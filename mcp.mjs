@@ -18,10 +18,26 @@
 //   allow  — empty = every connected server; otherwise only these (name, id or key)
 //   deny   — servers the agents may see in the bar but never call
 //   departments — which pods a server is wired to (default: a built-in map, else every pod)
-import { spawn } from 'node:child_process';
+import { spawn, execFileSync } from 'node:child_process';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
+
+// Windows: `claude` on PATH is a .cmd shim, and Node's spawn() can't exec .cmd/.bat files
+// directly (ENOENT) or safely via shell:true (unescaped arg concatenation — Node warns
+// DEP0190). The shim just calls a real claude.exe next to it, so resolve and spawn that
+// .exe directly instead: no shell involved, args passed as a real argv array.
+let _bin = null;
+export function resolveBin() {
+  if (_bin) return _bin;
+  if (process.platform !== 'win32') return (_bin = 'claude');
+  try {
+    const where = execFileSync('where', ['claude.cmd'], { encoding: 'utf8' }).trim().split(/\r?\n/)[0];
+    const exe = where.replace(/claude\.cmd$/i, 'node_modules\\@anthropic-ai\\claude-code\\bin\\claude.exe');
+    if (exe && fs.existsSync(exe)) return (_bin = exe);
+  } catch {}
+  return (_bin = 'claude'); // fallback: will fail with ENOENT until resolved; surfaces the same error as before
+}
 
 export const DEPT_KEYS = ['emails', 'sales', 'marketing', 'ops', 'fin', 'delivery'];
 
@@ -93,12 +109,21 @@ export function parseList(text) {
 }
 /* ---------- V3.2 (16 Sep): the browser ---------- */
 export const BROWSER = 'claude-in-chrome'; // the MCP server Claude Code adds to a --chrome run; tools are mcp__claude-in-chrome__*
-// what Claude Code remembers about the extension on this machine (paired device, onboarding done)
+// the native messaging host `claude --chrome` registers — the surest sign the extension can reach this machine
+const NATIVE_HOST = 'com.anthropic.claude_code_browser_extension.json';
+function nativeHost() {
+  const h = os.homedir();
+  const spots = process.platform === 'win32' ? [path.join(process.env.APPDATA || path.join(h, 'AppData', 'Roaming'), 'Claude Code', 'ChromeNativeHost', NATIVE_HOST)]
+    : process.platform === 'darwin' ? [path.join(h, 'Library', 'Application Support', 'Google', 'Chrome', 'NativeMessagingHosts', NATIVE_HOST)]
+    : [path.join(h, '.config', 'google-chrome', 'NativeMessagingHosts', NATIVE_HOST), path.join(h, '.config', 'chromium', 'NativeMessagingHosts', NATIVE_HOST)];
+  return spots.some(p => fs.existsSync(p));
+}
+// what Claude Code remembers about the extension on this machine (paired device, onboarding done, native host registered)
 export function browserState() {
-  try {
-    const j = JSON.parse(fs.readFileSync(path.join(os.homedir(), '.claude.json'), 'utf8'));
-    return { installed: !!j.cachedChromeExtensionInstalled, device: j.chromeExtension?.pairedDeviceName || '', onboarded: !!j.hasCompletedClaudeInChromeOnboarding };
-  } catch { return { installed: false, device: '', onboarded: false }; }
+  let j = {};
+  try { j = JSON.parse(fs.readFileSync(path.join(os.homedir(), '.claude.json'), 'utf8')); } catch {}
+  const onboarded = !!j.hasCompletedClaudeInChromeOnboarding;
+  return { installed: !!j.cachedChromeExtensionInstalled || onboarded || nativeHost(), device: j.chromeExtension?.pairedDeviceName || '', onboarded };
 }
 function browserServer(prev) {
   const b = browserState();
@@ -116,7 +141,7 @@ export function discover({ timeout = 45000 } = {}) {
     let out = '', done = false;
     const finish = list => { if (done) return; done = true; if (list) { servers = withBrowser(list); discoveredAt = Date.now(); } resolve(servers); };
     let p;
-    try { p = spawn('claude', ['mcp', 'list'], { env, stdio: ['ignore', 'pipe', 'pipe'] }); } catch { return finish([]); }
+    try { p = spawn(resolveBin(), ['mcp', 'list'], { env, stdio: ['ignore', 'pipe', 'pipe'] }); } catch { return finish([]); }
     const timer = setTimeout(() => { try { p.kill('SIGKILL'); } catch {} finish(parseList(out)); }, timeout);
     p.stdout.on('data', d => { out += d; }); p.stderr.on('data', d => { out += d; });
     p.on('error', () => { clearTimeout(timer); finish([]); });

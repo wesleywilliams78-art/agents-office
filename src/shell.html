@@ -627,6 +627,13 @@
     border-radius: 7px; font-size: 13px; line-height: 1; display: grid; place-items: center; transition: all .25s var(--ease);
   }
   .tp-big-btn:hover { background: rgba(21,20,20,.07); color: var(--ink); }
+  .tp-upload-btn { /* V3.7: drop a doc in, it becomes a note the agent reads */
+    flex: none; width: 24px; height: 24px; margin-top: 3px; border: 0; background: none; color: var(--grey); cursor: pointer;
+    border-radius: 7px; font-size: 13px; line-height: 1; display: grid; place-items: center; transition: all .25s var(--ease);
+  }
+  .tp-upload-btn:hover { background: rgba(21,20,20,.07); color: var(--ink); }
+  .tp-upload-btn.busy { animation: tpUploadSpin 1s linear infinite; }
+  @keyframes tpUploadSpin { to { transform: rotate(360deg); } }
   /* the big editor: the same task box, room to write a brief */
   #tpBig { position: fixed; inset: 0; z-index: 26; display: none; align-items: center; justify-content: center; background: rgba(21,20,20,.42); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); }
   #tpBig.on { display: flex; }
@@ -756,7 +763,7 @@
   body.dark .tp-model { border-color: var(--hairline); color: var(--grey); background: #1B1C21; }
   body.dark .tb-box { background: #1E1F24; }
   body.dark .tb-in { color: var(--ink); }
-  body.dark .tp-big-btn:hover, body.dark .tb-close:hover { background: rgba(236,234,227,.1); }
+  body.dark .tp-big-btn:hover, body.dark .tb-close:hover, body.dark .tp-upload-btn:hover { background: rgba(236,234,227,.1); }
   body.dark #tpBig { background: rgba(0,0,0,.55); }
   body.dark .tp-model.set { color: var(--ink); border-color: var(--ink); }
   body.dark .tp-effort { border-color: var(--hairline); color: var(--grey); background: #1B1C21; }
@@ -1132,6 +1139,8 @@
       <button class="tp-dd" title="department"><span class="dot"></span><span class="tp-ddn">MARKETING</span></button>
       <div class="tp-menu"></div>
       <textarea class="tp-in" rows="1" placeholder="Type a task…" autocomplete="off" spellcheck="false"></textarea>
+      <button class="tp-upload-btn" title="upload a document or image (.pdf, .docx, .txt, .md, .png, .jpg, .webp, .gif) for the agent to digest">📎</button>
+      <input type="file" class="tp-upload-file" accept=".pdf,.docx,.txt,.md,.png,.jpg,.jpeg,.webp,.gif" hidden>
       <button class="tp-big-btn" title="open the big editor (⌘⇧E)">⤢</button>
     </div>
     <div class="tp-r2">

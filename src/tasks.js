@@ -232,8 +232,9 @@ export function initTasks(ctx) {
     return t;
   }
 
-  /* ---------- seed a believable morning ---------- */
-  {
+  /* ---------- seed a believable morning — demo only (file://). Live (served), the office starts
+     empty and connect() below fills it from your real tasks — no fabricated busywork mixed in. ---------- */
+  if (!location.protocol.startsWith('http')) {
     const now = performance.now(), wall = Date.now();
     for (const a of AGENTS) {
       const r = R[a.id];
@@ -294,6 +295,7 @@ export function initTasks(ctx) {
     rep: panel.querySelector('.tp-rep'), repRow: panel.querySelector('.tp-rep-row'), cad: panel.querySelector('.tp-cad'), at: panel.querySelector('.tp-at'), okc: panel.querySelector('.tp-okc'), next: panel.querySelector('.tp-next'),
     model: panel.querySelector('.tp-model'), effort: panel.querySelector('.tp-effort'),
     bigBtn: panel.querySelector('.tp-big-btn'), team: panel.querySelector('.tp-team'),
+    uploadBtn: panel.querySelector('.tp-upload-btn'), uploadFile: panel.querySelector('.tp-upload-file'),
   };
   // V3.7: the box grows with the text (one line at rest, six at most) and the big editor mirrors it
   const big = document.getElementById('tpBig');
@@ -406,6 +408,31 @@ export function initTasks(ctx) {
   });
   P_.add.addEventListener('click', submit);
   P_.bigBtn.addEventListener('click', openBig);
+  P_.uploadBtn.addEventListener('click', () => P_.uploadFile.click());
+  P_.uploadFile.addEventListener('change', async () => {
+    const f = P_.uploadFile.files[0]; P_.uploadFile.value = '';
+    if (!f) return;
+    P_.uploadBtn.classList.add('busy');
+    say(`Reading ${esc(f.name)}…`, 'busy');
+    try {
+      const buf = await f.arrayBuffer();
+      let bin = ''; const bytes = new Uint8Array(buf);
+      for (let i = 0; i < bytes.length; i++) bin += String.fromCharCode(bytes[i]);
+      const dataBase64 = btoa(bin);
+      const r = await fetch(API + '/upload', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ filename: f.name, dataBase64, dept }) });
+      const out = await r.json();
+      if (!r.ok) throw new Error(out.error || r.statusText);
+      const prefix = `Read "${f.name}" (just uploaded) and `;
+      P_.input.value = prefix + P_.input.value;
+      P_.input.focus(); P_.input.setSelectionRange(prefix.length, prefix.length);
+      grow();
+      say(`Got it — <b>${esc(f.name)}</b> read (${out.chars.toLocaleString()} characters) and saved to the brain as a note. Say what you want done with it.`);
+    } catch (e) {
+      say(`Couldn't read that file (${esc(e.message)}).`, 'err');
+    } finally {
+      P_.uploadBtn.classList.remove('busy');
+    }
+  });
   B_.in.addEventListener('input', () => { P_.input.value = B_.in.value; P_.input.dispatchEvent(new Event('input', { bubbles: true })); mirrorHint(); });
   B_.in.addEventListener('keydown', (e) => { e.stopPropagation(); if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) { e.preventDefault(); submit(); } else if (e.key === 'Escape') closeBig(); });
   B_.add.addEventListener('click', submit);
@@ -576,7 +603,7 @@ export function initTasks(ctx) {
     }
     apply(t, st);
   }
-  function copyResult(t, st) { t.result = st.result; t.error = !!st.error; t.read = st.read || []; t.note = st.note; t.tools = st.tools || []; t.used = st.used || []; t.draft = st.draft; t.approved = !!st.approved; if (st.modelUsed) { t.modelUsed = st.modelUsed; t.modelFrom = st.modelFrom; t.effortUsed = st.effortUsed || ''; t.effortFrom = st.effortFrom; } }
+  function copyResult(t, st) { t.result = st.result; t.error = !!st.error; t.read = st.read || []; t.note = st.note; t.tools = st.tools || []; t.used = st.used || []; t.draft = st.draft; t.approved = !!st.approved; t.revisions = st.revisions || 0; if (st.modelUsed) { t.modelUsed = st.modelUsed; t.modelFrom = st.modelFrom; t.effortUsed = st.effortUsed || ''; t.effortFrom = st.effortFrom; } }
   // V3.2 (16 Sep): the server's team state → piece cards on the teammates' desks, notes as 💬, the lead's members list
   const seenNotes = new Set();
   function syncTeam(t, st, quiet) {
@@ -680,7 +707,7 @@ export function initTasks(ctx) {
         if (!agentOf(st.agent)) continue;
         if (st.state === 'done') {
           const t = mk({ agent: st.agent, title: st.title, text: st.text, plan: st.plan, by: 'you', live: true, sid: st.id, state: 'done',
-            doneAt: st.doneAt, changedAt: st.doneAt, addedAt: st.addedAt, result: st.result, read: st.read, note: st.note, tools: st.tools || [], used: st.used || [], error: !!st.error, last: 'done' });
+            doneAt: st.doneAt, changedAt: st.doneAt, addedAt: st.addedAt, result: st.result, read: st.read, note: st.note, tools: st.tools || [], used: st.used || [], error: !!st.error, revisions: st.revisions || 0, last: 'done' });
           if (st.team) syncTeam(t, st, true);
           deliver(t);
         } else reconcile(st); // next, doing (the server may be running it), waiting for your OK, scheduled for a date — pick it up again
@@ -959,8 +986,10 @@ export function initTasks(ctx) {
       } else {
         const nx = agentTasks(id, 'next').sort((a, b) => a.addedAt - b.addedAt)[0];
         if (nx) { start(nx, now); r.nextBrainAt = null; }
-        else if (!r.nextBrainAt) r.nextBrainAt = now + 6000 + Math.random() * 16000;
-        else if (now > r.nextBrainAt) { r.nextBrainAt = null; brainSend(id); }
+        else if (!live) { // demo only — an idle desk in a live office just stays idle until you give it real work
+          if (!r.nextBrainAt) r.nextBrainAt = now + 6000 + Math.random() * 16000;
+          else if (now > r.nextBrainAt) { r.nextBrainAt = null; brainSend(id); }
+        }
       }
     }
     if (now - lastBadge > 400) { syncBadges(); lastBadge = now; }

@@ -53,6 +53,7 @@ import * as teams from './teams.mjs';
 import * as aios from './aios.mjs';
 import { normModel, modelFor, modelArgs, modelId, modelName, MODEL_KEYS, DEFAULT_MODEL, normEffort, effortFor, effortName, EFFORT_KEYS } from './src/models.js';
 import { parseWhen, describe, valid as validWhen, untilText } from './src/when.js';
+import mammoth from 'mammoth';
 
 const cfg = loadConfig();
 const HTML = path.join(ROOT, 'dist', 'command-centre-v2.html'); // built by build.mjs; shipped so npm start works without a build
@@ -108,6 +109,53 @@ async function getUsage(force) {
 function bumpUsage(u) { if (!u) return; Object.assign(USTATE, usage.record(USTATE, u)); usage.saveState(DATA, USTATE); usageCache.stale = true; }
 const slug = t => String(t).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 60);
 
+/* ---------- V3.7: document upload — a dropped file becomes a brain note, so agents read it the same
+   way they read anything else (relevantNotes(), no new plumbing). Agents get no file tools, so the
+   text has to already be in the note by the time a task runs.
+   V3.8: images (and scanned/text-thin PDFs) go through a one-off vision call instead of OCR — Claude
+   actually looks at the thing and writes a real digest (what it says, what it shows, what it's
+   evidence of), not just a transcript. ---------- */
+const IMAGE_MEDIA = { '.png': 'image/png', '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.webp': 'image/webp', '.gif': 'image/gif' };
+const VISION_PROMPT = "Digest this for someone's personal work record. Transcribe all visible text, numbers and labels exactly, in full. Describe any charts, tables, screenshots or visual structure — what they show, not just that they exist. If it looks like evidence of something (a result, a metric, a message, a certificate, a review), say plainly what it's evidence of. Be thorough and literal: this write-up is the only record of what's in the file — nothing else will ever look at the original again.";
+function visionDigest(block) {
+  const msg = JSON.stringify({ type: 'user', message: { role: 'user', content: [{ type: 'text', text: VISION_PROMPT }, block] } });
+  const env = { ...process.env }; delete env.CLAUDECODE;
+  return new Promise((resolve, reject) => {
+    const p = spawn(mcp.resolveBin(), ['-p', '--input-format', 'stream-json', '--output-format', 'stream-json', '--verbose',
+      '--disallowedTools', 'Bash,Edit,Write,Read,Glob,Grep,Agent,NotebookEdit,Task,WebFetch,WebSearch', '--model', modelId('sonnet')],
+      { cwd: CLI_CWD, env, stdio: ['pipe', 'pipe', 'pipe'] });
+    let out = '', err = '', text = '';
+    const timer = setTimeout(() => { p.kill('SIGKILL'); reject(new Error('vision digest took too long')); }, 120000);
+    const feed = line => { if (!line.trim()) return; let j; try { j = JSON.parse(line); } catch { return; } if (j.type === 'result') text = String(j.result || '').trim(); };
+    p.stdout.on('data', d => { out += d; let i; while ((i = out.indexOf('\n')) >= 0) { feed(out.slice(0, i)); out = out.slice(i + 1); } });
+    p.stderr.on('data', d => { err += d; });
+    p.on('error', e => { clearTimeout(timer); reject(e); });
+    p.on('close', code => { clearTimeout(timer); if (text) resolve(text); else reject(new Error(err.trim() || `vision digest exited ${code}`)); });
+    fs.mkdirSync(CLI_CWD, { recursive: true });
+    p.stdin.write(msg + '\n'); p.stdin.end();
+  });
+}
+async function extractText(filename, buf) {
+  const ext = path.extname(filename).toLowerCase();
+  if (ext === '.txt' || ext === '.md') return buf.toString('utf8');
+  if (IMAGE_MEDIA[ext]) return visionDigest({ type: 'image', source: { type: 'base64', media_type: IMAGE_MEDIA[ext], data: buf.toString('base64') } });
+  if (ext === '.pdf') {
+    const { PDFParse } = await import('pdf-parse');
+    const parser = new PDFParse({ data: buf });
+    const result = await parser.getText();
+    const pdfText = result.text.trim();
+    const pages = result.total || result.pages?.length || 1;
+    await parser.destroy();
+    // a real, complete text layer is cheap and exact — but pdf-parse can silently stop partway through
+    // a multi-page or multi-column PDF (a two-column CV, say), so don't trust a short result just because
+    // it cleared the noise floor: it has to be plausible for the page count too, or go to vision instead.
+    if (pdfText.length > 200 && pdfText.length > pages * 400) return pdfText;
+    return visionDigest({ type: 'document', source: { type: 'base64', media_type: 'application/pdf', data: buf.toString('base64') } }); // scanned/image-only PDF
+  }
+  if (ext === '.docx') return (await mammoth.extractRawText({ buffer: buf })).value;
+  return null;
+}
+
 /* ---------- ask Claude ---------- */
 // askX → { text, tools }: tools = the MCP/web tools the agent actually called (for the office to
 // light up). On the CLI the agent gets --allowedTools = every connected server the config allows
@@ -135,7 +183,7 @@ async function askX(system, user, { maxTokens = 4000, tools = true, timeout = RU
   args.push(...modelArgs(model, effort));
   const env = { ...process.env }; delete env.CLAUDECODE; // the CLI refuses to nest inside another Claude Code session
   return new Promise((resolve, reject) => {
-    const p = spawn('claude', args, { cwd: CLI_CWD, env, stdio: ['ignore', 'pipe', 'pipe'] });
+    const p = spawn(mcp.resolveBin(), args, { cwd: CLI_CWD, env, stdio: ['ignore', 'pipe', 'pipe'] });
     let out = '', err = '', text = '', used = [], gotResult = false, usageOut = null, modelUsed = null;
     const timer = setTimeout(() => { p.kill('SIGKILL'); reject(new Error(`Claude took longer than ${timeout / 1000} s`)); }, timeout);
     const feed = line => {
@@ -521,10 +569,10 @@ const agentsOut = () => { const setup = setupMap(); return AGENTS.map(a => ({ id
 const server = http.createServer(async (req, res) => {
   const url = new URL(req.url, 'http://x');
   try {
-    if (req.method === 'GET' && (url.pathname === '/' || url.pathname === '/command-centre-v2.html' || url.pathname === '/dark')) {
+    if (req.method === 'GET' && (url.pathname === '/' || url.pathname === '/command-centre-v2.html' || url.pathname === '/dark' || url.pathname === '/light')) {
       res.writeHead(200, { 'content-type': 'text/html; charset=utf-8', 'cache-control': 'no-store' });
       const page = fs.readFileSync(HTML, 'utf8');
-      return res.end(url.pathname === '/dark' ? page.replace('<body>', '<body class="dark">') : page); // /dark: the same file, opened in dark mode
+      return res.end(url.pathname === '/light' ? page : page.replace('<body>', '<body class="dark">')); // dark mode is the default on startup; /light opts back out
     }
     if (req.method === 'GET' && url.pathname === '/aios') { // V3.9: the AIOS dashboard — roles, live work, the Eisenhower matrix (plain HTML, no build)
       res.writeHead(200, { 'content-type': 'text/html; charset=utf-8', 'cache-control': 'no-store' });
@@ -580,6 +628,23 @@ const server = http.createServer(async (req, res) => {
       console.log(`+ ${task.id} → ${task.agent}: ${task.title}${asTeam ? ' (team)' : ''}${dueAt ? ' · scheduled ' + untilText(dueAt) : ''}`);
       return json(res, 200, task);
     }
+    if (url.pathname === '/api/upload' && req.method === 'POST') {
+      const { filename, dataBase64, dept } = await body(req);
+      if (!filename || !dataBase64) return json(res, 400, { error: 'filename and dataBase64 required' });
+      const buf = Buffer.from(dataBase64, 'base64');
+      if (buf.length > 20 * 1024 * 1024) return json(res, 400, { error: 'file too large (20MB max)' });
+      let text; try { text = await extractText(filename, buf); } catch (e) { return json(res, 400, { error: `could not read ${filename}: ${e.message}` }); }
+      if (text === null) return json(res, 400, { error: `${path.extname(filename) || 'that file type'} is not supported yet — .txt, .md, .pdf, .docx, .png, .jpg, .jpeg, .webp and .gif only` });
+      text = text.trim();
+      if (!text) return json(res, 400, { error: `${filename} has no extractable text (a scanned/image-only PDF, for instance)` });
+      const base = path.basename(filename, path.extname(filename));
+      const name = `Upload - ${base} - ${slug(Date.now().toString(36))}`;
+      fs.mkdirSync(NOTES_DIR, { recursive: true });
+      const deptLine = dept && DEPTS[dept] ? ` · uploaded for ${DEPTS[dept].name}` : '';
+      fs.writeFileSync(path.join(NOTES_DIR, name + '.md'), `# ${filename}\n\n> Uploaded ${new Date().toLocaleString()}${deptLine} · ${text.length.toLocaleString()} characters\n\n${text}\n`);
+      rebuildGraph();
+      return json(res, 200, { ok: true, note: name, filename, chars: text.length, preview: text.slice(0, 400) });
+    }
     const m = url.pathname.match(/^\/api\/tasks\/([^/]+)(?:\/(run|revise|approve|reject))?$/);
     if (m && req.method === 'POST' && (m[2] === 'approve' || m[2] === 'reject')) { // D1: the owner's tick on a routine's draft
       const task = load().find(t => t.id === m[1]);
@@ -587,6 +652,7 @@ const server = http.createServer(async (req, res) => {
       if (task.state !== 'waiting') return json(res, 400, { error: 'this task is not waiting for your OK' });
       const { feedback } = m[2] === 'reject' ? await body(req) : {};
       const note = String(feedback || '').trim();
+      if (m[2] === 'reject') { task.revisions = (task.revisions || 0) + 1; save(load().map(t => t.id === task.id ? task : t)); } // V3.8: a rejected draft is a real "sent back" too — persist before runServerTask reloads its own copy
       console.log(`${m[2] === 'approve' ? '✅' : '↩'} ${task.id} ${m[2] === 'approve' ? 'approved — ' + agentName(task.agent) + ' is sending' : 'sent back: ' + note.slice(0, 80)}`);
       enqueue(() => runServerTask(task.id, m[2] === 'approve' ? { approve: true } : { feedback: note || 'Not this. Rework it.' }))
         .then(t => { if (m[2] === 'reject' && note && t && !t.error) { const a = AGENTS.find(x => x.id === t.agent); return learn.classify(ask, a, t, note).then(v => { const r = learn.record(BRAIN, a, t, note, v); console.log(`  ↳ ${a.name} ${r.standing ? 'learned a rule' : 'noted a one-off'}: ${r.line.slice(0, 100)}`); }); } })
@@ -597,6 +663,7 @@ const server = http.createServer(async (req, res) => {
       const list = load(); const task = list.find(t => t.id === m[1]);
       if (!task) return json(res, 404, { error: 'no such task' });
       const { feedback } = m[2] === 'revise' ? await body(req) : {};
+      if (m[2] === 'revise') task.revisions = (task.revisions || 0) + 1; // V3.8: a revise is a real "sent back" — the KPI rows below count these
       task.state = 'doing'; task.startedAt = Date.now(); save(list);
       try {
         const { result, read, tools, used, skills: sk, modelUsed, modelFrom, modelId: ran, effortUsed, effortFrom, team } = await run(task, feedback);

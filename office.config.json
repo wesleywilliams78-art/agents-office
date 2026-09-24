@@ -1,9 +1,23 @@
 {
-  "name": "Northgate Studio",
+  "name": "Wes's Office",
   "brain": "./brain",
   "port": 4520,
   "model": "sonnet",
-  "mcp": { "allow": [], "deny": [], "departments": {} },
+  "mcp": { "allow": [], "deny": [
+    "plugin_enterprise-search_notion",
+    "plugin_enterprise-search_guru",
+    "plugin_enterprise-search_atlassian",
+    "plugin_enterprise-search_asana",
+    "plugin_enterprise-search_google_calendar",
+    "plugin_enterprise-search_gmail",
+    "plugin_operations_google_calendar",
+    "plugin_operations_gmail",
+    "plugin_productivity_linear",
+    "plugin_productivity_monday",
+    "plugin_productivity_clickup",
+    "plugin_productivity_google_calendar",
+    "plugin_productivity_gmail"
+  ], "departments": {} },
   "tools": { "web": true, "browser": true },
   "teams": { "enabled": true, "max": 4 }
 }

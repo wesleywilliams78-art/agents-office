@@ -318,29 +318,33 @@ function tickDim(dt) {
     m.color.copy(m.userData.baseColor).lerp(m.userData.dimColor, focusDim);
 }
 
-/* ---------- department billboards — v1's exact agreed metric rows + amber approval row ---------- */
+/* ---------- department billboards — real proposal tracking, same 3 KPIs every dept ---------- */
+// V3.8: "Proposals Approved / Rejected / % of rejections", sourced from real task data (tasks.tasks,
+// live from the server), not simulation. Approved = tasks currently delivered (done, no error).
+// Rejected = total "revise:"/REJECT send-backs (task.revisions), a running count of real events —
+// a task can be both (rejected once, then delivered) so the two aren't mutually exclusive buckets.
 const kv = id => KPIS.find(k => k.id === id).val;
 let brainNotes = brain.state.notes;
+function proposalCounts(dept) {
+  const list = (tasks?.tasks || []).filter(t => t.live && t.dept === dept);
+  const approved = list.filter(t => t.state === 'done' && !t.error).length;
+  const rejected = list.reduce((s, t) => s + (t.revisions || 0), 0);
+  return { approved, rejected, pct: approved + rejected ? Math.round((rejected / (approved + rejected)) * 100) : 0 };
+}
+function proposalRows(dept) {
+  return [
+    ['PROPOSALS APPROVED', () => proposalCounts(dept).approved],
+    ['PROPOSALS REJECTED', () => proposalCounts(dept).rejected],
+    ['% OF REJECTIONS', () => proposalCounts(dept).pct + '%'],
+  ];
+}
 const BB_ROWS = profileRows() || {
-  emails: [
-    ['EMAILS SENT', () => STATS.emailsSent],
-    ['REPLIES DRAFTED', () => STATS.drafts]],
-  delivery: [
-    ['REPORTS SENT', () => STATS.reports],
-    ['ON TRACK', () => STATS.onTrack + ' / ' + STATS.projects]],
-  sales: [
-    ['CALLS S·A·J', () => STATS.spencer + '·' + STATS.arwin + '·' + STATS.jack],
-    ['NEW MANAGERS', () => STATS.managers],
-    ['AUTO-ONBOARDED', () => STATS.autoOnb]],
-  marketing: [
-    ['NEW INSIGHTS', () => STATS.insMkt],
-    ['COST PER USER', () => '$' + Math.round(STATS.cpa)]],
-  ops: [
-    ['PROPOSALS MADE', () => Math.round(kv('proposals'))],
-    ['NEW INSIGHTS', () => STATS.insOps]],
-  fin: [
-    ['INVOICES ISSUED', () => Math.round(kv('invoices'))],
-    ['BILLS PAID', () => STATS.billsPaid]],
+  emails: proposalRows('emails'),
+  delivery: proposalRows('delivery'),
+  sales: proposalRows('sales'),
+  marketing: proposalRows('marketing'),
+  ops: proposalRows('ops'),
+  fin: proposalRows('fin'),
   brain: [
     ['NOTES INDEXED', () => brainNotes.toLocaleString('en-NZ')]],
 };
