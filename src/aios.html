@@ -1,0 +1,391 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Agents Office · AIOS</title>
+<style>
+  :root {
+    --bg: #F4F3EE; --panel: #FDFFF8; --ink: #151414; --grey: #5A5A5A; --faint: #8b8a85;
+    --line: rgba(21,20,20,.12); --soft: rgba(21,20,20,.045);
+    --serif: "Instrument Serif", Georgia, "Times New Roman", serif;
+    --ui: Inter, -apple-system, "Segoe UI", "Helvetica Neue", sans-serif;
+    --mono: ui-monospace, Menlo, Consolas, monospace;
+    --q-do: #C8553D; --q-plan: #2E86AB; --q-delegate: #A08A1E; --q-drop: #7a7a7a;
+    --ok: #1E9070; --warn: #C98A12; --bad: #C8553D;
+  }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+    --bg: #111215; --panel: #1B1C21; --ink: #ECEAE3; --grey: #A3A29C; --faint: #74736e;
+    --line: rgba(236,234,227,.12); --soft: rgba(236,234,227,.05);
+    --q-do: #E27A63; --q-plan: #6FB7DA; --q-delegate: #D9C35A; --q-drop: #8f8f8f; --ok: #5ADEB7; --warn: #F0B849; --bad: #E27A63;
+  } }
+  :root[data-theme="dark"] {
+    --bg: #111215; --panel: #1B1C21; --ink: #ECEAE3; --grey: #A3A29C; --faint: #74736e;
+    --line: rgba(236,234,227,.12); --soft: rgba(236,234,227,.05);
+    --q-do: #E27A63; --q-plan: #6FB7DA; --q-delegate: #D9C35A; --q-drop: #8f8f8f; --ok: #5ADEB7; --warn: #F0B849; --bad: #E27A63;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 13px/1.45 var(--ui); }
+  a { color: inherit; }
+  button, select, input, textarea { font: inherit; color: inherit; }
+  button { cursor: pointer; background: var(--soft); border: 1px solid var(--line); border-radius: 7px; padding: 5px 10px; font-size: 11px; letter-spacing: .06em; font-weight: 600; }
+  button:hover { border-color: var(--grey); }
+  button.primary { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+  button:disabled { opacity: .45; cursor: default; }
+  .wrap { max-width: 1440px; margin: 0 auto; padding: 18px 16px 60px; }
+  header { display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; margin-bottom: 16px; }
+  header h1 { font: 400 30px/1 var(--serif); margin: 0; letter-spacing: .01em; }
+  header .sub { color: var(--grey); font-size: 11px; letter-spacing: .14em; text-transform: uppercase; }
+  header .right { margin-left: auto; display: flex; gap: 8px; align-items: center; font-size: 11px; color: var(--grey); }
+  .live { width: 8px; height: 8px; border-radius: 50%; background: var(--faint); display: inline-block; }
+  .live.on { background: var(--ok); box-shadow: 0 0 0 3px color-mix(in srgb, var(--ok) 25%, transparent); }
+  .kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 8px; margin-bottom: 18px; }
+  .kpi { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; }
+  .kpi .v { font: 400 28px/1.05 var(--serif); font-variant-numeric: tabular-nums; }
+  .kpi .l { font-size: 10px; letter-spacing: .12em; text-transform: uppercase; color: var(--grey); margin-top: 2px; }
+  .kpi.alert .v { color: var(--warn); }
+  section { margin-bottom: 26px; }
+  .sh { display: flex; align-items: baseline; gap: 12px; margin: 0 0 10px; flex-wrap: wrap; }
+  .sh h2 { font: 400 22px/1 var(--serif); margin: 0; }
+  .sh .note { color: var(--grey); font-size: 12px; }
+  .sh .tools { margin-left: auto; display: flex; gap: 6px; flex-wrap: wrap; }
+  .seg button.on { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+  .panel { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; }
+
+  /* roles */
+  .depts { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(330px, 100%), 1fr)); gap: 12px; }
+  .dept { overflow: hidden; }
+  .dept .dh { display: flex; align-items: center; gap: 8px; padding: 10px 12px; border-bottom: 1px solid var(--line); }
+  .dept .chip { width: 10px; height: 10px; border-radius: 3px; flex: none; }
+  .dept .dn { font-size: 11px; font-weight: 700; letter-spacing: .14em; }
+  .dept .dm { margin-left: auto; font-size: 10.5px; color: var(--grey); }
+  .seat { padding: 9px 12px; border-bottom: 1px solid var(--line); cursor: pointer; }
+  .seat:last-child { border-bottom: 0; }
+  .seat:hover { background: var(--soft); }
+  .seat .r1 { display: flex; align-items: center; gap: 7px; }
+  .seat .nm { font-size: 11px; font-weight: 700; letter-spacing: .1em; }
+  .seat .role { color: var(--grey); font-size: 11.5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
+  .seat .st { margin-left: auto; display: flex; align-items: center; gap: 5px; font-size: 10px; letter-spacing: .08em; color: var(--grey); flex: none; }
+  .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--line); flex: none; }
+  .dot.doing { background: var(--ok); } .dot.waiting { background: var(--warn); } .dot.error { background: var(--bad); }
+  .seat .does { color: var(--grey); font-size: 11.5px; margin-top: 3px; display: none; }
+  .seat.open .does { display: block; }
+  .seat .meta { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 5px; }
+  .tag { font-size: 9.5px; letter-spacing: .06em; padding: 1px 6px; border-radius: 4px; border: 1px solid var(--line); color: var(--grey); white-space: nowrap; }
+  .tag.lead { background: var(--ink); color: var(--bg); border-color: var(--ink); font-weight: 700; }
+  .tag.good { color: var(--ok); border-color: color-mix(in srgb, var(--ok) 40%, transparent); }
+  .tag.miss { color: var(--warn); border-color: color-mix(in srgb, var(--warn) 40%, transparent); }
+  .ready { display: inline-flex; gap: 2px; }
+  .ready i { width: 5px; height: 11px; border-radius: 1.5px; background: var(--line); display: block; }
+  .ready i.f { background: var(--ok); }
+  .seat .last { font-size: 11px; color: var(--faint); margin-top: 4px; display: none; }
+  .seat.open .last { display: block; }
+
+  /* matrix */
+  .feed { padding: 12px; display: grid; gap: 8px; margin-bottom: 12px; }
+  .feed textarea { width: 100%; min-height: 84px; resize: vertical; background: var(--bg); border: 1px solid var(--line); border-radius: 8px; padding: 9px 10px; }
+  .feed .row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+  .feed input, .feed select { background: var(--bg); border: 1px solid var(--line); border-radius: 7px; padding: 6px 9px; min-width: 0; }
+  .feed input { flex: 1 1 220px; } .feed select { flex: 1 1 260px; max-width: 100%; }
+  .feed .msg { font-size: 12px; color: var(--grey); }
+  .feed .msg.err { color: var(--bad); }
+  .matrix { display: grid; grid-template-columns: 22px 1fr 1fr; grid-template-rows: 22px auto auto; gap: 8px; }
+  .axis { font-size: 10px; letter-spacing: .16em; font-weight: 700; color: var(--grey); display: flex; align-items: center; justify-content: center; text-transform: uppercase; }
+  .axis.v { writing-mode: vertical-rl; transform: rotate(180deg); }
+  .quad { min-height: 190px; padding: 10px; border-top: 3px solid var(--qc); display: flex; flex-direction: column; gap: 7px; }
+  .quad .qh { display: flex; align-items: baseline; gap: 8px; }
+  .quad .qn { font-size: 11px; font-weight: 700; letter-spacing: .14em; color: var(--qc); }
+  .quad .qhint { font-size: 11px; color: var(--grey); }
+  .quad .qc { margin-left: auto; font: 400 20px/1 var(--serif); }
+  .quad.drag { outline: 2px dashed var(--qc); outline-offset: -4px; }
+  .quad .empty { color: var(--faint); font-size: 12px; padding: 8px 0; }
+  .item { background: var(--bg); border: 1px solid var(--line); border-radius: 8px; padding: 8px 9px; cursor: grab; }
+  .item.done, .item.dropped { opacity: .5; }
+  .item .it { font-weight: 600; font-size: 12.5px; }
+  .item .id { color: var(--grey); font-size: 11.5px; margin-top: 2px; display: none; }
+  .item.x .id { display: block; }
+  .item .im { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 5px; align-items: center; }
+  .item .ia { display: none; gap: 5px; margin-top: 7px; flex-wrap: wrap; }
+  .item.x .ia { display: flex; }
+  .item .ia button { font-size: 10px; padding: 3px 8px; }
+  .gap { color: var(--bad); border-color: color-mix(in srgb, var(--bad) 45%, transparent); font-weight: 700; }
+  .feeds { margin-top: 10px; font-size: 12px; color: var(--grey); display: grid; gap: 4px; }
+  .feeds b { color: var(--ink); font-weight: 600; }
+
+  /* activity */
+  .cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr)); gap: 12px; }
+  .col { padding: 10px 12px; }
+  .col h3 { margin: 0 0 8px; font-size: 11px; letter-spacing: .14em; font-weight: 700; display: flex; gap: 6px; align-items: center; }
+  .task { padding: 7px 0; border-top: 1px solid var(--line); display: flex; gap: 8px; align-items: flex-start; }
+  .task .tt { font-size: 12.5px; }
+  .task .tm { font-size: 11px; color: var(--grey); }
+  .task .tb { margin-left: auto; flex: none; }
+  .task .tb button { font-size: 10px; padding: 3px 7px; }
+  .none { color: var(--faint); font-size: 12px; padding: 6px 0; }
+
+  @media (max-width: 720px) {
+    .matrix { grid-template-columns: 1fr; grid-template-rows: none; }
+    .axis { display: none; }
+    header .right { margin-left: 0; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1 id="biz">AIOS</h1>
+    <span class="sub">Agents Office · operating picture</span>
+    <div class="right"><span class="live" id="live"></span><span id="liveTxt">connecting…</span> · <a href="/">open the office</a></div>
+  </header>
+
+  <div class="kpis" id="kpis"></div>
+
+  <section id="matrixSec">
+    <div class="sh">
+      <h2>Eisenhower matrix</h2>
+      <span class="note">Feed in what came out of a piece of work. The office lists what follows, sorts it, and names the seat.</span>
+      <div class="tools seg" id="mShow"><button data-v="open" class="on">OPEN</button><button data-v="all">ALL</button></div>
+    </div>
+    <div class="panel feed">
+      <textarea id="fText" placeholder="Paste what you got: meeting notes, an email thread, a client's reply, the outcome of a task…"></textarea>
+      <div class="row">
+        <select id="fTask"><option value="">…or read the result of a finished task</option></select>
+        <input id="fSrc" placeholder="Where it came from (optional): call with Heavenly Desserts, 24 Sep">
+        <button class="primary" id="fGo">READ IT</button>
+      </div>
+      <div class="msg" id="fMsg"></div>
+    </div>
+    <div class="matrix" id="matrix">
+      <div></div><div class="axis">Urgent</div><div class="axis">Not urgent</div>
+      <div class="axis v">Important</div>
+      <div class="panel quad" data-q="do" style="--qc: var(--q-do)"></div>
+      <div class="panel quad" data-q="plan" style="--qc: var(--q-plan)"></div>
+      <div class="axis v">Not important</div>
+      <div class="panel quad" data-q="delegate" style="--qc: var(--q-delegate)"></div>
+      <div class="panel quad" data-q="drop" style="--qc: var(--q-drop)"></div>
+    </div>
+    <div class="feeds" id="feeds"></div>
+  </section>
+
+  <section>
+    <div class="sh">
+      <h2>Roles</h2>
+      <span class="note">The 35 seats, what each one is for, and what it runs on by default. Click a seat for the detail.</span>
+      <div class="tools seg" id="rShow"><button data-v="all" class="on">ALL SEATS</button><button data-v="gaps">NEEDS A BRIEF OR SKILL</button><button data-v="busy">WORKING</button></div>
+    </div>
+    <div class="depts" id="depts"></div>
+  </section>
+
+  <section>
+    <div class="sh"><h2>Happening now</h2><span class="note" id="nowNote">Live from the office.</span></div>
+    <div class="cols">
+      <div class="panel col"><h3><span class="dot doing"></span>WORKING</h3><div id="aDoing"></div></div>
+      <div class="panel col"><h3><span class="dot waiting"></span>WAITING ON YOUR OK</h3><div id="aWaiting"></div></div>
+      <div class="panel col"><h3><span class="dot"></span>RECENTLY DONE</h3><div id="aDone"></div></div>
+      <div class="panel col"><h3>⏱ SCHEDULED</h3><div id="aSched"></div></div>
+    </div>
+  </section>
+</div>
+
+<script>
+const DEPTS = {
+  emails:    { name: 'EMAILS',     chip: '#5ADEB7' },
+  sales:     { name: 'SALES',      chip: '#EADC8F' },
+  marketing: { name: 'MARKETING',  chip: '#E69393' },
+  ops:       { name: 'OPERATIONS', chip: '#BFA2E3' },
+  fin:       { name: 'FINANCE',    chip: '#98A5EF' },
+  delivery:  { name: 'DELIVERY',   chip: '#8FD3F4' },
+  owner:     { name: 'YOU',        chip: '#8b8a85' },
+};
+const ORDER = ['emails', 'sales', 'marketing', 'ops', 'fin', 'delivery'];
+const GAPS = { 'no-seat': 'GAP · NO SEAT', 'owner-decision': 'YOUR CALL', 'missing-info': 'GAP · MISSING INFO' };
+const MODEL = { sonnet: 'Sonnet', opus: 'Opus', fable: 'Fable' };
+const S = { health: null, agents: [], tasks: [], routines: [], matrix: { items: [], feeds: [], quadrants: {} }, rShow: 'all', mShow: 'open', openSeat: new Set(), openItem: new Set(), busy: false };
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const ago = t => { if (!t) return ''; const s = (Date.now() - t) / 1000; return s < 60 ? 'just now' : s < 3600 ? Math.round(s / 60) + ' min ago' : s < 86400 ? Math.round(s / 3600) + ' h ago' : Math.round(s / 86400) + ' d ago'; };
+const when = t => new Date(t).toLocaleString([], { weekday: 'short', day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
+const agentBy = id => S.agents.find(a => a.id === id);
+const api = (p, o = {}) => fetch('/api' + p, { headers: { 'content-type': 'application/json' }, ...o, body: o.body ? JSON.stringify(o.body) : undefined }).then(async r => { const j = await r.json().catch(() => ({})); if (!r.ok) throw new Error(j.error || r.statusText); return j; });
+
+async function poll() {
+  try {
+    const [h, t, r, m] = await Promise.all([api('/health'), api('/tasks'), api('/routines').catch(() => ({ routines: [] })), api('/matrix')]);
+    S.health = h; S.agents = h.agents || []; S.tasks = Array.isArray(t) ? t : []; S.routines = r.routines || []; S.matrix = m;
+    $('live').classList.add('on'); $('liveTxt').textContent = `live · v${h.version} · ${MODEL[h.model] || h.model} by default`;
+    $('biz').textContent = h.name || 'AIOS'; document.title = (h.name || 'Agents Office') + ' · AIOS';
+    render();
+  } catch (e) { $('live').classList.remove('on'); $('liveTxt').textContent = location.protocol === 'file:' ? 'this is the file, not the office — open http://localhost:4520/aios' : 'office not reachable — is npm start running?'; }
+}
+
+// the state of a seat right now, from the task list
+function seatState(a) {
+  const mine = S.tasks.filter(t => t.agent === a.id || t.team?.pieces?.some(p => p.agent === a.id && p.state === 'doing'));
+  const doing = mine.find(t => t.state === 'doing'), waiting = mine.find(t => t.state === 'waiting');
+  const last = mine.filter(t => t.state === 'done').sort((x, y) => (y.doneAt || 0) - (x.doneAt || 0))[0];
+  const done = mine.filter(t => t.state === 'done' && !t.error).length;
+  return { doing, waiting, last, done, key: doing ? 'doing' : waiting ? 'waiting' : last?.error ? 'error' : 'idle' };
+}
+// a skill every seat carries is a house style, not how this seat's work is done
+const houseSkills = () => { const n = S.agents.length; const c = {}; for (const a of S.agents) for (const s of a.skills || []) c[s] = (c[s] || 0) + 1; return new Set(Object.keys(c).filter(s => n > 1 && c[s] === n)); };
+const roleSkills = a => { const h = houseSkills(); return (a.skills || []).filter(s => !h.has(s)); };
+// readiness: a role written, a standing brief, a skill that says how this seat's work is done
+const readiness = a => [!!a.does, !!a.brief, roleSkills(a).length > 0];
+
+function render() { renderKpis(); renderMatrix(); renderRoles(); renderActivity(); renderTaskPicker(); }
+
+function renderKpis() {
+  const T = S.tasks, today = new Date().toDateString();
+  const open = S.matrix.items.filter(i => i.state === 'open');
+  const briefed = S.agents.filter(a => a.brief).length, skilled = S.agents.filter(a => roleSkills(a).length).length;
+  const k = [
+    [S.agents.length, 'seats'],
+    [briefed, 'with a brief'],
+    [skilled, 'with a role skill'],
+    [T.filter(t => t.state === 'doing').length, 'working now'],
+    [T.filter(t => t.state === 'waiting').length, 'waiting on you', T.some(t => t.state === 'waiting')],
+    [T.filter(t => t.state === 'done' && t.doneAt && new Date(t.doneAt).toDateString() === today).length, 'done today'],
+    [S.routines.filter(r => !r.paused).length, 'routines on'],
+    [open.filter(i => i.q === 'do').length, 'do now', open.some(i => i.q === 'do')],
+    [open.filter(i => i.gap).length, 'gaps open', open.some(i => i.gap === 'no-seat')],
+  ];
+  $('kpis').innerHTML = k.map(([v, l, alert]) => `<div class="kpi${alert ? ' alert' : ''}"><div class="v">${v}</div><div class="l">${l}</div></div>`).join('');
+}
+
+function renderRoles() {
+  const office = S.health?.model || 'sonnet';
+  $('depts').innerHTML = ORDER.map(k => {
+    let seats = S.agents.filter(a => a.department === k).sort((a, b) => (b.lead ? 1 : 0) - (a.lead ? 1 : 0));
+    const setUp = S.health?.setup?.[k];
+    const all = seats.length, ready = seats.filter(a => readiness(a).every(Boolean)).length;
+    if (S.rShow === 'gaps') seats = seats.filter(a => !readiness(a).every(Boolean));
+    if (S.rShow === 'busy') seats = seats.filter(a => seatState(a).key === 'doing' || seatState(a).key === 'waiting');
+    if (!seats.length && S.rShow !== 'all') return '';
+    return `<div class="panel dept"><div class="dh"><span class="chip" style="background:${DEPTS[k].chip}"></span><span class="dn">${DEPTS[k].name}</span>
+      <span class="dm">${all} seats · ${ready} fully set · ${setUp ? 'set up' : 'not set up yet'}</span></div>` +
+      seats.map(a => {
+        const st = seatState(a), r = readiness(a), open = S.openSeat.has(a.id);
+        const stTxt = st.key === 'doing' ? 'WORKING' : st.key === 'waiting' ? 'WAITING' : st.key === 'error' ? 'LAST RUN FAILED' : 'IDLE';
+        const model = a.model ? `${MODEL[a.model] || a.model} (own)` : `${MODEL[office] || office} (office)`;
+        return `<div class="seat${open ? ' open' : ''}" data-seat="${esc(a.id)}">
+          <div class="r1"><span class="nm">${esc(a.name)}</span>${a.lead ? '<span class="tag lead">LEAD</span>' : ''}<span class="role">${esc(a.role)}</span>
+            <span class="st"><span class="ready" title="role · brief · skill">${r.map(x => `<i class="${x ? 'f' : ''}"></i>`).join('')}</span><span class="dot ${st.key}"></span>${stTxt}</span></div>
+          <div class="does">${esc(a.does)}</div>
+          <div class="meta">
+            <span class="tag">${esc(model)}</span>${a.effort ? `<span class="tag">effort ${esc(a.effort)}</span>` : ''}
+            <span class="tag ${a.brief ? 'good' : 'miss'}">${a.brief ? 'BRIEF' : 'NO BRIEF'}</span>
+            <span class="tag ${roleSkills(a).length ? 'good' : 'miss'}">${roleSkills(a).length ? 'SKILL: ' + esc(roleSkills(a).join(', ')) : 'NO ROLE SKILL'}</span>
+            ${a.lessons ? `<span class="tag">${a.lessons} lesson${a.lessons > 1 ? 's' : ''}</span>` : ''}
+            ${open ? (a.tools || []).map(t => `<span class="tag">${esc(t)}</span>`).join('') : (a.tools || []).length ? `<span class="tag">${a.tools.length} tools</span>` : ''}
+          </div>
+          <div class="last">${st.doing ? 'Now: ' + esc(st.doing.title) : st.waiting ? 'Waiting on your OK: ' + esc(st.waiting.title) : st.last ? `Last: ${esc(st.last.title)} · ${ago(st.last.doneAt)}` : 'No work yet.'} · ${st.done} done in total</div>
+        </div>`;
+      }).join('') + '</div>';
+  }).join('') || '<div class="none">Nothing to show for this filter.</div>';
+}
+
+function renderMatrix() {
+  const Q = S.matrix.quadrants || {};
+  const items = S.matrix.items.filter(i => S.mShow === 'all' || i.state === 'open');
+  for (const el of document.querySelectorAll('.quad')) {
+    const q = el.dataset.q, list = items.filter(i => i.q === q).sort((a, b) => (a.due || '9') < (b.due || '9') ? -1 : 1);
+    el.innerHTML = `<div class="qh"><span class="qn">${esc(Q[q]?.name || q)}</span><span class="qhint">${esc(Q[q]?.hint || '')}</span><span class="qc">${list.length}</span></div>` +
+      (list.map(itemHtml).join('') || '<div class="empty">Nothing here.</div>');
+  }
+  const feeds = [...(S.matrix.feeds || [])].reverse().slice(0, 4);
+  $('feeds').innerHTML = feeds.length ? feeds.map(f => `<div>${ago(f.at)} · ${f.auto ? '<span class="tag">AUTO</span> ' : ''}<b>${esc(f.source)}</b> → ${f.count} action${f.count === 1 ? '' : 's'}${f.summary ? ' — ' + esc(f.summary) : ''}</div>`).join('') : '';
+}
+function itemHtml(i) {
+  const a = agentBy(i.agent), d = DEPTS[i.dept] || DEPTS.owner, open = S.openItem.has(i.id);
+  const task = i.task && S.tasks.find(t => t.id === i.task);
+  const taskTxt = task ? (task.state === 'waiting' ? 'draft waiting on your OK' : task.state === 'done' ? (task.error ? 'task failed' : 'task done') : 'task running') : '';
+  return `<div class="item ${i.state}${open ? ' x' : ''}" draggable="true" data-item="${esc(i.id)}">
+    <div class="it">${esc(i.title)}</div>
+    <div class="im"><span class="tag" style="border-color:${d.chip}">${d.name}</span>${a ? `<span class="tag">${esc(a.name)}</span>` : ''}${i.gap ? `<span class="tag gap">${GAPS[i.gap] || i.gap}</span>` : ''}${i.due ? `<span class="tag">due ${esc(i.due)}</span>` : ''}${i.state !== 'open' ? `<span class="tag">${esc(i.state.toUpperCase())}</span>` : ''}${taskTxt ? `<span class="tag">${taskTxt}</span>` : ''}</div>
+    <div class="id">${esc(i.detail)}${i.why ? ` <i>(${esc(i.why)})</i>` : ''}</div>
+    <div class="ia">
+      ${i.state === 'open' && DEPTS[i.dept] && i.dept !== 'owner' ? `<button data-act="send">SEND TO ${esc(a ? a.name : d.name)}</button>` : ''}
+      ${i.state !== 'done' ? '<button data-act="done">DONE</button>' : ''}
+      ${i.state === 'open' ? '<button data-act="drop">DROP</button>' : '<button data-act="reopen">REOPEN</button>'}
+      <button data-act="delete">REMOVE</button>
+    </div></div>`;
+}
+
+function renderActivity() {
+  const T = S.tasks, name = id => agentBy(id)?.name || id;
+  const row = (t, extra = '') => `<div class="task"><div><div class="tt">${esc(t.title)}</div><div class="tm">${esc(name(t.agent))} · ${DEPTS[t.dept]?.name || t.dept}${t.routine ? ' · routine' : ''}${t.by === 'aios' ? ' · from the matrix' : ''} · ${extra}</div></div>` +
+    (t.state === 'done' && !t.error ? `<div class="tb">${matrixCell(t)}</div>` : '') + '</div>';
+  // a finished task has fed the matrix (automatically or by hand), is being read now, or can be read by hand
+  const matrixCell = t => {
+    const fed = (S.matrix.feeds || []).filter(f => f.taskId === t.id);
+    if (fed.length) { const n = fed[fed.length - 1].count; return `<span class="tag" title="${esc(fed[fed.length - 1].summary || '')}">${n ? n + ' IN MATRIX' : 'NOTHING FOLLOWS'}</span>`; }
+    if (S.matrix.autoFeed && Date.now() - (t.doneAt || 0) < 5 * 60000) return '<span class="tag">READING…</span>';
+    return `<button data-matrix="${esc(t.id)}" title="Read this result and list what follows">→ MATRIX</button>`;
+  };
+  $('nowNote').textContent = S.matrix.autoFeed ? 'Live from the office. Every finished task is read for what follows, and the actions land in the matrix.' : 'Live from the office. Send any finished result to the matrix to see what it kicks out.';
+  const doing = T.filter(t => t.state === 'doing');
+  const waiting = T.filter(t => t.state === 'waiting');
+  const done = T.filter(t => t.state === 'done').sort((a, b) => (b.doneAt || 0) - (a.doneAt || 0)).slice(0, 8);
+  const sched = [...T.filter(t => t.state === 'scheduled').map(t => ({ at: t.dueAt, title: t.title, who: name(t.agent) })),
+    ...S.routines.filter(r => !r.paused && r.nextAt).map(r => ({ at: r.nextAt, title: r.title, who: name(r.agent) + ' · ' + (r.desc || 'routine') }))].sort((a, b) => a.at - b.at).slice(0, 8);
+  $('aDoing').innerHTML = doing.map(t => row(t, 'started ' + ago(t.startedAt))).join('') || '<div class="none">Nobody is working right now.</div>';
+  $('aWaiting').innerHTML = waiting.map(t => row(t, 'drafted ' + ago(t.waitingAt)) ).join('') || '<div class="none">Nothing waiting. Approve drafts in the office.</div>';
+  $('aDone').innerHTML = done.map(t => row(t, (t.error ? 'failed ' : '') + ago(t.doneAt))).join('') || '<div class="none">No finished work yet.</div>';
+  $('aSched').innerHTML = sched.map(s => `<div class="task"><div><div class="tt">${esc(s.title)}</div><div class="tm">${esc(s.who)} · ${when(s.at)}</div></div></div>`).join('') || '<div class="none">Nothing on the timetable.</div>';
+}
+
+function renderTaskPicker() {
+  const sel = $('fTask'), cur = sel.value;
+  const done = S.tasks.filter(t => (t.state === 'done' && !t.error) || t.state === 'waiting').sort((a, b) => (b.doneAt || b.waitingAt || 0) - (a.doneAt || a.waitingAt || 0)).slice(0, 25);
+  const html = '<option value="">…or read the result of a finished task</option>' + done.map(t => `<option value="${esc(t.id)}">${esc(t.title)} · ${esc(agentBy(t.agent)?.name || t.agent)}</option>`).join('');
+  if (sel.dataset.h !== html) { sel.innerHTML = html; sel.dataset.h = html; sel.value = cur; }
+}
+
+async function feed(taskId) {
+  const text = $('fText').value.trim(), source = $('fSrc').value.trim(); taskId = taskId || $('fTask').value;
+  if (!text && !taskId) { $('fMsg').className = 'msg err'; $('fMsg').textContent = 'Paste something, or pick a task.'; return; }
+  S.busy = true; $('fGo').disabled = true; $('fMsg').className = 'msg'; $('fMsg').textContent = 'Reading it against the roster… (about 20–60 seconds)';
+  try {
+    const r = await api('/matrix/feed', { method: 'POST', body: { text, source, taskId: taskId || undefined } });
+    const c = q => r.items.filter(i => i.q === q).length, g = r.items.filter(i => i.gap).length;
+    $('fMsg').textContent = `${r.items.length} actions: ${c('do')} do now · ${c('plan')} schedule · ${c('delegate')} delegate · ${c('drop')} drop${g ? ` · ${g} gap${g > 1 ? 's' : ''}` : ''}. ${r.feed.summary || ''}`;
+    $('fText').value = ''; $('fSrc').value = ''; $('fTask').value = '';
+    await poll();
+  } catch (e) { $('fMsg').className = 'msg err'; $('fMsg').textContent = 'Could not read it: ' + e.message; }
+  S.busy = false; $('fGo').disabled = false;
+}
+
+async function act(id, what) {
+  try {
+    if (what === 'delete') await api('/matrix/' + id, { method: 'DELETE' });
+    else if (what === 'send') { const r = await api('/matrix/' + id + '/send', { method: 'POST' }); $('fMsg').className = 'msg'; $('fMsg').textContent = `Sent: ${r.task.title} → ${agentBy(r.task.agent)?.name || r.task.agent}${r.task.needsOk ? '. It will wait for your OK before anything goes out.' : '.'}`; }
+    else await api('/matrix/' + id, { method: 'POST', body: { state: what === 'drop' ? 'dropped' : what === 'reopen' ? 'open' : 'done' } });
+    await poll();
+  } catch (e) { alert(e.message); }
+}
+
+document.addEventListener('click', e => {
+  const seg = e.target.closest('.seg button');
+  if (seg) { const box = seg.parentElement; box.querySelectorAll('button').forEach(b => b.classList.toggle('on', b === seg)); S[box.id] = seg.dataset.v; render(); return; }
+  const b = e.target.closest('button[data-act]');
+  if (b) { const id = b.closest('[data-item]').dataset.item; b.disabled = true; act(id, b.dataset.act); return; }
+  const m = e.target.closest('button[data-matrix]');
+  if (m) { m.disabled = true; $('matrixSec').scrollIntoView({ behavior: 'smooth' }); feed(m.dataset.matrix); return; }
+  const it = e.target.closest('[data-item]');
+  if (it) { const id = it.dataset.item; S.openItem.has(id) ? S.openItem.delete(id) : S.openItem.add(id); renderMatrix(); return; }
+  const s = e.target.closest('[data-seat]');
+  if (s) { const id = s.dataset.seat; S.openSeat.has(id) ? S.openSeat.delete(id) : S.openSeat.add(id); renderRoles(); }
+});
+$('fGo').onclick = () => feed();
+// drag an item to another quadrant: the owner's call beats the office's
+let dragId = null;
+document.addEventListener('dragstart', e => { const it = e.target.closest?.('[data-item]'); dragId = it ? it.dataset.item : null; });
+for (const q of document.querySelectorAll('.quad')) {
+  q.addEventListener('dragover', e => { if (dragId) { e.preventDefault(); q.classList.add('drag'); } });
+  q.addEventListener('dragleave', () => q.classList.remove('drag'));
+  q.addEventListener('drop', async e => { e.preventDefault(); q.classList.remove('drag'); if (!dragId) return; const id = dragId; dragId = null; await api('/matrix/' + id, { method: 'POST', body: { q: q.dataset.q } }).catch(err => alert(err.message)); poll(); });
+}
+poll(); setInterval(() => { if (!S.busy && !document.hidden) poll(); }, 5000);
+</script>
+</body>
+</html>

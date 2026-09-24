@@ -50,6 +50,7 @@ import * as onboard from './onboard.mjs';
 import * as routines from './routines.mjs';
 import * as usage from './usage.mjs';
 import * as teams from './teams.mjs';
+import * as aios from './aios.mjs';
 import { normModel, modelFor, modelArgs, modelId, modelName, MODEL_KEYS, DEFAULT_MODEL, normEffort, effortFor, effortName, EFFORT_KEYS } from './src/models.js';
 import { parseWhen, describe, valid as validWhen, untilText } from './src/when.js';
 
@@ -378,6 +379,7 @@ async function runServerTask(id, { feedback, approve } = {}) {
   }
   list = load(); const i = list.findIndex(t => t.id === task.id); if (i >= 0) list[i] = task; save(list);
   console.log(`${task.error ? '✗' : task.state === 'waiting' ? '⏸' : '✓'} ${task.id} ${task.error ? 'failed' : task.state === 'waiting' ? 'waiting for your OK' : 'done'} (${task.result.length} chars${task.tools?.length ? ', tools: ' + task.tools.join(' ') : ''}${task.note ? ', note: ' + task.note : ''})`);
+  autoFeed(task);
   return task;
 }
 function tickRoutines() {
@@ -446,6 +448,68 @@ async function routinesChat(a, text) {
   return { reply: `Done. ${r.desc.charAt(0).toUpperCase() + r.desc.slice(1)}, ${who}.${made.guessed ? ` I took "${made.guessed}" as ${r.when.at}; say a time to change it.` : ''} ${r.needsOk ? 'Anything to send waits for your OK first.' : 'It only reads, so it will not wait for you.'} Next run ${untilText(r.nextAt)}. Say "routines" to see the list, "pause ${r.title.toLowerCase()}" to stop it.`, routine: r };
 }
 
+/* ---------- V3.9 AIOS: the Eisenhower matrix — the owner feeds in what came out of a piece of work, the office says what follows ---------- */
+// every finished task feeds the matrix on its own (aios.autoFeed: false in office.config.json turns it off).
+// Runs after the task is saved, off the routine queue. A revised task replaces the actions its earlier version
+// put there, unless the owner has already sent, finished or moved them on.
+const AUTO_FEED = cfg.aios?.autoFeed !== false;
+function autoFeed(task) {
+  if (!AUTO_FEED || task.state !== 'done' || task.error || !task.result) return;
+  const m = aios.load(DATA);
+  const earlier = new Set(m.feeds.filter(f => f.taskId === task.id).map(f => f.id));
+  if (earlier.size) { m.items = m.items.filter(i => !(earlier.has(i.feed) && i.state === 'open')); aios.save(DATA, m); }
+  feedMatrix({ taskId: task.id, auto: true }).catch(e => console.warn(`matrix: could not read ${task.id}:`, e.message));
+}
+async function feedMatrix({ text, source, taskId, auto }) {
+  let input = String(text || '').trim(), src = String(source || '').trim();
+  if (taskId) {
+    const t = load().find(x => x.id === taskId);
+    if (!t) throw Object.assign(new Error('no such task'), { code: 404 });
+    if (!t.result) throw Object.assign(new Error('that task has no result yet'), { code: 400 });
+    input = `${t.title}\n\n${t.draft || t.result}` + (input ? `\n\nTHE OWNER ADDS: ${input}` : '');
+    src = src || `The result of the task "${t.title}", done by ${agentName(t.agent)} (${DEPTS[t.dept]?.name || t.dept}).`;
+  }
+  if (!input) throw Object.assign(new Error('nothing to read — paste the information or pick a task'), { code: 400 });
+  reloadRoster();
+  const roster = AGENTS.map(a => `${a.department} · ${a.id} · ${a.name}${a.lead ? ' (lead)' : ''} · ${a.does}`).join('\n');
+  const today = new Date().toLocaleDateString('en-CA') + ' (' + new Date().toLocaleDateString([], { weekday: 'long' }) + ')';
+  const existing = aios.load(DATA).items.filter(i => i.state === 'open').slice(-40).map(i => i.title);
+  const pr = aios.extractPrompt({ business: cfg.name, roster, input, source: src, today, existing });
+  const feedId = 'f' + nid();
+  const out = aios.normalise(parseJSON(await ask(pr.system, pr.user, { maxTokens: 3000, timeout: 180000, model: 'sonnet' })), AGENTS, feedId);
+  const m = aios.load(DATA);
+  m.feeds.push({ id: feedId, at: Date.now(), source: src || 'Pasted by the owner', taskId: taskId || '', auto: !!auto, summary: out.summary, input: input.slice(0, 2000), count: out.items.length });
+  m.items.push(...out.items); aios.save(DATA, m);
+  console.log(`▦ matrix: ${out.items.length} actions from ${taskId ? (auto ? 'finished task ' : 'task ') + taskId : 'a paste'} (${Object.keys(aios.QUADRANTS).map(q => q + ' ' + out.items.filter(i => i.q === q).length).join(' · ')})`);
+  return { feed: m.feeds[m.feeds.length - 1], items: out.items };
+}
+async function matrixApi(req, res, url) {
+  if (url.pathname === '/api/matrix' && req.method === 'GET') return json(res, 200, { ...aios.load(DATA), quadrants: aios.QUADRANTS, autoFeed: AUTO_FEED });
+  if (url.pathname === '/api/matrix/feed' && req.method === 'POST') {
+    try { return json(res, 200, await feedMatrix(await body(req))); } catch (e) { return json(res, e.code || 500, { error: e.message }); }
+  }
+  const mm = url.pathname.match(/^\/api\/matrix\/([^/]+)(?:\/(send))?$/);
+  if (!mm) return json(res, 404, { error: 'not found' });
+  const m = aios.load(DATA); const item = m.items.find(x => x.id === mm[1]);
+  if (!item) return json(res, 404, { error: 'no such item' });
+  if (req.method === 'DELETE') { m.items = m.items.filter(x => x.id !== item.id); aios.save(DATA, m); return json(res, 200, { ok: true }); }
+  if (req.method !== 'POST') return json(res, 405, { error: 'POST or DELETE' });
+  if (mm[2] === 'send') { // hand the action to its seat: a real task, run here; anything outbound waits for the OK
+    if (!DEPTS[item.dept] || item.dept === 'brain') return json(res, 400, { error: 'this one is the owner\'s — no department to send it to' });
+    const text = `${item.title}. ${item.detail}`.trim();
+    const r = await route(item.dept, text);
+    const agent = item.agent && AGENTS.find(a => a.id === item.agent && a.department === item.dept) ? item.agent : r.agent;
+    const task = { id: nid(), dept: item.dept, agent, title: r.title, text, plan: r.plan, eta: r.eta, why: r.why, state: 'doing', startedAt: Date.now(), addedAt: Date.now(), by: 'aios', needsOk: r.needsOk, matrix: item.id };
+    const list = load(); list.push(task); save(list);
+    aios.patch(item, { state: 'sent', task: task.id }); aios.save(DATA, m);
+    console.log(`▦ ${item.id} → task ${task.id} → ${agent}: ${task.title}${task.needsOk ? ' (waits for your OK)' : ''}`);
+    enqueue(() => runServerTask(task.id));
+    return json(res, 200, { ok: true, item, task });
+  }
+  aios.patch(item, await body(req)); aios.save(DATA, m);
+  return json(res, 200, { ok: true, item });
+}
+
 /* ---------- http ---------- */
 const json = (res, code, body) => { res.writeHead(code, { 'content-type': 'application/json' }); res.end(JSON.stringify(body)); };
 const body = req => new Promise((resolve, reject) => { let s = ''; req.on('data', d => { s += d; }); req.on('end', () => { try { resolve(s ? JSON.parse(s) : {}); } catch (e) { reject(e); } }); });
@@ -462,6 +526,11 @@ const server = http.createServer(async (req, res) => {
       const page = fs.readFileSync(HTML, 'utf8');
       return res.end(url.pathname === '/dark' ? page.replace('<body>', '<body class="dark">') : page); // /dark: the same file, opened in dark mode
     }
+    if (req.method === 'GET' && url.pathname === '/aios') { // V3.9: the AIOS dashboard — roles, live work, the Eisenhower matrix (plain HTML, no build)
+      res.writeHead(200, { 'content-type': 'text/html; charset=utf-8', 'cache-control': 'no-store' });
+      return res.end(fs.readFileSync(path.join(ROOT, 'src', 'aios.html'), 'utf8'));
+    }
+    if (url.pathname.startsWith('/api/matrix')) return matrixApi(req, res, url);
     if (url.pathname === '/api/health') return json(res, 200, { ok: true, version, backend, model: cfg.model, modelName: modelName(cfg.model), models: MODEL_KEYS, effort: cfg.effort || '', efforts: EFFORT_KEYS, name: cfg.name, brain: BRAIN, notes: graph.notes, depts: DEPT_KEYS,
       agents: agentsOut(), setup: setupMap(), routines: (l => ({ count: l.length, paused: l.filter(r => r.paused).length, depts: routines.ALLOWED }))(loadRoutines()), roster: { customised: roster.customised, briefed: roster.briefed, files: roster.files, problems: roster.problems }, skills: (({ count, shipped, brain, problems }) => ({ count, shipped, brain, problems }))(skills.summary()), tools: backend === 'claude-cli', mcp: mcp.summary(), teams: TEAMS, browser: mcp.summary().browser });
     if (url.pathname === '/api/agents') return json(res, 200, { agents: agentsOut(), problems: roster.problems, files: roster.files });
@@ -540,6 +609,7 @@ const server = http.createServer(async (req, res) => {
       const l2 = load(); const i = l2.findIndex(t => t.id === task.id); if (i >= 0) l2[i] = task; save(l2);
       console.log(`${task.error ? '✗' : '✓'} ${task.id} ${task.error ? 'failed' : 'done'} (${task.result.length} chars${task.tools?.length ? ', tools: ' + task.tools.join(' ') : ''}${task.note ? ', note: ' + task.note : ''})`);
       json(res, 200, task);
+      autoFeed(task);
       if (feedback && !task.error) { // learn from the correction, after the reply is out the door
         const a = AGENTS.find(x => x.id === task.agent);
         learn.classify(ask, a, task, feedback).then(v => { const r = learn.record(BRAIN, a, task, feedback, v); console.log(`  ↳ ${a.name} ${r.standing ? 'learned a rule' : 'noted a one-off'}: ${r.line.slice(0, 100)}`); })

@@ -292,6 +292,26 @@ It needs the Claude Code login (not an API key), the extension paired, and Chrom
 paired yet? The tile is grey and says what to do on hover. `tools.browser: false` in
 `office.config.json` keeps the agents out of the browser altogether (and off the bar).
 
+## AIOS: the dashboard for the whole office
+
+Open **http://localhost:4520/aios** beside the office. It has three parts and refreshes every five seconds:
+
+- **Eisenhower matrix.** Paste what came out of a piece of work (call notes, an email thread, a
+  client's reply), or pick a finished task, and press READ IT. The office lists the actions that
+  follow, sorts them into DO NOW · SCHEDULE · DELEGATE · DROP, and names the seat for each one.
+  Gaps are flagged: **GAP · NO SEAT** (no agent covers it, so rename a seat), **YOUR CALL** (a
+  decision only you can make) and **GAP · MISSING INFO**. Drag a card to another quadrant if you
+  disagree. SEND TO … turns it into a real task on that desk; anything that sends, posts or pays
+  waits for your OK. **Every finished task feeds the matrix on its own**: once it is done, the
+  office reads the result and adds what follows, skipping anything already there (a revised task
+  replaces the open actions its earlier version added). *Happening now* shows `N IN MATRIX` beside
+  each one. To switch this off, add `"aios": { "autoFeed": false }` to `office.config.json`; the
+  **→ MATRIX** button then does it by hand. The matrix is kept in `data/matrix.json`.
+- **Roles.** All 35 seats by department: role, what it does, the model it runs on by default,
+  its tools, and whether it has a brief and a role skill (the three bars). NEEDS A BRIEF OR SKILL
+  shows the seats still to set up.
+- **Happening now.** Working, waiting on your OK, recently done, and what is on the timetable.
+
 ## Which model, and how much of your plan
 
 Every run names its model. Three, by name: **Sonnet**, **Opus**, **Fable**. Sonnet is the

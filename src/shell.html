@@ -223,14 +223,15 @@
     0%, 100% { box-shadow: 0 0 0 0 rgba(242,184,75,0); }
     50% { box-shadow: 0 0 0 6px rgba(242,184,75,.25); }
   }
-  #topCal { /* V3.2.1: the calendar button beside the approval counter */
+  #topCal, #topAios { /* V3.2.1: the calendar button beside the approval counter; V3.9: the AIOS link beside it */
     display: inline-flex; align-items: center; gap: 5px; cursor: pointer; margin-right: 8px;
     font-family: var(--ui); font-size: 10px; font-weight: 700; letter-spacing: .14em; color: var(--ink);
     background: color-mix(in srgb, var(--cream) 94%, transparent); border: 1px solid var(--hairline); border-radius: 99px; padding: 5px 12px;
     transition: all .3s var(--ease);
   }
-  #topCal:hover, body.calOpen #topCal { background: var(--ink); color: var(--cream); border-color: var(--ink); }
-  body.dark #topCal { background: #1B1C21; }
+  #topCal:hover, body.calOpen #topCal, #topAios:hover { background: var(--ink); color: var(--cream); border-color: var(--ink); }
+  body.dark #topCal, body.dark #topAios { background: #1B1C21; }
+  #topAios { text-decoration: none; }
   #topAppr {
     align-items: center; gap: 5px; cursor: pointer;
     font-size: 12px; font-weight: 600; letter-spacing: .06em;
@@ -1053,6 +1054,7 @@
   <div id="topconn"></div>
   <span class="sp"></span>
   <div id="topmodels"></div>
+  <a id="topAios" href="/aios" target="_blank" rel="noopener" title="the AIOS dashboard — roles, live work and the Eisenhower matrix (opens in a new tab)">▦ AIOS</a>
   <button id="topCal" title="the calendar — tasks and routines on their days (P)">◷ CALENDAR</button>
   <span id="topAppr" style="display:none">⚠ <span>0</span></span>
   <span id="clock">—</span>

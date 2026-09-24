@@ -506,6 +506,13 @@ else {
       const c = m.servers.find(s => s.id === 'claude-in-chrome'); if (!c || c.key !== 'chrome' || !Array.isArray(c.depts) || c.depts.length !== 6) throw new Error('chrome not in /api/mcp: ' + JSON.stringify(c));
       return `teams on (max ${up.teams.max}) · Chrome ${c.status}${up.browser.device ? ' · ' + up.browser.device : ''} · wired to every pod`;
     });
+    await step('server: /aios serves the dashboard and /api/matrix holds the Eisenhower matrix', async () => { // V3.9
+      const p = await fetch(base + '/aios'); if (!p.ok || !/Eisenhower matrix/.test(await p.text())) throw new Error('/aios ' + p.status);
+      const m = await (await fetch(base + '/api/matrix')).json(); if (!Array.isArray(m.items) || Object.keys(m.quadrants || {}).join() !== 'do,plan,delegate,drop') throw new Error(JSON.stringify(m).slice(0, 120));
+      const e = await fetch(base + '/api/matrix/feed', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ text: '  ' }) });
+      if (e.status !== 400) throw new Error('an empty feed was accepted');
+      return `${m.items.filter(i => i.state === 'open').length} open actions · ${m.items.filter(i => i.state === 'open' && i.gap).length} gaps`;
+    });
     await step('server: a task scheduled for a time that has passed is refused', async () => { // V3.2.1
       const r = await fetch(base + '/api/tasks', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ dept: 'sales', text: 'call the leads', at: Date.now() - 3600000 }) });
       const j = await r.json(); if (r.status !== 400 || !/passed/.test(j.error)) throw new Error(r.status + ' ' + JSON.stringify(j));
