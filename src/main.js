@@ -12,10 +12,12 @@ import {
 import { initMcp } from './mcp.js';
 import { loadConnectors } from './connectors.js';
 import { initTasks } from './tasks.js';
+import { initReview } from './review.js';
 import { initBrain } from './brain.js';
 import { initHero, HERO } from './hero.js';
 if (HERO) document.body.classList.add('hero'); // the website hero: no Sahni.ai mark or licence line on top of the page that already carries them // sahni.ai/custom hero mode (16 Sep 2026): opt-in via window.HERO, no-op otherwise
 let tasks = null; // V3 task boards — initialised after the rail constants exist
+let review = null; // V3.9: the pop-up reader for every finished task (review.js)
 
 /* ---------- renderer / scene / camera ---------- */
 const canvas = document.getElementById('scene');
@@ -635,7 +637,7 @@ function renderChat(id) {
     return '';
   }).join('');
   mMsgs.querySelectorAll('.m-file').forEach(el =>
-    el.addEventListener('click', () => el.classList.toggle('exp')));
+    el.addEventListener('click', () => { const m = chatHist[id][+el.dataset.i]; if (review && m) review.read({ agent: id, title: m.title || m.name, content: m.content, meta: m.meta, kindLabel: m.icon === '📝' ? 'DRAFT' : 'DELIVERED' }); else el.classList.toggle('exp'); }));
   mMsgs.querySelectorAll('.m-appr .a-yes').forEach(el =>
     el.addEventListener('click', () => resolveApproval(id, true)));
   mMsgs.querySelectorAll('.m-appr .a-no').forEach(el =>
@@ -968,6 +970,7 @@ function setStuckLive(id, ask, sid) {
 function resolveApproval(id, approved) {
   const r = R[id];
   if (!r || r.state !== 'stuck') return;
+  if (r.liveSid && review) { const pick = t => t.agent === id; approved ? review.open(pick) : review.openReject(pick); return; } // V3.9
   r.state = 'working';
   r.ask = null;
   r.warn.visible = false;
@@ -984,6 +987,19 @@ function resolveApproval(id, approved) {
     text: approved ? '✓ Approved — actioning it now. I\'ll log the result in my activity.'
                    : '✗ Understood — parked. I\'ll adjust and come back with a better version.',
   });
+  syncApprovals();
+}
+function decidedLive(id, approved) { // V3.9: the reader decided one of this agent's tasks
+  const r = R[id]; if (!r) return;
+  const msg = chatHist[id] && [...chatHist[id]].reverse().find(m => m.who === 'appr' && m.pending);
+  if (msg) { msg.pending = false; msg.approved = approved; }
+  const now = performance.now();
+  if (approved) r.cheerUntil = now + 2400; else r.slumpUntil = now + 2600;
+  spawnEmote(r, approved ? '✅' : '❌');
+  const next = tasks && tasks.waitingFor(id).find(t => t.state === 'waiting' && t.sid !== r.liveSid);
+  if (next) { r.liveSid = next.sid; r.ask = next.ask; }
+  else { r.state = 'working'; r.ask = null; r.liveSid = null; r.warn.visible = false; }
+  if (modalOpen === id && modalTab === 'chat') renderChat(id);
   syncApprovals();
 }
 function stuckIn(dept) { return Object.values(R).filter(r => r.state === 'stuck' && r.a.dept === dept); }
@@ -1013,6 +1029,7 @@ function zoomToApproval(dept) {
 }
 document.getElementById('topCal').addEventListener('click', () => { if (tasks && tasks.calendar) tasks.calendar.toggle(); }); // V3.2.1: the top-bar calendar button (same as P)
 document.getElementById('topAppr').addEventListener('click', () => {
+  if (review && review.open()) return; // V3.9: the review queue, oldest first
   const s = Object.values(R).find(r => r.state === 'stuck');
   if (s) zoomToApproval(s.a.dept);
 });
@@ -1371,12 +1388,13 @@ function applyRoster(agents) {
   }
   if (tasks && tasks.syncPills) tasks.syncPills(); // the pills were rebuilt — put the clock chips back
 }
+review = initReview({ esc, agentOf: id => R[id] && R[id].a, onApprove: t => tasks.approveTask(t), onReject: (t, reason) => tasks.rejectTask(t, reason) });
 tasks = initTasks({
   hud, R, deptRT, RAIL_SIDE, spawnEmote, chatPush, chatHist, feedPush, zoomToApproval, enterFocus, openAgent, esc,
   brainWrite: (id, title) => brain.write(id, title), brain,
   onLive: (h) => { document.querySelector('#topbar .brand .ver').textContent = 'BETA'; document.title = `${h.name} — Agents Office`; brain.setOwner(h.name); brain.setQuiet(true); applyRoster(h.agents); },
   onTools: (agentId, keys) => mcp.onToolsUsed(agentId, keys),
-  requestApproval, setStuck: setStuckLive,
+  requestApproval, setStuck: setStuckLive, review, onDecided: decidedLive,
   onUsage: (u) => { if (mcp && mcp.setUsage) mcp.setUsage(u); }, // V3.6: the plan's gauge in the top bar
   getFocused: () => focused, getZoom: () => view.zoom, getFocusDim: () => focusDim,
   toScreen: (p) => toScreen(p), reframe,

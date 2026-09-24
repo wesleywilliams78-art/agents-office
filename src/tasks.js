@@ -129,7 +129,8 @@ const STATE_LABEL = { next: 'Backlog', doing: 'In progress', waiting: 'Waiting',
 
 export function initTasks(ctx) {
   const { R, deptRT, spawnEmote, chatPush, chatHist, feedPush, zoomToApproval, enterFocus, openAgent,
-          getFocused, esc, brainWrite, brain, onLive, onTools, requestApproval, setStuck, onUsage } = ctx;
+          getFocused, esc, brainWrite, brain, onLive, onTools, requestApproval, setStuck, onUsage, onDecided } = ctx;
+  let review = ctx.review || null; // V3.9: the pop-up reader (review.js) — every finished live task is read and ticked there
   // LIVE mode (served by serve.mjs): the bar routes through Claude, agents produce real
   // deliverables saved as notes in the brain, and tasks persist. Opened as a file it stays demo.
   let live = false;
@@ -219,7 +220,7 @@ export function initTasks(ctx) {
       if (L && R[L.id]) { spawnEmote(R[L.id], '📋'); feedPush(R[L.id], '📋', `Piece in from ${a.name}: ${t.title}`); }
       return;
     }
-    chatPush(t.agent, { who: 'file', icon: t.error ? '⚠' : '📄', name: (t.note || slug(t.title)) + '.md',
+    chatPush(t.agent, { who: 'file', icon: t.error ? '⚠' : '📄', name: (t.note || slug(t.title)) + '.md', title: t.title,
       meta: `${t.error ? 'could not complete' : t.approved ? 'sent after your OK · saved to your brain' : 'delivered · saved to your brain'} · ${timeStr(t.doneAt)} · click to view`, content: t.result });
     if (!t.error) chatPush(t.agent, { who: 'agent', text: `Done — "${t.title}"${t.routine ? ` (routine, ${t.when}${t.late ? ', ran late' : ''})` : ''} is ready above${t.team?.members?.length ? ` — the team was ${membersText(t)} and me` : ''}${t.read && t.read.length ? ` (I read ${t.read.slice(0, 3).join(', ')})` : ''}${t.used && t.used.length ? `. Used ${t.used.join(', ')}` : ''}. Say "revise: …" and I'll change it.` });
     feedPush(R[t.agent], '📄', `Delivered: ${t.title}`);
@@ -636,6 +637,7 @@ export function initTasks(ctx) {
   }
   function apply(t, st) {
     if (st.team) syncTeam(t, st);
+    if (st.state !== 'waiting' && review && review.has(t.sid)) review.drop(t.sid); // decided elsewhere (another tab, the chat)
     if (st.state === 'scheduled') { if (t.state !== 'scheduled') { t.state = 'scheduled'; t.dueAt = st.dueAt; touch(t, 'scheduled'); } else if (t.dueAt !== st.dueAt) { t.dueAt = st.dueAt; dirty = true; } return; }
     if (t.state === 'scheduled' && st.state !== 'scheduled') { t.state = 'next'; t.addedAt = st.addedAt || Date.now(); t.late = !!st.late; t.due = st.due; touch(t, 'added'); spawnEmote(R[t.agent], '⏱'); feedPush(R[t.agent], '⏱', `Scheduled task fired: ${t.title}${t.late ? ' (late)' : ''}`); if (calendar) calendar.refresh(); }
     if (st.state === 'doing' && t.state !== 'doing') {
@@ -650,12 +652,37 @@ export function initTasks(ctx) {
       if (brain && !t.error) fetch(API + '/brain').then(r => r.json()).then(g => brain.setGraph(g)).catch(() => {});
     }
   }
-  function askApproval(t) { // D1: the draft lands in the chat with APPROVE / REJECT and the agent stands and waves
-    chatPush(t.agent, { who: 'file', icon: '📝', name: slug(t.title) + '.md', meta: `draft · waiting for your OK · ${timeStr(t.changedAt)} · click to view`, content: t.draft || t.result });
+  function askApproval(t) { // D1: the draft lands in the chat with APPROVE / REJECT and the agent stands and waves; V3.9: and pops up over the office to be read
+    chatPush(t.agent, { who: 'file', icon: '📝', name: slug(t.title) + '.md', title: t.title, meta: `${t.needsOk ? 'draft · waiting for your OK' : 'ready for your review'} · ${timeStr(t.changedAt)} · click to read`, content: t.draft || t.result });
+    if (review && t.live) review.push(t);
     chatPush(t.agent, { who: 'appr', text: t.ask || `"${t.title}" is ready — approve to send it, reject to tell me what to change.`, pending: true, live: true });
     feedPush(R[t.agent], '⏸', `Waiting for your OK: ${t.title}`);
     if (setStuck) setStuck(t.agent, t.ask, t.sid);
   }
+  // V3.9: the reader's APPROVE / REJECT (with its reason) — straight to the server by task id
+  async function approveTask(t) {
+    const r = await post(`/tasks/${t.sid}/approve`);
+    if (r?.task) { apply(t, r.task); chatPush(t.agent, { who: 'agent', text: '✓ Approved — marked done and saved to your brain.' }); } // nothing to send: done now
+    else { toDoing(t); chatPush(t.agent, { who: 'agent', text: '✓ Approved — sending it now. It lands here when it is done.' }); }
+    if (onDecided) onDecided(t.agent, true);
+  }
+  async function rejectTask(t, reason) {
+    t.revisions = (t.revisions || 0) + 1;
+    await post(`/tasks/${t.sid}/reject`, { feedback: reason });
+    toDoing(t); t.draftAt = null;
+    chatPush(t.agent, { who: 'user', text: 'Rejected: ' + reason });
+    chatPush(t.agent, { who: 'agent', text: 'Understood — reworking it with your reason. It comes back to you for review, and I will keep the lesson for next time.' });
+    feedPush(R[t.agent], '↩', `Sent back: ${t.title}`);
+    if (onDecided) onDecided(t.agent, false);
+  }
+  const liveTask = id => tasks.find(x => String(x.id) === String(id));
+  function openReview(id) { const t = liveTask(id); return !!(t && t.live && review && review.open(t)); }
+  function readTask(id) { // a finished task, read in the pop-up
+    const t = liveTask(id); if (!t || !t.live || !t.result || !review) return false;
+    review.read({ agent: t.agent, dept: t.dept, title: t.title, content: t.result, used: t.used, read: t.read, kindLabel: t.error ? 'COULD NOT COMPLETE' : t.approved ? 'APPROVED' : 'DONE', meta: t.doneAt ? 'done ' + timeStr(t.doneAt) : '' });
+    return true;
+  }
+  const waitingFor = agentId => tasks.filter(x => x.live && x.agent === agentId && x.state === 'waiting');
   const pendingFeedback = {}; // agentId → sid after REJECT: the owner's next chat line is the note
   function resolveLive(agentId, approved) { // APPROVE / REJECT on a live draft (main.js calls this instead of the demo onResolve)
     const t = tasks.find(x => x.live && x.agent === agentId && x.state === 'waiting'); if (!t) return false;
@@ -678,6 +705,7 @@ export function initTasks(ctx) {
       const r = await fetch(`${API}/tasks/${t.sid}/${feedback ? 'revise' : 'run'}`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(feedback ? { feedback } : {}) });
       if (!r.ok) throw new Error((await r.json()).error || r.statusText);
       const st = await r.json();
+      if (st.state === 'waiting') { apply(t, st); return; } // V3.9: done → waiting for your review (the tick never marks it done by itself)
       t.result = st.result; t.error = !!st.error; t.read = st.read || []; t.note = st.note; t.tools = st.tools || []; t.used = st.used || []; if (st.modelUsed) { t.modelUsed = st.modelUsed; t.modelFrom = st.modelFrom; t.effortUsed = st.effortUsed || ''; t.effortFrom = st.effortFrom; }
       usageDue = true;
       if (t.tools.length && onTools) onTools(t.agent, t.tools); // the connectors the agent really pulled on light up
@@ -804,8 +832,8 @@ export function initTasks(ctx) {
       : (list.map(rowHTMLp).join('') || `<div class="tp-empty">Nothing here right now.</div>`);
     renderNext();
     P_.rows.querySelectorAll('.tp-act button').forEach(b => b.addEventListener('click', e => { e.stopPropagation(); const row = b.closest('.tp-row'); if (row.dataset.rid) rtAct(row.dataset.rid, b.dataset.act); else if (b.dataset.act === 'cancel') cancelScheduled(tasks.find(t => String(t.id) === row.dataset.id)); else if (b.dataset.act === 'calendar' && calendar) calendar.open(); }));
-    P_.rows.querySelectorAll('.tp-row.waiting').forEach(n => n.addEventListener('click', () => zoomToApproval(n.dataset.dept)));
-    P_.rows.querySelectorAll('.tp-row.live.done').forEach(n => n.addEventListener('click', () => openAgent && openAgent(n.dataset.agent, 'chat')));
+    P_.rows.querySelectorAll('.tp-row.waiting').forEach(n => n.addEventListener('click', () => openReview(n.dataset.id) || zoomToApproval(n.dataset.dept)));
+    P_.rows.querySelectorAll('.tp-row.live.done').forEach(n => n.addEventListener('click', () => readTask(n.dataset.id) || (openAgent && openAgent(n.dataset.agent, 'chat'))));
     if (!structural) flip(before);
   }
   function refreshBars() {
@@ -886,7 +914,8 @@ export function initTasks(ctx) {
   function renderBoard() {
     if (!board.open) return;
     el.innerHTML = companyHTML();
-    el.querySelectorAll('.tk.waiting').forEach(n => n.addEventListener('click', () => { close(); zoomToApproval(n.dataset.dept); }));
+    el.querySelectorAll('.tk.waiting').forEach(n => n.addEventListener('click', () => { close(); openReview(n.dataset.id) || zoomToApproval(n.dataset.dept); }));
+    el.querySelectorAll('.tk.done').forEach(n => n.addEventListener('click', () => { if (readTask(n.dataset.id)) close(); }));
     el.querySelectorAll('.tk.sched').forEach(n => n.addEventListener('click', () => { close(); filter = 'sched'; openFor(n.dataset.dept); render(true); }));
   }
   function open() {
@@ -1043,5 +1072,5 @@ export function initTasks(ctx) {
   const calendar = initCalendar({ tasks, routines, agentOf, DEPTS, DEPT_KEYS, RT_DEPTS, rtRefuse, create: createScheduled, createRoutine: createRoutineAt, cancelTask: cancelScheduled, rtAct, openAgent: (id, tab) => openAgent && openAgent(id, tab), esc, isLive: () => live, officeModel: () => officeModel, MODEL_KEYS, modelName, business: () => document.title.replace(/ — Agents Office$/, ''), currentDept: () => dept });
   return { tick, toggle, open, close, openFor, isOpen, boardWidth, onFocusChange, onStuck, onResolve, calendar, createScheduled, cancelScheduled,
            handleChat, addTask, revise, rowHTML, setDept, tasks, panelWidth: () => panel.offsetWidth, isLive: () => live,
-           routines, addRoutine, rtAct, railFor, syncPills, refresh: poll, resolveLive, pendingReject, rejectLive, officeModel: () => officeModel, chosenModel, chosenEffort };
+           routines, addRoutine, rtAct, railFor, syncPills, refresh: poll, resolveLive, pendingReject, rejectLive, approveTask, rejectTask, openReview, readTask, waitingFor, setReview: r => { review = r; for (const t of tasks) if (t.live && t.state === 'waiting') r.push(t, { auto: false }); }, officeModel: () => officeModel, chosenModel, chosenEffort };
 }

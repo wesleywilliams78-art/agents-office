@@ -412,6 +412,11 @@ function fire(r, { due = Date.now(), late = false, by = 'routine' } = {}) { // t
   enqueue(() => runServerTask(task.id));
   return task;
 }
+// V3.9: every finished task waits for the owner's review — approve marks it done, reject sends it back with a reason
+// the agent learns from (learn.mjs). review.all: false in office.config.json goes back to straight-to-done
+// (tasks that send, post or pay still wait for the OK either way).
+const REVIEW_ALL = cfg.review?.all !== false;
+const reviewLine = task => `"${task.title}" is ready for your review — approve to mark it done, or reject and tell me why.`;
 async function runServerTask(id, { feedback, approve } = {}) {
   let list = load(); const task = list.find(t => t.id === id); if (!task) return null;
   task.state = 'doing'; task.startedAt = Date.now(); delete task.ask; save(list);
@@ -420,7 +425,7 @@ async function runServerTask(id, { feedback, approve } = {}) {
     if (approve) { task.result = (task.draft || task.result) + '\n\n---\nAFTER YOUR OK\n' + out.result; task.approved = true; task.approvedAt = Date.now(); }
     else task.result = out.result;
     Object.assign(task, { read: out.read, tools: [...new Set([...(task.tools || []), ...out.tools])], used: [...new Set([...(task.used || []), ...out.used])], skills: out.skills, error: false, modelUsed: out.modelUsed, modelFrom: out.modelFrom, modelId: out.modelId, effortUsed: out.effortUsed, effortFrom: out.effortFrom, ...(out.team ? { team: out.team } : {}) });
-    if (task.needsOk && !approve) { task.state = 'waiting'; task.draft = out.result; task.waitingAt = Date.now(); task.ask = routines.askLine(task); }
+    if ((task.needsOk || REVIEW_ALL) && !approve) { task.state = 'waiting'; task.draft = out.result; task.waitingAt = Date.now(); task.ask = task.needsOk ? routines.askLine(task) : reviewLine(task); }
     else { task.state = 'done'; task.doneAt = Date.now(); task.note = writeNote(task); await rebuildGraph(); }
   } catch (e) {
     Object.assign(task, { state: 'done', doneAt: Date.now(), result: 'Could not complete this task: ' + e.message, error: true });
@@ -623,7 +628,8 @@ const server = http.createServer(async (req, res) => {
       const asTeam = TEAMS.enabled && (team === true || teams.intent(text)); // V3.2 (16 Sep): TEAM in the bar, or "as a team" in the sentence → the lead owns it and splits it
       const task = { id: nid(), dept, agent: asTeam ? leadOf(dept).id : r.agent, title: r.title, text: String(text).trim(), plan: r.plan, eta: r.eta, why: asTeam ? `team — ${leadOf(dept).name} splits it across the desks` : r.why, state: 'next', addedAt: Date.now(), by: 'you', model: normModel(model) || undefined, effort: normEffort(effort) || undefined, // model/effort: set on this task (beats routine, agent, office)
         team: asTeam ? { lead: leadOf(dept).id, asked: team === true ? 'you' : 'text' } : undefined };
-      if (dueAt) { task.state = 'scheduled'; task.dueAt = dueAt; task.needsOk = r.needsOk; } // waits for its minute; needsOk decides whether it then waits for the OK
+      task.needsOk = r.needsOk; // V3.9: a task that sends, posts or pays is drafted first and only goes out after the owner's APPROVE & SEND
+      if (dueAt) { task.state = 'scheduled'; task.dueAt = dueAt; } // waits for its minute, then waits for review
       const list = load(); list.push(task); save(list);
       console.log(`+ ${task.id} → ${task.agent}: ${task.title}${asTeam ? ' (team)' : ''}${dueAt ? ' · scheduled ' + untilText(dueAt) : ''}`);
       return json(res, 200, task);
@@ -652,6 +658,13 @@ const server = http.createServer(async (req, res) => {
       if (task.state !== 'waiting') return json(res, 400, { error: 'this task is not waiting for your OK' });
       const { feedback } = m[2] === 'reject' ? await body(req) : {};
       const note = String(feedback || '').trim();
+      if (m[2] === 'approve' && !task.needsOk) { // V3.9: a reviewed task with nothing to send — the tick is the finish line, no second run
+        Object.assign(task, { state: 'done', result: task.draft || task.result, approved: true, approvedAt: Date.now(), doneAt: Date.now() }); delete task.ask;
+        task.note = writeNote(task); save(load().map(t => t.id === task.id ? task : t)); await rebuildGraph();
+        console.log(`✅ ${task.id} approved — done (note: ${task.note})`);
+        autoFeed(task);
+        return json(res, 200, { ok: true, id: task.id, state: 'done', task });
+      }
       if (m[2] === 'reject') { task.revisions = (task.revisions || 0) + 1; save(load().map(t => t.id === task.id ? task : t)); } // V3.8: a rejected draft is a real "sent back" too — persist before runServerTask reloads its own copy
       console.log(`${m[2] === 'approve' ? '✅' : '↩'} ${task.id} ${m[2] === 'approve' ? 'approved — ' + agentName(task.agent) + ' is sending' : 'sent back: ' + note.slice(0, 80)}`);
       enqueue(() => runServerTask(task.id, m[2] === 'approve' ? { approve: true } : { feedback: note || 'Not this. Rework it.' }))
@@ -665,21 +678,11 @@ const server = http.createServer(async (req, res) => {
       const { feedback } = m[2] === 'revise' ? await body(req) : {};
       if (m[2] === 'revise') task.revisions = (task.revisions || 0) + 1; // V3.8: a revise is a real "sent back" — the KPI rows below count these
       task.state = 'doing'; task.startedAt = Date.now(); save(list);
-      try {
-        const { result, read, tools, used, skills: sk, modelUsed, modelFrom, modelId: ran, effortUsed, effortFrom, team } = await run(task, feedback);
-        Object.assign(task, { state: 'done', doneAt: Date.now(), result, read, tools, used, skills: sk, error: false, modelUsed, modelFrom, modelId: ran, effortUsed, effortFrom, ...(team ? { team } : {}) });
-        task.note = writeNote(task);
-        await rebuildGraph();
-      } catch (e) {
-        Object.assign(task, { state: 'done', doneAt: Date.now(), result: 'Could not complete this task: ' + e.message, error: true });
-      }
-      const l2 = load(); const i = l2.findIndex(t => t.id === task.id); if (i >= 0) l2[i] = task; save(l2);
-      console.log(`${task.error ? '✗' : '✓'} ${task.id} ${task.error ? 'failed' : 'done'} (${task.result.length} chars${task.tools?.length ? ', tools: ' + task.tools.join(' ') : ''}${task.note ? ', note: ' + task.note : ''})`);
-      json(res, 200, task);
-      autoFeed(task);
-      if (feedback && !task.error) { // learn from the correction, after the reply is out the door
+      const done = await runServerTask(task.id, { feedback }) || task; // V3.9: the same path as a routine — the result waits for the owner's review
+      json(res, 200, done);
+      if (feedback && !done.error) { // learn from the correction, after the reply is out the door
         const a = AGENTS.find(x => x.id === task.agent);
-        learn.classify(ask, a, task, feedback).then(v => { const r = learn.record(BRAIN, a, task, feedback, v); console.log(`  ↳ ${a.name} ${r.standing ? 'learned a rule' : 'noted a one-off'}: ${r.line.slice(0, 100)}`); })
+        learn.classify(ask, a, done, feedback).then(v => { const r = learn.record(BRAIN, a, done, feedback, v); console.log(`  ↳ ${a.name} ${r.standing ? 'learned a rule' : 'noted a one-off'}: ${r.line.slice(0, 100)}`); })
           .catch(e => console.warn('learn:', e.message));
       }
       return;

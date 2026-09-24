@@ -292,6 +292,23 @@ It needs the Claude Code login (not an API key), the extension paired, and Chrom
 paired yet? The tile is grey and says what to do on hover. `tools.browser: false` in
 `office.config.json` keeps the agents out of the browser altogether (and off the bar).
 
+## Every task comes back for your review
+
+No task marks itself done. When an agent finishes, its work pops up over the office in a reader
+(FOR YOUR REVIEW), with the whole deliverable laid out to read. If a few are waiting, they queue
+(1 OF 3); LATER or Esc closes the reader and they stay waiting under ⚠ in the top bar.
+
+- **APPROVE** marks it done and saves it to your brain as a note. For a task that sends, posts or
+  pays, the agent only drafts it; the button reads **APPROVE & SEND**, and approving is what sends it.
+- **REJECT** opens a second screen, **Reason for rejection**. Say what is wrong. The agent reworks
+  it with your reason, and it comes back to you. It also learns from it: a reason that applies every
+  time becomes one of its standing rules in `<brain>/Agents Office/feedback/<agent>.md`, which it
+  reads before every task. That is how the office gets coached.
+
+Clicking a finished task, a waiting card, or a file in an agent's chat opens it in the same reader.
+To go back to tasks finishing on their own, add `"review": { "all": false }` to `office.config.json`
+(anything that sends, posts or pays still waits for your OK).
+
 ## AIOS: the dashboard for the whole office
 
 Open **http://localhost:4520/aios** beside the office. It has three parts and refreshes every five seconds:
@@ -302,8 +319,8 @@ Open **http://localhost:4520/aios** beside the office. It has three parts and re
   Gaps are flagged: **GAP · NO SEAT** (no agent covers it, so rename a seat), **YOUR CALL** (a
   decision only you can make) and **GAP · MISSING INFO**. Drag a card to another quadrant if you
   disagree. SEND TO … turns it into a real task on that desk; anything that sends, posts or pays
-  waits for your OK. **Every finished task feeds the matrix on its own**: once it is done, the
-  office reads the result and adds what follows, skipping anything already there (a revised task
+  waits for your OK. **Every finished task feeds the matrix on its own**: once you approve it,
+  the office reads the result and adds what follows, skipping anything already there (a revised task
   replaces the open actions its earlier version added). *Happening now* shows `N IN MATRIX` beside
   each one. To switch this off, add `"aios": { "autoFeed": false }` to `office.config.json`; the
   **→ MATRIX** button then does it by hand. The matrix is kept in `data/matrix.json`.
