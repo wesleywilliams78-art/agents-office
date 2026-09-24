@@ -176,8 +176,12 @@ async function askX(system, user, { maxTokens = 4000, tools = true, timeout = RU
   }
   fs.mkdirSync(CLI_CWD, { recursive: true });
   const allowed = tools ? mcp.allowedTools() : [];
-  const args = ['-p', user, '--output-format', 'stream-json', '--verbose', '--no-session-persistence', '--system-prompt', system,
-    '--disallowedTools', 'Bash,Edit,Write,Read,Glob,Grep,Agent,NotebookEdit,Task' + (allowed.includes('WebFetch') ? '' : ',WebFetch,WebSearch')];
+  // The system prompt carries the notes, so with a long uploaded document it can pass Windows' ~32k command-line limit
+  // (spawn ENAMETOOLONG). Hand it over as a file instead of an argument.
+  const sysFile = path.join(CLI_CWD, `system-${nid()}.txt`); fs.writeFileSync(sysFile, system);
+  const rmSys = () => fs.rm(sysFile, { force: true }, () => {});
+  const args = ['-p', user, '--output-format', 'stream-json', '--verbose', '--no-session-persistence', '--system-prompt-file', sysFile,
+    '--disallowedTools', ['Bash,Edit,Write,Read,Glob,Grep,Agent,NotebookEdit,Task' + (allowed.includes('WebFetch') ? '' : ',WebFetch,WebSearch'), ...mcp.blockedTools()].join(',')]; // V3.9: never the email send tools
   if (allowed.length) args.push('--allowedTools', allowed.join(','));
   args.push(...(tools ? mcp.cliArgs() : ['--no-chrome'])); // V3.2 (16 Sep): the owner's Chrome, when tools.browser is on
   args.push(...modelArgs(model, effort));
@@ -195,9 +199,9 @@ async function askX(system, user, { maxTokens = 4000, tools = true, timeout = RU
     };
     p.stdout.on('data', d => { out += d; let i; while ((i = out.indexOf('\n')) >= 0) { feed(out.slice(0, i)); out = out.slice(i + 1); } });
     p.stderr.on('data', d => { err += d; });
-    p.on('error', e => { clearTimeout(timer); reject(new Error(e.code === 'ENOENT' ? 'Claude Code is not installed (claude not found on PATH)' : e.message)); });
+    p.on('error', e => { clearTimeout(timer); rmSys(); reject(new Error(e.code === 'ENOENT' ? 'Claude Code is not installed (claude not found on PATH)' : e.message)); });
     p.on('close', code => {
-      clearTimeout(timer); feed(out);
+      clearTimeout(timer); rmSys(); feed(out);
       if (code !== 0 && !gotResult) return reject(new Error(`claude exited ${code}${err ? ': ' + err.trim().slice(0, 300) : ''}`));
       if (!gotResult) { try { text = String(JSON.parse(out).result || '').trim(); } catch { text = out.trim(); } }
       bumpUsage(usageOut);
@@ -228,6 +232,10 @@ function businessContext(index) {
   for (const k of ['CLAUDE', 'index', 'business-model', 'voice']) if (index.has(k)) bits.push(`--- ${k}.md ---\n${index.get(k).slice(0, 1200)}`);
   return bits.join('\n\n');
 }
+// An uploaded document (a note named "Upload - …") is the thing the owner wants read, so it gets far more room
+// than an ordinary note: 1,800 characters is about one page, and a proposal or contract is many.
+const UPLOAD_CAP = 60000;
+const isUpload = name => String(name).startsWith('Upload - ');
 // the notes an agent would read for this task: name/word overlap, department MOC first
 function relevantNotes(index, dept, text, n = 4) {
   const words = new Set(String(text).toLowerCase().split(/[^a-z0-9]+/).filter(w => w.length > 3));
@@ -235,7 +243,7 @@ function relevantNotes(index, dept, text, n = 4) {
   const scored = [];
   for (const [name, txt] of index) {
     if (['CLAUDE', 'index', 'log'].includes(name)) continue;
-    const hay = (name + ' ' + txt.slice(0, 1500)).toLowerCase();
+    const hay = (name + ' ' + txt.slice(0, isUpload(name) ? UPLOAD_CAP : 1500)).toLowerCase(); // an upload is matched on its whole text, not just the first page
     let s = 0; for (const w of words) if (hay.includes(w)) s += name.toLowerCase().includes(w) ? 3 : 1;
     if (name === mocName) s += 2;
     if (s) scored.push([s, name]);
@@ -246,7 +254,11 @@ function relevantNotes(index, dept, text, n = 4) {
   return picks;
 }
 function contextText(index, names) {
-  return names.map(n => `--- ${n}.md ---\n${(index.get(n) || '').slice(0, 1800)}`).join('\n\n');
+  return names.map(n => {
+    const txt = index.get(n) || '';
+    const cap = isUpload(n) ? UPLOAD_CAP : 1800;
+    return `--- ${n}.md ---\n${txt.slice(0, cap)}${txt.length > cap ? `\n[…the note continues: ${txt.length - cap} more characters not shown]` : ''}`;
+  }).join('\n\n');
 }
 
 /* ---------- the roster, as Claude sees it ---------- */
@@ -263,12 +275,12 @@ async function route(dept, text) {
   const system = `You are the router for ${cfg.name}, a business whose departments are run by AI agents. ` +
     'Pick the single best agent for the owner\'s request — an agent whose skills match the request is the right one — and return ONLY a JSON object — no prose, no code fences.';
   const user = `Department: ${d.name}\nAgents (id · name · role · what they do):\n${rosterText(dept)}\n\nOwner's request: "${text}"\n\n` +
-    'Return: {"agent":"<id from the list>","title":"<clean imperative task title, max 70 characters>","plan":["<step>","<step>","<step>"],"eta_minutes":<integer>,"why":"<one short sentence>","needs_ok":<true if doing this involves sending, posting, paying, deleting or changing anything outside this machine; false if it only reads and reports>}';
+    'Return: {"agent":"<id from the list>","title":"<clean imperative task title, max 70 characters>","plan":["<step>","<step>","<step>"],"eta_minutes":<integer>,"why":"<one short sentence>","needs_ok":<true if doing this involves sending, posting, paying, deleting or changing anything outside this machine; false if it only reads and reports>,"channel":"<email if the outbound step is an email or a reply to one; post, payment or change for the others; none when it only reads>"}';
   const j = parseJSON(await ask(system, user, { maxTokens: 800, timeout: 150000, model: 'sonnet' })); // routing is a one-line JSON job: always Sonnet
   const valid = AGENTS.find(a => a.id === j.agent && a.department === dept);
   const agent = valid ? valid.id : (AGENTS.find(a => a.department === dept && a.lead) || AGENTS.find(a => a.department === dept)).id;
   return { agent, title: String(j.title || text).slice(0, 90), plan: Array.isArray(j.plan) ? j.plan.slice(0, 4).map(String) : [],
-    eta: Number.isFinite(j.eta_minutes) ? j.eta_minutes : 30, why: String(j.why || ''), needsOk: typeof j.needs_ok === 'boolean' ? j.needs_ok : routines.guessNeedsOk(text) };
+    eta: Number.isFinite(j.eta_minutes) ? j.eta_minutes : 30, why: String(j.why || ''), needsOk: typeof j.needs_ok === 'boolean' ? j.needs_ok : routines.guessNeedsOk(text), channel: ['email', 'post', 'payment', 'change', 'none'].includes(j.channel) ? j.channel : '' };
 }
 // the system prompt every agent run starts from: who it is, its brief, skills and lessons, its tools, the company, the notes for this task
 function agentSystem(a, index, read, { extra = '', words = 260 } = {}) {
@@ -279,7 +291,11 @@ function agentSystem(a, index, read, { extra = '', words = 260 } = {}) {
     'If you used a tool, say so in one line at the end ("Used: Gmail — searched the client thread").\n\n' +
     `${mcp.promptText(a.tools)}\n\nCOMPANY NOTES\n${businessContext(index)}\n\nNOTES YOU READ FOR THIS TASK\n${contextText(index, read)}`;
 }
-const modeLineFor = (mode, task) => mode === 'draft' ? '\nPrepare everything, but send, post, pay or change NOTHING outside this machine: the owner reads this first and approves it. End with one line saying exactly what will go out when approved (or that nothing needs to).'
+// V3.9: an email task — the router said so, or the words do (a routine written before the router named channels)
+const isEmail = task => task.channel ? task.channel === 'email' : /\b(e-?mails?|reply|replies|respond|inbox|gmail|follow[- ]?up message)\b/i.test(task.title + ' ' + task.text + ' ' + String(task.draft || '').slice(-400));
+const EMAIL_DRAFT = '\nThis is an email. Do NOT create anything in Gmail yet and never send: write the email here in full — To, Cc if any, Subject, then the body exactly as it would go. End with one line: "When approved, this goes into your Gmail drafts: <subject> to <recipient>."';
+const EMAIL_APPROVE = task => `\nThe owner has APPROVED the email below. Put it in the owner's Gmail as a DRAFT now (create_draft; keep a reply in its thread when the tool allows), worded exactly as approved. Do NOT send it: sending is switched off for you and the owner sends it from their own inbox. If Gmail is not connected, say so and show the email. Then report in two lines: the draft's subject and recipient, and that it is waiting in Gmail drafts for the owner to send.\nApproved email:\n${task.draft || task.result}`;
+const modeLineFor = (mode, task) => mode === 'draft' && isEmail(task) ? EMAIL_DRAFT : mode === 'approve' && isEmail(task) ? EMAIL_APPROVE(task) : mode === 'draft' ? '\nPrepare everything, but send, post, pay or change NOTHING outside this machine: the owner reads this first and approves it. End with one line saying exactly what will go out when approved (or that nothing needs to).'
   : mode === 'approve' ? `\nThe owner has APPROVED the draft below. Carry out the outbound step now, exactly as drafted, with your tools (send, post, update). If a tool you need is not connected, say so and show what you would have sent. Then report in one short section: what went out, to whom, and anything that did not.\nApproved draft:\n${task.draft || task.result}` : '';
 const pickFor = (task, a) => { // model + effort: four places, one precedence (task > routine > agent > office)
   const pick = modelFor({ task: task.model, routine: task.routineModel, agent: a.model, office: cfg.model });
@@ -425,7 +441,8 @@ async function runServerTask(id, { feedback, approve } = {}) {
     if (approve) { task.result = (task.draft || task.result) + '\n\n---\nAFTER YOUR OK\n' + out.result; task.approved = true; task.approvedAt = Date.now(); }
     else task.result = out.result;
     Object.assign(task, { read: out.read, tools: [...new Set([...(task.tools || []), ...out.tools])], used: [...new Set([...(task.used || []), ...out.used])], skills: out.skills, error: false, modelUsed: out.modelUsed, modelFrom: out.modelFrom, modelId: out.modelId, effortUsed: out.effortUsed, effortFrom: out.effortFrom, ...(out.team ? { team: out.team } : {}) });
-    if ((task.needsOk || REVIEW_ALL) && !approve) { task.state = 'waiting'; task.draft = out.result; task.waitingAt = Date.now(); task.ask = task.needsOk ? routines.askLine(task) : reviewLine(task); }
+    if (task.needsOk && !task.channel && isEmail(task)) task.channel = 'email';
+    if ((task.needsOk || REVIEW_ALL) && !approve) { task.state = 'waiting'; task.draft = out.result; task.waitingAt = Date.now(); task.ask = task.needsOk ? (task.channel === 'email' ? `"${task.title}" is written — approve to put it in your Gmail drafts, then send it from your inbox. Reject to tell me what to change.` : routines.askLine(task)) : reviewLine(task); }
     else { task.state = 'done'; task.doneAt = Date.now(); task.note = writeNote(task); await rebuildGraph(); }
   } catch (e) {
     Object.assign(task, { state: 'done', doneAt: Date.now(), result: 'Could not complete this task: ' + e.message, error: true });
@@ -628,7 +645,7 @@ const server = http.createServer(async (req, res) => {
       const asTeam = TEAMS.enabled && (team === true || teams.intent(text)); // V3.2 (16 Sep): TEAM in the bar, or "as a team" in the sentence → the lead owns it and splits it
       const task = { id: nid(), dept, agent: asTeam ? leadOf(dept).id : r.agent, title: r.title, text: String(text).trim(), plan: r.plan, eta: r.eta, why: asTeam ? `team — ${leadOf(dept).name} splits it across the desks` : r.why, state: 'next', addedAt: Date.now(), by: 'you', model: normModel(model) || undefined, effort: normEffort(effort) || undefined, // model/effort: set on this task (beats routine, agent, office)
         team: asTeam ? { lead: leadOf(dept).id, asked: team === true ? 'you' : 'text' } : undefined };
-      task.needsOk = r.needsOk; // V3.9: a task that sends, posts or pays is drafted first and only goes out after the owner's APPROVE & SEND
+      task.needsOk = r.needsOk; task.channel = r.channel || undefined; // V3.9: a task that sends, posts or pays is drafted first and only goes out after the owner's APPROVE & SEND
       if (dueAt) { task.state = 'scheduled'; task.dueAt = dueAt; } // waits for its minute, then waits for review
       const list = load(); list.push(task); save(list);
       console.log(`+ ${task.id} → ${task.agent}: ${task.title}${asTeam ? ' (team)' : ''}${dueAt ? ' · scheduled ' + untilText(dueAt) : ''}`);
@@ -665,7 +682,7 @@ const server = http.createServer(async (req, res) => {
         autoFeed(task);
         return json(res, 200, { ok: true, id: task.id, state: 'done', task });
       }
-      if (m[2] === 'reject') { task.revisions = (task.revisions || 0) + 1; save(load().map(t => t.id === task.id ? task : t)); } // V3.8: a rejected draft is a real "sent back" too — persist before runServerTask reloads its own copy
+      if (m[2] === 'reject') { task.revisions = (task.revisions || 0) + 1; task.rejectedAt = Date.now(); save(load().map(t => t.id === task.id ? task : t)); } // V3.8: a rejected draft is a real "sent back" too — persist before runServerTask reloads its own copy
       console.log(`${m[2] === 'approve' ? '✅' : '↩'} ${task.id} ${m[2] === 'approve' ? 'approved — ' + agentName(task.agent) + ' is sending' : 'sent back: ' + note.slice(0, 80)}`);
       enqueue(() => runServerTask(task.id, m[2] === 'approve' ? { approve: true } : { feedback: note || 'Not this. Rework it.' }))
         .then(t => { if (m[2] === 'reject' && note && t && !t.error) { const a = AGENTS.find(x => x.id === t.agent); return learn.classify(ask, a, t, note).then(v => { const r = learn.record(BRAIN, a, t, note, v); console.log(`  ↳ ${a.name} ${r.standing ? 'learned a rule' : 'noted a one-off'}: ${r.line.slice(0, 100)}`); }); } })
@@ -676,7 +693,7 @@ const server = http.createServer(async (req, res) => {
       const list = load(); const task = list.find(t => t.id === m[1]);
       if (!task) return json(res, 404, { error: 'no such task' });
       const { feedback } = m[2] === 'revise' ? await body(req) : {};
-      if (m[2] === 'revise') task.revisions = (task.revisions || 0) + 1; // V3.8: a revise is a real "sent back" — the KPI rows below count these
+      if (m[2] === 'revise') { task.revisions = (task.revisions || 0) + 1; task.rejectedAt = Date.now(); } // V3.8: a revise is a real "sent back" — the KPI rows below count these
       task.state = 'doing'; task.startedAt = Date.now(); save(list);
       const done = await runServerTask(task.id, { feedback }) || task; // V3.9: the same path as a routine — the result waits for the owner's review
       json(res, 200, done);
@@ -708,6 +725,7 @@ const server = http.createServer(async (req, res) => {
     json(res, 404, { error: 'not found' });
   } catch (e) { console.error(e); json(res, 500, { error: e.message }); }
 });
+{ const l = load(); let c = false; for (const t of l) if (t.state === 'waiting' && t.needsOk && !t.channel && isEmail(t)) { t.channel = 'email'; c = true; } if (c) save(l); } // V3.9: drafts from before the router named channels
 server.listen(cfg.port, () => {
   console.log(`Agents Office ${version} → http://localhost:${cfg.port}`);
   console.log(`  business: ${cfg.name}   brain: ${BRAIN} (${graph.notes} notes, ${graph.links.length} links)   claude: ${backend} · ${modelName(cfg.model)}${cfg.effort ? ' · effort ' + cfg.effort : ''} by default (routing on Sonnet)`);

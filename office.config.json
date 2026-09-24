@@ -3,6 +3,7 @@
   "brain": "./brain",
   "port": 4520,
   "model": "sonnet",
+  "effort": "medium",
   "mcp": { "allow": [], "deny": [
     "plugin_enterprise-search_notion",
     "plugin_enterprise-search_guru",

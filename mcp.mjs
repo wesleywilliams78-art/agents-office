@@ -164,6 +164,20 @@ export function fromInit(init) {
 }
 export function list() { return servers; }
 export function usable() { return servers.filter(s => s.status === 'connected' && allowed(s)); }
+// V3.9 EMAIL: agents never send email. The most they do is put a draft in the owner's inbox (after the owner's
+// APPROVE); the owner sends it from Gmail. The send tools of every mail connector are refused at the CLI
+// (--disallowedTools beats --allowedTools), whatever the prompt says — the known Gmail names are listed even
+// before a run has reported the server's tools.
+const isMail = s => /mail|outlook|inbox/i.test(`${s.key || ''} ${s.name || ''} ${s.id || ''}`);
+const SENDS = /^(send|reply|forward)(_|$)|(^|_)send(_|$)/i;
+export function blockedTools() {
+  const out = [];
+  for (const s of usable().filter(isMail)) {
+    for (const t of new Set([...(s.tools || []), 'send_message', 'reply', 'forward', 'send_draft'])) if (SENDS.test(t)) out.push(`mcp__${s.id}__${t}`);
+  }
+  return out;
+}
+export const mailConnected = () => usable().some(isMail);
 export function allowedTools() {
   const t = usable().map(s => `mcp__${s.id}`);
   if (cfgWeb) t.push('WebSearch', 'WebFetch');
@@ -185,5 +199,6 @@ export function promptText(agentTools = []) {
   return 'TOOLS\nYou can call these connectors:\n' + lines.join('\n') + (cfgWeb ? '\n- Web search and web fetch' : '') +
     (mine.length ? `\nYour usual tools: ${mine.map(s => s.name).join(', ')}.` : '') +
     '\nRules: read freely (search, list, fetch) when it makes the work better. Anything that sends, posts, pays, deletes or changes data outside this machine — do it ONLY when the owner\'s request explicitly asks for that exact action; otherwise prepare it and say what you would send. Never ask the owner a question mid-task; make a reasonable assumption and mark it (assumed).' +
+    (mailConnected() ? '\nEMAIL: you never send email — not with a tool, not in the browser. Sending, replying and forwarding are switched off for you. The furthest you go is a draft in the owner\'s own inbox, and only once the owner has approved the wording; the owner sends it from their inbox.' : '') +
     (browser ? '\nThe browser is the owner\'s own: use it when a connector cannot do the job or the owner names a website. Look and read freely; type into a form, submit, post, send, buy or change anything on a site ONLY when the task explicitly asks for that exact action. If a page wants a login, a code or a CAPTCHA, stop there and say so. Prefer a connector when one covers the same app. Close the tabs you opened.' : '');
 }

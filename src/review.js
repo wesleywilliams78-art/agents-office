@@ -100,7 +100,8 @@ export function initReview({ esc, agentOf, onApprove, onReject }) {
     $('.rv-chip').style.background = d.chip || '#999';
     $('.rv-who').textContent = `${a.name} · ${d.name || ''}`;
     const k = $('.rv-kind'); k.className = 'rv-kind' + (readOnly ? ' read' : '');
-    k.textContent = readOnly ? (t.kindLabel || 'DELIVERED') : t.needsOk ? 'READY TO SEND · YOUR OK' : 'FOR YOUR REVIEW';
+    const email = t.needsOk && t.channel === 'email';
+    k.textContent = readOnly ? (t.kindLabel || 'DELIVERED') : email ? 'EMAIL · YOUR OK TO DRAFT' : t.needsOk ? 'READY TO SEND · YOUR OK' : 'FOR YOUR REVIEW';
     $('.rv-q').textContent = !readOnly && queue.length > 1 ? `${queue.indexOf(cur) + 1} OF ${queue.length}` : '';
     $('#rvTitle').textContent = t.title;
     const bits = [];
@@ -120,8 +121,8 @@ export function initReview({ esc, agentOf, onApprove, onReject }) {
       btns.innerHTML = '<button class="rv-btn rv-back">BACK</button> <button class="rv-btn rv-send" disabled>SEND BACK TO ' + esc(a.name) + '</button>';
       syncSend();
     } else {
-      $('.rv-hint').textContent = t.needsOk ? 'Approving sends it exactly as written. Reject to say what to change.' : 'Approve to mark it done and save it to your brain. Reject to say what is wrong.';
-      btns.innerHTML = `<button class="rv-btn rv-later">LATER</button> <button class="rv-btn rv-no">REJECT</button> <button class="rv-btn rv-yes">${t.needsOk ? 'APPROVE & SEND' : 'APPROVE'}</button>`;
+      $('.rv-hint').textContent = email ? 'Approving puts this email in your Gmail drafts, exactly as written. You send it from your inbox; the office never sends email.' : t.needsOk ? 'Approving sends it exactly as written. Reject to say what to change.' : 'Approve to mark it done and save it to your brain. Reject to say what is wrong.';
+      btns.innerHTML = `<button class="rv-btn rv-later">LATER</button> <button class="rv-btn rv-no">REJECT</button> <button class="rv-btn rv-yes">${email ? 'APPROVE & CREATE DRAFT' : t.needsOk ? 'APPROVE & SEND' : 'APPROVE'}</button>`;
     }
   }
   const syncSend = () => { const b = $('.rv-send'); if (b) b.disabled = busy || !ta.value.trim(); };

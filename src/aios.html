@@ -32,7 +32,7 @@
   button:hover { border-color: var(--grey); }
   button.primary { background: var(--ink); color: var(--bg); border-color: var(--ink); }
   button:disabled { opacity: .45; cursor: default; }
-  .wrap { max-width: 1440px; margin: 0 auto; padding: 18px 16px 60px; }
+  .wrap { max-width: 1720px; margin: 0 auto; padding: 18px 16px 60px; }
   header { display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; margin-bottom: 16px; }
   header h1 { font: 400 30px/1 var(--serif); margin: 0; letter-spacing: .01em; }
   header .sub { color: var(--grey); font-size: 11px; letter-spacing: .14em; text-transform: uppercase; }
@@ -53,7 +53,35 @@
   .panel { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; }
 
   /* roles */
-  .depts { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(330px, 100%), 1fr)); gap: 12px; }
+  .split { display: grid; grid-template-columns: minmax(0, 1fr) 380px; gap: 16px; align-items: start; }
+  .split-main { min-width: 0; }
+  .depts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; align-items: start; }
+
+  /* news feed */
+  .news { position: sticky; top: 12px; display: flex; flex-direction: column; max-height: calc(100vh - 24px); overflow: hidden; }
+  .news .nh { padding: 12px 14px 6px; display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+  .news .nh h2 { font: 400 22px/1 var(--serif); margin: 0; }
+  .news .nh .note { color: var(--grey); font-size: 11.5px; }
+  .news .nf { display: flex; gap: 5px; padding: 0 14px 10px; border-bottom: 1px solid var(--line); flex-wrap: wrap; }
+  .news .nf button { font-size: 10px; padding: 4px 9px; }
+  .news .nl { overflow: auto; padding: 4px 14px 14px; }
+  .news .nd { font-size: 10px; letter-spacing: .14em; font-weight: 700; color: var(--grey); text-transform: uppercase; padding: 12px 0 4px; }
+  .ni { display: flex; gap: 10px; padding: 9px 0; border-top: 1px solid var(--line); }
+  .nd + .ni { border-top: 0; }
+  .ni .nic { width: 24px; height: 24px; border-radius: 7px; background: var(--soft); display: grid; place-items: center; font-size: 12px; flex: none; }
+  .ni.hot .nic { background: color-mix(in srgb, var(--warn) 22%, transparent); }
+  .ni.good .nic { background: color-mix(in srgb, var(--ok) 18%, transparent); color: var(--ok); }
+  .ni.bad .nic { background: color-mix(in srgb, var(--bad) 18%, transparent); color: var(--bad); }
+  .ni .nb { min-width: 0; }
+  .ni .nv { font-size: 10.5px; letter-spacing: .06em; font-weight: 700; text-transform: uppercase; color: var(--grey); }
+  .ni.hot .nv { color: var(--warn); }
+  .ni .nt { font-size: 12.5px; font-weight: 600; margin-top: 1px; }
+  .ni .nx { font-size: 11.5px; color: var(--grey); margin-top: 2px; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+  .ni .nm { font-size: 10.5px; color: var(--faint); margin-top: 3px; display: flex; align-items: center; gap: 5px; }
+  .ni .nm .chip { width: 7px; height: 7px; border-radius: 2px; display: inline-block; }
+  @media (max-width: 1380px) { .depts { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (max-width: 1100px) { .split { grid-template-columns: 1fr; } .news { position: static; max-height: 560px; } }
+  @media (max-width: 760px) { .depts { grid-template-columns: 1fr; } }
   .dept { overflow: hidden; }
   .dept .dh { display: flex; align-items: center; gap: 8px; padding: 10px 12px; border-bottom: 1px solid var(--line); }
   .dept .chip { width: 10px; height: 10px; border-radius: 3px; flex: none; }
@@ -109,8 +137,6 @@
   .item.x .ia { display: flex; }
   .item .ia button { font-size: 10px; padding: 3px 8px; }
   .gap { color: var(--bad); border-color: color-mix(in srgb, var(--bad) 45%, transparent); font-weight: 700; }
-  .feeds { margin-top: 10px; font-size: 12px; color: var(--grey); display: grid; gap: 4px; }
-  .feeds b { color: var(--ink); font-weight: 600; }
 
   /* activity */
   .cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr)); gap: 12px; }
@@ -164,16 +190,22 @@
       <div class="panel quad" data-q="delegate" style="--qc: var(--q-delegate)"></div>
       <div class="panel quad" data-q="drop" style="--qc: var(--q-drop)"></div>
     </div>
-    <div class="feeds" id="feeds"></div>
   </section>
 
-  <section>
-    <div class="sh">
-      <h2>Roles</h2>
-      <span class="note">The 35 seats, what each one is for, and what it runs on by default. Click a seat for the detail.</span>
-      <div class="tools seg" id="rShow"><button data-v="all" class="on">ALL SEATS</button><button data-v="gaps">NEEDS A BRIEF OR SKILL</button><button data-v="busy">WORKING</button></div>
+  <section class="split">
+    <div class="split-main">
+      <div class="sh">
+        <h2>Roles</h2>
+        <span class="note">The 35 seats, what each one is for, and what it runs on by default. Click a seat for the detail.</span>
+        <div class="tools seg" id="rShow"><button data-v="all" class="on">ALL SEATS</button><button data-v="gaps">NEEDS A BRIEF OR SKILL</button><button data-v="busy">WORKING</button></div>
+      </div>
+      <div class="depts" id="depts"></div>
     </div>
-    <div class="depts" id="depts"></div>
+    <aside class="panel news">
+      <div class="nh"><h2>News feed</h2><span class="note">What the office has done, newest first</span></div>
+      <div class="seg nf" id="nShow"><button data-v="all" class="on">ALL</button><button data-v="work">WORK</button><button data-v="review">REVIEWS</button><button data-v="matrix">MATRIX</button></div>
+      <div class="nl" id="news"></div>
+    </aside>
   </section>
 
   <section>
@@ -200,7 +232,7 @@ const DEPTS = {
 const ORDER = ['emails', 'sales', 'marketing', 'ops', 'fin', 'delivery'];
 const GAPS = { 'no-seat': 'GAP · NO SEAT', 'owner-decision': 'YOUR CALL', 'missing-info': 'GAP · MISSING INFO' };
 const MODEL = { sonnet: 'Sonnet', opus: 'Opus', fable: 'Fable' };
-const S = { health: null, agents: [], tasks: [], routines: [], matrix: { items: [], feeds: [], quadrants: {} }, rShow: 'all', mShow: 'open', openSeat: new Set(), openItem: new Set(), busy: false };
+const S = { health: null, agents: [], tasks: [], routines: [], matrix: { items: [], feeds: [], quadrants: {} }, rShow: 'all', mShow: 'open', nShow: 'all', openSeat: new Set(), openItem: new Set(), busy: false };
 const $ = id => document.getElementById(id);
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const ago = t => { if (!t) return ''; const s = (Date.now() - t) / 1000; return s < 60 ? 'just now' : s < 3600 ? Math.round(s / 60) + ' min ago' : s < 86400 ? Math.round(s / 3600) + ' h ago' : Math.round(s / 86400) + ' d ago'; };
@@ -232,7 +264,7 @@ const roleSkills = a => { const h = houseSkills(); return (a.skills || []).filte
 // readiness: a role written, a standing brief, a skill that says how this seat's work is done
 const readiness = a => [!!a.does, !!a.brief, roleSkills(a).length > 0];
 
-function render() { renderKpis(); renderMatrix(); renderRoles(); renderActivity(); renderTaskPicker(); }
+function render() { renderKpis(); renderMatrix(); renderRoles(); renderNews(); renderActivity(); renderTaskPicker(); }
 
 function renderKpis() {
   const T = S.tasks, today = new Date().toDateString();
@@ -292,8 +324,40 @@ function renderMatrix() {
     el.innerHTML = `<div class="qh"><span class="qn">${esc(Q[q]?.name || q)}</span><span class="qhint">${esc(Q[q]?.hint || '')}</span><span class="qc">${list.length}</span></div>` +
       (list.map(itemHtml).join('') || '<div class="empty">Nothing here.</div>');
   }
-  const feeds = [...(S.matrix.feeds || [])].reverse().slice(0, 4);
-  $('feeds').innerHTML = feeds.length ? feeds.map(f => `<div>${ago(f.at)} · ${f.auto ? '<span class="tag">AUTO</span> ' : ''}<b>${esc(f.source)}</b> → ${f.count} action${f.count === 1 ? '' : 's'}${f.summary ? ' — ' + esc(f.summary) : ''}</div>`).join('') : '';
+}
+
+// the news feed: every step of every task, plus what the matrix pulled out of it — one timeline, newest first
+function newsEvents() {
+  const ev = [], who = id => agentBy(id)?.name || id;
+  for (const t of S.tasks) {
+    const base = { agent: t.agent, dept: t.dept, title: t.title, id: t.id };
+    const src = t.routine ? 'Routine fired' : t.by === 'aios' ? 'Sent from the matrix' : t.dueAt ? 'Scheduled task fired' : 'New task';
+    if (t.addedAt) ev.push({ ...base, at: t.addedAt, kind: 'work', icon: t.routine ? '⏱' : '＋', verb: src });
+    if (t.startedAt && t.state !== 'next' && t.state !== 'scheduled') ev.push({ ...base, at: t.startedAt, kind: 'work', icon: '▸', verb: t.team ? 'Team started' : 'Started' });
+    if (t.waitingAt) ev.push({ ...base, at: t.waitingAt, kind: 'review', icon: '⏸', verb: t.state === 'waiting' ? (t.channel === 'email' ? 'Email ready — waiting for your OK' : 'Ready for your review') : (t.revisions ? `Revision ${t.revisions + 1} submitted` : 'Submitted for review'), hot: t.state === 'waiting' });
+    if (t.approvedAt) ev.push({ ...base, at: t.approvedAt, kind: 'review', icon: '✓', verb: t.channel === 'email' ? 'Approved — put in Gmail drafts' : 'Approved — done', good: true });
+    else if (t.state === 'done' && t.doneAt) ev.push({ ...base, at: t.doneAt, kind: t.error ? 'work' : 'review', icon: t.error ? '⚠' : '✓', verb: t.error ? 'Could not complete' : 'Done', bad: !!t.error, good: !t.error });
+    if (t.revisions) ev.push({ ...base, at: t.rejectedAt || (t.startedAt || t.addedAt) - 1, kind: 'review', icon: '↩', verb: t.revisions > 1 ? `Sent back (${t.revisions} times)` : 'Sent back', bad: true });
+  }
+  for (const f of S.matrix.feeds || []) {
+    const t = f.taskId && S.tasks.find(x => x.id === f.taskId);
+    ev.push({ at: f.at, kind: 'matrix', icon: '▦', agent: t?.agent, dept: t?.dept, title: t ? t.title : f.source, verb: f.count ? `${f.count} action${f.count === 1 ? '' : 's'} to the matrix` : 'Read for the matrix — nothing follows', detail: f.summary });
+  }
+  return ev.filter(e => e.at).sort((a, b) => b.at - a.at);
+}
+function renderNews() {
+  const list = newsEvents().filter(e => S.nShow === 'all' || e.kind === S.nShow).slice(0, 60);
+  let day = '';
+  $('news').innerHTML = list.map(e => {
+    const d = new Date(e.at).toDateString(), head = d !== day ? `<div class="nd">${d === new Date().toDateString() ? 'Today' : new Date(e.at).toLocaleDateString([], { weekday: 'long', day: 'numeric', month: 'short' })}</div>` : '';
+    day = d;
+    const a = e.agent && agentBy(e.agent), dp = DEPTS[e.dept] || DEPTS.owner;
+    return head + `<div class="ni${e.hot ? ' hot' : ''}${e.good ? ' good' : ''}${e.bad ? ' bad' : ''}">
+      <span class="nic">${e.icon}</span>
+      <div class="nb"><div class="nv">${esc(e.verb)}</div><div class="nt">${esc(e.title)}</div>
+        ${e.detail ? `<div class="nx">${esc(e.detail)}</div>` : ''}
+        <div class="nm">${a ? `<span class="chip" style="background:${dp.chip}"></span>${esc(a.name)} · ` : ''}${new Date(e.at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} · ${ago(e.at)}</div></div></div>`;
+  }).join('') || '<div class="none">Nothing yet. Work shows up here as it happens.</div>';
 }
 function itemHtml(i) {
   const a = agentBy(i.agent), d = DEPTS[i.dept] || DEPTS.owner, open = S.openItem.has(i.id);

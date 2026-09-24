@@ -300,6 +300,10 @@ No task marks itself done. When an agent finishes, its work pops up over the off
 
 - **APPROVE** marks it done and saves it to your brain as a note. For a task that sends, posts or
   pays, the agent only drafts it; the button reads **APPROVE & SEND**, and approving is what sends it.
+- **Email is never sent by an agent.** For an email the button reads **APPROVE & CREATE DRAFT**:
+  approving puts it in your Gmail drafts exactly as written, and you send it from your own inbox.
+  Gmail's send, reply and forward tools are switched off for every agent at the Claude level, so
+  no instruction can get round it, and the agents are told never to press Send in the browser either.
 - **REJECT** opens a second screen, **Reason for rejection**. Say what is wrong. The agent reworks
   it with your reason, and it comes back to you. It also learns from it: a reason that applies every
   time becomes one of its standing rules in `<brain>/Agents Office/feedback/<agent>.md`, which it
