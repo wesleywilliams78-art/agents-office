@@ -154,6 +154,16 @@ await step('brain updates: a proposed note change is parsed, refused when unsafe
   fs.rmSync(tmp, { recursive: true, force: true });
   return 'parsed (even inside a code fence) · unsafe paths, the agents\' area, rules file, bank details and a 4th update refused · section replaced, rest of the note intact · backup kept · a repeat refused';
 });
+await step('restart recovery: a task left running by a restart starts again, one already past the owner\'s OK is held, nothing else is touched', async () => {
+  const { recover } = await import('./recover.mjs');
+  const list = [{ id: 'a', state: 'doing', title: 'First pass' }, { id: 'b', state: 'doing', title: 'After the OK', draft: 'x', waitingAt: 1 },
+    { id: 'c', state: 'waiting', title: 'Waiting' }, { id: 'd', state: 'done', title: 'Done' }, { id: 'e', state: 'doing', title: 'Team', team: { pieces: [{ state: 'doing' }, { state: 'done' }] } }];
+  const r = recover(list);
+  if (r.requeue.join() !== 'a,e' || r.held.join() !== 'b') throw new Error('wrong sort: ' + JSON.stringify(r));
+  if (list[0].state !== 'next' || list[1].state !== 'waiting' || !/restarted/.test(list[1].ask) || list[2].state !== 'waiting' || list[3].state !== 'done') throw new Error('states wrong');
+  if (list[4].team.pieces[0].state !== 'next' || list[4].team.pieces[1].state !== 'done') throw new Error('team pieces wrong');
+  return 'a first-pass task restarts · one past the OK is held · waiting and done tasks untouched · a team piece resets';
+});
 await step('budget: ledger rows become month totals, and a wrong total is named against the sheet\'s own summary', async () => {
   const budget = await import('./budget.mjs');
   const j = { rows: [['2026-01-01', 'Income', 'Salary', 'Salary', 1000, 'Recurring', 'Actual', ''], ['2026-01-01', 'Income', 'Sale', 'One-off income', 200, 'One-off', 'Actual', 'Received 3 Jan'],
