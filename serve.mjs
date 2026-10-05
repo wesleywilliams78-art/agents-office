@@ -53,9 +53,11 @@ import * as teams from './teams.mjs';
 import * as aios from './aios.mjs';
 import * as budget from './budget.mjs';
 import * as brainnotes from './brainnotes.mjs';
+import { recover } from './recover.mjs';
 import { normModel, modelFor, modelArgs, modelId, modelName, MODEL_KEYS, DEFAULT_MODEL, normEffort, effortFor, effortName, EFFORT_KEYS } from './src/models.js';
 import { parseWhen, describe, valid as validWhen, untilText } from './src/when.js';
 import mammoth from 'mammoth';
+import { toMarkdownBytes } from '@firecrawl/anydoc'; // local Rust converter: Office/OpenDocument/RTF/EPUB/CSV → Markdown (tables and headings kept)
 
 const cfg = loadConfig();
 const HTML = path.join(ROOT, 'dist', 'command-centre-v2.html'); // built by build.mjs; shipped so npm start works without a build
@@ -137,6 +139,7 @@ function visionDigest(block) {
     p.stdin.write(msg + '\n'); p.stdin.end();
   });
 }
+const ANYDOC_EXT = new Set(['.docx', '.doc', '.docm', '.pptx', '.ppt', '.xlsx', '.xls', '.xlsm', '.odt', '.ods', '.odp', '.rtf', '.epub', '.csv']);
 async function extractText(filename, buf) {
   const ext = path.extname(filename).toLowerCase();
   if (ext === '.txt' || ext === '.md') return buf.toString('utf8');
@@ -154,7 +157,11 @@ async function extractText(filename, buf) {
     if (pdfText.length > 200 && pdfText.length > pages * 400) return pdfText;
     return visionDigest({ type: 'document', source: { type: 'base64', media_type: 'application/pdf', data: buf.toString('base64') } }); // scanned/image-only PDF
   }
-  if (ext === '.docx') return (await mammoth.extractRawText({ buffer: buf })).value;
+  if (ANYDOC_EXT.has(ext)) {
+    // keyless, offline: ocr stays 'reject' so nothing is ever sent to Firecrawl
+    try { const md = (await toMarkdownBytes(new Uint8Array(buf), ext === '.csv' ? 'csv' : undefined)).trim(); if (md) return md; } catch (e) { if (ext !== '.docx') throw e; }
+    if (ext === '.docx') return (await mammoth.extractRawText({ buffer: buf })).value; // fallback if anydoc fails or comes back empty
+  }
   return null;
 }
 
@@ -745,7 +752,7 @@ const server = http.createServer(async (req, res) => {
       const buf = Buffer.from(dataBase64, 'base64');
       if (buf.length > 20 * 1024 * 1024) return json(res, 400, { error: 'file too large (20MB max)' });
       let text; try { text = await extractText(filename, buf); } catch (e) { return json(res, 400, { error: `could not read ${filename}: ${e.message}` }); }
-      if (text === null) return json(res, 400, { error: `${path.extname(filename) || 'that file type'} is not supported yet — .txt, .md, .pdf, .docx, .png, .jpg, .jpeg, .webp and .gif only` });
+      if (text === null) return json(res, 400, { error: `${path.extname(filename) || 'that file type'} is not supported yet — .txt, .md, .pdf, Word, PowerPoint, Excel, OpenDocument, .rtf, .epub, .csv, .png, .jpg, .jpeg, .webp and .gif only` });
       text = text.trim();
       if (!text) return json(res, 400, { error: `${filename} has no extractable text (a scanned/image-only PDF, for instance)` });
       const base = path.basename(filename, path.extname(filename));
@@ -815,6 +822,8 @@ const server = http.createServer(async (req, res) => {
   } catch (e) { console.error(e); json(res, 500, { error: e.message }); }
 });
 { const l = load(); let c = false; for (const t of l) if (t.state === 'waiting' && t.needsOk && !t.channel && isEmail(t)) { t.channel = 'email'; c = true; } if (c) save(l); } // V3.9: drafts from before the router named channels
+{ const l = load(), r = recover(l); // tasks left at "doing" by a restart: start them again, or hold them for the owner (recover.mjs)
+  if (r.requeue.length || r.held.length) { save(l); console.log(`↻ restart recovery: ${r.requeue.length} task(s) started again${r.requeue.length ? ' (' + r.requeue.join(', ') + ')' : ''}${r.held.length ? `, ${r.held.length} held for your OK (${r.held.join(', ')})` : ''}`); for (const id of r.requeue) enqueue(async () => { await discovering; return runServerTask(id); }); } } // wait for the connectors: a run that starts before they are found has none allowed
 server.listen(cfg.port, () => {
   console.log(`Agents Office ${version} → http://localhost:${cfg.port}`);
   console.log(`  business: ${cfg.name}   brain: ${BRAIN} (${graph.notes} notes, ${graph.links.length} links)   claude: ${backend} · ${modelName(cfg.model)}${cfg.effort ? ' · effort ' + cfg.effort : ''} by default (routing on Sonnet)`);
