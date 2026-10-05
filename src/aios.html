@@ -110,13 +110,9 @@
   .seat.open .last { display: block; }
 
   /* matrix */
-  .feed { padding: 12px; display: grid; gap: 8px; margin-bottom: 12px; }
-  .feed textarea { width: 100%; min-height: 84px; resize: vertical; background: var(--bg); border: 1px solid var(--line); border-radius: 8px; padding: 9px 10px; }
-  .feed .row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
-  .feed input, .feed select { background: var(--bg); border: 1px solid var(--line); border-radius: 7px; padding: 6px 9px; min-width: 0; }
-  .feed input { flex: 1 1 220px; } .feed select { flex: 1 1 260px; max-width: 100%; }
-  .feed .msg { font-size: 12px; color: var(--grey); }
-  .feed .msg.err { color: var(--bad); }
+  .msg { font-size: 12px; color: var(--grey); margin-bottom: 8px; }
+  .msg:empty { display: none; }
+  .msg.err { color: var(--bad); }
   .matrix { display: grid; grid-template-columns: 22px 1fr 1fr; grid-template-rows: 22px auto auto; gap: 8px; }
   .axis { font-size: 10px; letter-spacing: .16em; font-weight: 700; color: var(--grey); display: flex; align-items: center; justify-content: center; text-transform: uppercase; }
   .axis.v { writing-mode: vertical-rl; transform: rotate(180deg); }
@@ -137,6 +133,12 @@
   .item.x .ia { display: flex; }
   .item .ia button { font-size: 10px; padding: 3px 8px; }
   .gap { color: var(--bad); border-color: color-mix(in srgb, var(--bad) 45%, transparent); font-weight: 700; }
+  .tag.cal { cursor: pointer; color: var(--q-plan); border-color: color-mix(in srgb, var(--q-plan) 45%, transparent); }
+  .tag.cal:hover { background: color-mix(in srgb, var(--q-plan) 12%, transparent); }
+  .tag.cal.on { cursor: default; color: var(--ok); border-color: color-mix(in srgb, var(--ok) 45%, transparent); }
+  .tag.due { padding: 0 2px 0 6px; }
+  .tag.due .dueInput { border: 0; background: none; padding: 0; margin: 0; font: inherit; color: inherit; width: 96px; cursor: pointer; }
+  .tag.due .dueInput:focus { outline: none; color: var(--ink); }
 
   /* activity */
   .cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr)); gap: 12px; }
@@ -154,6 +156,48 @@
     .axis { display: none; }
     header .right { margin-left: 0; }
   }
+
+  /* clients: one full-width agency box, then a row of client boxes underneath */
+  .clientGrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin-top: 10px; }
+  .client { padding: 12px 14px; }
+  .client.agency { border-left: 3px solid var(--q-plan); }
+  .client .ch { display: flex; align-items: baseline; gap: 8px; margin-bottom: 6px; }
+  .client .cn { font-size: 12px; font-weight: 700; letter-spacing: .08em; }
+  .client .cc { margin-left: auto; font: 400 18px/1 var(--serif); color: var(--grey); }
+  .client .citem { padding: 6px 0; border-top: 1px solid var(--line); font-size: 12px; }
+  .client .citem:first-child { border-top: 0; }
+  .client .citem .ct { font-weight: 600; }
+  .client .citem .cm { color: var(--grey); font-size: 10.5px; margin-top: 2px; }
+
+  /* personal budget: read from the owner's Google Sheet, shown on this machine only */
+  .bmonths { display: flex; gap: 5px; flex-wrap: wrap; margin-bottom: 10px; }
+  .bkpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 8px; margin-bottom: 12px; }
+  .bkpis .kpi .v.good { color: var(--ok); }
+  .bkpis .kpi .v.bad { color: var(--bad); }
+  .bgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(380px, 100%), 1fr)); gap: 12px; margin-bottom: 12px; }
+  .bpanel { padding: 12px 14px; }
+  .bpanel h3 { margin: 0 0 8px; font-size: 11px; letter-spacing: .14em; font-weight: 700; }
+  .bcat { display: grid; grid-template-columns: 140px minmax(0, 1fr) 92px 38px; gap: 8px; align-items: center; padding: 4px 0; font-size: 12px; }
+  .bcat .bn { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .bcat .bbar { height: 8px; border-radius: 4px; background: var(--soft); overflow: hidden; }
+  .bcat .bbar i { display: block; height: 100%; background: var(--q-plan); border-radius: 4px; }
+  .bcat .ba, .bcat .bp, .bm .bnum, .bl .bnum { text-align: right; font-variant-numeric: tabular-nums; }
+  .bcat .bp { color: var(--grey); font-size: 11px; }
+  .bm { display: grid; grid-template-columns: 70px repeat(3, minmax(0, 1fr)) 64px; gap: 8px; align-items: center; padding: 6px 4px; border-top: 1px solid var(--line); font-size: 12px; cursor: pointer; }
+  .bm:first-of-type { border-top: 0; }
+  .bm:hover, .bm.on { background: var(--soft); }
+  .bm.hd { font-size: 10px; letter-spacing: .1em; color: var(--grey); cursor: default; background: none; }
+  .bm .good { color: var(--ok); } .bm .bad { color: var(--bad); }
+  .bledhead { display: flex; align-items: center; gap: 10px; }
+  .bledhead h3 { margin: 0; }
+  .bledhead button { margin-left: auto; }
+  .bl { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1.2fr) 96px 80px 70px minmax(0, 2fr); gap: 8px; padding: 5px 0; border-top: 1px solid var(--line); font-size: 12px; align-items: baseline; }
+  .bl.hd { font-size: 10px; letter-spacing: .1em; color: var(--grey); border-top: 0; margin-top: 8px; }
+  .bl .in { color: var(--ok); }
+  .bl .bnote { color: var(--grey); font-size: 11px; }
+  .bfoot { font-size: 11px; color: var(--grey); margin-top: 8px; }
+  .bfoot .bad { color: var(--warn); }
+  @media (max-width: 760px) { .bcat { grid-template-columns: 100px minmax(0, 1fr) 80px; } .bcat .bp { display: none; } .bl { grid-template-columns: minmax(0, 1fr) 90px; } .bl > :nth-child(n+3):not(.bnum) { display: none; } .bl.hd > :nth-child(n+3) { display: none; } }
 </style>
 </head>
 <body>
@@ -166,21 +210,22 @@
 
   <div class="kpis" id="kpis"></div>
 
+  <section id="clientsSec">
+    <div class="sh">
+      <h2>Clients</h2>
+      <span class="note">Next actions by client, pulled from the matrix as tasks finish.</span>
+    </div>
+    <div class="panel client agency" id="clientAgency"></div>
+    <div class="clientGrid" id="clientGrid"></div>
+  </section>
+
   <section id="matrixSec">
     <div class="sh">
       <h2>Eisenhower matrix</h2>
-      <span class="note">Feed in what came out of a piece of work. The office lists what follows, sorts it, and names the seat.</span>
+      <span class="note">What follows from finished work, sorted and named to a seat automatically. Feed the office through the office itself — this just shows what came out of it.</span>
       <div class="tools seg" id="mShow"><button data-v="open" class="on">OPEN</button><button data-v="all">ALL</button></div>
     </div>
-    <div class="panel feed">
-      <textarea id="fText" placeholder="Paste what you got: meeting notes, an email thread, a client's reply, the outcome of a task…"></textarea>
-      <div class="row">
-        <select id="fTask"><option value="">…or read the result of a finished task</option></select>
-        <input id="fSrc" placeholder="Where it came from (optional): call with Heavenly Desserts, 24 Sep">
-        <button class="primary" id="fGo">READ IT</button>
-      </div>
-      <div class="msg" id="fMsg"></div>
-    </div>
+    <div class="msg" id="fMsg"></div>
     <div class="matrix" id="matrix">
       <div></div><div class="axis">Urgent</div><div class="axis">Not urgent</div>
       <div class="axis v">Important</div>
@@ -217,6 +262,23 @@
       <div class="panel col"><h3>⏱ SCHEDULED</h3><div id="aSched"></div></div>
     </div>
   </section>
+
+  <section id="budgetSec" style="display:none">
+    <div class="sh">
+      <h2>Personal budget</h2>
+      <span class="note">Read from your Personal Budget Ledger in Google Sheets. Shown on this machine only.</span>
+      <div class="tools"><button id="bSync" data-bsync>↻ REFRESH</button><button data-bopen>OPEN SHEET</button></div>
+    </div>
+    <div class="msg" id="bMsg"></div>
+    <div class="seg bmonths" id="bMonth"></div>
+    <div class="bkpis" id="bKpis"></div>
+    <div class="bgrid">
+      <div class="panel bpanel"><h3 id="bCatTitle">OUTGOINGS BY CATEGORY</h3><div id="bCats"></div></div>
+      <div class="panel bpanel"><h3>MONTH BY MONTH</h3><div id="bMonths"></div></div>
+    </div>
+    <div class="panel bpanel"><div class="bledhead"><h3 id="bLedTitle">LEDGER</h3><button data-bled id="bLedBtn">SHOW</button></div><div id="bLedger"></div></div>
+    <div class="bfoot" id="bFoot"></div>
+  </section>
 </div>
 
 <script>
@@ -232,7 +294,7 @@ const DEPTS = {
 const ORDER = ['emails', 'sales', 'marketing', 'ops', 'fin', 'delivery'];
 const GAPS = { 'no-seat': 'GAP · NO SEAT', 'owner-decision': 'YOUR CALL', 'missing-info': 'GAP · MISSING INFO' };
 const MODEL = { sonnet: 'Sonnet', opus: 'Opus', fable: 'Fable' };
-const S = { health: null, agents: [], tasks: [], routines: [], matrix: { items: [], feeds: [], quadrants: {} }, rShow: 'all', mShow: 'open', nShow: 'all', openSeat: new Set(), openItem: new Set(), busy: false };
+const S = { health: null, agents: [], tasks: [], routines: [], matrix: { items: [], feeds: [], quadrants: {}, clients: [] }, rShow: 'all', mShow: 'open', nShow: 'all', openSeat: new Set(), openItem: new Set(), busy: false };
 const $ = id => document.getElementById(id);
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const ago = t => { if (!t) return ''; const s = (Date.now() - t) / 1000; return s < 60 ? 'just now' : s < 3600 ? Math.round(s / 60) + ' min ago' : s < 86400 ? Math.round(s / 3600) + ' h ago' : Math.round(s / 86400) + ' d ago'; };
@@ -264,7 +326,82 @@ const roleSkills = a => { const h = houseSkills(); return (a.skills || []).filte
 // readiness: a role written, a standing brief, a skill that says how this seat's work is done
 const readiness = a => [!!a.does, !!a.brief, roleSkills(a).length > 0];
 
-function render() { renderKpis(); renderMatrix(); renderRoles(); renderNews(); renderActivity(); renderTaskPicker(); }
+function render() { renderKpis(); renderClients(); renderMatrix(); renderRoles(); renderNews(); renderActivity(); renderBudget(); }
+
+// personal budget: the server reads the owner's Google Sheet (Claude, via the Drive connector) and keeps a snapshot;
+// this only draws it. Every number here is plain arithmetic on the ledger rows, checked against the sheet's own summary block.
+const gbp = n => (n < 0 ? '−' : '') + '£' + Math.abs(n).toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+const mLabel = m => new Date(m + 'T12:00:00').toLocaleDateString('en-GB', { month: 'short', year: 'numeric' });
+async function loadBudget() { try { S.budget = await api('/budget'); } catch { S.budget = { configured: false }; } renderBudget(); }
+function renderBudget() {
+  const b = S.budget, sec = $('budgetSec');
+  sec.style.display = b && b.configured ? '' : 'none';
+  if (!b || !b.configured) return;
+  const busy = !!b.syncing || !!S.bBusy, snap = b.snapshot;
+  $('bSync').disabled = busy; $('bSync').textContent = busy ? 'READING THE SHEET…' : '↻ REFRESH';
+  if (!snap || !snap.months?.length) {
+    $('bMonth').innerHTML = ''; $('bCats').innerHTML = ''; $('bMonths').innerHTML = ''; $('bLedger').innerHTML = '';
+    $('bKpis').innerHTML = `<div class="none">${busy ? 'Reading your ledger for the first time… about a minute.' : b.error ? 'Could not read the sheet: ' + esc(b.error) : 'Nothing read yet. Press REFRESH.'}</div>`;
+    $('bFoot').textContent = ''; return;
+  }
+  const months = snap.months, nowM = new Date().toISOString().slice(0, 7) + '-01';
+  const cur = months.find(m => m.month === S.bMonth) || [...months].reverse().find(m => m.month <= nowM) || months[months.length - 1];
+  $('bMonth').innerHTML = months.map(m => `<button data-v="${m.month}"${m.month === cur.month ? ' class="on"' : ''}>${mLabel(m.month).toUpperCase()}</button>`).join('');
+  const kpi = (v, l, cls = '') => `<div class="kpi"><div class="v ${cls}">${v}</div><div class="l">${l}</div></div>`;
+  $('bKpis').innerHTML = kpi(gbp(cur.income), 'income') + kpi(gbp(cur.outgoings), 'outgoings') + kpi(gbp(cur.net), 'net', cur.net >= 0 ? 'good' : 'bad') +
+    kpi(gbp(cur.recurringNet), 'recurring net · the baseline', cur.recurringNet >= 0 ? 'good' : 'bad') + kpi(cur.status.toUpperCase(), cur.status === 'Actual' ? 'money that has landed' : cur.status === 'Forecast' ? 'not yet happened' : 'part landed, part forecast');
+  $('bCatTitle').textContent = 'OUTGOINGS BY CATEGORY · ' + mLabel(cur.month).toUpperCase();
+  const top = cur.categories[0]?.amount || 1;
+  $('bCats').innerHTML = cur.categories.map(c => `<div class="bcat"><span class="bn" title="${esc(c.name)}">${esc(c.name)}</span><span class="bbar"><i style="width:${Math.max(2, c.amount / top * 100).toFixed(1)}%"></i></span><span class="ba">${gbp(c.amount)}</span><span class="bp">${cur.outgoings ? Math.round(c.amount / cur.outgoings * 100) : 0}%</span></div>`).join('') || '<div class="none">No outgoings this month.</div>';
+  $('bMonths').innerHTML = '<div class="bm hd"><span>MONTH</span><span class="bnum">INCOME</span><span class="bnum">OUTGOINGS</span><span class="bnum">NET</span><span></span></div>' +
+    months.map(m => `<div class="bm${m.month === cur.month ? ' on' : ''}" data-bm="${m.month}"><span>${mLabel(m.month)}</span><span class="bnum">${gbp(m.income)}</span><span class="bnum">${gbp(m.outgoings)}</span><span class="bnum ${m.net >= 0 ? 'good' : 'bad'}">${gbp(m.net)}</span><span class="tag">${m.status.toUpperCase()}</span></div>`).join('');
+  const rows = snap.rows.filter(r => r.month === cur.month).sort((a, b) => (a.flow === b.flow ? b.amount - a.amount : a.flow === 'Income' ? -1 : 1));
+  $('bLedTitle').textContent = 'LEDGER · ' + mLabel(cur.month).toUpperCase() + ' · ' + rows.length + ' LINES';
+  $('bLedBtn').textContent = S.bLedger ? 'HIDE' : 'SHOW';
+  $('bLedger').innerHTML = S.bLedger ? '<div class="bl hd"><span>ITEM</span><span>CATEGORY</span><span class="bnum">AMOUNT</span><span>RECURRENCE</span><span>STATUS</span><span>NOTE</span></div>' +
+    rows.map(r => `<div class="bl"><span>${esc(r.item)}</span><span>${esc(r.category)}</span><span class="bnum${r.flow === 'Income' ? ' in' : ''}">${r.flow === 'Income' ? '+' : ''}${gbp(r.amount)}</span><span>${esc(r.recurrence)}</span><span>${esc(r.status)}</span><span class="bnote">${esc(r.note)}</span></div>`).join('') : '';
+  const ck = snap.check || {};
+  $('bFoot').innerHTML = `Read ${ago(snap.syncedAt)} from “${esc(snap.sheet.name)}” · refreshes itself when older than 6 hours · ` +
+    (!ck.checked ? 'no summary block in the sheet to check against' : ck.ok ? `<span style="color:var(--ok)">✓ totals match the sheet’s own summary (${ck.checked} month${ck.checked > 1 ? 's' : ''})</span>` : `<span class="bad">⚠ differs from the sheet’s own summary: ${esc(ck.mismatches.join('; '))}</span>`) +
+    (ck.dropped?.length ? ` · <span class="bad">${ck.dropped.length} row${ck.dropped.length > 1 ? 's' : ''} skipped as unreadable: ${esc(ck.dropped.join(', '))}</span>` : '') +
+    (b.error ? ` · <span class="bad">last refresh failed: ${esc(b.error)}</span>` : '');
+}
+async function syncBudgetNow() {
+  S.bBusy = true; $('bMsg').className = 'msg'; $('bMsg').textContent = 'Reading the sheet through Google Drive… about a minute.'; renderBudget();
+  try { await api('/budget/sync', { method: 'POST' }); $('bMsg').textContent = ''; }
+  catch (e) { $('bMsg').className = 'msg err'; $('bMsg').textContent = 'Could not read the sheet: ' + e.message; }
+  S.bBusy = false; await loadBudget();
+}
+
+// one box per client (id/name/scope from office.config.json aios.clients), showing its open matrix
+// items — the "scope":"agency" one (YSF Advisory) sits full-width above the rest, everyone else
+// wraps into a grid below. Nothing to configure here: add or rename clients in the config, not this file.
+// the "+ CALENDAR" tag: a 10-min to-do reminder on the owner's own Google Calendar, dated to the
+// item's due date — shown wherever an item with a due date appears, matrix or client box alike.
+function calTag(i) {
+  if (!i.due) return '';
+  return i.calendar ? '<span class="tag cal on">✓ ON CALENDAR</span>'
+    : `<button class="tag cal" data-act="calendar" title="Add a 10-min to-do reminder to Google Calendar on ${esc(i.due)}">+ CALENDAR</button>`;
+}
+
+function renderClients() {
+  const clients = S.matrix.clients || [];
+  $('clientsSec').style.display = clients.length ? '' : 'none';
+  if (!clients.length) return;
+  const open = S.matrix.items.filter(i => i.state === 'open');
+  const box = c => {
+    const mine = open.filter(i => i.client === c.id).sort((a, b) => (a.due || '9') < (b.due || '9') ? -1 : 1).slice(0, 5);
+    return `<div class="ch"><span class="cn">${esc(c.name)}</span><span class="cc">${mine.length}</span></div>` +
+      (mine.map(i => {
+        const a = agentBy(i.agent), d = DEPTS[i.dept] || DEPTS.owner;
+        return `<div class="citem" data-item="${esc(i.id)}"><div class="ct">${esc(i.title)}</div><div class="cm">${i.due ? 'due ' + esc(i.due) + ' · ' : ''}${esc(a ? a.name : d.name)} ${calTag(i)}</div></div>`;
+      }).join('') || '<div class="none">Nothing waiting.</div>');
+  };
+  const agency = clients.find(c => c.scope === 'agency'), rest = clients.filter(c => c.scope !== 'agency');
+  $('clientAgency').style.display = agency ? '' : 'none';
+  if (agency) $('clientAgency').innerHTML = box(agency);
+  $('clientGrid').innerHTML = rest.map(c => `<div class="panel client">${box(c)}</div>`).join('');
+}
 
 function renderKpis() {
   const T = S.tasks, today = new Date().toDateString();
@@ -365,7 +502,7 @@ function itemHtml(i) {
   const taskTxt = task ? (task.state === 'waiting' ? 'draft waiting on your OK' : task.state === 'done' ? (task.error ? 'task failed' : 'task done') : 'task running') : '';
   return `<div class="item ${i.state}${open ? ' x' : ''}" draggable="true" data-item="${esc(i.id)}">
     <div class="it">${esc(i.title)}</div>
-    <div class="im"><span class="tag" style="border-color:${d.chip}">${d.name}</span>${a ? `<span class="tag">${esc(a.name)}</span>` : ''}${i.gap ? `<span class="tag gap">${GAPS[i.gap] || i.gap}</span>` : ''}${i.due ? `<span class="tag">due ${esc(i.due)}</span>` : ''}${i.state !== 'open' ? `<span class="tag">${esc(i.state.toUpperCase())}</span>` : ''}${taskTxt ? `<span class="tag">${taskTxt}</span>` : ''}</div>
+    <div class="im"><span class="tag" style="border-color:${d.chip}">${d.name}</span>${a ? `<span class="tag">${esc(a.name)}</span>` : ''}${i.gap ? `<span class="tag gap">${GAPS[i.gap] || i.gap}</span>` : ''}<span class="tag due"><input type="date" class="dueInput" value="${esc(i.due || '')}" data-orig="${esc(i.due || '')}" data-item="${esc(i.id)}" title="Change the due date"></span>${calTag(i)}${i.state !== 'open' ? `<span class="tag">${esc(i.state.toUpperCase())}</span>` : ''}${taskTxt ? `<span class="tag">${taskTxt}</span>` : ''}</div>
     <div class="id">${esc(i.detail)}${i.why ? ` <i>(${esc(i.why)})</i>` : ''}</div>
     <div class="ia">
       ${i.state === 'open' && DEPTS[i.dept] && i.dept !== 'owner' ? `<button data-act="send">SEND TO ${esc(a ? a.name : d.name)}</button>` : ''}
@@ -398,31 +535,25 @@ function renderActivity() {
   $('aSched').innerHTML = sched.map(s => `<div class="task"><div><div class="tt">${esc(s.title)}</div><div class="tm">${esc(s.who)} · ${when(s.at)}</div></div></div>`).join('') || '<div class="none">Nothing on the timetable.</div>';
 }
 
-function renderTaskPicker() {
-  const sel = $('fTask'), cur = sel.value;
-  const done = S.tasks.filter(t => (t.state === 'done' && !t.error) || t.state === 'waiting').sort((a, b) => (b.doneAt || b.waitingAt || 0) - (a.doneAt || a.waitingAt || 0)).slice(0, 25);
-  const html = '<option value="">…or read the result of a finished task</option>' + done.map(t => `<option value="${esc(t.id)}">${esc(t.title)} · ${esc(agentBy(t.agent)?.name || t.agent)}</option>`).join('');
-  if (sel.dataset.h !== html) { sel.innerHTML = html; sel.dataset.h = html; sel.value = cur; }
-}
-
+// re-reads one task's result against the matrix — used by a task row's "→ MATRIX" button
+// (autoFeed already does this automatically when a task finishes; this is only for a re-run).
 async function feed(taskId) {
-  const text = $('fText').value.trim(), source = $('fSrc').value.trim(); taskId = taskId || $('fTask').value;
-  if (!text && !taskId) { $('fMsg').className = 'msg err'; $('fMsg').textContent = 'Paste something, or pick a task.'; return; }
-  S.busy = true; $('fGo').disabled = true; $('fMsg').className = 'msg'; $('fMsg').textContent = 'Reading it against the roster… (about 20–60 seconds)';
+  if (!taskId) return;
+  S.busy = true; $('fMsg').className = 'msg'; $('fMsg').textContent = 'Reading it against the roster… (about 20–60 seconds)';
   try {
-    const r = await api('/matrix/feed', { method: 'POST', body: { text, source, taskId: taskId || undefined } });
+    const r = await api('/matrix/feed', { method: 'POST', body: { taskId } });
     const c = q => r.items.filter(i => i.q === q).length, g = r.items.filter(i => i.gap).length;
     $('fMsg').textContent = `${r.items.length} actions: ${c('do')} do now · ${c('plan')} schedule · ${c('delegate')} delegate · ${c('drop')} drop${g ? ` · ${g} gap${g > 1 ? 's' : ''}` : ''}. ${r.feed.summary || ''}`;
-    $('fText').value = ''; $('fSrc').value = ''; $('fTask').value = '';
     await poll();
   } catch (e) { $('fMsg').className = 'msg err'; $('fMsg').textContent = 'Could not read it: ' + e.message; }
-  S.busy = false; $('fGo').disabled = false;
+  S.busy = false;
 }
 
 async function act(id, what) {
   try {
     if (what === 'delete') await api('/matrix/' + id, { method: 'DELETE' });
     else if (what === 'send') { const r = await api('/matrix/' + id + '/send', { method: 'POST' }); $('fMsg').className = 'msg'; $('fMsg').textContent = `Sent: ${r.task.title} → ${agentBy(r.task.agent)?.name || r.task.agent}${r.task.needsOk ? '. It will wait for your OK before anything goes out.' : '.'}`; }
+    else if (what === 'calendar') { $('fMsg').className = 'msg'; $('fMsg').textContent = 'Adding to Google Calendar…'; const r = await api('/matrix/' + id + '/calendar', { method: 'POST' }); $('fMsg').textContent = r.note || 'Added to Google Calendar.'; }
     else await api('/matrix/' + id, { method: 'POST', body: { state: what === 'drop' ? 'dropped' : what === 'reopen' ? 'open' : 'done' } });
     await poll();
   } catch (e) { alert(e.message); }
@@ -431,16 +562,20 @@ async function act(id, what) {
 document.addEventListener('click', e => {
   const seg = e.target.closest('.seg button');
   if (seg) { const box = seg.parentElement; box.querySelectorAll('button').forEach(b => b.classList.toggle('on', b === seg)); S[box.id] = seg.dataset.v; render(); return; }
+  if (e.target.closest('[data-bsync]')) { if (!S.bBusy) syncBudgetNow(); return; }
+  if (e.target.closest('[data-bopen]')) { const sh = S.budget?.sheet?.sheet; if (sh) window.open('https://docs.google.com/spreadsheets/d/' + encodeURIComponent(sh) + '/edit', '_blank', 'noopener'); return; }
+  if (e.target.closest('[data-bled]')) { S.bLedger = !S.bLedger; renderBudget(); return; }
+  const bm = e.target.closest('[data-bm]'); if (bm) { S.bMonth = bm.dataset.bm; renderBudget(); return; }
   const b = e.target.closest('button[data-act]');
   if (b) { const id = b.closest('[data-item]').dataset.item; b.disabled = true; act(id, b.dataset.act); return; }
   const m = e.target.closest('button[data-matrix]');
   if (m) { m.disabled = true; $('matrixSec').scrollIntoView({ behavior: 'smooth' }); feed(m.dataset.matrix); return; }
+  if (e.target.closest('.dueInput')) return; // picking a date shouldn't also toggle the item open/closed
   const it = e.target.closest('[data-item]');
   if (it) { const id = it.dataset.item; S.openItem.has(id) ? S.openItem.delete(id) : S.openItem.add(id); renderMatrix(); return; }
   const s = e.target.closest('[data-seat]');
   if (s) { const id = s.dataset.seat; S.openSeat.has(id) ? S.openSeat.delete(id) : S.openSeat.add(id); renderRoles(); }
 });
-$('fGo').onclick = () => feed();
 // drag an item to another quadrant: the owner's call beats the office's
 let dragId = null;
 document.addEventListener('dragstart', e => { const it = e.target.closest?.('[data-item]'); dragId = it ? it.dataset.item : null; });
@@ -449,7 +584,33 @@ for (const q of document.querySelectorAll('.quad')) {
   q.addEventListener('dragleave', () => q.classList.remove('drag'));
   q.addEventListener('drop', async e => { e.preventDefault(); q.classList.remove('drag'); if (!dragId) return; const id = dragId; dragId = null; await api('/matrix/' + id, { method: 'POST', body: { q: q.dataset.q } }).catch(err => alert(err.message)); poll(); });
 }
-poll(); setInterval(() => { if (!S.busy && !document.hidden) poll(); }, 5000);
+// editing a due date: "by the 21st" often means act well before then, so this is a plain edit,
+// not a special flow — changing it also clears an already-added calendar reminder (server side)
+// so the "+ CALENDAR" tag comes back for the corrected date instead of silently staying stale.
+// Saves only on blur (focusout), not on 'change' — a native date input can fire 'change' the
+// moment ONE segment (day/month/year) is filled, while the others are still mid-edit or blank,
+// which is exactly how "0001" happened: it saved a half-typed value before typing was done.
+// Waiting for the owner to actually leave the field means it only ever saves a finished date.
+const DATE_RE = /^20\d{2}-\d{2}-\d{2}$/;
+document.addEventListener('focusout', async e => {
+  const inp = e.target.closest('.dueInput');
+  if (!inp) return;
+  S.editingDate = false;
+  const val = inp.value;
+  if (val === inp.dataset.orig) return; // nothing actually changed
+  if (val && !DATE_RE.test(val)) { inp.value = inp.dataset.orig; return; } // incomplete/bogus (e.g. year not typed yet) — quietly revert, don't save
+  const id = inp.dataset.item;
+  S.busy = true; inp.disabled = true;
+  try { await api('/matrix/' + id, { method: 'POST', body: { due: val } }); await poll(); }
+  catch (err) { alert(err.message); inp.value = inp.dataset.orig; inp.disabled = false; }
+  S.busy = false;
+});
+// the 5s auto-refresh rebuilds the item's whole card — fine normally, but it was tearing a date
+// field's own drop-down calendar out from under the owner mid-pick ("kicked out of the box").
+// Pause refreshing for as long as a date field has focus, including while its picker is open.
+document.addEventListener('focusin', e => { if (e.target.closest('.dueInput')) S.editingDate = true; });
+poll(); setInterval(() => { if (!S.busy && !S.editingDate && !document.hidden) poll(); }, 5000);
+loadBudget(); setInterval(() => { if (!document.hidden && !S.bBusy) loadBudget(); }, 30000);
 </script>
 </body>
 </html>

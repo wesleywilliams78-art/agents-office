@@ -51,6 +51,11 @@ function tidy(s) { // the task text with the schedule taken out
 export function parseWhen(input) {
   const src = String(input || '');
   let s = src, m;
+  // A day name or "weekly" inside an ordinary task ("send the update on Friday", "review the weekly report")
+  // is not a schedule. Recurrence needs a clear marker: every/each/once a…, a plural day, two days joined,
+  // or the sentence opening with daily/weekly/hourly/weekdays/weekends.
+  const DAY = '(?:sun|mon|tues?|wed(?:nes)?|thu(?:rs)?|fri|sat(?:ur)?)(?:day)?';
+  if (!new RegExp(`\\b(?:every|each|once\\s+an?|on\\s+a\\s+schedule)\\b|\\b${DAY}s\\b|\\b${DAY}\\s*(?:,|and|&|\\+)\\s*${DAY}\\b|\\b(?:daily|weekly|hourly)\\s+(?:at|from|between)\\b|,\\s*(?:daily|weekly|hourly)\\s*$|^\\W*(?:daily|weekly|hourly|week\\s?days?|weekends?|business\\s+days?|working\\s+days?)\\b`, 'i').test(s)) return null;
   // every N minutes (filming cadence — accepted, never offered)
   if ((m = /\bevery\s+(\d+)\s*(?:min|mins|minutes?)\b/i.exec(s))) {
     return { when: { kind: 'minutes', every: Math.max(1, +m[1]) }, text: tidy(cut(s, [m.index, m.index + m[0].length])) };

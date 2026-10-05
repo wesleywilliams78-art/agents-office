@@ -298,6 +298,22 @@ export function initTasks(ctx) {
     bigBtn: panel.querySelector('.tp-big-btn'), team: panel.querySelector('.tp-team'),
     uploadBtn: panel.querySelector('.tp-upload-btn'), uploadFile: panel.querySelector('.tp-upload-file'),
   };
+  // V3.9: drag the panel's left edge to widen it (double-click resets); the width is remembered, and the scene re-centres via a resize event
+  {
+    const grip = panel.querySelector('.tp-resize'), KEY = 'tpanelWidth', DEF = 400;
+    const clampW = w => Math.round(Math.max(340, Math.min(w, Math.min(innerWidth * 0.75, 1000))));
+    const setW = w => { panel.style.setProperty('--tp-w', clampW(w) + 'px'); dispatchEvent(new Event('resize')); };
+    try { const saved = +localStorage.getItem(KEY); if (saved) panel.style.setProperty('--tp-w', clampW(saved) + 'px'); } catch {}
+    let raf = 0;
+    grip.addEventListener('pointerdown', e => {
+      e.preventDefault(); grip.setPointerCapture(e.pointerId); grip.classList.add('on');
+      const move = ev => { cancelAnimationFrame(raf); raf = requestAnimationFrame(() => setW(innerWidth - ev.clientX - 18)); };
+      const up = () => { grip.classList.remove('on'); grip.removeEventListener('pointermove', move); grip.removeEventListener('pointerup', up);
+        try { localStorage.setItem(KEY, String(panel.offsetWidth)); } catch {} };
+      grip.addEventListener('pointermove', move); grip.addEventListener('pointerup', up);
+    });
+    grip.addEventListener('dblclick', () => { panel.style.removeProperty('--tp-w'); try { localStorage.removeItem(KEY); } catch {} dispatchEvent(new Event('resize')); });
+  }
   // V3.7: the box grows with the text (one line at rest, six at most) and the big editor mirrors it
   const big = document.getElementById('tpBig');
   const B_ = { in: big.querySelector('.tb-in'), dept: big.querySelector('.tb-dept'), dot: big.querySelector('.tb-head .dot'), hint: big.querySelector('.tb-hint'), add: big.querySelector('.tb-add'), close: big.querySelector('.tb-close') };
@@ -337,7 +353,8 @@ export function initTasks(ctx) {
   P_.cad.addEventListener('change', () => { P_.at.disabled = P_.cad.value === 'hourly'; updateHint(); });
   P_.at.addEventListener('change', updateHint);
   [P_.cad, P_.at, P_.okc].forEach(el => el.addEventListener('keydown', e => e.stopPropagation()));
-  const routineIntent = text => repeat ? { when: fromPicker(P_.cad.value, P_.at.value), text, picker: true } : parseWhen(text);
+  function resetRepeat() { repeat = false; P_.rep.classList.remove('on'); P_.repRow.hidden = true; } // one routine per press of REPEAT
+  const routineIntent = text => repeat ? { when: fromPicker(P_.cad.value, P_.at.value), text, picker: true } : null; // a routine only ever comes from the REPEAT button, never from the words typed
   // V3.2 (16 Sep) Agent Teams: the TEAM toggle — the department lead splits the task across its desks, they work at once, the lead writes the final
   let teamOn = false, teamsCfg = { enabled: true, max: 4 };
   const teamIntent = text => /\b(as a team|team up|team this|get the (whole )?team|the (whole )?team (on|to|should|can)|with the team|(spawn|use|get) (\d+|two|three|four|five|a few|some) teammates?|\d+ teammates|split (it|this|the work) (up|across|between)|teammates|team:|whole department)\b/i.test(text);
@@ -514,7 +531,7 @@ export function initTasks(ctx) {
         setRoutines([...routines.filter(x => x.id !== j.routine.id), j.routine]);
         const a = agentOf(j.routine.agent);
         say(`Routine set — <b>${a.name}</b> · ${esc(j.routine.desc)} · next ${esc(untilText(j.routine.nextAt))}${j.routine.needsOk ? ' · waits for your OK' : ' · read-only, no OK needed'}${j.guessed ? ` · "${esc(j.guessed)}" taken as ${j.routine.when.at}` : ''}`);
-        P_.input.value = ''; resetModel(); spawnEmote(R[a.id], '⏱'); feedPush(R[a.id], '⏱', `New routine: ${j.routine.title} (${j.routine.desc})`);
+        P_.input.value = ''; resetModel(); resetRepeat(); spawnEmote(R[a.id], '⏱'); feedPush(R[a.id], '⏱', `New routine: ${j.routine.title} (${j.routine.desc})`);
         filter = 'sched'; render(true); poll();
       } catch (e) { say(`Claude couldn't set it (${esc(e.message)}).`, 'err'); }
       P_.input.disabled = false; P_.add.disabled = false; P_.input.blur();
@@ -522,7 +539,7 @@ export function initTasks(ctx) {
     }
     const { agent: a } = route(k, text);
     const r = addRoutine(k, a.id, text, rt.when, rt.picker ? P_.okc.checked : guessOk(text));
-    r.model = chosenModel() || undefined; r.effort = effortSend(); resetModel();
+    r.model = chosenModel() || undefined; r.effort = effortSend(); resetModel(); resetRepeat();
     P_.input.value = ''; say(`Routine set — <b>${a.name}</b> · ${esc(r.desc)} · next ${esc(untilText(r.nextAt))}${r.needsOk ? ' · waits for your OK' : ' · read-only'}`);
     spawnEmote(R[a.id], '⏱'); feedPush(R[a.id], '⏱', `New routine: ${r.title} (${r.desc})`); filter = 'sched'; render(true); P_.input.blur(); setTimeout(updateHint, 5000);
   }

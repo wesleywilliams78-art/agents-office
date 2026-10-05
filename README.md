@@ -80,6 +80,10 @@ Agents can call those servers while they work, plus web search. They never get B
 tools or sub-agents. Their standing rule: read freely; send, post, pay, delete or change
 anything outside this machine **only** when your task explicitly asks for that exact action.
 A finished deliverable says which tools it used, and the note in your brain records them.
+The one thing an agent can ask for beyond that is a change to a note in your brain: it proposes the
+change as a `BRAIN UPDATE`, the review card shows what approving would file, and the office files it
+only when you approve (Markdown notes inside the brain only, the previous version is kept in
+`data/brain-backups/`). Turn it off with `"brainWrite": { "enabled": false }`.
 
 Decide what the agents may touch in `office.config.json`:
 

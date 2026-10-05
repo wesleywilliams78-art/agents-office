@@ -113,10 +113,62 @@ await step('interview: the lead asks five questions, then writes briefs + a skil
   const merged = loadRoster(brain); if (merged.agents.find(a => a.id === 'piper').brief !== 'Three options, recommend the middle.' || merged.problems.length) throw new Error('brief not merged into the brain roster: ' + merged.problems);
   const sk = loadSkills(brain, merged.agents); const w = sk.skills.find(x => x.name === 'wholesale-quote');
   if (!w || w.source !== 'brain' || !w.agents.includes('piper') || !w.files.some(f => f.name === 'template.md') || sk.problems.length) throw new Error('skill not loadable: ' + sk.problems);
-  if (!onboard.isSetUp(merged.agents, sk, 'sales') || onboard.isSetUp(merged.agents, sk, 'fin')) throw new Error('setUp flag wrong');
+  const untouched = ['fin', 'marketing', 'delivery', 'ops', 'emails'].find(d => !agents.some(a => a.department === d && a.brief)); // the owner's own roster may already brief some departments
+  if (!onboard.isSetUp(merged.agents, sk, 'sales') || (untouched && onboard.isSetUp(merged.agents, sk, untouched))) throw new Error('setUp flag wrong');
   const c = await onboard.handle('set up', ctx); await onboard.handle('cancel', ctx); if (onboard.active(data, 'sales')) throw new Error('cancel did not clear');
   fs.rmSync(tmp, { recursive: true, force: true });
-  return `5 questions · 2 briefs merged · skill wholesale-quote→piper with template · sales set up, fin not · cancel clears`;
+  return `5 questions · 2 briefs merged · skill wholesale-quote→piper with template · sales set up, an untouched department not · cancel clears`;
+});
+await step('matrix: the same action worded differently is not raised again, a different one is', async () => {
+  const aios = await import('./aios.mjs');
+  const same = [['Log INV101 and INV102 status in billing.md', 'Write the INV101/INV102 status and numbering into billing.md'],
+    ['Update the Nov Gas Bill row to Actual', 'Mark the Nov Gas Bill row as Actual'],
+    ['Chase the overdue Acme invoice INV077', 'Chase Acme for the overdue invoice INV077 (due 3 Oct)']];
+  for (const [a, b] of same) if (!aios.similar(a, b)) throw new Error(`should be the same action: "${a}" / "${b}"`);
+  const different = [['Chase the overdue Acme invoice INV077', 'Draft the October proposal for Harbour Hardware'], ['Confirm the Gas direct debit date', 'Confirm the Water direct debit date']];
+  for (const [a, b] of different) if (aios.similar(a, b)) throw new Error(`should be different actions: "${a}" / "${b}"`);
+  const { kept, dropped } = aios.dedupe([{ title: 'Write the INV101/INV102 status into billing.md' }, { title: 'Draft the October proposal for Harbour Hardware' }, { title: 'Draft October proposal for Harbour Hardware' }], ['Log INV101 and INV102 status in billing.md']);
+  if (kept.length !== 1 || dropped.length !== 2) throw new Error(`kept ${kept.length}, dropped ${dropped.length}`);
+  return 'a reworded action is caught · a different action is not · a repeat inside one batch is caught';
+});
+await step('brain updates: a proposed note change is parsed, refused when unsafe, and filed only inside the brain with a backup', async () => {
+  const bn = await import('./brainnotes.mjs'); const os = await import('node:os');
+  const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'ao-brainnotes-')), brain = path.join(tmp, 'brain'), bak = path.join(tmp, 'bak');
+  const w = (rel, txt) => { fs.mkdirSync(path.dirname(path.join(brain, rel)), { recursive: true }); fs.writeFileSync(path.join(brain, rel), txt); };
+  w('10-Business/billing.md', '# Billing\n\n## Numbering\nLast used INV001.\n\n## Outstanding\n- INV001 unpaid\n'); w('CLAUDE.md', '# rules\n'); w('Agents Office/skills/x/SKILL.md', 'skill\n'); w('80-Finance/a.md', 'a\n'); w('90-Operations/a.md', 'a\n');
+  const text = 'Done.\n\nBRAIN UPDATE\nnote: billing\nmode: replace-section\nsection: Numbering\nreason: new number\n---\nLast used INV002.\n---\nsecond line\nEND BRAIN UPDATE\n\n```\nBRAIN UPDATE\nnote: 80-Finance/water.md\nmode: create\n---\n# Water\nPaid monthly.\nEND BRAIN UPDATE\n```';
+  const blocks = bn.parse(text);
+  if (blocks.length !== 2 || blocks[0].section !== 'Numbering' || !/second line/.test(blocks[0].body) || blocks[1].mode !== 'create') throw new Error('parse wrong: ' + JSON.stringify(blocks));
+  const bad = [['../outside.md', 'append'], ['Agents Office/skills/x/SKILL.md', 'append'], ['CLAUDE.md', 'append'], ['a', 'append'], ['10-Business/billing.md', 'create'], ['10-Business/missing.md', 'append'], ['10-Business/billing.md', 'replace-section', 'Nope']]
+    .map(([note, mode, section]) => bn.plan(brain, { note, mode, section: section || 'Numbering', body: 'x' }));
+  if (bad.some(p => p.ok)) throw new Error('an unsafe or impossible update was allowed: ' + JSON.stringify(bad.filter(p => p.ok)));
+  if (bn.plan(brain, { note: '80-Finance/b.md', mode: 'create', body: 'Sort code 12-34-56, account 12345678' }).ok) throw new Error('bank details were allowed');
+  if (bn.planAll(brain, [1, 2, 3, 4].map(i => ({ note: `80-Finance/n${i}.md`, mode: 'create', body: 'x' }))).filter(p => p.ok).length !== 3) throw new Error('more than three updates per task were allowed');
+  const done = bn.applyAll(brain, blocks, { backupDir: bak });
+  if (!done.every(d => d.ok)) throw new Error('could not file: ' + JSON.stringify(done));
+  const billing = fs.readFileSync(path.join(brain, '10-Business/billing.md'), 'utf8');
+  if (!/Last used INV002/.test(billing) || /INV001\.\n/.test(billing) || !/## Outstanding\n- INV001 unpaid/.test(billing) || !/## Numbering/.test(billing)) throw new Error('section not replaced cleanly:\n' + billing);
+  if (!fs.existsSync(path.join(brain, '80-Finance/water.md')) || fs.readdirSync(bak).length !== 1) throw new Error('new note or backup missing');
+  const again = bn.applyAll(brain, [{ note: 'billing', mode: 'append', body: 'Last used INV002.' }], { backupDir: bak });
+  if (again[0].ok || !/already/.test(again[0].message)) throw new Error('an identical update was filed twice');
+  fs.rmSync(tmp, { recursive: true, force: true });
+  return 'parsed (even inside a code fence) · unsafe paths, the agents\' area, rules file, bank details and a 4th update refused · section replaced, rest of the note intact · backup kept · a repeat refused';
+});
+await step('budget: ledger rows become month totals, and a wrong total is named against the sheet\'s own summary', async () => {
+  const budget = await import('./budget.mjs');
+  const j = { rows: [['2026-01-01', 'Income', 'Salary', 'Salary', 1000, 'Recurring', 'Actual', ''], ['2026-01-01', 'Income', 'Sale', 'One-off income', 200, 'One-off', 'Actual', 'Received 3 Jan'],
+    ['2026-01-01', 'Outgoing', 'Rent', 'Housing', 500, 'Recurring', 'Actual', ''], ['2026-01-01', 'Outgoing', 'Streaming', 'Subscriptions', '12.99', 'Recurring', 'Actual', ''],
+    ['2026-02-01', 'Income', 'Salary', 'Salary', '£1,000.00', 'Recurring', 'Forecast', ''], ['2026-02-01', 'Outgoing', 'Rent', 'Housing', 500, 'Recurring', 'Forecast', ''], ['not a month', 'Income', 'x', 'y', 1, '', '', '']],
+    summary: [['2026-01-01', 1200, 512.99, 687.01, 1000, 512.99, 487.01], ['2026-02-01', 1000, 500, 500, 1000, 500, 500]] };
+  const s = budget.snapshot({ sheet: 'abc' }, j); const jan = s.months[0], feb = s.months[1];
+  if (s.rows.length !== 6 || s.check.dropped.length !== 1) throw new Error(`rows ${s.rows.length}, dropped ${s.check.dropped.length}`);
+  if (jan.income !== 1200 || jan.outgoings !== 512.99 || jan.net !== 687.01 || jan.recurringNet !== 487.01 || jan.status !== 'Actual' || feb.status !== 'Forecast') throw new Error('month totals wrong: ' + JSON.stringify(jan));
+  if (jan.categories[0].name !== 'Housing' || feb.income !== 1000) throw new Error('categories or a £-prefixed amount wrong');
+  if (!s.check.ok || s.check.checked !== 2) throw new Error('matching summary should verify: ' + JSON.stringify(s.check));
+  j.summary[0][3] = 700; const bad = budget.snapshot({ sheet: 'abc' }, j).check;
+  if (bad.ok || bad.mismatches.length !== 1 || !/2026-01 net/.test(bad.mismatches[0])) throw new Error('a wrong sheet total was not named: ' + JSON.stringify(bad));
+  let empty = false; try { budget.snapshot({ sheet: 'abc' }, { rows: [] }); } catch { empty = true; } if (!empty) throw new Error('an empty read must be an error, not a blank dashboard');
+  return '2 months · totals, categories and £-strings right · a wrong sheet total is named · empty read refused';
 });
 await step('connectors: claude mcp list parses', async () => {
   const m = await import('./mcp.mjs');
@@ -348,7 +400,8 @@ else {
     });
     await step('smoke: a routine typed in the bar lands in SCHEDULED (demo)', async () => {
       await page.click('.tp-dd'); await page.click('.tp-menu button[data-k="emails"]');
-      await page.fill('.tp-in', 'every weekday at 8am, triage the inbox and tell me what needs me');
+      await page.click('.tp-rep'); await page.selectOption('.tp-cad', 'weekdays'); await page.fill('.tp-at', '08:00'); // a routine only comes from REPEAT
+      await page.fill('.tp-in', 'triage the inbox and tell me what needs me');
       await page.evaluate(() => document.querySelector('.tp-in').dispatchEvent(new Event('input', { bubbles: true })));
       await page.waitForFunction(() => /Routine/.test(document.querySelector('.tp-hint').textContent), null, { timeout: 5000 }).catch(() => {});
       const pre = await page.evaluate(() => document.querySelector('.tp-hint').textContent); if (!/Routine/.test(pre) || !/every weekday · 08:00/.test(pre)) throw new Error('hint before Add: ' + pre);
@@ -366,9 +419,10 @@ else {
       await page.evaluate(() => window.CC.tasks.rtAct(window.CC.routines()[0].id, 'run')); await page.waitForTimeout(500);
       const fired = await page.evaluate(() => window.CC.tasks.tasks.some(t => t.routine && /triage the inbox/i.test(t.title))); if (!fired) throw new Error('RUN NOW did not make a task');
       await page.click('.tp-dd'); await page.click('.tp-menu button[data-k="marketing"]');
-      await page.fill('.tp-in', 'every day at 9am post the reel'); await page.keyboard.press('Enter'); await page.waitForTimeout(400);
+      await page.click('.tp-rep'); await page.fill('.tp-in', 'post the reel'); await page.keyboard.press('Enter'); await page.waitForTimeout(400);
       const no = await page.evaluate(() => document.querySelector('.tp-hint').textContent); if (!/later release/.test(no)) throw new Error('marketing not refused: ' + no);
       const still = await page.evaluate(() => window.CC.routines().length); if (still !== 1) throw new Error('a refused routine was added');
+      await page.click('.tp-rep'); // REPEAT back off
       const opts = await page.evaluate(() => [...document.querySelectorAll('.tp-model option')].map(o => o.value).join(',') + '|' + document.querySelector('.tp-model').value); if (opts !== 'sonnet,opus,fable|sonnet') throw new Error('model menu: ' + opts);
       const eff = await page.evaluate(() => [...document.querySelectorAll('.tp-effort option')].map(o => o.value).join(',') + '|' + document.querySelector('.tp-effort').value); if (eff !== ',low,medium,high,xhigh,max|') throw new Error('effort menu: ' + eff);
       // V3.7: the box grows with the text, and the big editor mirrors it both ways

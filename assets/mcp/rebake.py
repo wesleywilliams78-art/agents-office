@@ -15,10 +15,11 @@ from PIL import Image, ImageDraw
 
 # key -> source png (square brand app-icon, transparent corners)
 SUBSET = {
-    'zoominfo': 'zoominfo-icon.png',   # 2020+ red "Z" logomark (was the retired orange sunburst)
-    'apollo': 'apollo-icon.png',       # yellow tile + black asterisk (was the asterisk alone)
-    'stripe': 'stripe-icon.png',       # purple tile mark (was the "stripe" wordmark)
+    'telegram': 'telegram-source.png', # Simple Icons brand mark, rendered to PNG (no cairosvg on this machine)
 }
+# Note: zoominfo/apollo/stripe were in this SUBSET previously but their source PNGs are not
+# checked into this repo, so bake.py is still the source of truth for the full set (see its
+# own docstring) - this file only rebakes whatever source PNGs actually exist alongside it.
 
 T, R, FIT = 256, 58, 176
 

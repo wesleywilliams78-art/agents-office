@@ -41,6 +41,20 @@ export function resolveBin() {
 
 export const DEPT_KEYS = ['emails', 'sales', 'marketing', 'ops', 'fin', 'delivery'];
 
+// Windows: this office process's own PATH is fixed at the moment its terminal launched it — a
+// tool installed afterwards (e.g. `winget install` while the office was already running) is
+// invisible to every `claude` this process spawns until the office itself is restarted from a
+// truly fresh shell. Re-reading PATH from the registry on every env build removes that trap:
+// the office always sees what's actually installed, no matter how stale its own launch was.
+function freshPath() {
+  if (process.platform !== 'win32') return process.env.PATH || '';
+  const read = (hive, key) => { try { return execFileSync('reg', ['query', hive, '/v', 'Path'], { encoding: 'utf8' }).split('\n').find(l => /\bPath\b/.test(l))?.split(/REG_(?:EXPAND_)?SZ/)[1]?.trim() || ''; } catch { return ''; } };
+  const m = read('HKLM\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Environment', 'Path');
+  const u = read('HKCU\\Environment', 'Path');
+  return [m, u].filter(Boolean).join(';') || process.env.PATH || '';
+}
+export function freshEnv(base = process.env) { return { ...base, PATH: freshPath() }; }
+
 // known brands → logo key in src/mcplogos.js. Anything else gets a generated tile.
 const ALIASES = {
   gmail: ['gmail', 'googlegmail'], notion: ['notion'], canva: ['canva'], meta: ['metaads', 'meta', 'facebookads', 'facebook'],
@@ -50,6 +64,7 @@ const ALIASES = {
   googlecalendar: ['googlecalendar', 'gcal', 'calendar'], googledrive: ['googledrive', 'gdrive', 'drive'], webflow: ['webflow'], playwright: ['playwright'],
   higgsfield: ['higgsfield', 'higgfield'], territool: ['territool'],
   chrome: ['claudeinchrome', 'chrome', 'claudechrome', 'browser'],
+  telegram: ['telegram', 'plugintelegramtelegram'],
 };
 // which pods a known brand feeds (mirrors the demo's MCP_BY_DEPT)
 const DEPTS_BY_KEY = {
@@ -61,11 +76,16 @@ const DEPTS_BY_KEY = {
   hubspot: ['sales', 'marketing'], salesforce: ['sales'], zapier: DEPT_KEYS, figma: ['marketing', 'delivery'],
   webflow: ['marketing', 'delivery'], higgsfield: ['marketing'], territool: ['sales'],
   chrome: DEPT_KEYS, // the owner's browser: every desk may need a web app
+  telegram: ['emails'], // the Executive Assistant's channel — wired to the emails pod it leads
 };
 
 export const norm = s => String(s).toLowerCase().replace(/^claude\.ai\s+/, '').replace(/\s+mcp$/, '').replace(/[^a-z0-9]/g, '');
 export const toolId = name => String(name).replace(/[^A-Za-z0-9_-]+/g, '_'); // "claude.ai Gmail" → mcp__claude_ai_Gmail__* · "claude-in-chrome" keeps its hyphens
-const display = name => String(name).replace(/^claude\.ai\s+/, '').replace(/\s+MCP$/, '');
+const display = name => { // "plugin:telegram:telegram" or "plugin:whatsapp-channel:whatsapp" (a locally-added plugin server) → "Telegram" / "Whatsapp"
+  const m = /^plugin:[^:]+:([a-z0-9]+)$/i.exec(name);
+  if (m) return m[1][0].toUpperCase() + m[1].slice(1);
+  return String(name).replace(/^claude\.ai\s+/, '').replace(/\s+MCP$/, '');
+};
 function logoKey(name) {
   const n = norm(name);
   for (const [key, list] of Object.entries(ALIASES)) if (list.includes(n)) return key;
@@ -137,7 +157,7 @@ export function cliArgs() { return cfgBrowser ? ['--chrome'] : ['--no-chrome']; 
 
 export function discover({ timeout = 45000 } = {}) {
   return new Promise(resolve => {
-    const env = { ...process.env }; delete env.CLAUDECODE;
+    const env = freshEnv(); delete env.CLAUDECODE;
     let out = '', done = false;
     const finish = list => { if (done) return; done = true; if (list) { servers = withBrowser(list); discoveredAt = Date.now(); } resolve(servers); };
     let p;

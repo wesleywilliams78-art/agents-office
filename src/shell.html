@@ -583,7 +583,7 @@
 
   /* ---------- V3.3: the Task Status panel (always on, right) ---------- */
   #tpanel {
-    position: fixed; top: 68px; right: 18px; bottom: 18px; width: 400px; z-index: 15;
+    position: fixed; top: 68px; right: 18px; bottom: 18px; width: var(--tp-w, 400px); z-index: 15;
     background: color-mix(in srgb, var(--cream) 96%, transparent);
     backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
     border: 1px solid var(--hairline); border-radius: 18px;
@@ -698,8 +698,15 @@
   .tp-chip.w b { color: #B4830B; }
   .tp-chip.w.on { background: #B4830B; border-color: #B4830B; color: var(--cream); }
   .tp-chip.w.on b { color: var(--cream); }
-  .tp-rows { flex: 1; min-height: 0; overflow-y: auto; display: flex; flex-direction: column; gap: 6px; scrollbar-width: none; padding-bottom: 6px; }
-  .tp-rows::-webkit-scrollbar { display: none; }
+  .tp-rows { flex: 1; min-height: 0; overflow-y: auto; display: flex; flex-direction: column; gap: 6px; padding-bottom: 6px; padding-right: 4px;
+    scrollbar-width: thin; scrollbar-color: rgba(120,120,120,.55) transparent; } /* a visible scrollbar: older tasks are down the list */
+  .tp-rows::-webkit-scrollbar { width: 8px; }
+  .tp-rows::-webkit-scrollbar-track { background: transparent; }
+  .tp-rows::-webkit-scrollbar-thumb { background: rgba(120,120,120,.45); border-radius: 8px; border: 2px solid transparent; background-clip: padding-box; }
+  .tp-rows::-webkit-scrollbar-thumb:hover { background: rgba(120,120,120,.75); background-clip: padding-box; }
+  .tp-resize { position: absolute; left: -6px; top: 14px; bottom: 14px; width: 12px; cursor: ew-resize; z-index: 2; touch-action: none; } /* drag to widen the panel */
+  .tp-resize::after { content: ''; position: absolute; left: 4px; top: 50%; width: 4px; height: 44px; margin-top: -22px; border-radius: 4px; background: rgba(120,120,120,.35); transition: background .2s; }
+  .tp-resize:hover::after, .tp-resize.on::after { background: rgba(120,120,120,.85); }
   .tp-row {
     display: grid; grid-template-columns: auto 1fr auto; gap: 9px; align-items: start;
     background: #fff; border: 1px solid var(--hairline); border-radius: 12px; padding: 9px 11px;
@@ -1134,6 +1141,7 @@
 </div>
 <!-- V3.3: the Task Status panel — always on, right side -->
 <div id="tpanel">
+  <div class="tp-resize" title="drag to widen · double-click to reset"></div>
   <div class="tp-cmd">
     <div class="tp-r1">
       <button class="tp-dd" title="department"><span class="dot"></span><span class="tp-ddn">MARKETING</span></button>

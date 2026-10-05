@@ -51,6 +51,8 @@ import * as routines from './routines.mjs';
 import * as usage from './usage.mjs';
 import * as teams from './teams.mjs';
 import * as aios from './aios.mjs';
+import * as budget from './budget.mjs';
+import * as brainnotes from './brainnotes.mjs';
 import { normModel, modelFor, modelArgs, modelId, modelName, MODEL_KEYS, DEFAULT_MODEL, normEffort, effortFor, effortName, EFFORT_KEYS } from './src/models.js';
 import { parseWhen, describe, valid as validWhen, untilText } from './src/when.js';
 import mammoth from 'mammoth';
@@ -119,7 +121,7 @@ const IMAGE_MEDIA = { '.png': 'image/png', '.jpg': 'image/jpeg', '.jpeg': 'image
 const VISION_PROMPT = "Digest this for someone's personal work record. Transcribe all visible text, numbers and labels exactly, in full. Describe any charts, tables, screenshots or visual structure — what they show, not just that they exist. If it looks like evidence of something (a result, a metric, a message, a certificate, a review), say plainly what it's evidence of. Be thorough and literal: this write-up is the only record of what's in the file — nothing else will ever look at the original again.";
 function visionDigest(block) {
   const msg = JSON.stringify({ type: 'user', message: { role: 'user', content: [{ type: 'text', text: VISION_PROMPT }, block] } });
-  const env = { ...process.env }; delete env.CLAUDECODE;
+  const env = mcp.freshEnv(); delete env.CLAUDECODE;
   return new Promise((resolve, reject) => {
     const p = spawn(mcp.resolveBin(), ['-p', '--input-format', 'stream-json', '--output-format', 'stream-json', '--verbose',
       '--disallowedTools', 'Bash,Edit,Write,Read,Glob,Grep,Agent,NotebookEdit,Task,WebFetch,WebSearch', '--model', modelId('sonnet')],
@@ -185,7 +187,7 @@ async function askX(system, user, { maxTokens = 4000, tools = true, timeout = RU
   if (allowed.length) args.push('--allowedTools', allowed.join(','));
   args.push(...(tools ? mcp.cliArgs() : ['--no-chrome'])); // V3.2 (16 Sep): the owner's Chrome, when tools.browser is on
   args.push(...modelArgs(model, effort));
-  const env = { ...process.env }; delete env.CLAUDECODE; // the CLI refuses to nest inside another Claude Code session
+  const env = mcp.freshEnv(); delete env.CLAUDECODE; // the CLI refuses to nest inside another Claude Code session
   return new Promise((resolve, reject) => {
     const p = spawn(mcp.resolveBin(), args, { cwd: CLI_CWD, env, stdio: ['ignore', 'pipe', 'pipe'] });
     let out = '', err = '', text = '', used = [], gotResult = false, usageOut = null, modelUsed = null;
@@ -282,10 +284,13 @@ async function route(dept, text) {
   return { agent, title: String(j.title || text).slice(0, 90), plan: Array.isArray(j.plan) ? j.plan.slice(0, 4).map(String) : [],
     eta: Number.isFinite(j.eta_minutes) ? j.eta_minutes : 30, why: String(j.why || ''), needsOk: typeof j.needs_ok === 'boolean' ? j.needs_ok : routines.guessNeedsOk(text), channel: ['email', 'post', 'payment', 'change', 'none'].includes(j.channel) ? j.channel : '' };
 }
+// agents have no file tools, so a task that names a file on the owner's computer used to fail and leave a "capability gap".
+// The office already turns an uploaded file into a note (extractText, /api/upload) and Drive files are readable, so say so.
+const FILES_LINE = 'FILES\nYou cannot open files on the owner\'s computer. If a task depends on one (a PDF, a document, an image), say so in one line and ask the owner to drop it into the office\'s upload box, where it becomes a note called "Upload - <file name>" that you can read, or to save it in Google Drive, where you can read it with the Drive tool. Do not ask for a file path and do not try to open one.';
 // the system prompt every agent run starts from: who it is, its brief, skills and lessons, its tools, the company, the notes for this task
 function agentSystem(a, index, read, { extra = '', words = 260 } = {}) {
   const d = DEPTS[a.department];
-  return `You are ${a.name}, ${a.role || 'an agent'}, in the ${d.name} department of ${cfg.name}. ${a.does}\n${agentBrief(a)}` + (extra ? `\n${extra}\n` : '') +
+  return `You are ${a.name}, ${a.role || 'an agent'}, in the ${d.name} department of ${cfg.name}. ${a.does}\n${agentBrief(a)}` + (BRAIN_WRITE ? `\n${brainnotes.INSTRUCTIONS}\n` : '') + `\n${FILES_LINE}\n` + (extra ? `\n${extra}\n` : '') +
     'Write the finished deliverable itself, not a description of what you would do. Plain text: a short heading, then short sections or bullets. ' +
     `At most ${words} words unless a skill or the owner\'s instructions set a different shape — those win. No preamble, no sign-off. Ground it in the company notes below; where a fact is missing, make a reasonable assumption and mark it (assumed). ` +
     'If you used a tool, say so in one line at the end ("Used: Gmail — searched the client thread").\n\n' +
@@ -380,6 +385,28 @@ async function runTeamLead(task, feedback, mode) {
   const allRead = [...new Set([...read, ...(tm.pieces || []).flatMap(p => p.read || [])])];
   return { result: text, read: allRead, tools: allTools, used: allUsed, skills: skills.names(lead), modelUsed: pick.model, modelFrom: pick.from, modelId: ran, effortUsed: eff.effort || '', effortFrom: eff.from, team: tm };
 }
+// Reviewed Brain updates (brainnotes.mjs): an agent proposes a change to a note, the review card says what it would file,
+// and the office files it only when the owner approves. brainWrite.enabled: false in office.config.json switches it off;
+// brainWrite.deny: ["folder/"] keeps agents out of a folder or a note.
+const BRAIN_WRITE = cfg.brainWrite?.enabled !== false;
+const BRAIN_DENY = Array.isArray(cfg.brainWrite?.deny) ? cfg.brainWrite.deny : [];
+function brainReview(task, text) { // what approving would file, for the review card
+  const blocks = BRAIN_WRITE ? brainnotes.parse(text) : [];
+  if (!blocks.length) { delete task.brain; return ''; }
+  const plans = brainnotes.planAll(BRAIN, blocks, { deny: BRAIN_DENY });
+  task.brain = plans.map(p => ({ note: p.rel || p.note, mode: p.mode, ok: p.ok, problem: p.problem || '' }));
+  const good = plans.filter(p => p.ok), bad = plans.filter(p => !p.ok);
+  return (good.length ? ` Approving also files ${good.length} Brain update${good.length === 1 ? '' : 's'}: ${good.map(p => `${p.mode} → ${p.rel}`).join(', ')}.` : '') +
+    (bad.length ? ` Not filed: ${bad.map(p => `${p.note || '?'} (${p.problem})`).join('; ')}.` : '');
+}
+function fileBrainUpdates(task) { // only for a task the owner approved, and only what was on the card they approved
+  if (!BRAIN_WRITE || !task.approved) return;
+  const blocks = brainnotes.parse(task.draft || task.result); if (!blocks.length) return;
+  const done = brainnotes.applyAll(BRAIN, blocks, { deny: BRAIN_DENY, backupDir: path.join(DATA, 'brain-backups') });
+  task.brain = done;
+  task.result += '\n\n---\nFILED TO THE BRAIN\n' + done.map(d => `${d.ok ? '✓' : '✗'} ${d.note} (${d.mode}): ${d.message}`).join('\n');
+  console.log(`▣ brain: ${done.filter(d => d.ok).length} of ${done.length} update(s) filed for ${task.id} — ${done.map(d => `${d.ok ? '✓' : '✗'} ${d.note}`).join(', ')}`);
+}
 function writeNote(task) { // the deliverable becomes a note in the brain, linked to what was read
   fs.mkdirSync(NOTES_DIR, { recursive: true });
   const a = AGENTS.find(x => x.id === task.agent);
@@ -442,8 +469,13 @@ async function runServerTask(id, { feedback, approve } = {}) {
     else task.result = out.result;
     Object.assign(task, { read: out.read, tools: [...new Set([...(task.tools || []), ...out.tools])], used: [...new Set([...(task.used || []), ...out.used])], skills: out.skills, error: false, modelUsed: out.modelUsed, modelFrom: out.modelFrom, modelId: out.modelId, effortUsed: out.effortUsed, effortFrom: out.effortFrom, ...(out.team ? { team: out.team } : {}) });
     if (task.needsOk && !task.channel && isEmail(task)) task.channel = 'email';
-    if ((task.needsOk || REVIEW_ALL) && !approve) { task.state = 'waiting'; task.draft = out.result; task.waitingAt = Date.now(); task.ask = task.needsOk ? (task.channel === 'email' ? `"${task.title}" is written — approve to put it in your Gmail drafts, then send it from your inbox. Reject to tell me what to change.` : routines.askLine(task)) : reviewLine(task); }
-    else { task.state = 'done'; task.doneAt = Date.now(); task.note = writeNote(task); await rebuildGraph(); }
+    if ((task.needsOk || REVIEW_ALL) && !approve) { task.state = 'waiting'; task.draft = out.result; task.waitingAt = Date.now(); task.ask = (task.needsOk ? (task.channel === 'email' ? `"${task.title}" is written — approve to put it in your Gmail drafts, then send it from your inbox. Reject to tell me what to change.` : routines.askLine(task)) : reviewLine(task)) + brainReview(task, out.result); }
+    else {
+      task.state = 'done'; task.doneAt = Date.now();
+      if (approve) fileBrainUpdates(task);
+      else if (BRAIN_WRITE && brainnotes.parse(out.result).length) task.result += '\n\n---\nBRAIN UPDATE NOT FILED: this task did not wait for your review, and nothing is filed without your OK.';
+      task.note = writeNote(task); await rebuildGraph();
+    }
   } catch (e) {
     Object.assign(task, { state: 'done', doneAt: Date.now(), result: 'Could not complete this task: ' + e.message, error: true });
   }
@@ -523,6 +555,33 @@ async function routinesChat(a, text) {
 // Runs after the task is saved, off the routine queue. A revised task replaces the actions its earlier version
 // put there, unless the owner has already sent, finished or moved them on.
 const AUTO_FEED = cfg.aios?.autoFeed !== false;
+const CLIENTS = Array.isArray(cfg.aios?.clients) ? cfg.aios.clients.filter(c => c && c.id && c.name) : []; // V3.10: the client-by-client boxes on /aios
+
+// The owner's personal budget (office.config.local.json → budget: { sheet, name }): a Google Sheet Claude reads on request.
+// Personal money, so these routes answer this machine only, and a snapshot older than BUDGET_STALE is refreshed in the background on the next visit.
+const BUDGET = cfg.budget?.sheet ? { sheet: String(cfg.budget.sheet), name: cfg.budget.name || 'Personal Budget Ledger' } : null;
+const BUDGET_STALE = 6 * 3600 * 1000;
+let budgetSync = null, budgetError = '';
+const isLoopback = req => /^(::1|127\.0\.0\.1|::ffff:127\.0\.0\.1)$/.test(req.socket.remoteAddress || '');
+function syncBudget() {
+  if (budgetSync) return budgetSync;
+  const bp = budget.syncPrompt(BUDGET);
+  budgetSync = askX(bp.system, bp.user, { tools: true, maxTokens: 16000, timeout: 170000, model: 'sonnet', effort: 'low' })
+    .then(({ text }) => { const snap = budget.snapshot(BUDGET, parseJSON(text)); budget.save(DATA, snap); budgetError = ''; console.log(`£ budget: ${snap.rows.length} rows, ${snap.months.length} months${snap.check.ok ? ' · totals match the sheet' : ' · ⚠ ' + snap.check.mismatches.length + ' mismatch(es)'}`); return snap; })
+    .catch(e => { budgetError = e.message; console.warn('budget:', e.message); throw e; })
+    .finally(() => { budgetSync = null; });
+  return budgetSync;
+}
+async function budgetApi(req, res, url) {
+  if (!isLoopback(req)) return json(res, 403, { error: 'the personal budget is only shown on the machine the office runs on' });
+  if (!BUDGET) return json(res, 200, { configured: false });
+  if (url.pathname === '/api/budget/sync' && req.method === 'POST') {
+    try { return json(res, 200, { ok: true, snapshot: await syncBudget() }); } catch (e) { return json(res, 500, { error: e.message }); }
+  }
+  const snap = budget.load(DATA);
+  if (!budgetSync && (!snap || Date.now() - snap.syncedAt > BUDGET_STALE)) syncBudget().catch(() => {}); // background refresh — the page shows the last snapshot meanwhile
+  return json(res, 200, { configured: true, sheet: BUDGET, snapshot: snap, syncing: !!budgetSync, error: budgetError });
+}
 function autoFeed(task) {
   if (!AUTO_FEED || task.state !== 'done' || task.error || !task.result) return;
   const m = aios.load(DATA);
@@ -543,22 +602,41 @@ async function feedMatrix({ text, source, taskId, auto }) {
   reloadRoster();
   const roster = AGENTS.map(a => `${a.department} · ${a.id} · ${a.name}${a.lead ? ' (lead)' : ''} · ${a.does}`).join('\n');
   const today = new Date().toLocaleDateString('en-CA') + ' (' + new Date().toLocaleDateString([], { weekday: 'long' }) + ')';
-  const existing = aios.load(DATA).items.filter(i => i.state === 'open').slice(-40).map(i => i.title);
-  const pr = aios.extractPrompt({ business: cfg.name, roster, input, source: src, today, existing });
+  // what the matrix already holds: everything open or sent to a seat, plus what finished or was dropped in the last week.
+  // An item sent to its seat is no longer "open", and its finished result used to restate it as if it were new.
+  const weekAgo = Date.now() - 7 * 86400000;
+  const known = aios.load(DATA).items.filter(i => i.state === 'open' || i.state === 'sent' || (i.doneAt || i.droppedAt || i.addedAt || 0) > weekAgo);
+  const existing = known.slice(-80).map(i => `${i.title}${i.state === 'open' ? '' : ' [' + i.state + ']'}`);
+  const pr = aios.extractPrompt({ business: cfg.name, roster, input, source: src, today, existing, clients: CLIENTS });
   const feedId = 'f' + nid();
-  const out = aios.normalise(parseJSON(await ask(pr.system, pr.user, { maxTokens: 3000, timeout: 180000, model: 'sonnet' })), AGENTS, feedId);
+  const raw = aios.normalise(parseJSON(await ask(pr.system, pr.user, { maxTokens: 3000, timeout: 180000, model: 'sonnet' })), AGENTS, feedId, CLIENTS);
+  const { kept, dropped } = aios.dedupe(raw.items, known.map(i => i.title)); // belt and braces: the same action worded a little differently is not new
+  const out = { summary: raw.summary, items: kept };
   const m = aios.load(DATA);
-  m.feeds.push({ id: feedId, at: Date.now(), source: src || 'Pasted by the owner', taskId: taskId || '', auto: !!auto, summary: out.summary, input: input.slice(0, 2000), count: out.items.length });
+  m.feeds.push({ id: feedId, at: Date.now(), source: src || 'Pasted by the owner', taskId: taskId || '', auto: !!auto, summary: out.summary, input: input.slice(0, 2000), count: out.items.length, duplicates: dropped.length });
   m.items.push(...out.items); aios.save(DATA, m);
-  console.log(`▦ matrix: ${out.items.length} actions from ${taskId ? (auto ? 'finished task ' : 'task ') + taskId : 'a paste'} (${Object.keys(aios.QUADRANTS).map(q => q + ' ' + out.items.filter(i => i.q === q).length).join(' · ')})`);
+  console.log(`▦ matrix: ${out.items.length} actions from ${taskId ? (auto ? 'finished task ' : 'task ') + taskId : 'a paste'} (${Object.keys(aios.QUADRANTS).map(q => q + ' ' + out.items.filter(i => i.q === q).length).join(' · ')})${dropped.length ? ` · ${dropped.length} already on the matrix, not repeated` : ''}`);
   return { feed: m.feeds[m.feeds.length - 1], items: out.items };
 }
+// a matrix item's "ADD TO CALENDAR" tag: one 10-minute to-do reminder on the owner's own Google
+// Calendar, dated to the item's due date, so it pings his phone through the week like any other
+// Google Calendar reminder — he doesn't have to ask the office to remember to make it.
+async function calendarReminder(item) {
+  const system = 'You are creating exactly one Google Calendar event on the owner\'s own primary Google Calendar. ' +
+    'This is a short personal to-do reminder, not a meeting — a normal 10-minute timed event, not all-day. ' +
+    'Use the Google Calendar tool directly and only that tool. First check that day\'s existing events (including any other 10-minute reminders already added the same way) and place this one in the first free 10-minute slot at or after 09:00, in 10-minute steps, so it never overlaps anything already on the calendar. ' +
+    'Do not ask a clarifying question, do not explain your reasoning — check, create the event at the free slot you found, then reply with one short line confirming the time you used, or say plainly why it failed.';
+  const user = `Create this event:\nTitle: ${item.title}\nDate: ${item.due}, 10 minutes long, earliest 09:00 — check the day first and use the next free slot if 09:00 is taken\nDescription: ${item.detail || ''}${item.why ? ` (${item.why})` : ''}${item.client ? `\nClient: ${item.client}` : ''}`;
+  const { text } = await askX(system, user, { tools: true, maxTokens: 400, timeout: 60000, model: 'sonnet', effort: 'low' });
+  if (!text) throw new Error('Claude did not confirm the event was created');
+  return text;
+}
 async function matrixApi(req, res, url) {
-  if (url.pathname === '/api/matrix' && req.method === 'GET') return json(res, 200, { ...aios.load(DATA), quadrants: aios.QUADRANTS, autoFeed: AUTO_FEED });
+  if (url.pathname === '/api/matrix' && req.method === 'GET') return json(res, 200, { ...aios.load(DATA), quadrants: aios.QUADRANTS, autoFeed: AUTO_FEED, clients: CLIENTS });
   if (url.pathname === '/api/matrix/feed' && req.method === 'POST') {
     try { return json(res, 200, await feedMatrix(await body(req))); } catch (e) { return json(res, e.code || 500, { error: e.message }); }
   }
-  const mm = url.pathname.match(/^\/api\/matrix\/([^/]+)(?:\/(send))?$/);
+  const mm = url.pathname.match(/^\/api\/matrix\/([^/]+)(?:\/(send|calendar))?$/);
   if (!mm) return json(res, 404, { error: 'not found' });
   const m = aios.load(DATA); const item = m.items.find(x => x.id === mm[1]);
   if (!item) return json(res, 404, { error: 'no such item' });
@@ -575,6 +653,15 @@ async function matrixApi(req, res, url) {
     console.log(`▦ ${item.id} → task ${task.id} → ${agent}: ${task.title}${task.needsOk ? ' (waits for your OK)' : ''}`);
     enqueue(() => runServerTask(task.id));
     return json(res, 200, { ok: true, item, task });
+  }
+  if (mm[2] === 'calendar') { // a 10-min to-do reminder on the owner's own Google Calendar, dated to the item's due date
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(item.due || '')) return json(res, 400, { error: 'this one has no due date to put on the calendar' });
+    try {
+      const at = await calendarReminder(item);
+      item.calendar = { at: Date.now() }; aios.save(DATA, m);
+      console.log(`▦ ${item.id} → Google Calendar: ${item.title} (${item.due})`);
+      return json(res, 200, { ok: true, item, note: at });
+    } catch (e) { return json(res, 500, { error: e.message }); }
   }
   aios.patch(item, await body(req)); aios.save(DATA, m);
   return json(res, 200, { ok: true, item });
@@ -601,6 +688,7 @@ const server = http.createServer(async (req, res) => {
       return res.end(fs.readFileSync(path.join(ROOT, 'src', 'aios.html'), 'utf8'));
     }
     if (url.pathname.startsWith('/api/matrix')) return matrixApi(req, res, url);
+    if (url.pathname === '/api/budget' || url.pathname === '/api/budget/sync') return budgetApi(req, res, url);
     if (url.pathname === '/api/health') return json(res, 200, { ok: true, version, backend, model: cfg.model, modelName: modelName(cfg.model), models: MODEL_KEYS, effort: cfg.effort || '', efforts: EFFORT_KEYS, name: cfg.name, brain: BRAIN, notes: graph.notes, depts: DEPT_KEYS,
       agents: agentsOut(), setup: setupMap(), routines: (l => ({ count: l.length, paused: l.filter(r => r.paused).length, depts: routines.ALLOWED }))(loadRoutines()), roster: { customised: roster.customised, briefed: roster.briefed, files: roster.files, problems: roster.problems }, skills: (({ count, shipped, brain, problems }) => ({ count, shipped, brain, problems }))(skills.summary()), tools: backend === 'claude-cli', mcp: mcp.summary(), teams: TEAMS, browser: mcp.summary().browser });
     if (url.pathname === '/api/agents') return json(res, 200, { agents: agentsOut(), problems: roster.problems, files: roster.files });
@@ -677,6 +765,7 @@ const server = http.createServer(async (req, res) => {
       const note = String(feedback || '').trim();
       if (m[2] === 'approve' && !task.needsOk) { // V3.9: a reviewed task with nothing to send — the tick is the finish line, no second run
         Object.assign(task, { state: 'done', result: task.draft || task.result, approved: true, approvedAt: Date.now(), doneAt: Date.now() }); delete task.ask;
+        fileBrainUpdates(task);
         task.note = writeNote(task); save(load().map(t => t.id === task.id ? task : t)); await rebuildGraph();
         console.log(`✅ ${task.id} approved — done (note: ${task.note})`);
         autoFeed(task);
