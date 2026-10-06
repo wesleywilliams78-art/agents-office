@@ -11,3 +11,6 @@ brain/Agents Office/
 # HyperFrames caches (regenerable)
 videos/*/.thumbnails/
 videos/*/.hyperframes/
+
+# local video connector outputs
+output/ltx/

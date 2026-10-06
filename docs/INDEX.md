@@ -19,6 +19,7 @@ Start here. Open only what the task needs; read big files by slice.
 - `serve.mjs` (79 KB): the server. Search for the function you need; never read whole.
 - `check.mjs` (80 KB): `npm run check` tests. Run it rather than reading it.
 - `aios.mjs` matrix and dedupe · `budget.mjs` personal budget · `brainnotes.mjs` reviewed Brain updates · `recover.mjs` restart recovery · `mcp.mjs` connectors · `routines.mjs` schedules · `teams.mjs` agent teams · `skills.mjs` skill loader · `roster.mjs` roster loader · `onboard.mjs` set-up interview · `learn.mjs` corrections.
+- `connectors/ltx-local/`: the local video connector (free LTX 2.5 on this machine). Start at its `README.md`; `mcp.mjs` is the agents' tools, `worker.mjs` owns the GPU.
 
 ## Data (large; never read whole)
 - `data/tasks.json` (630 KB, over 100k tokens): read by task id or the last 20 entries.

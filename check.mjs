@@ -164,6 +164,29 @@ await step('restart recovery: a task left running by a restart starts again, one
   if (list[4].team.pieces[0].state !== 'next' || list[4].team.pieces[1].state !== 'done') throw new Error('team pieces wrong');
   return 'a first-pass task restarts · one past the OK is held · waiting and done tasks untouched · a team piece resets';
 });
+await step('local video connector: speaks MCP, refuses bad requests without queueing, and always forces local generation', async () => {
+  const dir = path.join(ROOT, 'connectors', 'ltx-local');
+  const { listJobs } = await import('./connectors/ltx-local/shared.mjs');
+  const before = listJobs().length;
+  const p = spawn(process.execPath, [path.join(dir, 'mcp.mjs')], { stdio: ['pipe', 'pipe', 'ignore'] });
+  let buf = ''; const waits = new Map();
+  p.stdout.on('data', d => { buf += d; let i; while ((i = buf.indexOf('\n')) >= 0) { const l = buf.slice(0, i); buf = buf.slice(i + 1); try { const m = JSON.parse(l); waits.get(m.id)?.(m); } catch {} } });
+  let n = 0; const rpc = (method, params) => new Promise((res, rej) => { const id = ++n; const t = setTimeout(() => rej(new Error(method + ' timed out')), 8000); waits.set(id, m => { clearTimeout(t); res(m); }); p.stdin.write(JSON.stringify({ jsonrpc: '2.0', id, method, params }) + '\n'); });
+  try {
+    await rpc('initialize', { protocolVersion: '2025-06-18', capabilities: {}, clientInfo: { name: 'check', version: '0' } });
+    const names = (await rpc('tools/list', {})).result.tools.map(t => t.name);
+    for (const t of ['ltx_status', 'ltx_submit_video', 'ltx_job', 'ltx_list_jobs', 'ltx_cancel']) if (!names.includes(t)) throw new Error('missing tool ' + t);
+    if (names.some(t => /(^|_)(send|reply|forward)(_|$)/.test(t))) throw new Error('a tool looks like a send');
+    const bad = await rpc('tools/call', { name: 'ltx_submit_video', arguments: { prompt: 'A slow push-in on layered mountains at dawn', resolution: '1080p', duration_seconds: 8 } });
+    if (!bad.result.isError) throw new Error('an invalid clip length was accepted');
+    const short = await rpc('tools/call', { name: 'ltx_submit_video', arguments: { prompt: 'short' } });
+    if (!short.result.isError) throw new Error('a one-word prompt was accepted');
+    if (listJobs().length !== before) throw new Error('a refused request still queued a job');
+  } finally { p.kill(); }
+  const worker = fs.readFileSync(path.join(dir, 'worker.mjs'), 'utf8');
+  if (!/userPrefersLtxApiVideoGenerations:\s*false/.test(worker)) throw new Error('the worker no longer forces local generation');
+  return 'five tools, no send-like tool · an invalid length and a one-word prompt refused, nothing queued · the worker forces the local (free) route every job';
+});
 await step('budget: ledger rows become month totals, and a wrong total is named against the sheet\'s own summary', async () => {
   const budget = await import('./budget.mjs');
   const j = { rows: [['2026-01-01', 'Income', 'Salary', 'Salary', 1000, 'Recurring', 'Actual', ''], ['2026-01-01', 'Income', 'Sale', 'One-off income', 200, 'One-off', 'Actual', 'Received 3 Jan'],
