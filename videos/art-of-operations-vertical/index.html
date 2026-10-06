@@ -1,0 +1,348 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1080, height=1920" />
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <style>
+      @font-face { font-family: "Newsreader"; font-weight: 300; font-style: normal; src: url("fonts/newsreader-latin-300-normal.woff2") format("woff2"); }
+      @font-face { font-family: "Archivo"; font-weight: 500; font-style: normal; src: url("fonts/archivo-latin-500-normal.woff2") format("woff2"); }
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body { margin: 0; width: 1080px; height: 1920px; overflow: hidden; background: #EC3013; }
+      #root { position: relative; width: 100%; height: 100%; background: #EC3013; overflow: hidden; }
+      .abs { position: absolute; }
+      .scene { position: absolute; inset: 0; }
+      .cw { position: absolute; inset: 0; transform-origin: 50% 40%; }
+      .kicker { position: absolute; left: 90px; font-family: "Archivo", sans-serif; font-weight: 500; font-size: 24px; letter-spacing: 0.22em; text-transform: uppercase; white-space: nowrap; }
+      .serif { font-family: "Newsreader", Georgia, serif; font-weight: 300; }
+      .line { display: block; overflow: hidden; padding: 24px 0 18px; margin: -24px 0 -18px; }
+      .line > span, .line .w { display: inline-block; }
+      .emph { position: relative; }
+      .ul { position: absolute; left: 0; right: 0; bottom: 12px; height: 6px; background: #EC3013; transform-origin: left center; }
+      .ridge { position: absolute; left: -60px; width: 1200px; height: 520px; bottom: 0; }
+      .seal { position: absolute; left: 90px; top: 110px; width: 72px; height: 72px; }
+      .ghost { position: absolute; font-family: "Newsreader", Georgia, serif; font-weight: 300; line-height: 1; white-space: nowrap; opacity: 0; }
+      .fc { position: absolute; left: 90px; width: 900px; height: 150px; border: 2px solid rgba(243,242,242,.28); }
+      .fnum { position: absolute; left: 30px; top: 16px; font-size: 108px; line-height: 1; color: #EC3013; }
+      .flbl { position: absolute; left: 210px; top: 34px; font-family: "Archivo", sans-serif; font-weight: 500; font-size: 24px; letter-spacing: 0.16em; color: #F3F2F2; white-space: nowrap; }
+      .fsub { position: absolute; left: 210px; top: 76px; width: 600px; font-size: 40px; line-height: 1.1; color: #D6D2CF; white-space: nowrap; }
+      .frule { position: absolute; left: 810px; top: 70px; width: 60px; height: 4px; background: #EC3013; transform-origin: left center; }
+      .row { position: absolute; left: 90px; width: 900px; height: 54px; border-bottom: 1px solid rgba(243,242,242,.38); font-family: "Archivo", sans-serif; font-weight: 500; color: #F3F2F2; }
+      .rn { position: absolute; left: 0; top: 11px; font-size: 24px; letter-spacing: 0.22em; }
+      .rt { position: absolute; left: 90px; top: 12px; font-size: 25px; letter-spacing: 0.14em; white-space: nowrap; }
+      .ltr { position: absolute; text-align: center; font-family: "Newsreader", Georgia, serif; font-weight: 300; }
+      .ov { position: absolute; inset: 0; opacity: 0; pointer-events: none; }
+      .bl { position: absolute; left: 0; width: 1080px; height: 385px; background: #EC3013; transform-origin: left center; }
+      .br { position: absolute; top: 0; width: 84px; height: 1920px; background: #201E1D; transform-origin: center top; }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-duration="48" data-width="1080" data-height="1920">
+
+      <div id="ground" class="abs" style="inset:0;background:#EC3013"></div>
+      <div id="ghosts" class="abs" style="inset:0">
+        <div id="gh2" class="ghost" style="left:60px;top:1130px;font-size:340px;color:#201E1D">Invisible</div>
+        <div id="gh3" class="ghost" style="left:140px;top:640px;font-size:620px;color:#F3F2F2">Five</div>
+        <div id="gh5" class="ghost" style="left:40px;top:1280px;font-size:400px;color:#F3F2F2">People</div>
+      </div>
+
+      <!-- S1 title -->
+      <div id="s1" class="scene clip" data-start="0" data-duration="7.6" data-track-index="0">
+          <svg id="r1b" class="ridge" style="bottom:0px" viewBox="0 0 1920 480" preserveAspectRatio="none"><path d="M0,260 C220,120 420,90 640,170 C860,250 1000,60 1260,90 C1520,120 1700,230 1920,150 L1920,480 L0,480 Z" fill="#F3F2F2" fill-opacity="0.3"/></svg>
+          <svg id="r1m" class="ridge" style="bottom:0px" viewBox="0 0 1920 480" preserveAspectRatio="none"><path d="M0,330 C260,230 470,210 720,290 C970,370 1130,200 1400,230 C1670,260 1800,330 1920,290 L1920,480 L0,480 Z" fill="#F3F2F2" fill-opacity="0.55"/></svg>
+          <svg id="r1f" class="ridge" style="bottom:0px" viewBox="0 0 1920 480" preserveAspectRatio="none"><path d="M0,400 C300,350 560,330 840,380 C1120,430 1380,340 1640,350 C1760,356 1850,372 1920,366 L1920,480 L0,480 Z" fill="#F3F2F2" fill-opacity="0.92"/></svg>
+        <div id="c1" class="cw">
+          <div id="k1" class="kicker" style="top:560px;color:#F3F2F2">Wesley Williams</div>
+          <div id="rule1" class="abs" style="left:90px;top:614px;width:120px;height:4px;background:#F3F2F2;transform-origin:left center"></div>
+          <h1 id="t1" class="serif abs" style="left:86px;top:660px;font-size:170px;line-height:1.04;color:#F3F2F2">
+            <span class="line" data-layout-allow-overflow><span class="w">The</span> <span class="w">Art</span> <span class="w">of</span></span>
+            <span class="line" data-layout-allow-overflow><span class="w">Operations</span></span>
+          </h1>
+          <div id="sub1" class="serif abs" style="left:90px;top:1040px;font-size:48px;line-height:1.15;color:#F3F2F2;white-space:nowrap">
+            <span class="line" data-layout-allow-overflow><span class="w">A modern view on</span></span>
+            <span class="line" data-layout-allow-overflow><span class="w">an ancient classic</span></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- S2 the idea -->
+      <div id="s2" class="scene clip" data-start="7.6" data-duration="8.0" data-track-index="1">
+          <svg id="r2b" class="ridge" style="bottom:-170px" viewBox="0 0 1920 480" preserveAspectRatio="none"><path d="M0,260 C220,120 420,90 640,170 C860,250 1000,60 1260,90 C1520,120 1700,230 1920,150 L1920,480 L0,480 Z" fill="#201E1D" fill-opacity="0.12"/></svg>
+          <svg id="r2m" class="ridge" style="bottom:-170px" viewBox="0 0 1920 480" preserveAspectRatio="none"><path d="M0,330 C260,230 470,210 720,290 C970,370 1130,200 1400,230 C1670,260 1800,330 1920,290 L1920,480 L0,480 Z" fill="#201E1D" fill-opacity="0.35"/></svg>
+          <svg id="r2f" class="ridge" style="bottom:-170px" viewBox="0 0 1920 480" preserveAspectRatio="none"><path d="M0,400 C300,350 560,330 840,380 C1120,430 1380,340 1640,350 C1760,356 1850,372 1920,366 L1920,480 L0,480 Z" fill="#201E1D" fill-opacity="0.92"/></svg>
+        <div id="c2" class="cw">
+          <div id="k2" class="kicker" style="top:420px;color:#B6240E">From the preface</div>
+          <h2 id="h2" class="serif abs" style="left:86px;top:480px;font-size:104px;line-height:1.06;color:#201E1D">
+            <span class="line" data-layout-allow-overflow><span class="w">The</span> <span class="w">better</span> <span class="w">it&rsquo;s</span> <span class="w">done,</span></span>
+            <span class="line" data-layout-allow-overflow><span class="w">the</span> <span class="w">more</span> <span class="w emph">invisible<i class="ul"></i></span></span>
+            <span class="line" data-layout-allow-overflow><span class="w">it</span> <span class="w">becomes.</span></span>
+          </h2>
+          <div id="sub2" class="serif abs" style="left:90px;top:880px;font-size:46px;line-height:1.2;color:#4A4644;white-space:nowrap">
+            <span class="line" data-layout-allow-overflow><span class="w">A flawless shift looks like</span></span>
+            <span class="line" data-layout-allow-overflow><span class="w">nothing happened.</span></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- S3 five factors -->
+      <div id="s3" class="scene clip" data-start="15.6" data-duration="9.4" data-track-index="2">
+          <svg id="r3b" class="ridge" style="bottom:0px" viewBox="0 0 1920 480" preserveAspectRatio="none"><path d="M0,260 C220,120 420,90 640,170 C860,250 1000,60 1260,90 C1520,120 1700,230 1920,150 L1920,480 L0,480 Z" fill="#F3F2F2" fill-opacity="0.07"/></svg>
+          <svg id="r3m" class="ridge" style="bottom:0px" viewBox="0 0 1920 480" preserveAspectRatio="none"><path d="M0,330 C260,230 470,210 720,290 C970,370 1130,200 1400,230 C1670,260 1800,330 1920,290 L1920,480 L0,480 Z" fill="#F3F2F2" fill-opacity="0.11"/></svg>
+          <svg id="r3f" class="ridge" style="bottom:0px" viewBox="0 0 1920 480" preserveAspectRatio="none"><path d="M0,400 C300,350 560,330 840,380 C1120,430 1380,340 1640,350 C1760,356 1850,372 1920,366 L1920,480 L0,480 Z" fill="#F3F2F2" fill-opacity="0.16"/></svg>
+        <div id="c3" class="cw">
+          <div id="k3" class="kicker" style="top:330px;color:#F3F2F2">Chapter One &middot; Laying Plans</div>
+          <h2 id="h3" class="serif abs" style="left:86px;top:380px;font-size:118px;line-height:1.04;color:#F3F2F2">
+            <span class="line" data-layout-allow-overflow><span class="w">Five constant</span></span>
+            <span class="line" data-layout-allow-overflow><span class="w">factors</span></span>
+          </h2>
+          <div id="fc0" class="fc" style="top:700px"><div id="fn0" class="fnum serif">01</div><div id="fl0" class="flbl">MISSION</div><div id="fs0" class="fsub serif">Moral Law</div><div id="fr0" class="frule"></div></div><div id="fc1" class="fc" style="top:880px"><div id="fn1" class="fnum serif">02</div><div id="fl1" class="flbl">MARKET</div><div id="fs1" class="fsub serif">Heaven</div><div id="fr1" class="frule"></div></div><div id="fc2" class="fc" style="top:1060px"><div id="fn2" class="fnum serif">03</div><div id="fl2" class="flbl">INFRASTRUCTURE</div><div id="fs2" class="fsub serif">Earth</div><div id="fr2" class="frule"></div></div><div id="fc3" class="fc" style="top:1240px"><div id="fn3" class="fnum serif">04</div><div id="fl3" class="flbl">LEADERSHIP</div><div id="fs3" class="fsub serif">The Commander</div><div id="fr3" class="frule"></div></div><div id="fc4" class="fc" style="top:1420px"><div id="fn4" class="fnum serif">05</div><div id="fl4" class="flbl">SYSTEMS</div><div id="fs4" class="fsub serif">Method &amp; Discipline</div><div id="fr4" class="frule"></div></div>
+        </div>
+      </div>
+
+      <!-- S4 thirteen chapters -->
+      <div id="s4" class="scene clip" data-start="25.0" data-duration="8.4" data-track-index="3">
+        <div id="c4" class="cw">
+          <div id="k4" class="kicker" style="top:300px;color:#F3F2F2">Chapters</div>
+          <div id="rule4" class="abs" style="left:90px;top:354px;width:120px;height:4px;background:#F3F2F2;transform-origin:left center"></div>
+          <div id="cnt" class="serif abs" style="left:80px;top:370px;font-size:480px;line-height:1;color:#F3F2F2"><span id="cntv">0</span></div>
+          <div id="list4" class="abs" style="left:0;top:0;width:1080px;height:1920px">
+            <div id="scan" class="abs" style="left:90px;width:900px;height:54px;top:940px;background:#F3F2F2;opacity:0"></div>
+            <div class="row" id="row0"><span class="rn">01</span><span class="rt">LAYING PLANS</span></div><div class="row" id="row1"><span class="rn">02</span><span class="rt">WAGING WAR</span></div><div class="row" id="row2"><span class="rn">03</span><span class="rt">ATTACK BY STRATAGEM</span></div><div class="row" id="row3"><span class="rn">04</span><span class="rt">TACTICAL DISPOSITIONS</span></div><div class="row" id="row4"><span class="rn">05</span><span class="rt">ENERGY</span></div><div class="row" id="row5"><span class="rn">06</span><span class="rt">WEAK POINTS AND STRONG</span></div><div class="row" id="row6"><span class="rn">07</span><span class="rt">MANOEUVERING</span></div><div class="row" id="row7"><span class="rn">08</span><span class="rt">VARIATION IN TACTICS</span></div><div class="row" id="row8"><span class="rn">09</span><span class="rt">ON THE MARCH</span></div><div class="row" id="row9"><span class="rn">10</span><span class="rt">TERRAIN</span></div><div class="row" id="row10"><span class="rn">11</span><span class="rt">THE NINE SITUATIONS</span></div><div class="row" id="row11"><span class="rn">12</span><span class="rt">MANAGING DISRUPTION</span></div><div class="row" id="row12"><span class="rn">13</span><span class="rt">THE USE OF INTELLIGENCE</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- S5 people -->
+      <div id="s5" class="scene clip" data-start="33.4" data-duration="7.8" data-track-index="4">
+          <svg id="r5b" class="ridge" style="bottom:0px" viewBox="0 0 1920 480" preserveAspectRatio="none"><path d="M0,260 C220,120 420,90 640,170 C860,250 1000,60 1260,90 C1520,120 1700,230 1920,150 L1920,480 L0,480 Z" fill="#F3F2F2" fill-opacity="0.07"/></svg>
+          <svg id="r5m" class="ridge" style="bottom:0px" viewBox="0 0 1920 480" preserveAspectRatio="none"><path d="M0,330 C260,230 470,210 720,290 C970,370 1130,200 1400,230 C1670,260 1800,330 1920,290 L1920,480 L0,480 Z" fill="#F3F2F2" fill-opacity="0.11"/></svg>
+          <svg id="r5f" class="ridge" style="bottom:0px" viewBox="0 0 1920 480" preserveAspectRatio="none"><path d="M0,400 C300,350 560,330 840,380 C1120,430 1380,340 1640,350 C1760,356 1850,372 1920,366 L1920,480 L0,480 Z" fill="#F3F2F2" fill-opacity="0.16"/></svg>
+        <div id="c5" class="cw">
+          <div id="k5" class="kicker" style="top:380px;color:#F3F2F2;font-size:22px">Chapter Thirteen &middot; The Use of Intelligence</div>
+          <h2 id="h5" class="serif abs" style="left:86px;top:440px;font-size:96px;line-height:1.06;color:#F3F2F2">
+            <span class="line" data-layout-allow-overflow><span class="w">Dashboards</span></span>
+            <span class="line" data-layout-allow-overflow><span class="w">tell you what</span></span>
+            <span class="line" data-layout-allow-overflow><span class="w">already happened.</span></span>
+          </h2>
+          <h2 id="h5b" class="serif abs" style="left:86px;top:830px;font-size:96px;line-height:1.06;color:#EC3013">
+            <span class="line" data-layout-allow-overflow><span class="w">People tell</span></span>
+            <span class="line" data-layout-allow-overflow><span class="w">you what&rsquo;s</span></span>
+            <span class="line" data-layout-allow-overflow><span class="w">about to.</span></span>
+          </h2>
+        </div>
+      </div>
+
+      <!-- S6 close -->
+      <div id="s6" class="scene clip" data-start="41.2" data-duration="6.8" data-track-index="5">
+          <svg id="r6b" class="ridge" style="bottom:-140px" viewBox="0 0 1920 480" preserveAspectRatio="none"><path d="M0,260 C220,120 420,90 640,170 C860,250 1000,60 1260,90 C1520,120 1700,230 1920,150 L1920,480 L0,480 Z" fill="#201E1D" fill-opacity="0.12"/></svg>
+          <svg id="r6m" class="ridge" style="bottom:-140px" viewBox="0 0 1920 480" preserveAspectRatio="none"><path d="M0,330 C260,230 470,210 720,290 C970,370 1130,200 1400,230 C1670,260 1800,330 1920,290 L1920,480 L0,480 Z" fill="#201E1D" fill-opacity="0.35"/></svg>
+          <svg id="r6f" class="ridge" style="bottom:-140px" viewBox="0 0 1920 480" preserveAspectRatio="none"><path d="M0,400 C300,350 560,330 840,380 C1120,430 1380,340 1640,350 C1760,356 1850,372 1920,366 L1920,480 L0,480 Z" fill="#201E1D" fill-opacity="0.92"/></svg>
+        <div id="c6" class="cw">
+          <div id="k6" class="kicker" style="top:700px;color:#B6240E">Wesley Williams</div>
+          <div id="rule6" class="abs" style="left:90px;top:754px;width:120px;height:4px;background:#EC3013;transform-origin:left center"></div>
+          <h1 id="t6" class="serif abs" style="left:86px;top:800px;font-size:130px;line-height:1.04;color:#201E1D">
+            <span class="line" data-layout-allow-overflow><span class="w">The</span> <span class="w">Art</span> <span class="w">of</span></span>
+            <span class="line" data-layout-allow-overflow><span class="w">Operations</span></span>
+          </h1>
+          <div id="tag6" class="serif abs" style="left:90px;top:1120px;font-size:46px;line-height:1.15;color:#4A4644;white-space:nowrap">
+            <span class="line" data-layout-allow-overflow><span class="w">Making the difficult</span></span>
+            <span class="line" data-layout-allow-overflow><span class="w">look simple.</span></span>
+          </div>
+          <div id="rule6v" class="abs" style="left:892px;top:300px;width:2px;height:1300px;background:rgba(32,30,29,.3);transform-origin:center top"></div>
+          <div id="msg6" class="abs" style="left:0;top:0;width:1080px;height:1920px"></div>
+        </div>
+      </div>
+
+      <!-- transition overlays -->
+      <div id="ovSeal" class="ov" style="background:#F3F2F2;clip-path:inset(110px 918px 1738px 90px)"></div>
+      <img id="sealB" class="seal" src="assets/seal-bone.svg" alt="" />
+      <img id="sealR" class="seal" src="assets/seal-red.svg" alt="" style="opacity:0" />
+      <div id="ovM2" class="ov"><svg class="abs" style="left:0;top:0" width="1080" height="2400" viewBox="0 0 1920 1500" preserveAspectRatio="none"><path d="M0,230 C240,110 440,80 660,150 C880,230 1020,70 1280,100 C1520,128 1700,210 1920,140 L1920,1500 L0,1500 Z" fill="#4A4644"/></svg></div>
+      <div id="ovM1" class="ov"><svg class="abs" style="left:0;top:0" width="1080" height="2400" viewBox="0 0 1920 1500" preserveAspectRatio="none"><path d="M0,260 C220,120 420,90 640,170 C860,250 1000,60 1260,90 C1520,120 1700,230 1920,150 L1920,1500 L0,1500 Z" fill="#201E1D"/></svg></div>
+      <div id="ovBl" class="ov"></div>
+      <div id="ovBr" class="ov"></div>
+      <audio id="score" src="audio/score.m4a" data-start="0" data-duration="48" data-track-index="9" data-volume="1"></audio>
+    </div>
+
+    <script>
+      const tl = gsap.timeline({ paused: true });
+      const pop = "back.out(1.8)", bouncy = "elastic.out(1,0.55)";
+      const BONE = "#F3F2F2", INK = "#201E1D", RED = "#EC3013";
+
+      const words = (sel, t, st, dur, ease) => tl.fromTo(sel, { yPercent: 130 }, { yPercent: 0, duration: dur || 1.3, ease: ease || pop, stagger: st || 0.18 }, t);
+      const kick = (id, t) => tl.fromTo(id, { opacity: 0, x: -40 }, { opacity: 1, x: 0, duration: 1.0, ease: pop }, t);
+      const ruleIn = (id, t) => tl.fromTo(id, { scaleX: 0 }, { scaleX: 1, duration: 1.0, ease: pop }, t);
+      const out = (k, t) => tl.to("#c" + k, { opacity: 0, y: -34, duration: 0.8, ease: "power2.in" }, t);
+      const push = (k, t, d) => tl.fromTo("#c" + k, { scale: 1 }, { scale: 1.035, duration: d, ease: "none" }, t);
+
+      const ovBl = document.getElementById("ovBl");
+      for (let i = 0; i < 5; i++) { const d = document.createElement("div"); d.className = "bl"; d.style.top = (i * 384) + "px"; ovBl.appendChild(d); }
+      const ovBr = document.getElementById("ovBr");
+      for (let i = 0; i < 13; i++) { const d = document.createElement("div"); d.className = "br"; d.style.left = (i * 83.1) + "px"; ovBr.appendChild(d); }
+
+      const START = [0, 7.6, 15.6, 25.0, 33.4, 41.2];
+      const G = [
+        { ground: RED, seal: "B", ridge: { fill: BONE, ops: [.30, .55, .92], y: 0 } },
+        { ground: BONE, seal: "R", ridge: { fill: INK, ops: [.12, .35, .92], y: 170 } },
+        { ground: INK, seal: "R", ridge: { fill: BONE, ops: [.07, .11, .16], y: 0 } },
+        { ground: RED, seal: "B", ridge: null },
+        { ground: INK, seal: "R", ridge: { fill: BONE, ops: [.07, .11, .16], y: 0 } },
+        { ground: BONE, seal: "R", ridge: { fill: INK, ops: [.12, .35, .92], y: 140 } }
+      ];
+      G.forEach((g, k) => {
+        const t = START[k];
+        if (k > 0) tl.set("#ground", { backgroundColor: g.ground }, t);
+        if (k > 0) {
+          tl.set("#sealB", { opacity: g.seal === "B" ? 1 : 0 }, t);
+          tl.set("#sealR", { opacity: g.seal === "R" ? 1 : 0 }, t);
+          tl.fromTo(g.seal === "B" ? "#sealB" : "#sealR", { scale: 1.3 }, { scale: 1, duration: 0.9, ease: "back.out(2.4)" }, t);
+        }
+      });
+
+
+      // ---------- ridges: one set per scene, one smooth rise, no overshoot, slow drift ----------
+      const ridgesIn = (k, t, len, a, b, c) => {
+        const set = [["b", 210, 0, a], ["m", 230, 0.15, b], ["f", 250, 0.3, c]];
+        set.forEach(([n, dy, lag, dx]) => {
+          tl.fromTo("#r" + k + n, { y: dy }, { y: 0, duration: 2.0, ease: "power3.out" }, t + lag);
+          tl.fromTo("#r" + k + n, { x: 0 }, { x: -dx, duration: len, ease: "none" }, t);
+        });
+      };
+
+      // transitions
+      const SEAL_CLIP = "inset(110px 918px 1738px 90px)";
+      tl.set("#ovSeal", { opacity: 1, backgroundColor: BONE }, 6.4);
+      tl.fromTo("#ovSeal", { clipPath: SEAL_CLIP }, { clipPath: "inset(0px 0px 0px 0px)", duration: 1.2, ease: "power3.inOut" }, 6.4);
+      tl.set("#ovSeal", { opacity: 0 }, 7.6);
+      out(1, 6.5);
+      tl.set(["#ovM2", "#ovM1"], { opacity: 1 }, 13.9);
+      tl.fromTo("#ovM2", { y: 2000 }, { y: -470, duration: 1.6, ease: "power3.inOut" }, 13.9);
+      tl.fromTo("#ovM1", { y: 2000 }, { y: -430, duration: 1.6, ease: "power3.inOut" }, 14.05);
+      tl.set(["#ovM2", "#ovM1"], { opacity: 0 }, 15.6);
+      out(2, 14.1);
+      tl.set("#ovBl", { opacity: 1 }, 23.6);
+      tl.fromTo("#ovBl .bl", { scaleX: 0 }, { scaleX: 1, duration: 0.9, ease: "power3.inOut", stagger: 0.12 }, 23.6);
+      tl.set("#ovBl", { opacity: 0 }, 25.0);
+      out(3, 23.7);
+      tl.set("#ovBr", { opacity: 1 }, 32.0);
+      tl.fromTo("#ovBr .br", { scaleY: 0 }, { scaleY: 1, duration: 0.85, ease: "power3.inOut", stagger: 0.045 }, 32.0);
+      tl.set("#ovBr", { opacity: 0 }, 33.4);
+      out(4, 32.1);
+      tl.set("#ovSeal", { opacity: 1, backgroundColor: BONE }, 40.0);
+      tl.fromTo("#ovSeal", { clipPath: SEAL_CLIP }, { clipPath: "inset(0px 0px 0px 0px)", duration: 1.2, ease: "power3.inOut" }, 40.0);
+      tl.set("#ovSeal", { opacity: 0 }, 41.2);
+      out(5, 40.1);
+
+      // S1
+      tl.fromTo("#sealB", { scale: 3.2, rotation: -14, opacity: 0, transformOrigin: "50% 50%" }, { scale: 1, rotation: 0, opacity: 1, duration: 1.0, ease: "back.out(2.4)" }, 0.4);
+      kick("#k1", 1.2); ruleIn("#rule1", 1.4);
+      words("#t1 .line:nth-child(1) .w", 1.7, 0.22, 1.4);
+      words("#t1 .line:nth-child(2) .w", 2.4, 0.22, 1.5);
+      words("#sub1 .line:nth-child(1) .w", 3.4, 0.12, 1.3);
+      words("#sub1 .line:nth-child(2) .w", 3.8, 0.12, 1.3);
+      push(1, 0, 7.6);
+
+      // S2
+      kick("#k2", 8.0);
+      words("#h2 .line:nth-child(1) .w", 8.2, 0.2, 1.4);
+      words("#h2 .line:nth-child(2) .w", 8.8, 0.2, 1.4);
+      words("#h2 .line:nth-child(3) .w", 9.4, 0.2, 1.4);
+      tl.to("#h2 .w:not(.emph)", { opacity: 0.32, duration: 0.9, ease: "power2.inOut" }, 10.4);
+      tl.to("#h2 .emph", { color: RED, duration: 0.7, ease: "power2.inOut" }, 10.4);
+      tl.fromTo("#h2 .ul", { scaleX: 0 }, { scaleX: 1, duration: 1.0, ease: "power3.out" }, 10.6);
+      words("#sub2 .line:nth-child(1) .w", 11.0, 0.12, 1.4);
+      words("#sub2 .line:nth-child(2) .w", 11.4, 0.12, 1.4);
+      push(2, 7.6, 8.0);
+      tl.fromTo("#gh2", { opacity: 0, x: 120 }, { opacity: 0.06, duration: 1.6, ease: "power2.out" }, 7.8);
+      tl.to("#gh2", { x: -120, duration: 8, ease: "none" }, 7.8);
+      tl.to("#gh2", { opacity: 0, duration: 0.5 }, 14.4);
+
+      // S3: rows
+      kick("#k3", 15.8);
+      words("#h3 .line:nth-child(1) .w", 16.0, 0.12, 1.4);
+      words("#h3 .line:nth-child(2) .w", 16.3, 0.12, 1.4);
+      for (let i = 0; i < 5; i++) {
+        const t = 16.5 + i * 0.6;
+        tl.fromTo("#fc" + i, { x: 140, opacity: 0, scale: 0.96, transformOrigin: "0% 50%" }, { x: 0, opacity: 1, scale: 1, duration: 1.3, ease: "back.out(1.7)" }, t);
+        tl.fromTo("#fn" + i, { y: -120, opacity: 0 }, { y: 0, opacity: 1, duration: 1.3, ease: "bounce.out" }, t + 0.35);
+        tl.fromTo("#fl" + i, { opacity: 0, x: -24 }, { opacity: 1, x: 0, duration: 0.9, ease: pop }, t + 0.7);
+        tl.fromTo("#fs" + i, { opacity: 0, x: -24 }, { opacity: 1, x: 0, duration: 0.9, ease: pop }, t + 0.95);
+        tl.fromTo("#fr" + i, { scaleX: 0 }, { scaleX: 1, duration: 0.8, ease: pop }, t + 1.1);
+        const s = 20.6 + i * 0.5;
+        tl.to("#fc" + i, { scale: 1.03, borderColor: "rgba(236,48,19,1)", duration: 0.4, ease: "power2.out" }, s);
+        tl.to("#fc" + i, { scale: 1, borderColor: "rgba(243,242,242,.28)", duration: 0.6, ease: "power2.inOut" }, s + 0.45);
+      }
+      push(3, 15.6, 9.4);
+      tl.fromTo("#gh3", { opacity: 0, x: 140 }, { opacity: 0.06, duration: 1.6, ease: "power2.out" }, 15.8);
+      tl.to("#gh3", { x: -120, duration: 9, ease: "none" }, 15.8);
+      tl.to("#gh3", { opacity: 0, duration: 0.5 }, 24.0);
+
+      // S4
+      tl.fromTo("#cnt", { opacity: 0, y: 80 }, { opacity: 1, y: 0, duration: 1.1, ease: pop }, 25.2);
+      kick("#k4", 25.2); ruleIn("#rule4", 25.4);
+      tl.fromTo("#scan", { opacity: 0 }, { opacity: 1, duration: 0.3 }, 25.5);
+      for (let i = 0; i < 13; i++) {
+        const t = 25.6 + i * 0.24;
+        tl.set("#row" + i, { top: 940 + i * 56 }, 0);
+        tl.fromTo("#row" + i, { x: 70, opacity: 0 }, { x: 0, opacity: 1, duration: 0.9, ease: pop }, t);
+        tl.to("#scan", { y: i * 56, duration: 0.22, ease: "power2.out" }, t);
+        tl.to("#row" + i, { color: INK, duration: 0.1 }, t + 0.05);
+        tl.to("#row" + i, { color: BONE, duration: 0.25 }, t + 0.28);
+      }
+      tl.to("#scan", { opacity: 0, duration: 0.5 }, 29.2);
+      const cn = { v: 0 };
+      tl.to(cn, { v: 13, duration: 13 * 0.24, ease: "none", onUpdate: () => { document.getElementById("cntv").textContent = Math.round(cn.v); } }, 25.6);
+      push(4, 25.0, 8.4);
+
+      // S5
+      kick("#k5", 33.5);
+      words("#h5 .line:nth-child(1) .w", 33.7, 0.2, 1.4);
+      words("#h5 .line:nth-child(2) .w", 34.1, 0.2, 1.4);
+      words("#h5 .line:nth-child(3) .w", 34.5, 0.2, 1.4);
+      words("#h5b .line:nth-child(1) .w", 35.8, 0.2, 1.4);
+      words("#h5b .line:nth-child(2) .w", 36.2, 0.2, 1.4);
+      words("#h5b .line:nth-child(3) .w", 36.6, 0.2, 1.4);
+      tl.to("#h5", { opacity: 0.34, duration: 1.0, ease: "power2.inOut" }, 36.0);
+      push(5, 33.4, 7.8);
+      tl.fromTo("#gh5", { opacity: 0, x: 140 }, { opacity: 0.06, duration: 1.6, ease: "power2.out" }, 33.6);
+      tl.to("#gh5", { x: -110, duration: 7.4, ease: "none" }, 33.6);
+      tl.to("#gh5", { opacity: 0, duration: 0.5 }, 40.0);
+
+      // S6
+      const message = (text, cx, top, height, size, color, t) => {
+        const host = document.getElementById("msg6");
+        const letters = text.replace(/ /g, "").length;
+        const pitch = height / (letters + 0.6);
+        const speed = 1100;
+        let y = top;
+        for (const ch of text) {
+          if (ch === " ") { y += pitch * 0.6; continue; }
+          const d = document.createElement("div");
+          d.className = "ltr";
+          d.textContent = ch;
+          d.style.cssText = `left:${cx - 50}px;top:${y}px;width:100px;height:${pitch}px;line-height:${pitch}px;font-size:${size}px;color:${color}`;
+          host.appendChild(d);
+          tl.fromTo(d, { y: -46, opacity: 0 }, { y: 0, opacity: 1, duration: 1.1, ease: "power3.out" }, t + (y - top) / speed);
+          y += pitch;
+        }
+      };
+      kick("#k6", 41.8); ruleIn("#rule6", 42.0);
+      words("#t6 .line:nth-child(1) .w", 42.2, 0.2, 1.4, bouncy);
+      words("#t6 .line:nth-child(2) .w", 42.8, 0.2, 1.5, bouncy);
+      words("#tag6 .line:nth-child(1) .w", 43.8, 0.12, 1.2);
+      words("#tag6 .line:nth-child(2) .w", 44.2, 0.12, 1.2);
+      tl.fromTo("#rule6v", { scaleY: 0 }, { scaleY: 1, duration: 1.4, ease: "power2.inOut" }, 43.6);
+      message("YOUR MANUSCRIPT", 826, 300, 1300, 80, INK, 44.0);
+      message("COMING SOON", 966, 300, 1300, 112, RED, 44.0);
+
+      ridgesIn(1, 0.1, 7.6, 28, 52, 84);
+      ridgesIn(2, 7.6, 8.0, 28, 52, 84);
+      ridgesIn(3, 15.6, 9.4, 28, 52, 84);
+      ridgesIn(5, 33.4, 7.8, 28, 52, 84);
+      ridgesIn(6, 41.2, 6.8, 28, 52, 84);
+
+      window.__timelines["main"] = tl;
+      tl.seek(0);
+    </script>
+  </body>
+</html>

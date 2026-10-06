@@ -14,3 +14,4 @@ videos/*/.hyperframes/
 
 # local video connector outputs
 output/ltx/
+videos/*/renders/
