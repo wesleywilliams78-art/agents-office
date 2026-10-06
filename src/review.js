@@ -37,6 +37,11 @@ body.dark #rv .rv-meta, body.dark #rv .rv-foot { border-color: rgba(236,234,227,
 body.dark #rv .rv-foot .rv-hint { color: #A3A29C; }
 #rv .rv-btn { font: 700 11px/1 var(--ui); letter-spacing: .12em; padding: 11px 18px; border-radius: 99px; cursor: pointer; border: 1px solid var(--hairline); background: none; color: inherit; }
 #rv .rv-btn:disabled { opacity: .4; cursor: default; }
+#rv .rv-copy { padding: 11px 16px; }
+#rv .rv-copy.ok { border-color: #1E9070; color: #1E9070; }
+body.dark #rv .rv-copy.ok { border-color: #5BC9A6; color: #5BC9A6; }
+#rv .rv-box, #rv .rv-box * { -webkit-user-select: text; user-select: text; } /* the answer can always be selected and copied */
+#rv .rv-btn, #rv .rv-x, #rv .rv-ex button { -webkit-user-select: none; user-select: none; }
 #rv .rv-yes { background: #1E9070; border-color: #1E9070; color: #fff; }
 #rv .rv-no { border-color: #C8553D; color: #C8553D; }
 body.dark #rv .rv-no { border-color: #E27A63; color: #E27A63; }
@@ -86,7 +91,7 @@ export function initReview({ esc, agentOf, onApprove, onReject }) {
       <p>Say what is wrong and what you want instead. The agent reworks it with this and it comes back here. It also learns from it: a reason that applies every time becomes one of its standing rules.</p>
       <textarea placeholder="e.g. Too long, and the tone is too formal for this client. Lead with the price, three bullets max."></textarea>
       <div class="rv-ex"><button>Too long</button><button>Wrong tone</button><button>Missing the numbers</button><button>Not what I asked for</button></div></div>
-    <div class="rv-foot"><span class="rv-hint"></span><span class="rv-btns"></span></div></div>`;
+    <div class="rv-foot"><span class="rv-hint"></span><button class="rv-btn rv-copy" title="Copy the whole answer as text">COPY</button><span class="rv-btns"></span></div></div>`;
   document.body.appendChild(el);
   const $ = s => el.querySelector(s);
   const ta = $('.rv-reason textarea');
@@ -161,8 +166,26 @@ export function initReview({ esc, agentOf, onApprove, onReject }) {
     drop(t.sid);
   }
 
+  // COPY: the whole answer as the agent wrote it (plain text with light markdown), onto the clipboard
+  let copyTimer = 0;
+  async function copyAnswer(btn) {
+    const t = readOnly || cur; if (!t) return;
+    const text = String(t.content ?? t.draft ?? t.result ?? '');
+    let ok = false;
+    try { await navigator.clipboard.writeText(text); ok = true; }
+    catch {
+      const x = document.createElement('textarea'); x.value = text; x.style.cssText = 'position:fixed;left:-9999px;top:0;opacity:0';
+      document.body.appendChild(x); x.select();
+      try { ok = document.execCommand('copy'); } catch { ok = false; }
+      x.remove();
+    }
+    btn.textContent = ok ? 'COPIED ✓' : 'COPY FAILED'; btn.classList.toggle('ok', ok);
+    clearTimeout(copyTimer); copyTimer = setTimeout(() => { btn.textContent = 'COPY'; btn.classList.remove('ok'); }, 1600);
+  }
+
   el.addEventListener('click', e => {
     const b = e.target.closest('button');
+    if (b && b.classList.contains('rv-copy')) return copyAnswer(b);
     if (e.target.classList.contains('rv-dim') || (b && (b.classList.contains('rv-x') || b.classList.contains('rv-later') || b.classList.contains('rv-close')))) return close();
     if (!b) return;
     if (b.classList.contains('rv-yes')) return decide(true);

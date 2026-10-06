@@ -31,6 +31,7 @@ export function fromSummary(m, agents) {
   const byDept = Object.fromEntries(DEPT_KEYS.map(k => [k, []]));
   const logos = {}, status = {}, shared = {}, names = {}, off = [];
   for (const s of m.servers || []) {
+    if (s.hidden) continue; // config mcp.hidden: still connected for the agents, no tile in the bar
     const key = s.key || s.id;
     logos[key] = MCP_LOGOS[key] || { name: s.name, img: tile(s.name) };
     names[key] = s.name;

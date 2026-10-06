@@ -65,6 +65,7 @@ const ALIASES = {
   higgsfield: ['higgsfield', 'higgfield'], territool: ['territool'],
   chrome: ['claudeinchrome', 'chrome', 'claudechrome', 'browser'],
   telegram: ['telegram', 'plugintelegramtelegram'],
+  whatsapp: ['whatsapp', 'openwa'], // OpenWA, the self-hosted WhatsApp gateway (read-only MCP)
 };
 // which pods a known brand feeds (mirrors the demo's MCP_BY_DEPT)
 const DEPTS_BY_KEY = {
@@ -77,6 +78,7 @@ const DEPTS_BY_KEY = {
   webflow: ['marketing', 'delivery'], higgsfield: ['marketing'], territool: ['sales'],
   chrome: DEPT_KEYS, // the owner's browser: every desk may need a web app
   telegram: ['emails'], // the Executive Assistant's channel — wired to the emails pod it leads
+  whatsapp: ['emails'], // read-only; the Emails desks review unread chats and draft replies
 };
 
 export const norm = s => String(s).toLowerCase().replace(/^claude\.ai\s+/, '').replace(/\s+mcp$/, '').replace(/[^a-z0-9]/g, '');
@@ -206,7 +208,7 @@ export function allowedTools() {
 export const keyOf = toolName => { const m = /^mcp__(.+?)__/.exec(toolName); if (!m) return null; const s = servers.find(x => x.id === m[1]); return s ? (s.key || s.id) : m[1]; };
 export const namesOf = toolNames => [...new Set(toolNames.map(n => { const m = /^mcp__(.+?)__/.exec(n); if (m) { const s = servers.find(x => x.id === m[1]); return s ? s.name : m[1]; } return n === 'WebSearch' ? 'web search' : n === 'WebFetch' ? 'web fetch' : null; }).filter(Boolean))];
 export function summary() {
-  return { discoveredAt, web: cfgWeb, browser: { on: cfgBrowser, ...browserState() }, servers: servers.map(s => ({ ...s, allowed: allowed(s), denied: denied(s) })) };
+  return { discoveredAt, web: cfgWeb, browser: { on: cfgBrowser, ...browserState() }, servers: servers.map(s => ({ ...s, allowed: allowed(s), denied: denied(s), hidden: (cfgMcp.hidden || []).some(x => matches(s, x)) })) }; // hidden: no tile in the top bar, still connected and usable
 }
 const browserUsable = () => usable().some(s => s.id === BROWSER);
 // the line an agent reads about its tools

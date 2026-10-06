@@ -16,6 +16,7 @@ from PIL import Image, ImageDraw
 # key -> source png (square brand app-icon, transparent corners)
 SUBSET = {
     'telegram': 'telegram-source.png', # Simple Icons brand mark, rendered to PNG (no cairosvg on this machine)
+    'whatsapp': 'whatsapp-source.png', # Simple Icons brand mark (whatsapp.svg, #25D366) rendered by headless Chrome
 }
 # Note: zoominfo/apollo/stripe were in this SUBSET previously but their source PNGs are not
 # checked into this repo, so bake.py is still the source of truth for the full set (see its
