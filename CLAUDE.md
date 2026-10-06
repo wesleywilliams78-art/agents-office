@@ -2,6 +2,8 @@
 
 Be concise. Skip preamble and restating the request. Lead with the answer or the result. Read files by slice, not whole, when they are large (`data/tasks.json` especially). Start at `docs/INDEX.md` and open only what the task needs.
 
+**Motion and video:** before writing any animation, motion graphic or HyperFrames composition, read `motion.md` (colours, type, easing, timing, never-list) and follow it. Use real components, not generic templates.
+
 You are in the Agents Office repo. The owner will most often ask you to change **who the agents are and what they do**, to teach an agent **how a kind of work is done** (a brief or a skill), to put something **on the timetable** (a routine), or to change **which connectors the agents may use**. Do that by editing the JSON files and skill folders described below. Do not touch `src/`, `serve.mjs` or the build for those requests.
 
 ## Changing the agents

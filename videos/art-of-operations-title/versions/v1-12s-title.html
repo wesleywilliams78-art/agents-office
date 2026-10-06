@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <style>
+      @font-face { font-family: "Newsreader"; font-weight: 300; font-style: normal; src: url("fonts/newsreader-latin-300-normal.woff2") format("woff2"); }
+      @font-face { font-family: "Archivo"; font-weight: 500; font-style: normal; src: url("fonts/archivo-latin-500-normal.woff2") format("woff2"); }
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body { margin: 0; width: 1920px; height: 1080px; overflow: hidden; background: #F3F2F2; }
+      #root { position: relative; width: 100%; height: 100%; background: #F3F2F2; overflow: hidden; }
+      .scene { position: absolute; inset: 0; }
+      .sc { position: absolute; inset: 0; overflow: hidden; }
+      .abs { position: absolute; }
+      .kicker { position: absolute; left: 154px; font-family: "Archivo", sans-serif; font-weight: 500; font-size: 22px; letter-spacing: 0.22em; text-transform: uppercase; white-space: nowrap; }
+      .serif { font-family: "Newsreader", Georgia, serif; font-weight: 300; }
+      .line { display: block; overflow: hidden; padding: 24px 0 18px; margin: -24px 0 -18px; }
+      .line > span, .line .w { display: inline-block; }
+      .ridge { position: absolute; left: -96px; width: 2112px; height: 480px; bottom: 0; }
+      .seal { position: absolute; left: 154px; top: 110px; width: 72px; height: 72px; }
+      .tick { position: absolute; height: 3px; transform-origin: right center; }
+      .card { position: absolute; top: 400px; width: 480px; height: 440px; border: 2px solid #D6D2CF; }
+      .num { position: absolute; left: 36px; top: 28px; font-size: 150px; line-height: 1; color: #EC3013; }
+      .lbl { position: absolute; left: 40px; bottom: 74px; font-family: "Archivo", sans-serif; font-weight: 500; font-size: 24px; letter-spacing: 0.22em; color: #4A4644; }
+      .crule { position: absolute; left: 40px; bottom: 44px; width: 90px; height: 4px; background: #EC3013; transform-origin: left center; }
+      .bar { position: absolute; bottom: 180px; width: 96px; transform-origin: center bottom; }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-duration="12.5" data-width="1920" data-height="1080">
+
+      <!-- SCENE 1: red statement ground -->
+      <div id="s1" class="scene clip" data-start="0" data-duration="3.8" data-track-index="0">
+        <div class="sc" id="sc1" style="background:#EC3013">
+          <svg id="r1b" class="ridge" viewBox="0 0 1920 480" preserveAspectRatio="none"><path d="M0,260 C220,120 420,90 640,170 C860,250 1000,60 1260,90 C1520,120 1700,230 1920,150 L1920,480 L0,480 Z" fill="#F3F2F2" fill-opacity=".30"/></svg>
+          <svg id="r1m" class="ridge" viewBox="0 0 1920 480" preserveAspectRatio="none"><path d="M0,330 C260,230 470,210 720,290 C970,370 1130,200 1400,230 C1670,260 1800,330 1920,290 L1920,480 L0,480 Z" fill="#F3F2F2" fill-opacity=".55"/></svg>
+          <svg id="r1f" class="ridge" viewBox="0 0 1920 480" preserveAspectRatio="none"><path d="M0,400 C300,350 560,330 840,380 C1120,430 1380,340 1640,350 C1760,356 1850,372 1920,366 L1920,480 L0,480 Z" fill="#F3F2F2" fill-opacity=".92"/></svg>
+          <img id="seal1" class="seal" src="assets/seal-bone.svg" alt="" />
+          <div id="k1" class="kicker" style="top:250px;color:#F3F2F2">WRW Consulting</div>
+          <div id="rule1" class="abs" style="left:154px;top:304px;width:120px;height:4px;background:#F3F2F2;transform-origin:left center"></div>
+          <h1 id="t1" class="serif abs" style="left:150px;top:340px;font-size:168px;line-height:1.04;color:#F3F2F2">
+            <span class="line" data-layout-allow-overflow><span class="w">The</span> <span class="w">Art</span> <span class="w">of</span></span>
+            <span class="line" data-layout-allow-overflow><span class="w">Operations</span></span>
+          </h1>
+          <!-- ruler ticks -->
+          <div id="ruler1"></div>
+          <div id="drop1" class="abs" style="left:1546px;top:120px;width:84px;height:84px;background:#F3F2F2"></div>
+        </div>
+      </div>
+
+      <!-- SCENE 2: bone, three cards -->
+      <div id="s2" class="scene clip" data-start="3.0" data-duration="4.4" data-track-index="1">
+        <div class="sc" id="sc2" style="background:#F3F2F2">
+          <div id="k2" class="kicker" style="top:110px;color:#B6240E">Three things</div>
+          <h2 id="h2" class="serif abs" style="left:150px;top:176px;font-size:112px;line-height:1.04;color:#201E1D"><span class="line" data-layout-allow-overflow><span class="w">What holds it together</span></span></h2>
+          <div id="c1" class="card" style="left:154px"><div class="num serif" id="n1">01</div><div class="lbl" id="l1">SYSTEMS</div><div class="crule" id="cr1"></div></div>
+          <div id="c2" class="card" style="left:720px"><div class="num serif" id="n2">02</div><div class="lbl" id="l2">PEOPLE</div><div class="crule" id="cr2"></div></div>
+          <div id="c3" class="card" style="left:1286px"><div class="num serif" id="n3">03</div><div class="lbl" id="l3">STANDARDS</div><div class="crule" id="cr3"></div></div>
+        </div>
+      </div>
+
+      <!-- SCENE 3: ink, bars and a counter -->
+      <div id="s3" class="scene clip" data-start="6.6" data-duration="3.4" data-track-index="2">
+        <div class="sc" id="sc3" style="background:#201E1D">
+          <svg id="r3b" class="ridge" viewBox="0 0 1920 480" preserveAspectRatio="none"><path d="M0,260 C220,120 420,90 640,170 C860,250 1000,60 1260,90 C1520,120 1700,230 1920,150 L1920,480 L0,480 Z" fill="#F3F2F2" fill-opacity=".07"/></svg>
+          <svg id="r3m" class="ridge" viewBox="0 0 1920 480" preserveAspectRatio="none"><path d="M0,330 C260,230 470,210 720,290 C970,370 1130,200 1400,230 C1670,260 1800,330 1920,290 L1920,480 L0,480 Z" fill="#F3F2F2" fill-opacity=".11"/></svg>
+          <svg id="r3f" class="ridge" viewBox="0 0 1920 480" preserveAspectRatio="none"><path d="M0,400 C300,350 560,330 840,380 C1120,430 1380,340 1640,350 C1760,356 1850,372 1920,366 L1920,480 L0,480 Z" fill="#F3F2F2" fill-opacity=".16"/></svg>
+          <div id="k3" class="kicker" style="top:150px;color:#F3F2F2">Build it once</div>
+          <div id="base3" class="abs" style="left:154px;top:900px;width:860px;height:3px;background:#F3F2F2;opacity:.35;transform-origin:left center"></div>
+          <div class="bar" id="b1" style="left:154px;height:120px;background:#F3F2F2;opacity:.9"></div>
+          <div class="bar" id="b2" style="left:300px;height:210px;background:#F3F2F2;opacity:.9"></div>
+          <div class="bar" id="b3" style="left:446px;height:180px;background:#F3F2F2;opacity:.9"></div>
+          <div class="bar" id="b4" style="left:592px;height:330px;background:#F3F2F2;opacity:.9"></div>
+          <div class="bar" id="b5" style="left:738px;height:420px;background:#F3F2F2;opacity:.9"></div>
+          <div class="bar" id="b6" style="left:884px;height:560px;background:#EC3013"></div>
+          <h2 id="h3" class="serif abs" style="left:1146px;top:230px;font-size:128px;line-height:1.04;color:#F3F2F2">
+            <span class="line" data-layout-allow-overflow><span class="w">Build the</span></span>
+            <span class="line" data-layout-allow-overflow><span class="w">system.</span></span>
+          </h2>
+          <div id="cnt" class="serif abs" style="left:1146px;top:560px;font-size:200px;line-height:1;color:#EC3013"><span id="cntv">0</span><span style="font-size:96px">%</span></div>
+          <div id="cl" class="kicker" style="left:1150px;top:790px;color:#F3F2F2">Standards in place</div>
+        </div>
+      </div>
+
+      <!-- SCENE 4: bone, lockup -->
+      <div id="s4" class="scene clip" data-start="9.2" data-duration="3.3" data-track-index="3">
+        <div class="sc" id="sc4" style="background:#F3F2F2">
+          <svg id="r4b" class="ridge" viewBox="0 0 1920 480" preserveAspectRatio="none"><path d="M0,260 C220,120 420,90 640,170 C860,250 1000,60 1260,90 C1520,120 1700,230 1920,150 L1920,480 L0,480 Z" fill="#201E1D" fill-opacity=".12"/></svg>
+          <svg id="r4m" class="ridge" viewBox="0 0 1920 480" preserveAspectRatio="none"><path d="M0,330 C260,230 470,210 720,290 C970,370 1130,200 1400,230 C1670,260 1800,330 1920,290 L1920,480 L0,480 Z" fill="#201E1D" fill-opacity=".35"/></svg>
+          <svg id="r4f" class="ridge" viewBox="0 0 1920 480" preserveAspectRatio="none"><path d="M0,400 C300,350 560,330 840,380 C1120,430 1380,340 1640,350 C1760,356 1850,372 1920,366 L1920,480 L0,480 Z" fill="#201E1D" fill-opacity=".92"/></svg>
+          <img id="seal4" class="seal" src="assets/seal-red.svg" alt="" />
+          <div id="k4" class="kicker" style="top:250px;color:#B6240E">WRW Consulting</div>
+          <div id="rule4" class="abs" style="left:154px;top:304px;width:120px;height:4px;background:#EC3013;transform-origin:left center"></div>
+          <h1 id="t4" class="serif abs" style="left:150px;top:340px;font-size:168px;line-height:1.04;color:#201E1D">
+            <span class="line" data-layout-allow-overflow><span class="w">The</span> <span class="w">Art</span> <span class="w">of</span></span>
+            <span class="line" data-layout-allow-overflow><span class="w">Operations</span></span>
+          </h1>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const tl = gsap.timeline({ paused: true });
+      const E = "power4.out", IO = "power4.inOut";
+      const pop = "back.out(2)", bouncy = "elastic.out(1,0.5)";
+
+      // build ruler ticks on scene 1 (deterministic)
+      const ruler = document.getElementById("ruler1");
+      for (let i = 0; i < 13; i++) {
+        const d = document.createElement("div");
+        d.className = "tick";
+        const long = i % 4 === 0;
+        d.style.cssText = `right:${1920 - 1700}px;top:${120 + i * 40}px;width:${long ? 110 : 56}px;background:#F3F2F2;opacity:${long ? 1 : .7}`;
+        ruler.appendChild(d);
+      }
+      const ticks = gsap.utils.toArray("#ruler1 .tick");
+
+      // ---- wipes: each later scene slides up over the last ----
+      tl.fromTo("#sc2", { yPercent: 100 }, { yPercent: 0, duration: 0.8, ease: IO }, 3.0);
+      tl.fromTo("#sc3", { yPercent: 100 }, { yPercent: 0, duration: 0.8, ease: IO }, 6.6);
+      tl.fromTo("#sc4", { yPercent: 100 }, { yPercent: 0, duration: 0.8, ease: IO }, 9.2);
+
+      // ---- S1: red ----
+      tl.fromTo("#r1b", { y: 260 }, { y: 0, duration: 1.3, ease: "back.out(1.2)" }, 0.1);
+      tl.fromTo("#r1m", { y: 280 }, { y: 0, duration: 1.3, ease: "back.out(1.4)" }, 0.22);
+      tl.fromTo("#r1f", { y: 300 }, { y: 0, duration: 1.3, ease: "back.out(1.6)" }, 0.34);
+      tl.fromTo("#r1b", { x: 0 }, { x: -28, duration: 3.8, ease: "none" }, 0);
+      tl.fromTo("#r1m", { x: 0 }, { x: -52, duration: 3.8, ease: "none" }, 0);
+      tl.fromTo("#r1f", { x: 0 }, { x: -84, duration: 3.8, ease: "none" }, 0);
+      tl.fromTo("#seal1", { scale: 3.2, rotation: -14, opacity: 0, transformOrigin: "50% 50%" }, { scale: 1, rotation: 0, opacity: 1, duration: 0.7, ease: "back.out(2.6)" }, 0.3);
+      tl.fromTo("#k1", { opacity: 0, x: -40 }, { opacity: 1, x: 0, duration: 0.7, ease: pop }, 0.8);
+      tl.fromTo("#rule1", { scaleX: 0 }, { scaleX: 1, duration: 0.7, ease: pop }, 0.95);
+      tl.fromTo("#t1 .line:nth-child(1) .w", { yPercent: 130 }, { yPercent: 0, duration: 0.9, ease: pop, stagger: 0.12 }, 1.0);
+      tl.fromTo("#t1 .line:nth-child(2) .w", { yPercent: 130 }, { yPercent: 0, duration: 1.0, ease: pop }, 1.45);
+      tl.fromTo(ticks, { scaleX: 0 }, { scaleX: 1, duration: 0.5, ease: pop, stagger: 0.05 }, 0.9);
+      tl.fromTo("#drop1", { y: -300, opacity: 0 }, { y: 0, opacity: 1, duration: 1.1, ease: "bounce.out" }, 1.5);
+      tl.to("#drop1", { y: 480, duration: 0.6, ease: "bounce.out" }, 2.5);
+      // exit: title pops down before wipe
+      tl.to("#t1 .w", { yPercent: 130, duration: 0.45, ease: "power3.in", stagger: 0.04 }, 2.55);
+      tl.to(["#t1", "#k1", "#rule1", "#seal1", "#ruler1", "#drop1"], { opacity: 0, duration: 0.2, ease: "power2.in" }, 2.85);
+
+      // ---- S2: cards ----
+      tl.fromTo("#k2", { opacity: 0, x: -40 }, { opacity: 1, x: 0, duration: 0.7, ease: pop }, 3.7);
+      tl.fromTo("#h2 .w", { yPercent: 130 }, { yPercent: 0, duration: 0.9, ease: pop }, 3.8);
+      ["c1", "c2", "c3"].forEach((c, i) => {
+        const t = 4.0 + i * 0.16;
+        tl.fromTo("#" + c, { y: 140, opacity: 0, scale: 0.9, transformOrigin: "50% 100%" }, { y: 0, opacity: 1, scale: 1, duration: 0.9, ease: "back.out(1.7)" }, t);
+        tl.fromTo("#n" + (i + 1), { y: -260, opacity: 0 }, { y: 0, opacity: 1, duration: 1.0, ease: "bounce.out" }, t + 0.25);
+        tl.fromTo("#l" + (i + 1), { opacity: 0, x: -24 }, { opacity: 1, x: 0, duration: 0.6, ease: pop }, t + 0.6);
+        tl.fromTo("#cr" + (i + 1), { scaleX: 0 }, { scaleX: 1, duration: 0.6, ease: pop }, t + 0.7);
+      });
+      // idle: small bounce on each numeral
+      ["n1", "n2", "n3"].forEach((n, i) => tl.to("#" + n, { y: -18, duration: 0.18, ease: "power2.out", yoyo: true, repeat: 1 }, 5.6 + i * 0.14));
+
+      // ---- S3: ink bars ----
+      tl.fromTo("#r3b", { y: 240 }, { y: 0, duration: 1.2, ease: "back.out(1.2)" }, 7.4);
+      tl.fromTo("#r3m", { y: 260 }, { y: 0, duration: 1.2, ease: "back.out(1.3)" }, 7.5);
+      tl.fromTo("#r3f", { y: 280 }, { y: 0, duration: 1.2, ease: "back.out(1.4)" }, 7.6);
+      tl.fromTo("#k3", { opacity: 0, x: -40 }, { opacity: 1, x: 0, duration: 0.7, ease: pop }, 7.4);
+      tl.fromTo("#base3", { scaleX: 0 }, { scaleX: 1, duration: 0.8, ease: E }, 7.4);
+      ["b1", "b2", "b3", "b4", "b5", "b6"].forEach((b, i) => tl.fromTo("#" + b, { scaleY: 0 }, { scaleY: 1, duration: 1.3, ease: bouncy }, 7.55 + i * 0.1));
+      tl.fromTo("#h3 .w", { yPercent: 130 }, { yPercent: 0, duration: 0.9, ease: pop, stagger: 0.14 }, 7.7);
+      tl.fromTo("#cnt", { opacity: 0, y: 60 }, { opacity: 1, y: 0, duration: 0.8, ease: pop }, 8.1);
+      const c = { v: 0 };
+      tl.to(c, { v: 100, duration: 1.4, ease: "power2.out", onUpdate: () => { document.getElementById("cntv").textContent = Math.round(c.v); } }, 8.1);
+      tl.fromTo("#cl", { opacity: 0, x: -30 }, { opacity: 1, x: 0, duration: 0.7, ease: pop }, 8.5);
+
+      // ---- S4: lockup ----
+      tl.fromTo("#r4b", { y: 260 }, { y: 0, duration: 1.3, ease: "back.out(1.2)" }, 10.0);
+      tl.fromTo("#r4m", { y: 280 }, { y: 0, duration: 1.3, ease: "back.out(1.4)" }, 10.12);
+      tl.fromTo("#r4f", { y: 300 }, { y: 0, duration: 1.3, ease: "back.out(1.6)" }, 10.24);
+      tl.fromTo("#r4b", { x: 0 }, { x: -22, duration: 2.5, ease: "none" }, 10.0);
+      tl.fromTo("#r4m", { x: 0 }, { x: -40, duration: 2.5, ease: "none" }, 10.0);
+      tl.fromTo("#r4f", { x: 0 }, { x: -64, duration: 2.5, ease: "none" }, 10.0);
+      tl.fromTo("#seal4", { scale: 3.2, rotation: 14, opacity: 0, transformOrigin: "50% 50%" }, { scale: 1, rotation: 0, opacity: 1, duration: 0.7, ease: "back.out(2.6)" }, 10.2);
+      tl.fromTo("#k4", { opacity: 0, x: -40 }, { opacity: 1, x: 0, duration: 0.7, ease: pop }, 10.6);
+      tl.fromTo("#rule4", { scaleX: 0 }, { scaleX: 1, duration: 0.7, ease: pop }, 10.75);
+      tl.fromTo("#t4 .line:nth-child(1) .w", { yPercent: 130 }, { yPercent: 0, duration: 1.1, ease: bouncy, stagger: 0.12 }, 10.8);
+      tl.fromTo("#t4 .line:nth-child(2) .w", { yPercent: 130 }, { yPercent: 0, duration: 1.2, ease: bouncy }, 11.25);
+
+      window.__timelines["main"] = tl;
+      tl.seek(0);
+    </script>
+  </body>
+</html>
