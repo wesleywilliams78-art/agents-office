@@ -107,7 +107,7 @@
           <div id="cnt" class="serif abs" style="left:80px;top:370px;font-size:480px;line-height:1;color:#F3F2F2"><span id="cntv">0</span></div>
           <div id="list4" class="abs" style="left:0;top:0;width:1080px;height:1920px">
             <div id="scan" class="abs" style="left:90px;width:900px;height:54px;top:940px;background:#F3F2F2;opacity:0"></div>
-            <div class="row" id="row0"><span class="rn">01</span><span class="rt">LAYING PLANS</span></div><div class="row" id="row1"><span class="rn">02</span><span class="rt">WAGING WAR</span></div><div class="row" id="row2"><span class="rn">03</span><span class="rt">ATTACK BY STRATAGEM</span></div><div class="row" id="row3"><span class="rn">04</span><span class="rt">TACTICAL DISPOSITIONS</span></div><div class="row" id="row4"><span class="rn">05</span><span class="rt">ENERGY</span></div><div class="row" id="row5"><span class="rn">06</span><span class="rt">WEAK POINTS AND STRONG</span></div><div class="row" id="row6"><span class="rn">07</span><span class="rt">MANOEUVERING</span></div><div class="row" id="row7"><span class="rn">08</span><span class="rt">VARIATION IN TACTICS</span></div><div class="row" id="row8"><span class="rn">09</span><span class="rt">ON THE MARCH</span></div><div class="row" id="row9"><span class="rn">10</span><span class="rt">TERRAIN</span></div><div class="row" id="row10"><span class="rn">11</span><span class="rt">THE NINE SITUATIONS</span></div><div class="row" id="row11"><span class="rn">12</span><span class="rt">MANAGING DISRUPTION</span></div><div class="row" id="row12"><span class="rn">13</span><span class="rt">THE USE OF INTELLIGENCE</span></div>
+            <div class="row" id="row0"><span class="rn">01</span><span class="rt">LAYING PLANS</span></div><div class="row" id="row1"><span class="rn">02</span><span class="rt">MANAGING BURN RATE</span></div><div class="row" id="row2"><span class="rn">03</span><span class="rt">QUIET VICTORIES</span></div><div class="row" id="row3"><span class="rn">04</span><span class="rt">TACTICAL DISPOSITIONS</span></div><div class="row" id="row4"><span class="rn">05</span><span class="rt">ENERGY</span></div><div class="row" id="row5"><span class="rn">06</span><span class="rt">WEAK POINTS AND STRONG</span></div><div class="row" id="row6"><span class="rn">07</span><span class="rt">MANOEUVERING</span></div><div class="row" id="row7"><span class="rn">08</span><span class="rt">VARIATION IN TACTICS</span></div><div class="row" id="row8"><span class="rn">09</span><span class="rt">READING GROUND</span></div><div class="row" id="row9"><span class="rn">10</span><span class="rt">TERRAIN</span></div><div class="row" id="row10"><span class="rn">11</span><span class="rt">THE NINE SITUATIONS</span></div><div class="row" id="row11"><span class="rn">12</span><span class="rt">MANAGING DISRUPTION</span></div><div class="row" id="row12"><span class="rn">13</span><span class="rt">THE USE OF INTELLIGENCE</span></div>
           </div>
         </div>
       </div>
@@ -169,7 +169,11 @@
       const pop = "back.out(1.8)", bouncy = "elastic.out(1,0.55)";
       const BONE = "#F3F2F2", INK = "#201E1D", RED = "#EC3013";
 
-      const words = (sel, t, st, dur, ease) => tl.fromTo(sel, { yPercent: 130 }, { yPercent: 0, duration: dur || 1.3, ease: ease || pop, stagger: st || 0.18 }, t);
+      const words = (sel, t, st, dur, ease) => {
+        // fully hidden until cued: opacity 0 + pushed well below the mask, then the rise
+        tl.fromTo(sel, { opacity: 0 }, { opacity: 1, duration: 0.01, stagger: st || 0.18 }, t);
+        return tl.fromTo(sel, { yPercent: 160 }, { yPercent: 0, duration: dur || 1.3, ease: ease || pop, stagger: st || 0.18 }, t);
+      };
       const kick = (id, t) => tl.fromTo(id, { opacity: 0, x: -40 }, { opacity: 1, x: 0, duration: 1.0, ease: pop }, t);
       const ruleIn = (id, t) => tl.fromTo(id, { scaleX: 0 }, { scaleX: 1, duration: 1.0, ease: pop }, t);
       const out = (k, t) => tl.to("#c" + k, { opacity: 0, y: -34, duration: 0.8, ease: "power2.in" }, t);

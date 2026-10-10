@@ -26,7 +26,7 @@ Grounds by purpose: **bone** = default; **red** = a statement (cover, section di
 Two or three layered smooth-bezier ridges rising from the bottom edge. Back ridges higher and paler, front ridge lowest and most solid. Flat fills, no outline, texture, gradient or trees. Ink on bone; white on red (back ~30%, front ~92% opacity); bone on ink at 7-16% (faint mist). No suns, moons, circles or arcs.
 
 ## Seal
-Small square, sharp corners, top-left margin, with 兵 in Newsreader centred. Red square with bone character on bone and ink grounds; bone square with red character on red. The only Eastern motif. Small, singular, never repeated on a screen.
+Small square, sharp corners, top-left margin, with 略 centred (decided 9 Oct, confirmed 10 Oct 2026; 兵 is retired). Newsreader has no Chinese glyphs, so never set it in Newsreader: use `assets/brand/seal-red.svg` / `seal-bone.svg` (the glyph is a vector path), or Noto Serif SC Light where a font is needed. Red square with bone character on bone and ink grounds; bone square with red character on red. The only Eastern motif. Small, singular, never repeated on a screen.
 
 ## Layout rules
 - Flush left always. Never centre text.
