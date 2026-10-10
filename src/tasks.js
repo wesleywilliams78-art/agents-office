@@ -692,6 +692,14 @@ export function initTasks(ctx) {
     feedPush(R[t.agent], '↩', `Sent back: ${t.title}`);
     if (onDecided) onDecided(t.agent, false);
   }
+  async function answerTask(t, text) { // the reader's ANSWER: more context, not a rejection — it is not counted as a send-back and the agent does not learn a rule from it
+    await post(`/tasks/${t.sid}/answer`, { feedback: text });
+    t.answers = (t.answers || 0) + 1;
+    toDoing(t); t.draftAt = null;
+    chatPush(t.agent, { who: 'user', text: 'Answer: ' + text });
+    chatPush(t.agent, { who: 'agent', text: 'Thank you — updating it with that. It comes back here for your review.' });
+    feedPush(R[t.agent], '💬', `Answered: ${t.title}`);
+  }
   const liveTask = id => tasks.find(x => String(x.id) === String(id));
   function openReview(id) { const t = liveTask(id); return !!(t && t.live && review && review.open(t)); }
   function readTask(id) { // a finished task, read in the pop-up
@@ -1089,5 +1097,5 @@ export function initTasks(ctx) {
   const calendar = initCalendar({ tasks, routines, agentOf, DEPTS, DEPT_KEYS, RT_DEPTS, rtRefuse, create: createScheduled, createRoutine: createRoutineAt, cancelTask: cancelScheduled, rtAct, openAgent: (id, tab) => openAgent && openAgent(id, tab), esc, isLive: () => live, officeModel: () => officeModel, MODEL_KEYS, modelName, business: () => document.title.replace(/ — Agents Office$/, ''), currentDept: () => dept });
   return { tick, toggle, open, close, openFor, isOpen, boardWidth, onFocusChange, onStuck, onResolve, calendar, createScheduled, cancelScheduled,
            handleChat, addTask, revise, rowHTML, setDept, tasks, panelWidth: () => panel.offsetWidth, isLive: () => live,
-           routines, addRoutine, rtAct, railFor, syncPills, refresh: poll, resolveLive, pendingReject, rejectLive, approveTask, rejectTask, openReview, readTask, waitingFor, setReview: r => { review = r; for (const t of tasks) if (t.live && t.state === 'waiting') r.push(t, { auto: false }); }, officeModel: () => officeModel, chosenModel, chosenEffort };
+           routines, addRoutine, rtAct, railFor, syncPills, refresh: poll, resolveLive, pendingReject, rejectLive, approveTask, rejectTask, answerTask, openReview, readTask, waitingFor, setReview: r => { review = r; for (const t of tasks) if (t.live && t.state === 'waiting') r.push(t, { auto: false }); }, officeModel: () => officeModel, chosenModel, chosenEffort };
 }

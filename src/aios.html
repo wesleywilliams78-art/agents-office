@@ -554,7 +554,12 @@ async function act(id, what) {
     if (what === 'delete') await api('/matrix/' + id, { method: 'DELETE' });
     else if (what === 'send') { const r = await api('/matrix/' + id + '/send', { method: 'POST' }); $('fMsg').className = 'msg'; $('fMsg').textContent = `Sent: ${r.task.title} → ${agentBy(r.task.agent)?.name || r.task.agent}${r.task.needsOk ? '. It will wait for your OK before anything goes out.' : '.'}`; }
     else if (what === 'calendar') { $('fMsg').className = 'msg'; $('fMsg').textContent = 'Adding to Google Calendar…'; const r = await api('/matrix/' + id + '/calendar', { method: 'POST' }); $('fMsg').textContent = r.note || 'Added to Google Calendar.'; }
-    else await api('/matrix/' + id, { method: 'POST', body: { state: what === 'drop' ? 'dropped' : what === 'reopen' ? 'open' : 'done' } });
+    else if (what === 'done') { // closing a card: say what happened, so the office learns it (blank = just mark it done)
+      const o = window.prompt('What happened? (optional)\n\nFor example "Paid 10 Oct" or "Mary\'s address is …". It is filed in the Brain so the agents know, and the card is not raised again.\nLeave blank to just mark it done.', '');
+      if (o === null) { await poll(); return; } // cancelled: leave the card open
+      await api('/matrix/' + id, { method: 'POST', body: { state: 'done', outcome: o } });
+    }
+    else await api('/matrix/' + id, { method: 'POST', body: { state: what === 'drop' ? 'dropped' : 'open' } });
     await poll();
   } catch (e) { alert(e.message); }
 }

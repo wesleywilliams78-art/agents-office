@@ -1388,7 +1388,7 @@ function applyRoster(agents) {
   }
   if (tasks && tasks.syncPills) tasks.syncPills(); // the pills were rebuilt — put the clock chips back
 }
-review = initReview({ esc, agentOf: id => R[id] && R[id].a, onApprove: t => tasks.approveTask(t), onReject: (t, reason) => tasks.rejectTask(t, reason) });
+review = initReview({ esc, agentOf: id => R[id] && R[id].a, onApprove: t => tasks.approveTask(t), onReject: (t, reason) => tasks.rejectTask(t, reason), onAnswer: (t, text) => tasks.answerTask(t, text) });
 tasks = initTasks({
   hud, R, deptRT, RAIL_SIDE, spawnEmote, chatPush, chatHist, feedPush, zoomToApproval, enterFocus, openAgent, esc,
   brainWrite: (id, title) => brain.write(id, title), brain,

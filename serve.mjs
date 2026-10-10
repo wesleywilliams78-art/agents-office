@@ -244,6 +244,7 @@ function businessContext(index) {
 // An uploaded document (a note named "Upload - …") is the thing the owner wants read, so it gets far more room
 // than an ordinary note: 1,800 characters is about one page, and a proposal or contract is many.
 const UPLOAD_CAP = 60000;
+const WHOLE_NOTE = 5000; // an ordinary note up to this long is given to the agent in full
 const isUpload = name => String(name).startsWith('Upload - ');
 // the notes an agent would read for this task: name/word overlap, department MOC first
 function relevantNotes(index, dept, text, n = 4) {
@@ -265,7 +266,7 @@ function relevantNotes(index, dept, text, n = 4) {
 function contextText(index, names) {
   return names.map(n => {
     const txt = index.get(n) || '';
-    const cap = isUpload(n) ? UPLOAD_CAP : 1800;
+    const cap = isUpload(n) ? UPLOAD_CAP : txt.length <= WHOLE_NOTE ? txt.length : 1800; // a short note is shown whole: billing.md's Outstanding section sits near the end and was being cut off
     return `--- ${n}.md ---\n${txt.slice(0, cap)}${txt.length > cap ? `\n[…the note continues: ${txt.length - cap} more characters not shown]` : ''}`;
   }).join('\n\n');
 }
@@ -316,7 +317,7 @@ const pickFor = (task, a) => { // model + effort: four places, one precedence (t
 };
 // persist a task mid-run (a team's pieces move while the run is still going; the page polls /api/tasks)
 function persist(task) { const l = load(); const i = l.findIndex(t => t.id === task.id); if (i >= 0) { l[i] = task; save(l); } }
-async function run(task, feedback, mode) { // mode: undefined (a task from the bar) · 'routine' (read-only routine) · 'draft' (routine that waits for the OK) · 'approve' (the owner ticked it)
+async function run(task, feedback, mode, asAnswer) { // asAnswer: the owner is adding context, not rejecting. mode: undefined (a task from the bar) · 'routine' (read-only routine) · 'draft' (routine that waits for the OK) · 'approve' (the owner ticked it)
   if (task.team && TEAMS.enabled) { // V3.2 (16 Sep): a team task — the lead plans, the desks work at once, the lead writes the final
     if (mode === 'approve') return runTeamLead(task, feedback, mode); // the outbound step after the OK is the lead's alone
     if (feedback && task.team.pieces?.length) return runTeamLead(task, feedback, mode); // "revise: …" reworks the final from the same pieces
@@ -331,7 +332,9 @@ async function run(task, feedback, mode) { // mode: undefined (a task from the b
     : task.dueAt ? `\nThis task was scheduled in advance for ${new Date(task.dueAt).toLocaleString([], { weekday: 'long', day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' })} and is running now; the owner is not at the keyboard${task.late ? ' and this run is late' : ''}. Do the work for now.` : '';
   const modeLine = modeLineFor(mode, task);
   const user = `Task: ${task.title}\nOwner's request: ${task.text}` + (task.plan?.length ? `\nAgreed plan: ${task.plan.join(' → ')}` : '') + routineLine + modeLine +
-    (feedback && mode !== 'approve' ? `\n\nThe owner reviewed your previous version and asked for changes: "${feedback}"\nPrevious version:\n${task.result}` : '');
+    (feedback && mode !== 'approve' ? (asAnswer
+      ? `\n\nThe owner is NOT rejecting your previous version. He is giving you information you did not have: "${feedback}"\nTreat it as fact. Update the work using it, keep everything that was already right, and do not apologise or mention a rejection.\nPrevious version:\n${task.result}`
+      : `\n\nThe owner reviewed your previous version and asked for changes: "${feedback}"\nPrevious version:\n${task.result}`) : '');
   const { pick, eff } = pickFor(task, a);
   const { text, tools, modelId: ran } = await askX(system, user, { model: pick.model, effort: eff.effort });
   if (!text) throw new Error('Claude returned nothing');
@@ -467,11 +470,11 @@ function fire(r, { due = Date.now(), late = false, by = 'routine' } = {}) { // t
 // (tasks that send, post or pay still wait for the OK either way).
 const REVIEW_ALL = cfg.review?.all !== false;
 const reviewLine = task => `"${task.title}" is ready for your review — approve to mark it done, or reject and tell me why.`;
-async function runServerTask(id, { feedback, approve } = {}) {
+async function runServerTask(id, { feedback, approve, answer } = {}) {
   let list = load(); const task = list.find(t => t.id === id); if (!task) return null;
   task.state = 'doing'; task.startedAt = Date.now(); delete task.ask; save(list);
   try {
-    const out = await run(task, feedback, approve ? 'approve' : task.needsOk ? 'draft' : 'routine');
+    const out = await run(task, feedback, approve ? 'approve' : task.needsOk ? 'draft' : 'routine', answer);
     if (approve) { task.result = (task.draft || task.result) + '\n\n---\nAFTER YOUR OK\n' + out.result; task.approved = true; task.approvedAt = Date.now(); }
     else task.result = out.result;
     Object.assign(task, { read: out.read, tools: [...new Set([...(task.tools || []), ...out.tools])], used: [...new Set([...(task.used || []), ...out.used])], skills: out.skills, error: false, modelUsed: out.modelUsed, modelFrom: out.modelFrom, modelId: out.modelId, effortUsed: out.effortUsed, effortFrom: out.effortFrom, ...(out.team ? { team: out.team } : {}) });
@@ -613,7 +616,7 @@ async function feedMatrix({ text, source, taskId, auto }) {
   // An item sent to its seat is no longer "open", and its finished result used to restate it as if it were new.
   const weekAgo = Date.now() - 7 * 86400000;
   const known = aios.load(DATA).items.filter(i => i.state === 'open' || i.state === 'sent' || (i.doneAt || i.droppedAt || i.addedAt || 0) > weekAgo);
-  const existing = known.slice(-80).map(i => `${i.title}${i.state === 'open' ? '' : ' [' + i.state + ']'}`);
+  const existing = known.slice(-80).map(i => `${i.title}${i.state === 'open' ? '' : ' [' + i.state + (i.outcome ? ': ' + i.outcome.slice(0, 120) : '') + ']'}`);
   const pr = aios.extractPrompt({ business: cfg.name, roster, input, source: src, today, existing, clients: CLIENTS });
   const feedId = 'f' + nid();
   const raw = aios.normalise(parseJSON(await ask(pr.system, pr.user, { maxTokens: 3000, timeout: 180000, model: 'sonnet' })), AGENTS, feedId, CLIENTS);
@@ -670,8 +673,25 @@ async function matrixApi(req, res, url) {
       return json(res, 200, { ok: true, item, note: at });
     } catch (e) { return json(res, 500, { error: e.message }); }
   }
-  aios.patch(item, await body(req)); aios.save(DATA, m);
+  const b = await body(req);
+  aios.patch(item, b);
+  if (b.state === 'done' && item.outcome) { // closing a card with an answer: file what happened where the agents read it
+    try { item.outcomeNote = writeAnswerNote(item); console.log(`▦ ${item.id} closed with an answer → note "${item.outcomeNote}"`); }
+    catch (e) { console.log('▦ could not file the answer note: ' + e.message); }
+  }
+  aios.save(DATA, m);
   return json(res, 200, { ok: true, item });
+}
+// the owner closed a matrix card and said what happened ("paid 10 Oct"): a fact, so it becomes a note in the brain
+// that the agents find the same way as any other note (name and word overlap), instead of dying on the dashboard
+function writeAnswerNote(item) {
+  fs.mkdirSync(NOTES_DIR, { recursive: true });
+  const day = new Date().toISOString().slice(0, 10), dept = DEPTS[item.dept]?.name || 'Owner';
+  const name = `${day} owner answer - ${slug(item.title)}`;
+  fs.writeFileSync(path.join(NOTES_DIR, name + '.md'),
+    `---\nagent: OWNER\ndepartment: ${dept}\ntask: ${item.kind === 'task' ? 'task' : 'matrix'} ${item.id}\ndone: ${new Date().toISOString()}\n---\n# Owner answer: ${item.title}\n\n**${item.kind === 'task' ? 'What Wesley told the agent' : 'What happened'} (Wesley, ${day}):** ${item.outcome}\n\n` +
+    (item.kind === 'task' ? `Given on the task: ${item.title}\n` : `The card said: ${item.detail || '—'}${item.why ? ` (${item.why})` : ''}\n`) + `Raised for: ${dept}${item.agent ? ' · ' + item.agent : ''}${item.client ? ' · client ' + item.client : ''}\n`);
+  return name;
 }
 
 /* ---------- http ---------- */
@@ -763,7 +783,20 @@ const server = http.createServer(async (req, res) => {
       rebuildGraph();
       return json(res, 200, { ok: true, note: name, filename, chars: text.length, preview: text.slice(0, 400) });
     }
-    const m = url.pathname.match(/^\/api\/tasks\/([^/]+)(?:\/(run|revise|approve|reject))?$/);
+    const m = url.pathname.match(/^\/api\/tasks\/([^/]+)(?:\/(run|revise|approve|reject|answer))?$/);
+    if (m && req.method === 'POST' && m[2] === 'answer') { // the owner is neither approving nor rejecting: he is giving the agent what it was missing
+      const task = load().find(t => t.id === m[1]);
+      if (!task) return json(res, 404, { error: 'no such task' });
+      if (task.state !== 'waiting') return json(res, 400, { error: 'this task is not waiting for you' });
+      const note = String((await body(req)).feedback || '').trim().slice(0, 4000);
+      if (!note) return json(res, 400, { error: 'write the answer first' });
+      // not a rejection: no revision count, no "sent back" mark, and nothing goes to learn.mjs, so it can never become a standing rule
+      task.answers = (task.answers || 0) + 1; task.answeredAt = Date.now(); save(load().map(t => t.id === task.id ? task : t));
+      try { writeAnswerNote({ kind: 'task', id: task.id, title: task.title, outcome: note, dept: task.dept, agent: task.agent }); } catch (e) { console.log('▦ could not file the answer note: ' + e.message); }
+      console.log(`💬 ${task.id} answered by the owner: ${note.slice(0, 80)}`);
+      enqueue(() => runServerTask(task.id, { feedback: note, answer: true })).catch(e => console.warn('answer:', e.message));
+      return json(res, 200, { ok: true, id: task.id, state: 'doing' });
+    }
     if (m && req.method === 'POST' && (m[2] === 'approve' || m[2] === 'reject')) { // D1: the owner's tick on a routine's draft
       const task = load().find(t => t.id === m[1]);
       if (!task) return json(res, 404, { error: 'no such task' });

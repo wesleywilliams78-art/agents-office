@@ -46,6 +46,10 @@ body.dark #rv .rv-copy.ok { border-color: #5BC9A6; color: #5BC9A6; }
 #rv .rv-no { border-color: #C8553D; color: #C8553D; }
 body.dark #rv .rv-no { border-color: #E27A63; color: #E27A63; }
 #rv .rv-send { background: #C8553D; border-color: #C8553D; color: #fff; }
+#rv .rv-ans { border-color: #3B7DD8; color: #3B7DD8; }
+body.dark #rv .rv-ans { border-color: #7FB0F0; color: #7FB0F0; }
+#rv.ans .rv-send { background: #3B7DD8; border-color: #3B7DD8; }
+#rv.ans .rv-reason textarea:focus { outline-color: #3B7DD8; }
 #rv .rv-reason { padding: 18px 22px 8px; display: none; }
 #rv.rej .rv-reason { display: block; }
 #rv.rej .rv-body { display: none; }
@@ -80,7 +84,7 @@ function render(text, esc) {
   return out.join('');
 }
 
-export function initReview({ esc, agentOf, onApprove, onReject }) {
+export function initReview({ esc, agentOf, onApprove, onReject, onAnswer }) {
   const st = document.createElement('style'); st.textContent = CSS; document.head.appendChild(st);
   const el = document.createElement('div'); el.id = 'rv';
   el.innerHTML = `<div class="rv-dim"></div><div class="rv-box" role="dialog" aria-modal="true" aria-labelledby="rvTitle">
@@ -95,6 +99,9 @@ export function initReview({ esc, agentOf, onApprove, onReject }) {
   document.body.appendChild(el);
   const $ = s => el.querySelector(s);
   const ta = $('.rv-reason textarea');
+  const REJ = { h: $('.rv-reason h3').textContent, p: $('.rv-reason p').textContent, ph: ta.placeholder, chips: $('.rv-ex').innerHTML }; // the rejection wording, so ANSWER can swap it and put it back
+  const ANS = { h: 'Your answer', p: 'This is not a rejection and it is not marked against the agent. Give it what it was missing: a fact, a decision, who to check with. It reworks the task with your answer and it comes back here for your review.',
+    ph: 'e.g. Mary’s address is mary@example.com. Penny said she’d take this one, so cc her and say it is a follow-up.', chips: '<button>Here is the missing detail</button><button>Check with someone first</button><button>Use this instead</button><button>It is already done</button>' };
   const queue = []; // live tasks waiting for review, oldest first
   let cur = null, readOnly = null, busy = false;
 
@@ -122,46 +129,48 @@ export function initReview({ esc, agentOf, onApprove, onReject }) {
     const btns = $('.rv-btns');
     if (readOnly) { $('.rv-hint').textContent = ''; btns.innerHTML = '<button class="rv-btn rv-close">CLOSE</button>'; }
     else if (el.classList.contains('rej')) {
-      $('.rv-hint').textContent = 'Ctrl+Enter to send it back.';
-      btns.innerHTML = '<button class="rv-btn rv-back">BACK</button> <button class="rv-btn rv-send" disabled>SEND BACK TO ' + esc(a.name) + '</button>';
+      const ans = el.classList.contains('ans'), w = ans ? ANS : REJ;
+      $('.rv-reason h3').textContent = w.h; $('.rv-reason p').textContent = w.p; ta.placeholder = w.ph; $('.rv-ex').innerHTML = w.chips;
+      $('.rv-hint').textContent = ans ? 'Ctrl+Enter to send your answer.' : 'Ctrl+Enter to send it back.';
+      btns.innerHTML = '<button class="rv-btn rv-back">BACK</button> <button class="rv-btn rv-send" disabled>' + (ans ? 'SEND ANSWER TO ' : 'SEND BACK TO ') + esc(a.name) + '</button>';
       syncSend();
     } else {
       $('.rv-hint').textContent = email ? 'Approving puts this email in your Gmail drafts, exactly as written. You send it from your inbox; the office never sends email.' : t.needsOk ? 'Approving sends it exactly as written. Reject to say what to change.' : 'Approve to mark it done and save it to your brain. Reject to say what is wrong.';
-      btns.innerHTML = `<button class="rv-btn rv-later">LATER</button> <button class="rv-btn rv-no">REJECT</button> <button class="rv-btn rv-yes">${email ? 'APPROVE & CREATE DRAFT' : t.needsOk ? 'APPROVE & SEND' : 'APPROVE'}</button>`;
+      btns.innerHTML = `<button class="rv-btn rv-later">LATER</button> <button class="rv-btn rv-ans" title="Not approving or rejecting: give the agent the context it was missing">ANSWER</button> <button class="rv-btn rv-no">REJECT</button> <button class="rv-btn rv-yes">${email ? 'APPROVE & CREATE DRAFT' : t.needsOk ? 'APPROVE & SEND' : 'APPROVE'}</button>`;
     }
   }
   const syncSend = () => { const b = $('.rv-send'); if (b) b.disabled = busy || !ta.value.trim(); };
   function show() { el.classList.add('on'); paint(); }
-  function close() { el.classList.remove('on', 'rej'); readOnly = null; ta.value = ''; }
+  function close() { el.classList.remove('on', 'rej', 'ans'); readOnly = null; ta.value = ''; }
   const typing = () => { const a = document.activeElement; return a && (a.tagName === 'TEXTAREA' || a.tagName === 'INPUT') && !el.contains(a); };
 
   // a task is ready for review: queue it, and pop up unless the owner is mid-sentence or already reading one
   function push(t, { auto = true } = {}) {
     if (queue.some(x => x.sid === t.sid)) { paint(); return; }
     queue.push(t);
-    if (!el.classList.contains('on') && auto && !typing()) { cur = t; readOnly = null; el.classList.remove('rej'); show(); }
+    if (!el.classList.contains('on') && auto && !typing()) { cur = t; readOnly = null; el.classList.remove('rej', 'ans'); show(); }
     else if (el.classList.contains('on') && !readOnly) paint();
   }
   function drop(sid) {
     const i = queue.findIndex(x => x.sid === sid); if (i < 0) return;
     queue.splice(i, 1);
-    if (cur && cur.sid === sid) { cur = queue[Math.min(i, queue.length - 1)] || null; el.classList.remove('rej'); ta.value = ''; if (!readOnly) cur ? paint() : close(); }
+    if (cur && cur.sid === sid) { cur = queue[Math.min(i, queue.length - 1)] || null; el.classList.remove('rej', 'ans'); ta.value = ''; if (!readOnly) cur ? paint() : close(); }
     else if (!readOnly && el.classList.contains('on')) paint();
   }
   function open(pick) { // the top-bar ⚠, an agent's waiting card, the chat's APPROVE / REJECT
     const t = typeof pick === 'function' ? queue.find(pick) : pick ? queue.find(x => x.sid === pick.sid) : queue[0];
     if (!t) return false;
-    cur = t; readOnly = null; el.classList.remove('rej'); show(); return true;
+    cur = t; readOnly = null; el.classList.remove('rej', 'ans'); show(); return true;
   }
   function openReject(pick) { if (!open(pick)) return false; el.classList.add('rej'); paint(); setTimeout(() => ta.focus(), 30); return true; }
-  function read(doc) { readOnly = doc; el.classList.remove('rej'); show(); } // { agent, title, content, meta, kindLabel }
+  function read(doc) { readOnly = doc; el.classList.remove('rej', 'ans'); show(); } // { agent, title, content, meta, kindLabel }
 
   async function decide(approved) {
     if (!cur || busy) return;
-    const t = cur, reason = ta.value.trim();
+    const t = cur, reason = ta.value.trim(), ans = el.classList.contains('ans');
     if (!approved && !reason) return;
     busy = true; syncSend();
-    try { approved ? await onApprove(t) : await onReject(t, reason); }
+    try { approved ? await onApprove(t) : ans ? await onAnswer(t, reason) : await onReject(t, reason); }
     finally { busy = false; }
     drop(t.sid);
   }
@@ -189,15 +198,16 @@ export function initReview({ esc, agentOf, onApprove, onReject }) {
     if (e.target.classList.contains('rv-dim') || (b && (b.classList.contains('rv-x') || b.classList.contains('rv-later') || b.classList.contains('rv-close')))) return close();
     if (!b) return;
     if (b.classList.contains('rv-yes')) return decide(true);
-    if (b.classList.contains('rv-no')) { el.classList.add('rej'); paint(); setTimeout(() => ta.focus(), 30); return; }
-    if (b.classList.contains('rv-back')) { el.classList.remove('rej'); paint(); return; }
+    if (b.classList.contains('rv-no')) { el.classList.add('rej'); el.classList.remove('ans'); paint(); setTimeout(() => ta.focus(), 30); return; }
+    if (b.classList.contains('rv-ans')) { el.classList.add('rej', 'ans'); paint(); setTimeout(() => ta.focus(), 30); return; } // ANSWER shares the reason screen, worded for context instead of rejection
+    if (b.classList.contains('rv-back')) { el.classList.remove('rej', 'ans'); paint(); return; }
     if (b.classList.contains('rv-send')) return decide(false);
     if (b.closest('.rv-ex')) { ta.value = (ta.value.trim() ? ta.value.trim() + ' ' : '') + b.textContent + '. '; ta.focus(); syncSend(); }
   });
   ta.addEventListener('input', syncSend);
   document.addEventListener('keydown', e => {
     if (!el.classList.contains('on')) return;
-    if (e.key === 'Escape') { e.stopPropagation(); if (el.classList.contains('rej') && !readOnly) { el.classList.remove('rej'); paint(); } else close(); return; }
+    if (e.key === 'Escape') { e.stopPropagation(); if (el.classList.contains('rej') && !readOnly) { el.classList.remove('rej', 'ans'); paint(); } else close(); return; }
     if (e.key === 'Enter' && (e.ctrlKey || e.metaKey) && el.classList.contains('rej')) { e.preventDefault(); decide(false); }
     e.stopPropagation(); // the office's own shortcuts (P, W, …) stay quiet while the reader is up
   }, true);

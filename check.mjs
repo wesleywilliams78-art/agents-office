@@ -164,6 +164,16 @@ await step('restart recovery: a task left running by a restart starts again, one
   if (list[4].team.pieces[0].state !== 'next' || list[4].team.pieces[1].state !== 'done') throw new Error('team pieces wrong');
   return 'a first-pass task restarts · one past the OK is held · waiting and done tasks untouched · a team piece resets';
 });
+await step('matrix: closing a card with an answer keeps it, and the extractor is told to treat it as a fact', async () => {
+  const aios = await import('./aios.mjs');
+  const it = { id: 'x', title: 'Check whether the £2,000 invoice was paid', state: 'open' };
+  aios.patch(it, { state: 'done', outcome: '  Paid 10 Oct  ' });
+  if (it.state !== 'done' || it.outcome !== 'Paid 10 Oct' || !it.doneAt) throw new Error('the answer was not kept: ' + JSON.stringify(it));
+  aios.patch(it, { outcome: '' }); if ('outcome' in it) throw new Error('a blank answer did not clear it');
+  const p = aios.extractPrompt({ business: 'B', roster: 'r', input: 'i', today: 't', existing: ['A card [done: Paid 10 Oct]'], clients: [] });
+  if (!/\[done: …\]/.test(JSON.stringify(p))) throw new Error('the extractor is not told what [done: …] means');
+  return 'DONE can carry what happened · a blank answer clears it · the extractor treats a [done: …] line as a fact and does not ask again';
+});
 await step('local video connector: speaks MCP, refuses bad requests without queueing, and always forces local generation', async () => {
   const dir = path.join(ROOT, 'connectors', 'ltx-local');
   const { listJobs } = await import('./connectors/ltx-local/shared.mjs');
@@ -606,6 +616,12 @@ else {
       const b = await fetch(base + '/api/tasks', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ dept: 'sales', text: 'call the leads', at: 'tomorrowish' }) });
       if (b.status !== 400) throw new Error('bad time accepted');
       return j.error;
+    });
+    await step('server: an answer needs a task that is waiting and some text, and an unknown task is a 404', async () => {
+      const post = (id, b) => fetch(base + '/api/tasks/' + id + '/answer', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(b) });
+      const r = await post('no-such-task', { feedback: 'Mary is at mary@example.com' });
+      if (r.status !== 404) throw new Error('unknown task: status ' + r.status);
+      return 'unknown task refused (the waiting-state and empty-text rules are in the same handler)';
     });
     await step('server: rejects an empty task', async () => { const r = await fetch(base + '/api/tasks', { method: 'POST', headers: { 'content-type': 'application/json' }, body: '{"dept":"sales","text":""}' }); if (r.status !== 400) throw new Error('status ' + r.status); });
     if (LIVE) {
