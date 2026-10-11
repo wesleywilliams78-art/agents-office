@@ -113,6 +113,20 @@
   .msg { font-size: 12px; color: var(--grey); margin-bottom: 8px; }
   .msg:empty { display: none; }
   .msg.err { color: var(--bad); }
+  /* left-hand categories: the page shows one category at a time instead of one long scroll */
+  .shell { display: grid; grid-template-columns: 184px minmax(0, 1fr); gap: 20px; align-items: start; }
+  .side { position: sticky; top: 14px; display: flex; flex-direction: column; gap: 3px; }
+  .side .gl { font-size: 9.5px; letter-spacing: .14em; color: var(--faint); text-transform: uppercase; margin: 12px 11px 4px; }
+  .side .gl:first-child { margin-top: 0; }
+  .side button { text-align: left; display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 9px 11px; font-size: 12px; letter-spacing: .04em; border-radius: 9px; background: transparent; border-color: transparent; }
+  .side button:hover { background: var(--soft); border-color: transparent; }
+  .side button.on { background: var(--ink); color: var(--bg); }
+  .side .n { font-size: 10.5px; font-weight: 700; opacity: .75; font-variant-numeric: tabular-nums; }
+  .side .n.alert { color: var(--warn); opacity: 1; }
+  .side button.on .n.alert { color: var(--bg); }
+  .main { min-width: 0; }
+  .cat-off { display: none !important; }
+  @media (max-width: 860px) { .shell { grid-template-columns: 1fr; } .side { position: static; flex-direction: row; overflow-x: auto; } .side .gl { display: none; } .side button { white-space: nowrap; } }
   /* skill audit */
   .skkpis { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 10px; }
   .skkpi { padding: 6px 10px; border: 1px solid var(--line); border-radius: 8px; font-size: 12px; background: var(--panel); }
@@ -225,9 +239,22 @@
     <div class="right"><span class="live" id="live"></span><span id="liveTxt">connecting…</span> · <a href="/">open the office</a></div>
   </header>
 
-  <div class="kpis" id="kpis"></div>
+  <div class="shell">
+  <nav class="side" id="side" aria-label="AIOS categories">
+    <div class="gl">Today</div>
+    <button data-go="overview">Overview <span class="n" id="nOverview"></span></button>
+    <button data-go="matrix">Matrix <span class="n" id="nMatrix"></span></button>
+    <div class="gl">The business</div>
+    <button data-go="clients">Clients <span class="n" id="nClients"></span></button>
+    <button data-go="budget" id="navBudget" style="display:none">Budget <span class="n"></span></button>
+    <div class="gl">The office</div>
+    <button data-go="roles">Roles <span class="n" id="nRoles"></span></button>
+    <button data-go="skills">Skills <span class="n" id="nSkills"></span></button>
+  </nav>
+  <div class="main">
+  <div class="kpis" id="kpis" data-cat="overview"></div>
 
-  <section id="clientsSec">
+  <section id="clientsSec" data-cat="clients">
     <div class="sh">
       <h2>Clients</h2>
       <span class="note">Next actions by client, pulled from the matrix as tasks finish.</span>
@@ -236,7 +263,7 @@
     <div class="clientGrid" id="clientGrid"></div>
   </section>
 
-  <section id="matrixSec">
+  <section id="matrixSec" data-cat="matrix">
     <div class="sh">
       <h2>Eisenhower matrix</h2>
       <span class="note">What follows from finished work, sorted and named to a seat automatically. Feed the office through the office itself — this just shows what came out of it.</span>
@@ -254,7 +281,7 @@
     </div>
   </section>
 
-  <section class="split">
+  <section class="split" data-cat="roles">
     <div class="split-main">
       <div class="sh">
         <h2>Roles</h2>
@@ -270,7 +297,7 @@
     </aside>
   </section>
 
-  <section id="skillSec">
+  <section id="skillSec" data-cat="skills">
     <div class="sh">
       <h2>Skill audit</h2>
       <span class="note">Which skills the office really uses, which it doesn't, which are being corrected, and whether the connectors a skill relies on are wired and proven. Ask for a revision on any card.</span>
@@ -281,7 +308,7 @@
     <div class="skgrid" id="skGrid"></div>
   </section>
 
-  <section>
+  <section data-cat="overview">
     <div class="sh"><h2>Happening now</h2><span class="note" id="nowNote">Live from the office.</span></div>
     <div class="cols">
       <div class="panel col"><h3><span class="dot doing"></span>WORKING</h3><div id="aDoing"></div></div>
@@ -291,7 +318,7 @@
     </div>
   </section>
 
-  <section id="budgetSec" style="display:none">
+  <section id="budgetSec" data-cat="budget" style="display:none">
     <div class="sh">
       <h2>Personal budget</h2>
       <span class="note">Read from your Personal Budget Ledger in Google Sheets. Shown on this machine only.</span>
@@ -307,6 +334,8 @@
     <div class="panel bpanel"><div class="bledhead"><h3 id="bLedTitle">LEDGER</h3><button data-bled id="bLedBtn">SHOW</button></div><div id="bLedger"></div></div>
     <div class="bfoot" id="bFoot"></div>
   </section>
+  </div>
+  </div>
 </div>
 
 <script>
@@ -322,7 +351,7 @@ const DEPTS = {
 const ORDER = ['emails', 'sales', 'marketing', 'ops', 'fin', 'delivery'];
 const GAPS = { 'no-seat': 'GAP · NO SEAT', 'owner-decision': 'YOUR CALL', 'missing-info': 'GAP · MISSING INFO' };
 const MODEL = { sonnet: 'Sonnet', opus: 'Opus', fable: 'Fable' };
-const S = { health: null, agents: [], tasks: [], routines: [], matrix: { items: [], feeds: [], quadrants: {}, clients: [] }, rShow: 'all', mShow: 'open', nShow: 'all', kShow: 'attn', skillAudit: null, openSeat: new Set(), openItem: new Set(), busy: false };
+const S = { health: null, agents: [], tasks: [], routines: [], matrix: { items: [], feeds: [], quadrants: {}, clients: [] }, rShow: 'all', mShow: 'open', nShow: 'all', kShow: 'attn', skillAudit: null, cat: 'overview', openSeat: new Set(), openItem: new Set(), busy: false };
 const $ = id => document.getElementById(id);
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const ago = t => { if (!t) return ''; const s = (Date.now() - t) / 1000; return s < 60 ? 'just now' : s < 3600 ? Math.round(s / 60) + ' min ago' : s < 86400 ? Math.round(s / 3600) + ' h ago' : Math.round(s / 86400) + ' d ago'; };
@@ -355,7 +384,28 @@ const roleSkills = a => { const h = houseSkills(); return (a.skills || []).filte
 // readiness: a role written, a standing brief, a skill that says how this seat's work is done
 const readiness = a => [!!a.does, !!a.brief, roleSkills(a).length > 0];
 
-function render() { renderKpis(); renderClients(); renderMatrix(); renderRoles(); renderSkills(); renderNews(); renderActivity(); renderBudget(); }
+function render() { renderNav(); renderKpis(); renderClients(); renderMatrix(); renderRoles(); renderSkills(); renderNews(); renderActivity(); renderBudget(); }
+
+// categories: the left-hand list shows one category at a time; the choice is remembered and can be linked to (#budget)
+const CAT_IDS = ['overview', 'matrix', 'clients', 'budget', 'roles', 'skills'];
+function applyCat() {
+  for (const el of document.querySelectorAll('[data-cat]')) el.classList.toggle('cat-off', el.dataset.cat !== S.cat);
+  for (const b of document.querySelectorAll('#side button[data-go]')) b.classList.toggle('on', b.dataset.go === S.cat);
+}
+function setCat(c, push = true) {
+  if (!CAT_IDS.includes(c)) c = 'overview';
+  S.cat = c; try { localStorage.setItem('aiosCat', c); } catch {}
+  if (push) history.replaceState(null, '', '#' + c);
+  applyCat(); window.scrollTo({ top: 0 });
+}
+function renderNav() { // small counts beside a category: what is waiting on you, what is open, what needs attention
+  const set = (id, n, alert) => { const e = $(id); if (!e) return; e.textContent = n || ''; e.classList.toggle('alert', !!alert && !!n); };
+  set('nOverview', S.tasks.filter(t => t.state === 'waiting').length, true);
+  set('nMatrix', (S.matrix.items || []).filter(i => i.state === 'open').length);
+  set('nSkills', S.skillAudit ? S.skillAudit.summary.attention : '', true);
+}
+(() => { let c = location.hash.slice(1); if (!c) { try { c = localStorage.getItem('aiosCat'); } catch {} } setCat(c || 'overview', false); })();
+window.addEventListener('hashchange', () => setCat(location.hash.slice(1), false));
 
 // skill audit: the server scores every skill from the task log, the lessons and the connector list; this only draws it
 function renderSkills() {
@@ -392,6 +442,8 @@ async function loadBudget() { try { S.budget = await api('/budget'); } catch { S
 function renderBudget() {
   const b = S.budget, sec = $('budgetSec');
   sec.style.display = b && b.configured ? '' : 'none';
+  $('navBudget').style.display = b && b.configured ? '' : 'none'; // no budget set up: no Budget category
+  if (S.cat === 'budget' && !(b && b.configured) && S.budget) setCat('overview');
   if (!b || !b.configured) return;
   const busy = !!b.syncing || !!S.bBusy, snap = b.snapshot;
   $('bSync').disabled = busy; $('bSync').textContent = busy ? 'READING THE SHEET…' : '↻ REFRESH';
@@ -627,6 +679,7 @@ document.addEventListener('click', e => {
   if (e.target.closest('[data-bopen]')) { const sh = S.budget?.sheet?.sheet; if (sh) window.open('https://docs.google.com/spreadsheets/d/' + encodeURIComponent(sh) + '/edit', '_blank', 'noopener'); return; }
   if (e.target.closest('[data-bled]')) { S.bLedger = !S.bLedger; renderBudget(); return; }
   const bm = e.target.closest('[data-bm]'); if (bm) { S.bMonth = bm.dataset.bm; renderBudget(); return; }
+  const nb = e.target.closest('#side button[data-go]'); if (nb) { setCat(nb.dataset.go); return; }
   const pb = e.target.closest('button[data-propose]'); if (pb) { proposeRevision(pb.dataset.propose, pb); return; }
   const cb = e.target.closest('button[data-copyprop]'); if (cb) { const el = document.querySelector(`[data-prop="${CSS.escape(cb.dataset.copyprop)}"]`); navigator.clipboard.writeText(el ? el.textContent : '').then(() => { cb.textContent = 'COPIED ✓'; setTimeout(() => { cb.textContent = 'COPY'; }, 1500); }).catch(() => { cb.textContent = 'COPY FAILED'; }); return; }
   const b = e.target.closest('button[data-act]');
