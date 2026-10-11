@@ -4,14 +4,17 @@
 import os from 'node:os';
 import readline from 'node:readline';
 import { execFileSync } from 'node:child_process';
-import { ALLOWED, ASPECTS, CAMERA, MAX_ACTIVE, MIN_FREE_RAM_GB, WORKER, active, ensureDirs, listJobs, newId, readJob, workerAlive, writeJob } from './shared.mjs';
+import { ALLOWED, ASPECTS, CAMERA, MAX_ACTIVE, MAX_SECONDS, MIN_FREE_RAM_GB, MIN_PER_SECOND, MIN_SECONDS, WORKER, active, ensureDirs, listJobs, newId, planSegments, readJob, workerAlive, writeJob } from './shared.mjs';
+
+const eta = (res, secs) => { const m = Math.round(secs * (MIN_PER_SECOND[res] || 2)); return m < 90 ? `about ${m} minutes` : `about ${(m / 60).toFixed(1)} hours`; };
 
 const TOOLS = [
   { name: 'ltx_status', description: 'Is the local video generator ready? Shows the queue, free memory and the limits. Free; read-only.', inputSchema: { type: 'object', properties: {} } },
-  { name: 'ltx_submit_video', description: 'Queue ONE short video clip to be generated locally on the owner\'s computer with LTX 2.5 (free, no credits). It is SLOW: about 6-7 minutes for a 5-second 540p clip, and jobs run one at a time, so this returns a job id straight away; check it later with ltx_job. Good for atmosphere, backgrounds and b-roll. It cannot draw exact logos, seals, type or brand colours: those are added afterwards in HyperFrames or Canva. Only submit when the task asks for generated footage.', inputSchema: { type: 'object', required: ['prompt'], properties: {
-    prompt: { type: 'string', description: 'What the clip shows, in plain English: subject, setting, light, colours, movement. State the palette (for WRW: ink black, bone white, one red accent). Say "no text, no logos, no people" unless people are wanted.' },
-    resolution: { type: 'string', enum: Object.keys(ALLOWED), description: '540p (default, fastest) or 720p. 1080p allows 5 seconds only.' },
-    duration_seconds: { type: 'integer', description: 'Seconds: 5 (default), 6, 8 or 10 (1080p: 5 only). Longer takes proportionally longer.' },
+  { name: 'ltx_submit_video', description: 'Queue a video to be generated locally on the owner\'s computer with LTX 2.5 (free, no credits), of ANY length the task needs (5 seconds up). There is no length limit: a long video is made as a chain of short parts, each starting from the last frame of the one before, then joined. It is SLOW and proportional to length: 540p takes about 1.3 minutes per second of video (a 5-second clip is 6-7 minutes, one minute of video about 80 minutes), 720p and 1080p longer. Jobs run one at a time, so this returns a job id straight away; check it later with ltx_job (it shows parts done). Good for atmosphere, backgrounds and b-roll. It cannot draw exact logos, seals, type or brand colours: those are added afterwards in HyperFrames or Canva. Only submit when the task asks for generated footage.', inputSchema: { type: 'object', required: ['prompt'], properties: {
+    prompt: { type: 'string', description: 'What the video shows, in plain English: subject, setting, light, colours, movement. State the palette (for WRW: ink black, bone white, one red accent). Say "no text, no logos, no people" unless people are wanted.' },
+    scenes: { type: 'array', items: { type: 'string' }, description: 'Optional, for long videos: one prompt per ~10-second part, in order, so the story moves on. If shorter than the number of parts, the last one repeats; if absent, `prompt` is used for every part.' },
+    resolution: { type: 'string', enum: Object.keys(ALLOWED), description: '540p (default, fastest) or 720p or 1080p.' },
+    duration_seconds: { type: 'integer', description: 'Total seconds, 5 or more (default 5). Any length; time scales with it.' },
     aspect_ratio: { type: 'string', enum: ASPECTS, description: '9:16 vertical (default, for Reels and Shorts) or 16:9.' },
     camera_motion: { type: 'string', enum: CAMERA, description: 'Optional camera move; default none.' },
     negative_prompt: { type: 'string', description: 'Optional: what to avoid, e.g. "text, watermark, people, flicker".' },
@@ -23,7 +26,7 @@ const TOOLS = [
 ];
 
 const mins = j => j.finishedAt && j.startedAt ? Math.round((j.finishedAt - j.startedAt) / 60000 * 10) / 10 : null;
-const brief = j => ({ id: j.id, state: j.state, resolution: j.resolution, seconds: j.duration, aspect: j.aspectRatio, requestedBy: j.requestedBy || '', file: j.file || undefined, error: j.error || undefined, minutesTaken: mins(j) ?? undefined, prompt: j.prompt.slice(0, 120) });
+const brief = j => ({ id: j.id, state: j.state, resolution: j.resolution, seconds: j.duration, aspect: j.aspectRatio, requestedBy: j.requestedBy || '', file: j.file || undefined, error: j.error || undefined, minutesTaken: mins(j) ?? undefined, parts: j.segments?.length > 1 ? j.segments.length : undefined, partsDone: j.progress?.done, prompt: j.prompt.slice(0, 120) });
 const text = o => ({ content: [{ type: 'text', text: typeof o === 'string' ? o : JSON.stringify(o, null, 2) }] });
 const fail = s => ({ isError: true, content: [{ type: 'text', text: s }] });
 
@@ -46,7 +49,7 @@ const tools = {
     return text({
       ready: true, workerRunning: !!workerAlive(), queued: jobs.filter(j => j.state === 'queued').length, running: jobs.filter(j => j.state === 'running').length,
       freeRamGb: +(os.freemem() / 2 ** 30).toFixed(1), needsFreeRamGb: MIN_FREE_RAM_GB, maxActiveJobs: MAX_ACTIVE, canAcceptMore: act.length < MAX_ACTIVE,
-      limits: ALLOWED, note: 'Free and local, but slow: about 6-7 minutes for a 5-second 540p clip. One job at a time.',
+      resolutions: Object.keys(ALLOWED), minSeconds: MIN_SECONDS, maxSeconds: 'no practical limit; time scales with length', note: 'Free and local, but slow: about 1.3 minutes per second of 540p video (6-7 minutes for 5 seconds). One job at a time.',
     });
   },
   ltx_submit_video(a) {
@@ -55,17 +58,20 @@ const tools = {
     if (prompt.length > 1500) return fail('Prompt is too long (max 1500 characters).');
     const resolution = a.resolution || '540p', duration = a.duration_seconds ?? 5, aspectRatio = a.aspect_ratio || '9:16', cameraMotion = a.camera_motion || 'none';
     if (!ALLOWED[resolution]) return fail('resolution must be one of ' + Object.keys(ALLOWED).join(', '));
-    if (!ALLOWED[resolution].includes(duration)) return fail(`${resolution} allows ${ALLOWED[resolution].join(', ')} seconds.`);
+    if (!Number.isInteger(duration) || duration < MIN_SECONDS || duration > MAX_SECONDS) return fail(`duration_seconds must be a whole number from ${MIN_SECONDS} to ${MAX_SECONDS}.`);
+    const scenes = Array.isArray(a.scenes) ? a.scenes.map(s => String(s).trim().slice(0, 1500)).filter(s => s.length >= 10).slice(0, 400) : [];
+    const segments = planSegments(resolution, duration);
     if (!ASPECTS.includes(aspectRatio)) return fail('aspect_ratio must be 9:16 or 16:9.');
     if (!CAMERA.includes(cameraMotion)) return fail('camera_motion must be one of ' + CAMERA.join(', '));
     ensureDirs();
     const act = active(listJobs());
     if (act.length >= MAX_ACTIVE) return fail(`The queue is full (${act.length} jobs waiting or running). Wait for some to finish; check ltx_list_jobs.`);
-    const job = writeJob({ id: newId(), state: 'queued', prompt, negativePrompt: String(a.negative_prompt || '').slice(0, 400), resolution, duration, aspectRatio, cameraMotion, requestedBy: String(a.requested_by || '').slice(0, 60), createdAt: Date.now() });
+    const job = writeJob({ id: newId(), state: 'queued', prompt, negativePrompt: String(a.negative_prompt || '').slice(0, 400), resolution, duration, segments, scenes: scenes.length ? segments.map((_, i) => scenes[Math.min(i, scenes.length - 1)]) : undefined, aspectRatio, cameraMotion, requestedBy: String(a.requested_by || '').slice(0, 60), createdAt: Date.now() });
     const started = startWorker();
     const ahead = act.length;
-    return text({ jobId: job.id, state: 'queued', jobsAhead: ahead, workerStarted: started,
-      expect: `about ${Math.round((6.5 + 6.5 * ahead) )} minutes if nothing else goes wrong (6-7 minutes per 5-second 540p clip, one at a time)`,
+    const aheadSecs = act.reduce((n, j) => n + (j.duration || 5), 0);
+    return text({ jobId: job.id, state: 'queued', jobsAhead: ahead, parts: segments.length, workerStarted: started,
+      expect: `${eta(resolution, duration + aheadSecs)} if nothing else goes wrong (${eta(resolution, duration)} for this video${ahead ? ', plus the jobs ahead' : ''}; one job at a time)`,
       next: 'Do not wait for it. Tell the owner the job id and that it is queued; check it later with ltx_job. The finished file is saved on the owner\'s computer under output/ltx/ and the path appears in ltx_job.' });
   },
   ltx_job(a) { kick(); const j = readJob(String(a.job_id || '')); return j ? text(brief(j)) : fail('No such job: ' + a.job_id); },
@@ -73,7 +79,8 @@ const tools = {
   ltx_cancel(a) {
     const j = readJob(String(a.job_id || '')); if (!j) return fail('No such job: ' + a.job_id);
     if (j.state === 'queued') { writeJob({ ...j, state: 'cancelled', finishedAt: Date.now() }); return text({ id: j.id, state: 'cancelled' }); }
-    return fail(`Job ${j.id} is ${j.state}; only a queued job can be cancelled.`);
+    if (j.state === 'running') { writeJob({ ...j, state: 'cancelled' }); return text({ id: j.id, state: 'cancelled', note: 'It stops when the part now being made finishes.' }); }
+    return fail(`Job ${j.id} is ${j.state}; only a queued or running job can be cancelled.`);
   },
 };
 

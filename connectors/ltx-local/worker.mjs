@@ -8,9 +8,10 @@ import os from 'node:os';
 import path from 'node:path';
 import crypto from 'node:crypto';
 import { spawn, execFileSync } from 'node:child_process';
-import { LTX, OUT, DATA, PIDFILE, WORKER_LOG, PORT, IDLE_MS, MIN_FREE_RAM_GB, ensureDirs, listJobs, readJob, writeJob } from './shared.mjs';
+import { LTX, OUT, DATA, TMP, PIDFILE, WORKER_LOG, PORT, IDLE_MS, MIN_FREE_RAM_GB, ensureDirs, findFfmpeg, listJobs, readJob, writeJob } from './shared.mjs';
 
 ensureDirs();
+const FFMPEG = findFfmpeg();
 const log = (...a) => { try { fs.appendFileSync(WORKER_LOG, new Date().toISOString() + ' ' + a.join(' ') + '\n'); } catch {} };
 
 // single instance
@@ -75,15 +76,36 @@ async function run(job) {
   await ensureBackend();
   // never the paid cloud API for video: force local generation every time
   await call('POST', '/api/settings', { userPrefersLtxApiVideoGenerations: false });
-  const body = { prompt: job.prompt, resolution: job.resolution, model: 'fast', duration: job.duration, fps: 24, aspectRatio: job.aspectRatio, cameraMotion: job.cameraMotion, audio: false };
-  if (job.negativePrompt) body.negativePrompt = job.negativePrompt;
-  const r = await call('POST', '/api/generate', body, 45 * 60 * 1000);
-  if (r.status !== 200 || r.json?.status !== 'complete' || !r.json?.video_path) {
-    const msg = r.json?.error || r.json?.detail || r.text || ('HTTP ' + r.status);
-    throw new Error('the backend refused the job: ' + String(msg).slice(0, 300));
+  // a video is a chain of segments: each starts from the last frame of the one before, so it carries on rather than cutting
+  const plan = job.segments?.length ? job.segments : [job.duration];
+  const dir = path.join(TMP, job.id); fs.mkdirSync(dir, { recursive: true });
+  const parts = []; let image = null;
+  for (let i = 0; i < plan.length; i++) {
+    const cur = readJob(job.id); if (cur?.state === 'cancelled') throw new Error('cancelled');
+    const body = { prompt: job.scenes?.[i] || job.prompt, resolution: job.resolution, model: 'fast', duration: plan[i], fps: 24, aspectRatio: job.aspectRatio, cameraMotion: job.cameraMotion, audio: false };
+    if (job.negativePrompt) body.negativePrompt = job.negativePrompt;
+    if (image) body.imagePath = image;
+    const r = await call('POST', '/api/generate', body, 45 * 60 * 1000);
+    if (r.status !== 200 || r.json?.status !== 'complete' || !r.json?.video_path) {
+      const msg = r.json?.error || r.json?.detail || r.text || ('HTTP ' + r.status);
+      throw new Error(`the backend refused ${plan.length > 1 ? 'part ' + (i + 1) + ' of ' + plan.length : 'the job'}: ` + String(msg).slice(0, 300));
+    }
+    const part = path.join(dir, 'p' + String(i).padStart(3, '0') + '.mp4');
+    fs.copyFileSync(r.json.video_path, part); parts.push(part);
+    writeJob({ ...(readJob(job.id) || job), progress: { done: i + 1, of: plan.length } });
+    if (i < plan.length - 1) { // the last frame becomes the first frame of the next part
+      image = path.join(dir, 'f' + i + '.png');
+      execFileSync(FFMPEG, ['-y', '-v', 'error', '-sseof', '-0.15', '-i', part, '-frames:v', '1', '-update', '1', image], { windowsHide: true, timeout: 60000 });
+    }
   }
   const dest = path.join(OUT, job.id + '.mp4');
-  fs.copyFileSync(r.json.video_path, dest);
+  if (parts.length === 1) fs.copyFileSync(parts[0], dest);
+  else {
+    const list = path.join(dir, 'list.txt');
+    fs.writeFileSync(list, parts.map(p => `file '${p.replace(/\\/g, '/')}'`).join('\n'));
+    execFileSync(FFMPEG, ['-y', '-v', 'error', '-f', 'concat', '-safe', '0', '-i', list, '-c', 'copy', dest], { windowsHide: true, timeout: 10 * 60 * 1000 });
+  }
+  fs.rmSync(dir, { recursive: true, force: true });
   return dest;
 }
 
@@ -97,7 +119,7 @@ async function loop() {
     }
     lastWork = Date.now();
     const job = writeJob({ ...next, state: 'running', startedAt: Date.now() });
-    log('job', job.id, 'start', job.resolution, job.duration + 's');
+    log('job', job.id, 'start', job.resolution, job.duration + 's', (job.segments?.length || 1) + ' part(s)');
     try {
       const file = await run(job);
       const cur = readJob(job.id);

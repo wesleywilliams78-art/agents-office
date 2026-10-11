@@ -17,7 +17,7 @@ Lets the office agents queue a generated video clip that is made **on this compu
 ## Guard rails
 - Always local: the worker turns off LTX's "use the cloud API for video" preference before every job. Cloud video is billed per second and is never used.
 - Refuses to start when LTX Desktop is open (it holds the GPU) or when under 8 GB of RAM is free. Windows ran out of memory below that during testing and the backend crashed.
-- At most 4 jobs queued or running; clips are capped at 10 seconds (1080p: 5). Only a queued job can be cancelled.
+- At most 4 jobs queued or running; there is no length limit. A video over 10 seconds is made as a chain of parts of up to 10 seconds: each part starts from the last frame of the one before (image-to-video), and ffmpeg joins them. Time scales with length: about 1.3 minutes per second at 540p (measured for 5 s; longer is an estimate), so a minute of video is about 80 minutes. `scenes` gives one prompt per part. A queued or running job can be cancelled (a running one stops after the part in progress). Parts live in `data/ltx/tmp/` until the join. Needs ffmpeg (found on PATH or in the winget packages).
 - Needs a large page file: set it to 32 GB initial, 80 GB maximum (or system managed). With the default it crashed.
 
 ## Try it by hand

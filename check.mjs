@@ -206,15 +206,18 @@ await step('local video connector: speaks MCP, refuses bad requests without queu
     const names = (await rpc('tools/list', {})).result.tools.map(t => t.name);
     for (const t of ['ltx_status', 'ltx_submit_video', 'ltx_job', 'ltx_list_jobs', 'ltx_cancel']) if (!names.includes(t)) throw new Error('missing tool ' + t);
     if (names.some(t => /(^|_)(send|reply|forward)(_|$)/.test(t))) throw new Error('a tool looks like a send');
-    const bad = await rpc('tools/call', { name: 'ltx_submit_video', arguments: { prompt: 'A slow push-in on layered mountains at dawn', resolution: '1080p', duration_seconds: 8 } });
-    if (!bad.result.isError) throw new Error('an invalid clip length was accepted');
+    const bad = await rpc('tools/call', { name: 'ltx_submit_video', arguments: { prompt: 'A slow push-in on layered mountains at dawn', resolution: '540p', duration_seconds: 2 } });
+    if (!bad.result.isError) throw new Error('a clip under the minimum length was accepted');
+    const { planSegments } = await import('./connectors/ltx-local/shared.mjs');
+    const plan = planSegments('540p', 60);
+    if (plan.reduce((a, b) => a + b, 0) !== 60 || plan.some(s => s > 10)) throw new Error('a 60-second plan does not chain into parts of 10 seconds or less');
     const short = await rpc('tools/call', { name: 'ltx_submit_video', arguments: { prompt: 'short' } });
     if (!short.result.isError) throw new Error('a one-word prompt was accepted');
     if (listJobs().length !== before) throw new Error('a refused request still queued a job');
   } finally { p.kill(); }
   const worker = fs.readFileSync(path.join(dir, 'worker.mjs'), 'utf8');
   if (!/userPrefersLtxApiVideoGenerations:\s*false/.test(worker)) throw new Error('the worker no longer forces local generation');
-  return 'five tools, no send-like tool · an invalid length and a one-word prompt refused, nothing queued · the worker forces the local (free) route every job';
+  return 'five tools, no send-like tool · too-short length and a one-word prompt refused, nothing queued · any length chains into parts of 10 s or less · the worker forces the local (free) route every job';
 });
 await step('budget: ledger rows become month totals, and a wrong total is named against the sheet\'s own summary', async () => {
   const budget = await import('./budget.mjs');
