@@ -239,11 +239,66 @@
   .bfoot { font-size: 11px; color: var(--grey); margin-top: 8px; }
   .bfoot .bad { color: var(--warn); }
   @media (max-width: 760px) { .bcat { grid-template-columns: 100px minmax(0, 1fr) 80px; } .bcat .bp { display: none; } .bl { grid-template-columns: minmax(0, 1fr) 90px; } .bl > :nth-child(n+3):not(.bnum) { display: none; } .bl.hd > :nth-child(n+3) { display: none; } }
+
+  /* ===== Wesley - Personal Brand ===== bone, ink and one red; Newsreader Light for headings, Archivo for everything else;
+     square corners, hairlines instead of boxes, generous space, one quiet mountain ridge. Tokens first, so every panel follows. */
+  :root {
+    --bg: #F3F2F2; --panel: #FBFAFA; --ink: #201E1D; --grey: #4A4644; --faint: #8a8582;
+    --line: #D6D2CF; --soft: rgba(32,30,29,.045);
+    --serif: Newsreader, "Instrument Serif", Georgia, serif; --ui: Archivo, Inter, -apple-system, "Segoe UI", sans-serif;
+    --red: #EC3013; --deep: #B6240E;
+    --q-do: #EC3013; --q-plan: #201E1D; --q-delegate: #8a7f78; --q-drop: #b9b3ae;
+    --ok: #4C7A5A; --warn: #B6240E; --bad: #EC3013;
+  }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+    --bg: #201E1D; --panel: #272422; --ink: #F3F2F2; --grey: #c9c4c1; --faint: #8f8985; --line: rgba(243,242,242,.16); --soft: rgba(243,242,242,.05);
+    --q-do: #EC3013; --q-plan: #F3F2F2; --q-delegate: #a89e97; --q-drop: #6f6a66; --ok: #7FB28F; --warn: #E9604A; --bad: #EC3013;
+  } }
+  :root[data-theme="dark"] { --bg: #201E1D; --panel: #272422; --ink: #F3F2F2; --grey: #c9c4c1; --faint: #8f8985; --line: rgba(243,242,242,.16); --soft: rgba(243,242,242,.05);
+    --q-do: #EC3013; --q-plan: #F3F2F2; --q-delegate: #a89e97; --q-drop: #6f6a66; --ok: #7FB28F; --warn: #E9604A; --bad: #EC3013; }
+  body { font-weight: 400; letter-spacing: .005em; }
+  *, *::before, *::after { border-radius: 0 !important; box-shadow: none !important; }
+  .live { border-radius: 50% !important; }
+  .live.on { box-shadow: 0 0 0 3px color-mix(in srgb, var(--ok) 25%, transparent) !important; }
+  .dot, .ready i { border-radius: 50% !important; } .ready i { border-radius: 0 !important; }
+  h1, h2, .kpi .v, .trh b, .skkpi b { font-family: var(--serif) !important; font-weight: 300 !important; }
+  header { position: relative; align-items: center; gap: 16px; padding: 6px 0 22px; margin-bottom: 8px; border-bottom: 1px solid var(--line); }
+  header h1 { font-size: 36px; letter-spacing: 0; }
+  header .sub, .kpi .l, .side .gl, .tag, .ni .nv, .news .nd { letter-spacing: .18em; font-weight: 500; color: var(--grey); }
+  .seal { width: 34px; height: 34px; background: var(--red); color: #F3F2F2; display: grid; place-items: center; font: 300 20px/1 "Noto Serif SC", serif; flex: none; }
+  /* flow: hairlines and air instead of boxes */
+  .panel { background: transparent; border: 0; border-top: 1px solid var(--line); }
+  .panel.trend, .panel.sk, .panel.client, .dept, .news { background: var(--panel); border: 1px solid var(--line); }
+  .kpis { gap: 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); margin-bottom: 26px; }
+  .kpi { background: transparent; border: 0; border-right: 1px solid var(--line); padding: 16px 16px 14px; }
+  .kpi:last-child { border-right: 0; }
+  .kpi .v { font-size: 38px; }
+  .kpi.alert .v { color: var(--red); }
+  section { margin-bottom: 44px; }
+  .sh { margin-bottom: 18px; align-items: baseline; }
+  .sh h2 { font-size: 30px; }
+  .side { gap: 0; }
+  .side button { padding: 10px 12px; font-weight: 500; letter-spacing: .1em; text-transform: uppercase; font-size: 11px; border-left: 2px solid transparent; }
+  .side button.on { background: transparent; color: var(--ink); border-left-color: var(--red); }
+  .side .n { color: var(--grey); } .side .n.alert { color: var(--red); } .side button.on .n.alert { color: var(--red); }
+  button { background: transparent; border-color: var(--ink); letter-spacing: .12em; text-transform: uppercase; font-weight: 500; font-size: 10.5px; padding: 7px 12px; }
+  button:hover { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+  button.primary, .seg button.on { background: var(--ink); color: var(--bg); }
+  .tag { border-color: var(--line); } .tag.lead { background: var(--ink); color: var(--bg); } .tag.miss { color: var(--deep); border-color: var(--deep); } .tag.good { color: var(--grey); border-color: var(--grey); }
+  .trb { background: var(--soft); } .trb i.ok { background: var(--ink); } .trb i.bad { background: var(--red); }
+  .wa th { color: var(--grey); letter-spacing: .14em; } .wa td { border-top-color: var(--line); }
+  a { text-decoration-color: var(--red); text-underline-offset: 3px; }
+  /* one quiet mountain ridge at the foot of the page, as on every WRW document */
+  body::after { content: ""; position: fixed; left: 0; right: 0; bottom: 0; height: 90px; pointer-events: none; opacity: .07; z-index: 0;
+    background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 120' preserveAspectRatio='none'><path d='M0 120V78C90 44 150 30 250 58S400 96 500 60 640 6 760 40s150 56 240 24 130-36 200-14V120Z' fill='%23201E1D'/></svg>") center bottom / 100% 100% no-repeat; }
+  .wrap { position: relative; z-index: 1; }
 </style>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500&family=Newsreader:opsz,wght@6..72,300;6..72,400&family=Noto+Serif+SC:wght@300&display=swap">
 </head>
 <body>
 <div class="wrap">
   <header>
+    <span class="seal" aria-hidden="true">略</span>
     <h1 id="biz">AIOS</h1>
     <span class="sub">Agents Office · operating picture</span>
     <div class="right"><span class="live" id="live"></span><span id="liveTxt">connecting…</span> · <a href="/">open the office</a></div>
