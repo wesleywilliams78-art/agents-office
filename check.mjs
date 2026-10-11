@@ -174,6 +174,25 @@ await step('matrix: closing a card with an answer keeps it, and the extractor is
   if (!/\[done: …\]/.test(JSON.stringify(p))) throw new Error('the extractor is not told what [done: …] means');
   return 'DONE can carry what happened · a blank answer clears it · the extractor treats a [done: …] line as a fact and does not ask again';
 });
+await step('skill audit: usage, rework, lessons and connector wiring are scored, and a proven link is not flagged', async () => {
+  const { audit } = await import('./skillaudit.mjs');
+  const mk = (name, extra = {}) => ({ name, description: 'd', agents: ['vid'], departments: [], everyone: false, files: [], source: 'brain', path: '', text: 'Use ltx-local for a clip.', ...extra });
+  const agents = [{ id: 'vid', name: 'VIDEO EDITOR', department: 'marketing', tools: ['ltx-local'] }];
+  const servers = [{ id: 'ltx-local', key: null, name: 'ltx-local', status: 'connected', allowed: true, depts: ['marketing'] }];
+  const day = 86400000, now = Date.now();
+  const tasks = [{ id: 1, agent: 'vid', skills: ['social'], revisions: 1, doneAt: now - day }, { id: 2, agent: 'vid', skills: ['social'], doneAt: now - day, used: ['ltx-local'] }];
+  const r = audit({ skills: [mk('social'), mk('idle')], agents, tasks, servers, brainPath: path.join(ROOT, 'no-brain'), now });
+  const a = r.skills.find(x => x.name === 'social'), b = r.skills.find(x => x.name === 'idle');
+  if (a.uses !== 2 || a.reworked !== 1) throw new Error('usage not counted: ' + JSON.stringify({ u: a.uses, r: a.reworked }));
+  if (!a.links[0]?.proven) throw new Error('a link used in a real task was not marked proven');
+  if (a.recs.some(x => /not wired|not usable/.test(x.text))) throw new Error('a proven link was flagged');
+  if (b.uses !== 0) throw new Error('an idle skill showed uses');
+  const fresh = audit({ skills: [mk('idle')], agents, tasks: [{ id: 3, agent: 'vid', skills: ['other'], doneAt: now }], servers, brainPath: path.join(ROOT, 'no-brain'), now }).skills[0];
+  if (!fresh.links[0] || fresh.links[0].usedByAgents !== 0 || !fresh.recs.some(x => /no agent task has used it yet/.test(x.text))) throw new Error('a wired link that no agent has used was not reported as untested');
+  const down = audit({ skills: [mk('idle')], agents, tasks: [], servers: [{ ...servers[0], status: 'failed' }], brainPath: path.join(ROOT, 'no-brain'), now });
+  if (!down.skills[0].recs.some(x => x.level === 'warn' && /not usable/.test(x.text))) throw new Error('a down connector was not flagged');
+  return 'counts uses and rework · a link used in a real task is proven · a wired link never used is "prove it with a test" · a down connector is a warning';
+});
 await step('local video connector: speaks MCP, refuses bad requests without queueing, and always forces local generation', async () => {
   const dir = path.join(ROOT, 'connectors', 'ltx-local');
   const { listJobs } = await import('./connectors/ltx-local/shared.mjs');

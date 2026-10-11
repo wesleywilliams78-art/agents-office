@@ -113,6 +113,23 @@
   .msg { font-size: 12px; color: var(--grey); margin-bottom: 8px; }
   .msg:empty { display: none; }
   .msg.err { color: var(--bad); }
+  /* skill audit */
+  .skkpis { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 10px; }
+  .skkpi { padding: 6px 10px; border: 1px solid var(--line); border-radius: 8px; font-size: 12px; background: var(--panel); }
+  .skkpi b { font: 400 18px/1 var(--serif); margin-right: 5px; }
+  .skgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(380px, 1fr)); gap: 10px; }
+  .sk { padding: 12px 13px; }
+  .sk .skh { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+  .sk .skn { font-weight: 700; font-size: 13.5px; }
+  .sk .skd { color: var(--grey); font-size: 12px; margin: 3px 0 6px; }
+  .sk .sks { display: flex; gap: 10px; flex-wrap: wrap; font-size: 11.5px; color: var(--grey); margin-bottom: 6px; }
+  .sk .skl { display: flex; gap: 5px; flex-wrap: wrap; margin-bottom: 6px; }
+  .sk ul.skr { margin: 0 0 8px; padding-left: 16px; font-size: 12px; list-style: none; }
+  .sk ul.skr li { margin: 4px 0; text-indent: -14px; padding-left: 14px; }
+  .sk ul.skr li.warn { color: var(--warn); }
+  .sk ul.skr li.ok { color: var(--ok); }
+  .sk .skp { white-space: pre-wrap; font-size: 12px; background: var(--bg); border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; margin-top: 6px; }
+  .sk .skb { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
   .matrix { display: grid; grid-template-columns: 22px 1fr 1fr; grid-template-rows: 22px auto auto; gap: 8px; }
   .axis { font-size: 10px; letter-spacing: .16em; font-weight: 700; color: var(--grey); display: flex; align-items: center; justify-content: center; text-transform: uppercase; }
   .axis.v { writing-mode: vertical-rl; transform: rotate(180deg); }
@@ -253,6 +270,17 @@
     </aside>
   </section>
 
+  <section id="skillSec">
+    <div class="sh">
+      <h2>Skill audit</h2>
+      <span class="note">Which skills the office really uses, which it doesn't, which are being corrected, and whether the connectors a skill relies on are wired and proven. Ask for a revision on any card.</span>
+      <div class="tools seg" id="kShow"><button data-v="attn" class="on">NEEDS ATTENTION</button><button data-v="unused">UNUSED OR QUIET</button><button data-v="refining">BEING REFINED</button><button data-v="all">ALL</button></div>
+    </div>
+    <div class="msg" id="skMsg"></div>
+    <div class="skkpis" id="skKpis"></div>
+    <div class="skgrid" id="skGrid"></div>
+  </section>
+
   <section>
     <div class="sh"><h2>Happening now</h2><span class="note" id="nowNote">Live from the office.</span></div>
     <div class="cols">
@@ -294,7 +322,7 @@ const DEPTS = {
 const ORDER = ['emails', 'sales', 'marketing', 'ops', 'fin', 'delivery'];
 const GAPS = { 'no-seat': 'GAP · NO SEAT', 'owner-decision': 'YOUR CALL', 'missing-info': 'GAP · MISSING INFO' };
 const MODEL = { sonnet: 'Sonnet', opus: 'Opus', fable: 'Fable' };
-const S = { health: null, agents: [], tasks: [], routines: [], matrix: { items: [], feeds: [], quadrants: {}, clients: [] }, rShow: 'all', mShow: 'open', nShow: 'all', openSeat: new Set(), openItem: new Set(), busy: false };
+const S = { health: null, agents: [], tasks: [], routines: [], matrix: { items: [], feeds: [], quadrants: {}, clients: [] }, rShow: 'all', mShow: 'open', nShow: 'all', kShow: 'attn', skillAudit: null, openSeat: new Set(), openItem: new Set(), busy: false };
 const $ = id => document.getElementById(id);
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const ago = t => { if (!t) return ''; const s = (Date.now() - t) / 1000; return s < 60 ? 'just now' : s < 3600 ? Math.round(s / 60) + ' min ago' : s < 86400 ? Math.round(s / 3600) + ' h ago' : Math.round(s / 86400) + ' d ago'; };
@@ -304,7 +332,8 @@ const api = (p, o = {}) => fetch('/api' + p, { headers: { 'content-type': 'appli
 
 async function poll() {
   try {
-    const [h, t, r, m] = await Promise.all([api('/health'), api('/tasks'), api('/routines').catch(() => ({ routines: [] })), api('/matrix')]);
+    const [h, t, r, m, sa] = await Promise.all([api('/health'), api('/tasks'), api('/routines').catch(() => ({ routines: [] })), api('/matrix'), api('/skill-audit').catch(() => null)]);
+    if (sa) S.skillAudit = sa;
     S.health = h; S.agents = h.agents || []; S.tasks = Array.isArray(t) ? t : []; S.routines = r.routines || []; S.matrix = m;
     $('live').classList.add('on'); $('liveTxt').textContent = `live · v${h.version} · ${MODEL[h.model] || h.model} by default`;
     $('biz').textContent = h.name || 'AIOS'; document.title = (h.name || 'Agents Office') + ' · AIOS';
@@ -326,7 +355,34 @@ const roleSkills = a => { const h = houseSkills(); return (a.skills || []).filte
 // readiness: a role written, a standing brief, a skill that says how this seat's work is done
 const readiness = a => [!!a.does, !!a.brief, roleSkills(a).length > 0];
 
-function render() { renderKpis(); renderClients(); renderMatrix(); renderRoles(); renderNews(); renderActivity(); renderBudget(); }
+function render() { renderKpis(); renderClients(); renderMatrix(); renderRoles(); renderSkills(); renderNews(); renderActivity(); renderBudget(); }
+
+// skill audit: the server scores every skill from the task log, the lessons and the connector list; this only draws it
+function renderSkills() {
+  const A = S.skillAudit; if (!A) return;
+  const sm = A.summary;
+  $('skKpis').innerHTML = [['skills', sm.total], ['need attention', sm.attention], ['never used', sm.unused], ['used once', sm.quiet], ['being refined', sm.refining], ['new', sm.newSkills]].map(([l, n]) => `<span class="skkpi"><b>${n}</b>${l}</span>`).join('');
+  const f = S.kShow, list = A.skills.filter(x => f === 'all' ? true : f === 'attn' ? x.attention > 0 : f === 'refining' ? x.refining : ['unused', 'quiet', 'new'].includes(x.state));
+  const label = { house: 'HOUSE STYLE', busy: 'BUSY', active: 'ACTIVE', quiet: 'USED ONCE', unused: 'NEVER USED', new: 'NEW' };
+  $('skGrid').innerHTML = list.map(x => {
+    const links = x.links.map(l => `<span class="tag ${l.connected && (l.proven || l.wired) ? 'good' : 'miss'}" title="${esc(l.notes.join('; '))}">${esc(l.name)} · ${l.proven ? 'proven, used ×' + l.usedByAgents : l.connected ? (l.wired ? 'wired, not yet used' : 'not wired') : 'not usable'}</span>`).join('');
+    const recs = x.recs.map(r => `<li class="${r.level}">${r.level === 'warn' ? '⚠ ' : r.level === 'ok' ? '✓ ' : '· '}${esc(r.text)}</li>`).join('');
+    const p = x.proposal ? `<div class="skp" data-prop="${esc(x.name)}">${esc(x.proposal.text)}</div><div class="skb"><button data-copyprop="${esc(x.name)}">COPY</button><span class="note">suggested ${ago(x.proposal.at)}; nothing is changed until you say so</span></div>` : '';
+    return `<div class="panel sk" data-skill="${esc(x.name)}">
+      <div class="skh"><span class="skn">${esc(x.name)}</span><span class="tag ${x.state === 'unused' ? 'miss' : x.state === 'busy' ? 'good' : ''}">${label[x.state]}</span>${x.refining ? '<span class="tag">BEING REFINED</span>' : ''}</div>
+      <div class="skd">${esc(x.description)}</div>
+      <div class="sks"><span>${x.house ? 'every seat' : esc(x.seats.map(s => s.name).join(', ') || 'no seat')}</span><span>used ${x.uses}×${x.lastUsed ? ', last ' + ago(x.lastUsed) : ''}</span>${x.uses ? `<span>reworked ${x.reworked} of ${x.uses}</span>` : ''}${x.lessonCount ? `<span>${x.lessonCount} correction${x.lessonCount > 1 ? 's' : ''}</span>` : ''}<span>${x.chars} / 6000 characters</span></div>
+      ${links ? `<div class="skl">${links}</div>` : ''}
+      <ul class="skr">${recs}</ul>
+      ${p}${x.house ? '' : `<div class="skb"><button data-propose="${esc(x.name)}">${x.proposal ? 'ASK AGAIN' : 'SUGGEST A REVISION'}</button></div>`}
+    </div>`;
+  }).join('') || '<div class="empty">Nothing here.</div>';
+}
+async function proposeRevision(name, btn) {
+  btn.disabled = true; btn.textContent = 'THINKING… (about 20 seconds)'; $('skMsg').className = 'msg'; $('skMsg').textContent = '';
+  try { await api('/skill-audit/propose', { method: 'POST', body: { skill: name } }); await poll(); }
+  catch (e) { $('skMsg').className = 'msg err'; $('skMsg').textContent = 'Could not get a suggestion: ' + e.message; btn.disabled = false; btn.textContent = 'SUGGEST A REVISION'; }
+}
 
 // personal budget: the server reads the owner's Google Sheet (Claude, via the Drive connector) and keeps a snapshot;
 // this only draws it. Every number here is plain arithmetic on the ledger rows, checked against the sheet's own summary block.
@@ -571,6 +627,8 @@ document.addEventListener('click', e => {
   if (e.target.closest('[data-bopen]')) { const sh = S.budget?.sheet?.sheet; if (sh) window.open('https://docs.google.com/spreadsheets/d/' + encodeURIComponent(sh) + '/edit', '_blank', 'noopener'); return; }
   if (e.target.closest('[data-bled]')) { S.bLedger = !S.bLedger; renderBudget(); return; }
   const bm = e.target.closest('[data-bm]'); if (bm) { S.bMonth = bm.dataset.bm; renderBudget(); return; }
+  const pb = e.target.closest('button[data-propose]'); if (pb) { proposeRevision(pb.dataset.propose, pb); return; }
+  const cb = e.target.closest('button[data-copyprop]'); if (cb) { const el = document.querySelector(`[data-prop="${CSS.escape(cb.dataset.copyprop)}"]`); navigator.clipboard.writeText(el ? el.textContent : '').then(() => { cb.textContent = 'COPIED ✓'; setTimeout(() => { cb.textContent = 'COPY'; }, 1500); }).catch(() => { cb.textContent = 'COPY FAILED'; }); return; }
   const b = e.target.closest('button[data-act]');
   if (b) { const id = b.closest('[data-item]').dataset.item; b.disabled = true; act(id, b.dataset.act); return; }
   const m = e.target.closest('button[data-matrix]');

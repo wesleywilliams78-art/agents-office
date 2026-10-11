@@ -53,6 +53,7 @@ import * as teams from './teams.mjs';
 import * as aios from './aios.mjs';
 import * as budget from './budget.mjs';
 import * as brainnotes from './brainnotes.mjs';
+import * as skillaudit from './skillaudit.mjs';
 import { recover } from './recover.mjs';
 import { normModel, modelFor, modelArgs, modelId, modelName, MODEL_KEYS, DEFAULT_MODEL, normEffort, effortFor, effortName, EFFORT_KEYS } from './src/models.js';
 import { parseWhen, describe, valid as validWhen, untilText } from './src/when.js';
@@ -720,6 +721,23 @@ const server = http.createServer(async (req, res) => {
       agents: agentsOut(), setup: setupMap(), routines: (l => ({ count: l.length, paused: l.filter(r => r.paused).length, depts: routines.ALLOWED }))(loadRoutines()), roster: { customised: roster.customised, briefed: roster.briefed, files: roster.files, problems: roster.problems }, skills: (({ count, shipped, brain, problems }) => ({ count, shipped, brain, problems }))(skills.summary()), tools: backend === 'claude-cli', mcp: mcp.summary(), teams: TEAMS, browser: mcp.summary().browser });
     if (url.pathname === '/api/agents') return json(res, 200, { agents: agentsOut(), problems: roster.problems, files: roster.files });
     if (url.pathname === '/api/skills') return json(res, 200, refreshSkills().summary()); // reloads from disk: edit a skill, hit this, see it
+    if (url.pathname === '/api/skill-audit' && req.method === 'GET') { // AIOS: which skills are used, refined, quiet, and whether their connectors are really wired
+      const sk = refreshSkills();
+      return json(res, 200, skillaudit.audit({ skills: sk.skills, agents: AGENTS, tasks: load(), servers: mcp.summary().servers, brainPath: BRAIN, proposals: skillaudit.loadProposals(DATA) }));
+    }
+    if (url.pathname === '/api/skill-audit/propose' && req.method === 'POST') { // ask Claude for a concrete revision of one skill; it proposes, the owner decides
+      const { skill } = await body(req);
+      const sk = refreshSkills(); const s = sk.skills.find(x => x.name === skill);
+      if (!s) return json(res, 404, { error: 'no such skill' });
+      const tasks = load();
+      const a = skillaudit.audit({ skills: sk.skills, agents: AGENTS, tasks, servers: mcp.summary().servers, brainPath: BRAIN });
+      const item = a.skills.find(x => x.name === skill);
+      const sent = tasks.filter(t => (t.skills || []).includes(skill) && t.revisions).map(t => t.title);
+      const pr = skillaudit.proposalPrompt(item, s.text, sent);
+      const text = String(await ask(pr.system, pr.user, { maxTokens: 900, timeout: 120000, model: 'sonnet' })).trim();
+      if (!text) return json(res, 502, { error: 'Claude did not answer' });
+      return json(res, 200, { ok: true, proposal: skillaudit.saveProposal(DATA, skill, text) });
+    }
     if (url.pathname === '/api/lessons') return json(res, 200, { dir: learn.dir(BRAIN), agents: AGENTS.map(a => ({ id: a.id, name: a.name, ...learn.read(BRAIN, a.id) })).filter(x => x.rules.length || x.oneOffs.length) });
     if (url.pathname === '/api/mcp') { if (url.searchParams.get('refresh') === '1') await mcp.discover(); else await discovering; return json(res, 200, { ...mcp.summary(), tools: backend === 'claude-cli' }); }
     if (url.pathname === '/api/brain') return json(res, 200, graph);
