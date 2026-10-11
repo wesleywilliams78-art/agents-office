@@ -44,6 +44,12 @@
   .kpi .v { font: 400 28px/1.05 var(--serif); font-variant-numeric: tabular-nums; }
   .kpi .l { font-size: 10px; letter-spacing: .12em; text-transform: uppercase; color: var(--grey); margin-top: 2px; }
   .kpi.alert .v { color: var(--warn); }
+  .trend { padding: 12px 14px; margin-bottom: 18px; }
+  .trh { font-size: 12px; color: var(--grey); margin-bottom: 8px; } .trh b { font: 400 22px/1 var(--serif); color: var(--ink); margin-right: 4px; } .trh .bad { color: var(--bad); }
+  .trbars { display: grid; grid-template-columns: repeat(14, 1fr); gap: 6px; align-items: end; }
+  .trd { display: flex; flex-direction: column; align-items: center; gap: 3px; font-size: 9.5px; color: var(--faint); }
+  .trb { width: 100%; height: 56px; display: flex; flex-direction: column; justify-content: flex-end; background: var(--soft); border-radius: 4px; overflow: hidden; }
+  .trb i { display: block; width: 100%; } .trb i.ok { background: var(--ok); } .trb i.bad { background: var(--bad); }
   section { margin-bottom: 26px; }
   .sh { display: flex; align-items: baseline; gap: 12px; margin: 0 0 10px; flex-wrap: wrap; }
   .sh h2 { font: 400 22px/1 var(--serif); margin: 0; }
@@ -259,6 +265,7 @@
   </nav>
   <div class="main">
   <div class="kpis" id="kpis" data-cat="overview"></div>
+  <div class="panel trend" id="trend" data-cat="overview"></div>
 
   <section id="clientsSec" data-cat="clients">
     <div class="sh">
@@ -581,6 +588,15 @@ function renderKpis() {
     [open.filter(i => i.gap).length, 'gaps open', open.some(i => i.gap === 'no-seat')],
   ];
   $('kpis').innerHTML = k.map(([v, l, alert]) => `<div class="kpi${alert ? ' alert' : ''}"><div class="v">${v}</div><div class="l">${l}</div></div>`).join('');
+  renderTrend();
+}
+// 14 days of finished work, one bar per day, split by outcome; hover a bar for the day and the count
+function renderTrend() {
+  const el = $('trend'); if (!el) return;
+  const days = [...Array(14)].map((_, i) => { const d = new Date(); d.setHours(0, 0, 0, 0); d.setDate(d.getDate() - (13 - i)); return { d, ok: 0, bad: 0 }; });
+  for (const t of S.tasks) if (t.state === 'done' && t.doneAt) { const x = days.find(y => new Date(t.doneAt) >= y.d && new Date(t.doneAt) < new Date(y.d.getTime() + 86400000)); if (x) t.error ? x.bad++ : x.ok++; }
+  const max = Math.max(1, ...days.map(d => d.ok + d.bad)), total = days.reduce((n, d) => n + d.ok, 0), fails = days.reduce((n, d) => n + d.bad, 0);
+  el.innerHTML = `<div class="trh"><b>${total}</b> tasks finished in 14 days${fails ? ` · <span class="bad">${fails} failed</span>` : ''}</div><div class="trbars">${days.map(d => `<div class="trd" title="${d.d.toLocaleDateString([], { weekday: 'short', day: 'numeric', month: 'short' })}: ${d.ok} done${d.bad ? ', ' + d.bad + ' failed' : ''}"><div class="trb"><i class="bad" style="height:${d.bad / max * 100}%"></i><i class="ok" style="height:${d.ok / max * 100}%"></i></div><span>${d.d.toLocaleDateString([], { weekday: 'narrow' })}</span></div>`).join('')}</div>`;
 }
 
 function renderRoles() {
