@@ -92,7 +92,8 @@ export function audit({ skills, agents, tasks, servers, brainPath, now = Date.no
       uses, lastUsed, reworked, reworkRate: uses ? Math.round(100 * reworked / uses) : 0, ageDays, chars, state,
       lessonCount: lessons.length, lessons: lessons.slice(0, 4),
       links, recs, attention: recs.filter(r => r.level === 'warn').length, refining: !house && uses > 0 && (lessons.length > 0 || reworked > 0),
-      proposal: proposals[s.name] || null,
+      proposal: proposals[s.name]?.text ? proposals[s.name] : null, // an actioned suggestion keeps only its history, so nothing is pending
+      actioned: (proposals[s.name]?.history || []).length, lastActioned: (proposals[s.name]?.history || []).slice(-1)[0]?.doneAt || 0,
     });
   }
   const order = { warn: 0, idea: 1, ok: 2 };
@@ -115,4 +116,11 @@ export function proposalPrompt(item, skillText, reworkedTitles = []) {
 
 export const proposalsFile = dataDir => path.join(dataDir, 'skill-proposals.json');
 export function loadProposals(dataDir) { try { return JSON.parse(fs.readFileSync(proposalsFile(dataDir), 'utf8').replace(/^﻿/, '')); } catch { return {}; } }
-export function saveProposal(dataDir, name, text) { const p = loadProposals(dataDir); p[name] = { text, at: Date.now() }; fs.mkdirSync(dataDir, { recursive: true }); fs.writeFileSync(proposalsFile(dataDir), JSON.stringify(p, null, 2)); return p[name]; }
+export function saveProposal(dataDir, name, text) { const p = loadProposals(dataDir); p[name] = { ...(p[name] || {}), text, at: Date.now() }; fs.mkdirSync(dataDir, { recursive: true }); fs.writeFileSync(proposalsFile(dataDir), JSON.stringify(p, null, 2)); return p[name]; }
+/** The owner has done what the suggestion asked: it leaves the card, a line of history stays, and the skill can be audited and suggested for again as before. */
+export function markProposalDone(dataDir, name) {
+  const p = loadProposals(dataDir), cur = p[name];
+  if (!cur?.text) return null;
+  p[name] = { history: [...(cur.history || []), { text: cur.text, at: cur.at, doneAt: Date.now() }].slice(-20) };
+  fs.mkdirSync(dataDir, { recursive: true }); fs.writeFileSync(proposalsFile(dataDir), JSON.stringify(p, null, 2)); return p[name];
+}

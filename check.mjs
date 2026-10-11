@@ -5,6 +5,7 @@
 // loop the Beta was built against: change something, run it, fix what is red, repeat.
 import { spawn } from 'node:child_process';
 import fs from 'node:fs';
+import os from 'node:os';
 import path from 'node:path';
 import { loadConfig, ROOT } from './config.mjs';
 
@@ -191,7 +192,15 @@ await step('skill audit: usage, rework, lessons and connector wiring are scored,
   if (!fresh.links[0] || fresh.links[0].usedByAgents !== 0 || !fresh.recs.some(x => /no agent task has used it yet/.test(x.text))) throw new Error('a wired link that no agent has used was not reported as untested');
   const down = audit({ skills: [mk('idle')], agents, tasks: [], servers: [{ ...servers[0], status: 'failed' }], brainPath: path.join(ROOT, 'no-brain'), now });
   if (!down.skills[0].recs.some(x => x.level === 'warn' && /not usable/.test(x.text))) throw new Error('a down connector was not flagged');
-  return 'counts uses and rework · a link used in a real task is proven · a wired link never used is "prove it with a test" · a down connector is a warning';
+  const sa = await import('./skillaudit.mjs'), dir = fs.mkdtempSync(path.join(os.tmpdir(), 'sa-'));
+  sa.saveProposal(dir, 'social', 'change A');
+  if (!sa.markProposalDone(dir, 'social') || sa.markProposalDone(dir, 'social')) throw new Error('marking a suggestion done must work once and then report nothing open');
+  if (sa.loadProposals(dir).social.text) throw new Error('an actioned suggestion is still pending');
+  const after = audit({ skills: [mk('social')], agents, tasks: [], servers, brainPath: path.join(ROOT, 'no-brain'), now, proposals: sa.loadProposals(dir) }).skills[0];
+  if (after.proposal || after.actioned !== 1) throw new Error('the card should show nothing pending and one actioned');
+  sa.saveProposal(dir, 'social', 'change B');
+  if (!sa.loadProposals(dir).social.text || sa.loadProposals(dir).social.history.length !== 1) throw new Error('a new suggestion must be possible and keep the history');
+  return 'counts uses and rework · a link used in a real task is proven · a wired link never used is "prove it with a test" · a down connector is a warning · MARK DONE clears one suggestion, keeps history, and a new one can follow';
 });
 await step('local video connector: speaks MCP, refuses bad requests without queueing, and always forces local generation', async () => {
   const dir = path.join(ROOT, 'connectors', 'ltx-local');

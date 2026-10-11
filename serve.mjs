@@ -739,6 +739,11 @@ const server = http.createServer(async (req, res) => {
       const sk = refreshSkills();
       return json(res, 200, skillaudit.audit({ skills: sk.skills, agents: AGENTS, tasks: load(), servers: mcp.summary().servers, brainPath: BRAIN, proposals: skillaudit.loadProposals(DATA) }));
     }
+    if (url.pathname === '/api/skill-audit/done' && req.method === 'POST') { // the owner has implemented the suggestion: mark it actioned, keep the skill open to future suggestions
+      const { skill } = await body(req);
+      const r = skillaudit.markProposalDone(DATA, String(skill || ''));
+      return r ? json(res, 200, { ok: true }) : json(res, 404, { error: 'no open suggestion for that skill' });
+    }
     if (url.pathname === '/api/skill-audit/propose' && req.method === 'POST') { // ask Claude for a concrete revision of one skill; it proposes, the owner decides
       const { skill } = await body(req);
       const sk = refreshSkills(); const s = sk.skills.find(x => x.name === skill);

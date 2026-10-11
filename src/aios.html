@@ -618,11 +618,11 @@ function renderSkills() {
   $('skGrid').innerHTML = list.map(x => {
     const links = x.links.map(l => `<span class="tag ${l.connected && (l.proven || l.wired) ? 'good' : 'miss'}" title="${esc(l.notes.join('; '))}">${esc(l.name)} · ${l.proven ? 'proven, used ×' + l.usedByAgents : l.connected ? (l.wired ? 'wired, not yet used' : 'not wired') : 'not usable'}</span>`).join('');
     const recs = x.recs.map(r => `<li class="${r.level}">${r.level === 'warn' ? '⚠ ' : r.level === 'ok' ? '✓ ' : '· '}${esc(r.text)}</li>`).join('');
-    const p = x.proposal ? `<div class="skp" data-prop="${esc(x.name)}">${esc(x.proposal.text)}</div><div class="skb"><button data-copyprop="${esc(x.name)}">COPY</button><span class="note">suggested ${ago(x.proposal.at)}; nothing is changed until you say so</span></div>` : '';
+    const p = x.proposal ? `<div class="skp" data-prop="${esc(x.name)}">${esc(x.proposal.text)}</div><div class="skb"><button data-copyprop="${esc(x.name)}">COPY</button><button data-doneprop="${esc(x.name)}" title="I have done what this suggestion asks">MARK DONE</button><span class="note">suggested ${ago(x.proposal.at)}; nothing is changed until you say so</span></div>` : '';
     return `<div class="panel sk" data-skill="${esc(x.name)}">
       <div class="skh"><span class="skn">${esc(x.name)}</span><span class="tag ${x.state === 'unused' ? 'miss' : x.state === 'busy' ? 'good' : ''}">${label[x.state]}</span>${x.refining ? '<span class="tag">BEING REFINED</span>' : ''}</div>
       <div class="skd">${esc(x.description)}</div>
-      <div class="sks"><span>${x.house ? 'every seat' : esc(x.seats.map(s => s.name).join(', ') || 'no seat')}</span><span>used ${x.uses}×${x.lastUsed ? ', last ' + ago(x.lastUsed) : ''}</span>${x.uses ? `<span>reworked ${x.reworked} of ${x.uses}</span>` : ''}${x.lessonCount ? `<span>${x.lessonCount} correction${x.lessonCount > 1 ? 's' : ''}</span>` : ''}<span>${x.chars} / 6000 characters</span></div>
+      <div class="sks"><span>${x.house ? 'every seat' : esc(x.seats.map(s => s.name).join(', ') || 'no seat')}</span><span>used ${x.uses}×${x.lastUsed ? ', last ' + ago(x.lastUsed) : ''}</span>${x.uses ? `<span>reworked ${x.reworked} of ${x.uses}</span>` : ''}${x.lessonCount ? `<span>${x.lessonCount} correction${x.lessonCount > 1 ? 's' : ''}</span>` : ''}<span>${x.chars} / 6000 characters</span>${x.actioned ? `<span>${x.actioned} suggestion${x.actioned > 1 ? 's' : ''} actioned, last ${ago(x.lastActioned)}</span>` : ''}</div>
       ${links ? `<div class="skl">${links}</div>` : ''}
       <ul class="skr">${recs}</ul>
       ${p}${x.house ? '' : `<div class="skb"><button data-propose="${esc(x.name)}">${x.proposal ? 'ASK AGAIN' : 'SUGGEST A REVISION'}</button></div>`}
@@ -899,6 +899,7 @@ document.addEventListener('click', e => {
   const bm = e.target.closest('[data-bm]'); if (bm) { S.bMonth = bm.dataset.bm; renderBudget(); return; }
   const nb = e.target.closest('#side button[data-go]'); if (nb) { setCat(nb.dataset.go); return; }
   const pb = e.target.closest('button[data-propose]'); if (pb) { proposeRevision(pb.dataset.propose, pb); return; }
+  const db = e.target.closest('button[data-doneprop]'); if (db) { db.disabled = true; api('/skill-audit/done', { method: 'POST', body: { skill: db.dataset.doneprop } }).then(poll).catch(er => { db.disabled = false; $('skMsg').className = 'msg err'; $('skMsg').textContent = 'Could not mark it done: ' + er.message; }); return; }
   const cb = e.target.closest('button[data-copyprop]'); if (cb) { const el = document.querySelector(`[data-prop="${CSS.escape(cb.dataset.copyprop)}"]`); navigator.clipboard.writeText(el ? el.textContent : '').then(() => { cb.textContent = 'COPIED ✓'; setTimeout(() => { cb.textContent = 'COPY'; }, 1500); }).catch(() => { cb.textContent = 'COPY FAILED'; }); return; }
   const b = e.target.closest('button[data-act]');
   if (b) { const id = b.closest('[data-item]').dataset.item; b.disabled = true; act(id, b.dataset.act); return; }
