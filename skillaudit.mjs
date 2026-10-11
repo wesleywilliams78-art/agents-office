@@ -35,14 +35,17 @@ export function audit({ skills, agents, tasks, servers, brainPath, now = Date.no
     const house = !!s.everyone;
     const used = tasks.filter(t => (t.skills || []).includes(s.name));
     const uses = used.length, reworked = used.filter(t => t.revisions).length;
+    // once the owner marks a suggestion done, what it was based on stops counting against the skill: only corrections and rework after that moment can raise it again
+    const ack = (proposals[s.name]?.history || []).slice(-1)[0]?.doneAt || 0;
+    const reworkedNew = used.filter(t => t.revisions && (t.doneAt || t.addedAt || 0) > ack).length;
     const lastUsed = used.reduce((m, t) => Math.max(m, t.doneAt || t.addedAt || 0), 0);
     let mtime = 0; try { mtime = fs.statSync(s.path).mtimeMs; } catch {}
     const ageDays = mtime ? Math.floor((now - mtime) / DAY) : null;
     const chars = (s.text || '').length;
 
     // lessons the seats that follow this skill have been given: a sign the skill is not yet saying it all
-    const lessons = [];
-    if (!house) for (const a of seats) { const l = learn.read(brainPath, a.id); for (const r of [...l.rules, ...l.oneOffs]) lessons.push(`${a.name}: ${r.replace(/\s*←.*$/, '').slice(0, 150)}`); }
+    const lessons = [], lessonsNew = [];
+    if (!house) for (const a of seats) { const l = learn.read(brainPath, a.id); for (const r of [...l.rules, ...l.oneOffs]) { const line = `${a.name}: ${r.replace(/\s*←.*$/, '').slice(0, 150)}`; lessons.push(line); const d = /(\d{4}-\d{2}-\d{2})/.exec(r); if (!ack || !d || Date.parse(d[1] + 'T23:59:59') > ack) lessonsNew.push(line); } }
 
     // connectors the skill names: connected? wired to the seats that follow it? on their tool lists? ever used by them?
     const links = [];
@@ -72,9 +75,9 @@ export function audit({ skills, agents, tasks, servers, brainPath, now = Date.no
       if (state === 'unused') recs.push({ level: 'warn', text: `Never used since it was built${ageDays !== null ? ` ${ageDays} days ago` : ''}. Give ${first ? first.name : 'a seat'} a real task that fits "${(s.description || s.name).slice(0, 80)}", or merge it into a related skill, or retire it.` });
       if (state === 'new') recs.push({ level: 'idea', text: `Built ${ageDays === 0 ? 'today' : ageDays + ' day' + (ageDays === 1 ? '' : 's') + ' ago'} and not used yet. Give ${first ? first.name : 'a seat'} a first task so it has a track record.` });
       if (state === 'quiet') recs.push({ level: 'idea', text: `Used once. Check it matches how you actually ask for this work; if it never grows, fold it into a related skill.` });
-      if (uses >= 4 && reworked / uses >= 0.25) recs.push({ level: 'warn', text: `Reworked on ${reworked} of ${uses} tasks (${Math.round(100 * reworked / uses)}%). Read the corrections and tighten the steps or the examples.` });
-      if (lessons.length >= 2) recs.push({ level: 'warn', text: `${lessons.length} corrections recorded for the seats that follow it. Fold the lasting ones into the skill (say "fold the lessons into ${s.name}").` });
-      else if (lessons.length === 1) recs.push({ level: 'idea', text: `1 correction recorded for these seats. If it will apply every time, make it a rule in the skill.` });
+      if (uses >= 4 && reworkedNew / uses >= 0.25) recs.push({ level: 'warn', text: `Reworked on ${reworkedNew} of ${uses} tasks${ack ? ' since you last actioned a suggestion' : ''} (${Math.round(100 * reworkedNew / uses)}%). Read the corrections and tighten the steps or the examples.` });
+      if (lessonsNew.length >= 2) recs.push({ level: 'warn', text: `${lessonsNew.length} corrections recorded for the seats that follow it. Fold the lasting ones into the skill (say "fold the lessons into ${s.name}").` });
+      else if (lessonsNew.length === 1) recs.push({ level: 'idea', text: `1 correction recorded for these seats. If it will apply every time, make it a rule in the skill.` });
       for (const l of links) {
         if (l.usedByAgents > 0 && l.connected) { l.proven = true; continue; } // it has worked in real tasks: the wiring labels do not matter
         if (!l.connected) recs.push({ level: 'warn', text: `Relies on ${l.name} but it is not usable: ${l.notes.join('; ')}.` });
@@ -91,7 +94,7 @@ export function audit({ skills, agents, tasks, servers, brainPath, now = Date.no
       seats: seats.map(a => ({ id: a.id, name: a.name })).slice(0, 12), seatCount: seats.length,
       uses, lastUsed, reworked, reworkRate: uses ? Math.round(100 * reworked / uses) : 0, ageDays, chars, state,
       lessonCount: lessons.length, lessons: lessons.slice(0, 4),
-      links, recs, attention: recs.filter(r => r.level === 'warn').length, refining: !house && uses > 0 && (lessons.length > 0 || reworked > 0),
+      links, recs, attention: recs.filter(r => r.level === 'warn').length, refining: !house && uses > 0 && (lessonsNew.length > 0 || reworkedNew > 0),
       proposal: proposals[s.name]?.text ? proposals[s.name] : null, // an actioned suggestion keeps only its history, so nothing is pending
       actioned: (proposals[s.name]?.history || []).length, lastActioned: (proposals[s.name]?.history || []).slice(-1)[0]?.doneAt || 0,
     });

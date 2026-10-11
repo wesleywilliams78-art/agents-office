@@ -644,6 +644,28 @@ async function calendarReminder(item) {
   if (!text) throw new Error('Claude did not confirm the event was created');
   return text;
 }
+// a revision suggestion for one skill, from the audit's evidence; saved for the owner to action (or MARK DONE) in the Skills section
+async function makeProposal(skill) {
+  const sk = refreshSkills(); const s = sk.skills.find(x => x.name === skill);
+  if (!s) return null;
+  const tasks = load();
+  const a = skillaudit.audit({ skills: sk.skills, agents: AGENTS, tasks, servers: mcp.summary().servers, brainPath: BRAIN });
+  const item = a.skills.find(x => x.name === skill);
+  const sent = tasks.filter(t => (t.skills || []).includes(skill) && t.revisions).map(t => t.title);
+  const pr = skillaudit.proposalPrompt(item, s.text, sent);
+  const text = String(await ask(pr.system, pr.user, { maxTokens: 900, timeout: 120000, model: 'sonnet' })).trim();
+  return text ? skillaudit.saveProposal(DATA, skill, text) : null;
+}
+// a rejected job is a lesson: after it is recorded, the skill the agent followed is asked how it should change, and the answer waits in Skills.
+// An open suggestion is left alone so the owner's list does not churn.
+async function proposeFromRejection(task) {
+  const names = (task.skills || []).filter(n => { const s = refreshSkills().skills.find(x => x.name === n); return s && !s.everyone; });
+  for (const n of names.slice(0, 1)) {
+    if (skillaudit.loadProposals(DATA)[n]?.text) continue;
+    const p = await makeProposal(n);
+    if (p) console.log('  ↳ skill "' + n + '" has a suggested revision waiting in Skills');
+  }
+}
 async function matrixApi(req, res, url) {
   if (url.pathname === '/api/matrix' && req.method === 'GET') return json(res, 200, { ...aios.load(DATA), quadrants: aios.QUADRANTS, autoFeed: AUTO_FEED, clients: CLIENTS });
   if (url.pathname === '/api/matrix/feed' && req.method === 'POST') {
@@ -746,16 +768,9 @@ const server = http.createServer(async (req, res) => {
     }
     if (url.pathname === '/api/skill-audit/propose' && req.method === 'POST') { // ask Claude for a concrete revision of one skill; it proposes, the owner decides
       const { skill } = await body(req);
-      const sk = refreshSkills(); const s = sk.skills.find(x => x.name === skill);
-      if (!s) return json(res, 404, { error: 'no such skill' });
-      const tasks = load();
-      const a = skillaudit.audit({ skills: sk.skills, agents: AGENTS, tasks, servers: mcp.summary().servers, brainPath: BRAIN });
-      const item = a.skills.find(x => x.name === skill);
-      const sent = tasks.filter(t => (t.skills || []).includes(skill) && t.revisions).map(t => t.title);
-      const pr = skillaudit.proposalPrompt(item, s.text, sent);
-      const text = String(await ask(pr.system, pr.user, { maxTokens: 900, timeout: 120000, model: 'sonnet' })).trim();
-      if (!text) return json(res, 502, { error: 'Claude did not answer' });
-      return json(res, 200, { ok: true, proposal: skillaudit.saveProposal(DATA, skill, text) });
+      if (!refreshSkills().skills.find(x => x.name === skill)) return json(res, 404, { error: 'no such skill' });
+      const p = await makeProposal(skill);
+      return p ? json(res, 200, { ok: true, proposal: p }) : json(res, 502, { error: 'Claude did not answer' });
     }
     if (url.pathname === '/api/lessons') return json(res, 200, { dir: learn.dir(BRAIN), agents: AGENTS.map(a => ({ id: a.id, name: a.name, ...learn.read(BRAIN, a.id) })).filter(x => x.rules.length || x.oneOffs.length) });
     if (url.pathname === '/api/mcp') { if (url.searchParams.get('refresh') === '1') await mcp.discover(); else await discovering; return json(res, 200, { ...mcp.summary(), tools: backend === 'claude-cli' }); }
@@ -851,7 +866,7 @@ const server = http.createServer(async (req, res) => {
       if (m[2] === 'reject') { task.revisions = (task.revisions || 0) + 1; task.rejectedAt = Date.now(); save(load().map(t => t.id === task.id ? task : t)); } // V3.8: a rejected draft is a real "sent back" too — persist before runServerTask reloads its own copy
       console.log(`${m[2] === 'approve' ? '✅' : '↩'} ${task.id} ${m[2] === 'approve' ? 'approved — ' + agentName(task.agent) + ' is sending' : 'sent back: ' + note.slice(0, 80)}`);
       enqueue(() => runServerTask(task.id, m[2] === 'approve' ? { approve: true } : { feedback: note || 'Not this. Rework it.' }))
-        .then(t => { if (m[2] === 'reject' && note && t && !t.error) { const a = AGENTS.find(x => x.id === t.agent); return learn.classify(ask, a, t, note).then(v => { const r = learn.record(BRAIN, a, t, note, v); console.log(`  ↳ ${a.name} ${r.standing ? 'learned a rule' : 'noted a one-off'}: ${r.line.slice(0, 100)}`); }); } })
+        .then(t => { if (m[2] === 'reject' && note && t && !t.error) { const a = AGENTS.find(x => x.id === t.agent); return learn.classify(ask, a, t, note).then(v => { const r = learn.record(BRAIN, a, t, note, v); console.log(`  ↳ ${a.name} ${r.standing ? 'learned a rule' : 'noted a one-off'}: ${r.line.slice(0, 100)}`); }).then(() => proposeFromRejection(t)); } })
         .catch(e => console.warn('approval:', e.message));
       return json(res, 200, { ok: true, id: task.id, state: 'doing' });
     }
@@ -865,7 +880,7 @@ const server = http.createServer(async (req, res) => {
       json(res, 200, done);
       if (feedback && !done.error) { // learn from the correction, after the reply is out the door
         const a = AGENTS.find(x => x.id === task.agent);
-        learn.classify(ask, a, done, feedback).then(v => { const r = learn.record(BRAIN, a, done, feedback, v); console.log(`  ↳ ${a.name} ${r.standing ? 'learned a rule' : 'noted a one-off'}: ${r.line.slice(0, 100)}`); })
+        learn.classify(ask, a, done, feedback).then(v => { const r = learn.record(BRAIN, a, done, feedback, v); console.log(`  ↳ ${a.name} ${r.standing ? 'learned a rule' : 'noted a one-off'}: ${r.line.slice(0, 100)}`); }).then(() => proposeFromRejection(done))
           .catch(e => console.warn('learn:', e.message));
       }
       return;

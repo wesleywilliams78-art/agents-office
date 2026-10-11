@@ -198,6 +198,10 @@ await step('skill audit: usage, rework, lessons and connector wiring are scored,
   if (sa.loadProposals(dir).social.text) throw new Error('an actioned suggestion is still pending');
   const after = audit({ skills: [mk('social')], agents, tasks: [], servers, brainPath: path.join(ROOT, 'no-brain'), now, proposals: sa.loadProposals(dir) }).skills[0];
   if (after.proposal || after.actioned !== 1) throw new Error('the card should show nothing pending and one actioned');
+  const many = [1, 2, 3, 4].map(i => ({ id: i, agent: 'vid', skills: ['social'], revisions: i <= 2 ? 1 : 0, doneAt: now - day }));
+  const before = audit({ skills: [mk('social')], agents, tasks: many, servers, brainPath: path.join(ROOT, 'no-brain'), now, proposals: {} }).skills[0];
+  const acked = audit({ skills: [mk('social')], agents, tasks: many, servers, brainPath: path.join(ROOT, 'no-brain'), now, proposals: { social: { history: [{ text: 'x', at: now - day, doneAt: now }] } } }).skills[0];
+  if (!before.attention || acked.attention || acked.refining) throw new Error('marking a suggestion done must take the rework it answered off the review list (before ' + before.attention + ', after ' + acked.attention + ')');
   sa.saveProposal(dir, 'social', 'change B');
   if (!sa.loadProposals(dir).social.text || sa.loadProposals(dir).social.history.length !== 1) throw new Error('a new suggestion must be possible and keep the history');
   return 'counts uses and rework · a link used in a real task is proven · a wired link never used is "prove it with a test" · a down connector is a warning · MARK DONE clears one suggestion, keeps history, and a new one can follow';
