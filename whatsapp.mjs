@@ -6,6 +6,7 @@ import os from 'node:os';
 import path from 'node:path';
 
 export const TAGS = ['clients', 'outposts', 'agents', 'ignore'];   // groups are detected, everything else starts "unsorted"
+const NOT_A_MESSAGE = new Set(['unknown', 'reaction', 'protocol', 'revoked', 'notification_template', 'e2e_notification', 'gp2', 'call_log', 'ciphertext', 'poll_vote']);
 const DAY = 86400, BASE = 'http://127.0.0.1:2785';
 
 export function create({ dataDir, cfg = {} }) {
@@ -38,7 +39,8 @@ export function create({ dataDir, cfg = {} }) {
   const median = a => { if (!a.length) return null; const s = [...a].sort((x, y) => x - y); return s[Math.floor(s.length / 2)]; };
 
   function summarise(chat, msgs, now, tag) {
-    const real = msgs.filter(m => !m.isStatusBroadcast && m.type !== 'notification_template' && m.type !== 'e2e_notification').sort((a, b) => a.timestamp - b.timestamp);
+    // reactions, deleted/system items and unreadable stubs are not messages: a reaction from them is not a reply you owe
+    const real = msgs.filter(m => !m.isStatusBroadcast && !NOT_A_MESSAGE.has(m.type)).sort((a, b) => a.timestamp - b.timestamp);
     const w7 = now / 1000 - 7 * DAY, w30 = now / 1000 - 30 * DAY;
     const c = { in7: 0, out7: 0, in30: 0, out30: 0 }, who = {}, lags = [];
     let pendingIn = null;
