@@ -54,6 +54,7 @@ import * as aios from './aios.mjs';
 import * as budget from './budget.mjs';
 import * as brainnotes from './brainnotes.mjs';
 import * as skillaudit from './skillaudit.mjs';
+import { create as createWhatsApp } from './whatsapp.mjs';
 import { recover } from './recover.mjs';
 import { normModel, modelFor, modelArgs, modelId, modelName, MODEL_KEYS, DEFAULT_MODEL, normEffort, effortFor, effortName, EFFORT_KEYS } from './src/models.js';
 import { parseWhen, describe, valid as validWhen, untilText } from './src/when.js';
@@ -64,6 +65,7 @@ const cfg = loadConfig();
 const HTML = path.join(ROOT, 'dist', 'command-centre-v2.html'); // built by build.mjs; shipped so npm start works without a build
 const DATA = path.join(ROOT, 'data');
 const FILE = path.join(DATA, 'tasks.json');
+const wa = createWhatsApp({ dataDir: DATA, cfg: cfg.whatsapp || {} });
 const BRAIN = cfg.brainPath;
 const NOTES_DIR = path.join(BRAIN, 'Agents Office');
 const CLI_CWD = path.join(os.tmpdir(), 'agents-office-cli'); // an empty cwd: no CLAUDE.md, no repo context
@@ -721,6 +723,18 @@ const server = http.createServer(async (req, res) => {
       agents: agentsOut(), setup: setupMap(), routines: (l => ({ count: l.length, paused: l.filter(r => r.paused).length, depts: routines.ALLOWED }))(loadRoutines()), roster: { customised: roster.customised, briefed: roster.briefed, files: roster.files, problems: roster.problems }, skills: (({ count, shipped, brain, problems }) => ({ count, shipped, brain, problems }))(skills.summary()), tools: backend === 'claude-cli', mcp: mcp.summary(), teams: TEAMS, browser: mcp.summary().browser });
     if (url.pathname === '/api/agents') return json(res, 200, { agents: agentsOut(), problems: roster.problems, files: roster.files });
     if (url.pathname === '/api/skills') return json(res, 200, refreshSkills().summary()); // reloads from disk: edit a skill, hit this, see it
+    if (url.pathname.startsWith('/api/whatsapp')) { // AIOS Communications: counts from the local OpenWA (read-only); text goes to Claude only on READ INTO MATRIX
+      try {
+        if (url.pathname === '/api/whatsapp' && req.method === 'GET') return json(res, 200, await wa.build(url.searchParams.get('refresh') === '1'));
+        if (url.pathname === '/api/whatsapp/tag' && req.method === 'POST') { const b = await body(req); wa.setTag(String(b.chatId || ''), b.tag || ''); return json(res, 200, await wa.build(false)); }
+        if (url.pathname === '/api/whatsapp/matrix' && req.method === 'POST') {
+          const b = await body(req); const w = await wa.waitingText(b.category || '');
+          const r = await feedMatrix({ text: w.text, source: `WhatsApp: ${w.count} chat${w.count > 1 ? 's' : ''} waiting on a reply${b.category ? ' (' + b.category + ')' : ''}. Voice notes are not transcribed.` });
+          return json(res, 200, { ...r, chats: w.count });
+        }
+      } catch (e) { return json(res, e.code || 500, { error: e.message }); }
+      return json(res, 404, { error: 'not found' });
+    }
     if (url.pathname === '/api/skill-audit' && req.method === 'GET') { // AIOS: which skills are used, refined, quiet, and whether their connectors are really wired
       const sk = refreshSkills();
       return json(res, 200, skillaudit.audit({ skills: sk.skills, agents: AGENTS, tasks: load(), servers: mcp.summary().servers, brainPath: BRAIN, proposals: skillaudit.loadProposals(DATA) }));

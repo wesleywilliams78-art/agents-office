@@ -131,6 +131,10 @@
   .skkpis { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 10px; }
   .skkpi { padding: 6px 10px; border: 1px solid var(--line); border-radius: 8px; font-size: 12px; background: var(--panel); }
   .skkpi b { font: 400 18px/1 var(--serif); margin-right: 5px; }
+  .wa { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .wa th { text-align: left; font: 500 11px/1 var(--sans, inherit); letter-spacing: .08em; text-transform: uppercase; color: var(--muted, #777); padding: 6px 8px; }
+  .wa td { padding: 8px; border-top: 1px solid var(--line); vertical-align: top; }
+  .wa select { font: inherit; font-size: 12px; background: transparent; color: inherit; border: 1px solid var(--line); border-radius: 6px; padding: 2px 4px; }
   .skgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(380px, 1fr)); gap: 10px; }
   .sk { padding: 12px 13px; }
   .sk .skh { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
@@ -247,6 +251,8 @@
     <div class="gl">The business</div>
     <button data-go="clients">Clients <span class="n" id="nClients"></span></button>
     <button data-go="budget" id="navBudget" style="display:none">Budget <span class="n"></span></button>
+    <div class="gl">Communications</div>
+    <button data-go="comms">WhatsApp <span class="n" id="nComms"></span></button>
     <div class="gl">The office</div>
     <button data-go="roles">Roles <span class="n" id="nRoles"></span></button>
     <button data-go="skills">Skills <span class="n" id="nSkills"></span></button>
@@ -295,6 +301,18 @@
       <div class="seg nf" id="nShow"><button data-v="all" class="on">ALL</button><button data-v="work">WORK</button><button data-v="review">REVIEWS</button><button data-v="matrix">MATRIX</button></div>
       <div class="nl" id="news"></div>
     </aside>
+  </section>
+
+  <section id="commsSec" data-cat="comms">
+    <div class="sh">
+      <h2>WhatsApp</h2>
+      <span class="note">Read-only counts from your linked WhatsApp. Nothing is sent. Message text goes to Claude only when you press READ INTO MATRIX.</span>
+      <div class="tools seg" id="wCat"><button data-v="all" class="on">ALL</button><button data-v="groups">GROUPS</button><button data-v="clients">CLIENTS</button><button data-v="outposts">OUTPOSTS</button><button data-v="agents">AGENTS</button><button data-v="unsorted">UNSORTED</button></div>
+    </div>
+    <div class="msg" id="waMsg"></div>
+    <div class="skkpis" id="waKpis"></div>
+    <div class="skb"><button id="waRefresh">REFRESH</button> <button id="waFeed">READ WAITING CHATS INTO MATRIX</button> <span class="note" id="waAt"></span></div>
+    <div class="panel" style="overflow-x:auto"><table class="wa" id="waTable"></table></div>
   </section>
 
   <section id="skillSec" data-cat="skills">
@@ -387,7 +405,7 @@ const readiness = a => [!!a.does, !!a.brief, roleSkills(a).length > 0];
 function render() { renderNav(); renderKpis(); renderClients(); renderMatrix(); renderRoles(); renderSkills(); renderNews(); renderActivity(); renderBudget(); }
 
 // categories: the left-hand list shows one category at a time; the choice is remembered and can be linked to (#budget)
-const CAT_IDS = ['overview', 'matrix', 'clients', 'budget', 'roles', 'skills'];
+const CAT_IDS = ['overview', 'matrix', 'clients', 'budget', 'comms', 'roles', 'skills'];
 function applyCat() {
   for (const el of document.querySelectorAll('[data-cat]')) el.classList.toggle('cat-off', el.dataset.cat !== S.cat);
   for (const b of document.querySelectorAll('#side button[data-go]')) b.classList.toggle('on', b.dataset.go === S.cat);
@@ -397,7 +415,43 @@ function setCat(c, push = true) {
   S.cat = c; try { localStorage.setItem('aiosCat', c); } catch {}
   if (push) history.replaceState(null, '', '#' + c);
   applyCat(); window.scrollTo({ top: 0 });
+  if (c === 'comms' && !S.wa) loadWa(false);
 }
+
+// WhatsApp: the server counts; this draws it. Tagging a chat (clients / outposts / agents / ignore) is remembered on the server.
+S.wCat = 'all';
+async function loadWa(refresh) {
+  $('waMsg').className = 'msg'; $('waMsg').textContent = refresh ? '' : 'Reading your chats… (about 20 seconds the first time)';
+  try { S.wa = await api('/whatsapp' + (refresh ? '?refresh=1' : '')); $('waMsg').textContent = ''; } catch (e) { S.wa = { ok: false, reason: e.message }; }
+  renderWa();
+}
+function renderWa() {
+  const w = S.wa; if (!w) return;
+  if (!w.ok) { $('waMsg').className = 'msg err'; $('waMsg').textContent = w.reason || 'WhatsApp is not available.'; $('waKpis').innerHTML = ''; $('waTable').innerHTML = ''; return; }
+  $('nComms').textContent = w.totals.waiting || ''; $('nComms').classList.toggle('alert', !!w.totals.waiting);
+  $('waKpis').innerHTML = [['messages in, 7 days', w.totals.in7], ['messages out, 7 days', w.totals.out7], ['chats waiting on you', w.totals.waiting], ['unsorted people', w.totals.unsorted]].map(([l, n]) => `<span class="skkpi"><b>${n}</b>${l}</span>`).join('');
+  $('waAt').textContent = `${w.analysed} active chats of ${w.totalChats} · read ${ago(w.at)}`;
+  const rows = w.chats.filter(c => S.wCat === 'all' || c.category === S.wCat);
+  const opt = (c, v, l) => `<option value="${v}"${c === v ? ' selected' : ''}>${l}</option>`;
+  $('waTable').innerHTML = '<tr><th>Chat</th><th>7 days in / out</th><th>30 days in / out</th><th>Reply time</th><th>Status</th><th>Sort as</th></tr>' + rows.map(c => {
+    const st = c.waiting ? `<span class="tag miss">WAITING ${c.waiting.hours} h${c.waiting.voice ? ' · ' + c.waiting.voice + ' voice' : ''}</span>` : c.kind === 'group' ? (c.topVoices?.length ? esc(c.topVoices.map(v => v.name + ' ' + v.n).join(', ')) : '') : '<span class="tag good">up to date</span>';
+    const sel = c.kind === 'group' && !c.tagged ? 'groups' : c.category;
+    return `<tr><td>${esc(c.name)}<div class="note">${c.kind}${c.lastAt ? ' · last ' + ago(c.lastAt) : ''}</div></td><td>${c.in7} / ${c.out7}</td><td>${c.in30} / ${c.out30}</td><td>${c.replyMedianMinutes == null ? '' : c.replyMedianMinutes < 90 ? c.replyMedianMinutes + ' min' : Math.round(c.replyMedianMinutes / 60) + ' h'}</td><td>${st}</td><td><select data-wtag="${esc(c.id)}">${opt(sel, c.kind === 'group' ? 'groups' : 'unsorted', c.kind === 'group' ? 'groups' : 'unsorted')}${opt(sel, 'clients', 'clients')}${opt(sel, 'outposts', 'outposts')}${opt(sel, 'agents', 'agents')}${opt(sel, 'ignore', 'ignore (hide)')}</select></td></tr>`;
+  }).join('') || '<tr><td colspan="6" class="empty">Nothing in this group yet. Sort chats with the last column.</td></tr>';
+  for (const b of document.querySelectorAll('#wCat button')) b.classList.toggle('on', b.dataset.v === S.wCat);
+}
+document.addEventListener('change', async e => {
+  const id = e.target.dataset?.wtag; if (!id) return;
+  const v = e.target.value; try { S.wa = await api('/whatsapp/tag', { method: 'POST', body: { chatId: id, tag: ['groups', 'unsorted'].includes(v) ? '' : v } }); renderWa(); } catch (er) { $('waMsg').className = 'msg err'; $('waMsg').textContent = er.message; }
+});
+$('wCat').addEventListener('click', e => { const v = e.target.dataset?.v; if (v) { S.wCat = v; renderWa(); } });
+$('waRefresh').addEventListener('click', () => loadWa(true));
+$('waFeed').addEventListener('click', async e => {
+  const b = e.target; b.disabled = true; b.textContent = 'READING… (about a minute)';
+  try { const r = await api('/whatsapp/matrix', { method: 'POST', body: { category: S.wCat === 'all' || S.wCat === 'unsorted' ? '' : S.wCat } }); $('waMsg').className = 'msg'; $('waMsg').textContent = `${r.items.length} action${r.items.length === 1 ? '' : 's'} from ${r.chats} chat${r.chats === 1 ? '' : 's'} added to the matrix.`; await poll(); }
+  catch (er) { $('waMsg').className = 'msg err'; $('waMsg').textContent = er.message; }
+  b.disabled = false; b.textContent = 'READ WAITING CHATS INTO MATRIX';
+});
 function renderNav() { // small counts beside a category: what is waiting on you, what is open, what needs attention
   const set = (id, n, alert) => { const e = $(id); if (!e) return; e.textContent = n || ''; e.classList.toggle('alert', !!alert && !!n); };
   set('nOverview', S.tasks.filter(t => t.state === 'waiting').length, true);
