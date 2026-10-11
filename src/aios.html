@@ -343,7 +343,8 @@
   /* two soft ridges at the foot of every page */
   body::after { content: ""; position: fixed; left: 0; right: 0; bottom: 0; height: 130px; pointer-events: none; z-index: 0; opacity: .06;
     background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 160' preserveAspectRatio='none'><path d='M0 160V96C120 52 210 36 330 74S520 128 640 84 800 12 940 58s190 64 290 22 150-44 210-18V160Z' fill='%23201E1D'/></svg>") center bottom / 100% 100% no-repeat; }
-  @media (prefers-color-scheme: dark) { body::after { filter: invert(1); opacity: .05; } }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) body::after { filter: invert(1); opacity: .05; } }
+  :root[data-theme="dark"] body::after { filter: invert(1); opacity: .05; }
 </style>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500&family=Newsreader:opsz,wght@6..72,300;6..72,400&family=Noto+Serif+SC:wght@300&display=swap">
 </head>
@@ -353,7 +354,7 @@
     <span class="seal" aria-hidden="true">略</span>
     <h1 id="biz">AIOS</h1>
     <span class="sub">Agents Office · operating picture</span>
-    <div class="right"><span class="live" id="live"></span><span id="liveTxt">connecting…</span> · <a href="/">open the office</a></div>
+    <div class="right"><span class="live" id="live"></span><span id="liveTxt">connecting…</span> · <a href="/">open the office</a> · <button id="themeBtn" type="button" title="Switch between automatic, light and dark">Auto</button></div>
   </header>
 
   <div class="shell">
@@ -542,6 +543,15 @@ function setCat(c, push = true) {
   applyCat(); window.scrollTo({ top: 0 });
   if (c === 'comms' && !S.wa) loadWa(false);
 }
+
+// theme: Auto follows the computer, Light and Dark are forced; the choice is remembered in this browser
+(() => {
+  const order = ['auto', 'light', 'dark'], btn = $('themeBtn');
+  let cur = 'auto'; try { cur = localStorage.getItem('aiosTheme') || 'auto'; } catch {}
+  const apply = () => { if (cur === 'auto') document.documentElement.removeAttribute('data-theme'); else document.documentElement.setAttribute('data-theme', cur); btn.textContent = cur === 'auto' ? 'Auto' : cur === 'light' ? 'Light' : 'Dark'; };
+  btn.addEventListener('click', () => { cur = order[(order.indexOf(cur) + 1) % 3]; try { localStorage.setItem('aiosTheme', cur); } catch {} apply(); });
+  apply();
+})();
 
 // WhatsApp: the server counts; this draws it. Tagging a chat (clients / outposts / agents / ignore) is remembered on the server.
 S.wCat = 'all';
