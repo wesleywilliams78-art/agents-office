@@ -244,7 +244,7 @@ await step('SOP builder: both house styles build the full SOP and one-pager, bad
   try {
     await rpc('initialize', { protocolVersion: '2025-06-18', capabilities: {}, clientInfo: { name: 'check', version: '0' } });
     const names = (await rpc('tools/list', {})).result.tools.map(t => t.name);
-    for (const t of ['sop_schema', 'sop_build', 'sop_list']) if (!names.includes(t)) throw new Error('missing tool ' + t);
+    for (const t of ['sop_schema', 'sop_build', 'sop_list', 'sop_review', 'sop_deliver']) if (!names.includes(t)) throw new Error('missing tool ' + t);
     for (const client of ['imrans-diner', 'creamy']) {
       const r = await rpc('tools/call', { name: 'sop_build', arguments: { client, content: sample, formats: ['full', 'onepager'], filename: 'ZZ check ' + client } });
       if (r.result.isError) throw new Error(client + ' did not build: ' + r.result.content[0].text.slice(0, 200));
@@ -256,7 +256,15 @@ await step('SOP builder: both house styles build the full SOP and one-pager, bad
     const dd = JSON.parse(dl.result.content[0].text); made.push(dd.folder);
     const landed = fs.readdirSync(drive); if (!dd.deliveredToMyDrive?.files?.length || landed.length !== dd.deliveredToMyDrive.files.length || fs.readdirSync(drive, { withFileTypes: true }).some(e => e.isDirectory())) throw new Error('delivery to My Drive went wrong: ' + JSON.stringify(landed));
     const again = JSON.parse((await rpc('tools/call', { name: 'sop_build', arguments: { client: 'creamy', content: sample, formats: ['full'], filename: 'ZZ drive check', deliver_to_drive: true } })).result.content[0].text); made.push(again.folder);
-    if (fs.readdirSync(drive).length !== landed.length * 2) throw new Error('a second delivery overwrote or skipped files instead of keeping both');    const tooMany = structuredClone(sample); tooMany.onepager.standards = Array(7).fill(['a', 'b']);
+    if (fs.readdirSync(drive).length !== landed.length * 2) throw new Error('a second delivery overwrote or skipped files instead of keeping both');
+    const rv = JSON.parse((await rpc('tools/call', { name: 'sop_review', arguments: { folder: 'ZZ check creamy' } })).result.content[0].text);
+    if (rv.documents.length !== 2 || rv.documents.some(d => !d.text || d.text.includes('<w:')) || !rv.checks.length) throw new Error('sop_review did not return clean document text and checks');
+    const before = fs.readdirSync(drive).length;
+    const d1 = await rpc('tools/call', { name: 'sop_deliver', arguments: { folder: 'ZZ check creamy' } });
+    if (d1.result.isError || fs.readdirSync(drive).length <= before) throw new Error('sop_deliver did not copy the files');
+    const d2 = await rpc('tools/call', { name: 'sop_deliver', arguments: { folder: 'ZZ check creamy' } });
+    if (!d2.result.isError) throw new Error('sop_deliver delivered the same folder twice');
+       const tooMany = structuredClone(sample); tooMany.onepager.standards = Array(7).fill(['a', 'b']);
     if (!(await rpc('tools/call', { name: 'sop_build', arguments: { client: 'creamy', content: tooMany, formats: ['onepager'] } })).result.isError) throw new Error('a one-pager over its limits was built');
     const noClient = await rpc('tools/call', { name: 'sop_build', arguments: { client: 'nobody', content: sample } });
     if (!noClient.result.isError) throw new Error('an unknown client was accepted');

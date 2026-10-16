@@ -46,6 +46,8 @@ const TOOLS = [
     deliver_to_drive: { type: 'boolean', description: 'true for a finished or final-draft SOP: copies the Word and PDF files to the top level of Wesley\'s My Drive for his review. Never into a folder. Leave false for tests and drafts still being worked.' },
     filename: { type: 'string', description: 'A short file name base, e.g. "5.5 Guest Journey". Defaults to the SOP title.' },
   } } },
+  { name: 'sop_review', description: 'Quality-check a built SOP folder (default: the most recent). Returns the full text of each Word file, the page counts, the placeholders still open, numbers that appear in the one-pager but not in the full SOP, and forbidden words. Read the text against the SOP quality skill; this tool only does the mechanical part.', inputSchema: { type: 'object', properties: { folder: { type: 'string', description: 'Folder name or any part of it, from sop_list. Omit for the newest.' } } } },
+  { name: 'sop_deliver', description: 'Copy the Word and PDF files of a built SOP folder to the top level of Wesley\'s My Drive for his review. Refuses if a page count is wrong, and never delivers the same folder twice. Use it only after the SOP has passed review.', inputSchema: { type: 'object', required: ['folder'], properties: { folder: { type: 'string', description: 'Folder name or any part of it, from sop_list.' } } } },
   { name: 'sop_list', description: 'The ten most recent SOP builds and their files.', inputSchema: { type: 'object', properties: {} } },
 ];
 
@@ -102,13 +104,52 @@ function build(a) {
     if (formats.includes('poster')) { const r = buildPoster(brand.id, c, dir, base); if (r.pdf) files.push(r.pdf); if (r.html) files.push(r.html); if (r.note) warns.push(r.note); }
   } catch (e) { return fail('The build failed: ' + String(e.message || e).slice(0, 400)); }
   let drive; if (a.deliver_to_drive === true) drive = badPages ? 'NOT delivered: a document has the wrong page count. Cut words, build again, and it will be delivered once every page count is right. Nothing was put in My Drive.' : deliver(files, brand.name, base);
+  if (drive?.files) fs.writeFileSync(path.join(dir, '.delivered'), JSON.stringify(drive.files));
   const link = f => '/files/sops/' + encodeURIComponent(dirName) + '/' + encodeURIComponent(path.basename(f));
   return text({ built: files.map(f => ({ file: path.basename(f), kb: Math.round(fs.statSync(f).size / 1024), download: link(f) })), folder: dir, deliveredToMyDrive: drive,
     pageCounts: pages.length ? pages : undefined, unfilledPlaceholders: placeholders.length ? placeholders.slice(0, 40) : 'none', warnings: warns.length ? warns : undefined,
     note: 'The PDFs read true in every viewer; the Word files are the editable source (Word\'s dark mode recolours them). Tell Wesley which placeholders are unfilled and send the gaps as questions, never inside the documents.' });
 }
 
+function findFolder(q) {
+  let all; try { all = fs.readdirSync(OUT).filter(d => fs.statSync(path.join(OUT, d)).isDirectory()).sort().reverse(); } catch { return null; }
+  if (!q) return all.find(d => fs.readdirSync(path.join(OUT, d)).some(f => /\.docx$/.test(f))) || null; // newest build with Word files
+  const hits = all.filter(d => d.toLowerCase().includes(String(q).toLowerCase()));
+  return hits[0] || null;
+}
+const numbersIn = s => new Set((s.match(/\d+(?:[.,]\d+)?\s?(?:°C|°|kg|g|ml|l|%|min|mins|hours?|hrs?|h|cups?|days?)?/gi) || []).map(x => x.replace(/\s+/g, '').toLowerCase()));
+function review(a) {
+  const folder = findFolder(a.folder); if (!folder) return fail('No SOP folder found' + (a.folder ? ' matching "' + a.folder + '"' : '') + '. Call sop_list.');
+  const dir = path.join(OUT, folder), docs = fs.readdirSync(dir).filter(f => /\.docx$/i.test(f)).sort();
+  if (!docs.length) return fail('No Word files in ' + folder);
+  const py = process.env.PYTHON || 'python', out = { folder, documents: [], checks: [] }; const texts = {};
+  for (const d of docs) {
+    let t = ''; try { t = execFileSync(py, ['-I', path.join(HERE, 'docx_text.py'), path.join(dir, d)], { encoding: 'utf8', timeout: 60000 }); } catch (e) { out.checks.push('could not read ' + d); continue; }
+    const pdf = path.join(dir, d.replace(/\.docx$/i, '.pdf')), want = /Full SOP/.test(d) ? 3 : 1, n = fs.existsSync(pdf) ? pdfPages(pdf) : null;
+    texts[/Full SOP/.test(d) ? 'full' : /One Pager/i.test(d) ? 'one' : d] = t;
+    out.documents.push({ file: d, pages: n, shouldBe: want, text: t.slice(0, 14000) });
+    if (n && n !== want) out.checks.push('FAIL ' + d + ' is ' + n + ' pages; it should be ' + want);
+    const ph = [...new Set(t.match(/\[[^\]]{2,}\]/g) || [])]; if (ph.length) out.checks.push(d + ': ' + ph.length + ' open placeholder(s): ' + ph.slice(0, 12).join(' ; '));
+    const bad = t.match(/\b(V2|version 2|readiness|gap analysis|TODO|lorem)\b/gi); if (bad) out.checks.push('FAIL ' + d + ' contains words that must not be in an SOP: ' + [...new Set(bad)].join(', '));
+  }
+  if (texts.full && texts.one) { const f = numbersIn(texts.full), extra = [...numbersIn(texts.one)].filter(x => !f.has(x) && /\d/.test(x) && x.length > 1); if (extra.length) out.checks.push('NUMBERS in the one-pager that are not in the full SOP (check they match): ' + extra.slice(0, 20).join(', ')); }
+  if (!out.checks.length) out.checks.push('no mechanical problems found');
+  return text(out);
+}
+function deliverFolder(a) {
+  const folder = findFolder(a.folder); if (!folder) return fail('No SOP folder found matching "' + a.folder + '". Call sop_list.');
+  const dir = path.join(OUT, folder), mark = path.join(dir, '.delivered');
+  if (fs.existsSync(mark)) return fail('Already delivered: ' + fs.readFileSync(mark, 'utf8') + '. Nothing was copied again.');
+  const m = folder.match(/^\d{4}-\d{2}-\d{2} (\S+) (.+)$/), brand = m && BRANDS[m[1]]; if (!brand) return fail('Cannot tell the client from the folder name ' + folder);
+  const files = fs.readdirSync(dir).filter(f => /\.(docx|pdf)$/i.test(f)).map(f => path.join(dir, f));
+  for (const f of files.filter(x => /\.pdf$/i.test(x))) { const n = pdfPages(f), want = /Full SOP/.test(f) ? 3 : /One Pager/i.test(f) ? 1 : 0; if (want && n !== want) return fail('Not delivered: ' + path.basename(f) + ' is ' + n + ' pages; it should be ' + want + '.'); }
+  const r = deliver(files, brand.name, m[2]); if (!r.error) fs.writeFileSync(mark, JSON.stringify(r.files));
+  return text({ deliveredToMyDrive: r });
+}
+
 const tools = {
+  sop_review: review,
+  sop_deliver: deliverFolder,
   sop_schema() { return text({ clients: Object.keys(BRANDS), limits: { onepager: 'at most 5 standards, 4 roles rows, 6 steps, 4 metrics, one sentence per cell', posterA: 'standards 4, roles 4, metrics 3, core procedure 3, tool steps 4, resources 3', posterB: 'at most 8 stops, stage 1-3 words, standard under 60 characters' }, skeleton: JSON.parse(SAMPLE) }); },
   sop_build: build,
   sop_list() {
