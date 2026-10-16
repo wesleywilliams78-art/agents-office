@@ -83,7 +83,7 @@ function build(a) {
   const base = slug(a.filename || (c.shortTitle || c.title.join(' ')).replace(/[\[\]]/g, ''));
   const dirName = new Date().toISOString().slice(0, 10) + ' ' + brand.id + ' ' + base;
   const dir = path.join(OUT, dirName); fs.mkdirSync(dir, { recursive: true });
-  const files = [], pages = [];
+  const files = [], pages = []; let badPages = false;
   try {
     const word = formats.filter(f => f !== 'poster');
     if (word.length) {
@@ -95,13 +95,13 @@ function build(a) {
       if (SOFFICE) for (const d of docs) {
         const pdf = toPdf(d, dir); if (!pdf) { warns.push('could not make a PDF of ' + path.basename(d)); continue; }
         files.push(pdf); const n = pdfPages(pdf), want = /Full SOP/.test(d) ? 3 : 1;
-        pages.push({ file: path.basename(pdf), pages: n }); if (n && n !== want) warns.push(path.basename(d) + ' runs to ' + n + ' pages; it should be ' + want + '. Cut words (never shrink the type) and build again.');
+        pages.push({ file: path.basename(pdf), pages: n }); if (n && n !== want) badPages = true; if (n && n !== want) warns.push(path.basename(d) + ' runs to ' + n + ' pages; it should be ' + want + '. Cut words (never shrink the type) and build again.');
       } else warns.push('LibreOffice is not installed, so no PDFs were made and page counts are not checked');
       for (const f of ['job.json', 'bg_first.png', 'bg_inner.png']) { try { if (f !== 'job.json' || true) fs.rmSync(path.join(dir, f)); } catch {} }
     }
     if (formats.includes('poster')) { const r = buildPoster(brand.id, c, dir, base); if (r.pdf) files.push(r.pdf); if (r.html) files.push(r.html); if (r.note) warns.push(r.note); }
   } catch (e) { return fail('The build failed: ' + String(e.message || e).slice(0, 400)); }
-  let drive; if (a.deliver_to_drive === true) drive = deliver(files, brand.name, base);
+  let drive; if (a.deliver_to_drive === true) drive = badPages ? 'NOT delivered: a document has the wrong page count. Cut words, build again, and it will be delivered once every page count is right. Nothing was put in My Drive.' : deliver(files, brand.name, base);
   const link = f => '/files/sops/' + encodeURIComponent(dirName) + '/' + encodeURIComponent(path.basename(f));
   return text({ built: files.map(f => ({ file: path.basename(f), kb: Math.round(fs.statSync(f).size / 1024), download: link(f) })), folder: dir, deliveredToMyDrive: drive,
     pageCounts: pages.length ? pages : undefined, unfilledPlaceholders: placeholders.length ? placeholders.slice(0, 40) : 'none', warnings: warns.length ? warns : undefined,
