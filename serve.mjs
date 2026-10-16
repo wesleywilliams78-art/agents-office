@@ -461,7 +461,7 @@ const agentName = id => AGENTS.find(a => a.id === id)?.name || id;
 let queue = Promise.resolve();
 const enqueue = fn => { const p = queue.then(fn, fn); queue = p.catch(() => {}); return p; };
 function fire(r, { due = Date.now(), late = false, by = 'routine' } = {}) { // the routine becomes a task and runs here, page or no page
-  const task = { id: nid(), dept: r.dept, agent: r.agent, title: r.title, text: r.text, plan: r.plan || [], eta: 15, why: '', state: 'next', addedAt: Date.now(), by, routine: r.id, when: r.desc || describe(r.when), needsOk: r.needsOk, due, late, routineModel: r.model || undefined, routineEffort: r.effort || undefined, team: r.team && TEAMS.enabled ? { lead: r.agent, asked: 'routine' } : undefined };
+  const task = { id: nid(), dept: r.dept, agent: r.agent, title: r.title, text: r.text, plan: r.plan || [], eta: 15, why: '', state: 'next', addedAt: Date.now(), by, routine: r.id, when: r.desc || describe(r.when), needsOk: r.needsOk, due, late, routineModel: r.model || undefined, routineEffort: r.effort || undefined, noMatrix: r.matrix === false || undefined, team: r.team && TEAMS.enabled ? { lead: r.agent, asked: 'routine' } : undefined };
   const list = load(); list.push(task); save(list);
   routines.advance(RSTATE, r, Date.now(), task.id, late); routines.saveState(DATA, RSTATE);
   console.log(`⏱ ${task.id} → ${task.agent}: ${task.title}${late ? ' (LATE · was due ' + new Date(due).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) + ')' : ''}`);
@@ -596,7 +596,7 @@ async function budgetApi(req, res, url) {
   return json(res, 200, { configured: true, sheet: BUDGET, snapshot: snap, syncing: !!budgetSync, error: budgetError });
 }
 function autoFeed(task) {
-  if (!AUTO_FEED || task.state !== 'done' || task.error || !task.result) return;
+  if (!AUTO_FEED || task.noMatrix || task.state !== 'done' || task.error || !task.result) return; // noMatrix: a status routine's result is a report, not a to-do list
   const m = aios.load(DATA);
   const earlier = new Set(m.feeds.filter(f => f.taskId === task.id).map(f => f.id));
   if (earlier.size) { m.items = m.items.filter(i => !(earlier.has(i.feed) && i.state === 'open')); aios.save(DATA, m); }
@@ -623,7 +623,10 @@ async function feedMatrix({ text, source, taskId, auto }) {
   const pr = aios.extractPrompt({ business: cfg.name, roster, input, source: src, today, existing, clients: CLIENTS });
   const feedId = 'f' + nid();
   const raw = aios.normalise(parseJSON(await ask(pr.system, pr.user, { maxTokens: 3000, timeout: 180000, model: 'sonnet' })), AGENTS, feedId, CLIENTS);
-  const { kept, dropped } = aios.dedupe(raw.items, known.map(i => i.title)); // belt and braces: the same action worded a little differently is not new
+  const dedupe = aios.dedupe(raw.items, known.map(i => i.title)); // belt and braces: the same action worded a little differently is not new
+  // the weekly SkillSpector scan reports on itself: a report about the report never becomes an action (it kept looping back into the matrix)
+  const SELF = /skill ?spector|skill (security|scan)/i;
+  const kept = dedupe.kept.filter(i => !SELF.test(`${i.title} ${i.detail || ''}`)), dropped = [...dedupe.dropped, ...dedupe.kept.filter(i => !kept.includes(i))];
   const out = { summary: raw.summary, items: kept };
   const m = aios.load(DATA);
   m.feeds.push({ id: feedId, at: Date.now(), source: src || 'Pasted by the owner', taskId: taskId || '', auto: !!auto, summary: out.summary, input: input.slice(0, 2000), count: out.items.length, duplicates: dropped.length });

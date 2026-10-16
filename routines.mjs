@@ -51,6 +51,7 @@ export function validate(r, agents, existing = []) {
   if (!valid(out.when)) problems.push(`${out.id}: the schedule is not complete (${JSON.stringify(r.when || null)}) — see src/when.js`);
   out.needsOk = r.needsOk !== false;
   out.paused = r.paused === true;
+  if (r.matrix === false) out.matrix = false; // a status routine: its result is never read for actions into the Eisenhower matrix
   if (Array.isArray(r.plan)) out.plan = r.plan.slice(0, 4).map(String);
   if (r.team === true) { // V3.2 (16 Sep): a team routine — the department lead splits it across the desks, so the lead owns it
     out.team = true; const lead = agents.find(x => x.department === out.dept && x.lead);
@@ -78,7 +79,7 @@ export function load(brainPath, agents) {
 export function save(brainPath, routines) {
   const p = file(brainPath);
   fs.mkdirSync(path.dirname(p), { recursive: true });
-  const clean = routines.map(r => ({ id: r.id, dept: r.dept, agent: r.agent, title: r.title, text: r.text, when: r.when, needsOk: r.needsOk, paused: r.paused, ...(r.model ? { model: r.model } : {}), ...(r.effort ? { effort: r.effort } : {}), ...(r.plan ? { plan: r.plan } : {}) }));
+  const clean = routines.map(r => ({ id: r.id, dept: r.dept, agent: r.agent, title: r.title, text: r.text, when: r.when, needsOk: r.needsOk, paused: r.paused, ...(r.model ? { model: r.model } : {}), ...(r.effort ? { effort: r.effort } : {}), ...(r.plan ? { plan: r.plan } : {}), ...(r.matrix === false ? { matrix: false } : {}) }));
   fs.writeFileSync(p, JSON.stringify({ routines: clean }, null, 2) + '\n');
   return p;
 }

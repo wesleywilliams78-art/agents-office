@@ -100,15 +100,18 @@ const top = r => { const real = r.issues.filter(i => !i.coverage); return (real.
 const realCount = r => r.issues.filter(i => !i.coverage).length;
 for (const r of bad) actions.push(`**${r.name}** (${r.label}) scored ${r.severity}: ${realCount(r)} real finding${realCount(r) === 1 ? '' : 's'}${r.scripts ? ', and it ships scripts that run on your PC' : ''}. Top finding: ${top(r)}. Decide: keep (then tell me to accept it), fix or remove.`);
 for (const r of worse) if (!bad.includes(r)) actions.push(`**${r.name}** got worse since last week (${prevBy.get(key(r)).severity} to ${r.severity}).`);
-for (const r of added) actions.push(`New skill **${r.name}** (${r.label}), scored ${r.severity}. Check it is one you meant to install.`);
-for (const r of changed) if (!bad.includes(r) && !worse.includes(r) && !isAccepted(r)) actions.push(`**${r.name}** changed since last week (score ${r.score ?? 'n/a'}, ${r.severity}). Fine if you or an update changed it.`);
+// a new or changed skill that scores LOW is information, not a decision: it is listed under the summary and never becomes an action
+const lowNotes = [];
+for (const r of added) { if ((RANK[r.severity] ?? 0) >= 1) actions.push(`New skill **${r.name}** (${r.label}), scored ${r.severity}. Check it is one you meant to install.`); else lowNotes.push(r.name); }
+for (const r of changed) if (!bad.includes(r) && !worse.includes(r) && !isAccepted(r)) { if ((RANK[r.severity] ?? 0) >= 1) actions.push(`**${r.name}** changed since last week (score ${r.score ?? 'n/a'}, ${r.severity}). Fine if you or an update changed it.`); else if (!lowNotes.includes(r.name)) lowNotes.push(r.name); }
 for (const r of failed) actions.push(`**${r.name}** could not be scanned. Check that SkillSpector runs.`);
 L.push('## Actions needed', '');
-if (!actions.length) L.push('None. Every skill scored LOW, and nothing new or changed needs a look.');
+if (!actions.length) L.push('None. Nothing needs a decision.');
 else actions.slice(0, 12).forEach((a, i) => L.push(`${i + 1}. ${a}`));
 if (actions.length > 12) L.push(`...and ${actions.length - 12} more in the full report.`);
 L.push('', '## Summary', '');
 for (const sev of ['CRITICAL', 'HIGH', 'MEDIUM', 'LOW']) L.push(`- ${sev}: ${results.filter(r => r.severity === sev).length}`);
+if (lowNotes.length) L.push(`- New or changed since the last scan, all LOW, no action: ${lowNotes.slice(0, 20).join(', ')}`);
 if (keptCount) L.push(`- High or critical but already looked at and kept by Wesley: ${keptCount} (not raised again unless they change)`);
 if (removed.length) L.push(`- Removed since last scan: ${removed.map(r => r.name).slice(0, 8).join(', ')}`);
 L.push('', `Full results: data/skillspector/${today}.json in the office folder.`);
