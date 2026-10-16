@@ -246,7 +246,7 @@ function businessContext(index) {
 }
 // An uploaded document (a note named "Upload - …") is the thing the owner wants read, so it gets far more room
 // than an ordinary note: 1,800 characters is about one page, and a proposal or contract is many.
-const UPLOAD_CAP = 60000;
+const UPLOAD_CAP = 150000; // about 37,000 tokens: a long transcript is read whole by the agent doing the task
 const WHOLE_NOTE = 5000; // an ordinary note up to this long is given to the agent in full
 const isUpload = name => String(name).startsWith('Upload - ');
 // the notes an agent would read for this task: name/word overlap, department MOC first
@@ -602,7 +602,20 @@ function autoFeed(task) {
   if (earlier.size) { m.items = m.items.filter(i => !(earlier.has(i.feed) && i.state === 'open')); aios.save(DATA, m); }
   feedMatrix({ taskId: task.id, auto: true }).catch(e => console.warn(`matrix: could not read ${task.id}:`, e.message));
 }
-async function feedMatrix({ text, source, taskId, auto }) {
+// A long document (a transcript runs to 40,000 characters and more) is read in full, never cut off: it is split into overlapping
+// pieces of about 11,000 characters, each piece is read for its actions, and what earlier pieces found is passed on so the same action is not raised twice.
+const CHUNK = 11000, OVERLAP = 600, MAX_ITEMS = 40;
+function chunksOf(txt) {
+  const out = []; let i = 0;
+  while (i < txt.length) {
+    let end = Math.min(txt.length, i + CHUNK);
+    if (end < txt.length) { const nl = txt.lastIndexOf('\n', end); if (nl > i + CHUNK * 0.6) end = nl; }
+    out.push(txt.slice(i, end)); if (end >= txt.length) break; i = end - OVERLAP;
+  }
+  return out;
+}
+const uploadsList = () => [...vaultIndex()].filter(([n]) => isUpload(n)).map(([n, txt]) => ({ name: n, chars: txt.length })).sort((a, b) => a.name < b.name ? 1 : -1);
+async function feedMatrix({ text, source, taskId, auto, note }) {
   let input = String(text || '').trim(), src = String(source || '').trim();
   if (taskId) {
     const t = load().find(x => x.id === taskId);
@@ -611,7 +624,13 @@ async function feedMatrix({ text, source, taskId, auto }) {
     input = `${t.title}\n\n${t.draft || t.result}` + (input ? `\n\nTHE OWNER ADDS: ${input}` : '');
     src = src || `The result of the task "${t.title}", done by ${agentName(t.agent)} (${DEPTS[t.dept]?.name || t.dept}).`;
   }
-  if (!input) throw Object.assign(new Error('nothing to read — paste the information or pick a task'), { code: 400 });
+  if (note) {
+    const doc = vaultIndex().get(String(note));
+    if (!doc) throw Object.assign(new Error('no such uploaded document'), { code: 404 });
+    input = doc.replace(/^---[\s\S]*?---\s*/, '') + (input ? `\n\nTHE OWNER ADDS: ${input}` : '');
+    src = src || `The uploaded document "${note}", read in full.`;
+  }
+  if (!input) throw Object.assign(new Error('nothing to read — paste the information, pick an uploaded document or pick a task'), { code: 400 });
   reloadRoster();
   const roster = AGENTS.map(a => `${a.department} · ${a.id} · ${a.name}${a.lead ? ' (lead)' : ''} · ${a.does}`).join('\n');
   const today = new Date().toLocaleDateString('en-CA') + ' (' + new Date().toLocaleDateString([], { weekday: 'long' }) + ')';
@@ -620,16 +639,23 @@ async function feedMatrix({ text, source, taskId, auto }) {
   const weekAgo = Date.now() - 7 * 86400000;
   const known = aios.load(DATA).items.filter(i => i.state === 'open' || i.state === 'sent' || (i.doneAt || i.droppedAt || i.addedAt || 0) > weekAgo);
   const existing = known.slice(-80).map(i => `${i.title}${i.state === 'open' ? '' : ' [' + i.state + (i.outcome ? ': ' + i.outcome.slice(0, 120) : '') + ']'}`);
-  const pr = aios.extractPrompt({ business: cfg.name, roster, input, source: src, today, existing, clients: CLIENTS });
   const feedId = 'f' + nid();
-  const raw = aios.normalise(parseJSON(await ask(pr.system, pr.user, { maxTokens: 3000, timeout: 180000, model: 'sonnet' })), AGENTS, feedId, CLIENTS);
+  const pieces = chunksOf(input), found = [], sums = [];
+  for (let k = 0; k < pieces.length; k++) {
+    const pr = aios.extractPrompt({ business: cfg.name, roster, input: pieces[k], today, existing: [...existing, ...found.map(i => i.title)].slice(-140), clients: CLIENTS,
+      source: (src || 'The owner pasted it in.') + (pieces.length > 1 ? ` This is part ${k + 1} of ${pieces.length} of a longer document, read in order. Raise an action once, where it is first settled.` : '') });
+    const part = aios.normalise(parseJSON(await ask(pr.system, pr.user, { maxTokens: 3000, timeout: 180000, model: 'sonnet' })), AGENTS, feedId, CLIENTS);
+    sums.push(part.summary); found.push(...part.items);
+    if (found.length >= MAX_ITEMS) break;
+  }
+  const raw = { summary: (sums.find(Boolean) || '') + (pieces.length > 1 ? ` (read in full, ${pieces.length} parts)` : ''), items: found.slice(0, MAX_ITEMS).map((it, i) => ({ ...it, id: `${feedId}-${i}` })) };
   const dedupe = aios.dedupe(raw.items, known.map(i => i.title)); // belt and braces: the same action worded a little differently is not new
   // the weekly SkillSpector scan reports on itself: a report about the report never becomes an action (it kept looping back into the matrix)
   const SELF = /skill ?spector|skill (security|scan)/i;
   const kept = dedupe.kept.filter(i => !SELF.test(`${i.title} ${i.detail || ''}`)), dropped = [...dedupe.dropped, ...dedupe.kept.filter(i => !kept.includes(i))];
   const out = { summary: raw.summary, items: kept };
   const m = aios.load(DATA);
-  m.feeds.push({ id: feedId, at: Date.now(), source: src || 'Pasted by the owner', taskId: taskId || '', auto: !!auto, summary: out.summary, input: input.slice(0, 2000), count: out.items.length, duplicates: dropped.length });
+  m.feeds.push({ id: feedId, at: Date.now(), source: src || 'Pasted by the owner', taskId: taskId || '', auto: !!auto, summary: out.summary, input: input.slice(0, 2000), chars: input.length, parts: pieces.length, count: out.items.length, duplicates: dropped.length });
   m.items.push(...out.items); aios.save(DATA, m);
   console.log(`▦ matrix: ${out.items.length} actions from ${taskId ? (auto ? 'finished task ' : 'task ') + taskId : 'a paste'} (${Object.keys(aios.QUADRANTS).map(q => q + ' ' + out.items.filter(i => i.q === q).length).join(' · ')})${dropped.length ? ` · ${dropped.length} already on the matrix, not repeated` : ''}`);
   return { feed: m.feeds[m.feeds.length - 1], items: out.items };
@@ -775,6 +801,7 @@ const server = http.createServer(async (req, res) => {
       const p = await makeProposal(skill);
       return p ? json(res, 200, { ok: true, proposal: p }) : json(res, 502, { error: 'Claude did not answer' });
     }
+    if (url.pathname === '/api/uploads' && req.method === 'GET') return json(res, 200, { uploads: uploadsList().slice(0, 40) }); // uploaded documents the matrix can read in full
     if (url.pathname === '/api/lessons') return json(res, 200, { dir: learn.dir(BRAIN), agents: AGENTS.map(a => ({ id: a.id, name: a.name, ...learn.read(BRAIN, a.id) })).filter(x => x.rules.length || x.oneOffs.length) });
     if (url.pathname === '/api/mcp') { if (url.searchParams.get('refresh') === '1') await mcp.discover(); else await discovering; return json(res, 200, { ...mcp.summary(), tools: backend === 'claude-cli' }); }
     if (url.pathname === '/api/brain') return json(res, 200, graph);

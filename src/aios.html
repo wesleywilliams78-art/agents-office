@@ -413,6 +413,7 @@
       <h2>Eisenhower matrix</h2>
       <span class="note">What follows from finished work, sorted and named to a seat automatically. Feed the office through the office itself — this just shows what came out of it.</span>
       <div class="tools seg" id="mShow"><button data-v="open" class="on">OPEN</button><button data-v="all">ALL</button></div>
+      <div class="tools" id="mUp"><select id="mUpSel" title="An uploaded document to read in full"><option value="">Read an uploaded document…</option></select><button id="mUpGo" type="button">READ INTO MATRIX</button></div>
     </div>
     <div class="msg" id="fMsg"></div>
     <div class="matrix" id="matrix">
@@ -566,6 +567,15 @@ function setCat(c, push = true) {
   apply();
 })();
 
+// read a whole uploaded document (a transcript, say) into the matrix: the server reads it in pieces so nothing is cut off
+async function loadUploads() { try { const u = await api('/uploads'); $('mUpSel').innerHTML = '<option value="">Read an uploaded document…</option>' + u.uploads.map(x => `<option value="${esc(x.name)}">${esc(x.name.replace(/^Upload - /, '').slice(0, 70))} · ${Math.round(x.chars / 1000)}k</option>`).join(''); } catch {} }
+$('mUpGo').addEventListener('click', async () => {
+  const note = $('mUpSel').value; if (!note) return; const b = $('mUpGo'); b.disabled = true; b.textContent = 'READING IN FULL… (a few minutes)';
+  try { const r = await api('/matrix/feed', { method: 'POST', body: { note } }); $('fMsg').className = 'msg'; $('fMsg').textContent = `${r.items.length} action${r.items.length === 1 ? '' : 's'} from the whole document (${r.feed.chars.toLocaleString()} characters, ${r.feed.parts} part${r.feed.parts === 1 ? '' : 's'}).`; await poll(); }
+  catch (e) { $('fMsg').className = 'msg err'; $('fMsg').textContent = e.message; }
+  b.disabled = false; b.textContent = 'READ INTO MATRIX';
+});
+loadUploads();
 // WhatsApp: the server counts; this draws it. Tagging a chat (clients / outposts / agents / ignore) is remembered on the server.
 S.wCat = 'all';
 async function loadWa(refresh) {
