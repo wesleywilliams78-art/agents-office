@@ -17,6 +17,19 @@ const OUT = path.join(HERE, '..', '..', 'output', 'sops');
 const SAMPLE = fs.readFileSync(path.join(HERE, 'content.sample.json'), 'utf8');
 // LibreOffice turns each Word file into the PDF that reads true in every viewer (Word's dark mode recolours the .docx), and lets the page count be checked.
 const SOFFICE = [process.env.SOFFICE, 'C:\\Program Files\\LibreOffice\\program\\soffice.com', 'C:\\Program Files (x86)\\LibreOffice\\program\\soffice.com'].find(p => p && fs.existsSync(p));
+// Finished drafts land at the top level of Wesley's My Drive (Google Drive for desktop syncs the folder), next to the CV master. Never inside any of his folders.
+const DRIVE_DIR = process.env.SOP_DRIVE_DIR || 'G:\\My Drive';
+function deliver(files, brandName, base) {
+  if (!fs.existsSync(DRIVE_DIR)) return { error: 'Google Drive for desktop is not available at ' + DRIVE_DIR };
+  const out = [];
+  for (const f of files.filter(x => /\.(docx|pdf)$/i.test(x))) {
+    const label = path.basename(f).slice(base.length); // " - Full SOP.docx", " - Poster.pdf"
+    let name = brandName + ' - ' + base + label, n = 1;
+    while (fs.existsSync(path.join(DRIVE_DIR, name))) name = brandName + ' - ' + base + ' (' + (++n) + ')' + label; // never overwrite anything already in his Drive
+    fs.copyFileSync(f, path.join(DRIVE_DIR, name)); out.push(name);
+  }
+  return { files: out };
+}
 const pdfPages = file => { try { const s = fs.readFileSync(file).toString('latin1'); return (s.match(/\/Type\s*\/Page[^s]/g) || []).length; } catch { return 0; } };
 function toPdf(docx, outDir) {
   if (!SOFFICE) return null;
@@ -30,6 +43,7 @@ const TOOLS = [
     client: { type: 'string', enum: Object.keys(BRANDS), description: 'imrans-diner or creamy' },
     content: { type: 'object', description: 'The SOP content, shaped exactly like the sop_schema skeleton.' },
     formats: { type: 'array', items: { type: 'string', enum: ['full', 'onepager', 'poster'] }, description: 'Default: full and onepager. Add poster only when a poster was asked for or clearly earns its place.' },
+    deliver_to_drive: { type: 'boolean', description: 'true for a finished or final-draft SOP: copies the Word and PDF files to the top level of Wesley\'s My Drive for his review. Never into a folder. Leave false for tests and drafts still being worked.' },
     filename: { type: 'string', description: 'A short file name base, e.g. "5.5 Guest Journey". Defaults to the SOP title.' },
   } } },
   { name: 'sop_list', description: 'The ten most recent SOP builds and their files.', inputSchema: { type: 'object', properties: {} } },
@@ -87,8 +101,9 @@ function build(a) {
     }
     if (formats.includes('poster')) { const r = buildPoster(brand.id, c, dir, base); if (r.pdf) files.push(r.pdf); if (r.html) files.push(r.html); if (r.note) warns.push(r.note); }
   } catch (e) { return fail('The build failed: ' + String(e.message || e).slice(0, 400)); }
+  let drive; if (a.deliver_to_drive === true) drive = deliver(files, brand.name, base);
   const link = f => '/files/sops/' + encodeURIComponent(dirName) + '/' + encodeURIComponent(path.basename(f));
-  return text({ built: files.map(f => ({ file: path.basename(f), kb: Math.round(fs.statSync(f).size / 1024), download: link(f) })), folder: dir,
+  return text({ built: files.map(f => ({ file: path.basename(f), kb: Math.round(fs.statSync(f).size / 1024), download: link(f) })), folder: dir, deliveredToMyDrive: drive,
     pageCounts: pages.length ? pages : undefined, unfilledPlaceholders: placeholders.length ? placeholders.slice(0, 40) : 'none', warnings: warns.length ? warns : undefined,
     note: 'The PDFs read true in every viewer; the Word files are the editable source (Word\'s dark mode recolours them). Tell Wesley which placeholders are unfilled and send the gaps as questions, never inside the documents.' });
 }

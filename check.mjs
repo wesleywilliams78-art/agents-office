@@ -235,7 +235,8 @@ await step('local video connector: speaks MCP, refuses bad requests without queu
 await step('SOP builder: both house styles build the full SOP and one-pager, bad content is refused with reasons, and the poster blocks are limit-checked', async () => {
   const dir = path.join(ROOT, 'connectors', 'sop-builder');
   const sample = JSON.parse(fs.readFileSync(path.join(dir, 'content.sample.json'), 'utf8'));
-  const p = spawn(process.execPath, [path.join(dir, 'mcp.mjs')], { stdio: ['pipe', 'pipe', 'ignore'] });
+  const drive = fs.mkdtempSync(path.join(os.tmpdir(), 'sop-drive-'));
+  const p = spawn(process.execPath, [path.join(dir, 'mcp.mjs')], { stdio: ['pipe', 'pipe', 'ignore'], env: { ...process.env, SOP_DRIVE_DIR: drive } });
   let buf = ''; const waits = new Map();
   p.stdout.on('data', d => { buf += d; let i; while ((i = buf.indexOf('\n')) >= 0) { const l = buf.slice(0, i); buf = buf.slice(i + 1); try { const m = JSON.parse(l); waits.get(m.id)?.(m); } catch {} } });
   let n = 0; const rpc = (method, params) => new Promise((res, rej) => { const id = ++n; const t = setTimeout(() => rej(new Error(method + ' timed out')), 120000); waits.set(id, m => { clearTimeout(t); res(m); }); p.stdin.write(JSON.stringify({ jsonrpc: '2.0', id, method, params }) + '\n'); });
@@ -251,11 +252,15 @@ await step('SOP builder: both house styles build the full SOP and one-pager, bad
       const docx = out.built.filter(f => /\.docx$/.test(f.file)); if (docx.length !== 2 || out.built.some(f => f.kb < 20)) throw new Error(client + ' built the wrong files'); if (out.pageCounts && out.pageCounts.some(p => /Full SOP/.test(p.file) ? p.pages !== 3 : p.pages !== 1)) throw new Error(client + ' page counts are off: ' + JSON.stringify(out.pageCounts));
       if (out.unfilledPlaceholders === 'none') throw new Error('unfilled placeholders were not reported');
     }
-    const tooMany = structuredClone(sample); tooMany.onepager.standards = Array(7).fill(['a', 'b']);
+    const dl = await rpc('tools/call', { name: 'sop_build', arguments: { client: 'creamy', content: sample, formats: ['full'], filename: 'ZZ drive check', deliver_to_drive: true } });
+    const dd = JSON.parse(dl.result.content[0].text); made.push(dd.folder);
+    const landed = fs.readdirSync(drive); if (!dd.deliveredToMyDrive?.files?.length || landed.length !== dd.deliveredToMyDrive.files.length || fs.readdirSync(drive, { withFileTypes: true }).some(e => e.isDirectory())) throw new Error('delivery to My Drive went wrong: ' + JSON.stringify(landed));
+    const again = JSON.parse((await rpc('tools/call', { name: 'sop_build', arguments: { client: 'creamy', content: sample, formats: ['full'], filename: 'ZZ drive check', deliver_to_drive: true } })).result.content[0].text); made.push(again.folder);
+    if (fs.readdirSync(drive).length !== landed.length * 2) throw new Error('a second delivery overwrote or skipped files instead of keeping both');    const tooMany = structuredClone(sample); tooMany.onepager.standards = Array(7).fill(['a', 'b']);
     if (!(await rpc('tools/call', { name: 'sop_build', arguments: { client: 'creamy', content: tooMany, formats: ['onepager'] } })).result.isError) throw new Error('a one-pager over its limits was built');
     const noClient = await rpc('tools/call', { name: 'sop_build', arguments: { client: 'nobody', content: sample } });
     if (!noClient.result.isError) throw new Error('an unknown client was accepted');
-  } finally { p.kill(); for (const d of made) try { fs.rmSync(d, { recursive: true, force: true }); } catch {} }
+  } finally { p.kill(); for (const d of [...made, drive]) try { fs.rmSync(d, { recursive: true, force: true }); } catch {} }
   return 'Imran\'s Diner and Creamy both build a full SOP and a one-pager · unfilled placeholders are listed · over-limit content and an unknown client are refused';
 });
 await step('budget: ledger rows become month totals, and a wrong total is named against the sheet\'s own summary', async () => {
