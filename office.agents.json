@@ -9,8 +9,7 @@
       "role": "Inbox Lead",
       "does": "Runs the whole inbox: routes every email to the right desk, checks tone, and escalates only what needs the owner.",
       "tools": [
-        "gmail",
-        "notion"
+        "gmail"
       ]
     },
     {
@@ -32,8 +31,7 @@
       "role": "Internal Email Agent",
       "does": "Keeps the team inbox moving — triage, summaries of long threads, calendar holds, and the weekly numbers circulated.",
       "tools": [
-        "gmail",
-        "notion"
+        "gmail"
       ]
     },
     {
@@ -66,7 +64,6 @@
       "role": "Sales Team Lead Agent",
       "does": "Runs the sales team — five agents report to it — and it owns the reps’ call lists.",
       "tools": [
-        "notion",
         "gmail"
       ]
     },
@@ -114,7 +111,6 @@
       "role": "Proposal Agent",
       "does": "Turns a deal brief into a proposal + send-ready email in minutes.",
       "tools": [
-        "notion",
         "gmail"
       ]
     },
@@ -139,8 +135,7 @@
       "does": "Runs the marketing team — six agents report to it — owns the content calendar and the ad budget, and reports what worked to AJ weekly.",
       "tools": [
         "meta",
-        "clarity",
-        "notion"
+        "clarity"
       ]
     },
     {
@@ -153,8 +148,7 @@
       "tools": [
         "meta",
         "beehiiv",
-        "clarity",
-        "notion"
+        "clarity"
       ]
     },
     {
@@ -224,7 +218,6 @@
       "role": "Operations Lead",
       "does": "Runs operations — five agents report to it — keeps contracts, compliance, intel and reporting moving, and escalates only what needs AJ.",
       "tools": [
-        "notion",
         "gmail",
         "pandadoc"
       ]
@@ -236,9 +229,7 @@
       "name": "INTEL",
       "role": "Competitor & Industry Analysis Agent",
       "does": "Turns Research’s raw findings into “here’s what we should do about it.”",
-      "tools": [
-        "notion"
-      ]
+      "tools": []
     },
     {
       "id": "legal",
@@ -260,7 +251,6 @@
       "role": "Regulatory Watch Agent",
       "does": "Watches government and regulator sites daily and reports what changed.",
       "tools": [
-        "notion",
         "gmail"
       ]
     },
@@ -272,8 +262,7 @@
       "role": "Company Reporting Agent",
       "does": "Builds the reports and keeps every company dashboard current.",
       "tools": [
-        "gmail",
-        "notion"
+        "gmail"
       ]
     },
     {
@@ -283,9 +272,7 @@
       "name": "INTERNAL DASHBOARDS",
       "role": "Dashboards Agent",
       "does": "Builds and keeps the internal dashboards honest — every tile traces to a number in the Brain, refreshed on schedule.",
-      "tools": [
-        "notion"
-      ]
+      "tools": []
     },
     {
       "id": "alead",
@@ -342,7 +329,6 @@
       "role": "Delivery Lead",
       "does": "Owns every live project end to end — risk, timelines, staffing, handovers — and reports the state of play to the owner weekly.",
       "tools": [
-        "notion",
         "gmail"
       ]
     },
@@ -353,9 +339,7 @@
       "name": "PROJECT CO-ORDINATOR",
       "role": "Project Co-ordinator",
       "does": "Keeps every project plan true — milestones, sign-offs, hours — and moves things before they become late.",
-      "tools": [
-        "notion"
-      ]
+      "tools": []
     },
     {
       "id": "qa",
@@ -364,9 +348,7 @@
       "name": "QUALITY ASSURANCE CHECKER",
       "role": "QA Checker",
       "does": "Nothing reaches a client until it passes: links, spelling, brand rules, numbers, the flows a client will actually click.",
-      "tools": [
-        "notion"
-      ]
+      "tools": []
     },
     {
       "id": "crep",
@@ -376,8 +358,7 @@
       "role": "Client Reports Agent",
       "does": "Writes every client status and results report from the numbers in the Brain — same format, every month, on time.",
       "tools": [
-        "pandadoc",
-        "notion"
+        "pandadoc"
       ]
     },
     {
@@ -388,8 +369,7 @@
       "role": "Client Assets Agent",
       "does": "Every logo, file, export and final lives in the right place, named right, synced to the client portal.",
       "tools": [
-        "canva",
-        "notion"
+        "canva"
       ]
     },
     {
@@ -411,8 +391,7 @@
       "role": "Onboarding Concierge (High-Usage)",
       "does": "Texts high-usage new users and gets them set up like a human would.",
       "tools": [
-        "gmail",
-        "notion"
+        "gmail"
       ]
     }
   ]

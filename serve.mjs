@@ -272,7 +272,8 @@ function relevantNotes(index, dept, text, n = 4) {
 }
 function contextText(index, names) {
   return names.map(n => {
-    const txt = index.get(n) || '';
+    let txt = index.get(n) || '';
+    if (!isUpload(n)) txt = txt.split('\n').filter(l => !/\bnotion\b/i.test(l)).join('\n'); // Notion is retired: old task notes still mention it, and agents kept acting on those lines
     const cap = isUpload(n) ? UPLOAD_CAP : txt.length <= WHOLE_NOTE ? txt.length : 1800; // a short note is shown whole: billing.md's Outstanding section sits near the end and was being cut off
     return `--- ${n}.md ---\n${txt.slice(0, cap)}${txt.length > cap ? `\n[…the note continues: ${txt.length - cap} more characters not shown]` : ''}`;
   }).join('\n\n');
