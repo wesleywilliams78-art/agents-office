@@ -261,8 +261,12 @@ function relevantNotes(index, dept, text, n = 4) {
     if (name === mocName) s += 2;
     if (s) scored.push([s, name]);
   }
+  // a task that names an uploaded file ("Read X.jpeg (just uploaded)") gets that upload first: word overlap alone lets long transcripts outrank a short image note
+  const lower = String(text).toLowerCase();
+  const named = [...index.keys()].filter(isUpload).filter(nm => { const base = nm.slice(9).replace(/ - [a-z0-9]+$/, '').toLowerCase(); return base.length > 4 && lower.includes(base); });
+  for (const nm of named) { const e = scored.find(x => x[1] === nm); if (e) e[0] += 1e6; else scored.push([1e6, nm]); }
   scored.sort((a, b) => b[0] - a[0]);
-  const picks = scored.slice(0, n).map(x => x[1]);
+  const picks = scored.slice(0, Math.max(n, named.length)).map(x => x[1]);
   if (mocName && index.has(mocName) && !picks.includes(mocName)) picks.push(mocName);
   return picks;
 }
