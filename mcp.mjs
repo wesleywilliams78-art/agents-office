@@ -63,6 +63,7 @@ const ALIASES = {
   hyperframes: ['hyperframes'], imessage: ['imessage', 'messages'], claude: ['claude'], chatgpt: ['chatgpt', 'openai'],
   googlecalendar: ['googlecalendar', 'gcal', 'calendar'], googledrive: ['googledrive', 'gdrive', 'drive'], webflow: ['webflow'], playwright: ['playwright'],
   microsoft365: ['microsoft365', 'm365', 'office365'],
+  googledocs: ['googledocs'], googlesheets: ['googlesheets'],
   ltx: ['ltxlocal', 'ltx'], // the local video generator (connectors/ltx-local)
   higgsfield: ['higgsfield', 'higgfield'], territool: ['territool'],
   chrome: ['claudeinchrome', 'chrome', 'claudechrome', 'browser'],
@@ -77,7 +78,8 @@ const DEPTS_BY_KEY = {
   slack: ['emails', 'ops', 'delivery'], googledrive: ['ops', 'delivery', 'fin'], googlecalendar: ['emails', 'sales', 'delivery'],
   playwright: ['marketing', 'ops'], github: ['ops', 'delivery'], linear: ['ops', 'delivery'], jira: ['ops', 'delivery'],
   hubspot: ['sales', 'marketing'], salesforce: ['sales'], zapier: DEPT_KEYS, figma: ['marketing', 'delivery'],
-  webflow: ['marketing', 'delivery'], higgsfield: ['marketing'], ltx: ['marketing'], territool: ['sales'],
+  webflow: ['marketing', 'delivery'], higgsfield: ['marketing'], ltx: ['marketing'],
+  googledocs: DEPT_KEYS, googlesheets: DEPT_KEYS, territool: ['sales'],
   chrome: DEPT_KEYS, // the owner's browser: every desk may need a web app
   telegram: ['emails'], // the Executive Assistant's channel — wired to the emails pod it leads
   whatsapp: ['emails'], // read-only; the Emails desks review unread chats and draft replies
