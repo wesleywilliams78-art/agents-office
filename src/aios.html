@@ -358,6 +358,54 @@
   @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) :is(.task .tm, .ni .nm, .ni .nx, .client .citem .cm, .client .cc, .sk .skd, .sk .sks, .item .id, .quad .qhint, .sh .note, .bfoot, .bcat .bp, .none, .quad .empty, .news .note, .bpanel .note) { color: #B79C8F; } }
   :root[data-theme="dark"] :is(.task .tm, .ni .nm, .ni .nx, .client .citem .cm, .client .cc, .sk .skd, .sk .sks, .item .id, .quad .qhint, .sh .note, .bfoot, .bcat .bp, .none, .quad .empty, .news .note, .bpanel .note) { color: #B79C8F; }
   .client .cc, .quad .qc { color: var(--red) !important; }
+  /* ===== phones and narrow windows (desktop is untouched: every rule below is inside a max-width query) ===== */
+  @media (max-width: 860px) {
+    .wrap { padding: 14px 14px 110px; }
+    .shell { grid-template-columns: minmax(0, 1fr); gap: 14px; }
+    .main { min-width: 0; }
+    header { gap: 10px; padding-bottom: 14px; }
+    header h1 { font-size: 24px; }
+    header .sub { order: 3; width: 100%; font-size: 9.5px; }
+    header .right { margin-left: 0; width: 100%; justify-content: space-between; flex-wrap: wrap; border-radius: 18px; padding: 8px 14px; font-size: 10.5px; gap: 6px; }
+    /* the rail becomes a swipeable strip of pills that stays in view */
+    .side { position: sticky; top: 0; z-index: 5; flex-direction: row; gap: 6px; overflow-x: auto; padding: 8px 0; margin: 0 -14px; padding-left: 14px; padding-right: 14px; background: var(--bg); scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+    .side::-webkit-scrollbar { display: none; }
+    .side .gl { display: none; }
+    .side button { flex: none; padding: 9px 14px; white-space: nowrap; }
+    .side button .n { margin-left: 4px; }
+    .hero { padding: 26px 22px 90px; border-radius: 24px; }
+    .hero h2 { font-size: 40px; max-width: none; margin: 12px 0 10px; }
+    .hero .eyebrow { font-size: 10px; letter-spacing: .16em; }
+    .hero .hs { font-size: 13px; }
+    .hero .hstats { position: static; margin-top: 22px; gap: 22px; flex-wrap: wrap; }
+    .hero .hn { font-size: 38px; }
+    .hero .hbtns { gap: 8px; }
+    .hero .hbtns a { padding: 9px 14px; font-size: 10px; }
+    .kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+    .kpi { padding: 14px 14px 12px; }
+    .kpi .v { font-size: 32px; }
+    .panel.trend { padding: 16px; }
+    .trbars { gap: 4px; }
+    .trh b { font-size: 26px; }
+    .sh { flex-direction: column; align-items: flex-start; gap: 6px; margin-bottom: 14px; }
+    .sh h2 { font-size: 28px; }
+    .sh .tools { margin-left: 0; }
+    .split, .depts, .skgrid, .clientGrid, .cols, .bgrid { grid-template-columns: minmax(0, 1fr) !important; }
+    .news { position: static; max-height: none; }
+    .quad { min-height: 0; }
+    .panel[style*="overflow-x"], .wa { font-size: 12px; }
+    #commsSec .panel { overflow-x: auto; }
+    .skkpis { gap: 6px; }
+    button { padding: 9px 14px; }
+    #mUp, #mUpSel { width: 100%; max-width: 100%; }
+    .tag { white-space: normal; max-width: 100%; }
+    .seat .meta { min-width: 0; }
+    body::after { height: 90px; }
+  }
+  @media (max-width: 420px) {
+    .hero h2 { font-size: 34px; }
+    .hero .hstat { min-width: 80px; }
+  }
 </style>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500&family=Newsreader:opsz,wght@6..72,300;6..72,400&family=Noto+Serif+SC:wght@300&display=swap">
 </head>

@@ -1060,6 +1060,23 @@
     text-shadow: 0 0 6px var(--cream), 0 0 12px var(--cream), 0 0 2px var(--cream);
     will-change: transform, opacity;
   }
+  /* ===== phones: the 3D scene gives way to the task panel, full screen (desktop is untouched: this is all inside a max-width query) ===== */
+  @media (max-width: 760px) {
+    #scene, #hud, #zoomCtl, #vignette, #sahniMark, #licence, #overviewBtn, #board, #boardDim { display: none !important; }
+    body { background: var(--cream); }
+    #topbar { height: 48px; padding: 0 12px; gap: 10px; overflow-x: auto; overflow-y: hidden; scrollbar-width: none; }
+    #topbar::-webkit-scrollbar { display: none; }
+    #topbar > * { flex: none; }
+    #topbar .brand { font-size: 18px; }
+    #topbar .brand .co, #topbar .brand .ver { display: none; }
+    #topconn, #topmodels, #clock { display: none; } /* the connector strip and clock make way for the AIOS and CALENDAR buttons */
+    #topAios { margin-left: auto; }
+    #tpanel { top: 48px; left: 0; right: 0; bottom: 0; width: auto !important; border-radius: 0; border: 0; border-top: 1px solid var(--hairline); box-shadow: none; background: var(--cream);
+      padding: 12px 14px calc(12px + env(safe-area-inset-bottom)); -webkit-backdrop-filter: none; backdrop-filter: none; overflow-y: auto; }
+    .tp-in { font-size: 16px; } /* 16px stops the phone zooming in when you tap the box */
+    .tp-r2 { flex-wrap: wrap; row-gap: 6px; }
+    .tb-box { width: 94vw; height: 78vh; }
+  }
 </style>
 </head>
 <body>
