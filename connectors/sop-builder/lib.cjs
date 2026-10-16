@@ -12,14 +12,14 @@ module.exports = function makeLib(B) {
 
   const r = (text, o = {}) => new TextRun({ text, font: FONT, size: 21, color: C.TEXT, ...o });
   const para = (runs, o = {}) => new Paragraph({ spacing: { after: 220, line: 306 }, ...o, children: Array.isArray(runs) ? runs : [r(runs)] });
-  const h1 = (text, pageBreak = false) => {
+  const h1 = (text, pageBreak = false, bg = null) => {
     const i = text.indexOf('. ');
     const numbered = i > 0 && i < 3 && !isNaN(Number(text.slice(0, i)));
     const runs = numbered
       ? [new TextRun({ text: text.slice(0, i) + '  ', font: FONT, size: 28, bold: true, color: C.ACCENT }),
          new TextRun({ text: text.slice(i + 2), font: FONT, size: 34, bold: true, color: C.WHITE })]
       : [new TextRun({ text, font: FONT, size: 34, bold: true, color: C.WHITE })];
-    return new Paragraph({ heading: HeadingLevel.HEADING_1, pageBreakBefore: pageBreak, keepNext: true, spacing: { before: 400, after: 190 }, children: runs });
+    return new Paragraph({ heading: HeadingLevel.HEADING_1, pageBreakBefore: pageBreak, keepNext: true, spacing: { before: 400, after: 190 }, children: bg ? [bg, ...runs] : runs });
   };
   const label = t => para([r(t, { bold: true, color: C.ACCENT })], { spacing: { before: 280, after: 150 }, keepNext: true });
   const section = t => para([r(t.toUpperCase(), { bold: true, size: 18, color: C.ACCENT, characterSpacing: 40 })], { spacing: { before: 250, after: 120 }, keepNext: true });
@@ -72,8 +72,8 @@ module.exports = function makeLib(B) {
   const numCfg = ref => ({ reference: ref, levels: [{ level: 0, format: LevelFormat.DECIMAL, text: '%1.', alignment: AlignmentType.LEFT,
     style: { run: { font: FONT, size: 21, color: C.ACCENT, bold: true }, paragraph: { indent: { left: 720, hanging: 360 } } } }] });
 
-  const titleBlock = (c, size = 60, subtitle = 'STANDARD OPERATING PROCEDURE') => [
-    new Paragraph({ spacing: { before: 300, after: 40 }, children: [new TextRun({ text: c.title[0], font: FONT, size, bold: true, allCaps: true, color: C.WHITE })] }),
+  const titleBlock = (c, size = 60, subtitle = 'STANDARD OPERATING PROCEDURE', bg = null) => [
+    new Paragraph({ spacing: { before: 300, after: 40 }, children: [...(bg ? [bg] : []), new TextRun({ text: c.title[0], font: FONT, size, bold: true, allCaps: true, color: C.WHITE })] }),
     new Paragraph({ spacing: { after: 220 }, children: [new TextRun({ text: c.title[1] || '', font: FONT, size, bold: true, allCaps: true, color: C.WHITE })] }),
     new Paragraph({ spacing: { after: 280 }, border: { bottom: { style: BorderStyle.SINGLE, size: 18, color: C.ACCENT, space: 8 } },
       children: [new TextRun({ text: subtitle, font: FONT, size: 20, color: C.ACCENT, bold: true, characterSpacing: 60 })] }),
@@ -82,8 +82,7 @@ module.exports = function makeLib(B) {
   const bgImage = file => new ImageRun({ type: 'png', data: fs.readFileSync(file), transformation: { width: 794, height: 1123 },
     floating: { horizontalPosition: { relative: HorizontalPositionRelativeFrom.PAGE, offset: 0 }, verticalPosition: { relative: VerticalPositionRelativeFrom.PAGE, offset: 0 },
       behindDocument: true, allowOverlap: true, wrap: { type: TextWrappingType.NONE } } });
-  const mkHeader = file => new Header({ children: [new Paragraph({ spacing: { after: 0 }, children: [
-    bgImage(file),
+  const mkHeader = () => new Header({ children: [new Paragraph({ spacing: { after: 0 }, children: [
     new TextRun({ text: B.wordmark, font: FONT, size: 38, bold: true, italics: true, color: C.ACCENT }),
     new TextRun({ text: '   |   ', font: FONT, size: 16, color: C.HAIR }),
     new TextRun({ text: B.headerRest, font: FONT, size: 16, bold: true, color: C.MUTED, characterSpacing: 40 })] })] });
@@ -99,5 +98,5 @@ module.exports = function makeLib(B) {
     numbering: { config: [numCfg('n1'), numCfg('n2'), { reference: 'bul', levels: [{ level: 0, format: LevelFormat.BULLET, text: '•',
       alignment: AlignmentType.LEFT, style: { run: { color: C.ACCENT, bold: true }, paragraph: { indent: { left: 720, hanging: 360 } } } }] }] } });
 
-  return { C, W, FONT, r, para, h1, label, section, note, gap, dataTable, metaTable, strip, callout, numbered, bullet, titleBlock, mkHeader, mkFooter, docBase };
+  return { bgImage, C, W, FONT, r, para, h1, label, section, note, gap, dataTable, metaTable, strip, callout, numbered, bullet, titleBlock, mkHeader, mkFooter, docBase };
 };

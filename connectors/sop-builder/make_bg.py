@@ -1,4 +1,4 @@
-"""Full-page background images for the dark Word SOPs: the ground colour with the corner waves.
+"""Full-page images of the corner waves on a transparent ground, for the dark Word SOPs (the ground itself is the page colour).
 usage: python make_bg.py <out dir> GROUND ACCENT WAVE2 SECOND   (colours as hex, no #)
 Writes bg_first.png (large waves, first page) and bg_inner.png (smaller top wave, other pages). Same drawing as the SOP skills."""
 import sys
@@ -62,12 +62,12 @@ def draw_wave(img, spec, vb, box, origin):
         img.alpha_composite(layer)
 
 def make(name, tr_scale, bl_scale):
-    img = Image.new('RGBA', (W * SS, H * SS), GROUND + (255,))
+    img = Image.new('RGBA', (W * SS, H * SS), (0, 0, 0, 0))  # transparent: only the waves are opaque, so the header and footer text stay visible; the ground is the page colour
     tw, th = 560 * tr_scale, 330 * tr_scale
     draw_wave(img, TR, (560, 380), (tw, th), (CW - tw, 0))
     bw, bh = 560 * bl_scale, 100 * bl_scale
     draw_wave(img, BL, (520, 120), (bw, bh), (0, CH - bh))
-    img.resize((W, H), Image.LANCZOS).convert('RGB').save(name, optimize=True)
+    img.resize((W, H), Image.LANCZOS).save(name, optimize=True)
     print('saved', name)
 
 make(out_dir + '/bg_first.png', 0.62, 0.62)
