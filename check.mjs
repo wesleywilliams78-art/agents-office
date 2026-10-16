@@ -248,7 +248,7 @@ await step('SOP builder: both house styles build the full SOP and one-pager, bad
       const r = await rpc('tools/call', { name: 'sop_build', arguments: { client, content: sample, formats: ['full', 'onepager'], filename: 'ZZ check ' + client } });
       if (r.result.isError) throw new Error(client + ' did not build: ' + r.result.content[0].text.slice(0, 200));
       const out = JSON.parse(r.result.content[0].text); made.push(out.folder);
-      if (out.built.length !== 2 || out.built.some(f => f.kb < 20)) throw new Error(client + ' built the wrong files');
+      const docx = out.built.filter(f => /\.docx$/.test(f.file)); if (docx.length !== 2 || out.built.some(f => f.kb < 20)) throw new Error(client + ' built the wrong files'); if (out.pageCounts && out.pageCounts.some(p => /Full SOP/.test(p.file) ? p.pages !== 3 : p.pages !== 1)) throw new Error(client + ' page counts are off: ' + JSON.stringify(out.pageCounts));
       if (out.unfilledPlaceholders === 'none') throw new Error('unfilled placeholders were not reported');
     }
     const tooMany = structuredClone(sample); tooMany.onepager.standards = Array(7).fill(['a', 'b']);
