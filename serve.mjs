@@ -939,7 +939,7 @@ const server = http.createServer(async (req, res) => {
 { const l = load(); let c = false; for (const t of l) if (t.state === 'waiting' && t.needsOk && !t.channel && isEmail(t)) { t.channel = 'email'; c = true; } if (c) save(l); } // V3.9: drafts from before the router named channels
 { const l = load(), r = recover(l); // tasks left at "doing" by a restart: start them again, or hold them for the owner (recover.mjs)
   if (r.requeue.length || r.held.length) { save(l); console.log(`↻ restart recovery: ${r.requeue.length} task(s) started again${r.requeue.length ? ' (' + r.requeue.join(', ') + ')' : ''}${r.held.length ? `, ${r.held.length} held for your OK (${r.held.join(', ')})` : ''}`); for (const id of r.requeue) enqueue(async () => { await discovering; return runServerTask(id); }); } } // wait for the connectors: a run that starts before they are found has none allowed
-server.listen(cfg.port, () => {
+server.listen(cfg.port, cfg.host || '127.0.0.1', () => { // this computer only: other devices reach it through Tailscale Serve, never straight over the network
   console.log(`Agents Office ${version} → http://localhost:${cfg.port}`);
   console.log(`  business: ${cfg.name}   brain: ${BRAIN} (${graph.notes} notes, ${graph.links.length} links)   claude: ${backend} · ${modelName(cfg.model)}${cfg.effort ? ' · effort ' + cfg.effort : ''} by default (routing on Sonnet)`);
   getUsage(true).then(u => console.log(u.source === 'claude' ? `  usage: session ${u.session?.percent ?? '—'}% · week ${u.week?.percent ?? '—'}% (your Claude plan, as Claude Code shows it)` : `  usage: Claude's gauge unavailable (${u.reason}) — showing the office's own count`)).catch(() => {});
