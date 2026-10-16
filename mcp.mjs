@@ -53,7 +53,9 @@ function freshPath() {
   const u = read('HKCU\\Environment', 'Path');
   return [m, u].filter(Boolean).join(';') || process.env.PATH || '';
 }
-export function freshEnv(base = process.env) { return { ...base, PATH: freshPath() }; }
+// MAX_MCP_OUTPUT_TOKENS: Claude Code cuts any tool result (a Plaud transcript, a long Doc) at 25,000 tokens by default, so an agent saw only the first part of a long
+// transcript and reviewed it as if it were all. The office lifts the cut-off so a whole transcript arrives (a hard ceiling, not a target).
+export function freshEnv(base = process.env) { return { ...base, PATH: freshPath(), MAX_MCP_OUTPUT_TOKENS: base.MAX_MCP_OUTPUT_TOKENS || '200000' }; }
 
 // known brands → logo key in src/mcplogos.js. Anything else gets a generated tile.
 const ALIASES = {
