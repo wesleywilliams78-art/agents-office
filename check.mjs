@@ -232,6 +232,32 @@ await step('local video connector: speaks MCP, refuses bad requests without queu
   if (!/userPrefersLtxApiVideoGenerations:\s*false/.test(worker)) throw new Error('the worker no longer forces local generation');
   return 'five tools, no send-like tool · too-short length and a one-word prompt refused, nothing queued · any length chains into parts of 10 s or less · the worker forces the local (free) route every job';
 });
+await step('SOP builder: both house styles build the full SOP and one-pager, bad content is refused with reasons, and the poster blocks are limit-checked', async () => {
+  const dir = path.join(ROOT, 'connectors', 'sop-builder');
+  const sample = JSON.parse(fs.readFileSync(path.join(dir, 'content.sample.json'), 'utf8'));
+  const p = spawn(process.execPath, [path.join(dir, 'mcp.mjs')], { stdio: ['pipe', 'pipe', 'ignore'] });
+  let buf = ''; const waits = new Map();
+  p.stdout.on('data', d => { buf += d; let i; while ((i = buf.indexOf('\n')) >= 0) { const l = buf.slice(0, i); buf = buf.slice(i + 1); try { const m = JSON.parse(l); waits.get(m.id)?.(m); } catch {} } });
+  let n = 0; const rpc = (method, params) => new Promise((res, rej) => { const id = ++n; const t = setTimeout(() => rej(new Error(method + ' timed out')), 120000); waits.set(id, m => { clearTimeout(t); res(m); }); p.stdin.write(JSON.stringify({ jsonrpc: '2.0', id, method, params }) + '\n'); });
+  const made = [];
+  try {
+    await rpc('initialize', { protocolVersion: '2025-06-18', capabilities: {}, clientInfo: { name: 'check', version: '0' } });
+    const names = (await rpc('tools/list', {})).result.tools.map(t => t.name);
+    for (const t of ['sop_schema', 'sop_build', 'sop_list']) if (!names.includes(t)) throw new Error('missing tool ' + t);
+    for (const client of ['imrans-diner', 'creamy']) {
+      const r = await rpc('tools/call', { name: 'sop_build', arguments: { client, content: sample, formats: ['full', 'onepager'], filename: 'ZZ check ' + client } });
+      if (r.result.isError) throw new Error(client + ' did not build: ' + r.result.content[0].text.slice(0, 200));
+      const out = JSON.parse(r.result.content[0].text); made.push(out.folder);
+      if (out.built.length !== 2 || out.built.some(f => f.kb < 20)) throw new Error(client + ' built the wrong files');
+      if (out.unfilledPlaceholders === 'none') throw new Error('unfilled placeholders were not reported');
+    }
+    const tooMany = structuredClone(sample); tooMany.onepager.standards = Array(7).fill(['a', 'b']);
+    if (!(await rpc('tools/call', { name: 'sop_build', arguments: { client: 'creamy', content: tooMany, formats: ['onepager'] } })).result.isError) throw new Error('a one-pager over its limits was built');
+    const noClient = await rpc('tools/call', { name: 'sop_build', arguments: { client: 'nobody', content: sample } });
+    if (!noClient.result.isError) throw new Error('an unknown client was accepted');
+  } finally { p.kill(); for (const d of made) try { fs.rmSync(d, { recursive: true, force: true }); } catch {} }
+  return 'Imran\'s Diner and Creamy both build a full SOP and a one-pager · unfilled placeholders are listed · over-limit content and an unknown client are refused';
+});
 await step('budget: ledger rows become month totals, and a wrong total is named against the sheet\'s own summary', async () => {
   const budget = await import('./budget.mjs');
   const j = { rows: [['2026-01-01', 'Income', 'Salary', 'Salary', 1000, 'Recurring', 'Actual', ''], ['2026-01-01', 'Income', 'Sale', 'One-off income', 200, 'One-off', 'Actual', 'Received 3 Jan'],

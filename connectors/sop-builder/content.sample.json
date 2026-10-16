@@ -1,0 +1,59 @@
+{
+  "title": ["[SOP TITLE LINE ONE", "AND LINE TWO IF NEEDED]"],
+  "shortTitle": "[SOP Title]",
+  "purpose": "[One or two sentences: what this SOP does, who it is for, and the outcome it protects.]",
+  "meta": {
+    "category": "[Operations Manual category, e.g. Day-to-Day Operating Requirements]",
+    "section": "[Chapter number and name, e.g. Chapter 5.5 — Customer service standards]",
+    "appliesTo": "[Roles, teams and sites this SOP applies to]",
+    "owner": "[Name, role]",
+    "status": "Draft — for internal review",
+    "reportingOwner": "[Name, review cadence; who makes resourcing / timing decisions]"
+  },
+  "howToUse": "[Two to three sentences. State that this is a working procedure, not a guideline, and name the two or three non-negotiables the reader must take away. Say who raises, who confirms, and who owns the outcome.]",
+  "intro": ["[Paragraph 1: what this SOP sets out and across which sites or teams.]", "[Paragraph 2: what happened before this process existed, and what this SOP replaces it with. Keep it factual.]", "[Paragraph 3: where this document sits in the Operations Manual and which companion documents it should be read alongside.]"],
+  "introNote": "[If this process itself is not working, say who to raise it with first, then who owns the SOP.]",
+  "standards": {
+    "intro": "[One to two sentences: these are the non-negotiable standards, enforced structurally wherever possible rather than relying on individual discretion.]",
+    "rows": [["[Standard 1]", "[Requirement. Specific, measurable, no override path unless stated.]"], ["[Standard 2]", "[Requirement]"], ["[Standard 3]", "[Requirement]"], ["[Standard 4]", "[Requirement]"], ["[Standard 5]", "[Requirement]"]],
+    "keyRule": "[The single definition or threshold people most often get wrong. State what counts, and what does not, in plain terms.]"
+  },
+  "roles": {
+    "intro": "[One to two sentences: every task has one named owner at all times. The table sets out who is responsible, who can reassign, and who to escalate to if something is not moving.]",
+    "rows": [["[Activity 1]", "[Role]", "[Role / N/A]", "[Role]"], ["[Activity 2]", "[Role]", "[Role / N/A]", "[Role]"], ["[Activity 3]", "[Role]", "[Role / N/A]", "[Role]"], ["[Activity 4]", "[Role]", "[Role / N/A]", "[Role]"]],
+    "procedureLabel": "[Core procedure heading.]",
+    "procedure": ["[Step one. Start with a verb.]", "[Step two.]", "[Step three.]"],
+    "procedureNote": "[Practical reminder: the most common failure point, and what happens if it is missed.]"
+  },
+  "metrics": {
+    "intro": "[One to two sentences: the metrics below confirm the process is working as intended and catch problems before they become a pattern.]",
+    "rows": [["[Metric 1]", "Lagging", "[Weekly / Monthly / Quarterly]"], ["[Metric 2]", "Leading", "[Cadence]"], ["[Metric 3]", "Leading", "[Cadence]"], ["[Metric 4]", "Leading", "[Cadence]"]],
+    "reviewOwner": "[Who reviews which metrics, how often, and who decides when a standard is found to be unworkable. State that this SOP will be updated to reflect any change.]"
+  },
+  "tools": {
+    "howLabel": "[How to carry out the task.]",
+    "steps": ["[Step one. Name the system, page or form to open.]", "[Step two.]", "[Step three.]", "[Step four.]"],
+    "resources": ["[Companion document or guide, and where it lives]", "[Second related SOP or resource]", "[System or access issues: contact name / role]"]
+  },
+  "onepager": {
+    "purpose": "[One sentence: what this SOP makes happen, and for whom.]",
+    "standards": [["[Standard 1]", "[Requirement, short]"], ["[Standard 2]", "[Requirement, short]"], ["[Standard 3]", "[Requirement, short]"], ["[Standard 4]", "[Requirement, short]"]],
+    "keyRule": "[The one rule people most often get wrong, in one sentence.]",
+    "roles": [["[Activity 1]", "[Owner]", "[Escalate to]"], ["[Activity 2]", "[Owner]", "[Escalate to]"], ["[Activity 3]", "[Owner]", "[Escalate to]"]],
+    "steps": ["[Step one. Start with a verb.]", "[Step two.]", "[Step three.]", "[Step four.]", "[Step five.]"],
+    "metrics": [["[Metric 1]", "[Weekly]"], ["[Metric 2]", "[Weekly]"], ["[Metric 3]", "[Monthly]"], ["[Metric 4]", "[Quarterly]"]],
+    "fullSopRef": "[where the full SOP lives]"
+  },
+  "poster": {
+    "_comment": "Optional. Only when a wall poster earns its place. layout 'A' carries the whole SOP in condensed form (the fields below); layout 'B' is a flow poster: replace everything below with { layout:'B', purpose, accentSecondLine, stops:[{owner, stage, standard, icon, key}], keyRule, fullSopRef }. icons: queue, menu, card, screen, flame, tick, bag, table. Layout B holds at most 8 stops, stage names 1 to 3 words, standard under 60 characters.",
+    "layout": "A",
+    "purpose": "[One sentence.]",
+    "howToUse": "[One or two short lines.]",
+    "intro": ["[One line]", "[One line]", "[One line]"],
+    "introNote": "[Who to raise problems with.]",
+    "standards": { "rows": [["[Standard 1]", "[Requirement, short]"], ["[Standard 2]", "[Requirement, short]"], ["[Standard 3]", "[Requirement, short]"]], "keyRule": "[One sentence.]" },
+    "roles": { "rows": [["[Activity 1]", "[Owner]", "[Reassign]", "[Escalate]"], ["[Activity 2]", "[Owner]", "[Reassign]", "[Escalate]"], ["[Activity 3]", "[Owner]", "[Reassign]", "[Escalate]"]], "procedureLabel": "[Core procedure.]", "procedure": ["[Step one.]", "[Step two.]", "[Step three.]"], "procedureNote": "[One line.]" },
+    "metrics": { "rows": [["[Metric 1]", "Lagging", "[Weekly]"], ["[Metric 2]", "Leading", "[Weekly]"], ["[Metric 3]", "Leading", "[Monthly]"]], "reviewOwner": "[One sentence.]" },
+    "tools": { "howLabel": "[How to carry out the task.]", "steps": ["[Step one.]", "[Step two.]", "[Step three.]", "[Step four.]"], "resources": ["[Resource one]", "[Resource two]", "[Resource three]"] }
+  }
+}
