@@ -114,8 +114,10 @@ function build(a) {
 function findFolder(q) {
   let all; try { all = fs.readdirSync(OUT).filter(d => fs.statSync(path.join(OUT, d)).isDirectory()).sort().reverse(); } catch { return null; }
   if (!q) return all.find(d => fs.readdirSync(path.join(OUT, d)).some(f => /\.docx$/.test(f))) || null; // newest build with Word files
-  const hits = all.filter(d => d.toLowerCase().includes(String(q).toLowerCase()));
-  return hits[0] || null;
+  const ql = String(q).toLowerCase().trim(), exact = all.find(d => d.toLowerCase() === ql); // an exact folder name wins over a longer name that merely contains it
+  if (exact) return exact;
+  const hits = all.filter(d => d.toLowerCase().includes(ql));
+  return hits.length === 1 ? hits[0] : hits.sort((a, b) => a.length - b.length)[0] || null; // otherwise the closest (shortest) match
 }
 const numbersIn = s => new Set((s.match(/\d+(?:[.,]\d+)?\s?(?:°C|°|kg|g|ml|l|%|min|mins|hours?|hrs?|h|cups?|days?)?/gi) || []).map(x => x.replace(/\s+/g, '').toLowerCase()));
 function review(a) {
