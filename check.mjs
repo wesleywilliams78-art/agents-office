@@ -132,6 +132,17 @@ await step('matrix: the same action worded differently is not raised again, a di
   if (kept.length !== 1 || dropped.length !== 2) throw new Error(`kept ${kept.length}, dropped ${dropped.length}`);
   return 'a reworded action is caught · a different action is not · a repeat inside one batch is caught';
 });
+await step('handoffs: a HANDOFF block is parsed, resolved to a seat by id or name, removed from the result, and an unknown seat is refused', async () => {
+  const h = await import('./handoff.mjs'); const { loadRoster } = await import('./roster.mjs'); const agents = loadRoster().agents;
+  const txt = ['Done.', '', 'HANDOFF', 'to: qa', 'title: QA the Lamb SOP', '---', 'Check folder X, one-pager only.', 'END HANDOFF', '', 'HANDOFF', 'to: nobody', 'title: x', '---', 'y', 'END HANDOFF', ''].join(String.fromCharCode(10));
+  const b = h.parse(txt); if (b.length !== 2 || b[0].to !== 'qa') throw new Error('blocks not parsed');
+  const pl = h.plan(b, agents, 'crep'); if (!pl[0].ok || pl[0].to !== 'qa' || pl[0].dept !== 'delivery') throw new Error('qa not resolved: ' + JSON.stringify(pl[0]));
+  if (pl[1].ok) throw new Error('an unknown seat was accepted');
+  if (h.resolve('QUALITY ASSURANCE CHECKER', agents, 'crep')?.id !== 'qa') throw new Error('names do not resolve');
+  if (h.resolve('qa', agents, 'qa')) throw new Error('a seat can hand to itself');
+  if (/HANDOFF/.test(h.strip(txt)) || !h.strip(txt).startsWith('Done.')) throw new Error('block not stripped');
+  return 'parsed · "qa" and the full name both find the seat · unknown seat and self-handoff refused · block removed from the result';
+});
 await step('brain updates: a proposed note change is parsed, refused when unsafe, and filed only inside the brain with a backup', async () => {
   const bn = await import('./brainnotes.mjs'); const os = await import('node:os');
   const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'ao-brainnotes-')), brain = path.join(tmp, 'brain'), bak = path.join(tmp, 'bak');

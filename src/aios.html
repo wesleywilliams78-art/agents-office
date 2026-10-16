@@ -853,7 +853,7 @@ function newsEvents() {
   const ev = [], who = id => agentBy(id)?.name || id;
   for (const t of S.tasks) {
     const base = { agent: t.agent, dept: t.dept, title: t.title, id: t.id };
-    const src = t.routine ? 'Routine fired' : t.by === 'aios' ? 'Sent from the matrix' : t.dueAt ? 'Scheduled task fired' : 'New task';
+    const src = t.routine ? 'Routine fired' : t.by === 'aios' ? 'Sent from the matrix' : t.by === 'handoff' ? 'Handed over by ' + who(t.handoffFrom) : t.dueAt ? 'Scheduled task fired' : 'New task';
     if (t.addedAt) ev.push({ ...base, at: t.addedAt, kind: 'work', icon: t.routine ? '⏱' : '＋', verb: src });
     if (t.startedAt && t.state !== 'next' && t.state !== 'scheduled') ev.push({ ...base, at: t.startedAt, kind: 'work', icon: '▸', verb: t.team ? 'Team started' : 'Started' });
     if (t.waitingAt) ev.push({ ...base, at: t.waitingAt, kind: 'review', icon: '⏸', verb: t.state === 'waiting' ? (t.channel === 'email' ? 'Email ready — waiting for your OK' : 'Ready for your review') : (t.revisions ? `Revision ${t.revisions + 1} submitted` : 'Submitted for review'), hot: t.state === 'waiting' });
@@ -899,7 +899,7 @@ function itemHtml(i) {
 
 function renderActivity() {
   const T = S.tasks, name = id => agentBy(id)?.name || id;
-  const row = (t, extra = '') => `<div class="task"><div><div class="tt">${esc(t.title)}</div><div class="tm">${esc(name(t.agent))} · ${DEPTS[t.dept]?.name || t.dept}${t.routine ? ' · routine' : ''}${t.by === 'aios' ? ' · from the matrix' : ''} · ${extra}</div></div>` +
+  const row = (t, extra = '') => `<div class="task"><div><div class="tt">${esc(t.title)}</div><div class="tm">${esc(name(t.agent))} · ${DEPTS[t.dept]?.name || t.dept}${t.routine ? ' · routine' : ''}${t.by === 'aios' ? ' · from the matrix' : ''}${t.by === 'handoff' ? ' · handed over' : ''} · ${extra}</div></div>` +
     (t.state === 'done' && !t.error ? `<div class="tb">${matrixCell(t)}</div>` : '') + '</div>';
   // a finished task has fed the matrix (automatically or by hand), is being read now, or can be read by hand
   const matrixCell = t => {

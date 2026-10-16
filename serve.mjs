@@ -53,6 +53,7 @@ import * as teams from './teams.mjs';
 import * as aios from './aios.mjs';
 import * as budget from './budget.mjs';
 import * as brainnotes from './brainnotes.mjs';
+import * as handoff from './handoff.mjs';
 import * as skillaudit from './skillaudit.mjs';
 import { create as createWhatsApp } from './whatsapp.mjs';
 import { recover } from './recover.mjs';
@@ -306,7 +307,7 @@ const FILES_LINE = 'FILES\nYou cannot open files on the owner\'s computer. If a 
 // the system prompt every agent run starts from: who it is, its brief, skills and lessons, its tools, the company, the notes for this task
 function agentSystem(a, index, read, { extra = '', words = 260 } = {}) {
   const d = DEPTS[a.department];
-  return `You are ${a.name}, ${a.role || 'an agent'}, in the ${d.name} department of ${cfg.name}. ${a.does}\n${agentBrief(a)}` + (BRAIN_WRITE ? `\n${brainnotes.INSTRUCTIONS}\n` : '') + `\n${FILES_LINE}\n` + (extra ? `\n${extra}\n` : '') +
+  return `You are ${a.name}, ${a.role || 'an agent'}, in the ${d.name} department of ${cfg.name}. ${a.does}\n${agentBrief(a)}` + (BRAIN_WRITE ? `\n${brainnotes.INSTRUCTIONS}\n` : '') + (/HANDOFF/.test(agentBrief(a)) ? `\n${handoff.INSTRUCTIONS}\n` : '') + `\n${FILES_LINE}\n` + (extra ? `\n${extra}\n` : '') +
     'Write the finished deliverable itself, not a description of what you would do. Plain text: a short heading, then short sections or bullets. ' +
     `At most ${words} words unless a skill or the owner\'s instructions set a different shape — those win. No preamble, no sign-off. Ground it in the company notes below; where a fact is missing, make a reasonable assumption and mark it (assumed). ` +
     'If you used a tool, say so in one line at the end ("Used: Gmail — searched the client thread").\n\n' +
@@ -425,6 +426,23 @@ function fileBrainUpdates(task) { // only for a task the owner approved, and onl
   task.result += '\n\n---\nFILED TO THE BRAIN\n' + done.map(d => `${d.ok ? '✓' : '✗'} ${d.note} (${d.mode}): ${d.message}`).join('\n');
   console.log(`▣ brain: ${done.filter(d => d.ok).length} of ${done.length} update(s) filed for ${task.id} — ${done.map(d => `${d.ok ? '✓' : '✗'} ${d.note}`).join(', ')}`);
 }
+function handoffReview(task, text) { // what approving would hand on, for the review card; the block itself is removed from the result
+  const blocks = handoff.parse(text); if (!blocks.length) { delete task.handoffs; return ''; }
+  task.handoffs = handoff.plan(blocks, AGENTS, task.agent);
+  const good = task.handoffs.filter(h => h.ok), bad = task.handoffs.filter(h => !h.ok);
+  return (good.length ? ` Approving also hands on ${good.length === 1 ? 'a task' : good.length + ' tasks'}: ${good.map(h => `${h.toName} — "${h.title}"`).join('; ')}.` : '') + (bad.length ? ` Not handed on: ${bad.map(h => `${h.toName || '?'} (${h.problem})`).join('; ')}.` : '');
+}
+function fireHandoffs(task) { // only for a task the owner approved, and only what was on the card he approved
+  const hs = (task.handoffs || []).filter(h => h.ok && !h.fired); if (!hs.length || !task.approved) return;
+  const list = load(); const made = [];
+  for (const h of hs) {
+    const t = { id: nid(), dept: h.dept, agent: h.to, title: h.title, text: `${h.text}\n\n(Handed over by ${agentName(task.agent)} from the task "${task.title}", which Wesley approved.)`, plan: [], eta: 10, why: `Handed over by ${agentName(task.agent)}`, state: 'doing', startedAt: Date.now(), addedAt: Date.now(), by: 'handoff', handoffFrom: task.agent, handoffTask: task.id, needsOk: false };
+    list.push(t); made.push(t); h.fired = t.id;
+  }
+  save(list);
+  task.result += '\n\n---\nHANDED ON\n' + made.map(t => `→ ${agentName(t.agent)}: ${t.title}`).join('\n');
+  for (const t of made) { console.log(`➜ ${task.id} hands on to ${t.agent}: ${t.title}`); enqueue(() => runServerTask(t.id)).catch(e => console.warn('handoff:', e.message)); }
+}
 function writeNote(task) { // the deliverable becomes a note in the brain, linked to what was read
   fs.mkdirSync(NOTES_DIR, { recursive: true });
   const a = AGENTS.find(x => x.id === task.agent);
@@ -483,14 +501,16 @@ async function runServerTask(id, { feedback, approve, answer } = {}) {
   task.state = 'doing'; task.startedAt = Date.now(); delete task.ask; save(list);
   try {
     const out = await run(task, feedback, approve ? 'approve' : task.needsOk ? 'draft' : 'routine', answer);
+    const hoText = out.result; if (handoff.parse(hoText).length) out.result = handoff.strip(hoText);
     if (approve) { task.result = (task.draft || task.result) + '\n\n---\nAFTER YOUR OK\n' + out.result; task.approved = true; task.approvedAt = Date.now(); }
     else task.result = out.result;
     Object.assign(task, { read: out.read, tools: [...new Set([...(task.tools || []), ...out.tools])], used: [...new Set([...(task.used || []), ...out.used])], skills: out.skills, error: false, modelUsed: out.modelUsed, modelFrom: out.modelFrom, modelId: out.modelId, effortUsed: out.effortUsed, effortFrom: out.effortFrom, ...(out.team ? { team: out.team } : {}) });
     if (task.needsOk && !task.channel && isEmail(task)) task.channel = 'email';
-    if ((task.needsOk || REVIEW_ALL) && !approve) { task.state = 'waiting'; task.draft = out.result; task.waitingAt = Date.now(); task.ask = (task.needsOk ? (task.channel === 'email' ? `"${task.title}" is written — approve to put it in your Gmail drafts, then send it from your inbox. Reject to tell me what to change.` : routines.askLine(task)) : reviewLine(task)) + brainReview(task, out.result); }
+    if ((task.needsOk || REVIEW_ALL) && !approve) { task.state = 'waiting'; task.draft = out.result; task.waitingAt = Date.now(); task.ask = (task.needsOk ? (task.channel === 'email' ? `"${task.title}" is written — approve to put it in your Gmail drafts, then send it from your inbox. Reject to tell me what to change.` : routines.askLine(task)) : reviewLine(task)) + brainReview(task, out.result) + (approve ? '' : handoffReview(task, hoText)); }
     else {
       task.state = 'done'; task.doneAt = Date.now();
-      if (approve) fileBrainUpdates(task);
+      if (approve) { fileBrainUpdates(task); fireHandoffs(task); }
+      else if (handoff.parse(hoText).length) task.result += '\n\n---\nHANDOFF NOT SENT: this task did not wait for your review, and nothing is handed on without your OK.';
       else if (BRAIN_WRITE && brainnotes.parse(out.result).length) task.result += '\n\n---\nBRAIN UPDATE NOT FILED: this task did not wait for your review, and nothing is filed without your OK.';
       task.note = writeNote(task); await rebuildGraph();
     }
@@ -899,7 +919,7 @@ const server = http.createServer(async (req, res) => {
       const note = String(feedback || '').trim();
       if (m[2] === 'approve' && !task.needsOk) { // V3.9: a reviewed task with nothing to send — the tick is the finish line, no second run
         Object.assign(task, { state: 'done', result: task.draft || task.result, approved: true, approvedAt: Date.now(), doneAt: Date.now() }); delete task.ask;
-        fileBrainUpdates(task);
+        fileBrainUpdates(task); fireHandoffs(task);
         task.note = writeNote(task); save(load().map(t => t.id === task.id ? task : t)); await rebuildGraph();
         console.log(`✅ ${task.id} approved — done (note: ${task.note})`);
         autoFeed(task);
