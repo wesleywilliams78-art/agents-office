@@ -232,13 +232,14 @@ async function askX(system, user, { maxTokens = 4000, tools = true, timeout = RU
   const env = mcp.freshEnv(); delete env.CLAUDECODE; // the CLI refuses to nest inside another Claude Code session
   return new Promise((resolve, reject) => {
     const p = spawn(mcp.resolveBin(), args, { cwd: CLI_CWD, env, stdio: ['ignore', 'pipe', 'pipe'] });
-    let out = '', err = '', text = '', used = [], gotResult = false, usageOut = null, modelUsed = null;
-    const timer = setTimeout(() => { p.kill('SIGKILL'); reject(new Error(`Claude took longer than ${timeout / 1000} s`)); }, timeout);
+    let out = '', err = '', text = '', used = [], gotResult = false, usageOut = null, modelUsed = null; const partial = []; // partial: every piece of text the agent has written so far, so a run that is stopped does not lose its work
+    const stopped = msg => { const e = new Error(msg); e.partial = partial.join(String.fromCharCode(10, 10)).trim(); e.used = used; return e; };
+    const timer = setTimeout(() => { p.kill('SIGKILL'); reject(stopped(`Claude took longer than ${timeout / 1000} s`)); }, timeout);
     const feed = line => {
       if (!line.trim()) return;
       let j; try { j = JSON.parse(line); } catch { return; }
       if (j.type === 'system' && j.subtype === 'init') mcp.fromInit(j);
-      if (j.type === 'assistant' && j.message?.content) for (const b of j.message.content) if (b.type === 'tool_use' && b.name && !used.includes(b.name)) used.push(b.name);
+      if (j.type === 'assistant' && j.message?.content) for (const b of j.message.content) { if (b.type === 'tool_use' && b.name && !used.includes(b.name)) used.push(b.name); if (b.type === 'text' && String(b.text || '').trim()) partial.push(String(b.text).trim()); }
       if (j.type === 'result') { gotResult = true; text = String(j.result || '').trim(); if (j.is_error && !text) text = ''; usageOut = j.usage || null; modelUsed = ranOn(j.modelUsage, model); }
     };
     p.stdout.on('data', d => { out += d; let i; while ((i = out.indexOf('\n')) >= 0) { feed(out.slice(0, i)); out = out.slice(i + 1); } });
@@ -246,7 +247,7 @@ async function askX(system, user, { maxTokens = 4000, tools = true, timeout = RU
     p.on('error', e => { clearTimeout(timer); rmSys(); reject(new Error(e.code === 'ENOENT' ? 'Claude Code is not installed (claude not found on PATH)' : e.message)); });
     p.on('close', code => {
       clearTimeout(timer); rmSys(); feed(out);
-      if (code !== 0 && !gotResult) return reject(new Error(`claude exited ${code}${err ? ': ' + err.trim().slice(0, 300) : ''}`));
+      if (code !== 0 && !gotResult) return reject(stopped(`claude exited ${code}${err ? ': ' + err.trim().slice(0, 300) : ''}`));
       if (!gotResult) { try { text = String(JSON.parse(out).result || '').trim(); } catch { text = out.trim(); } }
       bumpUsage(usageOut);
       resolve({ text, tools: used, usage: usageOut, modelId: modelUsed });
@@ -416,7 +417,7 @@ async function runTeam(task, mode) {
       const { body, messages } = teams.parseMessages(text, ids);
       Object.assign(piece, { result: body || '(empty)', tools: toolKeys(tools), used: mcp.namesOf(tools), read, modelId: ran, error: !text });
       for (const m of messages) task.team.messages.push({ from: a.id, to: m.to === lead.id ? 'lead' : m.to, text: m.text, at: Date.now() });
-    } catch (e) { Object.assign(piece, { result: 'Could not complete this piece: ' + e.message, error: true }); }
+    } catch (e) { Object.assign(piece, { result: 'Could not complete this piece: ' + e.message + (e.partial ? `${String.fromCharCode(10, 10)}What it had written so far:${String.fromCharCode(10, 10)}${e.partial}` : ''), error: true }); }
     piece.state = 'done'; piece.doneAt = Date.now(); persist(task);
     console.log(`    ${piece.error ? '✗' : '✓'} ${a.name}: ${piece.title} (${(piece.result || '').length} chars${piece.tools?.length ? ', tools: ' + piece.tools.join(' ') : ''})`);
   });
@@ -549,7 +550,8 @@ async function runServerTask(id, { feedback, approve, answer } = {}) {
       task.note = writeNote(task); await rebuildGraph();
     }
   } catch (e) {
-    Object.assign(task, { state: 'done', doneAt: Date.now(), result: 'Could not complete this task: ' + e.message, error: true });
+    const kept = e.partial ? `${String.fromCharCode(10, 10)}---${String.fromCharCode(10)}WHAT IT HAD WRITTEN WHEN IT STOPPED (unfinished, kept so the work is not lost)${String.fromCharCode(10, 10)}${e.partial}` : '';
+    Object.assign(task, { state: 'done', doneAt: Date.now(), result: 'Could not complete this task: ' + e.message + kept, error: true, ...(e.partial ? { partial: true } : {}), ...(e.used?.length ? { used: [...new Set([...(task.used || []), ...e.used])] } : {}) });
   }
   list = load(); const i = list.findIndex(t => t.id === task.id); if (i >= 0) list[i] = task; save(list);
   console.log(`${task.error ? '✗' : task.state === 'waiting' ? '⏸' : '✓'} ${task.id} ${task.error ? 'failed' : task.state === 'waiting' ? 'waiting for your OK' : 'done'} (${task.result.length} chars${task.tools?.length ? ', tools: ' + task.tools.join(' ') : ''}${task.note ? ', note: ' + task.note : ''})`);
