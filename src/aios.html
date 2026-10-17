@@ -227,6 +227,10 @@
   .sdChip { font-size: 10.5px; padding: 4px 10px; border-radius: 99px; background: transparent; color: var(--grey); letter-spacing: .04em; }
   .sdChip.on { background: var(--ink); color: var(--bg); border-color: var(--ink); }
   .sdChartBox { position: relative; border: 1px solid var(--line); border-radius: 14px; background: var(--panel); padding: 6px 6px 0; overflow: hidden; }
+  .sdZoom { margin-left: auto; display: flex; align-items: center; gap: 4px; }
+  .sdZoom button { width: 28px; height: 28px; padding: 0; border-radius: 8px; font-size: 15px; line-height: 1; background: var(--panel); } .sdZoom .sdFit { width: auto; padding: 0 9px; font-size: 10.5px; letter-spacing: .06em; }
+  .sdZoom span { font-size: 10.5px; color: var(--faint); min-width: 30px; text-align: right; font-variant-numeric: tabular-nums; }
+  #sdSvg { cursor: grab; touch-action: none; user-select: none; } #sdSvg:active { cursor: grabbing; }
   .sdTip { position: absolute; z-index: 5; width: 186px; pointer-events: none; background: var(--panel); color: var(--ink); border: 1px solid var(--line); border-radius: 10px; padding: 9px 11px; font-size: 11px; box-shadow: 0 8px 24px rgba(0,0,0,.28); }
   .sdTip b { font-family: var(--serif); font-weight: 400; font-size: 15px; display: block; } .sdTip > div:nth-child(2) { color: var(--faint); font-size: 10px; margin-bottom: 5px; }
   .sdTr { display: flex; justify-content: space-between; gap: 8px; padding: 2px 0; border-top: 1px solid var(--line); } .sdTr span:first-child { color: var(--grey); }
@@ -848,65 +852,107 @@ function renderPos(el, cur, d) {
 // Star / Dog analysis (menu engineering). Every dish is judged against its OWN category: popular = at or above 70% of an even share of the category's sales,
 // profitable = margin per dish at or above the category's sales-weighted average. Layout (classic menu-engineering board):
 //   top left STARS (high margin, high units) · top right PUZZLES (high margin, low units) · bottom left PLOWHORSES (low margin, high units) · bottom right DOGS (low margin, low units)
+// The board zooms inside its own frame (buttons, Ctrl/⌘ + scroll, double-click, drag to pan, or pick a category to fit it); nothing else on the page moves.
 const SD_COL = { star: '#C8553D', puzzle: '#C98A12', plowhorse: '#4C7EA8', dog: '#8a8a94' };
 const SD_NAME = { star: 'Stars', puzzle: 'Puzzles', plowhorse: 'Plowhorses', dog: 'Dogs' };
 const SD_SHORT = { star: 'High margin · high units sold', puzzle: 'High margin · low units sold', plowhorse: 'Low margin · high units sold', dog: 'Low margin · low units sold' };
 const SD_DO = { star: 'Keep and feature them. Protect quality and supply.', puzzle: 'Good money per sale, too few sales. Move them up the menu, name them, pair them.', plowhorse: 'They carry the volume. Try a small price rise or trim the cost or portion.', dog: 'Weakest on both. Reprice, rework the recipe, or consider dropping them.' };
+const SD_W = 700, SD_H = 440, SD_PL = 56, SD_PR = 16, SD_PT = 40, SD_PB = 46, SD_PW = SD_W - SD_PL - SD_PR, SD_PH = SD_H - SD_PT - SD_PB;
+const SD_HOME = { a: Math.log(5), b: Math.log(0.12), y0: 0.55, y1: 1.4 };   // a = left edge (most units, in log of the popularity index), b = right edge
 function sdTipHtml(x, c) { return `<b>${esc(x.name)}</b><div>${esc(x.cat)} · ${SD_NAME[x.box]}</div><div class="sdTr"><span>Units sold</span><span>${x.units.toLocaleString('en-GB')}</span></div><div class="sdTr"><span>Price ex VAT</span><span>${c} ${x.price.toFixed(0)}</span></div><div class="sdTr"><span>Food cost</span><span>${c} ${x.cost.toFixed(0)} (${x.fc}%)</span></div><div class="sdTr"><span>Margin per dish</span><span>${c} ${x.cm.toFixed(0)}</span></div>`; }
+function sdFit(ds) { // a view that frames these dishes with some air around them
+  if (!ds.length) return { ...SD_HOME };
+  const lx = ds.map(x => Math.log(x.px)), ys = ds.map(x => x.py);
+  let a = Math.max(...lx), b = Math.min(...lx), y0 = Math.min(...ys), y1 = Math.max(...ys);
+  const padX = Math.max((a - b) * 0.14, 0.25), padY = Math.max((y1 - y0) * 0.16, 0.06);
+  a += padX; b -= padX; y0 -= padY; y1 += padY;
+  if (a - b < 1.2) { const m = (a + b) / 2; a = m + 0.6; b = m - 0.6; }
+  if (y1 - y0 < 0.3) { const m = (y0 + y1) / 2; y0 = m - 0.15; y1 = m + 0.15; }
+  return { a, b, y0, y1 };
+}
+function sdChartInner(all, sel, v) {
+  const X = p => SD_PL + (v.a - Math.log(Math.max(p, 0.01))) / (v.a - v.b) * SD_PW, Y = q => SD_PT + (1 - (q - v.y0) / (v.y1 - v.y0)) * SD_PH;
+  const clampX = x => Math.min(Math.max(x, SD_PL), SD_W - SD_PR), clampY = y => Math.min(Math.max(y, SD_PT), SD_PT + SD_PH);
+  const mx = clampX(X(1)), my = clampY(Y(1)), zoom = (SD_HOME.a - SD_HOME.b) / (v.a - v.b), maxU = Math.max(...all.map(x => x.units));
+  const rad = u => (3.2 + Math.sqrt(u / maxU) * 11) * Math.min(1.9, Math.pow(zoom, 0.38));
+  const quad = (b, x0, y0, x1, y1) => x1 > x0 && y1 > y0 ? `<rect x="${x0}" y="${y0}" width="${x1 - x0}" height="${y1 - y0}" fill="${SD_COL[b]}" fill-opacity=".075"/>` : '';
+  const xr = SD_W - SD_PR, yb = SD_PT + SD_PH;
+  const showNames = zoom < 1.8, crossX = X(1) > SD_PL && X(1) < xr, crossY = Y(1) > SD_PT && Y(1) < yb;
+  const qlab = (b, x, y, a) => `<text x="${x}" y="${y}" text-anchor="${a}" font-family="var(--serif)" font-size="19" fill="${SD_COL[b]}">${SD_NAME[b]}</text><text x="${x}" y="${y + 13}" text-anchor="${a}" font-size="9" letter-spacing=".06em" fill="var(--grey)">${SD_SHORT[b].toUpperCase()}</text>`;
+  const xs = [0.12, 0.15, 0.2, 0.25, 0.35, 0.5, 0.7, 1, 1.4, 2, 3, 4, 5].filter(t => Math.log(t) < v.a - 0.04 && Math.log(t) > v.b + 0.04);
+  const step = (v.y1 - v.y0) > 0.6 ? 0.2 : (v.y1 - v.y0) > 0.3 ? 0.1 : 0.05, ys = []; for (let t = Math.ceil(v.y0 / step) * step; t < v.y1; t += step) ys.push(+t.toFixed(3));
+  const grid = xs.map(t => `<line x1="${X(t).toFixed(1)}" x2="${X(t).toFixed(1)}" y1="${SD_PT}" y2="${yb}" stroke="var(--line)" stroke-dasharray="2 5"/><text x="${X(t).toFixed(1)}" y="${SD_H - SD_PB + 14}" text-anchor="middle" font-size="9" fill="var(--faint)">${t}×</text>`).join('') +
+    ys.map(t => `<line x1="${SD_PL}" x2="${xr}" y1="${Y(t).toFixed(1)}" y2="${Y(t).toFixed(1)}" stroke="var(--line)" stroke-dasharray="2 5"/><text x="${SD_PL - 7}" y="${(Y(t) + 3).toFixed(1)}" text-anchor="end" font-size="9" fill="var(--faint)">${t}×</text>`).join('');
+  const cross = (crossX ? `<line x1="${mx}" x2="${mx}" y1="${SD_PT}" y2="${yb}" stroke="var(--ink)" stroke-opacity=".32"/>` : '') + (crossY ? `<line x1="${SD_PL}" x2="${xr}" y1="${my}" y2="${my}" stroke="var(--ink)" stroke-opacity=".32"/>` : '');
+  const vis = all.filter(x => { const px = X(x.px), py = Y(x.py), r = rad(x.units); return px > SD_PL - r && px < xr + r && py > SD_PT - r && py < yb + r; });
+  const placed = [], labs = [], cap = zoom > 1.6 ? 80 : sel ? 12 : 12;
+  for (const x of vis.filter(x => !sel || x.cat === sel).sort((a, b) => b.units - a.units).slice(0, cap)) {
+    const t = x.name.length > 26 ? x.name.slice(0, 25) + '…' : x.name, w = t.length * 4.9, r = rad(x.units), cx = X(x.px), cy = Y(x.py);
+    for (const [side, up] of [[1, 0], [-1, 0], [1, 1], [-1, 1], [1, -1], [-1, -1]]) {
+      const lx = side === 1 ? cx + r + 4 : cx - r - 4, x0 = side === 1 ? lx : lx - w, ty = cy + up * (r + 6);
+      if (x0 < SD_PL || x0 + w > xr || ty - 9 < SD_PT || ty + 3 > yb) continue;
+      const box = [x0, ty - 9, x0 + w, ty + 3];
+      if (placed.some(p => box[0] < p[2] && box[2] > p[0] && box[1] < p[3] && box[3] > p[1])) continue;
+      placed.push(box); labs.push(`<text x="${lx.toFixed(1)}" y="${(ty - 1).toFixed(1)}" text-anchor="${side === 1 ? 'start' : 'end'}" font-size="9.5" fill="var(--ink)" paint-order="stroke" stroke="var(--panel)" stroke-width="3" stroke-linejoin="round" pointer-events="none">${esc(t)}</text>`); break;
+    }
+  }
+  const dots = vis.map(x => { const i = all.indexOf(x), dim = sel && x.cat !== sel; return { i, u: x.units, h: `<circle data-sdi="${i}" cx="${X(x.px).toFixed(1)}" cy="${Y(x.py).toFixed(1)}" r="${rad(x.units).toFixed(1)}" fill="${SD_COL[x.box]}" fill-opacity="${dim ? .06 : .82}" stroke="var(--panel)" stroke-opacity="${dim ? 0 : 1}" stroke-width="1.3" ${dim ? 'pointer-events="none"' : 'style="cursor:pointer"'}/>` }; })
+    .sort((a, b) => b.u - a.u).map(d => d.h).join('');
+  const names = showNames ? qlab('star', SD_PL + 10, SD_PT + 22, 'start') + qlab('puzzle', xr - 10, SD_PT + 22, 'end') + qlab('plowhorse', SD_PL + 10, yb - 22, 'start') + qlab('dog', xr - 10, yb - 22, 'end') : '';
+  return `<defs><clipPath id="sdClip"><rect x="${SD_PL}" y="${SD_PT}" width="${SD_PW}" height="${SD_PH}"/></clipPath></defs>
+    ${quad('star', SD_PL, SD_PT, mx, my)}${quad('puzzle', mx, SD_PT, xr, my)}${quad('plowhorse', SD_PL, my, mx, yb)}${quad('dog', mx, my, xr, yb)}
+    <g clip-path="url(#sdClip)">${grid.replace(/<text[^>]*>[^<]*<\/text>/g, '')}${cross}${dots}${labs.join('')}</g>${names}${grid.match(/<text[^>]*>[^<]*<\/text>/g).join('')}
+    <text x="${SD_PL}" y="${SD_PT - 14}" font-size="9.5" letter-spacing=".1em" fill="var(--grey)">← MORE UNITS SOLD</text><text x="${xr}" y="${SD_PT - 14}" text-anchor="end" font-size="9.5" letter-spacing=".1em" fill="var(--grey)">FEWER UNITS SOLD →</text>
+    <text transform="translate(14 ${SD_PT + SD_PH / 2}) rotate(-90)" text-anchor="middle" font-size="9.5" letter-spacing=".1em" fill="var(--grey)">LOWER MARGIN ← MARGIN PER DISH → HIGHER</text>`;
+}
+function sdView(all, sel) { return S.sdView || (sel ? sdFit(all.filter(x => x.cat === sel)) : { ...SD_HOME }); }
+function sdRedraw() { const svg = document.getElementById('sdSvg'); if (!svg || !S.sdDishes) return; const sel = S.sdCat || ''; svg.innerHTML = sdChartInner(S.sdDishes, sel, sdView(S.sdDishes, sel)); const z = document.getElementById('sdZoomLbl'); if (z) { const v = sdView(S.sdDishes, sel); z.textContent = ((SD_HOME.a - SD_HOME.b) / (v.a - v.b)).toFixed(1) + '×'; } }
+function sdZoomAt(f, fx, fy) { // f < 1 zooms in; (fx, fy) = the point to hold still, as a fraction of the plot (0..1)
+  const sel = S.sdCat || '', v = sdView(S.sdDishes, sel), la = v.a - fx * (v.a - v.b), ly = v.y1 - fy * (v.y1 - v.y0);
+  let ra = (v.a - v.b) * f, ry = (v.y1 - v.y0) * f; ra = Math.min(Math.max(ra, 0.15), 9); ry = Math.min(Math.max(ry, 0.05), 1.9);
+  S.sdView = { a: la + fx * ra, b: la - (1 - fx) * ra, y1: ly + fy * ry, y0: ly - (1 - fy) * ry };
+  sdRedraw();
+}
 function starDogHtml(d) {
   const sd = d && d.stardog; if (!sd) return '';
   const cats = sd.categories, c = sd.currency || 'kr', cov = sd.coverage, sel = S.sdCat || '';
   const all = sd.dishes.filter(x => x.box && cats[x.cat] && cats[x.cat].ranked).map(x => ({ ...x, px: x.mix / cats[x.cat].line, py: x.cm / cats[x.cat].avgCm }));
   S.sdDishes = all;
-  const W = 700, H = 440, pl = 56, pr = 16, pt = 40, pb = 46, pw = W - pl - pr, ph = H - pt - pb;
-  const lx0 = Math.log(0.12), lx1 = Math.log(5), y0 = 0.55, y1 = 1.4;
-  const X = v => pl + (lx1 - Math.log(Math.min(Math.max(v, 0.12), 5))) / (lx1 - lx0) * pw;   // more units sold = further LEFT
-  const Y = v => pt + (1 - (Math.min(Math.max(v, y0), y1) - y0) / (y1 - y0)) * ph;             // higher margin = further UP
-  const mx = X(1), my = Y(1), maxU = Math.max(...all.map(x => x.units)), rad = u => 3.2 + Math.sqrt(u / maxU) * 11;
-  const quad = (b, x, y, w, h) => `<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="${SD_COL[b]}" fill-opacity=".075"/>`;
-  const qlab = (b, x, y, a) => `<text x="${x}" y="${y}" text-anchor="${a}" font-family="var(--serif)" font-size="19" fill="${SD_COL[b]}">${SD_NAME[b]}</text><text x="${x}" y="${y + 13}" text-anchor="${a}" font-size="9" letter-spacing=".06em" fill="var(--grey)">${SD_SHORT[b].toUpperCase()}</text>`;
-  // labels: the biggest sellers, placed greedily so none overlaps
-  const placed = [], labs = [];
-  for (const x of [...all].filter(x => !sel || x.cat === sel).sort((a, b) => b.units - a.units).slice(0, sel ? 10 : 12)) {
-    const t = x.name.length > 24 ? x.name.slice(0, 23) + '…' : x.name, w = t.length * 4.7, r = rad(x.units), cx = X(x.px), cy = Y(x.py);
-    for (const side of [1, -1]) {
-      const lx = side === 1 ? cx + r + 4 : cx - r - 4, x0 = side === 1 ? lx : lx - w;
-      if (x0 < pl || x0 + w > W - pr) continue;
-      const box = [x0, cy - 9, x0 + w, cy + 3];
-      if (placed.some(p => box[0] < p[2] && box[2] > p[0] && box[1] < p[3] && box[3] > p[1])) continue;
-      placed.push(box); labs.push(`<text x="${lx.toFixed(1)}" y="${(cy - 1).toFixed(1)}" text-anchor="${side === 1 ? 'start' : 'end'}" font-size="9.5" fill="var(--ink)" paint-order="stroke" stroke="var(--panel)" stroke-width="3" stroke-linejoin="round">${esc(t)}</text>`); break;
-    }
-  }
-  const dots = [...all.keys()].sort((a, b) => all[b].units - all[a].units).map(i => { const x = all[i], dim = sel && x.cat !== sel;
-    return `<circle data-sdi="${i}" cx="${X(x.px).toFixed(1)}" cy="${Y(x.py).toFixed(1)}" r="${rad(x.units).toFixed(1)}" fill="${SD_COL[x.box]}" fill-opacity="${dim ? .1 : .82}" stroke="var(--panel)" stroke-width="1.3" style="cursor:pointer;transition:fill-opacity .15s"/>`; }).join('');
-  const xt = [4, 2, 1, .5, .25].map(v => `<text x="${X(v).toFixed(1)}" y="${H - pb + 14}" text-anchor="middle" font-size="9" fill="var(--faint)">${v}×</text>`).join('');
-  const yt = [1.3, 1.1, 1, .9, .7].map(v => `<text x="${pl - 7}" y="${Y(v) + 3}" text-anchor="end" font-size="9" fill="var(--faint)">${v}×</text>`).join('');
-  const chart = `<div class="sdChartBox"><svg class="sChart" viewBox="0 0 ${W} ${H}" role="img" aria-label="Star and dog board: margin per dish against units sold, each dish measured against its own category">
-    ${quad('star', pl, pt, mx - pl, my - pt)}${quad('puzzle', mx, pt, W - pr - mx, my - pt)}${quad('plowhorse', pl, my, mx - pl, pt + ph - my)}${quad('dog', mx, my, W - pr - mx, pt + ph - my)}
-    <line x1="${mx}" x2="${mx}" y1="${pt}" y2="${pt + ph}" stroke="var(--ink)" stroke-opacity=".28" stroke-width="1"/><line x1="${pl}" x2="${W - pr}" y1="${my}" y2="${my}" stroke="var(--ink)" stroke-opacity=".28" stroke-width="1"/>
-    ${qlab('star', pl + 10, pt + 22, 'start')}${qlab('puzzle', W - pr - 10, pt + 22, 'end')}${qlab('plowhorse', pl + 10, pt + ph - 22, 'start')}${qlab('dog', W - pr - 10, pt + ph - 22, 'end')}
-    ${dots}${labs.join('')}${xt}${yt}
-    <text x="${pl}" y="${pt - 14}" font-size="9.5" letter-spacing=".1em" fill="var(--grey)">← MORE UNITS SOLD</text><text x="${W - pr}" y="${pt - 14}" text-anchor="end" font-size="9.5" letter-spacing=".1em" fill="var(--grey)">FEWER UNITS SOLD →</text>
-    <text transform="translate(14 ${pt + ph / 2}) rotate(-90)" text-anchor="middle" font-size="9.5" letter-spacing=".1em" fill="var(--grey)">LOWER MARGIN ← MARGIN PER DISH → HIGHER</text></svg><div class="sdTip" id="sdTip" hidden></div></div>`;
-  const chips = `<div class="sdChips"><button class="sdChip${sel ? '' : ' on'}" data-sdcat="">All categories</button>${Object.entries(cats).filter(([, v]) => v.ranked).map(([n]) => `<button class="sdChip${sel === n ? ' on' : ''}" data-sdcat="${esc(n)}">${esc(n)}</button>`).join('')}</div>`;
+  const chart = `<div class="sdChartBox"><svg class="sChart" id="sdSvg" viewBox="0 0 ${SD_W} ${SD_H}" role="img" aria-label="Star and dog board: margin per dish against units sold, each dish measured against its own category">${sdChartInner(all, sel, sdView(all, sel))}</svg>
+    <div class="sdTip" id="sdTip" hidden></div></div>`;
+  const chips = `<div class="sdChips"><button class="sdChip${sel ? '' : ' on'}" data-sdcat="">All categories</button>${Object.entries(cats).filter(([, v]) => v.ranked).map(([n]) => `<button class="sdChip${sel === n ? ' on' : ''}" data-sdcat="${esc(n)}">${esc(n)}</button>`).join('')}<div class="sdZoom"><button data-sdzoom="in" title="Zoom in">+</button><button data-sdzoom="out" title="Zoom out">−</button><button data-sdzoom="fit" title="Back to the whole board" class="sdFit">Fit</button><span id="sdZoomLbl">${((SD_HOME.a - SD_HOME.b) / (sdView(all, sel).a - sdView(all, sel).b)).toFixed(1)}×</span></div></div>`;
   const by = b => all.filter(x => x.box === b && (!sel || x.cat === sel)).sort((p, q) => q.units - p.units);
   const box = b => { const l = by(b), top = l.slice(0, 6); return `<div class="sdBox" style="--c:${SD_COL[b]}"><div class="sdH"><b>${SD_NAME[b]}</b><span>${l.length}</span></div><div class="sdS">${SD_SHORT[b]}</div><ul>${top.map(x => `<li>${esc(x.name)} <span>${x.units.toLocaleString('en-GB')} · ${c}${Math.round(x.cm)}</span></li>`).join('') || '<li><span>none</span></li>'}</ul>${l.length > top.length ? `<div class="sdMore">and ${l.length - top.length} more</div>` : ''}<div class="sdDo">${SD_DO[b]}</div></div>`; };
   const catRows = Object.entries(cats).map(([n, v]) => `<tr><td>${esc(n)}</td><td>${v.items}</td><td>${v.costed}</td><td>${v.ranked ? c + ' ' + Math.round(v.avgCm) : 'not ranked'}</td></tr>`).join('');
   return `<div class="sdWrap"><div class="sHead" style="margin-top:22px"><b>Star and dog analysis</b><span class="note">a start: ${cov.costed} of ${cov.dishes} dishes have a food cost (${Math.round(cov.costedUnits / cov.units * 100)}% of units sold) · as at ${esc(sd.asOf)}</span></div>
-    ${chips}${chart}<div class="sdKey"><span>Dot size = units sold</span><span>Position = against its own category (1× = the category line)</span><span>Hover a dot for the dish</span></div>
+    ${chips}${chart}<div class="sdKey"><span>Dot size = units sold</span><span>Position = against its own category (1× = the category line)</span><span>Pick a category to zoom to it · + / − · Ctrl + scroll · double-click · drag to pan</span></div>
     <div class="sdGrid">${box('star')}${box('puzzle')}${box('plowhorse')}${box('dog')}</div>
-    <div class="note" style="font-size:10.5px;color:var(--faint);margin-top:12px">Each dish is judged against its own category, so a shake is compared with shakes and a crepe with crepes. High units sold means at least 70% of an even share of the category. High margin means margin per dish at or above the category's average, weighted by sales. Dishes without a food cost yet are left out, and hot drinks, bought-in drinks and ice cream are not ranked. The missing costs are in the Missing costs tab of the sales summary sheet; the coffee price is one of them. Margin is price without VAT minus ingredients only: no packaging, labour or platform commission.</div>
+    <div class="note" style="font-size:10.5px;color:var(--faint);margin-top:12px">Each dish is judged against its own category, so a shake is compared with shakes and a crepe with crepes. High units sold means at least 70% of an even share of the category. High margin means margin per dish at or above the category's average, weighted by sales. Dishes without a food cost yet are left out, and hot drinks, bought-in drinks and ice cream are not ranked. The missing costs are in the Missing costs tab of the sales summary sheet. Margin is price without VAT minus ingredients only: no packaging, labour or platform commission.</div>
     <details class="sdCats"><summary>By category</summary><table><thead><tr><th>Category</th><th>Dishes</th><th>Costed</th><th>Average margin</th></tr></thead><tbody>${catRows}</tbody></table></details></div>`;
 }
-// filter chips and the hover card (bound once)
+// bound once: category chips (fit the board to that category), zoom buttons, Ctrl/⌘ + scroll, double-click, drag to pan, hover card
 if (!window.__sdBound) {
   window.__sdBound = true;
-  document.addEventListener('click', e => { const b = e.target.closest('[data-sdcat]'); if (b) { S.sdCat = b.dataset.sdcat || ''; renderSales(); } });
-  const tip = () => document.getElementById('sdTip');
-  document.addEventListener('mouseover', e => { const dot = e.target.closest && e.target.closest('[data-sdi]'); const t = tip(); if (!t) return; if (!dot) { t.hidden = true; return; }
-    const x = (S.sdDishes || [])[+dot.dataset.sdi]; if (!x) return; t.innerHTML = sdTipHtml(x, '£'.replace('£', 'kr')); t.hidden = false; dot.setAttribute('stroke', 'var(--ink)'); dot.setAttribute('stroke-width', '2'); });
+  const plotFrac = e => { const svg = document.getElementById('sdSvg'); if (!svg) return null; const r = svg.getBoundingClientRect(), sx = SD_W / r.width, sy = SD_H / r.height; const px = (e.clientX - r.left) * sx, py = (e.clientY - r.top) * sy; return { fx: Math.min(Math.max((px - SD_PL) / SD_PW, 0), 1), fy: Math.min(Math.max((py - SD_PT) / SD_PH, 0), 1), sx, sy }; };
+  document.addEventListener('click', e => {
+    const b = e.target.closest('[data-sdcat]'); if (b) { S.sdCat = b.dataset.sdcat || ''; S.sdView = null; renderSales(); return; }
+    const z = e.target.closest('[data-sdzoom]'); if (z) { const k = z.dataset.sdzoom; if (k === 'fit') { S.sdView = null; sdRedraw(); } else sdZoomAt(k === 'in' ? 0.6 : 1.65, 0.5, 0.5); }
+  });
+  document.addEventListener('dblclick', e => { if (!e.target.closest('#sdSvg')) return; const p = plotFrac(e); if (p) { e.preventDefault(); sdZoomAt(0.5, p.fx, p.fy); } });
+  document.addEventListener('wheel', e => { if (!e.target.closest('#sdSvg') || !(e.ctrlKey || e.metaKey)) return; const p = plotFrac(e); if (!p) return; e.preventDefault(); sdZoomAt(e.deltaY < 0 ? 0.82 : 1.22, p.fx, p.fy); }, { passive: false });
+  let drag = null;
+  document.addEventListener('pointerdown', e => { const svg = e.target.closest('#sdSvg'); if (!svg || e.button !== 0) return; const p = plotFrac(e); const v = sdView(S.sdDishes || [], S.sdCat || ''); drag = { x: e.clientX, y: e.clientY, v: { ...v }, sx: p.sx, sy: p.sy, moved: false }; });
+  document.addEventListener('pointermove', e => {
+    if (drag) { const dx = (e.clientX - drag.x) * drag.sx, dy = (e.clientY - drag.y) * drag.sy; if (Math.abs(dx) + Math.abs(dy) > 3) drag.moved = true;
+      if (drag.moved) { const v = drag.v, ra = v.a - v.b, ry = v.y1 - v.y0; S.sdView = { a: v.a + dx / SD_PW * ra, b: v.b + dx / SD_PW * ra, y0: v.y0 + dy / SD_PH * ry, y1: v.y1 + dy / SD_PH * ry }; const t0 = document.getElementById('sdTip'); if (t0) t0.hidden = true; cancelAnimationFrame(drag.raf); drag.raf = requestAnimationFrame(sdRedraw); return; } }
+    const dot = e.target.closest && e.target.closest('[data-sdi]'), t = document.getElementById('sdTip'); if (!t) return;
+    if (!dot || drag) { t.hidden = true; return; }
+    const x = (S.sdDishes || [])[+dot.dataset.sdi]; if (!x) return; t.innerHTML = sdTipHtml(x, 'kr'); t.hidden = false;
+    const box = t.parentElement.getBoundingClientRect(); let px = e.clientX - box.left + 14, py = e.clientY - box.top + 14; if (px + 190 > box.width) px = e.clientX - box.left - 200; if (py + 130 > box.height) py = e.clientY - box.top - 135; t.style.left = px + 'px'; t.style.top = py + 'px';
+  });
+  document.addEventListener('pointerup', () => { drag = null; });
+  document.addEventListener('mouseover', e => { const dot = e.target.closest && e.target.closest('[data-sdi]'); if (dot) { dot.setAttribute('stroke', 'var(--ink)'); dot.setAttribute('stroke-width', '2'); } });
   document.addEventListener('mouseout', e => { const dot = e.target.closest && e.target.closest('[data-sdi]'); if (dot) { dot.setAttribute('stroke', 'var(--panel)'); dot.setAttribute('stroke-width', '1.3'); } });
-  document.addEventListener('mousemove', e => { const t = tip(); if (!t || t.hidden) return; const box = t.parentElement.getBoundingClientRect(); let x = e.clientX - box.left + 14, y = e.clientY - box.top + 14; if (x + 190 > box.width) x = e.clientX - box.left - 200; t.style.left = x + 'px'; t.style.top = y + 'px'; });
 }
 function renderSales() {
   const el = $('salesPanel'); if (!el || !isDash(S.cat)) return;
