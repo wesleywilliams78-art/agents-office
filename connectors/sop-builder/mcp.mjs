@@ -48,6 +48,7 @@ const TOOLS = [
   } } },
   { name: 'sop_review', description: 'Quality-check a built SOP folder (default: the most recent). Returns the full text of each Word file, the page counts, the placeholders still open, numbers that appear in the one-pager but not in the full SOP, and forbidden words. Read the text against the SOP quality skill; this tool only does the mechanical part.', inputSchema: { type: 'object', properties: { folder: { type: 'string', description: 'Folder name or any part of it, from sop_list. Omit for the newest.' }, part: { type: 'string', enum: ['onepager', 'full', 'all'], description: 'Which documents to look at. Default all. Use onepager when only the one-pager is being checked.' } } } },
   { name: 'sop_deliver', description: 'Copy the Word and PDF files of a built SOP folder to the top level of Wesley\'s My Drive for his review. Refuses if a page count is wrong, and never delivers the same folder twice. Use it only after the SOP has passed review.', inputSchema: { type: 'object', required: ['folder'], properties: { folder: { type: 'string', description: 'Folder name or any part of it, from sop_list.' }, part: { type: 'string', enum: ['onepager', 'full', 'all'], description: 'Which documents to deliver. Default all. Use onepager when only the one-pager was checked.' } } } },
+  { name: 'sop_fix', description: 'Correct the text of a built SOP in place, then rebuild its PDF and check the page count. Give the folder, which document (part) and a list of {find, replace} pairs; each find must match text exactly as sop_review showed it (one cell, line or phrase). Returns how many times each find was replaced, and the new page count. Use it to fix what review found, then call sop_deliver.', inputSchema: { type: 'object', required: ['folder', 'replacements'], properties: { folder: { type: 'string' }, part: { type: 'string', enum: ['onepager', 'full', 'all'] }, replacements: { type: 'array', items: { type: 'object', required: ['find', 'replace'], properties: { find: { type: 'string' }, replace: { type: 'string' } } } } } } },
   { name: 'sop_list', description: 'The ten most recent SOP builds and their files.', inputSchema: { type: 'object', properties: {} } },
 ];
 
@@ -139,6 +140,26 @@ function review(a) {
   if (!out.checks.length) out.checks.push('no mechanical problems found');
   return text(out);
 }
+function fix(a) {
+  const folder = findFolder(a.folder); if (!folder) return fail('No SOP folder found matching "' + a.folder + '". Call sop_list.');
+  const reps = (Array.isArray(a.replacements) ? a.replacements : []).filter(r => r && typeof r.find === 'string' && typeof r.replace === 'string' && r.find.length > 1).slice(0, 40);
+  if (!reps.length) return fail('Give at least one {find, replace}.');
+  if (reps.some(r => /<|>/.test(r.replace))) return fail('Replacement text cannot contain < or >.');
+  const dir = path.join(OUT, folder), docs = fs.readdirSync(dir).filter(f => /\.docx$/i.test(f) && partOk(f, a.part));
+  if (!docs.length) return fail('No matching Word files in ' + folder);
+  if (fs.existsSync(path.join(dir, '.delivered'))) return fail('This folder has already been delivered; ask Operations Manuals to build a new version instead.');
+  const py = process.env.PYTHON || 'python', spec = path.join(os.tmpdir(), 'sopfix-' + process.pid + '.json'); fs.writeFileSync(spec, JSON.stringify(reps));
+  const result = [];
+  try {
+    for (const d of docs) {
+      const file = path.join(dir, d);
+      const counts = JSON.parse(execFileSync(py, ['-I', path.join(HERE, 'docx_replace.py'), file, spec], { encoding: 'utf8', timeout: 60000 }).trim().split(String.fromCharCode(10)).pop());
+      const pdf = toPdf(file, dir), n = pdf ? pdfPages(pdf) : null, want = /Full SOP/.test(d) ? 3 : 1;
+      result.push({ file: d, replaced: counts.filter(c => c.count).length, notFound: counts.filter(c => !c.count).map(c => c.find), pages: n, shouldBe: want, pageProblem: n && n !== want ? 'wrong page count: shorten the replacement text' : undefined });
+    }
+  } catch (e) { return fail('Could not apply the fixes: ' + String(e.message || e).slice(0, 300)); } finally { try { fs.rmSync(spec); } catch {} }
+  return text(result);
+}
 function deliverFolder(a) {
   const folder = findFolder(a.folder); if (!folder) return fail('No SOP folder found matching "' + a.folder + '". Call sop_list.');
   const dir = path.join(OUT, folder), mark = path.join(dir, '.delivered');
@@ -151,10 +172,11 @@ function deliverFolder(a) {
 }
 
 // two servers run from this one file: sop-builder (writes the documents) and sop-qa (--qa: reads and delivers them, and cannot build or change anything)
-const QA_MODE = process.argv.includes('--qa'), QA_TOOLS = ['sop_list', 'sop_review', 'sop_deliver'], BUILDER_HIDES = ['sop_deliver'];
+const QA_MODE = process.argv.includes('--qa'), QA_TOOLS = ['sop_list', 'sop_review', 'sop_fix', 'sop_deliver'], BUILDER_HIDES = ['sop_deliver'];
 const allowed = n => QA_MODE ? QA_TOOLS.includes(n) : !BUILDER_HIDES.includes(n);
 const tools = {
   sop_review: review,
+  sop_fix: fix,
   sop_deliver: deliverFolder,
   sop_schema() { return text({ clients: Object.keys(BRANDS), limits: { onepager: 'at most 5 standards, 4 roles rows, 6 steps, 4 metrics, one sentence per cell', posterA: 'standards 4, roles 4, metrics 3, core procedure 3, tool steps 4, resources 3', posterB: 'at most 8 stops, stage 1-3 words, standard under 60 characters' }, skeleton: JSON.parse(SAMPLE) }); },
   sop_build: build,

@@ -259,7 +259,7 @@ await step('SOP builder: both house styles build the full SOP and one-pager, bad
   try {
     await qrpc('initialize', { protocolVersion: '2025-06-18', capabilities: {}, clientInfo: { name: 'check', version: '0' } });
     const qnames = (await qrpc('tools/list', {})).result.tools.map(t => t.name).sort().join();
-    if (qnames !== 'sop_deliver,sop_list,sop_review') throw new Error('the QA server must expose only list, review and deliver: ' + qnames);
+    if (qnames !== 'sop_deliver,sop_fix,sop_list,sop_review') throw new Error('the QA server must expose only list, review and deliver: ' + qnames);
     await rpc('initialize', { protocolVersion: '2025-06-18', capabilities: {}, clientInfo: { name: 'check', version: '0' } });
     const names = (await rpc('tools/list', {})).result.tools.map(t => t.name);
     for (const t of ['sop_schema', 'sop_build', 'sop_list', 'sop_review']) if (!names.includes(t)) throw new Error('missing tool ' + t);
