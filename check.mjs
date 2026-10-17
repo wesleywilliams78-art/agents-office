@@ -282,7 +282,13 @@ await step('SOP builder: both house styles build the full SOP and one-pager, bad
     const d1 = await qrpc('tools/call', { name: 'sop_deliver', arguments: { folder: 'ZZ check creamy' } });
     if (d1.result.isError || fs.readdirSync(drive).length <= before) throw new Error('sop_deliver did not copy the files');
     const d2 = await qrpc('tools/call', { name: 'sop_deliver', arguments: { folder: 'ZZ check creamy' } });
-    if (!d2.result.isError) throw new Error('sop_deliver delivered the same folder twice');
+    if (d2.result.isError || !/Nothing has changed/.test(d2.result.content[0].text)) throw new Error('an unchanged folder was delivered again');
+    const one = rv.documents.find(d => /One Pager/.test(d.file)), line = one.text.split(String.fromCharCode(10))[0].trim();
+    const fx = JSON.parse((await qrpc('tools/call', { name: 'sop_fix', arguments: { folder: 'ZZ check creamy', part: 'onepager', fixes: [{ old: line, new: line + ' ZZ' }] } })).result.content[0].text);
+    if (fx[0].replaced !== 1 || fx[0].pages !== 1) throw new Error('sop_fix did not apply the correction cleanly: ' + JSON.stringify(fx));
+    const countBefore = fs.readdirSync(drive).length;
+    const d3 = JSON.parse((await qrpc('tools/call', { name: 'sop_deliver', arguments: { folder: 'ZZ check creamy', part: 'onepager' } })).result.content[0].text);
+    if (!d3.deliveredToMyDrive.replacedEarlierDelivery?.length || fs.readdirSync(drive).length !== countBefore) throw new Error('a corrected delivery left a duplicate instead of replacing: ' + JSON.stringify(d3));
        const tooMany = structuredClone(sample); tooMany.onepager.standards = Array(7).fill(['a', 'b']);
     if (!(await rpc('tools/call', { name: 'sop_build', arguments: { client: 'creamy', content: tooMany, formats: ['onepager'] } })).result.isError) throw new Error('a one-pager over its limits was built');
     const noClient = await rpc('tools/call', { name: 'sop_build', arguments: { client: 'nobody', content: sample } });

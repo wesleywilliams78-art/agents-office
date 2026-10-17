@@ -8,6 +8,7 @@ import path from 'node:path';
 import readline from 'node:readline';
 import { fileURLToPath } from 'node:url';
 import { createRequire } from 'node:module';
+import crypto from 'node:crypto';
 import { execFileSync } from 'node:child_process';
 import { buildPoster } from './poster.mjs';
 const require = createRequire(import.meta.url);
@@ -19,16 +20,21 @@ const SAMPLE = fs.readFileSync(path.join(HERE, 'content.sample.json'), 'utf8');
 const SOFFICE = [process.env.SOFFICE, 'C:\\Program Files\\LibreOffice\\program\\soffice.com', 'C:\\Program Files (x86)\\LibreOffice\\program\\soffice.com'].find(p => p && fs.existsSync(p));
 // Finished drafts land at the top level of Wesley's My Drive (Google Drive for desktop syncs the folder), next to the CV master. Never inside any of his folders.
 const DRIVE_DIR = process.env.SOP_DRIVE_DIR || 'G:\\My Drive';
-function deliver(files, brandName, base) {
+const sha = f => crypto.createHash('sha1').update(fs.readFileSync(f)).digest('hex');
+// prev: what an earlier delivery of this folder put in My Drive ([{name, local, hash}]). A file we delivered that is still byte-for-byte what we delivered
+// is replaced by the corrected version (so Wesley does not collect duplicates); one he has since touched is left alone and the new one arrives as "(2)".
+function deliver(files, brandName, base, prev = []) {
   if (!fs.existsSync(DRIVE_DIR)) return { error: 'Google Drive for desktop is not available at ' + DRIVE_DIR };
-  const out = [];
+  const out = [], detail = [], replaced = [];
   for (const f of files.filter(x => /\.(docx|pdf)$/i.test(x))) {
-    const label = path.basename(f).slice(base.length); // " - Full SOP.docx", " - Poster.pdf"
-    let name = brandName + ' - ' + base + label, n = 1;
-    while (fs.existsSync(path.join(DRIVE_DIR, name))) name = brandName + ' - ' + base + ' (' + (++n) + ')' + label; // never overwrite anything already in his Drive
-    fs.copyFileSync(f, path.join(DRIVE_DIR, name)); out.push(name);
+    const local = path.basename(f), label = local.slice(base.length); // " - Full SOP.docx", " - Poster.pdf"
+    const was = prev.find(p => p.local === local), wasPath = was && path.join(DRIVE_DIR, was.name);
+    let name;
+    if (was && wasPath && fs.existsSync(wasPath) && sha(wasPath) === was.hash) { name = was.name; replaced.push(name); }
+    else { name = brandName + ' - ' + base + label; let n = 1; while (fs.existsSync(path.join(DRIVE_DIR, name))) name = brandName + ' - ' + base + ' (' + (++n) + ')' + label; } // never overwrite anything that is not our own untouched delivery
+    fs.copyFileSync(f, path.join(DRIVE_DIR, name)); out.push(name); detail.push({ name, local, hash: sha(f) });
   }
-  return { files: out };
+  return { files: out, replacedEarlierDelivery: replaced.length ? replaced : undefined, detail };
 }
 const pdfPages = file => { try { const s = fs.readFileSync(file).toString('latin1'); return (s.match(/\/Type\s*\/Page[^s]/g) || []).length; } catch { return 0; } };
 function toPdf(docx, outDir) {
@@ -105,7 +111,7 @@ function build(a) {
     if (formats.includes('poster')) { const r = buildPoster(brand.id, c, dir, base); if (r.pdf) files.push(r.pdf); if (r.html) files.push(r.html); if (r.note) warns.push(r.note); }
   } catch (e) { return fail('The build failed: ' + String(e.message || e).slice(0, 400)); }
   let drive; if (a.deliver_to_drive === true) drive = badPages ? 'NOT delivered: a document has the wrong page count. Cut words, build again, and it will be delivered once every page count is right. Nothing was put in My Drive.' : deliver(files, brand.name, base);
-  if (drive?.files) fs.writeFileSync(path.join(dir, '.delivered'), JSON.stringify(drive.files));
+  if (drive?.detail) fs.writeFileSync(path.join(dir, '.delivered'), JSON.stringify(drive.detail));
   const link = f => '/files/sops/' + encodeURIComponent(dirName) + '/' + encodeURIComponent(path.basename(f));
   return text({ built: files.map(f => ({ file: path.basename(f), kb: Math.round(fs.statSync(f).size / 1024), download: link(f) })), folder: dir, deliveredToMyDrive: drive,
     pageCounts: pages.length ? pages : undefined, unfilledPlaceholders: placeholders.length ? placeholders.slice(0, 40) : 'none', warnings: warns.length ? warns : undefined,
@@ -142,12 +148,21 @@ function review(a) {
 }
 function fix(a) {
   const folder = findFolder(a.folder); if (!folder) return fail('No SOP folder found matching "' + a.folder + '". Call sop_list.');
-  const reps = (Array.isArray(a.replacements) ? a.replacements : []).filter(r => r && typeof r.find === 'string' && typeof r.replace === 'string' && r.find.length > 1).slice(0, 40);
-  if (!reps.length) return fail('Give at least one {find, replace}.');
+  const raw = a.replacements || a.fixes || a.changes || a.edits || a.corrections || a.replacement; // agents guess the name: accept the usual ones
+  const pick = (r, ...ks) => { for (const k of ks) if (typeof r?.[k] === 'string') return r[k]; };
+  const reps = (Array.isArray(raw) ? raw : []).map(r => ({ find: pick(r, 'find', 'old', 'from', 'search', 'text', 'old_text', 'target'), replace: pick(r, 'replace', 'new', 'to', 'with', 'replacement', 'new_text') })).filter(r => typeof r.find === 'string' && typeof r.replace === 'string' && r.find.length > 1).slice(0, 40);
+  if (!reps.length) return fail('Nothing to apply. Call sop_fix with {"folder": "...", "part": "onepager", "replacements": [{"find": "text exactly as sop_review showed it", "replace": "new text"}]}.');
   if (reps.some(r => /<|>/.test(r.replace))) return fail('Replacement text cannot contain < or >.');
   const dir = path.join(OUT, folder), docs = fs.readdirSync(dir).filter(f => /\.docx$/i.test(f) && partOk(f, a.part));
   if (!docs.length) return fail('No matching Word files in ' + folder);
-  if (fs.existsSync(path.join(dir, '.delivered'))) return fail('This folder has already been delivered; ask Operations Manuals to build a new version instead.');
+  { // an older delivery recorded only file names: if the copy in My Drive is still exactly the local file, record its hash so the corrected version can replace it
+    const mk = path.join(dir, '.delivered'); let old = null; try { old = JSON.parse(fs.readFileSync(mk, 'utf8')); } catch {}
+    if (Array.isArray(old) && old.length && old.every(x => typeof x === 'string')) {
+      const upgraded = [];
+      for (const n of old) { const local = fs.readdirSync(dir).find(f => n.endsWith(f.slice(f.indexOf(' - ')))) ; const lp = local && path.join(dir, local), dp = path.join(DRIVE_DIR, n); if (lp && fs.existsSync(dp) && sha(dp) === sha(lp)) upgraded.push({ name: n, local, hash: sha(lp) }); }
+      fs.writeFileSync(mk, JSON.stringify(upgraded));
+    }
+  }
   const py = process.env.PYTHON || 'python', spec = path.join(os.tmpdir(), 'sopfix-' + process.pid + '.json'); fs.writeFileSync(spec, JSON.stringify(reps));
   const result = [];
   try {
@@ -163,12 +178,15 @@ function fix(a) {
 function deliverFolder(a) {
   const folder = findFolder(a.folder); if (!folder) return fail('No SOP folder found matching "' + a.folder + '". Call sop_list.');
   const dir = path.join(OUT, folder), mark = path.join(dir, '.delivered');
-  if (fs.existsSync(mark)) return fail('Already delivered: ' + fs.readFileSync(mark, 'utf8') + '. Nothing was copied again.');
   const m = folder.match(/^\d{4}-\d{2}-\d{2} (\S+) (.+)$/), brand = m && BRANDS[m[1]]; if (!brand) return fail('Cannot tell the client from the folder name ' + folder);
   const files = fs.readdirSync(dir).filter(f => /\.(docx|pdf)$/i.test(f) && partOk(f, a.part)).map(f => path.join(dir, f));
-  for (const f of files.filter(x => /\.pdf$/i.test(x))) { const n = pdfPages(f), want = /Full SOP/.test(f) ? 3 : /One Pager/i.test(f) ? 1 : 0; if (want && n !== want) return fail('Not delivered: ' + path.basename(f) + ' is ' + n + ' pages; it should be ' + want + '.'); }
-  const r = deliver(files, brand.name, m[2]); if (!r.error) fs.writeFileSync(mark, JSON.stringify(r.files));
-  return text({ deliveredToMyDrive: r });
+  for (const f of files.filter(x => /\.pdf$/i.test(x))) { const n = pdfPages(f), want = /Full SOP/.test(f) ? 3 : /One Pager/i.test(f) ? 1 : 0; if (want && n !== want) return fail('Not delivered: ' + path.basename(f) + ' is ' + n + ' pages; it should be ' + want + '. Shorten the text with sop_fix.'); }
+  let prev = []; try { prev = JSON.parse(fs.readFileSync(mark, 'utf8')); if (!Array.isArray(prev) || prev.some(p => typeof p === 'string')) prev = []; } catch {}
+  const changed = files.filter(f => { const p = prev.find(x => x.local === path.basename(f)); return !p || p.hash !== sha(f); });
+  if (prev.length && !changed.length) return text({ deliveredToMyDrive: 'Nothing has changed since this folder was delivered, so nothing was copied.' });
+  const r = deliver(changed.length ? changed : files, brand.name, m[2], prev); if (r.error) return fail(r.error);
+  fs.writeFileSync(mark, JSON.stringify([...prev.filter(p => !r.detail.some(d => d.local === p.local)), ...r.detail]));
+  return text({ deliveredToMyDrive: { files: r.files, replacedEarlierDelivery: r.replacedEarlierDelivery } });
 }
 
 // two servers run from this one file: sop-builder (writes the documents) and sop-qa (--qa: reads and delivers them, and cannot build or change anything)
