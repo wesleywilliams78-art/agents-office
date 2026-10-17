@@ -275,7 +275,7 @@ function businessContext(index) {
 }
 // An uploaded document (a note named "Upload - …") is the thing the owner wants read, so it gets far more room
 // than an ordinary note: 1,800 characters is about one page, and a proposal or contract is many.
-const UPLOAD_CAP = 150000; // about 37,000 tokens: a long transcript is read whole by the agent doing the task
+const UPLOAD_CAP = 180000; // about 45,000 tokens: a long transcript or a zip of reports is read whole by the agent doing the task
 const WHOLE_NOTE = 5000; // an ordinary note up to this long is given to the agent in full
 const isUpload = name => String(name).startsWith('Upload - ');
 // the notes an agent would read for this task: name/word overlap, department MOC first
