@@ -333,10 +333,13 @@ async function route(dept, text) {
 // agents have no file tools, so a task that names a file on the owner's computer used to fail and leave a "capability gap".
 // The office already turns an uploaded file into a note (extractText, /api/upload) and Drive files are readable, so say so.
 const FILES_LINE = 'FILES\nYou cannot open files on the owner\'s computer. If a task depends on one (a PDF, a document, an image), say so in one line and ask the owner to drop it into the office\'s upload box, where it becomes a note called "Upload - <file name>" that you can read, or to save it in Google Drive, where you can read it with the Drive tool. Do not ask for a file path and do not try to open one.';
+// Wesley's standing rule: anything made for his review lands at the top level of his My Drive, where he reviews and files it himself
+const DRIVE_RULE = 'WHERE FILES LAND\nEvery new file you create in Google Drive for Wesley (a Doc, Sheet, PDF or Word file) goes in the top level of his own My Drive. Do not pass a parent folder, do not search for or pick a client folder, and never create a file in a shared drive. He reviews each one and files it himself. The only exception is a task that names the exact folder itself. Editing a file that already exists leaves it where it is.';
+const usesDrive = a => (a.tools || []).some(t => /drive|sheet|docs/i.test(String(t)));
 // the system prompt every agent run starts from: who it is, its brief, skills and lessons, its tools, the company, the notes for this task
 function agentSystem(a, index, read, { extra = '', words = 260 } = {}) {
   const d = DEPTS[a.department];
-  return `You are ${a.name}, ${a.role || 'an agent'}, in the ${d.name} department of ${cfg.name}. ${a.does}\n${agentBrief(a)}` + (BRAIN_WRITE ? `\n${brainnotes.INSTRUCTIONS}\n` : '') + (/HANDOFF/.test(agentBrief(a)) ? `\n${handoff.INSTRUCTIONS}\n` : '') + `\n${FILES_LINE}\n` + (extra ? `\n${extra}\n` : '') +
+  return `You are ${a.name}, ${a.role || 'an agent'}, in the ${d.name} department of ${cfg.name}. ${a.does}\n${agentBrief(a)}` + (BRAIN_WRITE ? `\n${brainnotes.INSTRUCTIONS}\n` : '') + (/HANDOFF/.test(agentBrief(a)) ? `\n${handoff.INSTRUCTIONS}\n` : '') + (usesDrive(a) ? `\n${DRIVE_RULE}\n` : '') +`\n${FILES_LINE}\n` + (extra ? `\n${extra}\n` : '') +
     'Write the finished deliverable itself, not a description of what you would do. Plain text: a short heading, then short sections or bullets. ' +
     `At most ${words} words unless a skill or the owner\'s instructions set a different shape — those win. No preamble, no sign-off. Ground it in the company notes below; where a fact is missing, make a reasonable assumption and mark it (assumed). ` +
     'If you used a tool, say so in one line at the end ("Used: Gmail — searched the client thread").\n\n' +
