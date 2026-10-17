@@ -55,6 +55,7 @@ import * as aios from './aios.mjs';
 import * as budget from './budget.mjs';
 import * as brainnotes from './brainnotes.mjs';
 import * as handoff from './handoff.mjs';
+import * as salesData from './sales.mjs';
 import * as skillaudit from './skillaudit.mjs';
 import { create as createWhatsApp } from './whatsapp.mjs';
 import { recover } from './recover.mjs';
@@ -861,6 +862,7 @@ const server = http.createServer(async (req, res) => {
       res.writeHead(200, { 'Content-Type': types[path.extname(file).toLowerCase()] || 'application/octet-stream', 'Content-Disposition': 'inline; filename="' + path.basename(file).replace(/"/g, '') + '"' });
       return res.end(fs.readFileSync(file));
     }
+    if (url.pathname === '/api/sales' && req.method === 'GET') return json(res, 200, salesData.build([...vaultIndex()].filter(([n, t]) => isUpload(n) && /^SALES REPORT\s*$/m.test(t)).map(([name, text]) => ({ name, text })))); // the Clients dashboard: parsed from uploaded sales-report notes, no model involved
     if (url.pathname === '/api/uploads' && req.method === 'GET') return json(res, 200, { uploads: uploadsList().slice(0, 40) }); // uploaded documents the matrix can read in full
     if (url.pathname === '/api/lessons') return json(res, 200, { dir: learn.dir(BRAIN), agents: AGENTS.map(a => ({ id: a.id, name: a.name, ...learn.read(BRAIN, a.id) })).filter(x => x.rules.length || x.oneOffs.length) });
     if (url.pathname === '/api/mcp') { if (url.searchParams.get('refresh') === '1') await mcp.discover(); else await discovering; return json(res, 200, { ...mcp.summary(), tools: backend === 'claude-cli' }); }

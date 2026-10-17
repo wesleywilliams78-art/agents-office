@@ -132,6 +132,16 @@ await step('matrix: the same action worded differently is not raised again, a di
   if (kept.length !== 1 || dropped.length !== 2) throw new Error(`kept ${kept.length}, dropped ${dropped.length}`);
   return 'a reworded action is caught · a different action is not · a repeat inside one batch is caught';
 });
+await step('sales dashboard: report text becomes per-shop monthly numbers, and a month with a new report replaces the old one', async () => {
+  const { build } = await import('./sales.mjs'); const NL = String.fromCharCode(10), T = String.fromCharCode(9), NB = String.fromCharCode(160);
+  const rep = (shop, ym, orders, turn) => ['SALES REPORT', shop + ' Sales Report', 'Shops: ' + shop, 'Period: ' + ym + '-01 - ' + ym + '-28', 'Summary', 'VALUE' + T + 'COMPARISON' + T + 'CHANGE', 'Orders ' + T + orders + ' ' + T + '1 000 ' + T + '10,0%', 'Turnover ' + T + turn + T + '100 000,00 ' + T + '5,0%', 'Average order amount ' + T + '100,00 ' + T + '100,00 ' + T + '0,0%', 'Payments', 'NAME ' + T + 'TURNOVER', 'Vipps ' + T + '50' + NB + '000,00', 'Products', 'NAME ' + T + 'TURNOVER ' + T + 'QUANTITY', 'Waffle ' + T + '9 000,50 ' + T + '40', 'Powered by ninito.com ' + T + '1 / 1'].join(NL);
+  const d = build([{ name: 'Upload - a', text: rep('Creamy A', '2026-08', '1 100', '110' + NB + '000,00') + NL + rep('Creamy B', '2026-08', '500', '60 000,00') }, { name: 'Upload - b', text: rep('Creamy A', '2026-09', '1 200', '132 000,00') + NL + rep('Creamy B', '2026-09', '400', '45 000,00') }]);
+  if (!d.available || d.shops.length !== 2 || d.months.length !== 2 || d.latest !== '2026-09') throw new Error('shape wrong: ' + JSON.stringify(d).slice(0, 200));
+  if (d.totals.turnover !== 177000 || d.totals.orders !== 1600 || d.totals.turnoverVsPrev !== 4.1) throw new Error('totals wrong: ' + JSON.stringify(d.totals));
+  if (d.products[0].name !== 'Waffle' || d.products[0].turnover !== 18001 || d.payments[0].turnover !== 100000) throw new Error('mix wrong: ' + JSON.stringify([d.products[0], d.payments[0]]));
+  if (build([{ name: 'x', text: 'nothing here' }]).available) throw new Error('a note with no reports made a dashboard');
+  return 'two shops, two months · Norwegian number format read · totals and change vs last month · products and payments summed · empty notes ignored';
+});
 await step('handoffs: a HANDOFF block is parsed, resolved to a seat by id or name, removed from the result, and an unknown seat is refused', async () => {
   const h = await import('./handoff.mjs'); const { loadRoster } = await import('./roster.mjs'); const agents = loadRoster().agents;
   const txt = ['Done.', '', 'HANDOFF', 'to: qa', 'title: QA the Lamb SOP', '---', 'Check folder X, one-pager only.', 'END HANDOFF', '', 'HANDOFF', 'to: nobody', 'title: x', '---', 'y', 'END HANDOFF', ''].join(String.fromCharCode(10));

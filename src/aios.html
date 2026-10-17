@@ -199,6 +199,28 @@
     header .right { margin-left: 0; }
   }
 
+  /* sales dashboard (Clients): one simple view, built from the uploaded sales reports */
+  .sales { padding: 16px 18px 18px; margin-bottom: 14px; }
+  .sales .sHead { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; margin-bottom: 12px; }
+  .sales .sHead b { font-family: var(--serif); font-size: 22px; font-weight: 400; }
+  .sales .sHead .note { font-size: 11px; color: var(--faint); }
+  .sKpis { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 14px; }
+  .sK { background: var(--soft); border-radius: 10px; padding: 10px 12px; }
+  .sK .v { font-family: var(--serif); font-size: 26px; line-height: 1.1; }
+  .sK .l { font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: var(--faint); margin-top: 3px; }
+  .sales .d { font-size: 11px; margin-top: 2px; } .sales .d.up { color: var(--ok); } .sales .d.dn { color: var(--bad); }
+  .sChart { width: 100%; height: auto; display: block; margin-bottom: 6px; }
+  .sLegend { display: flex; gap: 14px; flex-wrap: wrap; font-size: 11px; color: var(--grey); margin-bottom: 14px; }
+  .sLegend i { display: inline-block; width: 18px; height: 3px; border-radius: 2px; margin-right: 6px; vertical-align: middle; }
+  .sShops { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-bottom: 14px; }
+  .sShop { border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; }
+  .sShop .n { font-size: 12px; font-weight: 600; } .sShop .v { font-family: var(--serif); font-size: 22px; margin: 2px 0; }
+  .sShop .m { font-size: 11px; color: var(--grey); }
+  .sBars { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; }
+  .sBars h4 { margin: 0 0 8px; font-size: 10px; letter-spacing: .12em; text-transform: uppercase; color: var(--faint); font-weight: 600; }
+  .sBar { margin-bottom: 7px; font-size: 11px; } .sBar .t { display: flex; justify-content: space-between; gap: 8px; } .sBar .t span:first-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .sBar .b { height: 5px; border-radius: 3px; background: var(--soft); margin-top: 3px; overflow: hidden; } .sBar .b i { display: block; height: 100%; background: var(--red, #C8553D); border-radius: 3px; }
+  @media (max-width: 860px) { .sKpis { grid-template-columns: 1fr; } .sales { padding: 14px; } }
   /* clients: one full-width agency box, then a row of client boxes underneath */
   .clientGrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin-top: 10px; }
   .client { padding: 12px 14px; }
@@ -452,6 +474,7 @@
       <h2>Clients</h2>
       <span class="note">Next actions by client, pulled from the matrix as tasks finish.</span>
     </div>
+    <div class="panel sales" id="salesPanel" style="display:none"></div>
     <div class="panel client agency" id="clientAgency"></div>
     <div class="clientGrid" id="clientGrid"></div>
   </section>
@@ -752,6 +775,36 @@ function calTag(i) {
     : `<button class="tag cal" data-act="calendar" title="Add a 10-min to-do reminder to Google Calendar on ${esc(i.due)}">+ CALENDAR</button>`;
 }
 
+// the sales dashboard: parsed on the server from the uploaded sales-report notes (no model, no tokens); simple on purpose
+const kr = n => n == null ? '—' : Math.abs(n) >= 1e6 ? (n / 1e6).toFixed(2) + 'm kr' : Math.abs(n) >= 1e4 ? Math.round(n / 1e3) + 'k kr' : Math.round(n).toLocaleString('en-GB') + ' kr';
+const dTag = v => v == null ? '' : `<div class="d ${v >= 0 ? 'up' : 'dn'}">${v >= 0 ? '▲' : '▼'} ${Math.abs(v).toFixed(1)}% vs last month</div>`;
+const mName = m => new Date(m + '-01T12:00:00').toLocaleDateString('en-GB', { month: 'short', year: '2-digit' });
+const SCOL = ['var(--red, #C8553D)', 'var(--ink)', 'var(--faint)'];
+async function loadSales() { try { S.sales = await api('/sales'); } catch { S.sales = { available: false }; } renderSales(); }
+function renderSales() {
+  const el = $('salesPanel'), d = S.sales; if (!el) return;
+  if (!d || !d.available) { el.style.display = 'none'; return; }
+  el.style.display = '';
+  const W = 700, H = 210, pl = 44, pr = 10, pt = 10, pb = 24, n = d.months.length;
+  const max = Math.max(...d.shops.flatMap(s => d.series[s].map(x => x ? x.turnover : 0))), top = Math.ceil(max / 100000) * 100000 || 1;
+  const x = i => pl + (n < 2 ? 0 : i * (W - pl - pr) / (n - 1)), y = v => pt + (1 - v / top) * (H - pt - pb);
+  const grid = [0, .25, .5, .75, 1].map(f => `<line x1="${pl}" x2="${W - pr}" y1="${y(top * f)}" y2="${y(top * f)}" stroke="var(--line)"/><text x="${pl - 6}" y="${y(top * f) + 3}" text-anchor="end" font-size="9" fill="var(--faint)">${top * f >= 1000 ? Math.round(top * f / 1000) + 'k' : 0}</text>`).join('');
+  const labels = d.months.map((m, i) => i % 2 === 0 || n < 8 ? `<text x="${x(i)}" y="${H - 6}" text-anchor="middle" font-size="9" fill="var(--faint)">${mName(m)}</text>` : '').join('');
+  const lines = d.shops.map((s, k) => {
+    const pts = d.series[s].map((v, i) => v ? [x(i), y(v.turnover), v, i] : null).filter(Boolean);
+    return `<polyline fill="none" stroke="${SCOL[k % 3]}" stroke-width="2.2" stroke-linejoin="round" points="${pts.map(p => p[0] + ',' + p[1]).join(' ')}"/>` +
+      pts.map(p => `<circle cx="${p[0]}" cy="${p[1]}" r="3" fill="${SCOL[k % 3]}"><title>${esc(s)} · ${mName(d.months[p[3]])} · ${kr(p[2].turnover)} · ${p[2].orders ?? '?'} orders</title></circle>`).join('');
+  }).join('');
+  const t = d.totals, bars = (title, list, key) => { const m = Math.max(1, ...list.map(r => r[key])); return `<div><h4>${title}</h4>${list.map(r => `<div class="sBar"><div class="t"><span>${esc(r.name)}</span><span>${kr(r[key])}</span></div><div class="b"><i style="width:${Math.round(r[key] / m * 100)}%"></i></div></div>`).join('')}</div>`; };
+  el.innerHTML = `<div class="sHead"><b>Creamy sales</b><span class="note">${mName(d.months[0])} to ${mName(d.latest)} · ${d.shops.length} locations · figures from the uploaded monthly reports</span></div>
+    <div class="sKpis"><div class="sK"><div class="v">${kr(t.turnover)}</div><div class="l">Turnover · ${mName(d.latest)}</div>${dTag(t.turnoverVsPrev)}</div>
+      <div class="sK"><div class="v">${(t.orders || 0).toLocaleString('en-GB')}</div><div class="l">Orders · ${mName(d.latest)}</div>${dTag(t.ordersVsPrev)}</div>
+      <div class="sK"><div class="v">${t.avg == null ? '—' : Math.round(t.avg) + ' kr'}</div><div class="l">Average order</div></div></div>
+    <svg class="sChart" viewBox="0 0 ${W} ${H}" role="img" aria-label="Monthly turnover by location">${grid}${labels}${lines}</svg>
+    <div class="sLegend">${d.shops.map((s, k) => `<span><i style="background:${SCOL[k % 3]}"></i>${esc(s.replace(/^Creamy /, ''))}</span>`).join('')}<span style="color:var(--faint)">monthly turnover, kr</span></div>
+    <div class="sShops">${d.perShop.map(s => `<div class="sShop"><div class="n">${esc(s.shop.replace(/^Creamy /, ''))}</div><div class="v">${kr(s.turnover)}</div><div class="m">${(s.orders || 0).toLocaleString('en-GB')} orders · ${s.avg == null ? '' : Math.round(s.avg) + ' kr avg'}</div>${dTag(s.vsPrevMonth)}</div>`).join('')}</div>
+    <div class="sBars">${bars('Top products · ' + mName(d.latest), d.products, 'turnover')}${bars('How they paid', d.payments, 'turnover')}${bars('Where orders came from', d.platforms, 'turnover')}</div>`;
+}
 function renderClients() {
   const clients = S.matrix.clients || [];
   $('clientsSec').style.display = clients.length ? '' : 'none';
@@ -1005,6 +1058,7 @@ document.addEventListener('focusout', async e => {
 document.addEventListener('focusin', e => { if (e.target.closest('.dueInput')) S.editingDate = true; });
 poll(); setInterval(() => { if (!S.busy && !S.editingDate && !document.hidden) poll(); }, 5000);
 loadBudget(); setInterval(() => { if (!document.hidden && !S.bBusy) loadBudget(); }, 30000);
+loadSales(); setInterval(() => { if (!document.hidden) loadSales(); }, 120000);
 </script>
 </body>
 </html>
