@@ -662,6 +662,18 @@ else {
   else {
     ok('server: starts', `${up.name} · ${up.backend} · brain ${up.notes} notes`);
     await step('server: serves the office', async () => { const r = await fetch(base + '/'); const t = await r.text(); if (!/AGENTS OFFICE/.test(t)) throw new Error('html missing'); });
+    await step('uploads: a zip is unpacked and every readable file inside becomes a section of one note; junk and unsupported files are named, not silently dropped', async () => {
+      const JSZip = (await import('jszip')).default; const BRAIN_DIR = (await import('./config.mjs')).loadConfig().brainPath; const z = new JSZip(); const NL = String.fromCharCode(10);
+      z.file('sales/week1.csv', 'day,sales' + NL + 'Mon,120' + NL + 'Tue,95' + NL); z.file('notes.txt', 'Creamy weekend note: waffles sold out.'); z.file('__MACOSX/._notes.txt', 'junk'); z.file('tool.exe', 'MZ');
+      const buf = await z.generateAsync({ type: 'nodebuffer' });
+      const r = await (await fetch(base + '/api/upload', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ filename: 'ZZ check sales.zip', dataBase64: buf.toString('base64') }) })).json();
+      if (!r.ok) throw new Error('zip refused: ' + JSON.stringify(r));
+      const noteFile = fs.readdirSync(path.join(BRAIN_DIR, 'Agents Office')).find(f => f.startsWith('Upload - ZZ check sales'));
+      const note = fs.readFileSync(path.join(BRAIN_DIR, 'Agents Office', noteFile), 'utf8'); fs.rmSync(path.join(BRAIN_DIR, 'Agents Office', noteFile));
+      const skipLine = note.split(String.fromCharCode(10)).find(l => l.includes('tool.exe')) || '';
+      if (!note.includes('## sales/week1.csv') || !note.includes('Mon') || !note.includes('## notes.txt') || !skipLine.includes('not a supported') || note.includes('MACOSX')) throw new Error('the zip note is wrong: ' + note.slice(0, 400));
+      return '2 files read into one note · the unsupported .exe is named as skipped · macOS junk ignored';
+    });
     await step('server: /api/brain has the live graph', async () => { const g = await (await fetch(base + '/api/brain')).json(); if (!g.nodes.length) throw new Error('empty'); return `${g.nodes.length} linked notes`; });
     await step('server: /api/mcp lists this machine\'s connectors', async () => {
       const m = await (await fetch(base + '/api/mcp')).json();

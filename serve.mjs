@@ -46,6 +46,7 @@ import * as mcp from './mcp.mjs';
 import { loadRoster } from './roster.mjs';
 import { loadSkills } from './skills.mjs';
 import * as learn from './learn.mjs';
+import JSZip from 'jszip';
 import * as onboard from './onboard.mjs';
 import * as routines from './routines.mjs';
 import * as usage from './usage.mjs';
@@ -144,8 +145,35 @@ function visionDigest(block) {
   });
 }
 const ANYDOC_EXT = new Set(['.docx', '.doc', '.docm', '.pptx', '.ppt', '.xlsx', '.xls', '.xlsm', '.odt', '.ods', '.odp', '.rtf', '.epub', '.csv']);
+// A zip is opened in memory and every file inside is digested the same way a single upload is, then joined into one note with a heading per file.
+// Limits keep one zip from running away: 80 files, 40 MB per file, 300 MB unpacked, 12 images or scans sent to vision, 60,000 characters per file.
+const ZIP_LIMITS = { files: 80, fileBytes: 40 * 1024 * 1024, totalBytes: 300 * 1024 * 1024, vision: 12, chars: 60000 };
+async function extractZip(buf, depth = 0) {
+  const zip = await JSZip.loadAsync(buf);
+  const entries = Object.values(zip.files).filter(e => !e.dir && !/(^|\/)(__MACOSX|\.DS_Store|Thumbs\.db|~\$)/.test(e.name) && !/(^|\/)\./.test(e.name));
+  const parts = [], skipped = []; let total = 0, vision = 0, read = 0;
+  for (const e of entries) {
+    if (read >= ZIP_LIMITS.files) { skipped.push(`${e.name} (more than ${ZIP_LIMITS.files} files)`); continue; }
+    const ext = path.extname(e.name).toLowerCase(), size = e._data?.uncompressedSize || 0;
+    if (size > ZIP_LIMITS.fileBytes) { skipped.push(`${e.name} (over 40 MB)`); continue; }
+    if (total + size > ZIP_LIMITS.totalBytes) { skipped.push(`${e.name} (zip is over 300 MB unpacked)`); continue; }
+    if (ext === '.zip' && depth >= 1) { skipped.push(`${e.name} (a zip inside a zip inside a zip)`); continue; }
+    const isVision = !!IMAGE_MEDIA[ext];
+    if (isVision && vision >= ZIP_LIMITS.vision) { skipped.push(`${e.name} (image limit of ${ZIP_LIMITS.vision} reached)`); continue; }
+    let data; try { data = Buffer.from(await e.async('uint8array')); } catch (er) { skipped.push(`${e.name} (could not unpack: ${er.message})`); continue; }
+    total += data.length; read++; if (isVision) vision++;
+    let txt; try { txt = ext === '.zip' ? await extractZip(data, depth + 1) : await extractText(e.name, data); } catch (er) { skipped.push(`${e.name} (could not read: ${er.message})`); continue; }
+    if (txt === null) { skipped.push(`${e.name} (${ext || 'no extension'} is not a supported type)`); continue; }
+    txt = String(txt).trim(); if (!txt) { skipped.push(`${e.name} (no readable text)`); continue; }
+    if (txt.length > ZIP_LIMITS.chars) txt = txt.slice(0, ZIP_LIMITS.chars) + `${String.fromCharCode(10)}[…cut here: ${txt.length - ZIP_LIMITS.chars} more characters of this file are not in the note]`;
+    parts.push(`## ${e.name}${String.fromCharCode(10, 10)}${txt}`);
+  }
+  const NL = String.fromCharCode(10), head = `This zip held ${entries.length} file${entries.length === 1 ? '' : 's'}; ${parts.length} read into this note${skipped.length ? ', ' + skipped.length + ' skipped' : ''}.` + (skipped.length ? NL + 'Skipped:' + NL + skipped.map(x => '- ' + x).join(NL) : '');
+  return parts.length ? head + NL + NL + parts.join(NL + NL) : (skipped.length ? head : null);
+}
 async function extractText(filename, buf) {
   const ext = path.extname(filename).toLowerCase();
+  if (ext === '.zip') return extractZip(buf);
   if (ext === '.txt' || ext === '.md') return buf.toString('utf8');
   if (IMAGE_MEDIA[ext]) return visionDigest({ type: 'image', source: { type: 'base64', media_type: IMAGE_MEDIA[ext], data: buf.toString('base64') } });
   if (ext === '.pdf') {
@@ -884,9 +912,9 @@ const server = http.createServer(async (req, res) => {
       const { filename, dataBase64, dept } = await body(req);
       if (!filename || !dataBase64) return json(res, 400, { error: 'filename and dataBase64 required' });
       const buf = Buffer.from(dataBase64, 'base64');
-      if (buf.length > 20 * 1024 * 1024) return json(res, 400, { error: 'file too large (20MB max)' });
+      if (buf.length > (/\.zip$/i.test(filename) ? 100 : 20) * 1024 * 1024) return json(res, 400, { error: `file too large (${/\.zip$/i.test(filename) ? 100 : 20}MB max)` });
       let text; try { text = await extractText(filename, buf); } catch (e) { return json(res, 400, { error: `could not read ${filename}: ${e.message}` }); }
-      if (text === null) return json(res, 400, { error: `${path.extname(filename) || 'that file type'} is not supported yet — .txt, .md, .pdf, Word, PowerPoint, Excel, OpenDocument, .rtf, .epub, .csv, .png, .jpg, .jpeg, .webp and .gif only` });
+      if (text === null) return json(res, 400, { error: `${path.extname(filename) || 'that file type'} is not supported yet — .zip, .txt, .md, .pdf, Word, PowerPoint, Excel, OpenDocument, .rtf, .epub, .csv, .png, .jpg, .jpeg, .webp and .gif only` });
       text = text.trim();
       if (!text) return json(res, 400, { error: `${filename} has no extractable text (a scanned/image-only PDF, for instance)` });
       const base = path.basename(filename, path.extname(filename));
