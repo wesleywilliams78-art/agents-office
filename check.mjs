@@ -155,6 +155,16 @@ await step('till dashboard: the hourly grid and item report become monthly turno
   if (build([{ name: 'x', text: 'nothing here' }], { match: 'Test Diner' }).available) throw new Error('empty input made a dashboard');
   return 'months from the hourly grid · part month flagged · weekday-by-hour map · menu totals from the item report, wrapped headers included';
 });
+await step('project trackers: open actions are sorted into overdue, due (14 days) and up next from the target dates; done and parked ones are left out', async () => {
+  const t = await import('./trackers.mjs');
+  const j = { total: 8, complete: 2, rows: [['1', 'Send the thing', 'WS', 'Wes', 'Not Started', 'High', '22-Sep-2026 (all inputs) / 30-Sep-2026', '', 'Next', ''], ['2', 'Due today', 'WS', 'Tawheed', 'Not Started', 'Medium', '17-Oct-2026', '', 'Now', 'None'], ['3', 'Due soon', 'WS', 'Wes', 'In Progress', 'Low', '28-Oct-26', '', '', ''], ['4', 'Later one', 'WS', 'Wes', 'Not Started', 'High', '15-Dec-2026', '', 'Later', ''], ['5', 'Parked, undated', 'WS', 'Wes', 'Not Started', 'High', 'TBC', '', 'Parked', ''], ['6', 'Undated, marked now', 'WS', 'Wes', 'Not Started', 'Low', 'TBC', '', 'Now', ''], ['7', 'Already done', 'WS', 'Wes', 'Complete', 'Low', '1-Sep-2026', '2-Sep-2026', '', '']] };
+  const v = t.view(t.snapshot({ client: 'x', name: 'X', sheet: 's' }, j), new Date(2026, 9, 17));
+  const ids = k => v[k].map(r => r.id).join(',');
+  if (ids('overdue') !== '1' || ids('due') !== '2,3' || ids('next') !== '4,6') throw new Error('cards wrong: ' + ['overdue', 'due', 'next'].map(k => k + '=' + ids(k)).join(' '));
+  if (v.open !== 6 || v.undated !== 2 || v.overdue[0].days !== -25 || v.due[0].waitingOn !== '') throw new Error('counts or cleaning wrong: ' + JSON.stringify([v.open, v.undated, v.overdue[0].days, v.due[0].waitingOn]));
+  if (t.parseDate('TBC') !== null || t.parseDate('28-Aug-26').toISOString().slice(0, 10) !== '2026-08-28') throw new Error('date parsing wrong');
+  return 'overdue 1 · due 2 · up next 2 · the completed and the parked-undated rows are left out · "None" is not an owner to wait on';
+});
 await step('handoffs: a HANDOFF block is parsed, resolved to a seat by id or name, removed from the result, and an unknown seat is refused', async () => {
   const h = await import('./handoff.mjs'); const { loadRoster } = await import('./roster.mjs'); const agents = loadRoster().agents;
   const txt = ['Done.', '', 'HANDOFF', 'to: qa', 'title: QA the Lamb SOP', '---', 'Check folder X, one-pager only.', 'END HANDOFF', '', 'HANDOFF', 'to: nobody', 'title: x', '---', 'y', 'END HANDOFF', ''].join(String.fromCharCode(10));

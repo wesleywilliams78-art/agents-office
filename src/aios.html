@@ -201,6 +201,21 @@
     header .right { margin-left: 0; }
   }
 
+  /* client project tracker cards */
+  .tkWrap { padding: 14px 16px 16px; margin-bottom: 12px; }
+  .tkn { font-family: var(--serif); font-size: 20px; }
+  .tkh { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; margin-bottom: 8px; }
+  .tkt { font-size: 10px; letter-spacing: .14em; text-transform: uppercase; color: var(--faint); font-weight: 600; } .tkm { font-size: 11px; color: var(--grey); }
+  .tkr { margin-left: auto; display: flex; gap: 8px; align-items: center; } .tkr a { font-size: 10px; letter-spacing: .08em; color: var(--grey); } .tkr button { font-size: 10px; padding: 3px 9px; }
+  .tkGrid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+  .tkCard { border: 1px solid var(--line); border-top: 3px solid var(--c, var(--line)); border-radius: 10px; padding: 9px 10px; background: var(--soft); min-width: 0; }
+  .tkCard.od { --c: var(--bad); } .tkCard.du { --c: var(--warn); } .tkCard.nx { --c: #4C7EA8; }
+  .tkN { display: flex; align-items: baseline; gap: 8px; } .tkN b { font-family: var(--serif); font-size: 26px; font-weight: 400; line-height: 1; } .tkN span { font-size: 10.5px; letter-spacing: .1em; text-transform: uppercase; color: var(--grey); }
+  .tkSub { font-size: 10px; color: var(--faint); margin: 2px 0 6px; }
+  .tkCard ul { list-style: none; margin: 0; padding: 0; } .tkCard li { padding: 5px 0; border-top: 1px solid var(--line); }
+  .tkA { font-size: 11.5px; line-height: 1.3; } .tkS { font-size: 10px; color: var(--faint); margin-top: 2px; } .tkS b { color: var(--ink); font-weight: 600; } .tkS i { color: var(--bad); font-style: normal; }
+  .tkMore { font-size: 10px; padding: 2px 8px; margin-top: 4px; } .tkU { font-size: 10.5px; color: var(--faint); margin-top: 6px; }
+  @media (max-width: 860px) { .tkGrid { grid-template-columns: 1fr; } }
   /* sales dashboard (Clients): one simple view, built from the uploaded sales reports */
   .sales { padding: 16px 18px 18px; margin-bottom: 14px; }
   .sales .sHead { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; margin-bottom: 12px; }
@@ -243,6 +258,9 @@
   .sdBox li span { color: var(--faint); font-size: 10.5px; white-space: nowrap; } .sdMore { font-size: 10.5px; color: var(--faint); padding-top: 3px; }
   .sdDo { font-size: 11px; color: var(--ink); margin-top: 8px; padding-top: 6px; border-top: 1px dashed var(--line); }
   .sdCats { margin-top: 10px; font-size: 11.5px; } .sdCats summary { cursor: pointer; color: var(--grey); } .sdCats table { border-collapse: collapse; margin-top: 6px; width: 100%; } .sdCats th, .sdCats td { text-align: left; padding: 4px 8px; border-top: 1px solid var(--line); font-weight: 400; } .sdCats th { font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: var(--faint); }
+  .sdMissWrap { overflow-x: auto; } .sdMiss table { border-collapse: collapse; width: 100%; min-width: 640px; font-size: 11.5px; } .sdMiss th { text-align: left; font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: var(--faint); font-weight: 500; padding: 6px 8px; border-bottom: 1px solid var(--line); }
+  .sdMiss td { padding: 7px 8px; border-top: 1px solid var(--line); vertical-align: top; } .sdMiss td:nth-child(3) { font-variant-numeric: tabular-nums; text-align: right; } .sdMiss td:nth-child(4), .sdMiss td:nth-child(5) { color: var(--grey); }
+  .sdKind { font-size: 10px; letter-spacing: .06em; padding: 2px 7px; border-radius: 99px; border: 1px solid var(--line); white-space: nowrap; }
   @media (max-width: 860px) { .sdGrid { grid-template-columns: 1fr; } .sdKey { gap: 6px 14px; } }
   .sHeat > span { min-width: 0; overflow: hidden; }
   .sHeat .hc { height: 18px; border-radius: 3px; background: var(--soft); } .sHeat .hh { text-align: center; } .sHeat .hd { text-align: right; padding-right: 4px; }
@@ -502,6 +520,7 @@
       <span class="note">Next actions by client, pulled from the matrix as tasks finish.</span>
     </div>
     <div class="panel client agency" id="clientAgency"></div>
+    <div id="trackerBox"></div>
     <div class="clientGrid" id="clientGrid"></div>
   </section>
 
@@ -924,11 +943,15 @@ function starDogHtml(d) {
   const by = b => all.filter(x => x.box === b && (!sel || x.cat === sel)).sort((p, q) => q.units - p.units);
   const box = b => { const l = by(b), top = l.slice(0, 6); return `<div class="sdBox" style="--c:${SD_COL[b]}"><div class="sdH"><b>${SD_NAME[b]}</b><span>${l.length}</span></div><div class="sdS">${SD_SHORT[b]}</div><ul>${top.map(x => `<li>${esc(x.name)} <span>${x.units.toLocaleString('en-GB')} · ${c}${Math.round(x.cm)}</span></li>`).join('') || '<li><span>none</span></li>'}</ul>${l.length > top.length ? `<div class="sdMore">and ${l.length - top.length} more</div>` : ''}<div class="sdDo">${SD_DO[b]}</div></div>`; };
   const catRows = Object.entries(cats).map(([n, v]) => `<tr><td>${esc(n)}</td><td>${v.items}</td><td>${v.costed}</td><td>${v.ranked ? c + ' ' + Math.round(v.avgCm) : 'not ranked'}</td></tr>`).join('');
+  const miss = sd.dishes.filter(x => x.cost == null).sort((a, b) => b.units - a.units), mu = miss.reduce((n, x) => n + x.units, 0), assumed = sd.dishes.filter(x => x.assumed).length;
+  const missHtml = `<div class="sdMiss"><div class="sHead" style="margin-top:20px"><b>What's missing?</b><span class="note">${miss.length} of ${cov.dishes} dishes · ${mu.toLocaleString('en-GB')} units · ${(mu / cov.units * 100).toFixed(1)}% of units sold have no food cost yet, so they are not on the board</span></div>
+    <div class="sdMissWrap"><table><thead><tr><th>Dish</th><th>Type</th><th>Sold</th><th>Why it is not costed</th><th>What is needed</th></tr></thead><tbody>${miss.map(x => `<tr><td><b>${esc(x.name)}</b></td><td><span class="sdKind">${esc(x.kind || x.cat)}</span></td><td>${x.units.toLocaleString('en-GB')}</td><td>${esc(x.why || '')}</td><td>${esc(x.need || '')}</td></tr>`).join('')}</tbody></table></div>
+    ${assumed ? `<div class="note" style="font-size:10.5px;color:var(--faint);margin-top:8px">Not counted as missing, but worth checking: ${assumed} hot drinks are costed on assumed standard recipes (marked on the Star Dog Analysis tab of the sheet).</div>` : ''}</div>`;
   return `<div class="sdWrap"><div class="sHead" style="margin-top:22px"><b>Star and dog analysis</b><span class="note">a start: ${cov.costed} of ${cov.dishes} dishes have a food cost (${Math.round(cov.costedUnits / cov.units * 100)}% of units sold) · as at ${esc(sd.asOf)}</span></div>
     ${chips}${chart}<div class="sdKey"><span>Dot size = units sold</span><span>Position = against its own category (1× = the category line)</span><span>Pick a category to zoom to it · + / − · Ctrl + scroll · double-click · drag to pan</span></div>
     <div class="sdGrid">${box('star')}${box('puzzle')}${box('plowhorse')}${box('dog')}</div>
     <div class="note" style="font-size:10.5px;color:var(--faint);margin-top:12px">Each dish is judged against its own category, so a shake is compared with shakes and a crepe with crepes. High units sold means at least 70% of an even share of the category. High margin means margin per dish at or above the category's average, weighted by sales. Dishes without a food cost yet are left out, and hot drinks, bought-in drinks and ice cream are not ranked. The missing costs are in the Missing costs tab of the sales summary sheet. Margin is price without VAT minus ingredients only: no packaging, labour or platform commission.</div>
-    <details class="sdCats"><summary>By category</summary><table><thead><tr><th>Category</th><th>Dishes</th><th>Costed</th><th>Average margin</th></tr></thead><tbody>${catRows}</tbody></table></details></div>`;
+    <details class="sdCats"><summary>By category</summary><table><thead><tr><th>Category</th><th>Dishes</th><th>Costed</th><th>Average margin</th></tr></thead><tbody>${catRows}</tbody></table></details>${missHtml}</div>`;
 }
 // bound once: category chips (fit the board to that category), zoom buttons, Ctrl/⌘ + scroll, double-click, drag to pan, hover card
 if (!window.__sdBound) {
@@ -981,6 +1004,27 @@ function renderSales() {
     <div class="sShops">${d.perShop.map(s => `<div class="sShop"><div class="n">${esc(s.shop.replace(/^Creamy /, ''))}</div><div class="v">${kr(s.turnover)}</div><div class="m">${(s.orders || 0).toLocaleString('en-GB')} orders · ${s.avg == null ? '' : Math.round(s.avg) + ' kr avg'}</div>${dTag(s.vsPrevMonth)}</div>`).join('')}</div>
     <div class="sBars">${bars('Top products · ' + mName(d.latest), d.products, 'turnover')}${bars('How they paid', d.payments, 'turnover')}${bars('Where orders came from', d.platforms, 'turnover')}</div>${starDogHtml(d)}`;
 }
+// Project tracker cards (overdue / due / up next) per client, from the client's tracker sheet; see trackers.mjs. Sorting is done on the server for today's date.
+async function loadTrackers() { try { S.trackers = await api('/trackers'); } catch { S.trackers = S.trackers || { configured: false, trackers: [] }; } renderClients(); }
+function trackerHtml(clientId, clientName) {
+  const T = S.trackers; if (!T || !T.configured) return '';
+  const t = T.trackers.find(x => x.client === clientId); if (!t) return '';
+  const v = t.view, url = 'https://docs.google.com/spreadsheets/d/' + t.sheet + '/edit';
+  const head = `<div class="tkh"><span class="tkn">${esc(clientName || clientId)}</span><span class="tkt">Project tracker</span>${v ? `<span class="tkm">${v.open} open${v.total ? ' of ' + v.total : ''} · read ${ago(v.syncedAt)}</span>` : ''}<span class="tkr"><a href="${esc(url)}" target="_blank" rel="noopener">OPEN SHEET</a><button data-trsync="${esc(clientId)}"${t.syncing || S.tkBusy ? ' disabled' : ''}>${t.syncing || S.tkBusy ? 'READING…' : 'SYNC'}</button></span></div>`;
+  if (!v) return `<div class="panel tkWrap">${head}<div class="none">${t.error ? 'Could not read the tracker: ' + esc(t.error) : t.syncing ? 'Reading the tracker…' : 'Not read yet.'}</div></div>`;
+  const fmt = d => d ? new Date(d + 'T12:00:00').toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }) : 'no date';
+  const card = (kind, title, list, sub) => {
+    const open = (S.tkOpen || {})[clientId + kind], show = open ? list : list.slice(0, 4);
+    const row = r => { const when = r.days === null ? (r.horizon ? r.horizon.toLowerCase() : 'no date') : r.days < 0 ? Math.abs(r.days) + 'd overdue' : r.days === 0 ? 'today' : r.days === 1 ? 'tomorrow' : 'in ' + r.days + 'd';
+      return `<li><div class="tkA">${esc(r.action.length > 92 ? r.action.slice(0, 91) + '…' : r.action)}</div><div class="tkS"><b>${esc(when)}</b>${r.date ? ' · ' + fmt(r.date) : ''}${r.owner ? ' · ' + esc(r.owner) : ''}${r.waitingOn ? ' · waiting on ' + esc(r.waitingOn) : ''}${r.priority && /high/i.test(r.priority) ? ' · <i>high</i>' : ''}</div></li>`; };
+    return `<div class="tkCard ${kind}"><div class="tkN"><b>${list.length}</b><span>${title}</span></div><div class="tkSub">${sub}</div><ul>${show.map(row).join('') || '<li><div class="tkS">nothing</div></li>'}</ul>${list.length > 4 ? `<button class="tkMore" data-tkmore="${esc(clientId + kind)}">${open ? 'show fewer' : 'and ' + (list.length - 4) + ' more'}</button>` : ''}</div>`;
+  };
+  return `<div class="panel tkWrap">${head}<div class="tkGrid">${card('od', 'Overdue', v.overdue, 'target date has passed')}${card('du', 'Due', v.due, 'in the next 14 days')}${card('nx', 'Up next', v.next, 'dated later, in progress, or marked Now / Next')}</div>${v.undated ? `<div class="tkU">${v.undated} open action${v.undated === 1 ? ' has' : 's have'} no date in the tracker.</div>` : ''}</div>`;
+}
+document.addEventListener('click', async e => {
+  const b = e.target.closest('[data-trsync]'); if (b) { S.tkBusy = true; renderClients(); try { await api('/trackers/sync', { method: 'POST', body: { client: b.dataset.trsync } }); } catch {} S.tkBusy = false; loadTrackers(); return; }
+  const m = e.target.closest('[data-tkmore]'); if (m) { S.tkOpen = S.tkOpen || {}; S.tkOpen[m.dataset.tkmore] = !S.tkOpen[m.dataset.tkmore]; renderClients(); }
+});
 function renderClients() {
   const clients = S.matrix.clients || [];
   $('clientsSec').style.display = clients.length ? '' : 'none';
@@ -997,6 +1041,7 @@ function renderClients() {
   const agency = clients.find(c => c.scope === 'agency'), rest = clients.filter(c => c.scope !== 'agency');
   $('clientAgency').style.display = agency ? '' : 'none';
   if (agency) $('clientAgency').innerHTML = box(agency);
+  const tb = $('trackerBox'); if (tb) tb.innerHTML = clients.filter(c => (S.trackers?.trackers || []).some(t => t.client === c.id)).map(c => trackerHtml(c.id, c.name)).join('');
   $('clientGrid').innerHTML = rest.map(c => `<div class="panel client">${box(c)}</div>`).join('');
 }
 
@@ -1235,6 +1280,7 @@ document.addEventListener('focusin', e => { if (e.target.closest('.dueInput')) S
 poll(); setInterval(() => { if (!S.busy && !S.editingDate && !document.hidden) poll(); }, 5000);
 loadBudget(); setInterval(() => { if (!document.hidden && !S.bBusy) loadBudget(); }, 30000);
 loadDash(); setInterval(() => { if (!document.hidden) loadDash(); }, 120000);
+loadTrackers(); setInterval(() => { if (!document.hidden && !S.tkBusy) loadTrackers(); }, 60000);
 </script>
 </body>
 </html>

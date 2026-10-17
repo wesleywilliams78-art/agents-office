@@ -57,6 +57,7 @@ import * as brainnotes from './brainnotes.mjs';
 import * as handoff from './handoff.mjs';
 import * as salesData from './sales.mjs';
 import * as posData from './pos.mjs';
+import * as trackers from './trackers.mjs';
 import * as skillaudit from './skillaudit.mjs';
 import { create as createWhatsApp } from './whatsapp.mjs';
 import { recover } from './recover.mjs';
@@ -653,6 +654,28 @@ async function budgetApi(req, res, url) {
   if (!budgetSync && (!snap || Date.now() - snap.syncedAt > BUDGET_STALE)) syncBudget().catch(() => {}); // background refresh — the page shows the last snapshot meanwhile
   return json(res, 200, { configured: true, sheet: BUDGET, snapshot: snap, syncing: !!budgetSync, error: budgetError });
 }
+// Client project trackers (office.config.local.json → aios.trackers: [{ client, name, sheet }]): Google Sheets Claude reads on request; the cards
+// (overdue, due, up next) are worked out here from the stored rows, so they are right for today. A snapshot older than TRACKER_STALE refreshes in the background.
+const TRACKERS = (Array.isArray(cfg.aios?.trackers) ? cfg.aios.trackers : []).filter(t => t && t.client && t.sheet).map(t => ({ client: String(t.client), name: String(t.name || t.client + ' project tracker'), sheet: String(t.sheet), tab: t.tab || 'Tracker' }));
+const TRACKER_STALE = 6 * 3600 * 1000, trackerSync = new Map(), trackerError = {};
+function syncTracker(t) {
+  if (trackerSync.has(t.client)) return trackerSync.get(t.client);
+  const tp = trackers.syncPrompt(t);
+  const pr = askX(tp.system, tp.user, { tools: true, maxTokens: 14000, timeout: 170000, model: 'sonnet', effort: 'low' })
+    .then(({ text }) => { const snap = trackers.snapshot(t, parseJSON(text)); if (!snap.rows.length && !snap.complete) throw new Error('the tracker came back empty'); const all = trackers.load(DATA); all[t.client] = snap; trackers.save(DATA, all); trackerError[t.client] = ''; console.log(`▤ tracker ${t.client}: ${snap.rows.length} open of ${snap.total ?? '?'} actions`); return snap; })
+    .catch(e => { trackerError[t.client] = e.message; console.warn('tracker:', t.client, e.message); throw e; })
+    .finally(() => { trackerSync.delete(t.client); });
+  trackerSync.set(t.client, pr); return pr;
+}
+async function trackersApi(req, res, url) {
+  if (url.pathname === '/api/trackers/sync' && req.method === 'POST') {
+    const want = String((await body(req)).client || ''); const list = TRACKERS.filter(t => !want || t.client === want);
+    const r = await Promise.allSettled(list.map(syncTracker)); return json(res, 200, { ok: true, synced: r.filter(x => x.status === 'fulfilled').length, failed: r.filter(x => x.status === 'rejected').map(x => x.reason.message) });
+  }
+  const all = trackers.load(DATA), now = new Date();
+  for (const t of TRACKERS) if (!trackerSync.has(t.client) && (!all[t.client] || Date.now() - all[t.client].syncedAt > TRACKER_STALE)) syncTracker(t).catch(() => {});
+  return json(res, 200, { configured: TRACKERS.length > 0, trackers: TRACKERS.map(t => ({ client: t.client, name: t.name, sheet: t.sheet, syncing: trackerSync.has(t.client), error: trackerError[t.client] || '', view: trackers.view(all[t.client], now) })) });
+}
 function autoFeed(task) {
   if (!AUTO_FEED || task.noMatrix || task.state !== 'done' || task.error || !task.result) return; // noMatrix: a status routine's result is a report, not a to-do list
   const m = aios.load(DATA);
@@ -866,6 +889,7 @@ const server = http.createServer(async (req, res) => {
       res.writeHead(200, { 'Content-Type': types[path.extname(file).toLowerCase()] || 'application/octet-stream', 'Content-Disposition': 'inline; filename="' + path.basename(file).replace(/"/g, '') + '"' });
       return res.end(fs.readFileSync(file));
     }
+    if (url.pathname === '/api/trackers' || url.pathname === '/api/trackers/sync') return trackersApi(req, res, url);
     if (url.pathname === '/api/dashboards' && req.method === 'GET') { // the Clients sub-pages: one per entry in aios.dashboards, parsed from uploaded sales-report notes (no model involved)
       const defs = Array.isArray(cfg.aios?.dashboards) && cfg.aios.dashboards.length ? cfg.aios.dashboards : [{ id: 'creamy', name: 'Creamy', match: 'Creamy' }];
       const notes = [...vaultIndex()].filter(([n, t]) => isUpload(n) && /^SALES REPORT\s*$/m.test(t)).map(([name, text]) => ({ name, text }));
