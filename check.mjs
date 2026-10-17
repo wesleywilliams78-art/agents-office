@@ -289,6 +289,13 @@ await step('SOP builder: both house styles build the full SOP and one-pager, bad
     const countBefore = fs.readdirSync(drive).length;
     const d3 = JSON.parse((await qrpc('tools/call', { name: 'sop_deliver', arguments: { folder: 'ZZ check creamy', part: 'onepager' } })).result.content[0].text);
     if (!d3.deliveredToMyDrive.replacedEarlierDelivery?.length || fs.readdirSync(drive).length !== countBefore) throw new Error('a corrected delivery left a duplicate instead of replacing: ' + JSON.stringify(d3));
+    const rows = (await qrpc('tools/call', { name: 'sop_review', arguments: { folder: 'ZZ check creamy', part: 'onepager' } })).result.content[0].text;
+    const rl = JSON.parse(rows).documents[0].text.split(String.fromCharCode(10)).map(l => l.split(' | ')).filter(c => c.length === 2 && c[0].trim().length > 3 && c[1].trim().length > 3 && c[0] !== c[0].toUpperCase());
+    if (rl.length < 2) throw new Error('no table rows to test row edits on');
+    const [r1, r2] = rl, tx = await qrpc('tools/call', { name: 'sop_fix', arguments: { folder: 'ZZ check creamy', part: 'onepager', replacements: [{ find: r1[1].trim(), replace: r1[1].trim() + ' RR', row: r1[0].trim() }], delete_rows: [r2[0].trim()] } });
+    const tfx = JSON.parse(tx.result.content[0].text)[0]; if (tfx.replaced !== 2 || tfx.pages !== 1) throw new Error('row-scoped edit and row delete did not both apply: ' + JSON.stringify(tfx));
+    const after = JSON.parse((await qrpc('tools/call', { name: 'sop_review', arguments: { folder: 'ZZ check creamy', part: 'onepager' } })).result.content[0].text).documents[0].text;
+    if (!after.includes(r1[1].trim() + ' RR') || after.includes(r2[0].trim() + ' | ' + r2[1].trim())) throw new Error('the row edit or the row removal is not in the document');
        const tooMany = structuredClone(sample); tooMany.onepager.standards = Array(7).fill(['a', 'b']);
     if (!(await rpc('tools/call', { name: 'sop_build', arguments: { client: 'creamy', content: tooMany, formats: ['onepager'] } })).result.isError) throw new Error('a one-pager over its limits was built');
     const noClient = await rpc('tools/call', { name: 'sop_build', arguments: { client: 'nobody', content: sample } });
