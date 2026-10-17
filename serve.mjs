@@ -870,7 +870,11 @@ const server = http.createServer(async (req, res) => {
       const defs = Array.isArray(cfg.aios?.dashboards) && cfg.aios.dashboards.length ? cfg.aios.dashboards : [{ id: 'creamy', name: 'Creamy', match: 'Creamy' }];
       const notes = [...vaultIndex()].filter(([n, t]) => isUpload(n) && /^SALES REPORT\s*$/m.test(t)).map(([name, text]) => ({ name, text }));
       const tillNotes = [...vaultIndex()].filter(([n, t]) => isUpload(n) && /Hourly Sales|Item Sales By Category/.test(t)).map(([name, text]) => ({ name, text })); // a restaurant's till reports (kind: pos)
-      return json(res, 200, { dashboards: defs.map(d => ({ id: String(d.id), name: String(d.name || d.id), data: d.kind === 'pos' ? posData.build(tillNotes, { match: d.match }) : salesData.build(notes, { match: d.match }) })) });
+      const withStarDog = (d, data) => { // an optional product-mix analysis (stars, plowhorses, puzzles, dogs) kept as a data file beside the sales numbers
+        if (d.stardog && data && data.available) { try { data.stardog = JSON.parse(fs.readFileSync(path.join(DATA, path.basename(String(d.stardog))), 'utf8')); } catch {} }
+        return data;
+      };
+      return json(res, 200, { dashboards: defs.map(d => ({ id: String(d.id), name: String(d.name || d.id), data: withStarDog(d, d.kind === 'pos' ? posData.build(tillNotes, { match: d.match }) : salesData.build(notes, { match: d.match })) })) });
     }
     if (url.pathname === '/api/uploads' && req.method === 'GET') return json(res, 200, { uploads: uploadsList().slice(0, 40) }); // uploaded documents the matrix can read in full
     if (url.pathname === '/api/lessons') return json(res, 200, { dir: learn.dir(BRAIN), agents: AGENTS.map(a => ({ id: a.id, name: a.name, ...learn.read(BRAIN, a.id) })).filter(x => x.rules.length || x.oneOffs.length) });

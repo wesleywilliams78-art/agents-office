@@ -223,6 +223,16 @@
   .sBar { margin-bottom: 7px; font-size: 11px; } .sBar .t { display: flex; justify-content: space-between; gap: 8px; } .sBar .t span:first-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .sBar .b { height: 5px; border-radius: 3px; background: var(--soft); margin-top: 3px; overflow: hidden; } .sBar .b i { display: block; height: 100%; background: var(--red, #C8553D); border-radius: 3px; }
   .sHeat { display: grid; gap: 2px; align-items: center; font-size: 9.5px; color: var(--faint); }
+  .sdGrid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; position: relative; margin-top: 4px; }
+  .sdBox { border: 1px solid var(--line); border-top: 3px solid var(--c); border-radius: 10px; padding: 10px 12px; background: var(--soft); min-width: 0; }
+  .sdH { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; } .sdH b { font-family: var(--serif); font-size: 18px; font-weight: 400; } .sdH span { font-size: 11px; color: var(--faint); }
+  .sdS { font-size: 10.5px; color: var(--grey); margin-bottom: 6px; }
+  .sdBox ul { list-style: none; margin: 0; padding: 0; } .sdBox li { font-size: 11.5px; padding: 3px 0; border-top: 1px solid var(--line); display: flex; justify-content: space-between; gap: 8px; }
+  .sdBox li span { color: var(--faint); font-size: 10.5px; white-space: nowrap; } .sdMore { font-size: 10.5px; color: var(--faint); padding-top: 3px; }
+  .sdDo { font-size: 11px; color: var(--ink); margin-top: 8px; padding-top: 6px; border-top: 1px dashed var(--line); }
+  .sdAxis { grid-column: 1 / -1; text-align: center; font-size: 9.5px; letter-spacing: .12em; color: var(--faint); } .sdAy { order: -1; text-align: left; }
+  .sdCats { margin-top: 10px; font-size: 11.5px; } .sdCats summary { cursor: pointer; color: var(--grey); } .sdCats table { border-collapse: collapse; margin-top: 6px; width: 100%; } .sdCats th, .sdCats td { text-align: left; padding: 4px 8px; border-top: 1px solid var(--line); font-weight: 400; } .sdCats th { font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: var(--faint); }
+  @media (max-width: 860px) { .sdGrid { grid-template-columns: 1fr; } }
   .sHeat > span { min-width: 0; overflow: hidden; }
   .sHeat .hc { height: 18px; border-radius: 3px; background: var(--soft); } .sHeat .hh { text-align: center; } .sHeat .hd { text-align: right; padding-right: 4px; }
   @media (max-width: 860px) { .sKpis { grid-template-columns: 1fr; } .sales { padding: 14px; } .sHeat .hh { font-size: 8px; } }
@@ -828,6 +838,37 @@ function renderPos(el, cur, d) {
   parts.push(`<div class="note" style="font-size:10.5px;color:var(--faint);margin-top:12px">${esc(d.currencyNote)}.${t && t.partial ? ' The latest month is part of a month, so its change is measured against the same days of the month before.' : ''}</div>`);
   el.innerHTML = parts.join('');
 }
+// Star / Dog analysis (menu engineering): each dish is judged against its OWN category. Popular = mix % within the category at or above
+// 70% x (1 / items in the category). Profitable = contribution margin at or above the category's units-weighted average. Dishes with no cost yet are left out.
+const SD_COL = { star: '#1E9070', plowhorse: '#C98A12', puzzle: '#2E86AB', dog: '#8a8a94' };
+const SD_NAME = { star: 'Stars', plowhorse: 'Plowhorses', puzzle: 'Puzzles', dog: 'Dogs' };
+const SD_SUB = { star: 'Popular and profitable', plowhorse: 'Popular, below-average margin', puzzle: 'Profitable, less popular', dog: 'Neither popular nor profitable' };
+const SD_DO = { star: 'Keep them as they are and feature them. Protect quality and supply.', plowhorse: 'Earn their place on volume. Test a small price rise or trim the portion or cost.', puzzle: 'Good money per sale but few sales. Move them up the menu, name them, or pair them.', dog: 'Weakest on both counts. Reprice, rework the recipe, or consider dropping them.' };
+function starDogHtml(d) {
+  const sd = d && d.stardog; if (!sd) return '';
+  const cats = sd.categories, ds = sd.dishes.filter(x => x.box && cats[x.cat] && cats[x.cat].ranked).map(x => ({ ...x, px: x.mix / cats[x.cat].line, py: x.cm / cats[x.cat].avgCm }));
+  const c = sd.currency || 'kr', cov = sd.coverage;
+  const W = 700, H = 380, pl = 46, pr = 14, pt = 14, pb = 34, xmin = Math.log(0.12), xmax = Math.log(6), ymin = 0.45, ymax = 1.45;
+  const X = v => pl + (Math.log(Math.max(v, 0.12)) - xmin) / (xmax - xmin) * (W - pl - pr), Y = v => pt + (1 - (Math.min(Math.max(v, ymin), ymax) - ymin) / (ymax - ymin)) * (H - pt - pb);
+  const maxU = Math.max(...ds.map(x => x.units)), rad = u => 3 + Math.sqrt(u / maxU) * 11;
+  const label = [...ds].sort((a, b) => b.units - a.units).slice(0, 6).map(x => x.name);
+  const xt = [0.25, 0.5, 1, 2, 4].map(v => `<line x1="${X(v)}" x2="${X(v)}" y1="${pt}" y2="${H - pb}" stroke="var(--line)" stroke-dasharray="${v === 1 ? '' : '2 4'}" ${v === 1 ? 'stroke-width="1.4"' : ''}/><text x="${X(v)}" y="${H - pb + 14}" text-anchor="middle" font-size="9" fill="var(--faint)">${v}×</text>`).join('');
+  const yt = [0.6, 0.8, 1, 1.2, 1.4].map(v => `<line x1="${pl}" x2="${W - pr}" y1="${Y(v)}" y2="${Y(v)}" stroke="var(--line)" stroke-dasharray="${v === 1 ? '' : '2 4'}" ${v === 1 ? 'stroke-width="1.4"' : ''}/><text x="${pl - 6}" y="${Y(v) + 3}" text-anchor="end" font-size="9" fill="var(--faint)">${v}×</text>`).join('');
+  const corner = (t, x, y, a) => `<text x="${x}" y="${y}" text-anchor="${a}" font-size="11" font-weight="700" letter-spacing=".1em" fill="var(--faint)" opacity=".75">${t}</text>`;
+  const dots = [...ds].sort((a, b) => b.units - a.units).map(x => `<circle cx="${X(x.px).toFixed(1)}" cy="${Y(x.py).toFixed(1)}" r="${rad(x.units).toFixed(1)}" fill="${SD_COL[x.box]}" fill-opacity=".72" stroke="var(--panel)" stroke-width="1"><title>${esc(x.name)} · ${esc(x.cat)} · ${x.units.toLocaleString('en-GB')} sold · ${c} ${x.cm.toFixed(0)} margin per dish · ${SD_NAME[x.box]}</title></circle>`).join('');
+  const labs = ds.filter(x => label.includes(x.name)).map(x => { const left = X(x.px) > W * 0.7; return `<text x="${(left ? X(x.px) - rad(x.units) - 3 : X(x.px) + rad(x.units) + 3).toFixed(1)}" y="${(Y(x.py) - rad(x.units) * 0.4).toFixed(1)}" text-anchor="${left ? 'end' : 'start'}" font-size="9" fill="var(--ink)" opacity=".85">${esc(x.name.length > 22 ? x.name.slice(0, 21) + '…' : x.name)}</text>`; }).join('');
+  const chart = `<svg class="sChart" viewBox="0 0 ${W} ${H}" role="img" aria-label="Star and dog chart: popularity against margin, each dish measured against its own category">${xt}${yt}${corner('PUZZLES', pl + 8, pt + 14, 'start')}${corner('STARS', W - pr - 8, pt + 14, 'end')}${corner('DOGS', pl + 8, H - pb - 8, 'start')}${corner('PLOWHORSES', W - pr - 8, H - pb - 8, 'end')}${dots}${labs}
+    <text x="${(pl + W - pr) / 2}" y="${H - 4}" text-anchor="middle" font-size="9.5" fill="var(--grey)">Popularity: share of its category's sales, against the category's popularity line (1× = on the line)</text>
+    <text transform="rotate(-90)" x="${-(pt + H - pb) / 2}" y="11" text-anchor="middle" font-size="9.5" fill="var(--grey)">Margin per dish against the category average (1× = average)</text></svg>`;
+  const by = b => ds.filter(x => x.box === b).sort((a, b2) => b2.units - a.units);
+  const box = b => { const l = by(b), top = l.slice(0, 7); return `<div class="sdBox" style="--c:${SD_COL[b]}"><div class="sdH"><b>${SD_NAME[b]}</b><span>${l.length} dishes</span></div><div class="sdS">${SD_SUB[b]}</div><ul>${top.map(x => `<li>${esc(x.name)} <span>${x.units.toLocaleString('en-GB')} sold · ${c}${Math.round(x.cm)}</span></li>`).join('')}</ul>${l.length > top.length ? `<div class="sdMore">and ${l.length - top.length} more</div>` : ''}<div class="sdDo">${SD_DO[b]}</div></div>`; };
+  const catRows = Object.entries(cats).map(([n, v]) => `<tr><td>${esc(n)}</td><td>${v.items}</td><td>${v.costed}</td><td>${v.ranked ? c + ' ' + Math.round(v.avgCm) : '—'}</td></tr>`).join('');
+  return `<div class="sdWrap"><div class="sHead" style="margin-top:20px"><b>Star and dog analysis</b><span class="note">a start: ${cov.costed} of ${cov.dishes} dishes have a food cost (${Math.round(cov.costedUnits / cov.units * 100)}% of units sold) · as at ${esc(sd.asOf)}</span></div>
+    ${chart}<div class="sLegend">${['star', 'plowhorse', 'puzzle', 'dog'].map(b => `<span><i style="background:${SD_COL[b]}"></i>${SD_NAME[b]}</span>`).join('')}<span style="color:var(--faint)">bigger dot = more sold · hover a dot for the dish</span></div>
+    <div class="sdGrid"><div class="sdAxis sdAy">MORE PROFITABLE ↑</div>${box('puzzle')}${box('star')}${box('dog')}${box('plowhorse')}<div class="sdAxis sdAx">← LESS POPULAR · MORE POPULAR →</div></div>
+    <div class="note" style="font-size:10.5px;color:var(--faint);margin-top:12px">Each dish is judged against its own category, so a shake is compared with shakes and a crepe with crepes. Popular means at or above 70% of an even share of the category. Profitable means margin per dish at or above the category's average, weighted by sales. Dishes without a food cost yet are left out, and the hot drinks, bought-in drinks and ice cream are not ranked. The missing costs are listed in the Missing costs tab of the sales summary sheet; the coffee price is one of them. Margin here is price without VAT minus ingredients only: no packaging, labour or platform commission.</div>
+    <details class="sdCats"><summary>By category</summary><table><thead><tr><th>Category</th><th>Dishes</th><th>Costed</th><th>Average margin</th></tr></thead><tbody>${catRows}</tbody></table></details></div>`;
+}
 function renderSales() {
   const el = $('salesPanel'); if (!el || !isDash(S.cat)) return;
   const cur = (S.dash || []).find(x => 'dash-' + x.id === S.cat), d = cur && cur.data;
@@ -853,7 +894,7 @@ function renderSales() {
     <svg class="sChart" viewBox="0 0 ${W} ${H}" role="img" aria-label="Monthly turnover by location">${grid}${labels}${lines}</svg>
     <div class="sLegend">${d.shops.map((s, k) => `<span><i style="background:${SCOL[k % 3]}"></i>${esc(s.replace(/^Creamy /, ''))}</span>`).join('')}<span style="color:var(--faint)">monthly turnover, kr</span></div>
     <div class="sShops">${d.perShop.map(s => `<div class="sShop"><div class="n">${esc(s.shop.replace(/^Creamy /, ''))}</div><div class="v">${kr(s.turnover)}</div><div class="m">${(s.orders || 0).toLocaleString('en-GB')} orders · ${s.avg == null ? '' : Math.round(s.avg) + ' kr avg'}</div>${dTag(s.vsPrevMonth)}</div>`).join('')}</div>
-    <div class="sBars">${bars('Top products · ' + mName(d.latest), d.products, 'turnover')}${bars('How they paid', d.payments, 'turnover')}${bars('Where orders came from', d.platforms, 'turnover')}</div>`;
+    <div class="sBars">${bars('Top products · ' + mName(d.latest), d.products, 'turnover')}${bars('How they paid', d.payments, 'turnover')}${bars('Where orders came from', d.platforms, 'turnover')}</div>${starDogHtml(d)}`;
 }
 function renderClients() {
   const clients = S.matrix.clients || [];
