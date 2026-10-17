@@ -862,7 +862,11 @@ const server = http.createServer(async (req, res) => {
       res.writeHead(200, { 'Content-Type': types[path.extname(file).toLowerCase()] || 'application/octet-stream', 'Content-Disposition': 'inline; filename="' + path.basename(file).replace(/"/g, '') + '"' });
       return res.end(fs.readFileSync(file));
     }
-    if (url.pathname === '/api/sales' && req.method === 'GET') return json(res, 200, salesData.build([...vaultIndex()].filter(([n, t]) => isUpload(n) && /^SALES REPORT\s*$/m.test(t)).map(([name, text]) => ({ name, text })))); // the Clients dashboard: parsed from uploaded sales-report notes, no model involved
+    if (url.pathname === '/api/dashboards' && req.method === 'GET') { // the Clients sub-pages: one per entry in aios.dashboards, parsed from uploaded sales-report notes (no model involved)
+      const defs = Array.isArray(cfg.aios?.dashboards) && cfg.aios.dashboards.length ? cfg.aios.dashboards : [{ id: 'creamy', name: 'Creamy', match: 'Creamy' }];
+      const notes = [...vaultIndex()].filter(([n, t]) => isUpload(n) && /^SALES REPORT\s*$/m.test(t)).map(([name, text]) => ({ name, text }));
+      return json(res, 200, { dashboards: defs.map(d => ({ id: String(d.id), name: String(d.name || d.id), data: salesData.build(notes, { match: d.match }) })) });
+    }
     if (url.pathname === '/api/uploads' && req.method === 'GET') return json(res, 200, { uploads: uploadsList().slice(0, 40) }); // uploaded documents the matrix can read in full
     if (url.pathname === '/api/lessons') return json(res, 200, { dir: learn.dir(BRAIN), agents: AGENTS.map(a => ({ id: a.id, name: a.name, ...learn.read(BRAIN, a.id) })).filter(x => x.rules.length || x.oneOffs.length) });
     if (url.pathname === '/api/mcp') { if (url.searchParams.get('refresh') === '1') await mcp.discover(); else await discovering; return json(res, 200, { ...mcp.summary(), tools: backend === 'claude-cli' }); }

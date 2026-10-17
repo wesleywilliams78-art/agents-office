@@ -31,14 +31,15 @@ const sum = (a, f) => a.reduce((n, x) => n + (f(x) || 0), 0);
 function top(list, key, n) { const m = new Map(); for (const x of list) { const e = m.get(x.name) || { name: x.name, turnover: 0, qty: 0 }; e.turnover += x.turnover || 0; e.qty += x.qty || 0; m.set(x.name, e); } return [...m.values()].sort((a, b) => b.turnover - a.turnover).slice(0, n); }
 
 // notes: [{name, text}]. The newest note's report wins when the same shop and month appear twice.
-export function build(notes) {
+export function build(notes, { match } = {}) {
   const by = new Map(), sources = [];
   for (const n of [...notes].sort((a, b) => (a.name < b.name ? -1 : 1))) {
     const reps = parseReports(String(n.text || '').slice(0, SIZE_CAP * 3)); if (!reps.length) continue;
     sources.push({ note: n.name, reports: reps.length });
     for (const r of reps) by.set(r.shop + '|' + r.month, r);
   }
-  const reports = [...by.values()]; if (!reports.length) return { available: false };
+  const want = match ? String(match).toLowerCase() : ''; // a dashboard shows the shops whose name contains its match text
+  const reports = [...by.values()].filter(r => !want || r.shop.toLowerCase().includes(want)); if (!reports.length) return { available: false };
   const months = [...new Set(reports.map(r => r.month))].sort();
   const shops = [...new Set(reports.map(r => r.shop))].sort();
   const series = Object.fromEntries(shops.map(s => [s, months.map(m => { const r = by.get(s + '|' + m); return r ? { month: m, turnover: r.turnover, orders: r.orders, avg: r.avg } : null; })]));

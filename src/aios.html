@@ -128,12 +128,14 @@
   .side button { text-align: left; display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 9px 11px; font-size: 12px; letter-spacing: .04em; border-radius: 9px; background: transparent; border-color: transparent; }
   .side button:hover { background: var(--soft); border-color: transparent; }
   .side button.on { background: var(--ink); color: var(--bg); }
+  .side .subnav { display: flex; flex-direction: column; gap: 3px; margin: 0 0 4px 14px; padding-left: 8px; border-left: 1px solid var(--line); }
+  .side .subnav button { font-size: 11.5px; padding: 7px 10px; }
   .side .n { font-size: 10.5px; font-weight: 700; opacity: .75; font-variant-numeric: tabular-nums; }
   .side .n.alert { color: var(--warn); opacity: 1; }
   .side button.on .n.alert { color: var(--bg); }
   .main { min-width: 0; }
   .cat-off { display: none !important; }
-  @media (max-width: 860px) { .shell { grid-template-columns: 1fr; } .side { position: static; flex-direction: row; overflow-x: auto; } .side .gl { display: none; } .side button { white-space: nowrap; } }
+  @media (max-width: 860px) { .shell { grid-template-columns: 1fr; } .side { position: static; flex-direction: row; overflow-x: auto; } .side .gl { display: none; } .side .subnav { flex-direction: row; margin: 0; padding: 0; border: 0; } .side button { white-space: nowrap; } }
   /* skill audit */
   .skkpis { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 10px; }
   .skkpi { padding: 6px 10px; border: 1px solid var(--line); border-radius: 8px; font-size: 12px; background: var(--panel); }
@@ -447,6 +449,7 @@
     <button data-go="matrix">Matrix <span class="n" id="nMatrix"></span></button>
     <div class="gl">The business</div>
     <button data-go="clients">Clients <span class="n" id="nClients"></span></button>
+    <div class="subnav" id="navDash"></div>
     <button data-go="budget" id="navBudget" style="display:none">Budget <span class="n"></span></button>
     <div class="gl">Communications</div>
     <button data-go="comms">WhatsApp <span class="n" id="nComms"></span></button>
@@ -474,9 +477,16 @@
       <h2>Clients</h2>
       <span class="note">Next actions by client, pulled from the matrix as tasks finish.</span>
     </div>
-    <div class="panel sales" id="salesPanel" style="display:none"></div>
     <div class="panel client agency" id="clientAgency"></div>
     <div class="clientGrid" id="clientGrid"></div>
+  </section>
+
+  <section id="dashSec" data-cat="dash">
+    <div class="sh">
+      <h2 id="dashTitle">Dashboard</h2>
+      <span class="note">Under Clients. Read from the reports uploaded to the office; no tokens are used.</span>
+    </div>
+    <div class="panel sales" id="salesPanel"></div>
   </section>
 
   <section id="matrixSec" data-cat="matrix">
@@ -617,15 +627,16 @@ function render() { renderNav(); renderKpis(); renderClients(); renderMatrix(); 
 
 // categories: the left-hand list shows one category at a time; the choice is remembered and can be linked to (#budget)
 const CAT_IDS = ['overview', 'matrix', 'clients', 'budget', 'comms', 'roles', 'skills'];
+const isDash = c => /^dash-[a-z0-9-]+$/.test(String(c));
 function applyCat() {
-  for (const el of document.querySelectorAll('[data-cat]')) el.classList.toggle('cat-off', el.dataset.cat !== S.cat);
+  for (const el of document.querySelectorAll('[data-cat]')) el.classList.toggle('cat-off', isDash(S.cat) ? el.dataset.cat !== 'dash' : el.dataset.cat !== S.cat);
   for (const b of document.querySelectorAll('#side button[data-go]')) b.classList.toggle('on', b.dataset.go === S.cat);
 }
 function setCat(c, push = true) {
-  if (!CAT_IDS.includes(c)) c = 'overview';
+  if (!CAT_IDS.includes(c) && !isDash(c)) c = 'overview';
   S.cat = c; try { localStorage.setItem('aiosCat', c); } catch {}
   if (push) history.replaceState(null, '', '#' + c);
-  applyCat(); window.scrollTo({ top: 0 });
+  applyCat(); window.scrollTo({ top: 0 }); if (isDash(c)) renderSales();
   if (c === 'comms' && !S.wa) loadWa(false);
 }
 
@@ -780,11 +791,17 @@ const kr = n => n == null ? '—' : Math.abs(n) >= 1e6 ? (n / 1e6).toFixed(2) + 
 const dTag = v => v == null ? '' : `<div class="d ${v >= 0 ? 'up' : 'dn'}">${v >= 0 ? '▲' : '▼'} ${Math.abs(v).toFixed(1)}% vs last month</div>`;
 const mName = m => new Date(m + '-01T12:00:00').toLocaleDateString('en-GB', { month: 'short', year: '2-digit' });
 const SCOL = ['var(--red, #C8553D)', 'var(--ink)', 'var(--faint)'];
-async function loadSales() { try { S.sales = await api('/sales'); } catch { S.sales = { available: false }; } renderSales(); }
+async function loadDash() {
+  try { S.dash = (await api('/dashboards')).dashboards; } catch { S.dash = S.dash || []; }
+  $('navDash').innerHTML = S.dash.map(d => `<button data-go="dash-${esc(d.id)}">${esc(d.name)}</button>`).join('');
+  applyCat(); if (isDash(S.cat)) renderSales();
+}
 function renderSales() {
-  const el = $('salesPanel'), d = S.sales; if (!el) return;
-  if (!d || !d.available) { el.style.display = 'none'; return; }
-  el.style.display = '';
+  const el = $('salesPanel'); if (!el || !isDash(S.cat)) return;
+  const cur = (S.dash || []).find(x => 'dash-' + x.id === S.cat), d = cur && cur.data;
+  $('dashTitle').textContent = cur ? cur.name : 'Dashboard';
+  if (!cur) { el.innerHTML = '<div class="none" style="padding:14px">Loading…</div>'; return; }
+  if (!d || !d.available) { el.innerHTML = `<div class="sHead"><b>${esc(cur.name)}</b><span class="note">No sales data yet</span></div><div class="none">Drop the reports into the office upload box (a zip of the monthly reports works) and this page fills itself in.</div>`; return; }
   const W = 700, H = 210, pl = 44, pr = 10, pt = 10, pb = 24, n = d.months.length;
   const max = Math.max(...d.shops.flatMap(s => d.series[s].map(x => x ? x.turnover : 0))), top = Math.ceil(max / 100000) * 100000 || 1;
   const x = i => pl + (n < 2 ? 0 : i * (W - pl - pr) / (n - 1)), y = v => pt + (1 - v / top) * (H - pt - pb);
@@ -796,7 +813,7 @@ function renderSales() {
       pts.map(p => `<circle cx="${p[0]}" cy="${p[1]}" r="3" fill="${SCOL[k % 3]}"><title>${esc(s)} · ${mName(d.months[p[3]])} · ${kr(p[2].turnover)} · ${p[2].orders ?? '?'} orders</title></circle>`).join('');
   }).join('');
   const t = d.totals, bars = (title, list, key) => { const m = Math.max(1, ...list.map(r => r[key])); return `<div><h4>${title}</h4>${list.map(r => `<div class="sBar"><div class="t"><span>${esc(r.name)}</span><span>${kr(r[key])}</span></div><div class="b"><i style="width:${Math.round(r[key] / m * 100)}%"></i></div></div>`).join('')}</div>`; };
-  el.innerHTML = `<div class="sHead"><b>Creamy sales</b><span class="note">${mName(d.months[0])} to ${mName(d.latest)} · ${d.shops.length} locations · figures from the uploaded monthly reports</span></div>
+  el.innerHTML = `<div class="sHead"><b>${esc(cur.name)} sales</b><span class="note">${mName(d.months[0])} to ${mName(d.latest)} · ${d.shops.length} locations · figures from the uploaded monthly reports</span></div>
     <div class="sKpis"><div class="sK"><div class="v">${kr(t.turnover)}</div><div class="l">Turnover · ${mName(d.latest)}</div>${dTag(t.turnoverVsPrev)}</div>
       <div class="sK"><div class="v">${(t.orders || 0).toLocaleString('en-GB')}</div><div class="l">Orders · ${mName(d.latest)}</div>${dTag(t.ordersVsPrev)}</div>
       <div class="sK"><div class="v">${t.avg == null ? '—' : Math.round(t.avg) + ' kr'}</div><div class="l">Average order</div></div></div>
@@ -1058,7 +1075,7 @@ document.addEventListener('focusout', async e => {
 document.addEventListener('focusin', e => { if (e.target.closest('.dueInput')) S.editingDate = true; });
 poll(); setInterval(() => { if (!S.busy && !S.editingDate && !document.hidden) poll(); }, 5000);
 loadBudget(); setInterval(() => { if (!document.hidden && !S.bBusy) loadBudget(); }, 30000);
-loadSales(); setInterval(() => { if (!document.hidden) loadSales(); }, 120000);
+loadDash(); setInterval(() => { if (!document.hidden) loadDash(); }, 120000);
 </script>
 </body>
 </html>

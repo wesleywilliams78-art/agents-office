@@ -684,6 +684,7 @@ else {
       if (!note.includes('## sales/week1.csv') || !note.includes('Mon') || !note.includes('## notes.txt') || !skipLine.includes('not a supported') || note.includes('MACOSX')) throw new Error('the zip note is wrong: ' + note.slice(0, 400));
       return '2 files read into one note · the unsupported .exe is named as skipped · macOS junk ignored';
     });
+    await step('server: /api/dashboards lists the Clients sub-pages', async () => { const j = await (await fetch(base + '/api/dashboards')).json(); if (!Array.isArray(j.dashboards) || !j.dashboards.length || !j.dashboards[0].id || typeof j.dashboards[0].data?.available !== 'boolean') throw new Error('bad shape'); return j.dashboards.map(d => d.name + (d.data.available ? '' : ' (no data yet)')).join(', '); });
     await step('server: /api/brain has the live graph', async () => { const g = await (await fetch(base + '/api/brain')).json(); if (!g.nodes.length) throw new Error('empty'); return `${g.nodes.length} linked notes`; });
     await step('server: /api/mcp lists this machine\'s connectors', async () => {
       const m = await (await fetch(base + '/api/mcp')).json();
