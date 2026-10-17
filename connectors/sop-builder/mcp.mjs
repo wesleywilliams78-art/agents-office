@@ -149,6 +149,9 @@ function deliverFolder(a) {
   return text({ deliveredToMyDrive: r });
 }
 
+// two servers run from this one file: sop-builder (writes the documents) and sop-qa (--qa: reads and delivers them, and cannot build or change anything)
+const QA_MODE = process.argv.includes('--qa'), QA_TOOLS = ['sop_list', 'sop_review', 'sop_deliver'], BUILDER_HIDES = ['sop_deliver'];
+const allowed = n => QA_MODE ? QA_TOOLS.includes(n) : !BUILDER_HIDES.includes(n);
 const tools = {
   sop_review: review,
   sop_deliver: deliverFolder,
@@ -165,10 +168,10 @@ readline.createInterface({ input: process.stdin }).on('line', line => {
   if (m.id === undefined) return;
   const ok = result => send({ jsonrpc: '2.0', id: m.id, result }), err = (code, message) => send({ jsonrpc: '2.0', id: m.id, error: { code, message } });
   try {
-    if (m.method === 'initialize') return ok({ protocolVersion: m.params?.protocolVersion || '2025-03-26', capabilities: { tools: {} }, serverInfo: { name: 'sop-builder', version: '1.0.0' } });
+    if (m.method === 'initialize') return ok({ protocolVersion: m.params?.protocolVersion || '2025-03-26', capabilities: { tools: {} }, serverInfo: { name: QA_MODE ? 'sop-qa' : 'sop-builder', version: '1.0.0' } });
     if (m.method === 'ping') return ok({});
-    if (m.method === 'tools/list') return ok({ tools: TOOLS });
-    if (m.method === 'tools/call') { const t = tools[m.params?.name]; return t ? ok(t(m.params.arguments || {})) : err(-32602, 'Unknown tool: ' + m.params?.name); }
+    if (m.method === 'tools/list') return ok({ tools: TOOLS.filter(t => allowed(t.name)) });
+    if (m.method === 'tools/call') { const t = allowed(m.params?.name) ? tools[m.params?.name] : null; return t ? ok(t(m.params.arguments || {})) : err(-32602, 'Unknown tool: ' + m.params?.name); }
     err(-32601, 'Method not found: ' + m.method);
   } catch (e) { ok(fail('Internal error: ' + (e.message || e))); }
 });

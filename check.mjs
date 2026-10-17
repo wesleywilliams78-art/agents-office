@@ -251,11 +251,19 @@ await step('SOP builder: both house styles build the full SOP and one-pager, bad
   let buf = ''; const waits = new Map();
   p.stdout.on('data', d => { buf += d; let i; while ((i = buf.indexOf('\n')) >= 0) { const l = buf.slice(0, i); buf = buf.slice(i + 1); try { const m = JSON.parse(l); waits.get(m.id)?.(m); } catch {} } });
   let n = 0; const rpc = (method, params) => new Promise((res, rej) => { const id = ++n; const t = setTimeout(() => rej(new Error(method + ' timed out')), 120000); waits.set(id, m => { clearTimeout(t); res(m); }); p.stdin.write(JSON.stringify({ jsonrpc: '2.0', id, method, params }) + '\n'); });
+  const qp = spawn(process.execPath, [path.join(dir, 'mcp.mjs'), '--qa'], { stdio: ['pipe', 'pipe', 'ignore'], env: { ...process.env, SOP_DRIVE_DIR: drive } });
+  let qbuf = ''; const qwaits = new Map(); let qn = 0;
+  qp.stdout.on('data', d => { qbuf += d; let i; while ((i = qbuf.indexOf(String.fromCharCode(10))) >= 0) { const l = qbuf.slice(0, i); qbuf = qbuf.slice(i + 1); try { const m = JSON.parse(l); qwaits.get(m.id)?.(m); } catch {} } });
+  const qrpc = (method, params) => new Promise((res, rej) => { const id = ++qn; const t = setTimeout(() => rej(new Error(method + ' timed out')), 120000); qwaits.set(id, m => { clearTimeout(t); res(m); }); qp.stdin.write(JSON.stringify({ jsonrpc: '2.0', id, method, params }) + String.fromCharCode(10)); });
   const made = [];
   try {
+    await qrpc('initialize', { protocolVersion: '2025-06-18', capabilities: {}, clientInfo: { name: 'check', version: '0' } });
+    const qnames = (await qrpc('tools/list', {})).result.tools.map(t => t.name).sort().join();
+    if (qnames !== 'sop_deliver,sop_list,sop_review') throw new Error('the QA server must expose only list, review and deliver: ' + qnames);
     await rpc('initialize', { protocolVersion: '2025-06-18', capabilities: {}, clientInfo: { name: 'check', version: '0' } });
     const names = (await rpc('tools/list', {})).result.tools.map(t => t.name);
-    for (const t of ['sop_schema', 'sop_build', 'sop_list', 'sop_review', 'sop_deliver']) if (!names.includes(t)) throw new Error('missing tool ' + t);
+    for (const t of ['sop_schema', 'sop_build', 'sop_list', 'sop_review']) if (!names.includes(t)) throw new Error('missing tool ' + t);
+    if (names.includes('sop_deliver')) throw new Error('the builder must not be able to deliver');
     for (const client of ['imrans-diner', 'creamy']) {
       const r = await rpc('tools/call', { name: 'sop_build', arguments: { client, content: sample, formats: ['full', 'onepager'], filename: 'ZZ check ' + client } });
       if (r.result.isError) throw new Error(client + ' did not build: ' + r.result.content[0].text.slice(0, 200));
@@ -268,18 +276,18 @@ await step('SOP builder: both house styles build the full SOP and one-pager, bad
     const landed = fs.readdirSync(drive); if (!dd.deliveredToMyDrive?.files?.length || landed.length !== dd.deliveredToMyDrive.files.length || fs.readdirSync(drive, { withFileTypes: true }).some(e => e.isDirectory())) throw new Error('delivery to My Drive went wrong: ' + JSON.stringify(landed));
     const again = JSON.parse((await rpc('tools/call', { name: 'sop_build', arguments: { client: 'creamy', content: sample, formats: ['full'], filename: 'ZZ drive check', deliver_to_drive: true } })).result.content[0].text); made.push(again.folder);
     if (fs.readdirSync(drive).length !== landed.length * 2) throw new Error('a second delivery overwrote or skipped files instead of keeping both');
-    const rv = JSON.parse((await rpc('tools/call', { name: 'sop_review', arguments: { folder: 'ZZ check creamy' } })).result.content[0].text);
+    const rv = JSON.parse((await qrpc('tools/call', { name: 'sop_review', arguments: { folder: 'ZZ check creamy' } })).result.content[0].text);
     if (rv.documents.length !== 2 || rv.documents.some(d => !d.text || d.text.includes('<w:')) || !rv.checks.length) throw new Error('sop_review did not return clean document text and checks');
     const before = fs.readdirSync(drive).length;
-    const d1 = await rpc('tools/call', { name: 'sop_deliver', arguments: { folder: 'ZZ check creamy' } });
+    const d1 = await qrpc('tools/call', { name: 'sop_deliver', arguments: { folder: 'ZZ check creamy' } });
     if (d1.result.isError || fs.readdirSync(drive).length <= before) throw new Error('sop_deliver did not copy the files');
-    const d2 = await rpc('tools/call', { name: 'sop_deliver', arguments: { folder: 'ZZ check creamy' } });
+    const d2 = await qrpc('tools/call', { name: 'sop_deliver', arguments: { folder: 'ZZ check creamy' } });
     if (!d2.result.isError) throw new Error('sop_deliver delivered the same folder twice');
        const tooMany = structuredClone(sample); tooMany.onepager.standards = Array(7).fill(['a', 'b']);
     if (!(await rpc('tools/call', { name: 'sop_build', arguments: { client: 'creamy', content: tooMany, formats: ['onepager'] } })).result.isError) throw new Error('a one-pager over its limits was built');
     const noClient = await rpc('tools/call', { name: 'sop_build', arguments: { client: 'nobody', content: sample } });
     if (!noClient.result.isError) throw new Error('an unknown client was accepted');
-  } finally { p.kill(); for (const d of [...made, drive]) try { fs.rmSync(d, { recursive: true, force: true }); } catch {} }
+  } finally { p.kill(); qp.kill(); for (const d of [...made, drive]) try { fs.rmSync(d, { recursive: true, force: true }); } catch {} }
   return 'Imran\'s Diner and Creamy both build a full SOP and a one-pager · unfilled placeholders are listed · over-limit content and an unknown client are refused';
 });
 await step('budget: ledger rows become month totals, and a wrong total is named against the sheet\'s own summary', async () => {
