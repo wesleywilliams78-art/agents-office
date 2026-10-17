@@ -621,7 +621,7 @@ export function initTasks(ctx) {
     }
     apply(t, st);
   }
-  function copyResult(t, st) { if (st.needsOk !== undefined) t.needsOk = !!st.needsOk; if (st.channel) t.channel = st.channel; t.result = st.result; t.error = !!st.error; t.read = st.read || []; t.note = st.note; t.tools = st.tools || []; t.used = st.used || []; t.draft = st.draft; t.approved = !!st.approved; t.revisions = st.revisions || 0; if (st.modelUsed) { t.modelUsed = st.modelUsed; t.modelFrom = st.modelFrom; t.effortUsed = st.effortUsed || ''; t.effortFrom = st.effortFrom; } }
+  function copyResult(t, st) { if (st.needsOk !== undefined) t.needsOk = !!st.needsOk; if (st.channel) t.channel = st.channel; t.result = st.result; t.error = !!st.error; t.read = st.read || []; t.note = st.note; t.tools = st.tools || []; t.used = st.used || []; t.draft = st.draft; t.nextStep = st.nextStep; t.handedTo = st.handedTo; t.handoffFrom = st.handoffFrom; t.approved = !!st.approved; t.revisions = st.revisions || 0; if (st.modelUsed) { t.modelUsed = st.modelUsed; t.modelFrom = st.modelFrom; t.effortUsed = st.effortUsed || ''; t.effortFrom = st.effortFrom; } }
   // V3.2 (16 Sep): the server's team state → piece cards on the teammates' desks, notes as 💬, the lead's members list
   const seenNotes = new Set();
   function syncTeam(t, st, quiet) {
@@ -677,6 +677,7 @@ export function initTasks(ctx) {
     if (setStuck) setStuck(t.agent, t.ask, t.sid);
   }
   // V3.9: the reader's APPROVE / REJECT (with its reason) — straight to the server by task id
+  async function handover(t, opts) { const r = await post(`/tasks/${t.sid}/handover`, opts); if (r && r.ok) poll && poll(); return r; } // HAND OVER on the review card
   async function approveTask(t) {
     const r = await post(`/tasks/${t.sid}/approve`);
     if (r?.task) { apply(t, r.task); chatPush(t.agent, { who: 'agent', text: '✓ Approved — marked done and saved to your brain.' }); } // nothing to send: done now
@@ -704,7 +705,7 @@ export function initTasks(ctx) {
   function openReview(id) { const t = liveTask(id); return !!(t && t.live && review && review.open(t)); }
   function readTask(id) { // a finished task, read in the pop-up
     const t = liveTask(id); if (!t || !t.live || !t.result || !review) return false;
-    review.read({ agent: t.agent, dept: t.dept, title: t.title, content: t.result, used: t.used, read: t.read, kindLabel: t.error ? 'COULD NOT COMPLETE' : t.approved ? 'APPROVED' : 'DONE', meta: t.doneAt ? 'done ' + timeStr(t.doneAt) : '' });
+    review.read({ sid: t.sid, state: t.state, nextStep: t.nextStep, handedTo: t.handedTo, handoffFrom: t.handoffFrom, agent: t.agent, dept: t.dept, title: t.title, content: t.result, used: t.used, read: t.read, kindLabel: t.error ? 'COULD NOT COMPLETE' : t.approved ? 'APPROVED' : 'DONE', meta: t.doneAt ? 'done ' + timeStr(t.doneAt) : '' });
     return true;
   }
   const waitingFor = agentId => tasks.filter(x => x.live && x.agent === agentId && x.state === 'waiting');
@@ -1097,5 +1098,5 @@ export function initTasks(ctx) {
   const calendar = initCalendar({ tasks, routines, agentOf, DEPTS, DEPT_KEYS, RT_DEPTS, rtRefuse, create: createScheduled, createRoutine: createRoutineAt, cancelTask: cancelScheduled, rtAct, openAgent: (id, tab) => openAgent && openAgent(id, tab), esc, isLive: () => live, officeModel: () => officeModel, MODEL_KEYS, modelName, business: () => document.title.replace(/ — Agents Office$/, ''), currentDept: () => dept });
   return { tick, toggle, open, close, openFor, isOpen, boardWidth, onFocusChange, onStuck, onResolve, calendar, createScheduled, cancelScheduled,
            handleChat, addTask, revise, rowHTML, setDept, tasks, panelWidth: () => panel.offsetWidth, isLive: () => live,
-           routines, addRoutine, rtAct, railFor, syncPills, refresh: poll, resolveLive, pendingReject, rejectLive, approveTask, rejectTask, answerTask, openReview, readTask, waitingFor, setReview: r => { review = r; for (const t of tasks) if (t.live && t.state === 'waiting') r.push(t, { auto: false }); }, officeModel: () => officeModel, chosenModel, chosenEffort };
+           routines, addRoutine, rtAct, railFor, syncPills, refresh: poll, handover, resolveLive, pendingReject, rejectLive, approveTask, rejectTask, answerTask, openReview, readTask, waitingFor, setReview: r => { review = r; for (const t of tasks) if (t.live && t.state === 'waiting') r.push(t, { auto: false }); }, officeModel: () => officeModel, chosenModel, chosenEffort };
 }

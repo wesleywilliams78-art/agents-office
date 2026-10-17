@@ -41,3 +41,11 @@ export function plan(blocks, agents, from) {
     return { to: a ? a.id : '', toName: a ? a.name : b.to, dept: a ? a.department : '', title: b.title || (a ? 'Handed over' : ''), text: b.text, ok: !!a && !!b.text, problem: !a ? `no seat called "${b.to}"` : !b.text ? 'no instructions' : '' };
   });
 }
+
+// "NEXT: qa — check the one-pager" at the end of a result: the writer's suggestion for the owner's HAND OVER button. Returns { next, text } with the line removed.
+export function takeNext(text, agents, from) {
+  const t = String(text || ''), m = /^[ \t*_]*NEXT:[ \t*_]*(.+?)[ \t]*[—–]+[ \t]*(.+?)[ \t*_]*$/m.exec(t);
+  if (!m) return { next: null, text: t };
+  const seat = resolve(m[1], agents, from);
+  return { next: { to: seat ? seat.id : '', toName: seat ? seat.name : m[1].trim(), what: m[2].trim().slice(0, 300) }, text: t.replace(m[0], '').replace(/\n{3,}/g, '\n\n').trim() };
+}

@@ -338,11 +338,13 @@ async function route(dept, text) {
 const FILES_LINE = 'FILES\nYou cannot open files on the owner\'s computer. If a task depends on one (a PDF, a document, an image), say so in one line and ask the owner to drop it into the office\'s upload box, where it becomes a note called "Upload - <file name>" that you can read, or to save it in Google Drive, where you can read it with the Drive tool. Do not ask for a file path and do not try to open one.';
 // Wesley's standing rule: anything made for his review lands at the top level of his My Drive, where he reviews and files it himself
 const DRIVE_RULE = 'WHERE FILES LAND\nEvery new file you create in Google Drive for Wesley (a Doc, Sheet, PDF or Word file) goes in the top level of his own My Drive. Do not pass a parent folder, do not search for or pick a client folder, and never create a file in a shared drive. He reviews each one and files it himself. The only exception is a task that names the exact folder itself. Editing a file that already exists leaves it where it is.';
+// Every seat may end its result with one line suggesting who should take the next step. It costs about 40 tokens; the owner decides (HAND OVER on the review card).
+const NEXT_LINE = 'NEXT STEP (optional)\nIf another seat should take the next step on what you have written, end with one last line: NEXT: <seat id or name> — <what it should do>. Leave it out when nothing follows.';
 const usesDrive = a => (a.tools || []).some(t => /drive|sheet|docs/i.test(String(t)));
 // the system prompt every agent run starts from: who it is, its brief, skills and lessons, its tools, the company, the notes for this task
 function agentSystem(a, index, read, { extra = '', words = 260 } = {}) {
   const d = DEPTS[a.department];
-  return `You are ${a.name}, ${a.role || 'an agent'}, in the ${d.name} department of ${cfg.name}. ${a.does}\n${agentBrief(a)}` + (BRAIN_WRITE ? `\n${brainnotes.INSTRUCTIONS}\n` : '') + (/HANDOFF/.test(agentBrief(a)) ? `\n${handoff.INSTRUCTIONS}\n` : '') + (usesDrive(a) ? `\n${DRIVE_RULE}\n` : '') +`\n${FILES_LINE}\n` + (extra ? `\n${extra}\n` : '') +
+  return `You are ${a.name}, ${a.role || 'an agent'}, in the ${d.name} department of ${cfg.name}. ${a.does}\n${agentBrief(a)}` + (BRAIN_WRITE ? `\n${brainnotes.INSTRUCTIONS}\n` : '') + (/HANDOFF/.test(agentBrief(a)) ? `\n${handoff.INSTRUCTIONS}\n` : '') + (usesDrive(a) ? `\n${DRIVE_RULE}\n` : '') + `\n${NEXT_LINE}\n` + `\n${FILES_LINE}\n` + (extra ? `\n${extra}\n` : '') +
     'Write the finished deliverable itself, not a description of what you would do. Plain text: a short heading, then short sections or bullets. ' +
     `At most ${words} words unless a skill or the owner\'s instructions set a different shape — those win. No preamble, no sign-off. Ground it in the company notes below; where a fact is missing, make a reasonable assumption and mark it (assumed). ` +
     'If you used a tool, say so in one line at the end ("Used: Gmail — searched the client thread").\n\n' +
@@ -537,6 +539,9 @@ async function runServerTask(id, { feedback, approve, answer } = {}) {
   try {
     const out = await run(task, feedback, approve ? 'approve' : task.needsOk ? 'draft' : 'routine', answer);
     const hoText = out.result; if (handoff.parse(hoText).length) out.result = handoff.strip(hoText);
+    if (!approve) { // a NEXT: line is a suggestion for the review card, not part of the deliverable
+      delete task.nextStep; const tn = handoff.takeNext(out.result, AGENTS, task.agent); if (tn.next) { task.nextStep = tn.next; out.result = tn.text; }
+    }
     if (approve) { task.result = (task.draft || task.result) + '\n\n---\nAFTER YOUR OK\n' + out.result; task.approved = true; task.approvedAt = Date.now(); }
     else task.result = out.result;
     Object.assign(task, { read: out.read, tools: [...new Set([...(task.tools || []), ...out.tools])], used: [...new Set([...(task.used || []), ...out.used])], skills: out.skills, error: false, modelUsed: out.modelUsed, modelFrom: out.modelFrom, modelId: out.modelId, effortUsed: out.effortUsed, effortFrom: out.effortFrom, ...(out.team ? { team: out.team } : {}) });
@@ -965,6 +970,33 @@ const server = http.createServer(async (req, res) => {
       fs.writeFileSync(path.join(NOTES_DIR, name + '.md'), `# ${filename}\n\n> Uploaded ${new Date().toLocaleString()}${deptLine} · ${text.length.toLocaleString()} characters\n\n${text}\n`);
       rebuildGraph();
       return json(res, 200, { ok: true, note: name, filename, chars: text.length, preview: text.slice(0, 400) });
+    }
+    const hm = url.pathname.match(/^\/api\/tasks\/([^/]+)\/handover$/);
+    if (hm && req.method === 'POST') { // the owner's click: hand a finished task to a seat (the suggested one, one he picks, or the Executive Assistant to decide)
+      const src = load().find(t => t.id === hm[1]); if (!src) return json(res, 404, { error: 'no such task' });
+      const { to, ea } = await body(req);
+      if (!src.result || src.state === 'doing') return json(res, 400, { error: 'this task has no finished result to hand over yet' });
+      if ((src.handoffDepth || 0) >= 3) return json(res, 400, { error: 'this has already been handed over three times: start a fresh task instead' });
+      const target = ea ? AGENTS.find(a => a.id === 'elead') : AGENTS.find(a => a.id === (to || src.nextStep?.to));
+      if (!target) return json(res, 400, { error: 'pick a seat to hand it to' });
+      if (!ea && (target.id === src.agent || target.id === src.handoffFrom)) return json(res, 400, { error: 'a task is not handed back to the seat that wrote it or handed it over' });
+      const hint = ea ? '' : String(src.nextStep?.what || '').trim();
+      let title, text;
+      if (ea) {
+        title = ('Decide the next step: ' + src.title).slice(0, 90);
+        text = `Wesley has asked you, as his Executive Assistant, to decide what happens next with this finished task from ${agentName(src.agent)}. Read the result below. Decide the best next step or steps and which seat should take each (use the roster you know), then end with one HANDOFF block per step so each starts when Wesley approves: write each block as a complete brief for that seat, with the figures and the files it needs and what it must deliver. If one piece of work forks (for example option 1 and option 2), write one block each. If nothing should happen next, say so in two lines and write no block. Never act on it yourself.\n\n=== THE FINISHED TASK: ${src.title} (${agentName(src.agent)}) ===\n${String(src.result).slice(0, 14000)}`;
+      } else {
+        try {
+          const j = parseJSON(await ask('You write the brief for the next seat in an office of AI agents. Reply with ONLY a JSON object {"title":"<under 80 characters>","text":"<the task, written as Wesley would type it>"}. The brief must be self-contained: include the figures, names and files the seat needs, say exactly what to deliver, tell it not to reread what is already in the brief, and say that nothing goes out without Wesley.',
+            `Next seat: ${target.name} (${target.role}). Its job: ${target.does}\nWhat the writer suggested: ${hint || 'take the next step'}\n\nThe finished task: ${src.title} (by ${agentName(src.agent)})\n${String(src.result).slice(0, 12000)}`, { maxTokens: 3500, timeout: 120000, model: 'sonnet' }));
+          title = String(j.title || '').slice(0, 90); text = String(j.text || '');
+        } catch (e) { console.warn('handover brief:', e.message); }
+        if (!text) { title = (hint || 'Next step after: ' + src.title).slice(0, 90); text = `${hint || 'Take the next step on this finished task.'}\n\n=== FROM ${agentName(src.agent)}: ${src.title} ===\n${String(src.result).slice(0, 12000)}`; }
+      }
+      const nt = { id: nid(), dept: target.department, agent: target.id, title: title || ('Next step: ' + src.title).slice(0, 90), text: text + `\n\n(Handed over by ${agentName(src.agent)} from the task "${src.title}", on Wesley's click.)`, plan: [], eta: 10, why: `Handed over by ${agentName(src.agent)}`, state: 'doing', startedAt: Date.now(), addedAt: Date.now(), by: 'handoff', handoffFrom: src.agent, handoffTask: src.id, handoffDepth: (src.handoffDepth || 0) + 1, needsOk: false };
+      const list = load(); list.push(nt); const si = list.findIndex(t => t.id === src.id); if (si >= 0) list[si].handedTo = [...(list[si].handedTo || []), nt.id]; save(list);
+      console.log(`➜ ${src.id} handed to ${target.id} on the owner's click: ${nt.title}`); enqueue(() => runServerTask(nt.id)).catch(e => console.warn('handover:', e.message));
+      return json(res, 200, { ok: true, id: nt.id, agent: target.id, agentName: target.name, title: nt.title });
     }
     const m = url.pathname.match(/^\/api\/tasks\/([^/]+)(?:\/(run|revise|approve|reject|answer))?$/);
     if (m && req.method === 'POST' && m[2] === 'answer') { // the owner is neither approving nor rejecting: he is giving the agent what it was missing

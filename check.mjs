@@ -174,7 +174,10 @@ await step('handoffs: a HANDOFF block is parsed, resolved to a seat by id or nam
   if (h.resolve('QUALITY ASSURANCE CHECKER', agents, 'crep')?.id !== 'qa') throw new Error('names do not resolve');
   if (h.resolve('qa', agents, 'qa')) throw new Error('a seat can hand to itself');
   if (/HANDOFF/.test(h.strip(txt)) || !h.strip(txt).startsWith('Done.')) throw new Error('block not stripped');
-  return 'parsed · "qa" and the full name both find the seat · unknown seat and self-handoff refused · block removed from the result';
+  const tn = h.takeNext(['Report.', '', 'NEXT: gfx — build the Canva deck from the 12 pages'].join(String.fromCharCode(10)), agents, 'recon');
+  if (!tn.next || tn.next.to !== 'gfx' || !/Canva/.test(tn.next.what) || /NEXT/.test(tn.text) || tn.text !== 'Report.') throw new Error('NEXT line not taken: ' + JSON.stringify(tn));
+  if (h.takeNext('NEXT: nobody — do a thing', agents, 'recon').next.to !== '' || h.takeNext('no suggestion here', agents, 'recon').next !== null) throw new Error('unknown seat or no NEXT line handled wrongly');
+  return 'parsed · "qa" and the full name both find the seat · unknown seat and self-handoff refused · block removed from the result · a NEXT line becomes a suggestion and leaves the deliverable clean';
 });
 await step('brain updates: a proposed note change is parsed, refused when unsafe, and filed only inside the brain with a backup', async () => {
   const bn = await import('./brainnotes.mjs'); const os = await import('node:os');
