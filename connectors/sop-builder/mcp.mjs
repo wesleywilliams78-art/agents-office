@@ -46,8 +46,8 @@ const TOOLS = [
     deliver_to_drive: { type: 'boolean', description: 'true for a finished or final-draft SOP: copies the Word and PDF files to the top level of Wesley\'s My Drive for his review. Never into a folder. Leave false for tests and drafts still being worked.' },
     filename: { type: 'string', description: 'A short file name base, e.g. "5.5 Guest Journey". Defaults to the SOP title.' },
   } } },
-  { name: 'sop_review', description: 'Quality-check a built SOP folder (default: the most recent). Returns the full text of each Word file, the page counts, the placeholders still open, numbers that appear in the one-pager but not in the full SOP, and forbidden words. Read the text against the SOP quality skill; this tool only does the mechanical part.', inputSchema: { type: 'object', properties: { folder: { type: 'string', description: 'Folder name or any part of it, from sop_list. Omit for the newest.' } } } },
-  { name: 'sop_deliver', description: 'Copy the Word and PDF files of a built SOP folder to the top level of Wesley\'s My Drive for his review. Refuses if a page count is wrong, and never delivers the same folder twice. Use it only after the SOP has passed review.', inputSchema: { type: 'object', required: ['folder'], properties: { folder: { type: 'string', description: 'Folder name or any part of it, from sop_list.' } } } },
+  { name: 'sop_review', description: 'Quality-check a built SOP folder (default: the most recent). Returns the full text of each Word file, the page counts, the placeholders still open, numbers that appear in the one-pager but not in the full SOP, and forbidden words. Read the text against the SOP quality skill; this tool only does the mechanical part.', inputSchema: { type: 'object', properties: { folder: { type: 'string', description: 'Folder name or any part of it, from sop_list. Omit for the newest.' }, part: { type: 'string', enum: ['onepager', 'full', 'all'], description: 'Which documents to look at. Default all. Use onepager when only the one-pager is being checked.' } } } },
+  { name: 'sop_deliver', description: 'Copy the Word and PDF files of a built SOP folder to the top level of Wesley\'s My Drive for his review. Refuses if a page count is wrong, and never delivers the same folder twice. Use it only after the SOP has passed review.', inputSchema: { type: 'object', required: ['folder'], properties: { folder: { type: 'string', description: 'Folder name or any part of it, from sop_list.' }, part: { type: 'string', enum: ['onepager', 'full', 'all'], description: 'Which documents to deliver. Default all. Use onepager when only the one-pager was checked.' } } } },
   { name: 'sop_list', description: 'The ten most recent SOP builds and their files.', inputSchema: { type: 'object', properties: {} } },
 ];
 
@@ -120,9 +120,10 @@ function findFolder(q) {
   return hits.length === 1 ? hits[0] : hits.sort((a, b) => a.length - b.length)[0] || null; // otherwise the closest (shortest) match
 }
 const numbersIn = s => new Set((s.match(/\d+(?:[.,]\d+)?\s?(?:°C|°|kg|g|ml|l|%|min|mins|hours?|hrs?|h|cups?|days?)?/gi) || []).map(x => x.replace(/\s+/g, '').toLowerCase()));
+const partOk = (f, part) => part === 'onepager' ? /One Pager/i.test(f) : part === 'full' ? /Full SOP/i.test(f) : true;
 function review(a) {
   const folder = findFolder(a.folder); if (!folder) return fail('No SOP folder found' + (a.folder ? ' matching "' + a.folder + '"' : '') + '. Call sop_list.');
-  const dir = path.join(OUT, folder), docs = fs.readdirSync(dir).filter(f => /\.docx$/i.test(f)).sort();
+  const dir = path.join(OUT, folder), docs = fs.readdirSync(dir).filter(f => /\.docx$/i.test(f) && partOk(f, a.part)).sort();
   if (!docs.length) return fail('No Word files in ' + folder);
   const py = process.env.PYTHON || 'python', out = { folder, documents: [], checks: [] }; const texts = {};
   for (const d of docs) {
@@ -143,7 +144,7 @@ function deliverFolder(a) {
   const dir = path.join(OUT, folder), mark = path.join(dir, '.delivered');
   if (fs.existsSync(mark)) return fail('Already delivered: ' + fs.readFileSync(mark, 'utf8') + '. Nothing was copied again.');
   const m = folder.match(/^\d{4}-\d{2}-\d{2} (\S+) (.+)$/), brand = m && BRANDS[m[1]]; if (!brand) return fail('Cannot tell the client from the folder name ' + folder);
-  const files = fs.readdirSync(dir).filter(f => /\.(docx|pdf)$/i.test(f)).map(f => path.join(dir, f));
+  const files = fs.readdirSync(dir).filter(f => /\.(docx|pdf)$/i.test(f) && partOk(f, a.part)).map(f => path.join(dir, f));
   for (const f of files.filter(x => /\.pdf$/i.test(x))) { const n = pdfPages(f), want = /Full SOP/.test(f) ? 3 : /One Pager/i.test(f) ? 1 : 0; if (want && n !== want) return fail('Not delivered: ' + path.basename(f) + ' is ' + n + ' pages; it should be ' + want + '.'); }
   const r = deliver(files, brand.name, m[2]); if (!r.error) fs.writeFileSync(mark, JSON.stringify(r.files));
   return text({ deliveredToMyDrive: r });
