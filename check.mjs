@@ -142,6 +142,19 @@ await step('sales dashboard: report text becomes per-shop monthly numbers, and a
   if (build([{ name: 'x', text: 'nothing here' }]).available) throw new Error('a note with no reports made a dashboard');
   return 'two shops, two months · Norwegian number format read · totals and change vs last month · products and payments summed · empty notes ignored';
 });
+await step('till dashboard: the hourly grid and item report become monthly turnover, a weekday-by-hour map and menu totals that match the report', async () => {
+  const { build } = await import('./pos.mjs'); const NL = String.fromCharCode(10);
+  const hourly = ['# x', '| Hour | 2026-08-30 | 2026-08-31 | 2026-09-01 | 2026-09-02 |', '| --- | --- | --- | --- | --- |', '| Hourly Sales report | Hourly Sales for Test Diner (High Street) Generated for the period of 2026-08-30 - 2026-09-02 |', '| 06:00PM | 10 (100.00) | 20 (250.50) | 5 (50.00) | 0 (-) |', '| 07:00PM | 30 (300.00) | 0 (-) | 15 (150.25) | 1 (1,000.00) |'].join(NL);
+  const items = ['Item Sales By Category Report for Test Diner', 'Generated for the period of 2025-10-01 - 2026-09-02', 'Default Menu', 'BURGERS', 'Page 1 of 2', 'Item Name Unit Price Quantity Total Discount', 'Chicken Burger 4.49 ++ 10 100.00 1.00', 'Total 10 100.00 1.00', 'Deliveroo Menu', 'WRAPS', 'Page 2 of 2', 'Item', 'Name Unit Price Quantity Total Discount', 'Misc 1.60, 2.00,', '2.50 5 25.50 0.00', 'Total 5 25.50 0.00'].join(NL);
+  const d = build([{ name: 'a', text: hourly + NL + 'Test Diner' }, { name: 'b', text: items }], { match: 'Test Diner' });
+  if (!d.available || d.kind !== 'pos') throw new Error('not built: ' + JSON.stringify(d).slice(0, 160));
+  const aug = d.hourly.months.find(m => m.month === '2026-08'), sep = d.hourly.months.find(m => m.month === '2026-09');
+  if (aug.turnover !== 650.5 || aug.orders !== 60 || sep.orders !== 21 || !sep.partial || d.hourly.heat[0][18] === undefined) throw new Error('hourly months wrong: ' + JSON.stringify(d.hourly.months));
+  if (d.totals.turnover !== 1200 || d.totals.orders !== 21 || d.totals.turnoverVsPrev !== null) throw new Error('latest month wrong: ' + JSON.stringify(d.totals));
+  if (d.items.total !== 125.5 || d.items.menus.length !== 2 || d.items.qty !== 15) throw new Error('item totals wrong (a wrapped header must still be read): ' + JSON.stringify(d.items.menus));
+  if (build([{ name: 'x', text: 'nothing here' }], { match: 'Test Diner' }).available) throw new Error('empty input made a dashboard');
+  return 'months from the hourly grid · part month flagged · weekday-by-hour map · menu totals from the item report, wrapped headers included';
+});
 await step('handoffs: a HANDOFF block is parsed, resolved to a seat by id or name, removed from the result, and an unknown seat is refused', async () => {
   const h = await import('./handoff.mjs'); const { loadRoster } = await import('./roster.mjs'); const agents = loadRoster().agents;
   const txt = ['Done.', '', 'HANDOFF', 'to: qa', 'title: QA the Lamb SOP', '---', 'Check folder X, one-pager only.', 'END HANDOFF', '', 'HANDOFF', 'to: nobody', 'title: x', '---', 'y', 'END HANDOFF', ''].join(String.fromCharCode(10));

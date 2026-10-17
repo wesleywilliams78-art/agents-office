@@ -222,7 +222,10 @@
   .sBars h4 { margin: 0 0 8px; font-size: 10px; letter-spacing: .12em; text-transform: uppercase; color: var(--faint); font-weight: 600; }
   .sBar { margin-bottom: 7px; font-size: 11px; } .sBar .t { display: flex; justify-content: space-between; gap: 8px; } .sBar .t span:first-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .sBar .b { height: 5px; border-radius: 3px; background: var(--soft); margin-top: 3px; overflow: hidden; } .sBar .b i { display: block; height: 100%; background: var(--red, #C8553D); border-radius: 3px; }
-  @media (max-width: 860px) { .sKpis { grid-template-columns: 1fr; } .sales { padding: 14px; } }
+  .sHeat { display: grid; gap: 2px; align-items: center; font-size: 9.5px; color: var(--faint); }
+  .sHeat > span { min-width: 0; overflow: hidden; }
+  .sHeat .hc { height: 18px; border-radius: 3px; background: var(--soft); } .sHeat .hh { text-align: center; } .sHeat .hd { text-align: right; padding-right: 4px; }
+  @media (max-width: 860px) { .sKpis { grid-template-columns: 1fr; } .sales { padding: 14px; } .sHeat .hh { font-size: 8px; } }
   /* clients: one full-width agency box, then a row of client boxes underneath */
   .clientGrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin-top: 10px; }
   .client { padding: 12px 14px; }
@@ -796,12 +799,42 @@ async function loadDash() {
   $('navDash').innerHTML = S.dash.map(d => `<button data-go="dash-${esc(d.id)}">${esc(d.name)}</button>`).join('');
   applyCat(); if (isDash(S.cat)) renderSales();
 }
+// a single restaurant site (till reports): headline, monthly turnover bars, a weekday-by-hour busyness map, menu / category / item bars
+const money = (n, c) => n == null ? '—' : Math.abs(n) >= 1e6 ? c + (n / 1e6).toFixed(2) + 'm' : Math.abs(n) >= 1e4 ? c + Math.round(n / 1e3) + 'k' : c + Math.round(n).toLocaleString('en-GB');
+const DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+const hLab = h => h === 0 ? '12am' : h < 12 ? h + 'am' : h === 12 ? '12pm' : (h - 12) + 'pm';
+function renderPos(el, cur, d) {
+  const c = d.currency || '£', hr = d.hourly, it = d.items, t = d.totals;
+  const parts = [];
+  parts.push(`<div class="sHead"><b>${esc(cur.name)}${hr && hr.place ? ' · ' + esc(hr.place) : ''}</b><span class="note">${hr ? mName(hr.from.slice(0, 7)) + ' to ' + mName(hr.to.slice(0, 7)) + ' by the hour' : ''}${hr && it ? ' · ' : ''}${it ? 'items ' + esc(it.from) + ' to ' + esc(it.to) : ''} · from the uploaded till reports</span></div>`);
+  if (t) parts.push(`<div class="sKpis"><div class="sK"><div class="v">${money(t.turnover, c)}</div><div class="l">Turnover · ${mName(hr.latest)}${t.partial ? ' (to ' + t.to.slice(8) + 'th)' : ''}</div>${t.turnoverVsPrev == null ? '' : `<div class="d ${t.turnoverVsPrev >= 0 ? 'up' : 'dn'}">${t.turnoverVsPrev >= 0 ? '▲' : '▼'} ${Math.abs(t.turnoverVsPrev).toFixed(1)}% ${esc(t.vsNote)}</div>`}</div>
+    <div class="sK"><div class="v">${(t.orders || 0).toLocaleString('en-GB')}</div><div class="l">Orders · ${mName(hr.latest)}</div>${t.ordersVsPrev == null ? '' : `<div class="d ${t.ordersVsPrev >= 0 ? 'up' : 'dn'}">${t.ordersVsPrev >= 0 ? '▲' : '▼'} ${Math.abs(t.ordersVsPrev).toFixed(1)}% ${esc(t.vsNote)}</div>`}</div>
+    <div class="sK"><div class="v">${t.avg == null ? '—' : c + t.avg.toFixed(2)}</div><div class="l">Average order</div></div></div>`);
+  if (hr) {
+    const W = 700, H = 190, pl = 44, pr = 10, pt = 12, pb = 24, ms = hr.months, n = ms.length, max = Math.max(...ms.map(m => m.turnover)), top = Math.ceil(max / 50000) * 50000 || 1;
+    const bw = (W - pl - pr) / n, y = v => pt + (1 - v / top) * (H - pt - pb);
+    const grid = [0, .5, 1].map(f => `<line x1="${pl}" x2="${W - pr}" y1="${y(top * f)}" y2="${y(top * f)}" stroke="var(--line)"/><text x="${pl - 6}" y="${y(top * f) + 3}" text-anchor="end" font-size="9" fill="var(--faint)">${top * f ? Math.round(top * f / 1000) + 'k' : 0}</text>`).join('');
+    const bars = ms.map((m, i) => `<rect x="${pl + i * bw + bw * .18}" y="${y(m.turnover)}" width="${bw * .64}" height="${H - pb - y(m.turnover)}" rx="3" fill="${m.partial ? 'var(--faint)' : 'var(--red, #C8553D)'}"><title>${mName(m.month)} · ${money(m.turnover, c)} · ${m.orders.toLocaleString('en-GB')} orders · ${m.days} trading days${m.partial ? ' (part month)' : ''}</title></rect><text x="${pl + i * bw + bw / 2}" y="${H - 6}" text-anchor="middle" font-size="9" fill="var(--faint)">${mName(m.month)}</text>`).join('');
+    parts.push(`<svg class="sChart" viewBox="0 0 ${W} ${H}" role="img" aria-label="Monthly turnover">${grid}${bars}</svg><div class="sLegend"><span><i style="background:var(--red, #C8553D)"></i>full month</span><span><i style="background:var(--faint)"></i>part month</span><span style="color:var(--faint)">monthly turnover, ${c}</span></div>`);
+    const hrs = [...Array(24).keys()].filter(h => hr.heat.some(r => r[h] >= .5)), mx = Math.max(...hr.heat.flat(), 1);
+    const order = [...hrs.filter(h => h >= 11), ...hrs.filter(h => h < 11)];
+    parts.push(`<div class="sBars"><div style="grid-column:1/-1"><h4>When it is busy · average orders per hour · peak ${DAYS[hr.peakDay]}s, ${hLab(hr.peakHour)}</h4>
+      <div class="sHeat" style="grid-template-columns:34px repeat(${order.length},1fr)"><span></span>${order.map(h => `<span class="hh">${hLab(h)}</span>`).join('')}${DAYS.map((dn, w) => `<span class="hd">${dn}</span>` + order.map(h => { const v = hr.heat[w][h]; return `<span class="hc" style="background:rgba(200,85,61,${(v / mx * .95 + (v ? .05 : 0)).toFixed(2)})" title="${dn} ${hLab(h)} · ${v} orders on average"></span>`; }).join('')).join('')}</div></div></div>`);
+  }
+  if (it) {
+    const bars = (title, list, key, note) => { const m = Math.max(1, ...list.map(r => r[key])); return `<div><h4>${title}</h4>${list.map(r => `<div class="sBar"><div class="t"><span>${esc(r.name)}</span><span>${money(r[key], c)}</span></div><div class="b"><i style="width:${Math.round(r[key] / m * 100)}%"></i></div></div>`).join('')}${note ? `<div class="note" style="font-size:10px;color:var(--faint)">${esc(note)}</div>` : ''}</div>`; };
+    parts.push(`<div class="sBars" style="margin-top:14px">${bars('Menus and channels · ' + money(it.total, c) + ' in the year', it.menus, 'sales')}${bars('Top categories', it.categories, 'sales')}${bars('Top items', it.top, 'sales', it.note)}</div>`);
+  }
+  parts.push(`<div class="note" style="font-size:10.5px;color:var(--faint);margin-top:12px">${esc(d.currencyNote)}.${t && t.partial ? ' The latest month is part of a month, so its change is measured against the same days of the month before.' : ''}</div>`);
+  el.innerHTML = parts.join('');
+}
 function renderSales() {
   const el = $('salesPanel'); if (!el || !isDash(S.cat)) return;
   const cur = (S.dash || []).find(x => 'dash-' + x.id === S.cat), d = cur && cur.data;
   $('dashTitle').textContent = cur ? cur.name : 'Dashboard';
   if (!cur) { el.innerHTML = '<div class="none" style="padding:14px">Loading…</div>'; return; }
   if (!d || !d.available) { el.innerHTML = `<div class="sHead"><b>${esc(cur.name)}</b><span class="note">No sales data yet</span></div><div class="none">Drop the reports into the office upload box (a zip of the monthly reports works) and this page fills itself in.</div>`; return; }
+  if (d.kind === 'pos') return renderPos(el, cur, d);
   const W = 700, H = 210, pl = 44, pr = 10, pt = 10, pb = 24, n = d.months.length;
   const max = Math.max(...d.shops.flatMap(s => d.series[s].map(x => x ? x.turnover : 0))), top = Math.ceil(max / 100000) * 100000 || 1;
   const x = i => pl + (n < 2 ? 0 : i * (W - pl - pr) / (n - 1)), y = v => pt + (1 - v / top) * (H - pt - pb);

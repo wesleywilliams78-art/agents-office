@@ -56,6 +56,7 @@ import * as budget from './budget.mjs';
 import * as brainnotes from './brainnotes.mjs';
 import * as handoff from './handoff.mjs';
 import * as salesData from './sales.mjs';
+import * as posData from './pos.mjs';
 import * as skillaudit from './skillaudit.mjs';
 import { create as createWhatsApp } from './whatsapp.mjs';
 import { recover } from './recover.mjs';
@@ -868,7 +869,8 @@ const server = http.createServer(async (req, res) => {
     if (url.pathname === '/api/dashboards' && req.method === 'GET') { // the Clients sub-pages: one per entry in aios.dashboards, parsed from uploaded sales-report notes (no model involved)
       const defs = Array.isArray(cfg.aios?.dashboards) && cfg.aios.dashboards.length ? cfg.aios.dashboards : [{ id: 'creamy', name: 'Creamy', match: 'Creamy' }];
       const notes = [...vaultIndex()].filter(([n, t]) => isUpload(n) && /^SALES REPORT\s*$/m.test(t)).map(([name, text]) => ({ name, text }));
-      return json(res, 200, { dashboards: defs.map(d => ({ id: String(d.id), name: String(d.name || d.id), data: salesData.build(notes, { match: d.match }) })) });
+      const tillNotes = [...vaultIndex()].filter(([n, t]) => isUpload(n) && /Hourly Sales|Item Sales By Category/.test(t)).map(([name, text]) => ({ name, text })); // a restaurant's till reports (kind: pos)
+      return json(res, 200, { dashboards: defs.map(d => ({ id: String(d.id), name: String(d.name || d.id), data: d.kind === 'pos' ? posData.build(tillNotes, { match: d.match }) : salesData.build(notes, { match: d.match }) })) });
     }
     if (url.pathname === '/api/uploads' && req.method === 'GET') return json(res, 200, { uploads: uploadsList().slice(0, 40) }); // uploaded documents the matrix can read in full
     if (url.pathname === '/api/lessons') return json(res, 200, { dir: learn.dir(BRAIN), agents: AGENTS.map(a => ({ id: a.id, name: a.name, ...learn.read(BRAIN, a.id) })).filter(x => x.rules.length || x.oneOffs.length) });
