@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="en-GB">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1080, height=1350" />
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <style>
+      /* The Operator's Toolkit, Wednesday 3: a LinkedIn document post, one slide per second, snapshot to PNG and PDF. */
+      @font-face { font-family: "Newsreader"; font-weight: 300; src: url("assets/fonts/newsreader-latin-300-normal.woff2") format("woff2"); }
+      @font-face { font-family: "Archivo"; font-weight: 400; src: url("assets/fonts/Archivo-Regular.ttf") format("truetype"); }
+      @font-face { font-family: "Archivo"; font-weight: 500; src: url("assets/fonts/Archivo-Medium.ttf") format("truetype"); }
+      :root { --bone: #f3f2f2; --ink: #201e1d; --red: #ec3013; --deep: #b6240e; --sand: #e9d8bd; --grey: #4a4644; --rule: #d6d2cf; }
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body { width: 1080px; height: 1350px; overflow: hidden; background: var(--bone); }
+      #root { position: relative; width: 100%; height: 100%; }
+      .slide { position: absolute; inset: 0; background: var(--bone); color: var(--ink); overflow: hidden; }
+      .red { background: var(--red); color: var(--bone); }
+      .ink { background: var(--ink); color: var(--bone); }
+      .kick { position: absolute; left: 86px; top: 150px; font: 500 28px/1 "Archivo", sans-serif; letter-spacing: .22em; color: var(--deep); }
+      .red .kick, .ink .kick { color: var(--bone); }
+      .h { position: absolute; left: 86px; top: 196px; width: 908px; font: 300 76px/1.08 "Newsreader", serif; letter-spacing: -0.01em; }
+      .p { position: absolute; left: 86px; width: 908px; font: 400 34px/1.35 "Archivo", sans-serif; color: var(--grey); }
+      .red .p, .ink .p { color: var(--bone); }
+      .foot { position: absolute; left: 86px; right: 86px; top: 1262px; display: flex; justify-content: space-between; font: 500 26px/1 "Archivo", sans-serif; letter-spacing: .18em; color: var(--grey); }
+      .red .foot, .ink .foot { color: var(--bone); }
+      .ex { position: absolute; left: 86px; width: 908px; border: 4px solid var(--ink); background: var(--sand); padding: 30px 34px; }
+      .ex .k { font: 500 26px/1 "Archivo", sans-serif; letter-spacing: .18em; color: var(--deep); margin-bottom: 22px; }
+      .row { display: flex; justify-content: space-between; font: 400 36px/1.55 "Archivo", sans-serif; font-variant-numeric: tabular-nums; }
+      .row.total { border-top: 3px solid var(--ink); margin-top: 10px; padding-top: 10px; font-weight: 500; }
+      .big { position: absolute; left: 86px; font: 300 120px/1 "Newsreader", serif; font-variant-numeric: tabular-nums; white-space: nowrap; }
+      .tip { position: absolute; left: 86px; width: 908px; font: 500 30px/1.35 "Archivo", sans-serif; color: var(--deep); }
+      .ws { position: absolute; left: 86px; top: 330px; width: 908px; }
+      .ws .r { display: grid; grid-template-columns: 56px 1fr 260px; align-items: end; padding: 15px 0; border-bottom: 2px solid var(--rule); font: 400 30px/1.2 "Archivo", sans-serif; }
+      .ws .l { font: 500 30px/1 "Archivo", sans-serif; color: var(--deep); }
+      .ws .f { border-bottom: 3px solid var(--ink); height: 38px; font: 400 28px/38px "Archivo", sans-serif; color: var(--grey); text-align: right; }
+      .ws small { display: block; font: 400 24px/1.3 "Archivo", sans-serif; color: var(--grey); }
+      .m { position: absolute; left: 86px; width: 908px; }
+      .m .n { font: 500 26px/1 "Archivo", sans-serif; letter-spacing: .18em; color: var(--deep); }
+      .m .t { font: 300 44px/1.1 "Newsreader", serif; margin: 8px 0 6px; }
+      .m .d { font: 400 28px/1.35 "Archivo", sans-serif; color: var(--grey); }
+      .kw { color: var(--red); }
+      .g { position: absolute; width: 195px; height: 300px; }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-duration="8" data-width="1080" data-height="1350">
+
+      <!-- 1 · cover -->
+      <div id="s1" class="slide red clip" data-start="0" data-duration="1" data-track-index="0">
+        <div class="kick">THE OPERATOR’S TOOLKIT · WEDNESDAY 3</div>
+        <div class="h" style="font-size: 96px">How long is your lunch queue really waiting?</div>
+        <div class="p" style="top: 640px">Two counts at 12:10 give you the wait, what walks out, and the fix.</div>
+        <div style="position: absolute; left: 86px; top: 1176px; width: 908px; height: 5px; background: var(--ink)"></div>
+        <img src="assets/athena/athena-worried.svg" alt="" style="position: absolute; left: 40px; top: 773px; width: 262px; height: 403px" />
+        <img class="g" src="assets/guests/guest-5.svg" alt="" style="left: 330px; top: 895px" />
+        <img class="g" src="assets/guests/guest-2.svg" alt="" style="left: 390px; top: 895px" />
+        <img class="g" src="assets/guests/guest-6.svg" alt="" style="left: 450px; top: 895px" />
+        <img class="g" src="assets/guests/guest-3.svg" alt="" style="left: 510px; top: 895px" />
+        <img class="g" src="assets/guests/guest-1.svg" alt="" style="left: 570px; top: 895px" />
+        <img class="g" src="assets/guests/guest-4.svg" alt="" style="left: 630px; top: 895px" />
+        <img src="assets/props/till-counter.svg" alt="" style="position: absolute; left: 780px; top: 958px; width: 220px; height: 220px" />
+        <div class="foot"><span>SWIPE FOR THE COUNT</span><span>1 / 8</span></div>
+      </div>
+
+      <!-- 2 · count the queue -->
+      <div id="s2" class="slide clip" data-start="1" data-duration="1" data-track-index="0">
+        <div class="kick">STEP 1</div>
+        <div class="h">Count the queue at 12:10</div>
+        <div class="p" style="top: 400px">Every order waiting to order or pay, at exactly ten past twelve. A group paying together is one order.</div>
+        <div class="ex" style="top: 610px">
+          <div class="k">SITE 10, THE EXAMPLE FROM MONDAY</div>
+          <div class="row"><span>In the queue at 12:10</span><span>12</span></div>
+        </div>
+        <div class="tip" style="top: 860px">Count on three different days and take the average. One busy Friday isn’t your lunch.</div>
+        <div class="foot"><span>THE OPERATOR’S TOOLKIT</span><span>2 / 8</span></div>
+      </div>
+
+      <!-- 3 · count the till -->
+      <div id="s3" class="slide clip" data-start="2" data-duration="1" data-track-index="0">
+        <div class="kick">STEP 2</div>
+        <div class="h">Count what the till serves</div>
+        <div class="p" style="top: 400px">From 12:10, count the orders completed at the till for five minutes. Divide by five.</div>
+        <div class="ex" style="top: 560px">
+          <div class="k">SITE 10</div>
+          <div class="row"><span>Served from 12:10 to 12:15</span><span>10</span></div>
+          <div class="row total"><span>Served a minute (10 ÷ 5)</span><span>2</span></div>
+        </div>
+        <div class="tip" style="top: 900px">Count at the till, not the door. If your till reports orders by the minute, it has already counted for you.</div>
+        <div class="foot"><span>THE OPERATOR’S TOOLKIT</span><span>3 / 8</span></div>
+      </div>
+
+      <!-- 4 · the wait -->
+      <div id="s4" class="slide clip" data-start="3" data-duration="1" data-track-index="0">
+        <div class="kick">STEP 3</div>
+        <div class="h">Divide one by the other</div>
+        <div class="p" style="top: 400px">The queue, divided by how fast you serve, is how long the last person waits.</div>
+        <div class="big" style="top: 560px">12 ÷ 2</div>
+        <div class="big" style="top: 710px; color: var(--deep)">= 6 minutes</div>
+        <div class="p" style="top: 890px">That’s Little’s Law, proved by John Little in 1961, turned round. It holds while the till is busy and the queue isn’t growing: lunch, in other words.</div>
+        <div class="foot"><span>THE OPERATOR’S TOOLKIT</span><span>4 / 8</span></div>
+      </div>
+
+      <!-- 5 · what walks out -->
+      <div id="s5" class="slide clip" data-start="4" data-duration="1" data-track-index="0">
+        <div class="kick">STEP 4</div>
+        <div class="h">Price what walks out</div>
+        <div class="p" style="top: 400px">Ask whoever is nearest the door to tally the guests who join and leave, or look and walk on.</div>
+        <div class="ex" style="top: 560px">
+          <div class="k">SITE 10</div>
+          <div class="row"><span>Walk-aways a day</span><span>10</span></div>
+          <div class="row"><span>× average lunch spend</span><span>£8.50</span></div>
+          <div class="row"><span>× lunch days a week</span><span>6</span></div>
+          <div class="row total"><span>Lost a week</span><span style="color: var(--deep)">£510</span></div>
+        </div>
+        <div class="tip" style="top: 1030px">SITE 10 is £520 a week short of break-even. Its lunch queue is costing it £510.</div>
+        <div class="foot"><span>THE OPERATOR’S TOOLKIT</span><span>5 / 8</span></div>
+      </div>
+
+      <!-- 6 · the fix -->
+      <div id="s6" class="slide clip" data-start="5" data-duration="1" data-track-index="0">
+        <div class="kick">STEP 5</div>
+        <div class="h">Work out the speed you need</div>
+        <div class="p" style="top: 400px">Pick the longest wait you’d accept as a guest. Divide the queue by it.</div>
+        <div class="ex" style="top: 520px">
+          <div class="k">SITE 10, TARGET WAIT 4 MINUTES</div>
+          <div class="row"><span>12 ÷ 4</span><span>3 a minute</span></div>
+          <div class="row total"><span>Today it serves</span><span style="color: var(--deep)">2 a minute</span></div>
+        </div>
+        <div class="tip" style="top: 820px">Not more staff all day. One more serve a minute, between 12:00 and 13:00.</div>
+        <div class="p" style="top: 940px; font-size: 30px">Look first at the person doing two jobs: taking orders and making drinks.</div>
+        <div class="foot"><span>THE OPERATOR’S TOOLKIT</span><span>6 / 8</span></div>
+      </div>
+
+      <!-- 7 · the worksheet -->
+      <div id="s7" class="slide clip" data-start="6" data-duration="1" data-track-index="0">
+        <div class="kick">YOUR SITE</div>
+        <div class="h">Fill it in</div>
+        <div class="ws">
+          <div class="r"><span class="l">A</span><span>Queue at 12:10<small>orders, average of three days</small></span><span class="f"></span></div>
+          <div class="r"><span class="l">B</span><span>Served a minute<small>orders from 12:10 to 12:15, ÷ 5</small></span><span class="f"></span></div>
+          <div class="r"><span class="l">C</span><span>Wait<small>A ÷ B</small></span><span class="f">min</span></div>
+          <div class="r"><span class="l">D</span><span>Walk-aways a day</span><span class="f"></span></div>
+          <div class="r"><span class="l">E</span><span>Lost a week<small>D × lunch spend × lunch days</small></span><span class="f">£</span></div>
+          <div class="r"><span class="l">F</span><span>Target wait</span><span class="f">min</span></div>
+          <div class="r"><span class="l">G</span><span>Served a minute needed<small>A ÷ F</small></span><span class="f"></span></div>
+        </div>
+        <div class="foot"><span>SAVE THIS PAGE</span><span>7 / 8</span></div>
+      </div>
+
+      <!-- 8 · the gate -->
+      <div id="s8" class="slide ink clip" data-start="7" data-duration="1" data-track-index="0">
+        <div class="kick">RUNNING MORE THAN ONE SITE?</div>
+        <div class="h" style="font-size: 80px">Comment <span class="kw">QUEUE</span> for the multi-site version.</div>
+        <div class="p" style="top: 470px">Every site’s lunch peak side by side: the wait, the speed it needs, what walks out, ranked, with a guide to where the noon queue slows.</div>
+        <div class="p" style="top: 700px; font-size: 28px; line-height: 1.4">Watch Monday’s episode of The Operator’s Ledger, “Little’s Law”, on the WRW Hospitality page.</div>
+        <img src="assets/brand/WRW-logo-white-on-red.svg" alt="" style="position: absolute; left: 86px; top: 900px; width: 112px; height: 112px" />
+        <div style="position: absolute; left: 230px; top: 920px; font: 500 28px/1 'Archivo', sans-serif; letter-spacing: .22em">WRW HOSPITALITY</div>
+        <div style="position: absolute; left: 230px; top: 966px; font: 400 32px/1 'Archivo', sans-serif">Wesley Williams</div>
+        <div style="position: absolute; left: 86px; top: 1160px; width: 908px; font: 400 24px/1.35 'Archivo', sans-serif; color: var(--bone); opacity: .75">Illustrative figures. Free for use in your own business; not to be resold, rebranded or redistributed.</div>
+        <div class="foot"><span>© 2026 WRW HOSPITALITY</span><span>8 / 8</span></div>
+      </div>
+    </div>
+    <script>
+      window.__timelines = window.__timelines || {};
+      const tl = gsap.timeline({ paused: true });
+      tl.set({}, {}, 8);
+      window.__timelines["main"] = tl;
+    </script>
+  </body>
+</html>
