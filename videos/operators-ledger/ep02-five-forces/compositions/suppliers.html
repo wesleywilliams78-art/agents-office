@@ -1,0 +1,62 @@
+<template>
+  <style>
+    @font-face { font-family: "Newsreader"; font-weight: 300; src: url("assets/fonts/newsreader-latin-300-normal.woff2") format("woff2"); }
+    @font-face { font-family: "Archivo"; font-weight: 500; src: url("assets/fonts/Archivo-Medium.ttf") format("truetype"); }
+    #root { position: absolute; inset: 0; background: #f3f2f2; color: #201e1d; overflow: hidden; }
+    #s-kick { position: absolute; left: 86px; top: 186px; font: 500 28px/1 "Archivo", sans-serif; letter-spacing: .22em; color: #b6240e; }
+    #s-title { position: absolute; left: 86px; top: 222px; font: 300 64px/1.1 "Newsreader", serif; }
+    #s-svg { position: absolute; left: 0; top: 0; width: 1080px; height: 1350px; overflow: visible; }
+    #s-svg .seg { fill: #e9d8bd; stroke: #201e1d; stroke-width: 4; }
+    .s-lab { position: absolute; left: 330px; font: 500 28px/1.25 "Archivo", sans-serif; white-space: nowrap; font-variant-numeric: tabular-nums; }
+    .s-lab b { display: block; font-weight: 500; color: #b6240e; }
+    #s-sales { position: absolute; left: 120px; top: 318px; font: 500 28px/1 "Archivo", sans-serif; font-variant-numeric: tabular-nums; }
+    #s-big { position: absolute; left: 640px; top: 214px; font: 300 200px/1 "Newsreader", serif; font-variant-numeric: tabular-nums; }
+    #s-bigk { position: absolute; left: 648px; top: 440px; font: 500 28px/1.35 "Archivo", sans-serif; letter-spacing: .22em; }
+    #s-note { position: absolute; left: 86px; top: 940px; font: 500 28px/1 "Archivo", sans-serif; letter-spacing: .22em; color: #b6240e; }
+    #s-l-food, #s-l-rent, #s-l-lab, #s-big, #s-bigk { opacity: 0; }
+  </style>
+  <div id="root" data-composition-id="suppliers" data-width="1080" data-height="1350">
+    <div id="s-kick">SUPPLIERS</div>
+    <div id="s-title">Site 10’s costs</div>
+    <div id="s-sales">Sales £13,000</div>
+    <!-- SITE 10 from Episode 01 at 0.04 px per £: labour 5,200 · food 3,900 · rent 2,600 · running 1,600 -->
+    <svg id="s-svg" viewBox="0 0 1080 1350">
+      <rect x="86" y="898" width="908" height="4" fill="#201e1d" />
+      <rect id="s-lab" class="seg" x="120" y="692" width="180" height="208" />
+      <rect id="s-food" class="seg" x="120" y="536" width="180" height="156" />
+      <rect id="s-rent" class="seg" x="120" y="432" width="180" height="104" />
+      <rect id="s-run" class="seg" x="120" y="368" width="180" height="64" />
+      <rect x="122" y="368" width="176" height="12" fill="#ec3013" />
+      <line x1="108" y1="380" x2="312" y2="380" stroke="#201e1d" stroke-width="4" />
+    </svg>
+    <div class="s-lab" id="s-l-run" style="top: 384px">Running £1,600 · 12%</div>
+    <div class="s-lab" id="s-l-rent" style="top: 450px">Rent £2,600 · 20%<b>the landlord</b></div>
+    <div class="s-lab" id="s-l-food" style="top: 580px">Food £3,900 · 30%<b>food suppliers</b></div>
+    <div class="s-lab" id="s-l-lab" style="top: 762px">Labour £5,200 · 40%<b>the labour market</b></div>
+    <div id="s-big">90p</div>
+    <div id="s-bigk">OF EVERY £1<br />SPOKEN FOR</div>
+    <div id="s-note">ILLUSTRATIVE FIGURES, WEEKLY</div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    const OFF = 0.3;
+    const WORDS = /*WORDS*/[["Start", 0.0], ["with", 0.2], ["suppliers.", 0.38], ["Food", 1.84], ["is", 2.56], ["thirty", 2.84], ["percent", 3.0], ["of", 3.54], ["site", 3.98], ["ten's", 4.24], ["sales.", 4.7], ["The", 5.68], ["landlord", 6.4], ["takes", 6.78], ["twenty.", 7.2], ["And", 8.0], ["Porter", 8.74], ["counts", 9.06], ["labour", 9.52], ["as", 9.96], ["a", 10.56], ["supplier", 10.7], ["too:", 11.14], ["forty", 11.62], ["percent.", 12.48], ["Ninety", 13.34], ["pence", 14.2], ["in", 14.7], ["every", 14.86], ["pound", 15.18], ["is", 15.52], ["spoken", 15.78], ["for", 16.04], ["before", 16.42], ["a", 16.9], ["guest", 17.28], ["walks", 17.54], ["in.", 17.84]];
+    const w = (k, n = 1) => { let c = 0; for (const [x, s] of WORDS) { if (x.toLowerCase().replace(/[^a-z0-9'-]/g, "").startsWith(k) && ++c === n) return OFF + s; } throw new Error("cue " + k); };
+    const pop = (sel, t) => tl.fromTo(sel, { opacity: 0, x: -10 }, { opacity: 1, x: 0, duration: 0.45, ease: "power3.out" }, t);
+    const light = (seg, t) => tl.to(seg, { fill: "#f2c14e", duration: 0.35, ease: "power2.out" }, t);
+
+    tl.fromTo(["#s-kick", "#s-title", "#s-sales"], { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out", stagger: 0.1 }, 0.1);
+    ["#s-lab", "#s-food", "#s-rent", "#s-run"].forEach((s, i) =>
+      tl.fromTo(s, { scaleY: 0, transformOrigin: "50% 100%" }, { scaleY: 1, duration: 0.5, ease: "power3.out" }, 0.3 + i * 0.15));
+    tl.fromTo(["#s-l-run", "#s-note"], { opacity: 0 }, { opacity: 1, duration: 0.4, ease: "power2.out" }, 1.0);
+    // each supplier lights up on its word
+    light("#s-food", w("food")); pop("#s-l-food", w("food"));
+    light("#s-rent", w("landlord")); pop("#s-l-rent", w("landlord"));
+    light("#s-lab", w("labour")); pop("#s-l-lab", w("labour"));
+    // "Ninety pence in every pound is spoken for"
+    tl.fromTo("#s-big", { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, w("ninety"));
+    tl.fromTo("#s-bigk", { opacity: 0 }, { opacity: 1, duration: 0.4, ease: "power2.out" }, w("spoken"));
+    tl.set({}, {}, /*SLOT*/20.5);
+    window.__timelines["suppliers"] = tl;
+  </script>
+</template>

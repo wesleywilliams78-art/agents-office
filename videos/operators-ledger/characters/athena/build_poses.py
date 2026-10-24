@@ -147,10 +147,10 @@ POSES = {
 }
 
 # ---------- shopfronts (viewBox 0 0 300 400, ground at y 392) ----------
-def shop(label, happy=True):
-    uid = label.replace(" ", "").lower() + ("h" if happy else "d")
+def shop(label, happy=True, stripe=None):
+    uid = label.replace(" ", "").lower() + ("h" if happy else "d") + (stripe or "").strip("#")
     facade = SAND if happy else STONE
-    stripes = "".join(R(14 + i * 34, 146, 17, 64, RED if happy else DEEP, False) for i in range(8))
+    stripes = "".join(R(14 + i * 34, 146, 17, 64, stripe or (RED if happy else DEEP), False) for i in range(8))
     awning = "M 24 146 L 276 146 L 292 196 L 8 196 Z" if happy else "M 24 146 L 276 146 L 290 206 Q 150 186 10 206 Z"
     if happy:
         eyes = (R(46, 216, 76, 70, OCHRE) + R(178, 216, 76, 70, OCHRE) +
@@ -182,7 +182,20 @@ for name, body in POSES.items():
     open(os.path.join(A_OUT, f"athena-{name}.svg"), "w", encoding="utf-8").write(
         f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="{vb}" width="{VIEW[2]}" height="{VIEW[3]}"><g id="athena-{name}">{body}</g></svg>')
 
-SHOPS = {"site-1": shop("SITE 1", True), "site-10": shop("SITE 10", False), "site-10-early": shop("SITE 10", True), "site": shop("SITE", True)}
+def to_let():
+    """An empty unit: no awning, whitewashed windows, a red TO LET board. A rival in waiting (Episode 02)."""
+    board = g(R(70, 236, 160, 54, RED, True) +
+              f'<text x="150" y="272" text-anchor="middle" font-family="Archivo, Arial, sans-serif" font-weight="500" font-size="28" letter-spacing="4" fill="{BONE}">TO LET</text>',
+              "rotate(-6 150 263)")
+    return "".join([
+        R(14, 70, 272, 322, STONE), R(4, 56, 292, 20, INK, False), R(40, 86, 220, 50, "#8C857C", False),
+        R(30, 196, 240, 116, BONE), Ln("M 150 196 L 150 312", INK, 4),
+        Ln("M 46 214 Q 80 230 70 260", "#D6D2CF", 6) + Ln("M 170 220 Q 210 240 196 280", "#D6D2CF", 6),
+        board, P("M 124 328 L 176 328 L 176 392 L 124 392 Z", "#8C857C"), Ln("M 4 392 L 296 392", INK, SW),
+    ])
+
+SHOPS = {"site-1": shop("SITE 1", True), "site-10": shop("SITE 10", False), "site-10-early": shop("SITE 10", True), "site": shop("SITE", True),
+         "rival-cafe": shop("CAFÉ", True, SAGE), "to-let": to_let()}
 for name, body in SHOPS.items():
     open(os.path.join(S_OUT, f"{name}.svg"), "w", encoding="utf-8").write(
         f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 400" width="300" height="400">{body}</svg>')

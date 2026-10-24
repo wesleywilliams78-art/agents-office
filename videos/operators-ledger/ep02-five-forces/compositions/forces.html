@@ -1,0 +1,66 @@
+<template>
+  <style>
+    @font-face { font-family: "Newsreader"; font-weight: 300; src: url("assets/fonts/newsreader-latin-300-normal.woff2") format("woff2"); }
+    @font-face { font-family: "Archivo"; font-weight: 500; src: url("assets/fonts/Archivo-Medium.ttf") format("truetype"); }
+    #root { position: absolute; inset: 0; background: #f3f2f2; color: #201e1d; overflow: hidden; }
+    #f-kick { position: absolute; left: 86px; top: 186px; font: 500 28px/1 "Archivo", sans-serif; letter-spacing: .22em; color: #b6240e; }
+    #f-title { position: absolute; left: 86px; top: 226px; font: 300 64px/1.1 "Newsreader", serif; }
+    #f-measure { position: absolute; left: 86px; top: 312px; font: 500 28px/1 "Archivo", sans-serif; letter-spacing: .12em; white-space: nowrap; }
+    #f-strike { position: absolute; left: 270px; top: 324px; width: 228px; height: 5px; background: #ec3013; }
+    #f-site { position: absolute; left: 556px; top: 312px; font: 500 28px/1 "Archivo", sans-serif; letter-spacing: .12em; color: #b6240e; }
+    #f-svg { position: absolute; left: 0; top: 0; width: 1080px; height: 1350px; }
+    .f-box { position: absolute; border: 4px solid #201e1d; background: #f3f2f2; padding: 16px 18px; }
+    .f-name { font: 500 28px/1.1 "Archivo", sans-serif; letter-spacing: .12em; }
+    .f-pl { font: 500 28px/1.2 "Archivo", sans-serif; color: #b6240e; margin-top: 10px; }
+    #f-centre { position: absolute; left: 400px; top: 500px; width: 280px; height: 300px; border: 4px solid #201e1d; background: #f3f2f2; }
+    #f-rivalry { position: absolute; left: 0; right: 0; top: 116px; text-align: center; font: 500 28px/1.1 "Archivo", sans-serif; letter-spacing: .12em; }
+    #f-shop { position: absolute; left: 30px; top: 12px; width: 212px; height: 283px; opacity: 0; }
+    #f-shop-l { position: absolute; left: 704px; top: 724px; width: 290px; text-align: left; font: 500 28px/1.2 "Archivo", sans-serif; color: #b6240e; }
+    #f-measure, #f-strike, #f-site, .f-pl, #f-shop-l, .f-box, #f-centre, #f-svg line { opacity: 0; }
+  </style>
+  <div id="root" data-composition-id="forces" data-width="1080" data-height="1350">
+    <div id="f-kick">PORTER, 1979</div>
+    <div id="f-title">The five forces</div>
+    <div id="f-measure">MEASURES: AN INDUSTRY</div>
+    <div id="f-strike"></div>
+    <div id="f-site">ONE SITE</div>
+    <svg id="f-svg" viewBox="0 0 1080 1350">
+      <g stroke="#201e1d" stroke-width="4">
+        <line id="f-a1" x1="376" y1="650" x2="400" y2="650" />
+        <line id="f-a2" x1="680" y1="650" x2="704" y2="650" />
+        <line id="f-a3" x1="540" y1="476" x2="540" y2="500" />
+        <line id="f-a4" x1="540" y1="800" x2="540" y2="884" />
+      </g>
+    </svg>
+    <div class="f-box" id="f-sup" style="left: 86px; top: 560px; width: 290px"><div class="f-name">SUPPLIERS</div><div class="f-pl" id="f-sup-pl">Food, rent, labour</div></div>
+    <div class="f-box" id="f-buy" style="left: 704px; top: 560px; width: 290px"><div class="f-name">BUYERS</div><div class="f-pl" id="f-buy-pl">Price, commission</div></div>
+    <div class="f-box" id="f-new" style="left: 380px; top: 372px; width: 320px; padding: 12px 18px"><div class="f-name">NEW ENTRANTS</div><div class="f-pl" id="f-new-pl" style="margin-top: 4px">A rival opens</div></div>
+    <div class="f-box" id="f-sub" style="left: 400px; top: 884px; width: 280px"><div class="f-name">SUBSTITUTES</div><div class="f-pl" id="f-sub-pl">Lost visits</div></div>
+    <div id="f-centre"><div id="f-rivalry">RIVALRY</div><img id="f-shop" src="assets/shops/site-10.svg" alt="" /></div>
+    <div id="f-shop-l">Rivals: price cuts</div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    const OFF = 0.3;
+    const WORDS = /*WORDS*/[["Michael", 0.02], ["Porter", 0.6], ["called", 0.94], ["them", 1.46], ["the", 1.68], ["five", 1.8], ["forces.", 2.0], ["On", 2.92], ["an", 3.52], ["MBA,", 3.7], ["they", 4.14], ["judge", 4.48], ["a", 4.78], ["whole", 4.94], ["industry.", 5.12], ["Owners", 6.14], ["usually", 6.74], ["stop", 7.06], ["there.", 7.76], ["Run", 8.64], ["them", 9.24], ["on", 9.44], ["a", 9.6], ["single", 9.72], ["site", 10.04], ["instead,", 10.36], ["and", 10.9], ["each", 11.5], ["force", 11.8], ["becomes", 12.18], ["a", 12.54], ["line", 12.8], ["on", 13.06], ["its", 13.36], ["P", 13.5], ["and", 13.68], ["L.", 13.68]];
+    const w = (k, n = 1) => { let c = 0; for (const [x, s] of WORDS) { if (x.toLowerCase().replace(/[^a-z0-9'-]/g, "").startsWith(k) && ++c === n) return OFF + s; } throw new Error("cue " + k); };
+    const pop = (sel, t) => tl.fromTo(sel, { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, t);
+
+    tl.fromTo(["#f-kick", "#f-title"], { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out", stagger: 0.1 }, 0.1);
+    // "the five forces" — the diagram builds, one force at a time
+    const t5 = w("forces");
+    ["#f-sup", "#f-buy", "#f-new", "#f-sub", "#f-centre"].forEach((b, i) => pop(b, t5 + i * 0.18));
+    tl.to(["#f-a1", "#f-a2", "#f-a3", "#f-a4"], { opacity: 1, duration: 0.4, ease: "power2.out" }, t5 + 0.9);
+    // "judge a whole industry" … "Owners usually stop there"
+    pop("#f-measure", w("industry"));
+    tl.fromTo("#f-strike", { opacity: 1, scaleX: 0, transformOrigin: "0% 50%" }, { opacity: 1, scaleX: 1, duration: 0.45, ease: "power3.inOut" }, w("stop"));
+    // "Run them on a single site instead"
+    pop("#f-site", w("single"));
+    tl.to("#f-rivalry", { opacity: 0, duration: 0.3, ease: "power2.in" }, w("single"));
+    tl.to("#f-shop", { opacity: 1, duration: 0.5, ease: "power2.out" }, w("single") + 0.2);
+    // "each force becomes a line on its P and L"
+    ["#f-sup-pl", "#f-buy-pl", "#f-new-pl", "#f-sub-pl", "#f-shop-l"].forEach((p, i) => pop(p, w("line") + i * 0.14));
+    tl.set({}, {}, /*SLOT*/16.0);
+    window.__timelines["forces"] = tl;
+  </script>
+</template>

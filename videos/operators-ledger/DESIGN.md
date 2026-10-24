@@ -73,6 +73,8 @@ All design decisions were settled on 24 Oct 2026.
 - Each beat has one main movement. Secondary moves (a blink, a small bob) may run alongside it.
 - The WRW logo stamp on the end card is the one allowed overshoot: scale from 1.15 to 1 with a 3° rotation settling to 0, using `power3.out`.
 
+- **The first frame is the thumbnail (decided 24 Oct 2026).** LinkedIn uses frame 0 as the video's preview, so the cold open starts as a finished, static title card. The kicker, title, Athena and the shops are all in place at t = 0, with no entrance animation. The scene's story motion (pose changes, SITE 10 turning drab) starts after the first 0.5 s. Before every render, snapshot t = 0 and check it reads as a poster.
+
 These rules also apply:
 - Numbers count up. Bars grow from the baseline. Hold every key line for 1 s or more.
 - Cut on the voiceover beat. Change scenes with a hard colour wipe (bone, red or ink panel sliding up) or a simple cut. No crossfades.

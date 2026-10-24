@@ -1,0 +1,63 @@
+<template>
+  <style>
+    @font-face { font-family: "Newsreader"; font-weight: 300; src: url("assets/fonts/newsreader-latin-300-normal.woff2") format("woff2"); }
+    @font-face { font-family: "Archivo"; font-weight: 500; src: url("assets/fonts/Archivo-Medium.ttf") format("truetype"); }
+    #root { position: absolute; inset: 0; background: #f3f2f2; color: #201e1d; overflow: hidden; }
+    #b-kick { position: absolute; left: 86px; top: 186px; font: 500 28px/1 "Archivo", sans-serif; letter-spacing: .22em; color: #b6240e; }
+    #b-ground { position: absolute; left: 86px; top: 556px; width: 908px; height: 5px; background: #201e1d; }
+    .b-shop { position: absolute; top: 246px; width: 240px; height: 320px; }
+    #b-ceil { position: absolute; left: 86px; top: 236px; width: 600px; border-top: 4px dashed #201e1d; }
+    #b-ceil-l { position: absolute; left: 700px; top: 222px; font: 500 28px/1.2 "Archivo", sans-serif; letter-spacing: .12em; }
+    #b-order-k { position: absolute; left: 86px; top: 640px; font: 500 28px/1 "Archivo", sans-serif; letter-spacing: .22em; }
+    #b-bar { position: absolute; left: 86px; top: 690px; width: 908px; height: 110px; border: 4px solid #201e1d; background: #f3f2f2; }
+    #b-keep { position: absolute; left: 0; top: 0; bottom: 0; width: 70%; background: #e9d8bd; border-right: 4px solid #201e1d; }
+    #b-cut { position: absolute; right: 0; top: 0; bottom: 0; width: 30%; background: #ec3013; }
+    .b-in { position: absolute; top: 34px; font: 500 34px/1 "Archivo", sans-serif; font-variant-numeric: tabular-nums; white-space: nowrap; }
+    #b-keep-l { left: 24px; }
+    #b-cut-l { right: 24px; color: #f3f2f2; }
+    #b-app { position: absolute; left: 722px; top: 822px; font: 500 28px/1.25 "Archivo", sans-serif; letter-spacing: .12em; color: #b6240e; }
+    #b-before { position: absolute; left: 86px; top: 822px; font: 500 28px/1.25 "Archivo", sans-serif; }
+    #b-note { position: absolute; left: 86px; top: 940px; font: 500 28px/1 "Archivo", sans-serif; letter-spacing: .22em; color: #b6240e; }
+    #b-ceil, #b-ceil-l, #b-order-k, #b-bar, #b-keep, #b-cut, #b-keep-l, #b-cut-l, #b-app, #b-before, #b-note, #b-rival { opacity: 0; }
+  </style>
+  <div id="root" data-composition-id="buyers" data-width="1080" data-height="1350">
+    <div id="b-kick">BUYERS</div>
+    <div id="b-ground"></div>
+    <img class="b-shop" id="b-site" src="assets/shops/site-10.svg" alt="" style="left: 86px" />
+    <img class="b-shop" id="b-rival" src="assets/shops/rival-cafe.svg" alt="" style="left: 420px" />
+    <div id="b-ceil"></div>
+    <div id="b-ceil-l">PRICE<br />CEILING</div>
+    <div id="b-order-k">A £20 ORDER</div>
+    <div id="b-bar"><div id="b-keep"><div class="b-in" id="b-keep-l">£14 to you</div></div><div id="b-cut"><div class="b-in" id="b-cut-l">Up to £6</div></div></div>
+    <div id="b-app">TO THE<br />DELIVERY APP</div>
+    <div id="b-before">Before food and labour</div>
+    <div id="b-note">ILLUSTRATIVE FIGURES</div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    const OFF = 0.3;
+    const WORDS = /*WORDS*/[["Next,", 0.08], ["buyers.", 0.96], ["A", 1.98], ["guest", 2.5], ["can", 2.76], ["walk", 2.96], ["next", 3.18], ["door,", 3.42], ["so", 3.84], ["your", 4.54], ["prices", 4.72], ["have", 5.14], ["a", 5.44], ["ceiling.", 5.56], ["And", 6.0], ["delivery", 6.66], ["apps", 7.0], ["sit", 7.38], ["between", 7.98], ["you", 8.28], ["and", 8.66], ["that", 9.3], ["guest.", 9.5], ["On", 10.12], ["a", 10.64], ["twenty", 10.76], ["pound", 11.03], ["order,", 11.3], ["up", 11.68], ["to", 12.04], ["six", 12.2], ["pounds", 12.48], ["can", 12.76], ["go", 12.98], ["in", 13.18], ["commission.", 13.32]];
+    const w = (k, n = 1) => { let c = 0; for (const [x, s] of WORDS) { if (x.toLowerCase().replace(/[^a-z0-9'-]/g, "").startsWith(k) && ++c === n) return OFF + s; } throw new Error("cue " + k); };
+    const pop = (sel, t) => tl.fromTo(sel, { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, t);
+
+    tl.fromTo(["#b-kick", "#b-site"], { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out", stagger: 0.1 }, 0.1);
+    tl.fromTo("#b-ground", { scaleX: 0, transformOrigin: "0% 50%" }, { scaleX: 1, duration: 0.6, ease: "power3.out" }, 0.2);
+    // "A guest can walk next door, so your prices have a ceiling"
+    pop("#b-rival", w("next"));
+    tl.fromTo("#b-ceil", { opacity: 1, scaleX: 0, transformOrigin: "0% 50%" }, { opacity: 1, scaleX: 1, duration: 0.6, ease: "power3.inOut" }, w("ceiling"));
+    pop("#b-ceil-l", w("ceiling") + 0.3);
+    // "delivery apps sit between you and that guest"
+    pop("#b-order-k", w("delivery"));
+    pop("#b-bar", w("delivery") + 0.15);
+    // "On a twenty pound order, up to six pounds can go in commission"
+    tl.fromTo("#b-keep", { opacity: 1, scaleX: 0, transformOrigin: "0% 50%" }, { opacity: 1, scaleX: 1, duration: 0.6, ease: "power3.out" }, w("twenty"));
+    pop("#b-keep-l", w("twenty") + 0.4);
+    tl.fromTo("#b-cut", { opacity: 1, scaleX: 0, transformOrigin: "100% 50%" }, { opacity: 1, scaleX: 1, duration: 0.5, ease: "power3.out" }, w("six"));
+    pop("#b-cut-l", w("six") + 0.25);
+    pop("#b-app", w("commission"));
+    pop("#b-before", w("commission") + 0.2);
+    tl.fromTo("#b-note", { opacity: 0 }, { opacity: 1, duration: 0.4, ease: "power2.out" }, w("twenty"));
+    tl.set({}, {}, /*SLOT*/16.1);
+    window.__timelines["buyers"] = tl;
+  </script>
+</template>

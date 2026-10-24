@@ -1,0 +1,54 @@
+<template>
+  <style>
+    @font-face { font-family: "Newsreader"; font-weight: 300; src: url("assets/fonts/newsreader-latin-300-normal.woff2") format("woff2"); }
+    @font-face { font-family: "Archivo"; font-weight: 500; src: url("assets/fonts/Archivo-Medium.ttf") format("truetype"); }
+    #root { position: absolute; inset: 0; background: #f3f2f2; color: #201e1d; overflow: hidden; }
+    .t-kick { position: absolute; font: 500 28px/1 "Archivo", sans-serif; letter-spacing: .22em; color: #b6240e; white-space: nowrap; }
+    .t-card { position: absolute; top: 236px; width: 280px; height: 104px; border: 4px solid #201e1d; background: #f3f2f2; padding: 18px 20px; font: 300 40px/1.05 "Newsreader", serif; }
+    #t-ground { position: absolute; left: 86px; top: 896px; width: 908px; height: 5px; background: #201e1d; }
+    .t-shop { position: absolute; top: 586px; width: 240px; height: 320px; }
+    #t-tag { position: absolute; left: 754px; top: 462px; background: #201e1d; color: #f3f2f2; font: 500 34px/1 "Archivo", sans-serif; padding: 12px 16px; font-variant-numeric: tabular-nums; }
+    #t-old { position: relative; }
+    #t-strike { position: absolute; left: -4px; right: -4px; top: 16px; height: 4px; background: #ec3013; }
+    #t-new { position: absolute; left: 884px; top: 474px; color: #ec3013; font: 500 34px/1 "Archivo", sans-serif; font-variant-numeric: tabular-nums; }
+    #t-k1, #t-k2, #t-k3, .t-card, #t-let, #t-rival, #t-tag, #t-strike, #t-new { opacity: 0; }
+  </style>
+  <div id="root" data-composition-id="street" data-width="1080" data-height="1350">
+    <div class="t-kick" id="t-k1" style="left: 86px; top: 186px">SUBSTITUTES</div>
+    <div class="t-card" id="t-c1" style="left: 86px">Meal deal</div>
+    <div class="t-card" id="t-c2" style="left: 400px">Office canteen</div>
+    <div class="t-card" id="t-c3" style="left: 714px">Cooking at home</div>
+    <div id="t-ground"></div>
+    <img class="t-shop" id="t-site" src="assets/shops/site-10.svg" alt="" style="left: 86px" />
+    <div class="t-kick" id="t-k2" style="left: 420px; top: 540px">NEW ENTRANT</div>
+    <img class="t-shop" id="t-let" src="assets/shops/to-let.svg" alt="" style="left: 420px" />
+    <div class="t-kick" id="t-k3" style="left: 754px; top: 540px">RIVAL</div>
+    <img class="t-shop" id="t-rival" src="assets/shops/rival-cafe.svg" alt="" style="left: 754px" />
+    <div id="t-tag"><span id="t-old">£3.40<span id="t-strike"></span></span></div>
+    <div id="t-new">£2.90</div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    const OFF = 0.3;
+    const WORDS = /*WORDS*/[["Then", 0.0], ["substitutes:", 0.44], ["the", 1.22], ["meal", 1.32], ["deal,", 1.58], ["the", 1.96], ["office", 2.24], ["canteen,", 2.58], ["cooking", 3.24], ["at", 3.72], ["home.", 3.96], ["New", 4.44], ["entrants:", 5.04], ["the", 5.96], ["empty", 6.56], ["unit", 6.84], ["opposite", 7.22], ["is", 7.62], ["a", 8.04], ["rival", 8.14], ["in", 8.52], ["waiting.", 8.78], ["And", 9.54], ["existing", 9.84], ["rivals", 10.14], ["cut", 10.64], ["prices", 11.14], ["to", 11.58], ["win", 11.9], ["your", 12.04], ["guests.", 12.2]];
+    const w = (k, n = 1) => { let c = 0; for (const [x, s] of WORDS) { if (x.toLowerCase().replace(/[^a-z0-9'-]/g, "").startsWith(k) && ++c === n) return OFF + s; } throw new Error("cue " + k); };
+    const pop = (sel, t) => tl.fromTo(sel, { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, t);
+
+    tl.fromTo("#t-site", { opacity: 0 }, { opacity: 1, duration: 0.4, ease: "power2.out" }, 0.05);
+    tl.fromTo("#t-ground", { scaleX: 0, transformOrigin: "0% 50%" }, { scaleX: 1, duration: 0.6, ease: "power3.out" }, 0.1);
+    // "Then substitutes: the meal deal, the office canteen, cooking at home"
+    pop("#t-k1", w("substitutes"));
+    pop("#t-c1", w("meal")); pop("#t-c2", w("office")); pop("#t-c3", w("cooking"));
+    // "New entrants: the empty unit opposite is a rival in waiting"
+    pop("#t-k2", w("new"));
+    pop("#t-let", w("empty"));
+    // "And existing rivals cut prices to win your guests"
+    pop("#t-k3", w("existing"));
+    pop("#t-rival", w("existing") + 0.1);
+    pop("#t-tag", w("rivals"));
+    tl.fromTo("#t-strike", { opacity: 1, scaleX: 0, transformOrigin: "0% 50%" }, { opacity: 1, scaleX: 1, duration: 0.35, ease: "power3.inOut" }, w("cut"));
+    pop("#t-new", w("cut") + 0.3);
+    tl.set({}, {}, /*SLOT*/15.0);
+    window.__timelines["street"] = tl;
+  </script>
+</template>

@@ -37,6 +37,7 @@
   </div>
   <script>
     const tl = gsap.timeline({ paused: true });
+    // frame 0 is the LinkedIn thumbnail: everything starts in place, no entrance motion (DESIGN.md)
     // retimed to the voiceover: old word time -> new word time
     const warp = (P, t) => { if (t <= P[0][0]) return P[0][1] + t - P[0][0]; for (let i = 1; i < P.length; i++) if (t <= P[i][0]) { const [a0, b0] = P[i - 1], [a1, b1] = P[i]; return b0 + (b1 - b0) * (t - a0) / ((a1 - a0) || 1); } const L = P[P.length - 1]; return L[1] + t - L[0]; };
     const T = (w) => 0.3 + warp([[0.0, 0.0], [0.292, 0.1], [0.643, 0.3], [0.936, 0.64], [1.228, 0.92], [1.9, 1.66], [2.192, 2.0], [2.543, 2.36], [2.718, 2.92], [3.441, 3.28], [3.675, 3.76], [3.967, 4.44], [4.318, 5.44], [4.611, 6.22], [5.281, 6.78], [5.574, 7.3], [6.1, 8.047]], w);
@@ -44,12 +45,6 @@
     const pose = (id, t) => poses.forEach((p) => tl.set(p, { opacity: p === id ? 1 : 0 }, t));
 
 
-    tl.fromTo("#s1-kicker", { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, 0.2);
-    tl.fromTo("#s1-title", { yPercent: 105 }, { yPercent: 0, duration: 0.7, ease: "power4.out" }, 0.35);
-    tl.fromTo("#s1-ground", { scaleX: 0 }, { scaleX: 1, duration: 0.8, ease: "power3.out" }, 0.5);
-    tl.fromTo("#s1-shop1", { x: -460 }, { x: 0, duration: 0.8, ease: "power3.out" }, 0.6);
-    tl.fromTo("#s1-shop10", { x: 460 }, { x: 0, duration: 0.8, ease: "power3.out" }, 0.75);
-    tl.fromTo("#s1-athena", { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.6, ease: "power3.out" }, 0.9);
 
     // "Your first site made money" — she looks to SITE 1
     pose("#s1-p-left", T(1.1));

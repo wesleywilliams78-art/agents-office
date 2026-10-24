@@ -19,3 +19,4 @@ voice/
 # superseded renders: the current render is committed, earlier cuts stay local
 **/renders/*-v1-*.mp4
 **/renders/*-v2-*.mp4
+**/renders/*-v3*.mp4

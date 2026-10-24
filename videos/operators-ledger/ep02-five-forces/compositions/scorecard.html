@@ -1,0 +1,71 @@
+<template>
+  <style>
+    @font-face { font-family: "Newsreader"; font-weight: 300; src: url("assets/fonts/newsreader-latin-300-normal.woff2") format("woff2"); }
+    @font-face { font-family: "Archivo"; font-weight: 500; src: url("assets/fonts/Archivo-Medium.ttf") format("truetype"); }
+    #root { position: absolute; inset: 0; background: #f3f2f2; color: #201e1d; overflow: hidden; }
+    #k-kick { position: absolute; left: 86px; top: 186px; font: 500 28px/1 "Archivo", sans-serif; letter-spacing: .22em; color: #b6240e; }
+    #k-title { position: absolute; left: 86px; top: 222px; font: 300 60px/1.1 "Newsreader", serif; }
+    #k-ground { position: absolute; left: 20px; top: 896px; width: 330px; height: 5px; background: #201e1d; }
+    #k-athena { position: absolute; left: 10px; top: 412px; width: 338px; height: 520px; }
+    #k-athena img { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; }
+    #k-athena #k-p-point { opacity: 1; }
+    .k-h { position: absolute; top: 340px; font: 500 28px/1 "Archivo", sans-serif; letter-spacing: .14em; }
+    .k-row { position: absolute; left: 400px; width: 594px; height: 84px; border-top: 2px solid #d6d2cf; }
+    .k-f { position: absolute; left: 0; top: 26px; font: 500 28px/1 "Archivo", sans-serif; }
+    .k-sq { position: absolute; top: 31px; width: 20px; height: 20px; border: 3px solid #201e1d; }
+    .k-on { background: #201e1d; }
+    .k-total { position: absolute; top: 826px; font: 300 64px/1 "Newsreader", serif; font-variant-numeric: tabular-nums; }
+    #k-tl { position: absolute; left: 400px; top: 846px; font: 500 28px/1 "Archivo", sans-serif; letter-spacing: .14em; }
+    #k-more { position: absolute; left: 790px; top: 906px; font: 500 28px/1.25 "Archivo", sans-serif; letter-spacing: .1em; color: #ec3013; }
+    .k-h, .k-row, .k-total, #k-tl, #k-more, .k-sq.k-on { opacity: 0; }
+  </style>
+  <div id="root" data-composition-id="scorecard" data-width="1080" data-height="1350">
+    <div id="k-kick">BEFORE THE NEXT LEASE</div>
+    <div id="k-title">Score each street, 1 to 5</div>
+    <div id="k-ground"></div>
+    <div id="k-athena">
+      <img id="k-p-point" src="assets/athena/athena-pointing.svg" alt="" />
+      <img id="k-p-fold" src="assets/athena/athena-arms-folded.svg" alt="" />
+    </div>
+    <div class="k-h" id="k-ha" style="left: 660px">STREET A</div>
+    <div class="k-h" id="k-hb" style="left: 840px">STREET B</div>
+    <div id="k-rows"></div>
+    <div id="k-tl">TOTAL</div>
+    <div class="k-total" id="k-ta" style="left: 660px">12</div>
+    <div class="k-total" id="k-tb" style="left: 840px; color: #ec3013">21</div>
+    <div id="k-more">MORE SALES<br />TO STAND STILL</div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    const OFF = 0.3;
+    const WORDS = /*WORDS*/[["So", 0.0], ["before", 0.22], ["you", 0.42], ["sign", 0.66], ["the", 0.92], ["next", 1.08], ["lease,", 1.26], ["score", 1.7], ["each", 2.12], ["street", 2.48], ["from", 2.82], ["one", 3.08], ["to", 3.34], ["five", 3.56], ["on", 3.82], ["every", 4.06], ["force.", 4.44], ["Street", 5.52], ["A", 6.04], ["scores", 6.18], ["twelve.", 6.42], ["Street", 7.76], ["B", 8.28], ["scores", 8.48], ["twenty-one.", 8.84], ["Street", 9.86], ["B", 10.38], ["needs", 10.64], ["more", 10.9], ["sales", 11.22], ["just", 11.6], ["to", 12.06], ["stand", 12.28], ["still.", 12.6]];
+    const w = (k, n = 1) => { let c = 0; for (const [x, s] of WORDS) { if (x.toLowerCase().replace(/[^a-z0-9'-]/g, "").startsWith(k) && ++c === n) return OFF + s; } throw new Error("cue " + k); };
+    const pop = (sel, t) => tl.fromTo(sel, { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, t);
+    // Illustrative scores. A: 3+2+2+2+3 = 12. B: 5+4+4+4+4 = 21.
+    const FORCES = [["Suppliers", 3, 5], ["Buyers", 2, 4], ["Substitutes", 2, 4], ["New entrants", 2, 4], ["Rivals", 3, 4]];
+
+    tl.fromTo(["#k-kick", "#k-title"], { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out", stagger: 0.1 }, 0.1);
+    tl.fromTo(["#k-athena", "#k-ground"], { opacity: 0 }, { opacity: 1, duration: 0.5, ease: "power2.out" }, 0.2);
+    pop(["#k-ha", "#k-hb"], w("score"));
+    const tRows = w("every");
+    FORCES.forEach(([name, a, b], i) => {
+      const id = "k-r" + i;
+      const sq = (x0, n, side) => [0, 1, 2, 3, 4].map((j) => `<div class="k-sq${j < n ? " k-on" : ""}" data-side="${side}" style="left:${x0 + j * 28}px"></div>`).join("");
+      document.querySelector("#k-rows").insertAdjacentHTML("beforeend",
+        `<div class="k-row" id="${id}" style="top:${384 + i * 84}px"><div class="k-f">${name}</div>${sq(260, a, "a")}${sq(440, b, "b")}</div>`);
+    });
+    FORCES.forEach((_, i) => {
+      pop("#k-r" + i, tRows + i * 0.22);
+      tl.fromTo(`#k-r${i} .k-on`, { opacity: 0, scale: 0.6 }, { opacity: 1, scale: 1, duration: 0.3, ease: "power3.out", stagger: 0.03 }, tRows + i * 0.22 + 0.2);
+    });
+    pop("#k-tl", w("twelve") - 0.2);
+    pop("#k-ta", w("twelve"));
+    pop("#k-tb", w("twenty-one"));
+    // "Street B needs more sales just to stand still"
+    pop("#k-more", w("needs"));
+    tl.set("#k-p-point", { opacity: 0 }, w("still"));
+    tl.set("#k-p-fold", { opacity: 1 }, w("still"));
+    tl.set({}, {}, /*SLOT*/16.1);
+    window.__timelines["scorecard"] = tl;
+  </script>
+</template>

@@ -1,0 +1,27 @@
+<template>
+  <style>
+    @font-face { font-family: "Newsreader"; font-weight: 300; src: url("assets/fonts/newsreader-latin-300-normal.woff2") format("woff2"); }
+    @font-face { font-family: "Archivo"; font-weight: 500; src: url("assets/fonts/Archivo-Medium.ttf") format("truetype"); }
+    #root { position: absolute; inset: 0; background: #ec3013; color: #f3f2f2; overflow: hidden; }
+    #q-kick { position: absolute; left: 86px; top: 300px; font: 500 28px/1 "Archivo", sans-serif; letter-spacing: .22em; }
+    #q-text { position: absolute; left: 86px; top: 360px; width: 908px; font: 300 112px/1.08 "Newsreader", serif; letter-spacing: -0.01em; }
+    #q-text span { display: inline-block; margin-right: 0.2em; }
+  </style>
+  <div id="root" data-composition-id="question" data-width="1080" data-height="1350">
+    <div id="q-kick">YOUR QUESTION FOR MONDAY</div>
+    <div id="q-text"><span>Which</span><span>force</span><span>takes</span><br /><span>the</span><span>biggest</span><span>cut</span><br /><span>at</span><span>each</span><span>site?</span></div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    const OFF = 0.3;
+    const WORDS = /*WORDS*/[["Your", 0.02], ["question", 0.48], ["for", 0.8], ["Monday:", 1.0], ["which", 1.42], ["force", 1.94], ["takes", 2.24], ["the", 2.58], ["biggest", 2.84], ["cut", 3.2], ["at", 3.54], ["each", 3.96], ["of", 4.22], ["your", 4.42], ["sites?", 4.54]];
+    const w = (k, n = 1) => { let c = 0; for (const [x, s] of WORDS) { if (x.toLowerCase().replace(/[^a-z0-9'-]/g, "").startsWith(k) && ++c === n) return OFF + s; } throw new Error("cue " + k); };
+    tl.fromTo("#q-kick", { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, w("your"));
+    // the words build on the spoken words; "site?" lands on "sites?"
+    const cues = [w("which"), w("force"), w("takes"), w("the"), w("biggest"), w("cut"), w("at"), w("each"), w("sites")];
+    document.querySelectorAll("#q-text span").forEach((el, i) =>
+      tl.fromTo(el, { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, cues[i]));
+    tl.set({}, {}, /*SLOT*/7.9);
+    window.__timelines["question"] = tl;
+  </script>
+</template>
