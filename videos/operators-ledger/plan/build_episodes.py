@@ -4,7 +4,7 @@ Order: modules rotate F, S, O, M, L, E, D, H, G, N, so every ten weeks covers th
 import datetime as dt, os
 
 FIRST_MONDAY = dt.date(2026, 10, 26)   # Episode 01 goes out on this Monday
-STATUS = {1: "Rendered (v4)", 2: "Rendered (v1)"}
+STATUS = {1: "Rendered (v4)", 2: "Rendered (v1)", 3: "Rendered (v1)"}
 
 # (MBA topic, the Ledger angle: what it means for an owner scaling sites, worked example in pounds or a concrete case)
 M = {
@@ -33,7 +33,7 @@ M = {
   ("Core competence", "When site three stretches what you're actually good at", "A great café brand opening a restaurant"),
  ]),
  "O": ("Operations", [
-  ("Little's Law", "Queue length, wait time and covers per hour in one line", "12 people waiting ÷ 4 an hour served = a 3-hour wait"),
+  ("Little's Law", "Two numbers you can count at lunch tell you how long guests wait, and what walks out", "12 in the queue ÷ 2 served a minute = a 6-minute wait"),
   ("Theory of Constraints", "Find the one bottleneck that caps every site's sales", "One espresso machine caps a 60-seat café at lunch"),
   ("Capacity utilisation and yield", "The money in empty seats at 3pm", "60 seats × 20% full × 3 quiet hours"),
   ("Lean: the eight wastes", "The eight wastes, found in one kitchen shift", "Walking 2 km a shift to a badly placed fridge"),

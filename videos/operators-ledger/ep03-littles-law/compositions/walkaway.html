@@ -1,0 +1,59 @@
+<template>
+  <style>
+    @font-face { font-family: "Newsreader"; font-weight: 300; src: url("assets/fonts/newsreader-latin-300-normal.woff2") format("woff2"); }
+    @font-face { font-family: "Archivo"; font-weight: 500; src: url("assets/fonts/Archivo-Medium.ttf") format("truetype"); }
+    #root { position: absolute; inset: 0; background: #f3f2f2; color: #201e1d; overflow: hidden; }
+    #a-kick { position: absolute; left: 86px; top: 186px; font: 500 28px/1 "Archivo", sans-serif; letter-spacing: .22em; color: #b6240e; }
+    #a-ground { position: absolute; left: 86px; top: 494px; width: 908px; height: 5px; background: #201e1d; }
+    #a-till { position: absolute; left: 834px; top: 334px; width: 160px; height: 160px; }
+    .a-g { position: absolute; top: 254px; width: 169px; height: 260px; }
+    .a-term { position: absolute; top: 560px; font: 300 56px/1 "Newsreader", serif; font-variant-numeric: tabular-nums; white-space: nowrap; }
+    #a-total { position: absolute; left: 86px; top: 650px; font: 300 112px/1 "Newsreader", serif; font-variant-numeric: tabular-nums; }
+    #a-gapk { position: absolute; left: 86px; top: 806px; font: 500 28px/1 "Archivo", sans-serif; letter-spacing: .14em; }
+    #a-bar { position: absolute; left: 86px; top: 850px; width: 908px; height: 84px; border: 4px solid #201e1d; background: #f3f2f2; }
+    #a-fill { position: absolute; left: 0; top: 0; bottom: 0; width: 98.1%; background: #e9d8bd; border-right: 4px solid #201e1d; }
+    #a-fill-l { position: absolute; left: 22px; top: 24px; font: 500 32px/1 "Archivo", sans-serif; font-variant-numeric: tabular-nums; }
+    #a-note { position: absolute; left: 86px; top: 952px; font: 500 28px/1 "Archivo", sans-serif; letter-spacing: .22em; color: #b6240e; }
+    .a-term, #a-total, #a-gapk, #a-bar, #a-fill, #a-fill-l, #a-note, .a-g { opacity: 0; }
+  </style>
+  <div id="root" data-composition-id="walkaway" data-width="1080" data-height="1350">
+    <div id="a-kick">WHO WALKS AWAY</div>
+    <div id="a-ground"></div>
+    <img id="a-till" src="assets/props/till-counter.svg" alt="" />
+    <img class="a-g" id="a-g1" src="assets/guests/guest-2.svg" alt="" style="left: 700px" />
+    <img class="a-g" id="a-g2" src="assets/guests/guest-5.svg" alt="" style="left: 620px" />
+    <img class="a-g" id="a-g3" src="assets/guests/guest-1.svg" alt="" style="left: 540px" />
+    <img class="a-g" id="a-g4" src="assets/guests/guest-6.svg" alt="" style="left: 460px" />
+    <img class="a-g" id="a-g5" src="assets/guests/guest-3.svg" alt="" style="left: 380px" />
+    <img class="a-g" id="a-g6" src="assets/guests/guest-4.svg" alt="" style="left: 300px" />
+    <div class="a-term" id="a-t1" style="left: 86px">10 a day</div>
+    <div class="a-term" id="a-t2" style="left: 330px">× £8.50</div>
+    <div class="a-term" id="a-t3" style="left: 560px">× 6 days</div>
+    <div id="a-total">= £510 a week</div>
+    <div id="a-gapk">SITE 10’S GAP TO BREAK-EVEN: £520</div>
+    <div id="a-bar"><div id="a-fill"><div id="a-fill-l">£510</div></div></div>
+    <div id="a-note">ILLUSTRATIVE FIGURES</div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    const OFF = 0.3;
+    const WORDS = /*WORDS*/[["Six", 0.0], ["minutes", 0.2], ["is", 0.5], ["long", 0.72], ["enough", 0.92], ["for", 1.16], ["some", 1.58], ["guests", 1.74], ["to", 2.08], ["give", 2.44], ["up.", 2.6], ["Say", 3.32], ["ten", 3.62], ["a", 4.08], ["day", 4.42], ["walk", 4.68], ["away,", 4.96], ["at", 5.28], ["eight", 5.82], ["pounds", 6.187], ["fifty", 6.553], ["each.", 6.92], ["Over", 7.98], ["six", 8.58], ["days,", 8.8], ["that's", 9.36], ["five", 9.94], ["hundred", 10.084], ["and", 10.228], ["ten", 10.372], ["pounds", 10.516], ["a", 10.66], ["week.", 11.54], ["Almost", 12.2], ["exactly", 12.8], ["what", 13.26], ["site", 13.74], ["ten", 14.08], ["is", 14.3], ["missing.", 14.52]];
+    const w = (k, n = 1) => { let c = 0; for (const [x, s] of WORDS) { if (x.toLowerCase().replace(/[^a-z0-9'-]/g, "").startsWith(k) && ++c === n) return OFF + s; } throw new Error("cue " + k); };
+    const pop = (sel, t) => tl.fromTo(sel, { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, t);
+
+    tl.fromTo("#a-kick", { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, 0.1);
+    tl.fromTo(".a-g", { opacity: 0 }, { opacity: 1, duration: 0.4, ease: "power2.out", stagger: 0.06 }, 0.2);
+    // "long enough for some guests to give up" — the back of the queue leaves
+    ["#a-g6", "#a-g5", "#a-g4"].forEach((g, i) =>
+      tl.to(g, { x: -120, opacity: 0, duration: 1.0, ease: "power2.inOut" }, w("give") + i * 0.25));
+    // "Say ten a day walk away, at eight pounds fifty each. Over six days …"
+    pop("#a-t1", w("ten")); pop("#a-t2", w("eight")); pop("#a-t3", w("six", 2));
+    pop("#a-total", w("five"));
+    // "Almost exactly what site ten is missing"
+    pop(["#a-gapk", "#a-bar", "#a-note"], w("almost"));
+    tl.fromTo("#a-fill", { opacity: 1, scaleX: 0, transformOrigin: "0% 50%" }, { opacity: 1, scaleX: 1, duration: 0.9, ease: "power3.out" }, w("almost") + 0.3);
+    pop("#a-fill-l", w("missing"));
+    tl.set({}, {}, /*SLOT*/17.5);
+    window.__timelines["walkaway"] = tl;
+  </script>
+</template>

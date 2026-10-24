@@ -1,0 +1,59 @@
+<template>
+  <style>
+    @font-face { font-family: "Newsreader"; font-weight: 300; src: url("assets/fonts/newsreader-latin-300-normal.woff2") format("woff2"); }
+    @font-face { font-family: "Archivo"; font-weight: 500; src: url("assets/fonts/Archivo-Medium.ttf") format("truetype"); }
+    #root { position: absolute; inset: 0; background: #f3f2f2; color: #201e1d; overflow: hidden; }
+    #l-kick { position: absolute; left: 86px; top: 186px; font: 500 28px/1 "Archivo", sans-serif; letter-spacing: .22em; color: #b6240e; }
+    #l-title { position: absolute; left: 86px; top: 222px; font: 300 64px/1.1 "Newsreader", serif; }
+    .l-sym { position: absolute; font: 300 150px/1 "Newsreader", serif; }
+    .l-lab { position: absolute; width: 220px; font: 500 28px/1.25 "Archivo", sans-serif; }
+    .l-tag { position: absolute; font: 500 28px/1 "Archivo", sans-serif; letter-spacing: .14em; color: #b6240e; white-space: nowrap; }
+    #l-rule { position: absolute; left: 86px; top: 640px; width: 908px; height: 2px; background: #d6d2cf; }
+    .l-word { position: absolute; font: 300 72px/1 "Newsreader", serif; white-space: nowrap; }
+    .l-sym, .l-lab, .l-tag, #l-rule, .l-word { opacity: 0; }
+  </style>
+  <div id="root" data-composition-id="law" data-width="1080" data-height="1350">
+    <div id="l-kick">LITTLE, 1961</div>
+    <div id="l-title">Little’s Law</div>
+    <!-- L = λ × W -->
+    <div class="l-sym" id="l-L" style="left: 100px; top: 330px">L</div>
+    <div class="l-sym" id="l-eq" style="left: 250px; top: 330px">=</div>
+    <div class="l-sym" id="l-lam" style="left: 400px; top: 330px">λ</div>
+    <div class="l-sym" id="l-x" style="left: 560px; top: 330px">×</div>
+    <div class="l-sym" id="l-W" style="left: 700px; top: 330px">W</div>
+    <div class="l-lab" id="l-lL" style="left: 86px; top: 500px">people in the queue</div>
+    <div class="l-lab" id="l-llam" style="left: 380px; top: 500px">arriving a minute</div>
+    <div class="l-lab" id="l-lW" style="left: 690px; top: 500px">minutes waiting</div>
+    <div id="l-rule"></div>
+    <!-- turned round: wait = queue ÷ serving rate -->
+    <div class="l-word" id="l-w1" style="left: 86px; top: 700px">Wait</div>
+    <div class="l-word" id="l-w2" style="left: 270px; top: 700px">=</div>
+    <div class="l-word" id="l-w3" style="left: 350px; top: 700px">queue</div>
+    <div class="l-word" id="l-w4" style="left: 560px; top: 700px">÷</div>
+    <div class="l-word" id="l-w5" style="left: 630px; top: 700px">served</div>
+    <div class="l-tag" id="l-t1" style="left: 86px; top: 800px">WORK IT OUT</div>
+    <div class="l-tag" id="l-t2" style="left: 350px; top: 800px">COUNT IT</div>
+    <div class="l-tag" id="l-t3" style="left: 630px; top: 800px">COUNT IT</div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    const OFF = 0.3;
+    const WORDS = /*WORDS*/[["John", 0.0], ["Little", 0.42], ["proved", 0.6], ["it", 0.98], ["in", 1.24], ["nineteen", 1.44], ["sixty-one.", 1.79], ["The", 2.82], ["number", 3.42], ["of", 3.76], ["people", 3.96], ["in", 4.2], ["a", 4.5], ["queue", 4.6], ["equals", 4.82], ["how", 5.38], ["fast", 5.66], ["they", 5.96], ["arrive,", 6.22], ["times", 6.56], ["how", 7.26], ["long", 7.6], ["they", 7.84], ["wait.", 8.06], ["Owners", 9.16], ["rarely", 9.76], ["use", 10.08], ["it.", 10.38], ["But", 10.74], ["turn", 11.46], ["it", 12.2], ["round,", 12.38], ["and", 12.72], ["two", 13.56], ["numbers", 13.82], ["you", 14.3], ["can", 14.76], ["count", 14.9], ["tell", 15.2], ["you", 15.66], ["the", 15.9], ["third.", 16.04]];
+    const w = (k, n = 1) => { let c = 0; for (const [x, s] of WORDS) { if (x.toLowerCase().replace(/[^a-z0-9'-]/g, "").startsWith(k) && ++c === n) return OFF + s; } throw new Error("cue " + k); };
+    const pop = (sel, t) => tl.fromTo(sel, { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, t);
+
+    tl.fromTo(["#l-kick", "#l-title"], { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out", stagger: 0.1 }, 0.1);
+    // "The number of people in a queue equals how fast they arrive, times how long they wait"
+    pop(["#l-L", "#l-lL"], w("number")); pop("#l-eq", w("equals"));
+    pop(["#l-lam", "#l-llam"], w("fast")); pop("#l-x", w("times"));
+    pop(["#l-W", "#l-lW"], w("long"));
+    // "But turn it round"
+    tl.fromTo("#l-rule", { opacity: 1, scaleX: 0, transformOrigin: "0% 50%" }, { opacity: 1, scaleX: 1, duration: 0.6, ease: "power3.inOut" }, w("turn"));
+    ["#l-w1", "#l-w2", "#l-w3", "#l-w4", "#l-w5"].forEach((s, i) => pop(s, w("round") + i * 0.14));
+    // "two numbers you can count tell you the third"
+    pop(["#l-t2", "#l-t3"], w("count"));
+    pop("#l-t1", w("third"));
+    tl.set({}, {}, /*SLOT*/18.7);
+    window.__timelines["law"] = tl;
+  </script>
+</template>

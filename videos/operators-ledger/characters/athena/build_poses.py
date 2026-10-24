@@ -223,3 +223,70 @@ open(os.path.join(A_OUT, "index.html"), "w", encoding="utf-8").write(
     '<!doctype html><meta charset="utf-8"><title>Athena poses v2</title><style>body{margin:0;background:#D6D2CF;padding:16px;display:grid;gap:16px;justify-items:start}body>svg{width:min(760px,100%);height:auto}</style>'
     + sheet + f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 520" width="1080" height="520">{grounds}</svg>')
 print("ok", len(POSES), "poses,", len(SHOPS), "shops")
+
+# ---------- guests (Episode 03 onwards): the diverse cast around Athena ----------
+# Same figure space and viewBox as Athena (head centre 0,0, feet at y 600), so they share a ground line.
+G_OUT, P_OUT = os.path.join(ROOT, "guests"), os.path.join(ROOT, "props")
+os.makedirs(G_OUT, exist_ok=True); os.makedirs(P_OUT, exist_ok=True)
+
+def dot(x, y, r=4.5): return f'<circle cx="{x}" cy="{y}" r="{r}" fill="{INK}"/>'
+
+def guest_hair(style, hair, back):
+    if style == "crop":
+        return "" if back else P("M -50 -6 C -52 -46 -28 -66 0 -66 C 28 -66 52 -46 50 -6 C 46 -26 30 -40 0 -42 C -30 -40 -46 -26 -50 -6 Z", hair)
+    if style == "long":
+        return P("M -58 -10 C -62 -64 62 -64 58 -10 L 62 78 L -62 78 Z", hair) if back else \
+               P("M -50 -4 C -54 -50 -26 -68 0 -68 C 26 -68 54 -50 50 -4 C 40 -30 20 -42 0 -44 C -20 -42 -40 -30 -50 -4 Z", hair)
+    if style == "beanie":
+        return "" if back else P("M -54 -14 C -54 -78 54 -78 54 -14 Z", DEEP) + R(-56, -24, 112, 16, DEEP)
+    if style == "curls":
+        if back: return ""
+        import math
+        pts = [(58 * math.cos(math.radians(196 - k * 212 / 11)), -16 - 64 * math.sin(math.radians(196 - k * 212 / 11))) for k in range(12)]
+        d = f"M {pts[0][0]:.1f} {pts[0][1]:.1f} " + "".join(
+            f"A {math.hypot(x1 - x0, y1 - y0) * 0.62:.1f} {math.hypot(x1 - x0, y1 - y0) * 0.62:.1f} 0 0 1 {x1:.1f} {y1:.1f} " for (x0, y0), (x1, y1) in zip(pts, pts[1:]))
+        return P(d + "C 46 -20 30 -34 0 -36 C -30 -34 -46 -20 -55 2 Z", hair)
+    if style == "scarf":
+        return P("M 0 -74 C 44 -74 64 -40 64 0 C 64 42 58 72 76 100 L -76 100 C -58 72 -64 42 -64 0 C -64 -40 -44 -74 0 -74 Z", hair) if back else \
+               Ln("M 58 60 C 34 98 -20 112 -66 96", INK, SW)
+    if style == "beard":
+        return "" if back else P("M -46 6 C -46 50 -22 62 0 62 C 22 62 46 50 46 6 C 30 28 -30 28 -46 6 Z", hair)
+    return ""
+
+def guest(skin, hair, style, jacket, trousers):
+    face_shape = HEAD if style != "scarf" else "M -42 -8 C -42 -40 -22 -52 0 -52 C 22 -52 42 -40 42 -8 C 42 24 24 50 0 52 C -24 50 -42 24 -42 -8 Z"
+    legs = (P("M -50 296 L -48 576 L -10 576 L -6 382 L 6 382 L 10 576 L 48 576 L 50 296 Z", trousers) +
+            P("M -50 572 C -56 594 -48 600 -36 600 L -8 600 C 0 600 0 588 -8 572 Z", INK) +
+            P("M 50 572 C 56 594 48 600 36 600 L 8 600 C 0 600 0 588 8 572 Z", INK))
+    sleeve = P("M -66 90 C -84 150 -88 220 -86 292 L -60 292 C -60 230 -58 170 -50 130 Z", jacket)
+    hand = P("M -86 286 C -90 318 -78 330 -70 330 C -60 330 -57 314 -60 286 Z", skin)
+    torso = (P("M -16 72 C -40 74 -62 80 -68 92 C -74 150 -72 240 -66 304 L 66 304 C 72 240 74 150 68 92 C 62 80 40 74 16 72 Z", jacket) +
+             P("M -16 72 L 0 120 L 16 72 Z", BONE) + Ln("M 0 120 L 0 304"))
+    ears = "" if style == "scarf" else P("M -48 -2 C -63 -6 -64 22 -47 24 Z", skin) + P("M 48 -2 C 63 -6 64 22 47 24 Z", skin)
+    face = (f'<circle cx="-27" cy="20" r="7" fill="{BLUSH}" opacity=".7"/><circle cx="27" cy="20" r="7" fill="{BLUSH}" opacity=".7"/>' +
+            dot(-16, 0, 5) + dot(16, 0, 5) + Ln("M -9 30 Q 0 36 9 30"))
+    return "".join([legs, P("M -12 46 L -12 80 L 12 80 L 12 46 Z", skin), hand, sleeve, mirror(hand + sleeve), torso,
+                    guest_hair(style, hair, True), ears, P(face_shape, skin), face, guest_hair(style, hair, False)])
+
+GUESTS = {
+    "guest-1": guest("#F3CDB0", "#6B3B24", "crop", SAGE, INK),
+    "guest-2": guest("#8B5A3C", "#2E2422", "curls", DEEP, STONE),
+    "guest-3": guest("#C68A5E", SAGE, "scarf", STONE, INK),
+    "guest-4": guest("#E0AC80", "#2E2422", "beanie", INK, STONE),
+    "guest-5": guest("#F3CDB0", "#C9A15E", "long", GREY, INK),
+    "guest-6": guest("#8B5A3C", "#2E2422", "beard", "#8C857C", INK),
+}
+for name, body in GUESTS.items():
+    open(os.path.join(G_OUT, f"{name}.svg"), "w", encoding="utf-8").write(
+        f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="{vb}" width="{VIEW[2]}" height="{VIEW[3]}"><g id="{name}">{body}</g></svg>')
+
+# ---------- props ----------
+TILL = "".join([
+    R(170, 56, 92, 64, INK), R(182, 68, 68, 26, OCHRE, False), R(196, 104, 40, 8, BONE, False),
+    P("M 0 120 L 300 120 L 300 142 L 0 142 Z", SAND),
+    P("M 12 142 L 288 142 L 288 298 L 12 298 Z", SAGE), Ln("M 12 190 L 288 190") + Ln("M 150 190 L 150 298"),
+    Ln("M 0 298 L 300 298", INK, SW),
+])
+open(os.path.join(P_OUT, "till-counter.svg"), "w", encoding="utf-8").write(
+    f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300" width="300" height="300">{TILL}</svg>')
+print("ok", len(GUESTS), "guests, 1 prop")

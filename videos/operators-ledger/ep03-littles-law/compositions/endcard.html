@@ -1,0 +1,32 @@
+<template>
+  <style>
+    @font-face { font-family: "Newsreader"; font-weight: 300; src: url("assets/fonts/newsreader-latin-300-normal.woff2") format("woff2"); }
+    @font-face { font-family: "Archivo"; font-weight: 500; src: url("assets/fonts/Archivo-Medium.ttf") format("truetype"); }
+    @font-face { font-family: "Archivo"; font-weight: 400; src: url("assets/fonts/Archivo-Regular.ttf") format("truetype"); }
+    #root { position: absolute; inset: 0; background: #201e1d; color: #f3f2f2; overflow: hidden; }
+    #ec-mtn { position: absolute; left: -200px; top: 990px; width: 1480px; height: 370px; }
+    #ec-kick { position: absolute; left: 86px; top: 330px; font: 500 28px/1 "Archivo", sans-serif; letter-spacing: .22em; }
+    #ec-title { position: absolute; left: 86px; top: 378px; font: 300 80px/1.08 "Newsreader", serif; }
+    #ec-logo { position: absolute; left: 86px; top: 600px; width: 128px; height: 128px; }
+    #ec-brand { position: absolute; left: 86px; top: 770px; font: 500 28px/1 "Archivo", sans-serif; letter-spacing: .22em; }
+    #ec-name { position: absolute; left: 86px; top: 816px; font: 400 32px/1.2 "Archivo", sans-serif; }
+  </style>
+  <div id="root" data-composition-id="endcard" data-width="1080" data-height="1350">
+    <img id="ec-mtn" src="assets/brand/mountains-bone-on-ink.svg" alt="" />
+    <div id="ec-kick">THE OPERATOR’S LEDGER</div>
+    <div id="ec-title">Episode 3<br />Little’s Law</div>
+    <img id="ec-logo" src="assets/brand/WRW-logo-white-on-red.svg" alt="" />
+    <div id="ec-brand">WRW HOSPITALITY</div>
+    <div id="ec-name">Wesley Williams</div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    tl.fromTo("#ec-mtn", { y: 90, opacity: 0 }, { y: 0, opacity: 1, duration: 0.8, ease: "power3.out" }, 0);
+    tl.fromTo(["#ec-kick", "#ec-title"], { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out", stagger: 0.1 }, 0.05);
+    // the one allowed overshoot: the WRW logo stamps on
+    tl.fromTo("#ec-logo", { opacity: 0, scale: 1.15, rotation: 3 }, { opacity: 1, scale: 1, rotation: 0, duration: 0.45, ease: "power3.out" }, 0.35);
+    tl.fromTo(["#ec-brand", "#ec-name"], { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out", stagger: 0.1 }, 0.5);
+    tl.set({}, {}, 3);
+    window.__timelines["endcard"] = tl;
+  </script>
+</template>

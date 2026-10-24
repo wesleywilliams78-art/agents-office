@@ -1,0 +1,49 @@
+<template>
+  <style>
+    @font-face { font-family: "Newsreader"; font-weight: 300; src: url("assets/fonts/newsreader-latin-300-normal.woff2") format("woff2"); }
+    @font-face { font-family: "Archivo"; font-weight: 500; src: url("assets/fonts/Archivo-Medium.ttf") format("truetype"); }
+    #root { position: absolute; inset: 0; background: #f3f2f2; color: #201e1d; overflow: hidden; }
+    #x-kick { position: absolute; left: 86px; top: 186px; font: 500 28px/1 "Archivo", sans-serif; letter-spacing: .22em; color: #b6240e; }
+    #x-not { position: absolute; left: 86px; top: 236px; font: 300 64px/1.1 "Newsreader", serif; }
+    #x-strike { position: absolute; left: 82px; top: 274px; width: 600px; height: 5px; background: #ec3013; }
+    #x-yes { position: absolute; left: 86px; top: 320px; font: 300 64px/1.1 "Newsreader", serif; color: #b6240e; }
+    #x-ground { position: absolute; left: 20px; top: 896px; width: 330px; height: 5px; background: #201e1d; }
+    #x-athena { position: absolute; left: 10px; top: 412px; width: 338px; height: 520px; }
+    .x-row { position: absolute; left: 400px; font: 300 56px/1.15 "Newsreader", serif; font-variant-numeric: tabular-nums; white-space: nowrap; }
+    .x-k { position: absolute; left: 404px; font: 500 28px/1 "Archivo", sans-serif; letter-spacing: .14em; }
+    #x-r1strike { position: absolute; left: 396px; top: 572px; width: 560px; height: 5px; background: #ec3013; }
+    #x-not, #x-strike, #x-yes, .x-row, .x-k, #x-r1strike { opacity: 0; }
+  </style>
+  <div id="root" data-composition-id="fix" data-width="1080" data-height="1350">
+    <div id="x-kick">THE FIX</div>
+    <div id="x-not">More staff all day</div>
+    <div id="x-strike"></div>
+    <div id="x-yes">The bottleneck at noon</div>
+    <div id="x-ground"></div>
+    <img id="x-athena" src="assets/athena/athena-pointing.svg" alt="" />
+    <div class="x-k" id="x-k1" style="top: 500px">NOW</div>
+    <div class="x-row" id="x-r1" style="top: 538px">2 a minute: 6 minutes</div>
+    <div id="x-r1strike"></div>
+    <div class="x-k" id="x-k2" style="top: 650px">AT NOON</div>
+    <div class="x-row" id="x-r2" style="top: 688px">3 a minute: 4 minutes</div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    const OFF = 0.3;
+    const WORDS = /*WORDS*/[["The", 0.0], ["fix", 0.4], ["isn't", 0.62], ["more", 1.0], ["staff", 1.04], ["all", 1.4], ["day.", 1.64], ["It's", 2.0], ["the", 2.72], ["bottleneck", 2.8], ["at", 3.5], ["noon.", 3.82], ["Serve", 4.64], ["three", 5.12], ["a", 5.32], ["minute", 5.52], ["instead", 5.72], ["of", 6.08], ["two,", 6.36], ["and", 6.68], ["the", 7.34], ["same", 7.44], ["queue", 7.66], ["waits", 7.88], ["four", 8.38], ["minutes,", 8.92], ["not", 9.46], ["six.", 10.0]];
+    const w = (k, n = 1) => { let c = 0; for (const [x, s] of WORDS) { if (x.toLowerCase().replace(/[^a-z0-9'-]/g, "").startsWith(k) && ++c === n) return OFF + s; } throw new Error("cue " + k); };
+    const pop = (sel, t) => tl.fromTo(sel, { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, t);
+
+    tl.fromTo(["#x-kick", "#x-athena", "#x-ground"], { opacity: 0 }, { opacity: 1, duration: 0.5, ease: "power2.out" }, 0.1);
+    // "The fix isn't more staff all day. It's the bottleneck at noon."
+    pop("#x-not", w("more"));
+    tl.fromTo("#x-strike", { opacity: 1, scaleX: 0, transformOrigin: "0% 50%" }, { opacity: 1, scaleX: 1, duration: 0.45, ease: "power3.inOut" }, w("day"));
+    pop("#x-yes", w("bottleneck"));
+    // "Serve three a minute instead of two, and the same queue waits four minutes, not six."
+    pop(["#x-k1", "#x-r1"], w("serve"));
+    pop(["#x-k2", "#x-r2"], w("three"));
+    tl.fromTo("#x-r1strike", { opacity: 1, scaleX: 0, transformOrigin: "0% 50%" }, { opacity: 1, scaleX: 1, duration: 0.45, ease: "power3.inOut" }, w("four"));
+    tl.set({}, {}, /*SLOT*/13.3);
+    window.__timelines["fix"] = tl;
+  </script>
+</template>

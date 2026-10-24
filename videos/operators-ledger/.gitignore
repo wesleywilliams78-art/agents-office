@@ -20,3 +20,6 @@ voice/
 **/renders/*-v1-*.mp4
 **/renders/*-v2-*.mp4
 **/renders/*-v3*.mp4
+
+# earlier cuts kept locally only
+**/renders/_old/

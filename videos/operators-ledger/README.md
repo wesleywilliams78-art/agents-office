@@ -8,7 +8,8 @@ A LinkedIn explainer series (10 episodes planned) under **WRW Hospitality**, Wes
 | `DESIGN.md` | The design system: format, safe area, colours (brand frame plus the character palette), type, characters, motifs, motion, captions, audio, end card, and the LinkedIn package. Every episode follows it. |
 | `characters/athena/README.md` | Athena, the recurring lead: her look, the eight poses, how to place and swap them, and how to regenerate them. |
 | `characters/athena/index.html` | Her pose sheet and how she looks on bone, red and ink grounds. Open it in a browser. |
-| `characters/shops/` | Shopfronts: SITE 1 thriving, SITE 10 struggling, SITE 10 before it struggles, and a generic site. |
+| `characters/shops/` | Shopfronts: SITE 1 thriving, SITE 10 struggling, SITE 10 before it struggles, a generic site, a rival café and a TO LET unit. Open `index.html` to see them. |
+| `characters/guests/`, `characters/props/` | Six diverse guests in Athena's style (same frame as her poses) and a till counter. |
 | `brand/` | The WRW logo in four colourways (SVG, from the WRW logo pack). The end card uses `WRW-logo-white-on-red.svg`. |
 | `voice/` | Wesley's voice reference, as exported from his VoiceStudio profile `ca7acc09`. |
 
@@ -28,6 +29,7 @@ A LinkedIn explainer series (10 episodes planned) under **WRW Hospitality**, Wes
 |---|---|---|
 | 01 | `ep01-unit-economics/` | Pilot rendered 24 Oct 2026 (`renders/`). The brief is `episode-01-brief.md`; `REVIEW.md` records what was decided and measured. |
 | 02 | `ep02-five-forces/` | Rendered 24 Oct 2026, for Monday 2 Nov. Cued from word timings by `.vo/build.py`. |
+| 03 | `ep03-littles-law/` | Rendered 24 Oct 2026, for Monday 9 Nov. Introduces the guests and the till counter. |
 
 ### Starting the next episode
 1. Copy the Episode 01 brief's shape: script table, numbers check, acceptance checks.

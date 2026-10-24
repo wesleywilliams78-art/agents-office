@@ -19,7 +19,7 @@
 |---|---|---|---|---|---|---|
 | 01 | Mon 26 Oct 2026 | Finance & accounting | **Unit economics and four-wall profit** | Site one's numbers don't predict site ten's | £20k site keeps £4,800; £13k site loses £300 | Rendered (v4) |
 | 02 | Mon 02 Nov 2026 | Strategy | **Porter's Five Forces** | Run it on each site's trade area: every force is a line on the P&L | Food 30%, labour 40%, rent 20%, the app's 30% cut | Rendered (v1) |
-| 03 | Mon 09 Nov 2026 | Operations | **Little's Law** | Queue length, wait time and covers per hour in one line | 12 people waiting ÷ 4 an hour served = a 3-hour wait | Planned |
+| 03 | Mon 09 Nov 2026 | Operations | **Little's Law** | Two numbers you can count at lunch tell you how long guests wait, and what walks out | 12 in the queue ÷ 2 served a minute = a 6-minute wait | Rendered (v1) |
 | 04 | Mon 16 Nov 2026 | Marketing | **STP: segmentation, targeting, positioning** | Each site is for someone: say who | Commuter site versus weekend family site | Planned |
 | 05 | Mon 23 Nov 2026 | Leadership & organisational behaviour | **Span of control** | How many sites one ops manager can really run | Six sites fine, eleven sites firefighting | Planned |
 | 06 | Mon 30 Nov 2026 | Economics | **Opportunity cost** | What the founder's hour is actually worth | An hour fixing a rota versus an hour on site five | Planned |

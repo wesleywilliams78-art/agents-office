@@ -1,0 +1,54 @@
+<template>
+  <style>
+    @font-face { font-family: "Newsreader"; font-weight: 300; src: url("assets/fonts/newsreader-latin-300-normal.woff2") format("woff2"); }
+    @font-face { font-family: "Archivo"; font-weight: 500; src: url("assets/fonts/Archivo-Medium.ttf") format("truetype"); }
+    #root { position: absolute; inset: 0; background: #ec3013; color: #f3f2f2; overflow: hidden; }
+    #c-kick { position: absolute; left: 86px; top: 186px; font: 500 28px/1 "Archivo", sans-serif; letter-spacing: .22em; }
+    #c-title { position: absolute; left: 86px; top: 236px; font: 300 112px/1.05 "Newsreader", serif; letter-spacing: -0.01em; }
+    #c-ground { position: absolute; left: 86px; top: 955px; width: 908px; height: 5px; background: #201e1d; }
+    #c-shop { position: absolute; left: 724px; top: 605px; width: 270px; height: 360px; }
+    .c-g { position: absolute; top: 599px; width: 247px; height: 380px; }
+    #c-athena { position: absolute; left: -10px; top: 394px; width: 390px; height: 600px; }
+    #c-athena img { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; }
+    #c-athena #c-p-neutral { opacity: 1; }
+    #c-gap { position: absolute; left: 724px; top: 528px; background: #201e1d; color: #f3f2f2; font: 500 32px/1 "Archivo", sans-serif; padding: 14px 18px; font-variant-numeric: tabular-nums; opacity: 0; }
+  </style>
+  <div id="root" data-composition-id="cold" data-width="1080" data-height="1350">
+    <div id="c-kick">THE OPERATOR’S LEDGER · EPISODE 3</div>
+    <div id="c-title">Little’s Law</div>
+    <div id="c-ground"></div>
+    <img id="c-shop" src="assets/shops/site-10.svg" alt="" />
+    <!-- the lunch queue, front (by the door) to back -->
+    <img class="c-g" id="c-g1" src="assets/guests/guest-2.svg" alt="" style="left: 516px" />
+    <img class="c-g" id="c-g2" src="assets/guests/guest-5.svg" alt="" style="left: 436px" />
+    <img class="c-g" id="c-g3" src="assets/guests/guest-6.svg" alt="" style="left: 356px" />
+    <img class="c-g" id="c-g4" src="assets/guests/guest-3.svg" alt="" style="left: 276px" />
+    <img class="c-g" id="c-g5" src="assets/guests/guest-4.svg" alt="" style="left: 196px" />
+    <div id="c-athena">
+      <img id="c-p-neutral" src="assets/athena/athena-standing-neutral.svg" alt="" />
+      <img id="c-p-right" src="assets/athena/athena-looking-right.svg" alt="" />
+      <img id="c-p-worried" src="assets/athena/athena-worried.svg" alt="" />
+    </div>
+    <div id="c-gap">£520 short a week</div>
+  </div>
+  <script>
+    // frame 0 is the LinkedIn thumbnail: the poster is complete at t = 0, no entrance motion (DESIGN.md)
+    const tl = gsap.timeline({ paused: true });
+    const OFF = 0.3;
+    const WORDS = /*WORDS*/[["Site", 0.0], ["ten", 0.42], ["needs", 0.6], ["five", 0.94], ["hundred", 1.168], ["and", 1.396], ["twenty", 1.624], ["pounds", 1.852], ["more", 2.08], ["a", 2.74], ["week", 3.0], ["to", 3.22], ["break", 3.38], ["even.", 3.6], ["Some", 4.62], ["of", 5.06], ["it", 5.18], ["may", 5.3], ["already", 5.5], ["be", 5.9], ["walking", 6.12], ["out", 6.42], ["of", 6.72], ["the", 6.9], ["door.", 7.0], ["Every", 7.88], ["lunchtime.", 8.32], ["In", 8.88], ["the", 9.58], ["queue.", 9.7]];
+    const w = (k, n = 1) => { let c = 0; for (const [x, s] of WORDS) { if (x.toLowerCase().replace(/[^a-z0-9'-]/g, "").startsWith(k) && ++c === n) return OFF + s; } throw new Error("cue " + k); };
+    const poses = ["#c-p-neutral", "#c-p-right", "#c-p-worried"];
+    const pose = (id, t) => poses.forEach((p) => tl.set(p, { opacity: p === id ? 1 : 0 }, t));
+
+    // "Site ten needs five hundred and twenty pounds more a week to break even"
+    tl.fromTo("#c-gap", { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, w("five"));
+    pose("#c-p-right", w("five") + 0.3);
+    // "Some of it may already be walking out of the door" — the guest at the back gives up
+    tl.to("#c-g5", { x: -90, opacity: 0, duration: 1.2, ease: "power2.inOut" }, w("walking"));
+    pose("#c-p-worried", w("walking") + 0.4);
+    // "Every lunchtime. In the queue."
+    pose("#c-p-right", w("queue"));
+    tl.set({}, {}, /*SLOT*/11.5);
+    window.__timelines["cold"] = tl;
+  </script>
+</template>
