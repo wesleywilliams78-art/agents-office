@@ -1,0 +1,71 @@
+<template>
+  <style>
+    @font-face { font-family: "Newsreader"; font-weight: 300; src: url("assets/fonts/newsreader-latin-300-normal.woff2") format("woff2"); }
+    @font-face { font-family: "Archivo"; font-weight: 500; src: url("assets/fonts/Archivo-Medium.ttf") format("truetype"); }
+    #root { position: absolute; inset: 0; background: #f3f2f2; color: #201e1d; overflow: hidden; }
+    #s2-kicker { position: absolute; left: 86px; top: 186px; font: 500 28px/1 "Archivo", sans-serif; letter-spacing: .22em; color: #b6240e; }
+    .s2-mask { position: absolute; left: 86px; overflow: hidden; padding-bottom: 8px; }
+    .s2-mask span { display: block; font: 300 64px/1.1 "Newsreader", serif; }
+    #s2-m1 { top: 232px; }
+    #s2-m2 { top: 306px; }
+    #s2-shop { position: absolute; left: 790px; top: 168px; width: 204px; height: 272px; }
+    #s2-saleslab { position: absolute; left: 86px; top: 484px; font: 500 28px/1 "Archivo", sans-serif; letter-spacing: .22em; }
+    #s2-bar { position: absolute; left: 86px; top: 528px; width: 908px; height: 380px; overflow: visible; }
+    #s2-bar rect { stroke: #201e1d; stroke-width: 4; stroke-linejoin: miter; fill: #e9d8bd; }
+    .s2-lab { position: absolute; top: 812px; font: 500 28px/1.15 "Archivo", sans-serif; }
+    #s2-plab { position: absolute; left: 792px; top: 640px; font: 300 44px/1.05 "Newsreader", serif; }
+  </style>
+  <div data-hf-id="hf-8gfr" id="root" data-composition-id="define" data-width="1080" data-height="1350">
+    <div data-hf-id="hf-qz9c" id="s2-kicker">UNIT ECONOMICS</div>
+    <div data-hf-id="hf-22xs" id="s2-m1" class="s2-mask"><span data-hf-id="hf-odev" id="s2-h1">What one site earns</span></div>
+    <div data-hf-id="hf-cyff" id="s2-m2" class="s2-mask"><span data-hf-id="hf-kwm8" id="s2-h2">after paying for itself.</span></div>
+
+    <img data-hf-id="hf-ga4b" id="s2-shop" src="assets/shops/site.svg" alt="" />
+
+    <div data-hf-id="hf-cp1i" id="s2-saleslab">SALES</div>
+    <svg data-hf-id="hf-7wp6" id="s2-bar" viewBox="0 0 908 380">
+      <defs data-hf-id="hf-mh0t"><clipPath data-hf-id="hf-80j9" id="s2-clip"><rect data-hf-id="hf-h3x5" id="s2-cliprect" x="-4" y="-4" width="0" height="388" /></clipPath></defs>
+      <g data-hf-id="hf-nvc7" clip-path="url(#s2-clip)">
+        <g data-hf-id="hf-x7rh" id="s2-food"><rect data-hf-id="hf-l1ie" x="2" y="2" width="252" height="92" /></g>
+        <g data-hf-id="hf-evx4" id="s2-labour"><rect data-hf-id="hf-65qz" x="254" y="2" width="254" height="92" /></g>
+        <g data-hf-id="hf-l5y4" id="s2-rent"><rect data-hf-id="hf-dxuo" x="508" y="2" width="91" height="92" /></g>
+        <g data-hf-id="hf-0ukg" id="s2-run"><rect data-hf-id="hf-pyge" x="599" y="2" width="91" height="92" /></g>
+        <g data-hf-id="hf-zvp3" id="s2-profit"><rect data-hf-id="hf-lq39" id="s2-profitrect" x="690" y="2" width="216" height="92" /></g>
+      </g>
+    </svg>
+    <div data-hf-id="hf-5ttx" id="s2-l-food" class="s2-lab" style="left: 88px">Food</div>
+    <div data-hf-id="hf-38tu" id="s2-l-labour" class="s2-lab" style="left: 340px">Labour</div>
+    <div data-hf-id="hf-jzzj" id="s2-l-rent" class="s2-lab" style="left: 594px">Rent</div>
+    <div data-hf-id="hf-0uj4" id="s2-l-run" class="s2-lab" style="left: 685px">Running<br data-hf-id="hf-x5px" />costs</div>
+    <div data-hf-id="hf-80vb" id="s2-plab">Four-wall<br data-hf-id="hf-rsrt" />profit</div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    const warp = (P, t) => { if (t <= P[0][0]) return P[0][1] + t - P[0][0]; for (let i = 1; i < P.length; i++) if (t <= P[i][0]) { const [a0, b0] = P[i - 1], [a1, b1] = P[i]; return b0 + (b1 - b0) * (t - a0) / ((a1 - a0) || 1); } const L = P[P.length - 1]; return L[1] + t - L[0]; };
+    const T = (w) => 0.2 + warp([[0.0, 0.0], [0.298, 0.2], [0.596, 0.4], [1.575, 1.16], [1.873, 1.54], [2.112, 1.8], [2.41, 2.1], [2.768, 2.44], [3.126, 2.88], [3.543, 3.24], [3.782, 3.5], [4.733, 4.76], [5.362, 5.36], [5.72, 5.86], [6.22, 6.54], [6.697, 7.14], [6.995, 7.68], [7.234, 7.96], [7.711, 8.22], [8.532, 8.96], [8.949, 9.56], [9.247, 9.82], [9.426, 10.42], [10.023, 10.98], [10.5, 11.787]], w); // voiceover starts 0.2 s in; old word time -> new
+
+    tl.fromTo("#s2-kicker", { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, 0.15);
+    tl.fromTo("#s2-shop", { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.6, ease: "power3.out" }, 0.3);
+    tl.fromTo("#s2-h1", { yPercent: 110 }, { yPercent: 0, duration: 0.7, ease: "power4.out" }, T(1.5));
+    tl.fromTo("#s2-h2", { yPercent: 110 }, { yPercent: 0, duration: 0.7, ease: "power4.out" }, T(2.6));
+
+    // "Sales, …" — the bar draws left to right
+    tl.fromTo("#s2-saleslab", { opacity: 0 }, { opacity: 1, duration: 0.4, ease: "power2.out" }, T(4.6));
+    tl.fromTo("#s2-cliprect", { attr: { width: 0 } }, { attr: { width: 916 }, duration: 0.8, ease: "power3.inOut" }, T(4.7));
+
+    // "minus food, labour, rent and running costs" — each slice drops out on its word
+    [["food", 5.7], ["labour", 6.2], ["rent", 6.7], ["run", 7.2]].forEach(([id, w]) => {
+      tl.fromTo("#s2-" + id, { y: 0 }, { y: 180, duration: 0.6, ease: "power3.out" }, T(w));
+      tl.fromTo("#s2-l-" + id, { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.4, ease: "power3.out" }, T(w) + 0.3);
+    });
+
+    // "What's left is four-wall profit"
+    tl.to("#s2-profitrect", { fill: "#201e1d", duration: 0.4, ease: "power2.out" }, T(9.4));
+    tl.fromTo("#s2-plab", { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, T(9.4));
+    tl.fromTo("#s2-profit", { scale: 1 }, { scale: 1.06, duration: 0.25, ease: "power2.out", svgOrigin: "798 48" }, T(10.0));
+    tl.to("#s2-profit", { scale: 1, duration: 0.35, ease: "power2.inOut", svgOrigin: "798 48" }, T(10.0) + 0.25);
+    tl.set({}, {}, 12.8);
+
+    window.__timelines["define"] = tl;
+  </script>
+</template>

@@ -1,0 +1,21 @@
+# The Operator's Ledger: what stays out of git
+
+# Wesley's voice reference: enough audio to clone his voice. Keep it on this machine only.
+voice/
+
+# tool caches and state, rebuilt on demand
+**/.hyperframes/
+**/.thumbnails/
+**/.waveform-cache/
+**/.media/
+**/node_modules/
+
+# raw voice generations and auditions (regenerable from the VoiceStudio profile and .vo/ scripts)
+**/.vo/vox/
+**/.vo/try/
+**/.vo/backup-george/
+**/voice-samples/
+
+# superseded renders: the current render is committed, earlier cuts stay local
+**/renders/*-v1-*.mp4
+**/renders/*-v2-*.mp4

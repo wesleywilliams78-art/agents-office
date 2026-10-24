@@ -1,0 +1,40 @@
+# The Operator's Ledger — series library
+
+A LinkedIn explainer series (10 episodes planned) under **WRW Hospitality**, Wesley Ross Williams's umbrella brand. This folder is the series bible. Every episode starts here, and anything learned while making one is written back here, so the next one inherits it.
+
+## Read first
+| File | What it holds |
+|---|---|
+| `DESIGN.md` | The design system: format, safe area, colours (brand frame plus the character palette), type, characters, motifs, motion, captions, audio, end card, and the LinkedIn package. Every episode follows it. |
+| `characters/athena/README.md` | Athena, the recurring lead: her look, the eight poses, how to place and swap them, and how to regenerate them. |
+| `characters/athena/index.html` | Her pose sheet and how she looks on bone, red and ink grounds. Open it in a browser. |
+| `characters/shops/` | Shopfronts: SITE 1 thriving, SITE 10 struggling, SITE 10 before it struggles, and a generic site. |
+| `brand/` | The WRW logo in four colourways (SVG, from the WRW logo pack). The end card uses `WRW-logo-white-on-red.svg`. |
+| `voice/` | Wesley's voice reference, as exported from his VoiceStudio profile `ca7acc09`. |
+
+## How the library grows
+- **One source for the cast:** `characters/athena/build_poses.py` draws Athena and the shops. A new pose, prop or character is added there, then regenerated. Characters are never drawn inside an episode.
+- **Decisions go in DESIGN.md with a date.** A rule changed during an episode (such as the v2 style or centred captions) is updated there so it applies to every episode after it.
+- **History is kept, not deleted:**
+  - `characters/athena/options/` holds the first three looks.
+  - `characters/athena/_line-art-v1/` holds the first thin line-art poses.
+  - `characters/style-test/` holds the colour variants that led to v2.
+
+## Episodes
+| # | Folder | Status |
+|---|---|---|
+| 01 | `ep01-unit-economics/` | Pilot rendered 24 Oct 2026 (`renders/`). The brief is `episode-01-brief.md`; `REVIEW.md` records what was decided and measured. |
+
+### Starting the next episode
+1. Copy the Episode 01 brief's shape: script table, numbers check, acceptance checks.
+2. Scaffold with `npx hyperframes init epNN-<slug> --example blank`, then set the canvas to 1080 × 1350.
+3. Copy `assets/athena/`, `assets/shops/`, `assets/brand/` and `assets/fonts/` from the latest episode, or regenerate the cast from `characters/`.
+4. Reuse Episode 01's patterns:
+   - `compositions/captions.html`, built by `.vo/captions.py` from word timings;
+   - the bars and break-even scenes, for charts;
+   - `endcard.html`.
+
+## Tools this series uses
+- **HyperFrames** renders the episodes (`npx hyperframes …`).
+- **Music** comes from local ACE-Step through `connectors/music-local/`.
+- **Pilot voice** is local Kokoro (`npx hyperframes tts`). Published episodes use Wesley's own recording.

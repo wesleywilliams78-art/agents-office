@@ -1,0 +1,49 @@
+<template>
+  <style>
+    @font-face { font-family: "Newsreader"; font-weight: 300; src: url("assets/fonts/newsreader-latin-300-normal.woff2") format("woff2"); }
+    @font-face { font-family: "Archivo"; font-weight: 500; src: url("assets/fonts/Archivo-Medium.ttf") format("truetype"); }
+    #root { position: absolute; inset: 0; background: #f3f2f2; color: #201e1d; overflow: hidden; }
+    #m-head { position: absolute; left: 86px; top: 196px; width: 908px; font: 300 72px/1.12 "Newsreader", serif; }
+    #m-head span { display: inline-block; margin-right: 0.22em; }
+    #m-athena { position: absolute; left: 105px; top: 377px; width: 390px; height: 600px; }
+    #m-athena img { width: 100%; height: 100%; }
+    .m-note { position: absolute; left: 580px; width: 414px; background: #f3f2f2; border: 4px solid #201e1d; padding: 26px 28px; font: 500 34px/1.2 "Archivo", sans-serif; }
+    #m-n1 { top: 452px; }
+    #m-n2 { top: 640px; }
+    .m-kick { font: 500 28px/1 "Archivo", sans-serif; letter-spacing: .22em; color: #b6240e; margin-bottom: 16px; }
+    #m-strike { position: absolute; left: 20px; top: 89px; width: 214px; height: 6px; background: #ec3013; }
+  </style>
+  <div data-hf-id="hf-fy1r" id="root" data-composition-id="model" data-width="1080" data-height="1350">
+    <div data-hf-id="hf-e2nh" id="m-head"><span data-hf-id="hf-w01i">Model</span><span data-hf-id="hf-3pgc">each</span><span data-hf-id="hf-ckre">site</span><br data-hf-id="hf-x5px" /><span data-hf-id="hf-dnos">on</span><span data-hf-id="hf-zdzp">its</span><span data-hf-id="hf-hscr">own</span><span data-hf-id="hf-8xq1">numbers.</span></div>
+    <div data-hf-id="hf-vxwu" id="m-athena"><img data-hf-id="hf-jzj5" src="assets/athena/athena-at-counter-writing.svg" alt="" /></div>
+
+    <div data-hf-id="hf-ydgt" id="m-n1" class="m-note">
+      <div data-hf-id="hf-w9aj" class="m-kick">SITE 10 PLAN</div>
+      <div data-hf-id="hf-chn3">Copy SITE 1</div>
+      <div data-hf-id="hf-t17b" id="m-strike" data-layout-allow-occlusion></div>
+    </div>
+    <div data-hf-id="hf-2bku" id="m-n2" class="m-note">
+      <div data-hf-id="hf-vasr" class="m-kick">SITE 10 PLAN</div>
+      <div data-hf-id="hf-6m7k" id="m-l1">Its own sales</div>
+      <div data-hf-id="hf-wrr1" id="m-l2">Its own fixed costs</div>
+    </div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    const warp = (P, t) => { if (t <= P[0][0]) return P[0][1] + t - P[0][0]; for (let i = 1; i < P.length; i++) if (t <= P[i][0]) { const [a0, b0] = P[i - 1], [a1, b1] = P[i]; return b0 + (b1 - b0) * (t - a0) / ((a1 - a0) || 1); } const L = P[P.length - 1]; return L[1] + t - L[0]; };
+    const T = (w) => 0.3 + warp([[0.0, 0.0], [0.292, 0.24], [0.643, 0.58], [1.111, 0.9], [1.462, 1.36], [1.93, 1.58], [2.223, 1.9], [3.103, 2.64], [3.442, 3.32], [3.78, 3.7], [4.006, 4.12], [4.289, 4.58], [4.458, 5.08], [4.684, 5.26], [4.91, 5.52], [5.662, 6.14], [5.971, 6.74], [6.219, 6.92], [6.466, 7.24], [6.837, 7.8], [7.27, 8.645]], w); // voiceover starts 0.3 s in; old word time -> new
+
+    tl.fromTo("#m-athena", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.6, ease: "power3.out" }, 0.1);
+    tl.fromTo("#m-n1", { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, 0.4);
+    // "Site one's numbers don't predict site ten's" — the copied plan is struck out
+    tl.fromTo("#m-strike", { scaleX: 0, transformOrigin: "0% 50%" }, { scaleX: 1, duration: 0.5, ease: "power3.inOut" }, T(1.3));
+    // "Model every new site on its own sales, with its own fixed costs"
+    tl.fromTo("#m-head span", { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.4, ease: "power3.out", stagger: 0.16 }, T(3.0));
+    tl.fromTo("#m-n2", { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, T(3.4));
+    tl.fromTo("#m-l1", { opacity: 0, x: -10 }, { opacity: 1, x: 0, duration: 0.45, ease: "power3.out" }, T(4.5));
+    tl.fromTo("#m-l2", { opacity: 0, x: -10 }, { opacity: 1, x: 0, duration: 0.45, ease: "power3.out" }, T(6.0));
+    tl.set({}, {}, 11.4);
+
+    window.__timelines["model"] = tl;
+  </script>
+</template>

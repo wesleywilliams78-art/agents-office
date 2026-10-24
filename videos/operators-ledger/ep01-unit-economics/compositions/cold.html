@@ -1,0 +1,70 @@
+<template>
+  <style>
+    @font-face { font-family: "Newsreader"; font-weight: 300; src: url("assets/fonts/newsreader-latin-300-normal.woff2") format("woff2"); }
+    @font-face { font-family: "Archivo"; font-weight: 500; src: url("assets/fonts/Archivo-Medium.ttf") format("truetype"); }
+    #root { position: absolute; inset: 0; background: #ec3013; color: #f3f2f2; overflow: hidden; }
+    #s1-kicker { position: absolute; left: 86px; top: 186px; font: 500 28px/1 "Archivo", sans-serif; letter-spacing: .22em; }
+    #s1-title-mask { position: absolute; left: 86px; top: 236px; overflow: hidden; padding-bottom: 14px; }
+    #s1-title { display: block; font: 300 112px/1.05 "Newsreader", serif; letter-spacing: -0.01em; }
+    .s1-shop { position: absolute; top: 605px; width: 270px; height: 360px; }
+    .s1-shop img { position: absolute; inset: 0; width: 100%; height: 100%; }
+    #s1-shop1 { left: 86px; }
+    #s1-shop10 { left: 724px; }
+    #s1-ten-drab { opacity: 0; }
+    #s1-ground { position: absolute; left: 86px; top: 955px; width: 908px; height: 5px; background: #201e1d; transform-origin: left center; }
+    #s1-athena { position: absolute; left: 345px; top: 394px; width: 390px; height: 600px; }
+    #s1-athena img { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; }
+    #s1-athena #s1-p-neutral { opacity: 1; }
+  </style>
+  <div data-hf-id="hf-433m" id="root" data-composition-id="cold" data-width="1080" data-height="1350">
+    <div data-hf-id="hf-w912" id="s1-kicker">THE OPERATOR’S LEDGER · EPISODE 1</div>
+    <div data-hf-id="hf-g8e9" id="s1-title-mask"><span data-hf-id="hf-gdnn" id="s1-title">Unit economics</span></div>
+
+    <div data-hf-id="hf-pm5n" id="s1-ground"></div>
+
+    <div data-hf-id="hf-0mhx" id="s1-shop1" class="s1-shop"><img data-hf-id="hf-weet" src="assets/shops/site-1.svg" alt="" /></div>
+    <div data-hf-id="hf-fgfr" id="s1-shop10" class="s1-shop">
+      <img data-hf-id="hf-0f47" id="s1-ten-early" src="assets/shops/site-10-early.svg" alt="" />
+      <img data-hf-id="hf-ami7" id="s1-ten-drab" src="assets/shops/site-10.svg" alt="" />
+    </div>
+
+    <div data-hf-id="hf-jyyf" id="s1-athena">
+      <img data-hf-id="hf-8dfr" id="s1-p-neutral" src="assets/athena/athena-standing-neutral.svg" alt="" />
+      <img data-hf-id="hf-m8tm" id="s1-p-left" src="assets/athena/athena-looking-left.svg" alt="" />
+      <img data-hf-id="hf-1wnk" id="s1-p-right" src="assets/athena/athena-looking-right.svg" alt="" />
+      <img data-hf-id="hf-shu9" id="s1-p-scratch" src="assets/athena/athena-head-scratch.svg" alt="" />
+    </div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    // retimed to the voiceover: old word time -> new word time
+    const warp = (P, t) => { if (t <= P[0][0]) return P[0][1] + t - P[0][0]; for (let i = 1; i < P.length; i++) if (t <= P[i][0]) { const [a0, b0] = P[i - 1], [a1, b1] = P[i]; return b0 + (b1 - b0) * (t - a0) / ((a1 - a0) || 1); } const L = P[P.length - 1]; return L[1] + t - L[0]; };
+    const T = (w) => 0.3 + warp([[0.0, 0.0], [0.292, 0.1], [0.643, 0.3], [0.936, 0.64], [1.228, 0.92], [1.9, 1.66], [2.192, 2.0], [2.543, 2.36], [2.718, 2.92], [3.441, 3.28], [3.675, 3.76], [3.967, 4.44], [4.318, 5.44], [4.611, 6.22], [5.281, 6.78], [5.574, 7.3], [6.1, 8.047]], w);
+    const poses = ["#s1-p-neutral", "#s1-p-left", "#s1-p-right", "#s1-p-scratch"];
+    const pose = (id, t) => poses.forEach((p) => tl.set(p, { opacity: p === id ? 1 : 0 }, t));
+
+
+    tl.fromTo("#s1-kicker", { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, 0.2);
+    tl.fromTo("#s1-title", { yPercent: 105 }, { yPercent: 0, duration: 0.7, ease: "power4.out" }, 0.35);
+    tl.fromTo("#s1-ground", { scaleX: 0 }, { scaleX: 1, duration: 0.8, ease: "power3.out" }, 0.5);
+    tl.fromTo("#s1-shop1", { x: -460 }, { x: 0, duration: 0.8, ease: "power3.out" }, 0.6);
+    tl.fromTo("#s1-shop10", { x: 460 }, { x: 0, duration: 0.8, ease: "power3.out" }, 0.75);
+    tl.fromTo("#s1-athena", { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.6, ease: "power3.out" }, 0.9);
+
+    // "Your first site made money" — she looks to SITE 1
+    pose("#s1-p-left", T(1.1));
+    // "Your tenth is losing it" — she looks to SITE 10, which goes drab
+    pose("#s1-p-right", T(2.2));
+    tl.to("#s1-ten-early", { opacity: 0, duration: 0.4, ease: "power2.inOut" }, T(2.6));
+    tl.to("#s1-ten-drab", { opacity: 1, duration: 0.4, ease: "power2.inOut" }, T(2.6));
+    tl.fromTo("#s1-ten-drab", { y: -6 }, { y: 0, duration: 0.5, ease: "power3.out" }, T(2.6));
+    pose("#s1-p-neutral", T(3.5));
+    // "What changed?"
+    tl.to("#s1-athena", { y: 6, duration: 0.15, ease: "power2.out" }, T(5.1));
+    pose("#s1-p-scratch", T(5.25));
+    tl.to("#s1-athena", { y: 0, duration: 0.4, ease: "power3.out" }, T(5.25));
+    tl.set({}, {}, 9.2);
+
+    window.__timelines["cold"] = tl;
+  </script>
+</template>

@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en-GB">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1080, height=1350" />
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <style>
+      /* The Operator's Ledger: tokens from ../DESIGN.md */
+      :root {
+        --bone: #f3f2f2;
+        --ink: #201e1d;
+        --red: #ec3013;
+        --deep-red: #b6240e;
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        margin: 0;
+        width: 1080px;
+        height: 1350px;
+        overflow: hidden;
+        background: var(--bone);
+      }
+      #root {
+        position: relative;
+        width: 100%;
+        height: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <div data-hf-id="hf-6e5a"
+      id="root"
+      data-composition-id="main"
+      data-start="0"
+      data-duration="104.7"
+      data-width="1080"
+      data-height="1350"
+    >
+      <!-- scenes -->
+      <div data-hf-id="hf-03rb" id="cold" data-composition-id="cold" data-composition-src="compositions/cold.html"
+        data-start="0" data-duration="9.2" data-track-index="1" data-track-kind="graphics"
+        data-width="1080" data-height="1350"></div>
+      <div data-hf-id="hf-tyhe" id="define" data-composition-id="define" data-composition-src="compositions/define.html"
+        data-start="9.2" data-duration="12.8" data-track-index="1" data-track-kind="graphics"
+        data-width="1080" data-height="1350"></div>
+      <div data-hf-id="hf-gnc7" id="bars" data-composition-id="bars" data-composition-src="compositions/bars.html"
+        data-start="22.0" data-duration="42.2" data-track-index="1" data-track-kind="graphics"
+        data-width="1080" data-height="1350"></div>
+      <div data-hf-id="hf-zh8o" id="breakeven" data-composition-id="breakeven" data-composition-src="compositions/breakeven.html"
+        data-start="64.2" data-duration="17.4" data-track-index="1" data-track-kind="graphics"
+        data-width="1080" data-height="1350"></div>
+      <div data-hf-id="hf-a2od" id="model" data-composition-id="model" data-composition-src="compositions/model.html"
+        data-start="81.6" data-duration="11.4" data-track-index="1" data-track-kind="graphics"
+        data-width="1080" data-height="1350"></div>
+      <div data-hf-id="hf-743o" id="question" data-composition-id="question" data-composition-src="compositions/question.html"
+        data-start="93.0" data-duration="8.7" data-track-index="1" data-track-kind="graphics"
+        data-width="1080" data-height="1350"></div>
+      <div data-hf-id="hf-qg71" id="endcard" data-composition-id="endcard" data-composition-src="compositions/endcard.html"
+        data-start="101.7" data-duration="3" data-track-index="1" data-track-kind="graphics"
+        data-width="1080" data-height="1350"></div>
+
+      <!-- captions: one host for every group -->
+      <div data-hf-id="hf-ixq3" id="captions" data-composition-id="captions" data-composition-src="compositions/captions.html"
+        data-start="0" data-duration="101.7" data-track-index="2" data-track-kind="captions"
+        data-width="1080" data-height="1350" style="z-index: 10"></div>
+
+      <!-- voiceover: Wesley's cloned voice (VoiceStudio profile ca7acc09, VoxCPM2, Apache-2.0) -->
+      <audio data-hf-id="hf-z3gm" id="vo-s1" class="clip" src="assets/vo/s1.wav" data-duration="8.047" data-start="0.3" data-track-index="3" data-volume="1.1"></audio>
+      <audio data-hf-id="hf-57co" id="vo-s2" class="clip" src="assets/vo/s2.wav" data-duration="11.787" data-start="9.4" data-track-index="3" data-volume="1.1"></audio>
+      <audio data-hf-id="hf-4jfc" id="vo-s3" class="clip" src="assets/vo/s3.wav" data-duration="13.881" data-start="22.4" data-track-index="3" data-volume="1.1"></audio>
+      <audio data-hf-id="hf-t2vr" id="vo-s4" class="clip" src="assets/vo/s4.wav" data-duration="23.028" data-start="39.0" data-track-index="3" data-volume="1.1"></audio>
+      <audio data-hf-id="hf-ir10" id="vo-s5" class="clip" src="assets/vo/s5.wav" data-duration="14.56" data-start="64.5" data-track-index="3" data-volume="1.1"></audio>
+      <audio data-hf-id="hf-6g5u" id="vo-s6" class="clip" src="assets/vo/s6.wav" data-duration="8.645" data-start="81.9" data-track-index="3" data-volume="1.1"></audio>
+      <audio data-hf-id="hf-uxpi" id="vo-s7" class="clip" src="assets/vo/s7.wav" data-duration="5.93" data-start="93.3" data-track-index="3" data-volume="1.1"></audio>
+
+      <!-- music bed: ACE-Step 1.5 local (job mmvmdhehecoz, 112 s), ~ -17 dB under the voice -->
+      <audio data-hf-id="hf-jpy3" id="music" class="clip" src="assets/music-bed.mp3" data-start="0" data-duration="104.7" data-track-index="4"
+        data-volume="0.125" data-fade-in="1.0" data-fade-out="2.5"></audio>
+
+      <!-- effects: each peak (0.073 s into the file) lands one frame after its picture -->
+      <audio data-hf-id="hf-yh4r" id="sfx-tick-1" class="clip" src="assets/sfx-tick.mp3" data-start="19.89" data-duration="0.366" data-track-index="5" data-volume="1.4"></audio>
+      <audio data-hf-id="hf-exfa" id="sfx-tick-2" class="clip" src="assets/sfx-tick.mp3" data-start="24.54" data-duration="0.366" data-track-index="5" data-volume="1.4"></audio>
+      <audio data-hf-id="hf-jcix" id="sfx-tick-3" class="clip" src="assets/sfx-tick.mp3" data-start="33.17" data-duration="0.366" data-track-index="5" data-volume="1.6"></audio>
+      <audio data-hf-id="hf-gcw2" id="sfx-tick-4" class="clip" src="assets/sfx-tick.mp3" data-start="44.81" data-duration="0.366" data-track-index="5" data-volume="1.4"></audio>
+      <audio data-hf-id="hf-ocoo" id="sfx-thud" class="clip" src="assets/sfx-thud.mp3" data-start="60.05" data-duration="2.116" data-track-index="5" data-volume="0.35"></audio>
+      <audio data-hf-id="hf-f1w4" id="sfx-tick-5" class="clip" src="assets/sfx-tick.mp3" data-start="73.56" data-duration="0.366" data-track-index="5" data-volume="1.4"></audio>
+    </div>
+    <script>
+      window.__timelines = window.__timelines || {};
+      window.__timelines["main"] = gsap.timeline({ paused: true });
+    </script>
+  </body>
+</html>

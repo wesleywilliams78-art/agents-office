@@ -1,0 +1,132 @@
+<template>
+  <style>
+    @font-face { font-family: "Newsreader"; font-weight: 300; src: url("assets/fonts/newsreader-latin-300-normal.woff2") format("woff2"); }
+    @font-face { font-family: "Archivo"; font-weight: 500; src: url("assets/fonts/Archivo-Medium.ttf") format("truetype"); }
+    #root { position: absolute; inset: 0; background: #f3f2f2; color: #201e1d; overflow: hidden; }
+    #b-svg { position: absolute; left: 0; top: 0; width: 1080px; height: 1350px; overflow: visible; }
+    #b-svg .seg { fill: #e9d8bd; stroke: #201e1d; stroke-width: 4; }
+    #b-svg .frame { fill: none; stroke: #201e1d; stroke-width: 4; }
+    .b-kick { position: absolute; font: 500 28px/1 "Archivo", sans-serif; letter-spacing: .22em; }
+    .b-total { position: absolute; font: 300 64px/1 "Newsreader", serif; font-variant-numeric: tabular-nums; }
+    .b-lab { position: absolute; font: 500 28px/1 "Archivo", sans-serif; font-variant-numeric: tabular-nums; white-space: nowrap; }
+    #b-in1 { position: absolute; left: 100px; top: 360px; width: 160px; text-align: center; font: 500 30px/1 "Archivo", sans-serif; color: #f3f2f2; font-variant-numeric: tabular-nums; }
+    #b-loss { position: absolute; left: 604px; top: 404px; font: 300 72px/1 "Newsreader", serif; color: #ec3013; font-variant-numeric: tabular-nums; }
+    #b-losskick { font: 500 28px/1 "Archivo", sans-serif; letter-spacing: .22em; margin-bottom: 6px; }
+    #b-note { position: absolute; left: 86px; top: 960px; font: 500 28px/1 "Archivo", sans-serif; letter-spacing: .22em; color: #b6240e; }
+    #b-athena { position: absolute; left: 716px; top: 415px; width: 364px; height: 560px; }
+    #b-athena img { position: absolute; inset: 0; width: 100%; height: 100%; }
+    #b-p-worried, #b10-over, #b10-bracket, #b-loss, #b-guide { opacity: 0; }
+  </style>
+  <div data-hf-id="hf-tgoe" id="root" data-composition-id="bars" data-width="1080" data-height="1350">
+    <svg data-hf-id="hf-8q4e" id="b-svg" viewBox="0 0 1080 1350">
+      <!-- ground -->
+      <rect data-hf-id="hf-sevn" id="b-ground" x="86" y="938" width="908" height="4" fill="#201e1d" />
+      <!-- SITE 1: £20,000 at 0.032 px per £ -->
+      <rect data-hf-id="hf-pemy" id="b1-frame" class="frame" x="100" y="300" width="160" height="640" />
+      <rect data-hf-id="hf-qipd" id="b1-labour" class="seg" x="100" y="760.8" width="160" height="179.2" />
+      <rect data-hf-id="hf-tier" id="b1-food" class="seg" x="100" y="581.6" width="160" height="179.2" />
+      <rect data-hf-id="hf-115a" id="b1-rent" class="seg" x="100" y="517.6" width="160" height="64" />
+      <rect data-hf-id="hf-g12t" id="b1-run" class="seg" x="100" y="453.6" width="160" height="64" />
+      <rect data-hf-id="hf-2byd" id="b1-profit" class="seg" x="100" y="300" width="160" height="153.6" style="fill: #201e1d" />
+      <!-- labour comparison guide -->
+      <line data-hf-id="hf-3u20" id="b-guide" x1="100" y1="760.8" x2="500" y2="760.8" stroke="#201e1d" stroke-width="3" stroke-dasharray="10 10" />
+      <!-- SITE 10: sales £13,000, costs £13,300 -->
+      <rect data-hf-id="hf-nmvy" id="b10-frame" class="frame" x="330" y="524" width="160" height="416" />
+      <rect data-hf-id="hf-z4ui" id="b10-labour" class="seg" x="330" y="773.6" width="160" height="166.4" />
+      <rect data-hf-id="hf-k5k0" id="b10-food" class="seg" x="330" y="648.8" width="160" height="124.8" />
+      <rect data-hf-id="hf-dtbd" id="b10-rent" class="seg" x="330" y="565.6" width="160" height="83.2" />
+      <rect data-hf-id="hf-in8g" id="b10-run" class="seg" x="330" y="514.4" width="160" height="51.2" />
+      <rect data-hf-id="hf-wcen" id="b10-over" x="332" y="514.4" width="156" height="9.6" fill="#ec3013" />
+      <line data-hf-id="hf-wmie" id="b10-salesline" x1="318" y1="524" x2="502" y2="524" stroke="#201e1d" stroke-width="4" />
+      <path data-hf-id="hf-mbbv" id="b10-bracket" d="M498 512 H510 V526 H498 M510 519 L600 500" fill="none" stroke="#ec3013" stroke-width="4" stroke-linejoin="miter" />
+    </svg>
+
+    <div data-hf-id="hf-2mdd" id="b1-kick" class="b-kick" style="left: 100px; top: 196px">SITE 1</div>
+    <div data-hf-id="hf-xu56" id="b1-total" class="b-total" style="left: 100px; top: 228px">£0</div>
+    <div data-hf-id="hf-p14n" id="b1-l-labour" class="b-lab" style="left: 284px; top: 836px">Labour £5,600 · 28%</div>
+    <div data-hf-id="hf-bdpq" id="b1-l-food" class="b-lab" style="left: 284px; top: 657px">Food £5,600 · 28%</div>
+    <div data-hf-id="hf-25ly" id="b1-l-rent" class="b-lab" style="left: 284px; top: 536px">Rent £2,000 · 10%</div>
+    <div data-hf-id="hf-7gjf" id="b1-l-run" class="b-lab" style="left: 284px; top: 472px">Running costs £2,000 · 10%</div>
+    <div data-hf-id="hf-bqsh" id="b1-l-profit" class="b-lab" style="left: 284px; top: 363px">Four-wall profit · 24%</div>
+    <div data-hf-id="hf-25cy" id="b-in1">+£4,800</div>
+
+    <div data-hf-id="hf-d8xm" id="b10-kick" class="b-kick" style="left: 330px; top: 404px">SITE 10</div>
+    <div data-hf-id="hf-fdpm" id="b10-total" class="b-total" style="left: 330px; top: 436px">£0</div>
+    <div data-hf-id="hf-1hj7" id="b10-l-labour" class="b-lab" style="left: 510px; top: 843px">Labour £5,200 · 40%</div>
+    <div data-hf-id="hf-ie6o" id="b10-l-food" class="b-lab" style="left: 510px; top: 697px">Food £3,900 · 30%</div>
+    <div data-hf-id="hf-qkt2" id="b10-l-rent" class="b-lab" style="left: 510px; top: 593px">Rent £2,600 · 20%</div>
+    <div data-hf-id="hf-hw5w" id="b10-l-run" class="b-lab" style="left: 510px; top: 540px">Running £1,600 · 12%</div>
+    <div data-hf-id="hf-x2y9" id="b-loss"><div data-hf-id="hf-d412" id="b-losskick">LOSS</div>−£300</div>
+
+    <div data-hf-id="hf-p5xq" id="b-note">ILLUSTRATIVE FIGURES, WEEKLY</div>
+
+    <div data-hf-id="hf-4ss7" id="b-athena">
+      <img data-hf-id="hf-7s4f" id="b-p-neutral" src="assets/athena/athena-standing-neutral.svg" alt="" />
+      <img data-hf-id="hf-e1y0" id="b-p-worried" src="assets/athena/athena-worried.svg" alt="" />
+    </div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    const gbp = (v) => (v < 0 ? "−£" : "£") + Math.round(Math.abs(v)).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    const count = (sel, to, at, dur) => {
+      const o = { v: 0 };
+      tl.fromTo(o, { v: 0 }, { v: to, duration: dur, ease: "power2.out",
+        onUpdate: () => { document.querySelector(sel).textContent = gbp(o.v); } }, at);
+    };
+    const grow = (sel, at, dur = 0.6) =>
+      tl.fromTo(sel, { scaleY: 0, transformOrigin: "50% 100%" }, { scaleY: 1, duration: dur, ease: "power3.out" }, at);
+    const show = (sel, at) =>
+      tl.fromTo(sel, { opacity: 0, x: -10 }, { opacity: 1, x: 0, duration: 0.45, ease: "power3.out" }, at);
+
+    // ---- Scene 3: SITE 1 (voiceover from 0.4 s) ----
+    const warp = (P, t) => { if (t <= P[0][0]) return P[0][1] + t - P[0][0]; for (let i = 1; i < P.length; i++) if (t <= P[i][0]) { const [a0, b0] = P[i - 1], [a1, b1] = P[i]; return b0 + (b1 - b0) * (t - a0) / ((a1 - a0) || 1); } const L = P[P.length - 1]; return L[1] + t - L[0]; };
+    const A = (w) => 0.4 + warp([[0.0, 0.0], [0.381, 0.24], [0.654, 0.42], [1.188, 0.85], [1.558, 1.28], [2.034, 1.71], [2.404, 2.14], [2.51, 2.52], [3.219, 3.38], [3.465, 3.98], [3.761, 4.22], [4.403, 4.67], [5.021, 5.12], [5.3, 6.0], [6.125, 6.9], [6.461, 7.56], [6.964, 8.06], [7.497, 8.54], [7.897, 9.26], [8.685, 10.09], [9.246, 10.92], [10.019, 11.5], [10.272, 11.736], [10.729, 11.972], [11.033, 12.208], [11.439, 12.444], [11.794, 12.68], [11.896, 13.34], [12.2, 13.881]], w); // old word time -> new
+    tl.fromTo("#b-ground", { scaleX: 0, transformOrigin: "0% 50%" }, { scaleX: 1, duration: 0.8, ease: "power3.out" }, 0.1);
+    tl.fromTo("#b1-kick", { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, 0.3);
+    tl.fromTo("#b1-frame", { scaleY: 0, transformOrigin: "50% 100%" }, { scaleY: 1, duration: 0.8, ease: "power3.out" }, 0.5);
+    tl.fromTo("#b-athena", { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.6, ease: "power3.out" }, 0.7);
+    tl.fromTo("#b-note", { opacity: 0 }, { opacity: 1, duration: 0.5, ease: "power2.out" }, 1.0);
+    // "Twenty thousand pounds a week"
+    tl.fromTo("#b1-total", { opacity: 0 }, { opacity: 1, duration: 0.2 }, A(1.1));
+    count("#b1-total", 20000, A(1.1), 1.4);
+    // "Food … labour … rent … running costs"
+    grow("#b1-food", A(3.2)); show("#b1-l-food", A(3.4));
+    grow("#b1-labour", A(5.0)); show("#b1-l-labour", A(5.2));
+    grow("#b1-rent", A(6.1), 0.5); show("#b1-l-rent", A(6.3));
+    grow("#b1-run", A(7.0), 0.5); show("#b1-l-run", A(7.2));
+    // "Four-wall profit: four thousand eight hundred"
+    grow("#b1-profit", A(8.7), 0.7); show("#b1-l-profit", A(8.9));
+    tl.fromTo("#b-in1", { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, A(10.0));
+
+    // ---- Scene 4: SITE 10 (starts at S4, voiceover 0.3 s later) ----
+    const S4 = 16.7; // scene 4 starts here
+    const B = (w) => S4 + 0.3 + warp([[0.0, 0.0], [0.219, 0.56], [0.493, 0.94], [0.767, 1.94], [1.516, 2.58], [1.899, 3.06], [2.435, 3.58], [2.764, 4.06], [3.093, 4.6], [3.257, 4.74], [3.75, 5.14], [4.298, 6.08], [4.952, 6.72], [5.336, 7.26], [5.5, 7.44], [5.884, 7.66], [6.322, 8.2], [6.596, 8.9], [6.87, 9.24], [7.642, 10.06], [8.025, 10.7], [8.245, 10.8], [8.934, 12.06], [9.318, 12.7], [9.701, 13.04], [10.404, 13.76], [10.623, 14.38], [10.952, 14.6], [11.226, 14.84], [11.336, 15.0], [11.61, 15.18], [11.884, 15.5], [12.048, 15.72], [12.322, 15.98], [12.541, 16.18], [13.317, 17.1], [13.701, 17.74], [13.975, 18.06], [14.304, 18.55], [15.169, 19.04], [15.443, 20.08], [15.662, 20.4], [15.991, 21.08], [16.32, 21.347], [16.758, 21.613], [17.142, 21.88], [17.251, 22.4], [17.58, 23.028]], w);
+    tl.to(["#b1-l-food", "#b1-l-labour", "#b1-l-rent", "#b1-l-run", "#b1-l-profit"], { opacity: 0, duration: 0.4, ease: "power2.in" }, S4);
+    tl.fromTo("#b10-kick", { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, B(0));
+    tl.fromTo("#b10-frame", { scaleY: 0, transformOrigin: "50% 100%" }, { scaleY: 1, duration: 0.8, ease: "power3.out" }, B(0.3));
+    // labour drawn first: nearly the size of SITE 1's
+    grow("#b10-labour", B(1.0), 0.7);
+    // "sales of thirteen thousand"
+    tl.fromTo("#b10-total", { opacity: 0 }, { opacity: 1, duration: 0.2 }, B(3.0));
+    count("#b10-total", 13000, B(3.0), 1.4);
+    tl.fromTo("#b10-salesline", { scaleX: 0, transformOrigin: "0% 50%" }, { scaleX: 1, duration: 0.6, ease: "power3.out" }, B(3.2));
+    // "Food creeps to thirty percent"
+    grow("#b10-food", B(4.3)); show("#b10-l-food", B(4.5));
+    // "labour barely moves"
+    tl.fromTo("#b-guide", { opacity: 0, attr: { x2: 100 } }, { opacity: 1, attr: { x2: 500 }, duration: 0.8, ease: "power3.inOut" }, B(8.9));
+    // "Labour hits forty percent" — rent's 20% on screen only
+    show("#b10-l-labour", B(13.3));
+    grow("#b10-rent", B(14.0), 0.5); show("#b10-l-rent", B(14.2));
+    grow("#b10-run", B(14.6), 0.5); show("#b10-l-run", B(14.8));
+    // "Site ten loses three hundred pounds a week"
+    tl.to("#b10-over", { opacity: 1, duration: 0.3, ease: "power2.out" }, B(15.6));
+    tl.to("#b10-bracket", { opacity: 1, duration: 0.3, ease: "power2.out" }, B(15.7));
+    tl.fromTo("#b-loss", { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, B(16.0));
+    tl.set("#b-p-neutral", { opacity: 0 }, B(16.4));
+    tl.set("#b-p-worried", { opacity: 1 }, B(16.4));
+    tl.fromTo("#b-athena", { y: 0 }, { y: 5, duration: 0.3, ease: "power2.out" }, B(16.4));
+    tl.set({}, {}, 42.2);
+
+    window.__timelines["bars"] = tl;
+  </script>
+</template>

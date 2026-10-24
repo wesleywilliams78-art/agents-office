@@ -1,0 +1,101 @@
+<template>
+  <style>
+    @font-face { font-family: "Archivo"; font-weight: 500; src: url("assets/fonts/Archivo-Medium.ttf") format("truetype"); }
+    #root { position: absolute; inset: 0; background: #f3f2f2; color: #201e1d; overflow: hidden; }
+    #e-svg { position: absolute; left: 0; top: 0; width: 1080px; height: 1350px; overflow: visible; }
+    .e-kick { position: absolute; left: 86px; font: 500 28px/1 "Archivo", sans-serif; letter-spacing: .22em; color: #b6240e; }
+    .e-lab { position: absolute; font: 500 28px/1.1 "Archivo", sans-serif; white-space: nowrap; font-variant-numeric: tabular-nums; }
+    .e-tick { position: absolute; top: 916px; width: 120px; margin-left: -60px; text-align: center; font: 500 28px/1 "Archivo", sans-serif; font-variant-numeric: tabular-nums; }
+    #e-axis-title { position: absolute; left: 160px; top: 962px; font: 500 28px/1 "Archivo", sans-serif; letter-spacing: .22em; }
+    #e-gap { position: absolute; top: 0; left: 0; transform: translate(776px, 504px); font: 500 34px/1 "Archivo", sans-serif; font-variant-numeric: tabular-nums; white-space: nowrap; }
+    #e-loss, #e-bel, #e-gauge, #e-mark, #e-gap, #e-be { opacity: 0; }
+    #e-be { position: absolute; left: 392px; top: 712px; font: 500 30px/1.15 "Archivo", sans-serif; }
+  </style>
+  <div data-hf-id="hf-o6ux" id="root" data-composition-id="breakeven" data-width="1080" data-height="1350">
+    <div data-hf-id="hf-c0b4" class="e-kick" id="e-k1" style="top: 186px">SITE 10’S COSTS</div>
+    <div data-hf-id="hf-vk6u" class="e-kick" id="e-k2" style="top: 226px">ILLUSTRATIVE FIGURES, WEEKLY</div>
+
+    <!-- X(s) = 160 + (s − 10,000) × 0.06 ; Y(v) = 900 − (v − 6,000) × 0.04 -->
+    <svg data-hf-id="hf-s05p" id="e-svg" viewBox="0 0 1080 1350">
+      <defs data-hf-id="hf-mh0t">
+        <clipPath data-hf-id="hf-gcp7" id="e-c-fixed"><rect data-hf-id="hf-sh88" id="e-r-fixed" x="150" y="0" width="0" height="1350" /></clipPath>
+        <clipPath data-hf-id="hf-jc7c" id="e-c-cost"><rect data-hf-id="hf-iind" id="e-r-cost" x="150" y="0" width="0" height="1350" /></clipPath>
+        <clipPath data-hf-id="hf-miyt" id="e-c-sales"><rect data-hf-id="hf-zp76" id="e-r-sales" x="150" y="0" width="0" height="1350" /></clipPath>
+      </defs>
+      <polygon data-hf-id="hf-2g6f" id="e-loss" points="160,658.8 371.2,599.2 160,740" fill="#ec3013" />
+      <line data-hf-id="hf-ljkp" id="e-xaxis" x1="160" y1="900" x2="880" y2="900" stroke="#201e1d" stroke-width="4" />
+      <line data-hf-id="hf-v92s" id="e-yaxis" x1="160" y1="260" x2="160" y2="900" stroke="#201e1d" stroke-width="4" />
+      <g data-hf-id="hf-mqrg" id="e-ticks" stroke="#201e1d" stroke-width="4">
+        <line data-hf-id="hf-5zv9" x1="160" y1="900" x2="160" y2="912" /><line data-hf-id="hf-81g5" x1="340" y1="900" x2="340" y2="912" />
+        <line data-hf-id="hf-3rf9" x1="520" y1="900" x2="520" y2="912" /><line data-hf-id="hf-31at" x1="700" y1="900" x2="700" y2="912" />
+        <line data-hf-id="hf-azzz" x1="880" y1="900" x2="880" y2="912" />
+      </g>
+      <line data-hf-id="hf-jwuf" clip-path="url(#e-c-fixed)" x1="160" y1="828" x2="880" y2="828" stroke="#201e1d" stroke-width="4" stroke-dasharray="14 10" />
+      <line data-hf-id="hf-6fse" clip-path="url(#e-c-cost)" x1="160" y1="658.8" x2="880" y2="455.7" stroke="#201e1d" stroke-width="5" />
+      <line data-hf-id="hf-btm6" clip-path="url(#e-c-sales)" x1="160" y1="740" x2="880" y2="260" stroke="#201e1d" stroke-width="5" />
+      <line data-hf-id="hf-8d9a" id="e-bel" x1="371.2" y1="599.2" x2="371.2" y2="900" stroke="#201e1d" stroke-width="3" stroke-dasharray="8 8" />
+      <line data-hf-id="hf-5ty4" id="e-gauge" x1="760" y1="340" x2="760" y2="489.5" stroke="#201e1d" stroke-width="12" />
+      <rect data-hf-id="hf-vins" id="e-mark" x="752" y="892" width="16" height="16" fill="#201e1d" />
+    </svg>
+
+    <div data-hf-id="hf-8yl7" class="e-tick" style="left: 160px">£10,000</div>
+    <div data-hf-id="hf-faji" class="e-tick" style="left: 340px">£13,000</div>
+    <div data-hf-id="hf-v8z9" class="e-tick" style="left: 520px">£16,000</div>
+    <div data-hf-id="hf-16k0" class="e-tick" style="left: 700px">£19,000</div>
+    <div data-hf-id="hf-zxor" class="e-tick" style="left: 880px">£22,000</div>
+    <div data-hf-id="hf-52ra" id="e-axis-title">WEEKLY SALES</div>
+
+    <div data-hf-id="hf-kx7g" id="e-l-sales" class="e-lab" style="left: 896px; top: 246px">Sales</div>
+    <div data-hf-id="hf-4tku" id="e-l-cost" class="e-lab" style="left: 896px; top: 438px">Total<br data-hf-id="hf-x5px" />costs</div>
+    <div data-hf-id="hf-hmpq" id="e-l-fixed" class="e-lab" style="left: 896px; top: 798px">Fixed<br data-hf-id="hf-rsrt" />costs</div>
+    <div data-hf-id="hf-rcsu" id="e-gap">+£3,738</div>
+    <div data-hf-id="hf-n3kw" id="e-be">Break-even<br data-hf-id="hf-szow" />≈ £13,500</div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    const warp = (P, t) => { if (t <= P[0][0]) return P[0][1] + t - P[0][0]; for (let i = 1; i < P.length; i++) if (t <= P[i][0]) { const [a0, b0] = P[i - 1], [a1, b1] = P[i]; return b0 + (b1 - b0) * (t - a0) / ((a1 - a0) || 1); } const L = P[P.length - 1]; return L[1] + t - L[0]; };
+    const T = (w) => 0.3 + warp([[0.0, 0.0], [0.272, 0.52], [0.49, 0.66], [0.871, 0.94], [1.089, 1.28], [1.471, 1.64], [1.852, 2.36], [2.509, 2.92], [2.835, 3.24], [3.162, 3.72], [3.435, 4.04], [3.816, 4.96], [4.501, 5.56], [4.719, 5.76], [5.046, 6.1], [5.373, 6.54], [5.863, 6.732], [6.081, 6.924], [6.19, 7.116], [6.602, 7.308], [7.093, 7.5], [7.202, 8.16], [7.474, 8.36], [7.979, 8.82], [8.143, 9.06], [8.469, 9.3], [8.796, 10.18], [8.905, 10.78], [9.698, 11.06], [9.97, 11.3], [10.406, 11.7], [10.678, 11.88], [10.951, 12.14], [11.06, 12.3], [11.441, 12.48], [12.125, 13.0], [12.289, 13.58], [12.506, 13.72], [12.779, 13.94], [13.16, 14.56]], w); // voiceover starts 0.3 s in; old word time -> new
+    const X = (s) => 160 + (s - 10000) * 0.06;
+    const Y = (v) => 900 - (v - 6000) * 0.04;
+    const cost = (s) => 7800 + (5500 / 13000) * s;
+    const gbp = (v) => (v < -0.5 ? "−£" : "+£") + Math.round(Math.abs(v)).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+
+    const gauge = { s: 20000 };
+    const drawGauge = () => {
+      const s = gauge.s, ys = Y(s), yc = Y(cost(s)), x = X(s), p = s - cost(s);
+      const g = document.querySelector("#e-gauge");
+      g.setAttribute("x1", x); g.setAttribute("x2", x);
+      g.setAttribute("y1", ys); g.setAttribute("y2", yc);
+      g.setAttribute("stroke", p < 0 ? "#ec3013" : "#201e1d");
+      document.querySelector("#e-mark").setAttribute("x", x - 8);
+      const lab = document.querySelector("#e-gap");
+      lab.textContent = gbp(p);
+      lab.style.color = p < 0 ? "#ec3013" : "#201e1d";
+      lab.style.transform = `translate(${x + 16}px, ${Math.max(ys, yc) + 14}px)`;
+    };
+
+    tl.fromTo(["#e-k1", "#e-k2"], { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out", stagger: 0.12 }, 0.1);
+    tl.fromTo("#e-xaxis", { scaleX: 0, transformOrigin: "0% 50%" }, { scaleX: 1, duration: 0.7, ease: "power3.out" }, 0.3);
+    tl.fromTo("#e-yaxis", { scaleY: 0, transformOrigin: "50% 100%" }, { scaleY: 1, duration: 0.7, ease: "power3.out" }, 0.3);
+    tl.fromTo(["#e-ticks", ".e-tick", "#e-axis-title"], { opacity: 0 }, { opacity: 1, duration: 0.5, ease: "power2.out" }, 0.8);
+
+    // "Rent and labour are mostly fixed"
+    tl.fromTo("#e-r-fixed", { attr: { width: 0 } }, { attr: { width: 740 }, duration: 0.8, ease: "power3.inOut" }, T(1.2));
+    tl.fromTo("#e-l-fixed", { opacity: 0 }, { opacity: 1, duration: 0.4, ease: "power2.out" }, T(1.8));
+    // "When sales fall, they don't"
+    tl.fromTo("#e-r-sales", { attr: { width: 0 } }, { attr: { width: 740 }, duration: 0.8, ease: "power3.inOut" }, T(1.9));
+    tl.fromTo("#e-l-sales", { opacity: 0 }, { opacity: 1, duration: 0.4, ease: "power2.out" }, T(2.5));
+    tl.fromTo("#e-r-cost", { attr: { width: 0 } }, { attr: { width: 740 }, duration: 0.8, ease: "power3.inOut" }, T(3.0));
+    tl.fromTo("#e-l-cost", { opacity: 0 }, { opacity: 1, duration: 0.4, ease: "power2.out" }, T(3.6));
+
+    // "Site ten needs about thirteen and a half thousand a week just to break even"
+    tl.fromTo(["#e-gauge", "#e-mark", "#e-gap"], { opacity: 0 }, { opacity: 1, duration: 0.3, ease: "power2.out" }, T(3.8));
+    tl.fromTo(gauge, { s: 20000 }, { s: 13000, duration: T(7.3) - T(4.1), ease: "power2.inOut", onUpdate: drawGauge, onStart: drawGauge }, T(4.1));
+    tl.fromTo("#e-loss", { opacity: 0 }, { opacity: 1, duration: 0.4, ease: "power2.out" }, T(6.7));
+    tl.fromTo("#e-bel", { opacity: 0 }, { opacity: 1, duration: 0.4, ease: "power2.out" }, T(8.1));
+    tl.fromTo("#e-be", { opacity: 0, x: -10 }, { opacity: 1, x: 0, duration: 0.5, ease: "power3.out" }, T(8.2));
+    tl.set({}, {}, 17.4);
+
+    window.__timelines["breakeven"] = tl;
+  </script>
+</template>

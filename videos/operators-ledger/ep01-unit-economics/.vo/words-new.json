@@ -1,0 +1,987 @@
+{
+ "s1": {
+  "duration": 8.047,
+  "words": [
+   {
+    "text": "Your",
+    "start": 0.0,
+    "end": 0.1
+   },
+   {
+    "text": "first",
+    "start": 0.1,
+    "end": 0.3
+   },
+   {
+    "text": "site",
+    "start": 0.3,
+    "end": 0.64
+   },
+   {
+    "text": "made",
+    "start": 0.64,
+    "end": 0.92
+   },
+   {
+    "text": "money.",
+    "start": 0.92,
+    "end": 1.26
+   },
+   {
+    "text": "Your",
+    "start": 1.66,
+    "end": 2.0
+   },
+   {
+    "text": "tenth",
+    "start": 2.0,
+    "end": 2.36
+   },
+   {
+    "text": "is",
+    "start": 2.36,
+    "end": 2.92
+   },
+   {
+    "text": "losing",
+    "start": 2.92,
+    "end": 3.28
+   },
+   {
+    "text": "it.",
+    "start": 3.28,
+    "end": 3.6
+   },
+   {
+    "text": "Same",
+    "start": 3.76,
+    "end": 4.44
+   },
+   {
+    "text": "menu.",
+    "start": 4.44,
+    "end": 5.24
+   },
+   {
+    "text": "Same",
+    "start": 5.44,
+    "end": 6.22
+   },
+   {
+    "text": "brand.",
+    "start": 6.22,
+    "end": 6.7
+   },
+   {
+    "text": "What",
+    "start": 6.78,
+    "end": 7.3
+   },
+   {
+    "text": "changed?",
+    "start": 7.3,
+    "end": 7.52
+   }
+  ]
+ },
+ "s2": {
+  "duration": 11.787,
+  "words": [
+   {
+    "text": "It's",
+    "start": 0.0,
+    "end": 0.2
+   },
+   {
+    "text": "unit",
+    "start": 0.2,
+    "end": 0.4
+   },
+   {
+    "text": "economics:",
+    "start": 0.4,
+    "end": 0.88
+   },
+   {
+    "text": "what",
+    "start": 1.16,
+    "end": 1.54
+   },
+   {
+    "text": "one",
+    "start": 1.54,
+    "end": 1.8
+   },
+   {
+    "text": "site",
+    "start": 1.8,
+    "end": 2.1
+   },
+   {
+    "text": "earns",
+    "start": 2.1,
+    "end": 2.44
+   },
+   {
+    "text": "after",
+    "start": 2.44,
+    "end": 2.88
+   },
+   {
+    "text": "paying",
+    "start": 2.88,
+    "end": 3.24
+   },
+   {
+    "text": "for",
+    "start": 3.24,
+    "end": 3.5
+   },
+   {
+    "text": "itself.",
+    "start": 3.5,
+    "end": 3.78
+   },
+   {
+    "text": "Sales,",
+    "start": 4.76,
+    "end": 5.36
+   },
+   {
+    "text": "minus",
+    "start": 5.36,
+    "end": 5.86
+   },
+   {
+    "text": "food,",
+    "start": 5.86,
+    "end": 6.32
+   },
+   {
+    "text": "labour,",
+    "start": 6.54,
+    "end": 6.98
+   },
+   {
+    "text": "rent",
+    "start": 7.14,
+    "end": 7.54
+   },
+   {
+    "text": "and",
+    "start": 7.68,
+    "end": 7.96
+   },
+   {
+    "text": "running",
+    "start": 7.96,
+    "end": 8.22
+   },
+   {
+    "text": "costs.",
+    "start": 8.22,
+    "end": 8.62
+   },
+   {
+    "text": "What's",
+    "start": 8.96,
+    "end": 9.56
+   },
+   {
+    "text": "left",
+    "start": 9.56,
+    "end": 9.82
+   },
+   {
+    "text": "is",
+    "start": 9.82,
+    "end": 10.42
+   },
+   {
+    "text": "four-wall",
+    "start": 10.42,
+    "end": 10.98
+   },
+   {
+    "text": "profit.",
+    "start": 10.98,
+    "end": 11.38
+   }
+  ]
+ },
+ "s3": {
+  "duration": 13.881,
+  "words": [
+   {
+    "text": "Here's",
+    "start": 0.0,
+    "end": 0.24
+   },
+   {
+    "text": "site",
+    "start": 0.24,
+    "end": 0.42
+   },
+   {
+    "text": "one.",
+    "start": 0.42,
+    "end": 0.85
+   },
+   {
+    "text": "Twenty",
+    "start": 0.85,
+    "end": 1.28
+   },
+   {
+    "text": "thousand",
+    "start": 1.28,
+    "end": 1.71
+   },
+   {
+    "text": "pounds",
+    "start": 1.71,
+    "end": 2.14
+   },
+   {
+    "text": "a",
+    "start": 2.14,
+    "end": 2.52
+   },
+   {
+    "text": "week.",
+    "start": 2.52,
+    "end": 2.72
+   },
+   {
+    "text": "Food",
+    "start": 3.38,
+    "end": 3.98
+   },
+   {
+    "text": "takes",
+    "start": 3.98,
+    "end": 4.22
+   },
+   {
+    "text": "twenty-eight",
+    "start": 4.22,
+    "end": 4.67
+   },
+   {
+    "text": "percent,",
+    "start": 4.67,
+    "end": 5.12
+   },
+   {
+    "text": "labour",
+    "start": 5.12,
+    "end": 5.84
+   },
+   {
+    "text": "twenty-eight,",
+    "start": 6.0,
+    "end": 6.48
+   },
+   {
+    "text": "rent",
+    "start": 6.9,
+    "end": 7.36
+   },
+   {
+    "text": "ten,",
+    "start": 7.56,
+    "end": 7.86
+   },
+   {
+    "text": "running",
+    "start": 8.06,
+    "end": 8.54
+   },
+   {
+    "text": "costs",
+    "start": 8.54,
+    "end": 8.86
+   },
+   {
+    "text": "ten.",
+    "start": 9.26,
+    "end": 10.09
+   },
+   {
+    "text": "Four-wall",
+    "start": 10.09,
+    "end": 10.92
+   },
+   {
+    "text": "profit:",
+    "start": 10.92,
+    "end": 11.22
+   },
+   {
+    "text": "four",
+    "start": 11.5,
+    "end": 11.736
+   },
+   {
+    "text": "thousand",
+    "start": 11.736,
+    "end": 11.972
+   },
+   {
+    "text": "eight",
+    "start": 11.972,
+    "end": 12.208
+   },
+   {
+    "text": "hundred",
+    "start": 12.208,
+    "end": 12.444
+   },
+   {
+    "text": "pounds",
+    "start": 12.444,
+    "end": 12.68
+   },
+   {
+    "text": "a",
+    "start": 12.68,
+    "end": 13.34
+   },
+   {
+    "text": "week.",
+    "start": 13.34,
+    "end": 13.52
+   }
+  ]
+ },
+ "s4": {
+  "duration": 23.028,
+  "words": [
+   {
+    "text": "Now",
+    "start": 0.0,
+    "end": 0.54
+   },
+   {
+    "text": "site",
+    "start": 0.56,
+    "end": 0.94
+   },
+   {
+    "text": "ten.",
+    "start": 0.94,
+    "end": 1.18
+   },
+   {
+    "text": "Weaker",
+    "start": 1.94,
+    "end": 2.58
+   },
+   {
+    "text": "pitch,",
+    "start": 2.58,
+    "end": 2.82
+   },
+   {
+    "text": "higher",
+    "start": 3.06,
+    "end": 3.58
+   },
+   {
+    "text": "rent,",
+    "start": 3.58,
+    "end": 3.88
+   },
+   {
+    "text": "sales",
+    "start": 4.06,
+    "end": 4.6
+   },
+   {
+    "text": "of",
+    "start": 4.6,
+    "end": 4.74
+   },
+   {
+    "text": "thirteen",
+    "start": 4.74,
+    "end": 5.14
+   },
+   {
+    "text": "thousand.",
+    "start": 5.14,
+    "end": 5.54
+   },
+   {
+    "text": "Food",
+    "start": 6.08,
+    "end": 6.72
+   },
+   {
+    "text": "creeps",
+    "start": 6.72,
+    "end": 7.26
+   },
+   {
+    "text": "to",
+    "start": 7.26,
+    "end": 7.44
+   },
+   {
+    "text": "thirty",
+    "start": 7.44,
+    "end": 7.66
+   },
+   {
+    "text": "percent",
+    "start": 7.66,
+    "end": 7.88
+   },
+   {
+    "text": "with",
+    "start": 8.2,
+    "end": 8.9
+   },
+   {
+    "text": "more",
+    "start": 8.9,
+    "end": 9.24
+   },
+   {
+    "text": "waste.",
+    "start": 9.24,
+    "end": 9.62
+   },
+   {
+    "text": "Here's",
+    "start": 10.06,
+    "end": 10.7
+   },
+   {
+    "text": "the",
+    "start": 10.7,
+    "end": 10.8
+   },
+   {
+    "text": "trap:",
+    "start": 10.8,
+    "end": 11.06
+   },
+   {
+    "text": "labour",
+    "start": 12.06,
+    "end": 12.7
+   },
+   {
+    "text": "barely",
+    "start": 12.7,
+    "end": 13.04
+   },
+   {
+    "text": "moves.",
+    "start": 13.04,
+    "end": 13.5
+   },
+   {
+    "text": "You",
+    "start": 13.76,
+    "end": 14.38
+   },
+   {
+    "text": "still",
+    "start": 14.38,
+    "end": 14.6
+   },
+   {
+    "text": "need",
+    "start": 14.6,
+    "end": 14.84
+   },
+   {
+    "text": "a",
+    "start": 14.84,
+    "end": 15.0
+   },
+   {
+    "text": "full",
+    "start": 15.0,
+    "end": 15.18
+   },
+   {
+    "text": "team",
+    "start": 15.18,
+    "end": 15.5
+   },
+   {
+    "text": "to",
+    "start": 15.5,
+    "end": 15.72
+   },
+   {
+    "text": "open",
+    "start": 15.72,
+    "end": 15.98
+   },
+   {
+    "text": "the",
+    "start": 15.98,
+    "end": 16.18
+   },
+   {
+    "text": "doors.",
+    "start": 16.18,
+    "end": 16.46
+   },
+   {
+    "text": "Labour",
+    "start": 17.1,
+    "end": 17.74
+   },
+   {
+    "text": "hits",
+    "start": 17.74,
+    "end": 18.06
+   },
+   {
+    "text": "forty",
+    "start": 18.06,
+    "end": 18.55
+   },
+   {
+    "text": "percent.",
+    "start": 18.55,
+    "end": 19.04
+   },
+   {
+    "text": "Site",
+    "start": 19.04,
+    "end": 20.08
+   },
+   {
+    "text": "ten",
+    "start": 20.08,
+    "end": 20.4
+   },
+   {
+    "text": "loses",
+    "start": 20.4,
+    "end": 21.08
+   },
+   {
+    "text": "three",
+    "start": 21.08,
+    "end": 21.347
+   },
+   {
+    "text": "hundred",
+    "start": 21.347,
+    "end": 21.613
+   },
+   {
+    "text": "pounds",
+    "start": 21.613,
+    "end": 21.88
+   },
+   {
+    "text": "a",
+    "start": 21.88,
+    "end": 22.4
+   },
+   {
+    "text": "week.",
+    "start": 22.4,
+    "end": 22.6
+   }
+  ]
+ },
+ "s5": {
+  "duration": 14.56,
+  "words": [
+   {
+    "text": "Rent",
+    "start": 0.02,
+    "end": 0.52
+   },
+   {
+    "text": "and",
+    "start": 0.52,
+    "end": 0.66
+   },
+   {
+    "text": "labour",
+    "start": 0.66,
+    "end": 0.94
+   },
+   {
+    "text": "are",
+    "start": 0.94,
+    "end": 1.28
+   },
+   {
+    "text": "mostly",
+    "start": 1.28,
+    "end": 1.64
+   },
+   {
+    "text": "fixed.",
+    "start": 1.64,
+    "end": 2.18
+   },
+   {
+    "text": "When",
+    "start": 2.36,
+    "end": 2.92
+   },
+   {
+    "text": "sales",
+    "start": 2.92,
+    "end": 3.24
+   },
+   {
+    "text": "fall,",
+    "start": 3.24,
+    "end": 3.56
+   },
+   {
+    "text": "they",
+    "start": 3.72,
+    "end": 4.04
+   },
+   {
+    "text": "don't.",
+    "start": 4.04,
+    "end": 4.5
+   },
+   {
+    "text": "Site",
+    "start": 4.96,
+    "end": 5.56
+   },
+   {
+    "text": "ten",
+    "start": 5.56,
+    "end": 5.76
+   },
+   {
+    "text": "needs",
+    "start": 5.76,
+    "end": 6.1
+   },
+   {
+    "text": "about",
+    "start": 6.1,
+    "end": 6.54
+   },
+   {
+    "text": "thirteen",
+    "start": 6.54,
+    "end": 6.732
+   },
+   {
+    "text": "and",
+    "start": 6.732,
+    "end": 6.924
+   },
+   {
+    "text": "a",
+    "start": 6.924,
+    "end": 7.116
+   },
+   {
+    "text": "half",
+    "start": 7.116,
+    "end": 7.308
+   },
+   {
+    "text": "thousand",
+    "start": 7.308,
+    "end": 7.5
+   },
+   {
+    "text": "a",
+    "start": 7.5,
+    "end": 8.16
+   },
+   {
+    "text": "week",
+    "start": 8.16,
+    "end": 8.36
+   },
+   {
+    "text": "just",
+    "start": 8.36,
+    "end": 8.82
+   },
+   {
+    "text": "to",
+    "start": 8.82,
+    "end": 9.06
+   },
+   {
+    "text": "break",
+    "start": 9.06,
+    "end": 9.3
+   },
+   {
+    "text": "even.",
+    "start": 9.3,
+    "end": 9.64
+   },
+   {
+    "text": "A",
+    "start": 10.18,
+    "end": 10.78
+   },
+   {
+    "text": "weaker",
+    "start": 10.78,
+    "end": 11.06
+   },
+   {
+    "text": "site",
+    "start": 11.06,
+    "end": 11.3
+   },
+   {
+    "text": "doesn't",
+    "start": 11.3,
+    "end": 11.7
+   },
+   {
+    "text": "just",
+    "start": 11.7,
+    "end": 11.88
+   },
+   {
+    "text": "earn",
+    "start": 11.88,
+    "end": 12.14
+   },
+   {
+    "text": "a",
+    "start": 12.14,
+    "end": 12.3
+   },
+   {
+    "text": "little",
+    "start": 12.3,
+    "end": 12.48
+   },
+   {
+    "text": "less.",
+    "start": 12.48,
+    "end": 12.82
+   },
+   {
+    "text": "It",
+    "start": 13.0,
+    "end": 13.58
+   },
+   {
+    "text": "can",
+    "start": 13.58,
+    "end": 13.72
+   },
+   {
+    "text": "lose",
+    "start": 13.72,
+    "end": 13.94
+   },
+   {
+    "text": "money.",
+    "start": 13.94,
+    "end": 14.2
+   }
+  ]
+ },
+ "s6": {
+  "duration": 8.645,
+  "words": [
+   {
+    "text": "Site",
+    "start": 0.0,
+    "end": 0.24
+   },
+   {
+    "text": "one's",
+    "start": 0.24,
+    "end": 0.58
+   },
+   {
+    "text": "numbers",
+    "start": 0.58,
+    "end": 0.9
+   },
+   {
+    "text": "don't",
+    "start": 0.9,
+    "end": 1.36
+   },
+   {
+    "text": "predict",
+    "start": 1.36,
+    "end": 1.58
+   },
+   {
+    "text": "site",
+    "start": 1.58,
+    "end": 1.9
+   },
+   {
+    "text": "ten's.",
+    "start": 1.9,
+    "end": 2.42
+   },
+   {
+    "text": "Model",
+    "start": 2.64,
+    "end": 3.32
+   },
+   {
+    "text": "every",
+    "start": 3.32,
+    "end": 3.7
+   },
+   {
+    "text": "new",
+    "start": 3.7,
+    "end": 4.12
+   },
+   {
+    "text": "site",
+    "start": 4.12,
+    "end": 4.58
+   },
+   {
+    "text": "on",
+    "start": 4.58,
+    "end": 5.08
+   },
+   {
+    "text": "its",
+    "start": 5.08,
+    "end": 5.26
+   },
+   {
+    "text": "own",
+    "start": 5.26,
+    "end": 5.52
+   },
+   {
+    "text": "sales,",
+    "start": 5.52,
+    "end": 5.94
+   },
+   {
+    "text": "with",
+    "start": 6.14,
+    "end": 6.74
+   },
+   {
+    "text": "its",
+    "start": 6.74,
+    "end": 6.92
+   },
+   {
+    "text": "own",
+    "start": 6.92,
+    "end": 7.24
+   },
+   {
+    "text": "fixed",
+    "start": 7.24,
+    "end": 7.8
+   },
+   {
+    "text": "costs.",
+    "start": 7.8,
+    "end": 8.24
+   }
+  ]
+ },
+ "s7": {
+  "duration": 5.93,
+  "words": [
+   {
+    "text": "Your",
+    "start": 0.0,
+    "end": 0.36
+   },
+   {
+    "text": "question",
+    "start": 0.36,
+    "end": 0.74
+   },
+   {
+    "text": "for",
+    "start": 0.74,
+    "end": 1.04
+   },
+   {
+    "text": "Monday:",
+    "start": 1.04,
+    "end": 1.36
+   },
+   {
+    "text": "what",
+    "start": 1.52,
+    "end": 2.14
+   },
+   {
+    "text": "weekly",
+    "start": 2.14,
+    "end": 2.66
+   },
+   {
+    "text": "sales",
+    "start": 2.66,
+    "end": 3.02
+   },
+   {
+    "text": "does",
+    "start": 3.02,
+    "end": 3.38
+   },
+   {
+    "text": "each",
+    "start": 3.38,
+    "end": 3.62
+   },
+   {
+    "text": "of",
+    "start": 3.62,
+    "end": 3.88
+   },
+   {
+    "text": "your",
+    "start": 3.88,
+    "end": 3.98
+   },
+   {
+    "text": "sites",
+    "start": 3.98,
+    "end": 4.26
+   },
+   {
+    "text": "need",
+    "start": 4.26,
+    "end": 4.68
+   },
+   {
+    "text": "to",
+    "start": 4.68,
+    "end": 4.96
+   },
+   {
+    "text": "break",
+    "start": 4.96,
+    "end": 5.26
+   },
+   {
+    "text": "even?",
+    "start": 5.26,
+    "end": 5.64
+   }
+  ]
+ }
+}
