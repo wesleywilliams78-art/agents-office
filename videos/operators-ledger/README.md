@@ -10,6 +10,7 @@ A LinkedIn explainer series (10 episodes planned) under **WRW Hospitality**, Wes
 | `characters/athena/index.html` | Her pose sheet and how she looks on bone, red and ink grounds. Open it in a browser. |
 | `characters/shops/` | Shopfronts: SITE 1 thriving, SITE 10 struggling, SITE 10 before it struggles, a generic site, a rival café and a TO LET unit. Open `index.html` to see them. |
 | `characters/guests/`, `characters/props/` | Six diverse guests in Athena's style (same frame as her poses) and a till counter. |
+| `wednesday/` | The Operator's Toolkit: one tool each Wednesday (a free single-site carousel plus a keyword-gated multi-site file). See `wednesday/README.md`. |
 | `brand/` | The WRW logo in four colourways (SVG, from the WRW logo pack). The end card uses `WRW-logo-white-on-red.svg`. |
 | `voice/` | Wesley's voice reference, as exported from his VoiceStudio profile `ca7acc09`. |
 

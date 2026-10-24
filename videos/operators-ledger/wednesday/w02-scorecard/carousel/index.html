@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="en-GB">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1080, height=1350" />
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <style>
+      /* The Operator's Toolkit, Wednesday 2: a LinkedIn document post, one slide per second, snapshot to PNG and PDF. */
+      @font-face { font-family: "Newsreader"; font-weight: 300; src: url("assets/fonts/newsreader-latin-300-normal.woff2") format("woff2"); }
+      @font-face { font-family: "Archivo"; font-weight: 400; src: url("assets/fonts/Archivo-Regular.ttf") format("truetype"); }
+      @font-face { font-family: "Archivo"; font-weight: 500; src: url("assets/fonts/Archivo-Medium.ttf") format("truetype"); }
+      :root { --bone: #f3f2f2; --ink: #201e1d; --red: #ec3013; --deep: #b6240e; --sand: #e9d8bd; --grey: #4a4644; --rule: #d6d2cf; }
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body { width: 1080px; height: 1350px; overflow: hidden; background: var(--bone); }
+      #root { position: relative; width: 100%; height: 100%; }
+      .slide { position: absolute; inset: 0; background: var(--bone); color: var(--ink); overflow: hidden; }
+      .red { background: var(--red); color: var(--bone); }
+      .ink { background: var(--ink); color: var(--bone); }
+      .kick { position: absolute; left: 86px; top: 150px; font: 500 28px/1 "Archivo", sans-serif; letter-spacing: .22em; color: var(--deep); }
+      .red .kick, .ink .kick { color: var(--bone); }
+      .h { position: absolute; left: 86px; top: 196px; width: 908px; font: 300 76px/1.08 "Newsreader", serif; letter-spacing: -0.01em; }
+      .p { position: absolute; left: 86px; width: 908px; font: 400 34px/1.35 "Archivo", sans-serif; color: var(--grey); }
+      .red .p, .ink .p { color: var(--bone); }
+      .foot { position: absolute; left: 86px; right: 86px; top: 1262px; display: flex; justify-content: space-between; font: 500 26px/1 "Archivo", sans-serif; letter-spacing: .18em; color: var(--grey); }
+      .red .foot, .ink .foot { color: var(--bone); }
+      .ex { position: absolute; left: 86px; width: 908px; border: 4px solid var(--ink); background: var(--sand); padding: 26px 34px; }
+      .ex .k { font: 500 26px/1 "Archivo", sans-serif; letter-spacing: .18em; color: var(--deep); margin-bottom: 18px; }
+      .row { display: flex; justify-content: space-between; font: 400 34px/1.5 "Archivo", sans-serif; font-variant-numeric: tabular-nums; }
+      .row.total { border-top: 3px solid var(--ink); margin-top: 8px; padding-top: 8px; font-weight: 500; }
+      .tip { position: absolute; left: 86px; width: 908px; font: 500 30px/1.35 "Archivo", sans-serif; color: var(--deep); }
+      /* scoring anchors: what a 1 and a 5 look like */
+      .sc { position: absolute; left: 86px; width: 908px; }
+      .sc .a { display: grid; grid-template-columns: 74px 1fr; gap: 0 22px; align-items: start; padding: 14px 0; border-bottom: 2px solid var(--rule); font: 400 30px/1.32 "Archivo", sans-serif; }
+      .sc .a:first-child { border-top: 2px solid var(--rule); }
+      .sc .s { width: 64px; height: 64px; border: 4px solid var(--ink); display: flex; align-items: center; justify-content: center; font: 500 32px/1 "Archivo", sans-serif; }
+      .sc .s.hi { background: var(--deep); border-color: var(--deep); color: var(--bone); }
+      .sc .a span { padding-top: 12px; }
+      .sc .chk { padding-top: 14px; font: 400 28px/1.35 "Archivo", sans-serif; color: var(--grey); }
+      .sc .chk b { font-weight: 500; color: var(--ink); }
+      /* two forces on one slide */
+      .f2 { position: absolute; left: 86px; width: 908px; }
+      .f2 .n { font: 500 26px/1 "Archivo", sans-serif; letter-spacing: .18em; color: var(--deep); }
+      .f2 .t { font: 300 60px/1.08 "Newsreader", serif; margin: 12px 0 10px; }
+      .f2 .d { font: 400 32px/1.35 "Archivo", sans-serif; color: var(--grey); margin-bottom: 16px; }
+      .f2 .chk { padding-top: 12px; border-top: 2px solid var(--rule); font: 400 28px/1.35 "Archivo", sans-serif; color: var(--grey); }
+      .f2 .chk b { font-weight: 500; color: var(--ink); }
+      .f2 .a { display: grid; grid-template-columns: 58px 1fr; gap: 0 20px; align-items: start; padding: 12px 0; border-top: 2px solid var(--rule); font: 400 31px/1.32 "Archivo", sans-serif; }
+      .f2 .s { width: 52px; height: 52px; border: 3px solid var(--ink); display: flex; align-items: center; justify-content: center; font: 500 28px/1 "Archivo", sans-serif; }
+      .f2 .s.hi { background: var(--deep); border-color: var(--deep); color: var(--bone); }
+      .f2 .a span { padding-top: 6px; }
+      /* the two-street scorecard */
+      .tb { position: absolute; left: 86px; width: 908px; border: 4px solid var(--ink); background: var(--sand); }
+      .tb .r { display: grid; grid-template-columns: 1fr 200px 200px; align-items: center; padding: 0 30px; height: 74px; border-bottom: 2px solid #cdbb9c; font: 400 34px/1 "Archivo", sans-serif; font-variant-numeric: tabular-nums; }
+      .tb .r > :not(:first-child) { text-align: right; }
+      .tb .r.hd { font: 500 26px/1 "Archivo", sans-serif; letter-spacing: .14em; color: var(--deep); height: 64px; }
+      .tb .r.tot { border-top: 3px solid var(--ink); border-bottom: 0; font-weight: 500; height: 84px; }
+      .tb .r.rd { border-bottom: 0; font: 500 28px/1 "Archivo", sans-serif; height: 60px; }
+      .bands { position: absolute; left: 86px; width: 908px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+      .bands div { border: 3px solid var(--ink); padding: 16px 18px; font: 400 26px/1.3 "Archivo", sans-serif; }
+      .bands b { display: block; font: 500 30px/1.1 "Archivo", sans-serif; margin-bottom: 6px; }
+      .bands .x { background: var(--deep); border-color: var(--deep); color: var(--bone); }
+      /* the worksheet */
+      .ws { position: absolute; left: 86px; top: 330px; width: 908px; }
+      .ws .r { display: grid; grid-template-columns: 1fr 140px 330px; gap: 0 26px; align-items: end; padding: 20px 0; border-bottom: 2px solid var(--rule); font: 400 32px/1.25 "Archivo", sans-serif; }
+      .ws .f { border-bottom: 3px solid var(--ink); height: 40px; font: 400 28px/40px "Archivo", sans-serif; color: var(--grey); text-align: right; }
+      .ws .e { border-bottom: 3px solid var(--ink); height: 40px; }
+      .ws small { display: block; font: 400 25px/1.3 "Archivo", sans-serif; color: var(--grey); }
+      .ws .r.tot { border-bottom: 0; font-weight: 500; }
+      .ws .hd { font: 500 24px/1 "Archivo", sans-serif; letter-spacing: .16em; color: var(--deep); padding: 0 0 6px; align-items: end; }
+      .kw { color: var(--red); }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-duration="8" data-width="1080" data-height="1350">
+
+      <!-- 1 · cover -->
+      <div id="s1" class="slide red clip" data-start="0" data-duration="1" data-track-index="0">
+        <div class="kick">THE OPERATOR’S TOOLKIT · WEDNESDAY 2</div>
+        <div class="h" style="font-size: 96px">Is this street worth the lease?</div>
+        <div class="p" style="top: 540px">Score the five forces on one street before you sign. One walk, ten minutes, a number out of 25.</div>
+        <div style="position: absolute; left: 86px; top: 1176px; width: 908px; height: 5px; background: var(--ink)"></div>
+        <img src="assets/athena/athena-looking-right.svg" alt="" style="position: absolute; left: 110px; top: 746px; width: 279px; height: 430px" />
+        <img src="assets/shops/rival-cafe.svg" alt="" style="position: absolute; left: 520px; top: 896px; width: 216px; height: 288px" />
+        <img src="assets/shops/to-let.svg" alt="" style="position: absolute; left: 760px; top: 896px; width: 216px; height: 288px" />
+        <div class="foot"><span>SWIPE FOR THE SCORECARD</span><span>1 / 8</span></div>
+      </div>
+
+      <!-- 2 · how to score -->
+      <div id="s2" class="slide clip" data-start="1" data-duration="1" data-track-index="0">
+        <div class="kick">HOW IT WORKS</div>
+        <div class="h">Score each force from 1 to 5</div>
+        <div class="p" style="top: 330px">Each force is something on the street that takes a cut of every £1 your site takes.</div>
+        <div class="sc" style="top: 480px">
+          <div class="a"><div class="s">1</div><span>The force is weak. It barely touches your margin.</span></div>
+          <div class="a"><div class="s">3</div><span>It’s there. Price it into the plan.</span></div>
+          <div class="a"><div class="s hi">5</div><span>It’s strong. It takes its cut every week, whatever you do.</span></div>
+        </div>
+        <div class="tip" style="top: 880px">Walk the street at the hour you’d trade. Write down what you saw next to each score: a score without evidence is a guess.</div>
+        <div class="foot"><span>THE OPERATOR’S TOOLKIT</span><span>2 / 8</span></div>
+      </div>
+
+      <!-- 3 · suppliers -->
+      <div id="s3" class="slide clip" data-start="2" data-duration="1" data-track-index="0">
+        <div class="kick">FORCE 1 · SUPPLIERS</div>
+        <div class="h">Who can push your costs up?</div>
+        <div class="p" style="top: 300px">Your food suppliers, your landlord and the local labour market.</div>
+        <div class="ex" style="top: 410px">
+          <div class="k">SITE 10 FROM MONDAY: EACH £1 OF SALES</div>
+          <div class="row"><span>Food and drink</span><span>30p</span></div>
+          <div class="row"><span>The team</span><span>40p</span></div>
+          <div class="row"><span>The landlord</span><span>20p</span></div>
+          <div class="row total"><span>Gone before anything else</span><span style="color: var(--deep)">90p</span></div>
+        </div>
+        <div class="sc" style="top: 800px">
+          <div class="a"><div class="s">1</div><span>Rent under 10% of forecast sales; easy to hire; two or more suppliers for key lines.</span></div>
+          <div class="a"><div class="s hi">5</div><span>Rent 20% or more, upward-only reviews; hard to hire; one supplier for key lines.</span></div>
+          <div class="chk"><b>Check:</b> rent ÷ forecast sales, and how long local job ads stay open.</div>
+        </div>
+        <div class="foot"><span>THE OPERATOR’S TOOLKIT</span><span>3 / 8</span></div>
+      </div>
+
+      <!-- 4 · buyers and substitutes -->
+      <div id="s4" class="slide clip" data-start="3" data-duration="1" data-track-index="0">
+        <div class="f2" style="top: 150px">
+          <div class="n">FORCE 2 · BUYERS</div>
+          <div class="t">Who can push your price down?</div>
+          <div class="d">Guests who compare on price, and delivery apps that take up to £6 of a £20 order.</div>
+          <div class="a"><div class="s">1</div><span>Guests choose you for the offer; delivery under 10% of sales.</span></div>
+          <div class="a"><div class="s hi">5</div><span>Guests compare on price every visit; apps 25% or more of sales.</span></div>
+          <div class="chk"><b>Check:</b> nearby menu prices; delivery’s share of your sales.</div>
+        </div>
+        <div class="f2" style="top: 730px">
+          <div class="n">FORCE 3 · SUBSTITUTES</div>
+          <div class="t">What else feeds them?</div>
+          <div class="d">Not another café: the meal deal, the office canteen, lunch from home.</div>
+          <div class="a"><div class="s">1</div><span>Nothing comparable on the guest’s path.</span></div>
+          <div class="a"><div class="s hi">5</div><span>Several cheaper options on the route guests take at your peak.</span></div>
+          <div class="chk"><b>Check:</b> walk the route your guests take at your peak hour.</div>
+        </div>
+        <div class="foot"><span>THE OPERATOR’S TOOLKIT</span><span>4 / 8</span></div>
+      </div>
+
+      <!-- 5 · new entrants and rivals -->
+      <div id="s5" class="slide clip" data-start="4" data-duration="1" data-track-index="0">
+        <div class="f2" style="top: 150px">
+          <div class="n">FORCE 4 · NEW ENTRANTS</div>
+          <div class="t">How easily could a rival open?</div>
+          <div class="d">Every empty unit nearby is a café that could open next year.</div>
+          <div class="a"><div class="s">1</div><span>No vacant units nearby; high fit-out cost.</span></div>
+          <div class="a"><div class="s hi">5</div><span>Several TO LET boards within three minutes’ walk, at low rents.</span></div>
+          <div class="chk"><b>Check:</b> count the boards; ask the agent what each unit may be used for.</div>
+        </div>
+        <div class="f2" style="top: 730px">
+          <div class="n">FORCE 5 · RIVALS</div>
+          <div class="t">Who’s already fighting for the guest?</div>
+          <div class="d">The café opposite cuts its coffee from £3.40 to £2.90. Now you have to answer.</div>
+          <div class="a"><div class="s">1</div><span>No direct rival within three minutes’ walk.</span></div>
+          <div class="a"><div class="s hi">5</div><span>Three or more direct rivals, or one discounting hard.</span></div>
+          <div class="chk"><b>Check:</b> count the same-offer sites and note their prices and offers.</div>
+        </div>
+        <div class="foot"><span>THE OPERATOR’S TOOLKIT</span><span>5 / 8</span></div>
+      </div>
+
+      <!-- 6 · two streets -->
+      <div id="s6" class="slide clip" data-start="5" data-duration="1" data-track-index="0">
+        <div class="kick">ADD THEM UP</div>
+        <div class="h">Two streets, two very different leases</div>
+        <div class="tb" style="top: 400px">
+          <div class="r hd"><span>FORCE</span><span>STREET A</span><span>STREET B</span></div>
+          <div class="r"><span>Suppliers</span><span>3</span><span>5</span></div>
+          <div class="r"><span>Buyers</span><span>2</span><span>4</span></div>
+          <div class="r"><span>Substitutes</span><span>2</span><span>4</span></div>
+          <div class="r"><span>New entrants</span><span>2</span><span>4</span></div>
+          <div class="r"><span>Rivals</span><span>3</span><span>4</span></div>
+          <div class="r tot"><span>Out of 25</span><span>12</span><span style="color: var(--deep)">21</span></div>
+        </div>
+        <div class="bands" style="top: 990px">
+          <div><b>5–12</b>Favourable</div>
+          <div><b>13–18</b>Workable: price the forces in</div>
+          <div class="x"><b>19–25</b>Hostile: more sales just to stand still</div>
+        </div>
+        <div class="foot"><span>THE OPERATOR’S TOOLKIT</span><span>6 / 8</span></div>
+      </div>
+
+      <!-- 7 · the worksheet -->
+      <div id="s7" class="slide clip" data-start="6" data-duration="1" data-track-index="0">
+        <div class="kick">YOUR STREET</div>
+        <div class="h">Fill it in</div>
+        <div class="ws">
+          <div class="r hd"><span>FORCE</span><span style="text-align: right">1–5</span><span>WHAT YOU SAW</span></div>
+          <div class="r"><span>Suppliers<small>rent ÷ sales, hiring</small></span><span class="f"></span><span class="e"></span></div>
+          <div class="r"><span>Buyers<small>prices nearby, delivery share</small></span><span class="f"></span><span class="e"></span></div>
+          <div class="r"><span>Substitutes<small>meal deals, canteens on the path</small></span><span class="f"></span><span class="e"></span></div>
+          <div class="r"><span>New entrants<small>TO LET boards nearby</small></span><span class="f"></span><span class="e"></span></div>
+          <div class="r"><span>Rivals<small>same offer, their prices</small></span><span class="f"></span><span class="e"></span></div>
+          <div class="r tot"><span>Total</span><span class="f">/ 25</span><span></span></div>
+        </div>
+        <div class="tip" style="top: 1110px">Your highest score is the force to plan for first.</div>
+        <div class="foot"><span>SAVE THIS PAGE</span><span>7 / 8</span></div>
+      </div>
+
+      <!-- 8 · the gate -->
+      <div id="s8" class="slide ink clip" data-start="7" data-duration="1" data-track-index="0">
+        <div class="kick">WEIGHING MORE THAN ONE SITE?</div>
+        <div class="h" style="font-size: 80px">Comment <span class="kw">SCORECARD</span> for the multi-site version.</div>
+        <div class="p" style="top: 470px">Every site and every lease you’re weighing, scored side by side: a guide for each force, the cushion over break-even, and what to do next.</div>
+        <div class="p" style="top: 700px; font-size: 28px; line-height: 1.4">Watch Monday’s episode of The Operator’s Ledger, “Five forces”, on the WRW Hospitality page.</div>
+        <img src="assets/brand/WRW-logo-white-on-red.svg" alt="" style="position: absolute; left: 86px; top: 900px; width: 112px; height: 112px" />
+        <div style="position: absolute; left: 230px; top: 920px; font: 500 28px/1 'Archivo', sans-serif; letter-spacing: .22em">WRW HOSPITALITY</div>
+        <div style="position: absolute; left: 230px; top: 966px; font: 400 32px/1 'Archivo', sans-serif">Wesley Williams</div>
+        <div class="foot"><span>© 2026 WRW HOSPITALITY</span><span>8 / 8</span></div>
+        <div style="position: absolute; left: 86px; top: 1160px; width: 908px; font: 400 24px/1.35 'Archivo', sans-serif; color: var(--bone); opacity: .75">Illustrative figures. Free for use in your own business; not to be resold, rebranded or redistributed.</div>
+      </div>
+    </div>
+    <script>
+      window.__timelines = window.__timelines || {};
+      const tl = gsap.timeline({ paused: true });
+      tl.set({}, {}, 8);
+      window.__timelines["main"] = tl;
+    </script>
+  </body>
+</html>

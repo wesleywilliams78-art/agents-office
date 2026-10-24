@@ -1,7 +1,9 @@
 """Builds ../EPISODES.md, the 100-episode plan for The Operator's Ledger.
 Edit the topic lists here (never the generated table by hand), then run:  python build_episodes.py
 Order: modules rotate F, S, O, M, L, E, D, H, G, N, so every ten weeks covers the whole MBA once."""
-import datetime as dt, os
+import datetime as dt, os, sys
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from wednesday_tools import W   # the Wednesday Toolkit, one per row
 
 FIRST_MONDAY = dt.date(2026, 10, 26)   # Episode 01 goes out on this Monday
 STATUS = {1: "Posted / scheduled", 2: "Posted / scheduled", 3: "Posted / scheduled", 4: "Rendered (v1)"}
@@ -134,9 +136,10 @@ ORDER = list("FSOMLEDHGN")
 rows, idx = [], {k: 0 for k in ORDER}
 for n in range(1, 101):
     k = ORDER[(n - 1) % 10]
-    topic, angle, example = M[k][1][idx[k]]; idx[k] += 1
+    topic, angle, example = M[k][1][idx[k]]
+    free, gated, kw = W[k][idx[k]]; idx[k] += 1
     date = FIRST_MONDAY + dt.timedelta(weeks=n - 1)
-    rows.append(f"| {n:02d} | {date:%a %d %b %Y} | {M[k][0]} | **{topic}** | {angle} | {example} | {STATUS.get(n, 'Planned')} |")
+    rows.append(f"| {n:02d} | {date:%a %d %b %Y} | {M[k][0]} | **{topic}** | {angle} | {example} | {free} | {gated} | **{kw}** | {STATUS.get(n, 'Planned')} |")
 
 intro = """# The Operator's Ledger — 100-episode plan
 
@@ -149,14 +152,16 @@ intro = """# The Operator's Ledger — 100-episode plan
 4. **One question for Monday,** something the viewer can check in their own business that week.
 5. **Never generic.** If the episode could run on any business channel unchanged, it isn't finished.
 
+**The weekly rhythm:** Monday, the episode (WRW Hospitality page, reposted by Wesley). **Wednesday, The Operator's Toolkit** (from Wesley's personal profile, pointing back to Monday's episode): the row's tool, complete for **one site**. People who comment the **keyword** get the **multi-site version** through a short form (the pattern is `wednesday/w01-breakeven/`). Friday, the country report (WRW Hospitality page).
+
 **How to use this file:**
 - Episodes run in order unless Wesley moves one. To change a topic, angle or order, edit `plan/build_episodes.py` and re-run it; never edit the table by hand.
 - Before scripting an episode, read its row here, then the `operators-ledger-episode` skill in the brain (`Agents Office/skills/operators-ledger-episode/`).
 - Mark status as episodes move: Planned → Scripted → In production → Rendered → Published.
 - Modules rotate in the order Finance, Strategy, Operations, Marketing, Leadership, Economics, Data, People, Growth, Negotiation and risk. So every ten weeks covers the whole MBA once.
 
-| # | Monday | Module | MBA topic | The Ledger angle | Worked example | Status |
-|---|---|---|---|---|---|---|
+| # | Monday | Module | MBA topic | The Ledger angle | Worked example | Wednesday tool (free, one site) | Gated (multi-site) | Keyword | Status |
+|---|---|---|---|---|---|---|---|---|---|
 """
 out = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "EPISODES.md")
 open(out, "w", encoding="utf-8").write(intro + "\n".join(rows) + "\n")

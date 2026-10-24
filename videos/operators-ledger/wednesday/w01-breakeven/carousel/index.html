@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="en-GB">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1080, height=1350" />
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <style>
+      /* The Operator's Toolkit, Wednesday 1: a LinkedIn document post, one slide per second, snapshot to PNG and PDF. */
+      @font-face { font-family: "Newsreader"; font-weight: 300; src: url("assets/fonts/newsreader-latin-300-normal.woff2") format("woff2"); }
+      @font-face { font-family: "Archivo"; font-weight: 400; src: url("assets/fonts/Archivo-Regular.ttf") format("truetype"); }
+      @font-face { font-family: "Archivo"; font-weight: 500; src: url("assets/fonts/Archivo-Medium.ttf") format("truetype"); }
+      :root { --bone: #f3f2f2; --ink: #201e1d; --red: #ec3013; --deep: #b6240e; --sand: #e9d8bd; --grey: #4a4644; }
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body { width: 1080px; height: 1350px; overflow: hidden; background: var(--bone); }
+      #root { position: relative; width: 100%; height: 100%; }
+      .slide { position: absolute; inset: 0; background: var(--bone); color: var(--ink); overflow: hidden; }
+      .red { background: var(--red); color: var(--bone); }
+      .ink { background: var(--ink); color: var(--bone); }
+      .kick { position: absolute; left: 86px; top: 150px; font: 500 28px/1 "Archivo", sans-serif; letter-spacing: .22em; color: var(--deep); }
+      .red .kick, .ink .kick { color: var(--bone); }
+      .h { position: absolute; left: 86px; top: 196px; width: 908px; font: 300 76px/1.08 "Newsreader", serif; letter-spacing: -0.01em; }
+      .p { position: absolute; left: 86px; width: 908px; font: 400 34px/1.35 "Archivo", sans-serif; color: var(--grey); }
+      .red .p, .ink .p { color: var(--bone); }
+      .foot { position: absolute; left: 86px; right: 86px; top: 1262px; display: flex; justify-content: space-between; font: 500 26px/1 "Archivo", sans-serif; letter-spacing: .18em; color: var(--grey); }
+      .red .foot, .ink .foot { color: var(--bone); }
+      .ex { position: absolute; left: 86px; width: 908px; border: 4px solid var(--ink); background: var(--sand); padding: 30px 34px; }
+      .ex .k { font: 500 26px/1 "Archivo", sans-serif; letter-spacing: .18em; color: var(--deep); margin-bottom: 22px; }
+      .row { display: flex; justify-content: space-between; font: 400 36px/1.55 "Archivo", sans-serif; font-variant-numeric: tabular-nums; }
+      .row.total { border-top: 3px solid var(--ink); margin-top: 10px; padding-top: 10px; font-weight: 500; }
+      .big { position: absolute; left: 86px; font: 300 120px/1 "Newsreader", serif; font-variant-numeric: tabular-nums; white-space: nowrap; }
+      .tip { position: absolute; left: 86px; width: 908px; font: 500 30px/1.35 "Archivo", sans-serif; color: var(--deep); }
+      .ws { position: absolute; left: 86px; top: 330px; width: 908px; }
+      .ws .r { display: grid; grid-template-columns: 60px 1fr 300px; align-items: end; padding: 22px 0; border-bottom: 2px solid #d6d2cf; font: 400 32px/1.25 "Archivo", sans-serif; }
+      .ws .l { font: 500 32px/1 "Archivo", sans-serif; color: var(--deep); }
+      .ws .f { border-bottom: 3px solid var(--ink); height: 40px; font: 400 30px/40px "Archivo", sans-serif; color: var(--grey); }
+      .ws small { display: block; font: 400 26px/1.3 "Archivo", sans-serif; color: var(--grey); }
+      .m { position: absolute; left: 86px; width: 908px; }
+      .m .n { font: 500 28px/1 "Archivo", sans-serif; letter-spacing: .18em; color: var(--deep); }
+      .m .t { font: 300 48px/1.1 "Newsreader", serif; margin: 10px 0 8px; }
+      .m .d { font: 400 30px/1.35 "Archivo", sans-serif; color: var(--grey); }
+      .kw { color: var(--red); }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-duration="8" data-width="1080" data-height="1350">
+
+      <!-- 1 · cover -->
+      <div id="s1" class="slide red clip" data-start="0" data-duration="1" data-track-index="0">
+        <div class="kick">THE OPERATOR’S TOOLKIT · WEDNESDAY 1</div>
+        <div class="h" style="font-size: 96px">What does one site need to break even?</div>
+        <div class="p" style="top: 640px">A four-step worksheet. One site, ten minutes, your own numbers.</div>
+        <div style="position: absolute; left: 86px; top: 1176px; width: 908px; height: 5px; background: var(--ink)"></div>
+        <img src="assets/athena/athena-head-scratch.svg" alt="" style="position: absolute; left: 120px; top: 760px; width: 279px; height: 430px" />
+        <img src="assets/shops/site-10.svg" alt="" style="position: absolute; left: 704px; top: 896px; width: 216px; height: 288px" />
+        <div class="foot"><span>SWIPE FOR THE STEPS</span><span>1 / 8</span></div>
+      </div>
+
+      <!-- 2 · step 1 -->
+      <div id="s2" class="slide clip" data-start="1" data-duration="1" data-track-index="0">
+        <div class="kick">STEP 1</div>
+        <div class="h">Add up the fixed costs</div>
+        <div class="p" style="top: 400px">Fixed costs stay the same in a quiet week. Use weekly figures.</div>
+        <div class="ex" style="top: 520px">
+          <div class="k">SITE 10, THE EXAMPLE FROM MONDAY</div>
+          <div class="row"><span>Core labour</span><span>£5,200</span></div>
+          <div class="row"><span>Rent and service charge</span><span>£2,600</span></div>
+          <div class="row total"><span>Fixed costs a week</span><span>£7,800</span></div>
+        </div>
+        <div class="tip" style="top: 900px">The test: would this cost fall if next week were quiet? If not, it’s fixed.</div>
+        <div class="foot"><span>THE OPERATOR’S TOOLKIT</span><span>2 / 8</span></div>
+      </div>
+
+      <!-- 3 · step 2 -->
+      <div id="s3" class="slide clip" data-start="2" data-duration="1" data-track-index="0">
+        <div class="kick">STEP 2</div>
+        <div class="h">Find the share that moves with sales</div>
+        <div class="p" style="top: 400px">Variable costs as a % of sales: food and drink, packaging, card fees, delivery commission.</div>
+        <div class="ex" style="top: 560px">
+          <div class="k">SITE 10: SALES £13,000 A WEEK</div>
+          <div class="row"><span>Food and drink, £3,900</span><span>30.0%</span></div>
+          <div class="row"><span>Other variable, £1,600</span><span>12.3%</span></div>
+          <div class="row total"><span>Variable share (£5,500 ÷ £13,000)</span><span>42.3%</span></div>
+        </div>
+        <div class="tip" style="top: 940px">Use this site’s own food cost, after waste. Not the brand average.</div>
+        <div class="foot"><span>THE OPERATOR’S TOOLKIT</span><span>3 / 8</span></div>
+      </div>
+
+      <!-- 4 · step 3 -->
+      <div id="s4" class="slide clip" data-start="3" data-duration="1" data-track-index="0">
+        <div class="kick">STEP 3</div>
+        <div class="h">What each £1 keeps</div>
+        <div class="p" style="top: 400px">100% minus the variable share. This is what pays the fixed costs.</div>
+        <div class="big" style="top: 540px">100% − 42.3%</div>
+        <div class="big" style="top: 690px; color: var(--deep)">= 57.7p</div>
+        <div class="p" style="top: 860px">Of every £1 a guest spends at site 10, 57.7p is left to cover rent and the core team. Only after they’re covered is anything profit.</div>
+        <div class="foot"><span>THE OPERATOR’S TOOLKIT</span><span>4 / 8</span></div>
+      </div>
+
+      <!-- 5 · step 4 -->
+      <div id="s5" class="slide clip" data-start="4" data-duration="1" data-track-index="0">
+        <div class="kick">STEP 4</div>
+        <div class="h">Divide the fixed costs by what each £1 keeps</div>
+        <div class="ex" style="top: 420px">
+          <div class="k">SITE 10</div>
+          <div class="row"><span>£7,800 ÷ 0.577</span><span>£13,520 a week</span></div>
+          <div class="row"><span>£13,520 ÷ 7 trading days</span><span>£1,931 a day</span></div>
+          <div class="row total"><span>Actual sales £13,000: short by</span><span style="color: var(--deep)">£520</span></div>
+        </div>
+        <div class="tip" style="top: 800px">Give each manager the daily number. It turns a P&amp;L into a target they can hit today.</div>
+        <div class="p" style="top: 930px; font-size: 28px">Exact: £7,800 ÷ (1 − £5,500/£13,000) = £13,520.</div>
+        <div class="foot"><span>THE OPERATOR’S TOOLKIT</span><span>5 / 8</span></div>
+      </div>
+
+      <!-- 6 · the worksheet -->
+      <div id="s6" class="slide clip" data-start="5" data-duration="1" data-track-index="0">
+        <div class="kick">YOUR SITE</div>
+        <div class="h">Fill it in</div>
+        <div class="ws">
+          <div class="r"><span class="l">A</span><span>Fixed costs a week</span><span class="f">£</span></div>
+          <div class="r"><span class="l">B</span><span>Variable share of sales</span><span class="f">%</span></div>
+          <div class="r"><span class="l">C</span><span>What each £1 keeps<small>1 − B</small></span><span class="f"></span></div>
+          <div class="r"><span class="l">D</span><span>Break-even a week<small>A ÷ C</small></span><span class="f">£</span></div>
+          <div class="r"><span class="l">E</span><span>Your sales a week<small>last 8 weeks’ average</small></span><span class="f">£</span></div>
+          <div class="r"><span class="l">F</span><span>Gap<small>E − D. Negative means below break-even</small></span><span class="f">£</span></div>
+          <div class="r"><span class="l">G</span><span>Break-even a day<small>D ÷ trading days</small></span><span class="f">£</span></div>
+        </div>
+        <div class="foot"><span>SAVE THIS PAGE</span><span>6 / 8</span></div>
+      </div>
+
+      <!-- 7 · mistakes -->
+      <div id="s7" class="slide clip" data-start="6" data-duration="1" data-track-index="0">
+        <div class="kick">THREE MISTAKES THAT HIDE A LOSS</div>
+        <div class="m" style="top: 230px"><div class="n">1</div><div class="t">Treating labour as variable</div><div class="d">Most of the rota is there whatever you take. Put the core team in fixed costs.</div></div>
+        <div class="m" style="top: 520px"><div class="n">2</div><div class="t">Using the brand’s average food cost</div><div class="d">One site’s waste hides inside a group average. Use each site’s own number.</div></div>
+        <div class="m" style="top: 810px"><div class="n">3</div><div class="t">Leaving out card fees and commission</div><div class="d">They rise with every sale. They belong in the variable share.</div></div>
+        <div class="foot"><span>THE OPERATOR’S TOOLKIT</span><span>7 / 8</span></div>
+      </div>
+
+      <!-- 8 · the gate -->
+      <div id="s8" class="slide ink clip" data-start="7" data-duration="1" data-track-index="0">
+        <div class="kick">RUNNING MORE THAN ONE SITE?</div>
+        <div class="h" style="font-size: 80px">Comment <span class="kw">BREAKEVEN</span> for the multi-site version.</div>
+        <div class="p" style="top: 470px">Every site side by side, ranked by how far each is from break-even, with each manager’s daily number. A spreadsheet that does the maths.</div>
+        <div class="p" style="top: 700px; font-size: 28px; line-height: 1.4">Watch Monday’s episode of The Operator’s Ledger, “Unit economics”, on the WRW Hospitality page.</div>
+        <img src="assets/brand/WRW-logo-white-on-red.svg" alt="" style="position: absolute; left: 86px; top: 900px; width: 112px; height: 112px" />
+        <div style="position: absolute; left: 230px; top: 920px; font: 500 28px/1 'Archivo', sans-serif; letter-spacing: .22em">WRW HOSPITALITY</div>
+        <div style="position: absolute; left: 230px; top: 966px; font: 400 32px/1 'Archivo', sans-serif">Wesley Williams</div>
+        <div class="foot"><span>© 2026 WRW HOSPITALITY</span><span>8 / 8</span></div>
+        <div style="position: absolute; left: 86px; top: 1160px; width: 908px; font: 400 24px/1.35 'Archivo', sans-serif; color: var(--bone); opacity: .75">Illustrative figures. Free for use in your own business; not to be resold, rebranded or redistributed.</div>
+      </div>
+    </div>
+    <script>
+      window.__timelines = window.__timelines || {};
+      const tl = gsap.timeline({ paused: true });
+      tl.set({}, {}, 8);
+      window.__timelines["main"] = tl;
+    </script>
+  </body>
+</html>
