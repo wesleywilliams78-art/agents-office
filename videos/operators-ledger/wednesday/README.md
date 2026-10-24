@@ -32,3 +32,4 @@ One tool every Wednesday, from Wesley's personal profile, pointing back to Monda
 | Wed 28 Oct 2026 | Break-even worksheet / break-even for every site | BREAKEVEN | `w01-breakeven/` |
 | Wed 4 Nov 2026 | Street scorecard (five forces, 1 to 5) / scorecard for every site and lease | SCORECARD | `w02-scorecard/` |
 | Wed 11 Nov 2026 | The 12:10 queue count / lunch-peak capacity for every site | QUEUE | `w03-queue/` |
+| Wed 18 Nov 2026 | Site profile / site profiles for every site | SITE | `w04-site/` |
