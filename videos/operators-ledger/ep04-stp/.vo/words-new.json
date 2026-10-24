@@ -1,0 +1,1002 @@
+{
+ "s1": {
+  "duration": 10.331,
+  "words": [
+   {
+    "text": "Same",
+    "start": 0.0,
+    "end": 0.3
+   },
+   {
+    "text": "brand.",
+    "start": 0.3,
+    "end": 0.56
+   },
+   {
+    "text": "Same",
+    "start": 1.12,
+    "end": 1.72
+   },
+   {
+    "text": "menu.",
+    "start": 1.72,
+    "end": 2.14
+   },
+   {
+    "text": "Same",
+    "start": 2.4,
+    "end": 3.0
+   },
+   {
+    "text": "opening",
+    "start": 3.0,
+    "end": 3.42
+   },
+   {
+    "text": "hours,",
+    "start": 3.42,
+    "end": 3.78
+   },
+   {
+    "text": "at",
+    "start": 4.14,
+    "end": 4.74
+   },
+   {
+    "text": "every",
+    "start": 4.74,
+    "end": 5.22
+   },
+   {
+    "text": "site.",
+    "start": 5.22,
+    "end": 5.6
+   },
+   {
+    "text": "But",
+    "start": 6.14,
+    "end": 6.74
+   },
+   {
+    "text": "the",
+    "start": 6.74,
+    "end": 6.84
+   },
+   {
+    "text": "people",
+    "start": 6.84,
+    "end": 7.08
+   },
+   {
+    "text": "outside",
+    "start": 7.08,
+    "end": 7.38
+   },
+   {
+    "text": "site",
+    "start": 7.38,
+    "end": 7.82
+   },
+   {
+    "text": "one",
+    "start": 7.82,
+    "end": 8.02
+   },
+   {
+    "text": "aren't",
+    "start": 8.02,
+    "end": 8.7
+   },
+   {
+    "text": "the",
+    "start": 8.7,
+    "end": 8.72
+   },
+   {
+    "text": "people",
+    "start": 8.72,
+    "end": 8.96
+   },
+   {
+    "text": "outside",
+    "start": 8.96,
+    "end": 9.26
+   },
+   {
+    "text": "site",
+    "start": 9.26,
+    "end": 9.78
+   },
+   {
+    "text": "ten.",
+    "start": 9.78,
+    "end": 10.02
+   }
+  ]
+ },
+ "s2": {
+  "duration": 18.98,
+  "words": [
+   {
+    "text": "Wendell",
+    "start": 0.0,
+    "end": 0.6
+   },
+   {
+    "text": "Smith",
+    "start": 0.6,
+    "end": 0.84
+   },
+   {
+    "text": "named",
+    "start": 0.84,
+    "end": 1.46
+   },
+   {
+    "text": "market",
+    "start": 1.46,
+    "end": 1.9
+   },
+   {
+    "text": "segmentation",
+    "start": 1.9,
+    "end": 2.8
+   },
+   {
+    "text": "in",
+    "start": 2.8,
+    "end": 3.28
+   },
+   {
+    "text": "nineteen",
+    "start": 3.28,
+    "end": 3.57
+   },
+   {
+    "text": "fifty-six.",
+    "start": 3.57,
+    "end": 3.86
+   },
+   {
+    "text": "Marketing",
+    "start": 4.9,
+    "end": 5.58
+   },
+   {
+    "text": "courses",
+    "start": 5.58,
+    "end": 6.0
+   },
+   {
+    "text": "now",
+    "start": 6.0,
+    "end": 6.4
+   },
+   {
+    "text": "teach",
+    "start": 6.4,
+    "end": 6.74
+   },
+   {
+    "text": "it",
+    "start": 6.74,
+    "end": 6.98
+   },
+   {
+    "text": "as",
+    "start": 6.98,
+    "end": 7.16
+   },
+   {
+    "text": "three",
+    "start": 7.16,
+    "end": 7.44
+   },
+   {
+    "text": "steps:",
+    "start": 7.44,
+    "end": 7.9
+   },
+   {
+    "text": "segment",
+    "start": 8.12,
+    "end": 8.68
+   },
+   {
+    "text": "the",
+    "start": 8.68,
+    "end": 8.86
+   },
+   {
+    "text": "market,",
+    "start": 8.86,
+    "end": 9.14
+   },
+   {
+    "text": "choose",
+    "start": 9.34,
+    "end": 9.68
+   },
+   {
+    "text": "a",
+    "start": 9.68,
+    "end": 9.84
+   },
+   {
+    "text": "target,",
+    "start": 9.84,
+    "end": 10.22
+   },
+   {
+    "text": "then",
+    "start": 10.36,
+    "end": 10.7
+   },
+   {
+    "text": "position",
+    "start": 10.7,
+    "end": 11.04
+   },
+   {
+    "text": "yourself",
+    "start": 11.04,
+    "end": 11.34
+   },
+   {
+    "text": "for",
+    "start": 11.34,
+    "end": 11.74
+   },
+   {
+    "text": "it.",
+    "start": 11.74,
+    "end": 11.98
+   },
+   {
+    "text": "Multi-site",
+    "start": 12.56,
+    "end": 13.24
+   },
+   {
+    "text": "owners",
+    "start": 13.24,
+    "end": 13.46
+   },
+   {
+    "text": "usually",
+    "start": 13.46,
+    "end": 13.92
+   },
+   {
+    "text": "do",
+    "start": 13.92,
+    "end": 14.24
+   },
+   {
+    "text": "it",
+    "start": 14.24,
+    "end": 14.38
+   },
+   {
+    "text": "once,",
+    "start": 14.38,
+    "end": 14.7
+   },
+   {
+    "text": "for",
+    "start": 14.7,
+    "end": 15.3
+   },
+   {
+    "text": "the",
+    "start": 15.3,
+    "end": 15.42
+   },
+   {
+    "text": "brand.",
+    "start": 15.42,
+    "end": 15.74
+   },
+   {
+    "text": "Do",
+    "start": 16.64,
+    "end": 16.98
+   },
+   {
+    "text": "it",
+    "start": 16.98,
+    "end": 17.1
+   },
+   {
+    "text": "again",
+    "start": 17.1,
+    "end": 17.3
+   },
+   {
+    "text": "for",
+    "start": 17.3,
+    "end": 17.86
+   },
+   {
+    "text": "every",
+    "start": 17.86,
+    "end": 18.3
+   },
+   {
+    "text": "site.",
+    "start": 18.3,
+    "end": 18.66
+   }
+  ]
+ },
+ "s3": {
+  "duration": 15.94,
+  "words": [
+   {
+    "text": "Site",
+    "start": 0.0,
+    "end": 0.24
+   },
+   {
+    "text": "one",
+    "start": 0.24,
+    "end": 0.44
+   },
+   {
+    "text": "sits",
+    "start": 0.44,
+    "end": 0.94
+   },
+   {
+    "text": "by",
+    "start": 0.94,
+    "end": 1.26
+   },
+   {
+    "text": "a",
+    "start": 1.26,
+    "end": 1.42
+   },
+   {
+    "text": "station.",
+    "start": 1.42,
+    "end": 1.8
+   },
+   {
+    "text": "Its",
+    "start": 2.04,
+    "end": 2.68
+   },
+   {
+    "text": "guests",
+    "start": 2.68,
+    "end": 2.96
+   },
+   {
+    "text": "arrive",
+    "start": 2.96,
+    "end": 3.5
+   },
+   {
+    "text": "between",
+    "start": 3.5,
+    "end": 3.98
+   },
+   {
+    "text": "seven",
+    "start": 3.98,
+    "end": 4.48
+   },
+   {
+    "text": "and",
+    "start": 4.48,
+    "end": 4.8
+   },
+   {
+    "text": "nine,",
+    "start": 4.8,
+    "end": 5.16
+   },
+   {
+    "text": "in",
+    "start": 5.16,
+    "end": 6.08
+   },
+   {
+    "text": "a",
+    "start": 6.08,
+    "end": 6.24
+   },
+   {
+    "text": "hurry,",
+    "start": 6.24,
+    "end": 6.54
+   },
+   {
+    "text": "and",
+    "start": 6.54,
+    "end": 6.94
+   },
+   {
+    "text": "spend",
+    "start": 6.94,
+    "end": 7.3
+   },
+   {
+    "text": "six",
+    "start": 7.3,
+    "end": 7.65
+   },
+   {
+    "text": "pounds",
+    "start": 7.65,
+    "end": 8.0
+   },
+   {
+    "text": "each.",
+    "start": 8.0,
+    "end": 8.22
+   },
+   {
+    "text": "Site",
+    "start": 8.78,
+    "end": 9.42
+   },
+   {
+    "text": "ten",
+    "start": 9.42,
+    "end": 9.66
+   },
+   {
+    "text": "sits",
+    "start": 9.66,
+    "end": 10.1
+   },
+   {
+    "text": "on",
+    "start": 10.1,
+    "end": 10.42
+   },
+   {
+    "text": "a",
+    "start": 10.42,
+    "end": 10.54
+   },
+   {
+    "text": "residential",
+    "start": 10.54,
+    "end": 10.92
+   },
+   {
+    "text": "street.",
+    "start": 10.92,
+    "end": 11.56
+   },
+   {
+    "text": "Its",
+    "start": 12.24,
+    "end": 12.56
+   },
+   {
+    "text": "busiest",
+    "start": 12.56,
+    "end": 12.88
+   },
+   {
+    "text": "hours",
+    "start": 12.88,
+    "end": 13.22
+   },
+   {
+    "text": "are",
+    "start": 13.22,
+    "end": 13.44
+   },
+   {
+    "text": "weekend",
+    "start": 13.44,
+    "end": 13.72
+   },
+   {
+    "text": "late",
+    "start": 13.72,
+    "end": 14.0
+   },
+   {
+    "text": "mornings,",
+    "start": 14.0,
+    "end": 14.38
+   },
+   {
+    "text": "with",
+    "start": 14.38,
+    "end": 14.86
+   },
+   {
+    "text": "guests",
+    "start": 14.86,
+    "end": 15.14
+   },
+   {
+    "text": "who",
+    "start": 15.14,
+    "end": 15.42
+   },
+   {
+    "text": "stay.",
+    "start": 15.42,
+    "end": 15.68
+   }
+  ]
+ },
+ "s4": {
+  "duration": 20.048,
+  "words": [
+   {
+    "text": "But",
+    "start": 0.0,
+    "end": 0.12
+   },
+   {
+    "text": "site",
+    "start": 0.12,
+    "end": 0.38
+   },
+   {
+    "text": "ten",
+    "start": 0.38,
+    "end": 0.58
+   },
+   {
+    "text": "runs",
+    "start": 0.58,
+    "end": 0.92
+   },
+   {
+    "text": "site",
+    "start": 1.14,
+    "end": 1.84
+   },
+   {
+    "text": "one's",
+    "start": 1.84,
+    "end": 2.2
+   },
+   {
+    "text": "menu:",
+    "start": 2.2,
+    "end": 2.48
+   },
+   {
+    "text": "a",
+    "start": 2.64,
+    "end": 3.16
+   },
+   {
+    "text": "coffee",
+    "start": 3.16,
+    "end": 3.56
+   },
+   {
+    "text": "and",
+    "start": 3.56,
+    "end": 3.98
+   },
+   {
+    "text": "a",
+    "start": 3.98,
+    "end": 4.18
+   },
+   {
+    "text": "pastry,",
+    "start": 4.18,
+    "end": 4.56
+   },
+   {
+    "text": "to",
+    "start": 4.56,
+    "end": 5.36
+   },
+   {
+    "text": "go.",
+    "start": 5.36,
+    "end": 5.56
+   },
+   {
+    "text": "On",
+    "start": 6.2,
+    "end": 6.8
+   },
+   {
+    "text": "a",
+    "start": 6.8,
+    "end": 6.94
+   },
+   {
+    "text": "Saturday,",
+    "start": 6.94,
+    "end": 7.34
+   },
+   {
+    "text": "two",
+    "start": 7.58,
+    "end": 7.84
+   },
+   {
+    "text": "hundred",
+    "start": 7.84,
+    "end": 8.1
+   },
+   {
+    "text": "guests",
+    "start": 8.1,
+    "end": 8.68
+   },
+   {
+    "text": "spend",
+    "start": 8.68,
+    "end": 9.46
+   },
+   {
+    "text": "seven",
+    "start": 9.46,
+    "end": 9.9
+   },
+   {
+    "text": "pounds",
+    "start": 9.9,
+    "end": 10.34
+   },
+   {
+    "text": "each.",
+    "start": 10.34,
+    "end": 10.62
+   },
+   {
+    "text": "Give",
+    "start": 11.14,
+    "end": 11.44
+   },
+   {
+    "text": "them",
+    "start": 11.44,
+    "end": 11.68
+   },
+   {
+    "text": "a",
+    "start": 11.68,
+    "end": 11.78
+   },
+   {
+    "text": "brunch",
+    "start": 11.78,
+    "end": 12.04
+   },
+   {
+    "text": "worth",
+    "start": 12.04,
+    "end": 12.5
+   },
+   {
+    "text": "eleven",
+    "start": 12.5,
+    "end": 12.92
+   },
+   {
+    "text": "pounds",
+    "start": 12.92,
+    "end": 13.34
+   },
+   {
+    "text": "a",
+    "start": 13.34,
+    "end": 13.48
+   },
+   {
+    "text": "head,",
+    "start": 13.48,
+    "end": 13.66
+   },
+   {
+    "text": "and",
+    "start": 13.8,
+    "end": 14.22
+   },
+   {
+    "text": "the",
+    "start": 14.22,
+    "end": 14.32
+   },
+   {
+    "text": "same",
+    "start": 14.32,
+    "end": 14.52
+   },
+   {
+    "text": "guests",
+    "start": 14.52,
+    "end": 14.96
+   },
+   {
+    "text": "add",
+    "start": 14.96,
+    "end": 15.3
+   },
+   {
+    "text": "eight",
+    "start": 15.3,
+    "end": 15.533
+   },
+   {
+    "text": "hundred",
+    "start": 15.533,
+    "end": 15.767
+   },
+   {
+    "text": "pounds",
+    "start": 15.767,
+    "end": 16.0
+   },
+   {
+    "text": "a",
+    "start": 16.0,
+    "end": 16.46
+   },
+   {
+    "text": "week.",
+    "start": 16.46,
+    "end": 16.66
+   },
+   {
+    "text": "Enough",
+    "start": 17.06,
+    "end": 17.66
+   },
+   {
+    "text": "to",
+    "start": 17.66,
+    "end": 17.86
+   },
+   {
+    "text": "take",
+    "start": 17.86,
+    "end": 18.12
+   },
+   {
+    "text": "site",
+    "start": 18.12,
+    "end": 18.44
+   },
+   {
+    "text": "ten",
+    "start": 18.44,
+    "end": 18.72
+   },
+   {
+    "text": "past",
+    "start": 18.72,
+    "end": 19.14
+   },
+   {
+    "text": "break-even.",
+    "start": 19.14,
+    "end": 19.82
+   }
+  ]
+ },
+ "s5": {
+  "duration": 11.35,
+  "words": [
+   {
+    "text": "That's",
+    "start": 0.0,
+    "end": 0.26
+   },
+   {
+    "text": "positioning.",
+    "start": 0.26,
+    "end": 0.72
+   },
+   {
+    "text": "Same",
+    "start": 1.34,
+    "end": 1.88
+   },
+   {
+    "text": "brand,",
+    "start": 1.88,
+    "end": 2.34
+   },
+   {
+    "text": "same",
+    "start": 2.62,
+    "end": 3.2
+   },
+   {
+    "text": "name",
+    "start": 3.2,
+    "end": 3.54
+   },
+   {
+    "text": "above",
+    "start": 3.54,
+    "end": 3.76
+   },
+   {
+    "text": "the",
+    "start": 3.76,
+    "end": 4.02
+   },
+   {
+    "text": "door.",
+    "start": 4.02,
+    "end": 4.2
+   },
+   {
+    "text": "But",
+    "start": 4.82,
+    "end": 5.36
+   },
+   {
+    "text": "the",
+    "start": 5.36,
+    "end": 5.5
+   },
+   {
+    "text": "menu,",
+    "start": 5.5,
+    "end": 5.9
+   },
+   {
+    "text": "the",
+    "start": 5.98,
+    "end": 6.16
+   },
+   {
+    "text": "hours",
+    "start": 6.16,
+    "end": 6.54
+   },
+   {
+    "text": "and",
+    "start": 6.54,
+    "end": 6.86
+   },
+   {
+    "text": "the",
+    "start": 6.86,
+    "end": 6.98
+   },
+   {
+    "text": "rota",
+    "start": 6.98,
+    "end": 7.44
+   },
+   {
+    "text": "at",
+    "start": 7.44,
+    "end": 7.64
+   },
+   {
+    "text": "each",
+    "start": 7.64,
+    "end": 7.96
+   },
+   {
+    "text": "site",
+    "start": 7.96,
+    "end": 8.32
+   },
+   {
+    "text": "are",
+    "start": 8.32,
+    "end": 8.66
+   },
+   {
+    "text": "set",
+    "start": 8.66,
+    "end": 8.92
+   },
+   {
+    "text": "for",
+    "start": 8.92,
+    "end": 9.16
+   },
+   {
+    "text": "the",
+    "start": 9.16,
+    "end": 9.3
+   },
+   {
+    "text": "guests",
+    "start": 9.3,
+    "end": 9.64
+   },
+   {
+    "text": "on",
+    "start": 9.64,
+    "end": 10.16
+   },
+   {
+    "text": "its",
+    "start": 10.16,
+    "end": 10.34
+   },
+   {
+    "text": "own",
+    "start": 10.34,
+    "end": 10.58
+   },
+   {
+    "text": "street.",
+    "start": 10.58,
+    "end": 10.98
+   }
+  ]
+ },
+ "s6": {
+  "duration": 4.474,
+  "words": [
+   {
+    "text": "Your",
+    "start": 0.02,
+    "end": 0.46
+   },
+   {
+    "text": "question",
+    "start": 0.46,
+    "end": 0.76
+   },
+   {
+    "text": "for",
+    "start": 0.76,
+    "end": 0.94
+   },
+   {
+    "text": "Monday:",
+    "start": 0.94,
+    "end": 1.28
+   },
+   {
+    "text": "who",
+    "start": 1.44,
+    "end": 2.12
+   },
+   {
+    "text": "is",
+    "start": 2.12,
+    "end": 2.36
+   },
+   {
+    "text": "each",
+    "start": 2.36,
+    "end": 2.58
+   },
+   {
+    "text": "of",
+    "start": 2.58,
+    "end": 2.8
+   },
+   {
+    "text": "your",
+    "start": 2.8,
+    "end": 2.9
+   },
+   {
+    "text": "sites",
+    "start": 2.9,
+    "end": 3.18
+   },
+   {
+    "text": "actually",
+    "start": 3.18,
+    "end": 3.78
+   },
+   {
+    "text": "for?",
+    "start": 3.78,
+    "end": 4.06
+   }
+  ]
+ }
+}

@@ -1,0 +1,49 @@
+<template>
+  <style>
+    @font-face { font-family: "Newsreader"; font-weight: 300; src: url("assets/fonts/newsreader-latin-300-normal.woff2") format("woff2"); }
+    @font-face { font-family: "Archivo"; font-weight: 500; src: url("assets/fonts/Archivo-Medium.ttf") format("truetype"); }
+    #root { position: absolute; inset: 0; background: #f3f2f2; color: #201e1d; overflow: hidden; }
+    #o-kick { position: absolute; left: 86px; top: 186px; font: 500 28px/1 "Archivo", sans-serif; letter-spacing: .22em; color: #b6240e; }
+    #o-head { position: absolute; left: 86px; top: 222px; font: 300 60px/1.1 "Newsreader", serif; }
+    .o-chip { position: absolute; top: 330px; border: 4px solid #201e1d; padding: 10px 16px; font: 500 28px/1 "Archivo", sans-serif; letter-spacing: .14em; }
+    #o-ground { position: absolute; left: 20px; top: 896px; width: 974px; height: 5px; background: #201e1d; }
+    #o-athena { position: absolute; left: 10px; top: 412px; width: 338px; height: 520px; }
+    .o-shop { position: absolute; top: 635px; width: 200px; height: 267px; }
+    .o-tag { position: absolute; top: 916px; background: #201e1d; color: #f3f2f2; font: 500 28px/1 "Archivo", sans-serif; padding: 10px 14px; white-space: nowrap; font-variant-numeric: tabular-nums; }
+    #o-head, .o-chip, .o-tag, #o-s10b { opacity: 0; }
+  </style>
+  <div id="root" data-composition-id="position" data-width="1080" data-height="1350">
+    <div id="o-kick">POSITIONING</div>
+    <div id="o-head">Same name above the door</div>
+    <div class="o-chip" id="o-c1" style="left: 86px">MENU</div>
+    <div class="o-chip" id="o-c2" style="left: 252px">HOURS</div>
+    <div class="o-chip" id="o-c3" style="left: 438px">ROTA</div>
+    <div id="o-ground"></div>
+    <img id="o-athena" src="assets/athena/athena-pointing.svg" alt="" />
+    <img class="o-shop" src="assets/shops/site-1.svg" alt="" style="left: 440px" />
+    <img class="o-shop" id="o-s10a" src="assets/shops/site-10.svg" alt="" style="left: 760px" />
+    <img class="o-shop" id="o-s10b" src="assets/shops/site-10-early.svg" alt="" style="left: 760px" />
+    <div class="o-tag" id="o-t1" style="left: 420px">7am, to go</div>
+    <div class="o-tag" id="o-t2" style="left: 728px">Weekend brunch</div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    const OFF = 0.3;
+    const WORDS = /*WORDS*/[["That's", 0.0], ["positioning.", 0.26], ["Same", 1.34], ["brand,", 1.88], ["same", 2.62], ["name", 3.2], ["above", 3.54], ["the", 3.76], ["door.", 4.02], ["But", 4.82], ["the", 5.36], ["menu,", 5.5], ["the", 5.98], ["hours", 6.16], ["and", 6.54], ["the", 6.86], ["rota", 6.98], ["at", 7.44], ["each", 7.64], ["site", 7.96], ["are", 8.32], ["set", 8.66], ["for", 8.92], ["the", 9.16], ["guests", 9.3], ["on", 9.64], ["its", 10.16], ["own", 10.34], ["street.", 10.58]];
+    const w = (k, n = 1) => { let c = 0; for (const [x, s] of WORDS) { if (x.toLowerCase().replace(/[^a-z0-9'-]/g, "").startsWith(k) && ++c === n) return OFF + s; } throw new Error("cue " + k); };
+    const pop = (sel, t) => tl.fromTo(sel, { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, t);
+
+    tl.fromTo("#o-kick", { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, w("positioning"));
+    // "Same brand, same name above the door"
+    pop("#o-head", w("name"));
+    // "But the menu, the hours and the rota at each site"
+    pop("#o-c1", w("menu")); pop("#o-c2", w("hours")); pop("#o-c3", w("rota"));
+    // "are set for the guests on its own street" — site ten, set for its street, cheers up
+    pop("#o-t1", w("guests"));
+    pop("#o-t2", w("street"));
+    tl.to("#o-s10a", { opacity: 0, duration: 0.5, ease: "power2.inOut" }, w("street"));
+    tl.to("#o-s10b", { opacity: 1, duration: 0.5, ease: "power2.inOut" }, w("street"));
+    tl.set({}, {}, /*SLOT*/13.9);
+    window.__timelines["position"] = tl;
+  </script>
+</template>

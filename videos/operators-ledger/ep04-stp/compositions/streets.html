@@ -1,0 +1,48 @@
+<template>
+  <style>
+    @font-face { font-family: "Newsreader"; font-weight: 300; src: url("assets/fonts/newsreader-latin-300-normal.woff2") format("woff2"); }
+    @font-face { font-family: "Archivo"; font-weight: 500; src: url("assets/fonts/Archivo-Medium.ttf") format("truetype"); }
+    #root { position: absolute; inset: 0; background: #f3f2f2; color: #201e1d; overflow: hidden; }
+    .s-shop { position: absolute; top: 230px; width: 240px; height: 320px; }
+    .s-ground { position: absolute; top: 541px; width: 400px; height: 5px; background: #201e1d; }
+    .s-g { position: absolute; top: 300px; width: 165px; height: 254px; }
+    .s-k { position: absolute; top: 590px; font: 500 28px/1 "Archivo", sans-serif; letter-spacing: .14em; color: #b6240e; }
+    .s-l { position: absolute; font: 300 42px/1.1 "Newsreader", serif; white-space: nowrap; font-variant-numeric: tabular-nums; }
+    .s-shop, .s-ground, .s-g, .s-k, .s-l { opacity: 0; }
+  </style>
+  <div id="root" data-composition-id="streets" data-width="1080" data-height="1350">
+    <!-- SITE 1, by a station -->
+    <div class="s-ground" id="s-g1" style="left: 86px"></div>
+    <img class="s-shop" id="s-shop1" src="assets/shops/site-1.svg" alt="" style="left: 86px" />
+    <img class="s-g" id="s-p1" src="assets/guests/guest-4.svg" alt="" style="left: 290px" />
+    <div class="s-k" id="s-k1" style="left: 86px">BY A STATION</div>
+    <div class="s-l" id="s-a1" style="left: 86px; top: 636px">Weekdays, 7 to 9am</div>
+    <div class="s-l" id="s-a2" style="left: 86px; top: 700px">In a hurry</div>
+    <div class="s-l" id="s-a3" style="left: 86px; top: 764px">£6 a head</div>
+    <!-- SITE 10, a residential street -->
+    <div class="s-ground" id="s-g2" style="left: 570px; width: 424px"></div>
+    <img class="s-shop" id="s-shop10" src="assets/shops/site-10.svg" alt="" style="left: 570px" />
+    <img class="s-g" id="s-p2" src="assets/guests/guest-3.svg" alt="" style="left: 790px" />
+    <div class="s-k" id="s-k2" style="left: 570px">RESIDENTIAL STREET</div>
+    <div class="s-l" id="s-b1" style="left: 570px; top: 636px">Weekend late mornings</div>
+    <div class="s-l" id="s-b2" style="left: 570px; top: 700px">Guests who stay</div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    const OFF = 0.3;
+    const WORDS = /*WORDS*/[["Site", 0.0], ["one", 0.24], ["sits", 0.44], ["by", 0.94], ["a", 1.26], ["station.", 1.42], ["Its", 2.04], ["guests", 2.68], ["arrive", 2.96], ["between", 3.5], ["seven", 3.98], ["and", 4.48], ["nine,", 4.8], ["in", 5.16], ["a", 6.08], ["hurry,", 6.24], ["and", 6.54], ["spend", 6.94], ["six", 7.3], ["pounds", 7.65], ["each.", 8.0], ["Site", 8.78], ["ten", 9.42], ["sits", 9.66], ["on", 10.1], ["a", 10.42], ["residential", 10.54], ["street.", 10.92], ["Its", 12.24], ["busiest", 12.56], ["hours", 12.88], ["are", 13.22], ["weekend", 13.44], ["late", 13.72], ["mornings,", 14.0], ["with", 14.38], ["guests", 14.86], ["who", 15.14], ["stay.", 15.42]];
+    const w = (k, n = 1) => { let c = 0; for (const [x, s] of WORDS) { if (x.toLowerCase().replace(/[^a-z0-9'-]/g, "").startsWith(k) && ++c === n) return OFF + s; } throw new Error("cue " + k); };
+    const pop = (sel, t) => tl.fromTo(sel, { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, t);
+
+    // "Site one sits by a station … between seven and nine, in a hurry, and spend six pounds each"
+    pop(["#s-g1", "#s-shop1"], 0.1);
+    pop(["#s-k1", "#s-p1"], w("station"));
+    pop("#s-a1", w("seven")); pop("#s-a2", w("hurry")); pop("#s-a3", w("six"));
+    // "Site ten sits on a residential street … weekend late mornings, with guests who stay"
+    pop(["#s-g2", "#s-shop10"], w("site", 2));
+    pop(["#s-k2", "#s-p2"], w("residential"));
+    pop("#s-b1", w("weekend")); pop("#s-b2", w("stay"));
+    tl.set({}, {}, /*SLOT*/18.1);
+    window.__timelines["streets"] = tl;
+  </script>
+</template>

@@ -1,0 +1,61 @@
+<template>
+  <style>
+    @font-face { font-family: "Newsreader"; font-weight: 300; src: url("assets/fonts/newsreader-latin-300-normal.woff2") format("woff2"); }
+    @font-face { font-family: "Archivo"; font-weight: 500; src: url("assets/fonts/Archivo-Medium.ttf") format("truetype"); }
+    #root { position: absolute; inset: 0; background: #f3f2f2; color: #201e1d; overflow: hidden; }
+    #r-kick { position: absolute; left: 86px; top: 186px; font: 500 28px/1 "Archivo", sans-serif; letter-spacing: .22em; color: #b6240e; }
+    #r-menu { position: absolute; left: 86px; top: 226px; font: 300 48px/1.1 "Newsreader", serif; }
+    .r-k { position: absolute; left: 86px; font: 500 28px/1 "Archivo", sans-serif; letter-spacing: .14em; }
+    .r-eq { position: absolute; left: 86px; font: 300 64px/1 "Newsreader", serif; font-variant-numeric: tabular-nums; white-space: nowrap; }
+    #r-add { position: absolute; left: 86px; top: 610px; font: 300 112px/1 "Newsreader", serif; font-variant-numeric: tabular-nums; }
+    #r-bar { position: absolute; left: 86px; top: 820px; width: 908px; height: 64px; border: 4px solid #201e1d; background: #f3f2f2; }
+    #r-now { position: absolute; left: 0; top: 0; bottom: 0; width: 300px; background: #e9d8bd; }
+    #r-more { position: absolute; left: 300px; top: 0; bottom: 0; width: 487px; background: #201e1d; }
+    #r-be { position: absolute; left: 703px; top: 790px; width: 0; height: 128px; border-left: 4px dashed #ec3013; }
+    #r-be-l { position: absolute; right: 389px; top: 770px; font: 500 28px/1 "Archivo", sans-serif; letter-spacing: .1em; color: #ec3013; white-space: nowrap; }
+    .r-tick { position: absolute; top: 904px; font: 500 28px/1 "Archivo", sans-serif; font-variant-numeric: tabular-nums; white-space: nowrap; }
+    #r-note { position: absolute; left: 86px; top: 962px; font: 500 28px/1 "Archivo", sans-serif; letter-spacing: .22em; color: #b6240e; }
+    #r-menu, .r-k, .r-eq, #r-add, #r-bar, #r-now, #r-more, #r-be, #r-be-l, .r-tick, #r-note { opacity: 0; }
+  </style>
+  <div id="root" data-composition-id="brunch" data-width="1080" data-height="1350">
+    <div id="r-kick">SATURDAY AT SITE 10</div>
+    <div id="r-menu">Site 1’s menu: coffee and a pastry, to go</div>
+    <div class="r-k" id="r-k1" style="top: 330px">NOW</div>
+    <div class="r-eq" id="r-e1" style="top: 370px">200 guests × £7 = £1,400</div>
+    <div class="r-k" id="r-k2" style="top: 470px; color: #b6240e">WITH A BRUNCH MENU</div>
+    <div class="r-eq" id="r-e2" style="top: 510px">200 guests × £11 = £2,200</div>
+    <div id="r-add">+£800 a week</div>
+    <!-- weekly sales, £12,500 to £14,000 across 908 px (0.6053 px per £) -->
+    <div id="r-bar"><div id="r-now"></div><div id="r-more"></div></div>
+    <div id="r-be"></div>
+    <div id="r-be-l">BREAK-EVEN £13,520</div>
+    <div class="r-tick" id="r-t1" style="left: 300px">£13,000 now</div>
+    <div class="r-tick" id="r-t2" style="left: 810px">£13,800</div>
+    <div id="r-note">ILLUSTRATIVE FIGURES, WEEKLY</div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    const OFF = 0.3;
+    const WORDS = /*WORDS*/[["But", 0.0], ["site", 0.12], ["ten", 0.38], ["runs", 0.58], ["site", 1.14], ["one's", 1.84], ["menu:", 2.2], ["a", 2.64], ["coffee", 3.16], ["and", 3.56], ["a", 3.98], ["pastry,", 4.18], ["to", 4.56], ["go.", 5.36], ["On", 6.2], ["a", 6.8], ["Saturday,", 6.94], ["two", 7.58], ["hundred", 7.84], ["guests", 8.1], ["spend", 8.68], ["seven", 9.46], ["pounds", 9.9], ["each.", 10.34], ["Give", 11.14], ["them", 11.44], ["a", 11.68], ["brunch", 11.78], ["worth", 12.04], ["eleven", 12.5], ["pounds", 12.92], ["a", 13.34], ["head,", 13.48], ["and", 13.8], ["the", 14.22], ["same", 14.32], ["guests", 14.52], ["add", 14.96], ["eight", 15.3], ["hundred", 15.533], ["pounds", 15.767], ["a", 16.0], ["week.", 16.46], ["Enough", 17.06], ["to", 17.66], ["take", 17.86], ["site", 18.12], ["ten", 18.44], ["past", 18.72], ["break-even.", 19.14]];
+    const w = (k, n = 1) => { let c = 0; for (const [x, s] of WORDS) { if (x.toLowerCase().replace(/[^a-z0-9'-]/g, "").startsWith(k) && ++c === n) return OFF + s; } throw new Error("cue " + k); };
+    const pop = (sel, t) => tl.fromTo(sel, { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, t);
+
+    tl.fromTo("#r-kick", { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, 0.1);
+    // "But site ten runs site one's menu: a coffee and a pastry, to go"
+    pop("#r-menu", w("coffee"));
+    // "On a Saturday, two hundred guests spend seven pounds each"
+    pop(["#r-k1", "#r-e1"], w("seven"));
+    // "Give them a brunch worth eleven pounds a head"
+    pop(["#r-k2", "#r-e2"], w("eleven"));
+    // "the same guests add eight hundred pounds a week"
+    pop("#r-add", w("eight"));
+    // "Enough to take site ten past break-even"
+    pop(["#r-bar", "#r-be", "#r-be-l", "#r-note"], w("enough"));
+    tl.fromTo("#r-now", { opacity: 1, scaleX: 0, transformOrigin: "0% 50%" }, { opacity: 1, scaleX: 1, duration: 0.5, ease: "power3.out" }, w("enough") + 0.2);
+    pop("#r-t1", w("enough") + 0.5);
+    tl.fromTo("#r-more", { opacity: 1, scaleX: 0, transformOrigin: "0% 50%" }, { opacity: 1, scaleX: 1, duration: 0.8, ease: "power3.inOut" }, w("past"));
+    pop("#r-t2", w("break-even"));
+    tl.set({}, {}, /*SLOT*/22.6);
+    window.__timelines["brunch"] = tl;
+  </script>
+</template>

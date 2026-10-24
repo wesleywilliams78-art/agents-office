@@ -1,0 +1,52 @@
+<template>
+  <style>
+    @font-face { font-family: "Newsreader"; font-weight: 300; src: url("assets/fonts/newsreader-latin-300-normal.woff2") format("woff2"); }
+    @font-face { font-family: "Archivo"; font-weight: 500; src: url("assets/fonts/Archivo-Medium.ttf") format("truetype"); }
+    #root { position: absolute; inset: 0; background: #ec3013; color: #f3f2f2; overflow: hidden; }
+    #c-kick { position: absolute; left: 86px; top: 186px; font: 500 28px/1 "Archivo", sans-serif; letter-spacing: .22em; }
+    #c-title { position: absolute; left: 86px; top: 236px; font: 300 84px/1.05 "Newsreader", serif; letter-spacing: -0.01em; white-space: nowrap; }
+    #c-ground { position: absolute; left: 86px; top: 955px; width: 908px; height: 5px; background: #201e1d; }
+    .c-shop { position: absolute; top: 642px; width: 240px; height: 320px; }
+    .c-g { position: absolute; top: 646px; width: 215px; height: 330px; }
+    #c-athena { position: absolute; left: 358px; top: 430px; width: 364px; height: 560px; }
+    #c-athena img { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; }
+    #c-athena #c-p-neutral { opacity: 1; }
+    .c-lab { position: absolute; top: 604px; background: #201e1d; color: #f3f2f2; font: 500 28px/1 "Archivo", sans-serif; letter-spacing: .14em; padding: 10px 14px; opacity: 0; }
+  </style>
+  <div id="root" data-composition-id="cold" data-width="1080" data-height="1350">
+    <div id="c-kick">THE OPERATOR’S LEDGER · EPISODE 4</div>
+    <div id="c-title">Segment, target, position</div>
+    <div id="c-ground"></div>
+    <img class="c-shop" src="assets/shops/site-1.svg" alt="" style="left: 86px" />
+    <img class="c-shop" src="assets/shops/site-10.svg" alt="" style="left: 754px" />
+    <img class="c-g" src="assets/guests/guest-4.svg" alt="" style="left: 223px" />
+    <img class="c-g" src="assets/guests/guest-1.svg" alt="" style="left: 303px" />
+    <img class="c-g" src="assets/guests/guest-3.svg" alt="" style="left: 563px" />
+    <img class="c-g" src="assets/guests/guest-6.svg" alt="" style="left: 643px" />
+    <div id="c-athena">
+      <img id="c-p-neutral" src="assets/athena/athena-standing-neutral.svg" alt="" />
+      <img id="c-p-left" src="assets/athena/athena-looking-left.svg" alt="" />
+      <img id="c-p-right" src="assets/athena/athena-looking-right.svg" alt="" />
+    </div>
+    <div class="c-lab" id="c-l1" style="left: 200px">COMMUTERS</div>
+    <div class="c-lab" id="c-l2" style="left: 640px">LOCALS</div>
+  </div>
+  <script>
+    // frame 0 is the LinkedIn thumbnail: the poster is complete at t = 0, no entrance motion (DESIGN.md)
+    const tl = gsap.timeline({ paused: true });
+    const OFF = 0.3;
+    const WORDS = /*WORDS*/[["Same", 0.0], ["brand.", 0.3], ["Same", 1.12], ["menu.", 1.72], ["Same", 2.4], ["opening", 3.0], ["hours,", 3.42], ["at", 4.14], ["every", 4.74], ["site.", 5.22], ["But", 6.14], ["the", 6.74], ["people", 6.84], ["outside", 7.08], ["site", 7.38], ["one", 7.82], ["aren't", 8.02], ["the", 8.7], ["people", 8.72], ["outside", 8.96], ["site", 9.26], ["ten.", 9.78]];
+    const w = (k, n = 1) => { let c = 0; for (const [x, s] of WORDS) { if (x.toLowerCase().replace(/[^a-z0-9'-]/g, "").startsWith(k) && ++c === n) return OFF + s; } throw new Error("cue " + k); };
+    const poses = ["#c-p-neutral", "#c-p-left", "#c-p-right"];
+    const pose = (id, t) => poses.forEach((p) => tl.set(p, { opacity: p === id ? 1 : 0 }, t));
+    const pop = (sel, t) => tl.fromTo(sel, { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, t);
+
+    // "But the people outside site one aren't the people outside site ten"
+    pose("#c-p-left", w("one"));
+    pop("#c-l1", w("one"));
+    pose("#c-p-right", w("ten"));
+    pop("#c-l2", w("ten"));
+    tl.set({}, {}, /*SLOT*/11.7);
+    window.__timelines["cold"] = tl;
+  </script>
+</template>

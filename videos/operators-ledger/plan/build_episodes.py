@@ -4,7 +4,7 @@ Order: modules rotate F, S, O, M, L, E, D, H, G, N, so every ten weeks covers th
 import datetime as dt, os
 
 FIRST_MONDAY = dt.date(2026, 10, 26)   # Episode 01 goes out on this Monday
-STATUS = {1: "Rendered (v4)", 2: "Rendered (v1)", 3: "Rendered (v1)"}
+STATUS = {1: "Posted / scheduled", 2: "Posted / scheduled", 3: "Posted / scheduled", 4: "Rendered (v1)"}
 
 # (MBA topic, the Ledger angle: what it means for an owner scaling sites, worked example in pounds or a concrete case)
 M = {
@@ -45,7 +45,7 @@ M = {
   ("Supply chain resilience", "Single-supplier risk and the bullwhip effect", "One supplier short = ten sites short"),
  ]),
  "M": ("Marketing", [
-  ("STP: segmentation, targeting, positioning", "Each site is for someone: say who", "Commuter site versus weekend family site"),
+  ("STP: segmentation, targeting, positioning", "Each site is for someone: say who", "Station site at 7am versus residential site at Saturday brunch"),
   ("The 7Ps of services", "People, process and physical evidence are the product", "The till queue is part of your brand"),
   ("Customer lifetime value", "What a regular is really worth to one site", "£6 × 5 visits a week × 48 weeks = £1,440"),
   ("CAC and payback", "Discounts and delivery apps as customer acquisition costs", "A £5 voucher that buys one visit, not a regular"),

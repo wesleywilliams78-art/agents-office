@@ -1,0 +1,53 @@
+<template>
+  <style>
+    @font-face { font-family: "Newsreader"; font-weight: 300; src: url("assets/fonts/newsreader-latin-300-normal.woff2") format("woff2"); }
+    @font-face { font-family: "Archivo"; font-weight: 500; src: url("assets/fonts/Archivo-Medium.ttf") format("truetype"); }
+    #root { position: absolute; inset: 0; background: #f3f2f2; color: #201e1d; overflow: hidden; }
+    #p-kick { position: absolute; left: 86px; top: 186px; font: 500 28px/1 "Archivo", sans-serif; letter-spacing: .22em; color: #b6240e; }
+    #p-title { position: absolute; left: 86px; top: 222px; font: 300 64px/1.1 "Newsreader", serif; }
+    .p-card { position: absolute; top: 340px; width: 280px; height: 130px; border: 4px solid #201e1d; background: #f3f2f2; padding: 18px 20px; }
+    .p-n { font: 500 28px/1 "Archivo", sans-serif; letter-spacing: .14em; color: #b6240e; }
+    .p-w { font: 300 48px/1.1 "Newsreader", serif; margin-top: 12px; }
+    .p-k { position: absolute; top: 540px; font: 500 28px/1 "Archivo", sans-serif; letter-spacing: .14em; }
+    #p-brand { position: absolute; left: 86px; top: 590px; width: 150px; height: 150px; border: 4px solid #201e1d; background: #201e1d; color: #f3f2f2; font: 300 40px/150px "Newsreader", serif; text-align: center; }
+    .p-cell { position: absolute; width: 100px; height: 100px; border: 4px solid #201e1d; background: #f3f2f2; font: 500 28px/92px "Archivo", sans-serif; text-align: center; font-variant-numeric: tabular-nums; }
+    .p-card, .p-k, #p-brand, .p-cell { opacity: 0; }
+  </style>
+  <div id="root" data-composition-id="stp" data-width="1080" data-height="1350">
+    <div id="p-kick">SMITH, 1956</div>
+    <div id="p-title">Segment, target, position</div>
+    <div class="p-card" id="p-c1" style="left: 86px"><div class="p-n">1</div><div class="p-w">Segment</div></div>
+    <div class="p-card" id="p-c2" style="left: 400px"><div class="p-n">2</div><div class="p-w">Target</div></div>
+    <div class="p-card" id="p-c3" style="left: 714px"><div class="p-n">3</div><div class="p-w">Position</div></div>
+    <div class="p-k" id="p-k1" style="left: 86px">ONCE</div>
+    <div id="p-brand">Brand</div>
+    <div class="p-k" id="p-k2" style="left: 330px; color: #b6240e">FOR EVERY SITE</div>
+    <div id="p-grid"></div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    const OFF = 0.3;
+    const WORDS = /*WORDS*/[["Wendell", 0.0], ["Smith", 0.6], ["named", 0.84], ["market", 1.46], ["segmentation", 1.9], ["in", 2.8], ["nineteen", 3.28], ["fifty-six.", 3.57], ["Marketing", 4.9], ["courses", 5.58], ["now", 6.0], ["teach", 6.4], ["it", 6.74], ["as", 6.98], ["three", 7.16], ["steps:", 7.44], ["segment", 8.12], ["the", 8.68], ["market,", 8.86], ["choose", 9.34], ["a", 9.68], ["target,", 9.84], ["then", 10.36], ["position", 10.7], ["yourself", 11.04], ["for", 11.34], ["it.", 11.74], ["Multi-site", 12.56], ["owners", 13.24], ["usually", 13.46], ["do", 13.92], ["it", 14.24], ["once,", 14.38], ["for", 14.7], ["the", 15.3], ["brand.", 15.42], ["Do", 16.64], ["it", 16.98], ["again", 17.1], ["for", 17.3], ["every", 17.86], ["site.", 18.3]];
+    const w = (k, n = 1) => { let c = 0; for (const [x, s] of WORDS) { if (x.toLowerCase().replace(/[^a-z0-9'-]/g, "").startsWith(k) && ++c === n) return OFF + s; } throw new Error("cue " + k); };
+    const pop = (sel, t) => tl.fromTo(sel, { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, t);
+
+    // ten site squares, the brand grid motif (two rows of five)
+    const grid = document.querySelector("#p-grid");
+    for (let i = 0; i < 10; i++) grid.insertAdjacentHTML("beforeend",
+      `<div class="p-cell" id="p-s${i}" style="left:${330 + (i % 5) * 120}px;top:${590 + Math.floor(i / 5) * 120}px">${i + 1}</div>`);
+
+    tl.fromTo(["#p-kick", "#p-title"], { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out", stagger: 0.1 }, 0.1);
+    // "segment the market, choose a target, then position yourself for it"
+    pop("#p-c1", w("segment", 2)); pop("#p-c2", w("target")); pop("#p-c3", w("position"));
+    // "Multi-site owners usually do it once, for the brand"
+    pop(["#p-k1", "#p-brand"], w("once"));
+    // "Do it again for every site"
+    pop("#p-k2", w("again"));
+    for (let i = 0; i < 10; i++) {
+      pop("#p-s" + i, w("again") + 0.1 + i * 0.09);
+      tl.to("#p-s" + i, { backgroundColor: "#e9d8bd", duration: 0.25, ease: "power2.out" }, w("every") + i * 0.07);
+    }
+    tl.set({}, {}, /*SLOT*/20.9);
+    window.__timelines["stp"] = tl;
+  </script>
+</template>

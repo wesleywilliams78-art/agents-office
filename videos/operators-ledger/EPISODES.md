@@ -17,10 +17,10 @@
 
 | # | Monday | Module | MBA topic | The Ledger angle | Worked example | Status |
 |---|---|---|---|---|---|---|
-| 01 | Mon 26 Oct 2026 | Finance & accounting | **Unit economics and four-wall profit** | Site one's numbers don't predict site ten's | £20k site keeps £4,800; £13k site loses £300 | Rendered (v4) |
-| 02 | Mon 02 Nov 2026 | Strategy | **Porter's Five Forces** | Run it on each site's trade area: every force is a line on the P&L | Food 30%, labour 40%, rent 20%, the app's 30% cut | Rendered (v1) |
-| 03 | Mon 09 Nov 2026 | Operations | **Little's Law** | Two numbers you can count at lunch tell you how long guests wait, and what walks out | 12 in the queue ÷ 2 served a minute = a 6-minute wait | Rendered (v1) |
-| 04 | Mon 16 Nov 2026 | Marketing | **STP: segmentation, targeting, positioning** | Each site is for someone: say who | Commuter site versus weekend family site | Planned |
+| 01 | Mon 26 Oct 2026 | Finance & accounting | **Unit economics and four-wall profit** | Site one's numbers don't predict site ten's | £20k site keeps £4,800; £13k site loses £300 | Posted / scheduled |
+| 02 | Mon 02 Nov 2026 | Strategy | **Porter's Five Forces** | Run it on each site's trade area: every force is a line on the P&L | Food 30%, labour 40%, rent 20%, the app's 30% cut | Posted / scheduled |
+| 03 | Mon 09 Nov 2026 | Operations | **Little's Law** | Two numbers you can count at lunch tell you how long guests wait, and what walks out | 12 in the queue ÷ 2 served a minute = a 6-minute wait | Posted / scheduled |
+| 04 | Mon 16 Nov 2026 | Marketing | **STP: segmentation, targeting, positioning** | Each site is for someone: say who | Station site at 7am versus residential site at Saturday brunch | Rendered (v1) |
 | 05 | Mon 23 Nov 2026 | Leadership & organisational behaviour | **Span of control** | How many sites one ops manager can really run | Six sites fine, eleven sites firefighting | Planned |
 | 06 | Mon 30 Nov 2026 | Economics | **Opportunity cost** | What the founder's hour is actually worth | An hour fixing a rota versus an hour on site five | Planned |
 | 07 | Mon 07 Dec 2026 | Data & decision-making | **Decision trees and expected value** | Pricing the risk before you sign a lease | 60% chance of £4k a week, 40% chance of £1k | Planned |

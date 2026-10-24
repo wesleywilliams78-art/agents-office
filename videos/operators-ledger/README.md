@@ -27,9 +27,10 @@ A LinkedIn explainer series (10 episodes planned) under **WRW Hospitality**, Wes
 ## Episodes
 | # | Folder | Status |
 |---|---|---|
-| 01 | `ep01-unit-economics/` | Pilot rendered 24 Oct 2026 (`renders/`). The brief is `episode-01-brief.md`; `REVIEW.md` records what was decided and measured. |
+| 01 | `ep01-unit-economics/` | Posted/scheduled. Pilot rendered 24 Oct 2026 (`renders/`). The brief is `episode-01-brief.md`; `REVIEW.md` records what was decided and measured. |
 | 02 | `ep02-five-forces/` | Rendered 24 Oct 2026, for Monday 2 Nov. Cued from word timings by `.vo/build.py`. |
 | 03 | `ep03-littles-law/` | Rendered 24 Oct 2026, for Monday 9 Nov. Introduces the guests and the till counter. |
+| 04 | `ep04-stp/` | Rendered 24 Oct 2026, for Monday 16 Nov. Closes SITE 10's arc: positioning takes it past break-even. |
 
 ### Starting the next episode
 1. Copy the Episode 01 brief's shape: script table, numbers check, acceptance checks.
