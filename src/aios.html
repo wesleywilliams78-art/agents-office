@@ -472,6 +472,70 @@
     .hero h2 { font-size: 34px; }
     .hero .hstat { min-width: 80px; }
   }
+
+  /* ---------- glass (25 Oct 2026) ----------
+     Frosted surfaces over a faint field of brand ridges. Readable first: cards stay 72-80% opaque, so text sits on a near-solid
+     ground and the blur only softens what shows through the edges. Small pills on top of a card don't blur again (a blur on a
+     blur costs frames and shows nothing); they take a lighter tint and the same hairline edge. The hero stays a solid statement. */
+  :root {
+    --glass: color-mix(in srgb, var(--card) 74%, transparent);
+    --glass-strong: color-mix(in srgb, var(--card) 86%, transparent);
+    --glass-pill: color-mix(in srgb, var(--card) 62%, transparent);
+    --glass-edge: rgba(255,255,255,.75); --glass-lip: rgba(255,255,255,.9); --glass-line: rgba(32,30,29,.09);
+    --glass-blur: blur(20px) saturate(150%);
+  }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+    --glass: color-mix(in srgb, var(--card) 70%, transparent); --glass-strong: color-mix(in srgb, var(--card) 84%, transparent);
+    --glass-pill: color-mix(in srgb, #F3F2F2 7%, transparent); --glass-edge: rgba(243,242,242,.12); --glass-lip: rgba(243,242,242,.16); --glass-line: rgba(243,242,242,.10);
+  } }
+  :root[data-theme="dark"] {
+    --glass: color-mix(in srgb, var(--card) 70%, transparent); --glass-strong: color-mix(in srgb, var(--card) 84%, transparent);
+    --glass-pill: color-mix(in srgb, #F3F2F2 7%, transparent); --glass-edge: rgba(243,242,242,.12); --glass-lip: rgba(243,242,242,.16); --glass-line: rgba(243,242,242,.10);
+  }
+  /* what the glass sees: three flat ridges in red and ink, high on the page, fixed so cards slide over them as you scroll */
+  body::before { content: ""; position: fixed; inset: 0; pointer-events: none; z-index: 0;
+    background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 900' preserveAspectRatio='none'><path fill='%23EC3013' fill-opacity='.10' d='M0 420C180 330 300 300 470 360S760 470 930 380 1240 230 1440 300V0H0Z'/><path fill='%23201E1D' fill-opacity='.06' d='M0 250C210 190 360 200 520 250S820 330 1010 260 1300 150 1440 180V0H0Z'/><path fill='%23EC3013' fill-opacity='.07' d='M0 900V700C200 640 330 650 500 700S800 770 980 690 1270 600 1440 640V900Z'/></svg>") center / 100% 100% no-repeat; }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) body::before { filter: brightness(1.4); } }
+  :root[data-theme="dark"] body::before { filter: brightness(1.4); }
+
+  /* the big surfaces: frosted */
+  .panel, .kpi, .dept, .news, .sk, .client, .bpanel, .col, .skkpi, .quad, header .right, .side {
+    background: var(--glass); border: 1px solid var(--glass-edge);
+    -webkit-backdrop-filter: var(--glass-blur); backdrop-filter: var(--glass-blur);
+    box-shadow: inset 0 1px 0 var(--glass-lip);
+  }
+  .news { background: var(--glass-strong); } /* long lists of small text read on the more solid glass */
+  .dept .dh { background: var(--glass-pill); }
+  .side { border-radius: 26px; padding: 10px; position: sticky; }
+  /* the pills: tinted glass, hairline edge, no second blur */
+  .tag, .side button, button, .item, .ni .nic, .sk .skp, input, textarea, select {
+    background: var(--glass-pill); border-color: var(--glass-line); box-shadow: inset 0 1px 0 var(--glass-lip);
+  }
+  .item { background: var(--glass-strong); }
+  .side button { background: transparent; box-shadow: none; }
+  .side button:hover { background: var(--glass-pill); box-shadow: inset 0 1px 0 var(--glass-lip); }
+  /* the solid ones stay solid: the active rail pill, primary and selected buttons, the lead tag, filled states */
+  .side button.on, button.primary, .seg button.on, button:hover, .tag.lead { background: var(--ink); color: var(--bg); box-shadow: none; }
+  @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+    .panel, .kpi, .dept, .news, .sk, .client, .bpanel, .col, .skkpi, .quad, header .right, .side { background: var(--card); }
+  }
+  /* people who ask the system for less transparency get solid cards */
+  @media (prefers-reduced-transparency: reduce) {
+    .panel, .kpi, .dept, .news, .sk, .client, .bpanel, .col, .skkpi, .quad, header .right, .side, .item { background: var(--card); -webkit-backdrop-filter: none; backdrop-filter: none; }
+    body::before { display: none; }
+  }
+  @media (max-width: 860px) { .side { border-radius: 18px; } }
+
+  /* ---------- motion (25 Oct 2026): the rail drives the page ----------
+     1. one ink pill that springs to the chosen item  2. the chosen category arrives in sequence  3. the client sub-menu unfolds.
+     Springs only (linear() curves sampled from a damped spring in JS), nothing on a timer, all of it off under reduced motion. */
+  .side .ind { position: absolute; left: 0; top: 0; width: 0; height: 0; border-radius: 999px; background: var(--ink); pointer-events: none; z-index: 0; opacity: 0; will-change: transform, width, height; }
+  .side.has-ind .ind { opacity: 1; }
+  .side button, .side .gl, .side .subnav { position: relative; z-index: 1; }
+  .side.has-ind button.on, .side.has-ind button.on:hover { background: transparent; box-shadow: none; }
+  .side .subnav { overflow: hidden; }
+  .side .subnav:not(.open) { height: 0; margin-bottom: 0; opacity: 0; pointer-events: none; }
+  @media (max-width: 860px) { .side .subnav:not(.open) { height: auto; opacity: 1; pointer-events: auto; } }
 </style>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500&family=Newsreader:opsz,wght@6..72,300;6..72,400&family=Noto+Serif+SC:wght@300&display=swap">
 </head>
@@ -498,6 +562,7 @@
     <div class="gl">The office</div>
     <button data-go="roles">Roles <span class="n" id="nRoles"></span></button>
     <button data-go="skills">Skills <span class="n" id="nSkills"></span></button>
+    <span class="ind" id="sideInd" aria-hidden="true"></span>
   </nav>
   <div class="main">
   <div class="hero" id="hero" data-cat="overview">
@@ -671,15 +736,93 @@ function render() { renderNav(); renderKpis(); renderClients(); renderMatrix(); 
 // categories: the left-hand list shows one category at a time; the choice is remembered and can be linked to (#budget)
 const CAT_IDS = ['overview', 'matrix', 'clients', 'budget', 'comms', 'roles', 'skills'];
 const isDash = c => /^dash-[a-z0-9-]+$/.test(String(c));
-function applyCat() {
+/* ---------- motion: springs for the rail and the page it drives ----------
+   A damped spring sampled into a CSS linear() curve: zeta < 1 overshoots and settles, like motion.md's back.out pops.
+   The curve is the whole move (its end is where the spring has settled), so duration sets the pace and zeta the bounce. */
+const REDUCED = matchMedia('(prefers-reduced-motion: reduce)');
+const NARROW = matchMedia('(max-width: 860px)');
+function springCurve(zeta) {
+  const w = 1, wd = w * Math.sqrt(1 - zeta * zeta), T = 7 / (zeta * w), pts = [];
+  for (let i = 0; i <= 60; i++) { const t = (i / 60) * T; pts.push((1 - Math.exp(-zeta * w * t) * (Math.cos(wd * t) + (zeta * w / wd) * Math.sin(wd * t))).toFixed(4)); }
+  pts[pts.length - 1] = '1';
+  return `linear(${pts.join(', ')})`;
+}
+const SPRING = springCurve(0.62), SPRING_SOFT = springCurve(0.78);
+const moving = () => !REDUCED.matches;
+// 1. the rail's ink pill: one shape that travels to the chosen item instead of the background jumping between buttons
+let indAnim = null;
+function indTarget() {
+  const side = $('side'), on = side.querySelector('button.on');
+  if (!on || on.offsetParent === null) return null;
+  const s = side.getBoundingClientRect(), r = on.getBoundingClientRect();
+  return { x: r.left - s.left + side.scrollLeft - side.clientLeft, y: r.top - s.top + side.scrollTop - side.clientTop, w: r.width, h: r.height };
+}
+function placeInd(animate) {
+  const side = $('side'), ind = $('sideInd'), t = indTarget();
+  if (!t) { side.classList.remove('has-ind'); return; }
+  const to = { transform: `translate(${t.x}px, ${t.y}px)`, width: t.w + 'px', height: t.h + 'px' };
+  if (indAnim && indAnim.playState === 'running') { if (!animate) return; indAnim.commitStyles?.(); indAnim.cancel(); }
+  const from = { transform: ind.style.transform, width: ind.style.width, height: ind.style.height };
+  Object.assign(ind.style, to); side.classList.add('has-ind');
+  if (animate && moving() && from.width && from.transform !== to.transform) indAnim = ind.animate([from, to], { duration: 620, easing: SPRING });
+}
+addEventListener('resize', () => placeInd(false));
+document.fonts?.ready.then(() => placeInd(false));
+// 3. the client sub-menu: folded away elsewhere, unfolds under Clients (open on narrow screens, where the rail is a row)
+function foldSubnav(animate) {
+  const nav = $('navDash'), open = S.cat === 'clients' || isDash(S.cat);
+  if (nav.classList.contains('open') === open) return;
+  const from = nav.offsetHeight; nav.classList.toggle('open', open); const to = nav.offsetHeight;
+  if (!animate || !moving() || NARROW.matches || from === to) return;
+  nav.animate([{ height: from + 'px', opacity: open ? 0 : 1 }, { height: to + 'px', opacity: open ? 1 : 0 }], { duration: open ? 560 : 300, easing: open ? SPRING_SOFT : 'cubic-bezier(.4,0,.2,1)' });
+  if (open) [...nav.children].forEach((b, i) => b.animate([{ opacity: 0, transform: 'translateY(-8px)' }, { opacity: 1, transform: 'none' }], { duration: 520, delay: 90 + i * 80, easing: SPRING, fill: 'backwards' }));
+}
+// 2. the chosen category arrives in sequence: the old view steps back fast, the title reveals upward, the cards rise one after another
+const CARD = '.hero, .kpi, .panel, .dept, .client, .quad, .sk, .col, .news, .bpanel, .skkpi';
+function arrive() {
+  if (!moving()) return;
+  const shown = [...document.querySelectorAll('[data-cat]:not(.cat-off)')];
+  const heads = [], cards = [];
+  for (const b of shown) {
+    if (b.matches('.hero')) { cards.push(b); const h = b.querySelector('h2'); if (h) heads.push(h); continue; }
+    if (b.matches(CARD)) { cards.push(b); continue; }
+    const h = b.querySelector(':scope > .sh h2, :scope > .split-main > .sh h2'); if (h) heads.push(h);
+    for (const c of b.querySelectorAll(CARD)) if (!c.parentElement.closest(CARD)) cards.push(c);
+  }
+  heads.forEach((h, i) => h.animate([{ clipPath: 'inset(0 0 100% 0)', transform: 'translateY(.45em)' }, { clipPath: 'inset(0 0 -10% 0)', transform: 'none' }], { duration: 640, delay: i * 90, easing: SPRING, fill: 'backwards' }));
+  const list = cards.filter(c => { const r = c.getBoundingClientRect(); return r.top < innerHeight + 40; }).slice(0, 18); // what you can see; the rest is already in place when you scroll to it
+  const step = Math.max(50, Math.min(100, 900 / Math.max(1, list.length)));
+  list.forEach((c, i) => c.animate([{ opacity: 0, transform: 'translateY(22px) scale(.985)' }, { opacity: 1, transform: 'none' }], { duration: 680, delay: 70 + i * step, easing: SPRING, fill: 'backwards' }));
+}
+let leaving = null;
+function leave() { // the view you are leaving steps back in a tenth of a second, so the new one never lands on top of it
+  if (!moving()) return Promise.resolve();
+  const shown = [...document.querySelectorAll('[data-cat]:not(.cat-off)')];
+  const outs = Promise.all(shown.map(b => b.animate([{ opacity: 1, transform: 'none' }, { opacity: 0, transform: 'translateY(8px)' }], { duration: 110, easing: 'cubic-bezier(.4,0,1,1)', fill: 'forwards' }).finished.then(a => a, () => {})));
+  // never wait on frames: a window that is not painting (minimised, behind another) still switches on a plain timer
+  return Promise.race([outs, new Promise(r => setTimeout(r, 160))]).then(() => shown);
+}
+
+function applyCat(animate = false) {
   for (const el of document.querySelectorAll('[data-cat]')) el.classList.toggle('cat-off', isDash(S.cat) ? el.dataset.cat !== 'dash' : el.dataset.cat !== S.cat);
   for (const b of document.querySelectorAll('#side button[data-go]')) b.classList.toggle('on', b.dataset.go === S.cat);
+  foldSubnav(animate); placeInd(animate);
 }
-function setCat(c, push = true) {
+let catSeq = 0, catReady = false;
+async function setCat(c, push = true) {
   if (!CAT_IDS.includes(c) && !isDash(c)) c = 'overview';
+  const first = !catReady, changed = c !== S.cat, seq = ++catSeq; catReady = true;
   S.cat = c; try { localStorage.setItem('aiosCat', c); } catch {}
   if (push) history.replaceState(null, '', '#' + c);
-  applyCat(); window.scrollTo({ top: 0 }); if (isDash(c)) renderSales();
+  if (first || !changed) { applyCat(false); window.scrollTo({ top: 0 }); }
+  else {
+    for (const b of document.querySelectorAll('#side button[data-go]')) b.classList.toggle('on', b.dataset.go === c);
+    foldSubnav(true); placeInd(true); // the pill sets off at once; the page follows it
+    const old = await leave(); if (seq !== catSeq) return; // a quicker click took over
+    for (const b of old) b.getAnimations().forEach(a => a.cancel());
+    applyCat(false); window.scrollTo({ top: 0 }); arrive();
+  }
+  if (isDash(c)) renderSales();
   if (c === 'comms' && !S.wa) loadWa(false);
 }
 
