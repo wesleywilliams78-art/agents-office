@@ -683,8 +683,21 @@ async function trackersApi(req, res, url) {
   for (const t of TRACKERS) if (!trackerSync.has(t.client) && (!all[t.client] || Date.now() - all[t.client].syncedAt > TRACKER_STALE)) syncTracker(t).catch(() => {});
   return json(res, 200, { configured: TRACKERS.length > 0, trackers: TRACKERS.map(t => ({ client: t.client, name: t.name, sheet: t.sheet, syncing: trackerSync.has(t.client), error: trackerError[t.client] || '', view: trackers.view(all[t.client], now) })) });
 }
+// V3.11 (24 Oct): what stops the matrix filling itself (151 open, ~100 of them noise).
+// 1. Housekeeping does not feed it: a fix, a re-file, a check or a tidy-up is the follow-up, not a source of new ones.
+// 2. Work that came from the matrix does not feed back into it, nor anything handed over from it: one action, one card,
+//    not a chain of follow-ups of follow-ups.
+// (3. DROP-ranked actions are kept off the open list: see feedMatrix.)
+const HOUSEKEEPING = /^(fix|file|re-?file|check|re-?check|verify|tidy|merge|delete|remove|rename|correct|proofread|qa|format|swap|re-?tag|record|log|mark|save|copy|move|add\b.*\b(row|rows|contact|tracker)\b|update\b.*\b(row|rows|tracker|note|draft|to line)\b)\b/i;
+function fromMatrix(task, list = load(), depth = 0) {
+  if (!task || depth > 8) return false;
+  if (task.by === 'aios' || task.matrix) return true;
+  return task.handoffTask ? fromMatrix(list.find(t => t.id === task.handoffTask), list, depth + 1) : false;
+}
 function autoFeed(task) {
   if (!AUTO_FEED || task.noMatrix || task.state !== 'done' || task.error || !task.result) return; // noMatrix: a status routine's result is a report, not a to-do list
+  if (fromMatrix(task)) { console.log(`  matrix: not read, ${task.id} came from the matrix (no follow-ups of follow-ups)`); return; }
+  if (HOUSEKEEPING.test(String(task.title).trim())) { console.log(`  matrix: not read, ${task.id} is housekeeping: ${task.title}`); return; }
   const m = aios.load(DATA);
   const earlier = new Set(m.feeds.filter(f => f.taskId === task.id).map(f => f.id));
   if (earlier.size) { m.items = m.items.filter(i => !(earlier.has(i.feed) && i.state === 'open')); aios.save(DATA, m); }
@@ -741,11 +754,17 @@ async function feedMatrix({ text, source, taskId, auto, note }) {
   // the weekly SkillSpector scan reports on itself: a report about the report never becomes an action (it kept looping back into the matrix)
   const SELF = /skill ?spector|skill (security|scan)/i;
   const kept = dedupe.kept.filter(i => !SELF.test(`${i.title} ${i.detail || ''}`)), dropped = [...dedupe.dropped, ...dedupe.kept.filter(i => !kept.includes(i))];
-  const out = { summary: raw.summary, items: kept };
+  // 3. An action the office itself ranks DROP (neither urgent nor important) is kept, but filed as dropped: it shows under ALL
+  // and can be reopened, and never counts as open work. A finished task's own read keeps its three most pressing actions at most.
+  const RANK = { do: 0, plan: 1, delegate: 2, drop: 3 };
+  let live = kept.filter(i => i.q !== 'drop').sort((a, b) => RANK[a.q] - RANK[b.q]);
+  const parked = kept.filter(i => i.q === 'drop').map(i => ({ ...i, state: 'dropped', droppedAt: Date.now(), outcome: 'Ranked DROP by the office when raised (neither urgent nor important). Reopen it if it matters.' }));
+  if (auto && taskId && live.length > 3) { for (const i of live.slice(3)) parked.push({ ...i, state: 'dropped', droppedAt: Date.now(), outcome: 'Raised from a finished task beyond its three most pressing actions. Reopen it if it matters.' }); live = live.slice(0, 3); }
+  const out = { summary: raw.summary, items: [...live, ...parked] };
   const m = aios.load(DATA);
-  m.feeds.push({ id: feedId, at: Date.now(), source: src || 'Pasted by the owner', taskId: taskId || '', auto: !!auto, summary: out.summary, input: input.slice(0, 2000), chars: input.length, parts: pieces.length, count: out.items.length, duplicates: dropped.length });
+  m.feeds.push({ id: feedId, at: Date.now(), source: src || 'Pasted by the owner', taskId: taskId || '', auto: !!auto, summary: out.summary, input: input.slice(0, 2000), chars: input.length, parts: pieces.length, count: live.length, parked: parked.length, duplicates: dropped.length });
   m.items.push(...out.items); aios.save(DATA, m);
-  console.log(`▦ matrix: ${out.items.length} actions from ${taskId ? (auto ? 'finished task ' : 'task ') + taskId : 'a paste'} (${Object.keys(aios.QUADRANTS).map(q => q + ' ' + out.items.filter(i => i.q === q).length).join(' · ')})${dropped.length ? ` · ${dropped.length} already on the matrix, not repeated` : ''}`);
+  console.log(`▦ matrix: ${live.length} actions${parked.length ? ' (+' + parked.length + ' filed as dropped)' : ''} from ${taskId ? (auto ? 'finished task ' : 'task ') + taskId : 'a paste'} (${Object.keys(aios.QUADRANTS).map(q => q + ' ' + out.items.filter(i => i.q === q).length).join(' · ')})${dropped.length ? ` · ${dropped.length} already on the matrix, not repeated` : ''}`);
   return { feed: m.feeds[m.feeds.length - 1], items: out.items };
 }
 // a matrix item's "ADD TO CALENDAR" tag: one 10-minute to-do reminder on the owner's own Google
