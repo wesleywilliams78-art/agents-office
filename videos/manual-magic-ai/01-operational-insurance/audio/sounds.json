@@ -1,0 +1,537 @@
+[
+ {
+  "t": 0.5,
+  "type": "sort",
+  "gain": 0.8
+ },
+ {
+  "t": 1,
+  "type": "sort",
+  "gain": 0.8
+ },
+ {
+  "t": 1.5,
+  "type": "sort",
+  "gain": 0.8
+ },
+ {
+  "t": 2,
+  "type": "morph",
+  "gain": 0.5
+ },
+ {
+  "t": 2,
+  "type": "click",
+  "gain": 1
+ },
+ {
+  "t": 2.12,
+  "type": "release",
+  "gain": 1
+ },
+ {
+  "t": 2.25,
+  "type": "morph",
+  "gain": 0.35
+ },
+ {
+  "t": 4,
+  "type": "morph",
+  "gain": 0.5
+ },
+ {
+  "t": 4,
+  "type": "click",
+  "gain": 1
+ },
+ {
+  "t": 4.25,
+  "type": "morph",
+  "gain": 0.35
+ },
+ {
+  "t": 4.5,
+  "type": "key",
+  "gain": 1
+ },
+ {
+  "t": 4.625,
+  "type": "key",
+  "gain": 1
+ },
+ {
+  "t": 4.75,
+  "type": "key",
+  "gain": 1
+ },
+ {
+  "t": 4.875,
+  "type": "key",
+  "gain": 1
+ },
+ {
+  "t": 5,
+  "type": "key",
+  "gain": 1
+ },
+ {
+  "t": 5.125,
+  "type": "key",
+  "gain": 1
+ },
+ {
+  "t": 5.25,
+  "type": "key",
+  "gain": 1
+ },
+ {
+  "t": 5.375,
+  "type": "key",
+  "gain": 1
+ },
+ {
+  "t": 5.5,
+  "type": "key",
+  "gain": 1
+ },
+ {
+  "t": 5.625,
+  "type": "key",
+  "gain": 1
+ },
+ {
+  "t": 5.75,
+  "type": "key",
+  "gain": 1
+ },
+ {
+  "t": 5.875,
+  "type": "key",
+  "gain": 1
+ },
+ {
+  "t": 8,
+  "type": "morph",
+  "gain": 0.5
+ },
+ {
+  "t": 10,
+  "type": "morph",
+  "gain": 0.5
+ },
+ {
+  "t": 11.5,
+  "type": "click",
+  "gain": 1
+ },
+ {
+  "t": 12,
+  "type": "drop",
+  "gain": 1
+ },
+ {
+  "t": 12,
+  "type": "morph",
+  "gain": 0.5
+ },
+ {
+  "t": 12.5,
+  "type": "drop",
+  "gain": 1
+ },
+ {
+  "t": 13,
+  "type": "drop",
+  "gain": 1
+ },
+ {
+  "t": 13.5,
+  "type": "drop",
+  "gain": 1
+ },
+ {
+  "t": 14,
+  "type": "tick",
+  "gain": 0.35
+ },
+ {
+  "t": 14,
+  "type": "morph",
+  "gain": 0.5
+ },
+ {
+  "t": 14.5,
+  "type": "tick",
+  "gain": 0.35
+ },
+ {
+  "t": 15.5,
+  "type": "check",
+  "gain": 1
+ },
+ {
+  "t": 16,
+  "type": "morph",
+  "gain": 0.5
+ },
+ {
+  "t": 16.5,
+  "type": "sort",
+  "gain": 1
+ },
+ {
+  "t": 17,
+  "type": "sort",
+  "gain": 1
+ },
+ {
+  "t": 17.5,
+  "type": "sort",
+  "gain": 1
+ },
+ {
+  "t": 18,
+  "type": "check",
+  "gain": 0.8
+ },
+ {
+  "t": 18.5,
+  "type": "morph",
+  "gain": 0.5
+ },
+ {
+  "t": 20,
+  "type": "write",
+  "gain": 0.5
+ },
+ {
+  "t": 20.5,
+  "type": "write",
+  "gain": 0.5
+ },
+ {
+  "t": 21,
+  "type": "write",
+  "gain": 0.5
+ },
+ {
+  "t": 21.5,
+  "type": "write",
+  "gain": 0.5
+ },
+ {
+  "t": 22,
+  "type": "swoosh",
+  "gain": 0.5
+ },
+ {
+  "t": 22,
+  "type": "click",
+  "gain": 1
+ },
+ {
+  "t": 22.5,
+  "type": "swoosh",
+  "gain": 0.5
+ },
+ {
+  "t": 22.5,
+  "type": "click",
+  "gain": 1
+ },
+ {
+  "t": 23,
+  "type": "swoosh",
+  "gain": 0.5
+ },
+ {
+  "t": 23,
+  "type": "click",
+  "gain": 1
+ },
+ {
+  "t": 23.5,
+  "type": "check",
+  "gain": 1
+ },
+ {
+  "t": 26,
+  "type": "morph",
+  "gain": 0.5
+ },
+ {
+  "t": 26.25,
+  "type": "morph",
+  "gain": 0.35
+ },
+ {
+  "t": 26.5,
+  "type": "key",
+  "gain": 1
+ },
+ {
+  "t": 26.5833,
+  "type": "key",
+  "gain": 1
+ },
+ {
+  "t": 26.6667,
+  "type": "key",
+  "gain": 1
+ },
+ {
+  "t": 26.75,
+  "type": "key",
+  "gain": 1
+ },
+ {
+  "t": 26.8333,
+  "type": "key",
+  "gain": 1
+ },
+ {
+  "t": 26.9167,
+  "type": "key",
+  "gain": 1
+ },
+ {
+  "t": 27,
+  "type": "key",
+  "gain": 1
+ },
+ {
+  "t": 27.0833,
+  "type": "key",
+  "gain": 1
+ },
+ {
+  "t": 27.1667,
+  "type": "key",
+  "gain": 1
+ },
+ {
+  "t": 27.25,
+  "type": "key",
+  "gain": 1
+ },
+ {
+  "t": 27.3333,
+  "type": "key",
+  "gain": 1
+ },
+ {
+  "t": 27.4167,
+  "type": "key",
+  "gain": 1
+ },
+ {
+  "t": 27.5,
+  "type": "key",
+  "gain": 1
+ },
+ {
+  "t": 27.5833,
+  "type": "key",
+  "gain": 1
+ },
+ {
+  "t": 27.6667,
+  "type": "key",
+  "gain": 1
+ },
+ {
+  "t": 27.75,
+  "type": "key",
+  "gain": 1
+ },
+ {
+  "t": 27.8333,
+  "type": "key",
+  "gain": 1
+ },
+ {
+  "t": 28.5,
+  "type": "enter",
+  "gain": 1
+ },
+ {
+  "t": 28.5,
+  "type": "morph",
+  "gain": 0.5
+ },
+ {
+  "t": 28.7,
+  "type": "morph",
+  "gain": 0.35
+ },
+ {
+  "t": 29,
+  "type": "check",
+  "gain": 1
+ },
+ {
+  "t": 29.5,
+  "type": "check",
+  "gain": 1
+ },
+ {
+  "t": 30,
+  "type": "morph",
+  "gain": 0.5
+ },
+ {
+  "t": 30.25,
+  "type": "morph",
+  "gain": 0.35
+ },
+ {
+  "t": 30.45,
+  "type": "toggle",
+  "gain": 1
+ },
+ {
+  "t": 32,
+  "type": "toggle",
+  "gain": 1
+ },
+ {
+  "t": 33.5,
+  "type": "tick",
+  "gain": 0.6
+ },
+ {
+  "t": 34,
+  "type": "morph",
+  "gain": 0.5
+ },
+ {
+  "t": 34.25,
+  "type": "morph",
+  "gain": 0.35
+ },
+ {
+  "t": 35.5,
+  "type": "click",
+  "gain": 1
+ },
+ {
+  "t": 36,
+  "type": "tick",
+  "gain": 0.7
+ },
+ {
+  "t": 36.5,
+  "type": "release",
+  "gain": 1
+ },
+ {
+  "t": 38,
+  "type": "morph",
+  "gain": 0.5
+ },
+ {
+  "t": 38.25,
+  "type": "morph",
+  "gain": 0.35
+ },
+ {
+  "t": 41.5,
+  "type": "click",
+  "gain": 1
+ },
+ {
+  "t": 42,
+  "type": "morph",
+  "gain": 0.5
+ },
+ {
+  "t": 43.5,
+  "type": "click",
+  "gain": 1
+ },
+ {
+  "t": 44,
+  "type": "morph",
+  "gain": 0.5
+ },
+ {
+  "t": 45.5,
+  "type": "write",
+  "gain": 0.6
+ },
+ {
+  "t": 46,
+  "type": "check",
+  "gain": 1
+ },
+ {
+  "t": 46.5,
+  "type": "check",
+  "gain": 1
+ },
+ {
+  "t": 47,
+  "type": "check",
+  "gain": 1
+ },
+ {
+  "t": 50,
+  "type": "morph",
+  "gain": 0.5
+ },
+ {
+  "t": 50.25,
+  "type": "morph",
+  "gain": 0.35
+ },
+ {
+  "t": 50.5,
+  "type": "tick",
+  "gain": 0.5
+ },
+ {
+  "t": 51,
+  "type": "tick",
+  "gain": 0.5
+ },
+ {
+  "t": 51.5,
+  "type": "tick",
+  "gain": 0.5
+ },
+ {
+  "t": 54,
+  "type": "logo",
+  "gain": 1
+ },
+ {
+  "t": 54,
+  "type": "morph",
+  "gain": 0.5
+ },
+ {
+  "t": 54.5,
+  "type": "morph",
+  "gain": 0.5
+ },
+ {
+  "t": 57.5,
+  "type": "click",
+  "gain": 1
+ },
+ {
+  "t": 57.62,
+  "type": "release",
+  "gain": 1
+ },
+ {
+  "t": 59,
+  "type": "morph",
+  "gain": 0.5
+ },
+ {
+  "t": 59.25,
+  "type": "morph",
+  "gain": 0.35
+ }
+]

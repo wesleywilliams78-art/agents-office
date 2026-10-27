@@ -1,0 +1,5 @@
+# Rebuildable: tools/render.mjs paints out/, tools/finish.mjs writes renders/, tools/sound.py writes the WAVs.
+# Approved finals live in Google Drive (006 - Manual Magic).
+*/out/
+*/renders/
+*/audio/*.wav
