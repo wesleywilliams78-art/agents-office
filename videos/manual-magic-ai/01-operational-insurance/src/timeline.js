@@ -165,8 +165,7 @@ function build() {
   fix({ html: 'Ten teams.', cls: 'j8 n', css: 'font-size:72px', y: -60, tin: HOOK_IN, tout: HOOK_OUT });
   const hook2 = fix({ html: 'Ten ways of doing the same job.', cls: 'j5 n', css: 'font-size:48px', y: 10, tin: HOOK_IN + .1, tout: HOOK_OUT });
   const hookW = Math.max(820, width(hook2) + 150), hookH = 300;
-  fix({ html: 'manualmagic.ai', cls: 'g6 w', css: 'font-size:30px;letter-spacing:.01em', y: -212, tin: B(30, 3, .35), tout: B(3, 1) + LOOP });
-  via(B(30, 3), { w: 160, h: 64, r: 32, y: CTA_Y, col: COL.orange }, { w: hookW, h: hookH, r: 44, y: 0, col: COL.white, cam: 1.45, fy: -40 });
+  via(B(30, 3), { w: 160, h: 64, r: 32, y: CTA_Y, col: COL.orange }, { w: hookW, h: hookH, r: 44, y: 0, col: COL.white, cam: 1.45, fy: -126 });
   const markW = [], markDy = [], markRot = [];
   for (let i = 0; i < 10; i++) {
     const dy = [-14, 9, -4, 16, -11, 5, -17, 12, -6, 10][i], w = [34, 22, 46, 30, 18, 52, 26, 40, 20, 36][i], rot = [-14, 8, 0, -22, 18, -6, 26, -10, 12, -30][i];
@@ -185,7 +184,7 @@ function build() {
   [2, 3, 4].forEach(b => snd(B(1, b), 'sort', .8));
 
   // ===== bar 2 · the question: the hook card folds into a pill on b1 and opens as the question =====
-  via(B(2, 1), { w: 180, h: 64, r: 32 }, { w: 820, h: 300, r: 44, cam: 1.45, fy: -40 });
+  via(B(2, 1), { w: 180, h: 64, r: 32 }, { w: 820, h: 300, r: 44, cam: 1.45, fy: -126 });
   item({ groups: [['What happens ', B(2, 1)], ['when your', B(2, 2)]], cls: 'j5 n', css: 'font-size:64px', y: -40, tin: B(2, 1), tout: B(3, 1) });
   item({ groups: [['best manager ', B(2, 3)], ['leaves?', B(2, 4)]], cls: 'j5 n', css: 'font-size:64px', y: 40, tin: B(2, 1), tout: B(3, 1) });
 
@@ -522,22 +521,26 @@ function build() {
   // feather only the plain navy margin of the square file, so its edge never shows against the canvas; the artwork is untouched
   logo.style.webkitMaskImage = logo.style.maskImage = 'radial-gradient(closest-side, #000 88%, transparent 100%)';
   top.appendChild(logo);
-  const LOGO_IN = B(28, 1), LOGO_OUT = B(30, 3);
+  // One logo from the CTA round the loop to the opening: it scales in on bar 28, and as the CTA button folds into the hook
+  // card on bar 30 b3 it glides up and settles above the card (300 world units, 435 px on screen), staying through the
+  // question and leaving on bar 3 b1. The navy margin of the file plus the gap keep more than 20% clear space above the card.
+  const LOGO_IN = B(28, 1), LOGO_OUT = B(3, 1) + LOOP;
+  const logoW = chan(SP.cam).at(B(27, 1), LOGO_W).at(B(30, 3), 300), logoY = chan(SP.cam).at(B(27, 1), -140).at(B(30, 3), -300);   // on the camera's spring, so its screen size only shrinks
   draws.push(t => {
     const u = life(t, LOGO_IN, LOGO_OUT); const st = logo.style;
     if (u === null) { st.visibility = 'hidden'; return; }
     const s = S(u - LOGO_IN, SP.logo), x = S(u - LOGO_OUT, SP.exit);
-    let sc = (0.72 + .28 * s) * (1 - .05 * x);
+    let sc = (logoW.f(t) / LOGO_W) * (0.72 + .28 * s) * (1 - .05 * x);
     const screen = LOGO_W * camK.f(t) * F.k;               // never shown above the 549 px source
     sc = Math.min(sc, 549 / screen);
-    const rot = -3 + 6 * clamp((u - LOGO_IN) / (LOGO_OUT + .4 - LOGO_IN));   // 6° in all, slow
+    const rot = -3 + 6 * clamp((u - LOGO_IN) / (LOGO_OUT - LOGO_IN));   // 6° in all across its 10 s on screen
     st.visibility = 'visible'; st.opacity = (clamp(s * 1.6) * (1 - x)).toFixed(4);
-    st.transform = `translate(${-LOGO_W / 2}px,${-140 - LOGO_W / 2}px) rotate(${rot.toFixed(3)}deg) scale(${sc.toFixed(4)})`;
+    st.transform = `translate(${-LOGO_W / 2}px,${(logoY.f(t) - LOGO_W / 2).toFixed(2)}px) rotate(${rot.toFixed(3)}deg) scale(${sc.toFixed(4)})`;
   });
   snd(LOGO_IN, 'logo');
 
   // ===== bar 30 · home =====
-  // (the hook state is set at B(30, 1) above; the label enters on b2)
+  // (the CTA folds into the hook on b3: see bar 1 above; the logo carries over)
 
   // ===== cursor =====
   cur(B(1, 3), 300, 110);          // enters from off-frame on bar 1 b3 and presses the hook card on bar 2 b1

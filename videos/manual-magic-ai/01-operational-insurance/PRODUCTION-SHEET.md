@@ -1,12 +1,19 @@
-# Operational Insurance™ explainer: production sheet (draft 4, 27 Oct 2026)
+# Operational Insurance™ explainer: production sheet (draft 5, 27 Oct 2026)
+
+**Draft 5** replaces the "manualmagic.ai" text label on the opening with the logo itself (Wesley, 27 Oct 2026). It is one logo all the way round the loop:
+- It scales in for the CTA on bar 28.
+- On bar 30 b3, as the CTA button folds into the hook card, it glides up and settles above the card. It shares the camera's spring, so its screen size only shrinks: 547 px down to 435 px.
+- It stays through the question and leaves on bar 3 b1.
+
+That covers the brief's "opening reveal and closing CTA only" for the logo. It never exceeds the 549 px source, rotates 6° in all over its 10 s on screen, and keeps more than 20% clear space above the card. The web address now appears only in the CTA button, written as on the site, "manualmagic.ai", with no mark: ® belongs on the brand name, not the address.
 
 **Draft 4** applies Penny's feedback (27 Oct 2026): "Manual Magic AI®" every time the name appears on screen. The only place it appears as text is the Pip Wilkins quote (0:38–0:42), which now reads "Manual Magic AI® is a real innovation for franchising". The ® is a superscript at half the cap height, top-aligned to the cap line. The logo artwork, the URL manualmagic.ai and the book title *Manual Magic* are unchanged. **Before publishing:** in the UK, marking an unregistered trade mark as registered is an offence (Trade Marks Act 1994, s.95). Confirm the UK registration number for Manual Magic AI. If it is not registered, or only applied for, change `BRAND_MARK` in `src/timeline.js` to ™ and re-render.
 
-**Approved by Wesley on 27 Oct 2026.** Sent to his Telegram, and filed as general-purpose content in Google Drive `006 - Manual Magic/General Content/` (both cuts and both posters, plain names). Penny still has to reconfirm the data lines at 0:30–0:34 before it is published.
+**Approved by Wesley on 27 Oct 2026.** Draft 4 replaced draft 3 in Google Drive `006 - Manual Magic/General Content/` (both cuts and both posters, plain names) and was sent to his Telegram the same day. Penny still has to reconfirm the data lines at 0:30–0:34 before it is published.
 
 **Draft 3** (Wesley's notes, 27 Oct 2026):
 - **New opening hook** on the pain of scaling: "Ten teams. Ten ways of doing the same job." It is frame 0, so it is also the poster. Under it, ten marks fall out of step on bar 1 b2–b4. The question "What happens when your best manager leaves?" follows on bar 2.
-- **"manualmagic.ai" label** above the hook and the question for the first 4 s. At the end it appears again in the CTA button.
+- **"manualmagic.ai" label** above the hook and the question for the first 4 s. At the end it appears again in the CTA button. (Draft 5 replaces this label with the logo.)
 - **"Ask your manager" removed.** The CTA ("Get Started · manualmagic.ai" with the logo) now holds from 0:55 to 0:59, then folds into the hook so the loop closes.
 - **Bridge transitions:** at most slide changes, the shape collapses on the beat into an element of the old slide, then opens an eighth note later as the next slide:
   - hook → question, and question → search, through a small pill
@@ -19,7 +26,7 @@
   - CTA → hook through the button
   The other changes already flow from one element into the next (button → upload card, card → loader circle, circle → island, chip → orange card).
 
-**Draft 2 added a background dot field** at Wesley's request: a grid of small white dots on the navy canvas that breathes slowly and ripples out from the shape on the beat. Bars 1–5, which have no kick, get a soft wave on each downbeat only. From bar 6, where the groove enters, every beat sends a wave and every downbeat a stronger one. A downbeat wave turns orange only in states with no other orange and no sky: bars 6, 9, 10, 14, 20, 21, 22, 26 and 27. Everywhere else it stays white, so the one-orange-per-state and no-orange-with-sky rules still hold. The field moves on a slower camera than the UI, so it reads as a layer behind. The dots are flat, with no glow and no particles. Draft 2 files carry `-draft4` in their names.
+**Draft 2 added a background dot field** at Wesley's request: a grid of small white dots on the navy canvas that breathes slowly and ripples out from the shape on the beat. Bars 1–5, which have no kick, get a soft wave on each downbeat only. From bar 6, where the groove enters, every beat sends a wave and every downbeat a stronger one. A downbeat wave turns orange only in states with no other orange and no sky: bars 6, 9, 10, 14, 20, 21, 22, 26 and 27. Everywhere else it stays white, so the one-orange-per-state and no-orange-with-sky rules still hold. The field moves on a slower camera than the UI, so it reads as a layer behind. The dots are flat, with no glow and no particles. Draft 2 files carry `-draft5` in their names.
 
 Manual Magic AI · 60.0 s seamless loop · 120 BPM, 30 bars · UI motion, one shape, no cuts · Night canvas.
 For Manual Magic AI's own channels (LinkedIn, Instagram, website). No partner or third-party attribution on screen apart from the cleared BFA claim and testimonial.
@@ -28,10 +35,10 @@ For Manual Magic AI's own channels (LinkedIn, Instagram, website). No partner or
 
 | Item | File |
 |---|---|
-| Master 1440 × 1440, 60 fps | `renders/manual-magic-ai-operational-insurance-1440-draft4.mp4` |
-| Vertical 1080 × 1920, 60 fps | `renders/manual-magic-ai-operational-insurance-1080x1920-draft4.mp4` |
-| Poster (frame 0) | `renders/poster-frame0-1440-draft4.png`, `renders/poster-frame0-1080x1920-draft4.png` |
-| Beat-grid sheet, one still per beat | `renders/beat-grid-sheet-1440-draft4.pdf` (120 stills in `out/square/stills/`) |
+| Master 1440 × 1440, 60 fps | `renders/manual-magic-ai-operational-insurance-1440-draft5.mp4` |
+| Vertical 1080 × 1920, 60 fps | `renders/manual-magic-ai-operational-insurance-1080x1920-draft5.mp4` |
+| Poster (frame 0) | `renders/poster-frame0-1440-draft5.png`, `renders/poster-frame0-1080x1920-draft5.png` |
+| Beat-grid sheet, one still per beat | `renders/beat-grid-sheet-1440-draft5.pdf` (120 stills in `out/square/stills/`) |
 | Earlier drafts | Kept beside them with `-draft1` (no dot field) and `-draft2` (old opening) in the name |
 | Source | `square.html`, `vertical.html`, `src/timeline.js`, `src/style.css`, `assets/` |
 | Audio | `audio/mix.wav` (final mix), `audio/track-60s.wav`, `audio/sounds.json` (every UI sound and its time) |
