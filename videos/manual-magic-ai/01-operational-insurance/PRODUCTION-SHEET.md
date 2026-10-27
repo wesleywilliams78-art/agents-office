@@ -1,4 +1,6 @@
-# Operational Insurance™ explainer: production sheet (draft 3, 27 Oct 2026)
+# Operational Insurance™ explainer: production sheet (draft 4, 27 Oct 2026)
+
+**Draft 4** applies Penny's feedback (27 Oct 2026): "Manual Magic AI®" every time the name appears on screen. The only place it appears as text is the Pip Wilkins quote (0:38–0:42), which now reads "Manual Magic AI® is a real innovation for franchising". The ® is a superscript at half the cap height, top-aligned to the cap line. The logo artwork, the URL manualmagic.ai and the book title *Manual Magic* are unchanged. **Before publishing:** in the UK, marking an unregistered trade mark as registered is an offence (Trade Marks Act 1994, s.95). Confirm the UK registration number for Manual Magic AI. If it is not registered, or only applied for, change `BRAND_MARK` in `src/timeline.js` to ™ and re-render.
 
 **Approved by Wesley on 27 Oct 2026.** Sent to his Telegram, and filed as general-purpose content in Google Drive `006 - Manual Magic/General Content/` (both cuts and both posters, plain names). Penny still has to reconfirm the data lines at 0:30–0:34 before it is published.
 
@@ -17,7 +19,7 @@
   - CTA → hook through the button
   The other changes already flow from one element into the next (button → upload card, card → loader circle, circle → island, chip → orange card).
 
-**Draft 2 added a background dot field** at Wesley's request: a grid of small white dots on the navy canvas that breathes slowly and ripples out from the shape on the beat. Bars 1–5, which have no kick, get a soft wave on each downbeat only. From bar 6, where the groove enters, every beat sends a wave and every downbeat a stronger one. A downbeat wave turns orange only in states with no other orange and no sky: bars 6, 9, 10, 14, 20, 21, 22, 26 and 27. Everywhere else it stays white, so the one-orange-per-state and no-orange-with-sky rules still hold. The field moves on a slower camera than the UI, so it reads as a layer behind. The dots are flat, with no glow and no particles. Draft 2 files carry `-draft3` in their names.
+**Draft 2 added a background dot field** at Wesley's request: a grid of small white dots on the navy canvas that breathes slowly and ripples out from the shape on the beat. Bars 1–5, which have no kick, get a soft wave on each downbeat only. From bar 6, where the groove enters, every beat sends a wave and every downbeat a stronger one. A downbeat wave turns orange only in states with no other orange and no sky: bars 6, 9, 10, 14, 20, 21, 22, 26 and 27. Everywhere else it stays white, so the one-orange-per-state and no-orange-with-sky rules still hold. The field moves on a slower camera than the UI, so it reads as a layer behind. The dots are flat, with no glow and no particles. Draft 2 files carry `-draft4` in their names.
 
 Manual Magic AI · 60.0 s seamless loop · 120 BPM, 30 bars · UI motion, one shape, no cuts · Night canvas.
 For Manual Magic AI's own channels (LinkedIn, Instagram, website). No partner or third-party attribution on screen apart from the cleared BFA claim and testimonial.
@@ -26,10 +28,10 @@ For Manual Magic AI's own channels (LinkedIn, Instagram, website). No partner or
 
 | Item | File |
 |---|---|
-| Master 1440 × 1440, 60 fps | `renders/manual-magic-ai-operational-insurance-1440-draft3.mp4` |
-| Vertical 1080 × 1920, 60 fps | `renders/manual-magic-ai-operational-insurance-1080x1920-draft3.mp4` |
-| Poster (frame 0) | `renders/poster-frame0-1440-draft3.png`, `renders/poster-frame0-1080x1920-draft3.png` |
-| Beat-grid sheet, one still per beat | `renders/beat-grid-sheet-1440-draft3.pdf` (120 stills in `out/square/stills/`) |
+| Master 1440 × 1440, 60 fps | `renders/manual-magic-ai-operational-insurance-1440-draft4.mp4` |
+| Vertical 1080 × 1920, 60 fps | `renders/manual-magic-ai-operational-insurance-1080x1920-draft4.mp4` |
+| Poster (frame 0) | `renders/poster-frame0-1440-draft4.png`, `renders/poster-frame0-1080x1920-draft4.png` |
+| Beat-grid sheet, one still per beat | `renders/beat-grid-sheet-1440-draft4.pdf` (120 stills in `out/square/stills/`) |
 | Earlier drafts | Kept beside them with `-draft1` (no dot field) and `-draft2` (old opening) in the name |
 | Source | `square.html`, `vertical.html`, `src/timeline.js`, `src/style.css`, `assets/` |
 | Audio | `audio/mix.wav` (final mix), `audio/track-60s.wav`, `audio/sounds.json` (every UI sound and its time) |
@@ -82,7 +84,7 @@ manualmagic.ai · Ten teams. Ten ways of doing the same job. · What happens whe
 | Operational Insurance™ spelled exactly, ™ legible, no insurance-product words | Pass. The ™ is 52% of cap height, top-aligned to the cap line. No policy, cover, premium, claim or underwritten. |
 | Only cleared claims, plus the BFA source line | Pass, with the three data lines flagged for Penny (above). |
 | Only the Pip Wilkins testimonial, word for word | Pass. No photo (no consent). |
-| "Manual Magic AI" with a capital I in every frame | Pass. |
+| "Manual Magic AI" with a capital I in every frame | Pass, written "Manual Magic AI®" at Penny's request (see the trade-mark note above). |
 | No prices, no exclamation marks, no emoji, no block over 12 words | Pass. Largest block: 12 words. |
 | Vertical cut inside the safe zone | Pass. All text and the logo sit between 14% from the top and 20% from the bottom. |
 | Works muted | Pass. Every message is on screen; nothing depends on sound. |

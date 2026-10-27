@@ -1,4 +1,4 @@
-/* Operational Insurance™ for Manual Magic AI: 60 s, 120 BPM, 30 bars, one shape, seamless loop.
+/* Operational Insurance™ for Manual Magic AI®: 60 s, 120 BPM, 30 bars, one shape, seamless loop.
    Every style is a pure function of t and is set in seek(t). Springs are closed-form step responses.
    A value that changes target many times is the sum of one spring per change, and each sum also carries
    the previous loop's changes, so t = 60 is exactly t = 0, cursor position and speed included. */
@@ -132,24 +132,28 @@ const width = (it) => it.el.offsetWidth;
 // first time a spring reaches 98%, so a landing can be put on the beat
 const reach = (sp, v = .98) => { for (let u = 0; u < 2; u += 0.001) if (S(u, sp) >= v) return u; return 0.3; };
 
-function tmMetrics() {
+function markMetrics(glyph, share) {
   const c = document.createElement('canvas').getContext('2d'), out = {};
   for (const wgt of [500, 800]) {
     c.font = `${wgt} 100px Jost`;
-    const H = c.measureText('H'), T = c.measureText('™');
+    const H = c.measureText('H'), T = c.measureText(glyph);
     const cap = H.actualBoundingBoxAscent / 100, asc = T.actualBoundingBoxAscent / 100, hgt = (T.actualBoundingBoxAscent + T.actualBoundingBoxDescent) / 100;
-    const f = 0.52 * cap / hgt;                       // the ™ is 52% of the cap height
+    const f = share * cap / hgt;                      // the mark is this share of the cap height
     const lift = (cap - asc * f) / f;                 // its top sits on the cap line
     out[wgt] = `font-size:${f.toFixed(3)}em;position:relative;top:${(-lift).toFixed(3)}em;margin-left:.03em;font-weight:${wgt}`;
   }
   return out;
 }
 
-let TM;
+// Penny (27 Oct 2026): "Manual Magic AI®" every time. ® is lawful in the UK only on a registered mark (Trade Marks
+// Act 1994 s.95); if it is not registered, set BRAND_MARK to '™'.
+const BRAND_MARK = '®';
+let TM, RM;
 const tm = w => `<span class="tm" style="${TM[w]}">™</span>`;
+const brand = w => `Manual Magic AI<span class="rm" style="${RM[w]}">${BRAND_MARK}</span>`;
 
 function build() {
-  TM = tmMetrics();
+  TM = markMetrics('™', .52); RM = markMetrics(BRAND_MARK, .5);
   const CTA_Y = 262;
   const pressT = [B(2, 1), B(3, 1), B(6, 4), B(21, 4), B(22, 4), B(29, 4)];
 
@@ -443,7 +447,7 @@ function build() {
   // ===== bars 20–21 · the quote (no photo) =====
   via(B(20, 1), { w: 76, h: 76, r: 38, x: detent, y: 0, col: COL.white }, { w: 860, h: 430, r: 44, y: 0, cam: 1.5, fy: 0 });
   item({ html: '“', cls: 'j8 n', css: 'font-size:150px;line-height:1', a: 'l', x: -372, y: -120, tin: B(20, 1, .04), tout: B(22, 1) });
-  item({ groups: [['Manual Magic AI', B(20, 2)]], cls: 'j5 n', css: 'font-size:56px', a: 'l', x: -360, y: -40, tin: B(20, 2), tout: B(22, 1) });
+  item({ groups: [[brand(500), B(20, 2)]], cls: 'j5 n', css: 'font-size:56px', a: 'l', x: -360, y: -40, tin: B(20, 2), tout: B(22, 1) });
   item({ groups: [['is a real innovation', B(20, 3)]], cls: 'j5 n', css: 'font-size:56px', a: 'l', x: -360, y: 30, tin: B(20, 3), tout: B(22, 1) });
   item({ groups: [['for franchising”', B(20, 4)]], cls: 'j5 n', css: 'font-size:56px', a: 'l', x: -360, y: 100, tin: B(20, 4), tout: B(22, 1) });
   item({ html: 'Pip Wilkins, CEO, the British Franchise Association', cls: 'g5 n6', css: 'font-size:28px', a: 'l', x: -360, y: 170, tin: B(21, 1), tout: B(22, 1) });
