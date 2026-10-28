@@ -534,6 +534,8 @@
   .side button, .side .gl, .side .subnav { position: relative; z-index: 1; }
   .side.has-ind button.on, .side.has-ind button.on:hover { background: transparent; box-shadow: none; }
   .side .subnav { overflow: hidden; }
+  .item.dragging { opacity: .4; outline: 1px dashed color-mix(in srgb, var(--ink) 35%, transparent); outline-offset: -1px; }
+  .quad.drag { outline: 2px solid color-mix(in srgb, var(--qc) 55%, transparent); outline-offset: -2px; }
   .side .subnav:not(.open) { height: 0; margin-bottom: 0; opacity: 0; pointer-events: none; }
   @media (max-width: 860px) { .side .subnav:not(.open) { height: auto; opacity: 1; pointer-events: auto; } }
 </style>
@@ -803,6 +805,77 @@ function leave() { // the view you are leaving steps back in a tenth of a second
   return Promise.race([outs, new Promise(r => setTimeout(r, 160))]).then(() => shown);
 }
 
+/* ---------- motion, part two: only what changed moves ----------
+   The page redraws every five seconds. morph() makes that invisible unless something really changed: the same markup is never
+   written again (so nothing replays and an open date picker is left alone); when it does change, cards that stay glide to their
+   new place, new cards arrive, and cards that left fold away as a ghost of themselves. */
+const lastHtml = new WeakMap();
+const seen = el => el && el.offsetParent !== null && el.getClientRects().length > 0;
+function morph(pairs, { key = '[data-k]', enter = 'rise', ghosts = true, max = 30 } = {}) {
+  pairs = pairs.filter(([el, html]) => el && lastHtml.get(el) !== html);
+  if (!pairs.length) return { entered: [] };
+  const first = pairs.every(([el]) => !lastHtml.has(el)), live = moving() && !first && pairs.some(([el]) => seen(el));
+  const before = new Map();
+  if (live) for (const [el] of pairs) for (const k of el.querySelectorAll(key)) { const id = k.getAttribute(key.slice(1, -1)); if (!before.has(id)) before.set(id, { r: k.getBoundingClientRect(), html: k.outerHTML, el: k }); } // outermost only: a card's own date field carries the same id
+  for (const [el, html] of pairs) { el.innerHTML = html; lastHtml.set(el, html); }
+  if (!live) return { entered: [] };
+  const attr = key.slice(1, -1), after = new Map(), entered = [];
+  for (const [el] of pairs) for (const k of el.querySelectorAll(key)) { const id = k.getAttribute(attr); if (!after.has(id)) after.set(id, k); }
+  const arriving = [...after.keys()].filter(k => !before.has(k));
+  if (arriving.length > max) return { entered: [] }; // a filter flip that swaps the whole list: just show it
+  for (const [k, n] of after) {
+    const o = before.get(k), r = n.getBoundingClientRect();
+    if (o) { const dx = o.r.left - r.left, dy = o.r.top - r.top; if (Math.abs(dx) > 1 || Math.abs(dy) > 1) n.animate([{ transform: `translate(${dx}px, ${dy}px)` }, { transform: 'none' }], { duration: 560, easing: SPRING }); continue; }
+    entered.push(n);
+    const i = entered.length - 1;
+    n.animate(enter === 'drop'
+      ? [{ opacity: 0, transform: 'translateY(-26px) scale(.96)' }, { opacity: 1, transform: 'none' }]
+      : [{ opacity: 0, transform: 'translateY(-14px)' }, { opacity: 1, transform: 'none' }], { duration: 640, delay: i * 90, easing: SPRING, fill: 'backwards' });
+  }
+  if (ghosts) for (const [k, o] of before) {
+    if (after.has(k) || o.r.height === 0) continue;
+    const g = document.createElement('div'); g.innerHTML = o.html; const ge = g.firstElementChild; if (!ge) continue;
+    Object.assign(ge.style, { position: 'fixed', left: o.r.left + 'px', top: o.r.top + 'px', width: o.r.width + 'px', height: o.r.height + 'px', margin: 0, zIndex: 40, pointerEvents: 'none', boxSizing: 'border-box' });
+    document.body.appendChild(ge);
+    const a = ge.animate([{ opacity: 1, transform: 'none', clipPath: 'inset(0 0 0 0 round 14px)' }, { opacity: 0, transform: 'scale(.94)', clipPath: 'inset(0 0 100% 0 round 14px)' }], { duration: 380, easing: 'cubic-bezier(.5,0,.75,0)', fill: 'forwards' });
+    const done = () => ge.remove(); a.finished.then(done, done); setTimeout(done, 900); // a window that is not painting still cleans up
+  }
+  return { entered };
+}
+// numbers that change roll to their new value and pop; the first load counts up from nought. The final value is written first,
+// so a window that is not drawing frames still shows the right number.
+const numsSeen = new Map();
+function countTo(el, from, to, dur = 700) {
+  el.textContent = to;
+  if (!moving() || from === to) return;
+  const t0 = performance.now(), fmt = v => String(Math.round(v));
+  const step = now => { const p = Math.min(1, (now - t0) / dur), e = 1 - Math.pow(1 - p, 3); el.textContent = p < 1 ? fmt(from + (to - from) * e) : to; if (p < 1) requestAnimationFrame(step); };
+  requestAnimationFrame(step);
+}
+function popNum(el, up = true) {
+  if (!moving()) return;
+  el.animate([{ transform: `translateY(${up ? -10 : 10}px) scale(1.12)` }, { transform: 'none' }], { duration: 620, easing: SPRING });
+}
+function stamp(el) { // a red badge arrives the way the seal does: scale and a slight turn
+  if (!moving()) return;
+  el.animate([{ transform: 'scale(1.7) rotate(-10deg)', opacity: 0 }, { transform: 'none', opacity: 1 }], { duration: 560, easing: SPRING });
+}
+// a block of numbered tiles (KPIs, hero stats): redraw only on change, then move the numbers that changed
+function tiles(el, html, numSel, labelSel) {
+  if (!el || lastHtml.get(el) === html) return;
+  const firstEver = !lastHtml.has(el), old = new Map();
+  for (const n of el.querySelectorAll(numSel)) old.set(n.parentElement.querySelector(labelSel)?.textContent || '', parseFloat(n.textContent));
+  el.innerHTML = html; lastHtml.set(el, html);
+  [...el.querySelectorAll(numSel)].forEach((n, i) => {
+    const k = n.parentElement.querySelector(labelSel)?.textContent || '', to = parseFloat(n.textContent);
+    if (!Number.isFinite(to)) return;
+    const from = firstEver ? 0 : old.get(k);
+    if (from === undefined || !Number.isFinite(from) || from === to) return;
+    if (firstEver) { if (!seen(el) || !moving()) return; n.textContent = 0; setTimeout(() => countTo(n, 0, to, 900), 120 + i * 90); return; }
+    countTo(n, from, to); popNum(n, to > from);
+  });
+}
+
 function applyCat(animate = false) {
   for (const el of document.querySelectorAll('[data-cat]')) el.classList.toggle('cat-off', isDash(S.cat) ? el.dataset.cat !== 'dash' : el.dataset.cat !== S.cat);
   for (const b of document.querySelectorAll('#side button[data-go]')) b.classList.toggle('on', b.dataset.go === S.cat);
@@ -879,7 +952,11 @@ $('waFeed').addEventListener('click', async e => {
   b.disabled = false; b.textContent = 'READ WAITING CHATS INTO MATRIX';
 });
 function renderNav() { // small counts beside a category: what is waiting on you, what is open, what needs attention
-  const set = (id, n, alert) => { const e = $(id); if (!e) return; e.textContent = n || ''; e.classList.toggle('alert', !!alert && !!n); };
+  const set = (id, n, alert) => { const e = $(id); if (!e) return;
+    const old = parseFloat(e.textContent), was = e.classList.contains('alert');
+    e.textContent = n || ''; e.classList.toggle('alert', !!alert && !!n);
+    if (Number.isFinite(old) && n && old !== n) { countTo(e, old, n); popNum(e, n > old); } // 3: counts roll to the new value
+    if (!was && e.classList.contains('alert') && numsSeen.has(id)) stamp(e); numsSeen.set(id, 1); };
   set('nOverview', S.tasks.filter(t => t.state === 'waiting').length, true);
   set('nMatrix', (S.matrix.items || []).filter(i => i.state === 'open').length);
   set('nSkills', S.skillAudit ? S.skillAudit.summary.attention : '', true);
@@ -1200,7 +1277,7 @@ function renderKpis() {
     [S.routines.filter(r => !r.paused).length, 'routines on'],
     [open.filter(i => i.gap).length, 'gaps open', open.some(i => i.gap === 'no-seat')],
   ];
-  $('kpis').innerHTML = k.map(([v, l, alert]) => `<div class="kpi${alert ? ' alert' : ''}"><div class="v">${v}</div><div class="l">${l}</div></div>`).join('');
+  tiles($('kpis'), k.map(([v, l, alert]) => `<div class="kpi${alert ? ' alert' : ''}"><div class="v">${v}</div><div class="l">${l}</div></div>`).join(''), '.v', '.l');
   renderTrend(); renderHero();
 }
 // the hero says the one thing that matters now, in plain words, and the three numbers behind it
@@ -1212,7 +1289,7 @@ function renderHero() {
   $('hEye').innerHTML = `${hi}, Wesley · ${new Date().toLocaleDateString([], { weekday: 'long', day: 'numeric', month: 'long' })}`;
   $('hHead').textContent = waiting ? `${waiting} thing${waiting > 1 ? 's' : ''} waiting on your OK.` : doNow ? `${doNow} to do now.` : 'Nothing needs you right now.';
   $('hSub').textContent = `${S.agents.length} seats in the office · ${working ? working + ' working now' : 'all quiet'} · ${today} finished today · ${open.length} actions open on the matrix.`;
-  $('hStats').innerHTML = [[waiting, 'Waiting on you', waiting], [doNow, 'Do now', doNow], [today, 'Done today', 0]].map(([n, l, a]) => `<div class="hstat"><div class="hn${a ? ' alert' : ''}">${n}</div><div class="hl">${l}</div></div>`).join('');
+  tiles($('hStats'), [[waiting, 'Waiting on you', waiting], [doNow, 'Do now', doNow], [today, 'Done today', 0]].map(([n, l, a]) => `<div class="hstat"><div class="hn${a ? ' alert' : ''}">${n}</div><div class="hl">${l}</div></div>`).join(''), '.hn', '.hl');
 }
 // 14 days of finished work, one bar per day, split by outcome; hover a bar for the day and the count
 function renderTrend() {
@@ -1258,11 +1335,13 @@ function renderRoles() {
 function renderMatrix() {
   const Q = S.matrix.quadrants || {};
   const items = S.matrix.items.filter(i => S.mShow === 'all' || i.state === 'open');
+  const pairs = [];
   for (const el of document.querySelectorAll('.quad')) {
     const q = el.dataset.q, list = items.filter(i => i.q === q).sort((a, b) => (a.due || '9') < (b.due || '9') ? -1 : 1);
-    el.innerHTML = `<div class="qh"><span class="qn">${esc(Q[q]?.name || q)}</span><span class="qhint">${esc(Q[q]?.hint || '')}</span><span class="qc">${list.length}</span></div>` +
-      (list.map(itemHtml).join('') || '<div class="empty">Nothing here.</div>');
+    pairs.push([el, `<div class="qh"><span class="qn">${esc(Q[q]?.name || q)}</span><span class="qhint">${esc(Q[q]?.hint || '')}</span><span class="qc">${list.length}</span></div>` +
+      (list.map(itemHtml).join('') || '<div class="empty">Nothing here.</div>')]);
   }
+  morph(pairs, { key: '[data-item]', enter: 'drop' }); // 4: cards that stay glide, new ones drop in, cleared ones fold away
 }
 
 // the news feed: every step of every task, plus what the matrix pulled out of it — one timeline, newest first
@@ -1287,16 +1366,18 @@ function newsEvents() {
 function renderNews() {
   const list = newsEvents().filter(e => S.nShow === 'all' || e.kind === S.nShow).slice(0, 60);
   let day = '';
-  $('news').innerHTML = list.map(e => {
+  const html = list.map(e => {
     const d = new Date(e.at).toDateString(), head = d !== day ? `<div class="nd">${d === new Date().toDateString() ? 'Today' : new Date(e.at).toLocaleDateString([], { weekday: 'long', day: 'numeric', month: 'short' })}</div>` : '';
     day = d;
     const a = e.agent && agentBy(e.agent), dp = DEPTS[e.dept] || DEPTS.owner;
-    return head + `<div class="ni${e.hot ? ' hot' : ''}${e.good ? ' good' : ''}${e.bad ? ' bad' : ''}">
+    return head + `<div class="ni${e.hot ? ' hot' : ''}${e.good ? ' good' : ''}${e.bad ? ' bad' : ''}" data-k="${esc(e.kind + ':' + e.at + ':' + (e.id || e.title))}">
       <span class="nic">${e.icon}</span>
       <div class="nb"><div class="nv">${esc(e.verb)}</div><div class="nt">${esc(e.title)}</div>
         ${e.detail ? `<div class="nx">${esc(e.detail)}</div>` : ''}
         <div class="nm">${a ? `<span class="chip" style="background:${dp.chip}"></span>${esc(a.name)} · ` : ''}${new Date(e.at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} · ${ago(e.at)}</div></div></div>`;
   }).join('') || '<div class="none">Nothing yet. Work shows up here as it happens.</div>';
+  const { entered } = morph([[$('news'), html]], { key: '[data-k]', enter: 'rise', ghosts: false }); // 7
+  for (const n of entered) if (n.classList.contains('hot')) n.querySelector('.nic')?.animate([{ transform: 'none' }, { transform: 'scale(1.35)' }, { transform: 'none' }], { duration: 700, delay: 600, easing: 'cubic-bezier(.3,0,.2,1)' });
 }
 function itemHtml(i) {
   const a = agentBy(i.agent), d = DEPTS[i.dept] || DEPTS.owner, open = S.openItem.has(i.id);
@@ -1352,6 +1433,7 @@ async function feed(taskId) {
 }
 
 async function act(id, what) {
+  for (const q of document.querySelectorAll('.quad')) lastHtml.set(q, ''); // the clicked button was disabled: the next draw must rewrite the cards, even if nothing changed (a cancel, a failed call)
   try {
     if (what === 'delete') await api('/matrix/' + id, { method: 'DELETE' });
     else if (what === 'send') { const r = await api('/matrix/' + id + '/send', { method: 'POST' }); $('fMsg').className = 'msg'; $('fMsg').textContent = `Sent: ${r.task.title} → ${agentBy(r.task.agent)?.name || r.task.agent}${r.task.needsOk ? '. It will wait for your OK before anything goes out.' : '.'}`; }
@@ -1389,11 +1471,13 @@ document.addEventListener('click', e => {
 });
 // drag an item to another quadrant: the owner's call beats the office's
 let dragId = null;
-document.addEventListener('dragstart', e => { const it = e.target.closest?.('[data-item]'); dragId = it ? it.dataset.item : null; });
+document.addEventListener('dragstart', e => { const it = e.target.closest?.('[data-item]'); dragId = it ? it.dataset.item : null; if (it) it.classList.add('dragging'); });
+document.addEventListener('dragend', e => { e.target.closest?.('[data-item]')?.classList.remove('dragging'); });
 for (const q of document.querySelectorAll('.quad')) {
   q.addEventListener('dragover', e => { if (dragId) { e.preventDefault(); q.classList.add('drag'); } });
   q.addEventListener('dragleave', () => q.classList.remove('drag'));
-  q.addEventListener('drop', async e => { e.preventDefault(); q.classList.remove('drag'); if (!dragId) return; const id = dragId; dragId = null; await api('/matrix/' + id, { method: 'POST', body: { q: q.dataset.q } }).catch(err => alert(err.message)); poll(); });
+  q.addEventListener('drop', async e => { e.preventDefault(); q.classList.remove('drag'); if (!dragId) return;
+    if (moving()) q.animate([{ height: '4px' }, { height: '14px' }, { height: '4px' }], { duration: 640, easing: SPRING_SOFT, pseudoElement: '::before' }); const id = dragId; dragId = null; await api('/matrix/' + id, { method: 'POST', body: { q: q.dataset.q } }).catch(err => alert(err.message)); poll(); });
 }
 // editing a due date: "by the 21st" often means act well before then, so this is a plain edit,
 // not a special flow — changing it also clears an already-added calendar reminder (server side)
