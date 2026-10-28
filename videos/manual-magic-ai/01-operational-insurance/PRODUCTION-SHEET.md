@@ -1,4 +1,6 @@
-# Operational Insurance™ explainer: production sheet (draft 5, 27 Oct 2026)
+# Operational Insurance™ explainer: production sheet (draft 6, 28 Oct 2026)
+
+**Draft 6** applies Penny's last amend (28 Oct 2026). The testimonial credit now reads "Pip Wilkins QFP, CEO, the British Franchise Association". QFP is the BFA's Qualified Franchise Professional post-nominal, so it follows the name with no comma. The longer line still sits inside the quote card's margins in both formats. On bar 20 b4 the cursor now moves to the empty space right of the quote, so it no longer rests on the credit. Nothing else changed: same timing, same audio.
 
 **Draft 5** replaces the "manualmagic.ai" text label on the opening with the logo itself (Wesley, 27 Oct 2026). It is one logo all the way round the loop:
 - It scales in for the CTA on bar 28.
@@ -9,7 +11,7 @@ That covers the brief's "opening reveal and closing CTA only" for the logo. It n
 
 **Draft 4** applies Penny's feedback (27 Oct 2026): "Manual Magic AI®" every time the name appears on screen. The only place it appears as text is the Pip Wilkins quote (0:38–0:42), which now reads "Manual Magic AI® is a real innovation for franchising". The ® is a superscript at half the cap height, top-aligned to the cap line. The logo artwork, the URL manualmagic.ai and the book title *Manual Magic* are unchanged. **Before publishing:** in the UK, marking an unregistered trade mark as registered is an offence (Trade Marks Act 1994, s.95). Confirm the UK registration number for Manual Magic AI. If it is not registered, or only applied for, change `BRAND_MARK` in `src/timeline.js` to ™ and re-render.
 
-**Approved by Wesley on 27 Oct 2026.** Draft 4 replaced draft 3 in Google Drive `006 - Manual Magic/General Content/` (both cuts and both posters, plain names) and was sent to his Telegram the same day. Penny still has to reconfirm the data lines at 0:30–0:34 before it is published.
+**Approved by Wesley on 27 Oct 2026.** Draft 6 replaced draft 5 in Google Drive `006 - Manual Magic/General Content/` on 28 Oct 2026 (both cuts and both posters, plain names) and went to his Telegram the same day, for him to send on to Penny. Penny still has to reconfirm the data lines at 0:30–0:34 before it is published.
 
 **Draft 3** (Wesley's notes, 27 Oct 2026):
 - **New opening hook** on the pain of scaling: "Ten teams. Ten ways of doing the same job." It is frame 0, so it is also the poster. Under it, ten marks fall out of step on bar 1 b2–b4. The question "What happens when your best manager leaves?" follows on bar 2.
@@ -35,10 +37,10 @@ For Manual Magic AI's own channels (LinkedIn, Instagram, website). No partner or
 
 | Item | File |
 |---|---|
-| Master 1440 × 1440, 60 fps | `renders/manual-magic-ai-operational-insurance-1440-draft5.mp4` |
-| Vertical 1080 × 1920, 60 fps | `renders/manual-magic-ai-operational-insurance-1080x1920-draft5.mp4` |
-| Poster (frame 0) | `renders/poster-frame0-1440-draft5.png`, `renders/poster-frame0-1080x1920-draft5.png` |
-| Beat-grid sheet, one still per beat | `renders/beat-grid-sheet-1440-draft5.pdf` (120 stills in `out/square/stills/`) |
+| Master 1440 × 1440, 60 fps | `renders/manual-magic-ai-operational-insurance-1440-draft6.mp4` |
+| Vertical 1080 × 1920, 60 fps | `renders/manual-magic-ai-operational-insurance-1080x1920-draft6.mp4` |
+| Poster (frame 0) | `renders/poster-frame0-1440-draft6.png`, `renders/poster-frame0-1080x1920-draft6.png` |
+| Beat-grid sheet, one still per beat | `renders/beat-grid-sheet-1440-draft6.pdf` (120 stills in `out/square/stills/`) |
 | Earlier drafts | Kept beside them with `-draft1` (no dot field) and `-draft2` (old opening) in the name |
 | Source | `square.html`, `vertical.html`, `src/timeline.js`, `src/style.css`, `assets/` |
 | Audio | `audio/mix.wav` (final mix), `audio/track-60s.wav`, `audio/sounds.json` (every UI sound and its time) |
@@ -67,7 +69,7 @@ Not used: £1,000 per outlet; "extends training by almost half"; any number of c
 
 ## Testimonial
 
-"Manual Magic AI is a real innovation for franchising" (0:38–0:42). Credit: Pip Wilkins, CEO, the British Franchise Association. **No photo:** video consent was not given, so the card carries a typographic quote mark instead. No other testimonial appears.
+"Manual Magic AI is a real innovation for franchising" (0:38–0:42). Credit: Pip Wilkins QFP, CEO, the British Franchise Association (QFP added at Penny's request, draft 6). **No photo:** video consent was not given, so the card carries a typographic quote mark instead. No other testimonial appears.
 
 ## Other copy (not claims)
 

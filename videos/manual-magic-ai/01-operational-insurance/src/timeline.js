@@ -449,7 +449,7 @@ function build() {
   item({ groups: [[brand(500), B(20, 2)]], cls: 'j5 n', css: 'font-size:56px', a: 'l', x: -360, y: -40, tin: B(20, 2), tout: B(22, 1) });
   item({ groups: [['is a real innovation', B(20, 3)]], cls: 'j5 n', css: 'font-size:56px', a: 'l', x: -360, y: 30, tin: B(20, 3), tout: B(22, 1) });
   item({ groups: [['for franchising”', B(20, 4)]], cls: 'j5 n', css: 'font-size:56px', a: 'l', x: -360, y: 100, tin: B(20, 4), tout: B(22, 1) });
-  item({ html: 'Pip Wilkins, CEO, the British Franchise Association', cls: 'g5 n6', css: 'font-size:28px', a: 'l', x: -360, y: 170, tin: B(21, 1), tout: B(22, 1) });
+  item({ html: 'Pip Wilkins QFP, CEO, the British Franchise Association', cls: 'g5 n6', css: 'font-size:28px', a: 'l', x: -360, y: 170, tin: B(21, 1), tout: B(22, 1) });
   state(B(21, 2), { cam: 1.56 });
 
   // ===== bar 22 · BFA chip =====
@@ -565,7 +565,7 @@ function build() {
   cur(B(17, 1, .3), 360, 330);
   // bar 18–19 cursor set above with the drag
   cur(B(20, 1, .2), 330, 330);
-  cur(B(21, 2, .1), 300, 120);
+  cur(B(20, 4, .3), 300, 40);       // rests right of the quote before the credit line lands
   cur(B(21, 4, .3), 330, 250);
   cur(B(22, 2, .1), 250, 30);
   cur(B(22, 4, .3), 380, 360);
