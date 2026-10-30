@@ -171,6 +171,16 @@ await step('till dashboard: monthly and daily reports give this year against las
   if (pos.uploadedAt('> Uploaded 17/10/2026, 11:32:16') >= pos.uploadedAt('> Uploaded 30/10/2026, 12:35:27')) throw new Error('the upload stamp must order reports by date, not by file name');
   return 'monthly and daily read by header · a part day left out · month to date and last full month against last year · newest upload by its stamp';
 });
+await step('till dashboard: the discount summary splits standard offers from hand-keyed discounts', async () => { // V3.12
+  const pos = await import('./pos.mjs');
+  const row = (...c) => '| ' + c.join(' | ') + ' |';
+  const txt = [row('Discount Summary Report report', 'Discount Summary Report for Test Diner (High St) Generated for the period of 2026-01-01 - 2026-10-30', '', ''), row('Discount %', 'Discount Value', 'No of Orders', 'Sales Total'),
+    row('10', '100.00', '50', '900.00'), row('25', '50.00', '10', '150.00'), row('37', '20.00', '2', '34.00'), row('100', '9.00', '1', '0.00')].join('\n');
+  const p = pos.parseDiscounts(txt); if (!p || p.bands.length !== 4 || p.from !== '2026-01-01') throw new Error('parse: ' + JSON.stringify(p));
+  const y = pos.build([{ name: 'Upload - disc', text: txt }], { match: 'Test Diner' }).discounts.years[0];
+  if (y.total !== 179 || y.hand.values !== 1 || y.hand.discount !== 20 || y.standard.find(b => b.pct === 25).orders !== 10) throw new Error('summary: ' + JSON.stringify(y));
+  return 'bands read by header · 37% counted as hand-keyed · 10%, 25% and 100% as standard offers · totals add up';
+});
 await step('till dashboard: the hourly grid and item report become monthly turnover, a weekday-by-hour map and menu totals that match the report', async () => {
   const { build } = await import('./pos.mjs'); const NL = String.fromCharCode(10);
   const hourly = ['# x', '| Hour | 2026-08-30 | 2026-08-31 | 2026-09-01 | 2026-09-02 |', '| --- | --- | --- | --- | --- |', '| Hourly Sales report | Hourly Sales for Test Diner (High Street) Generated for the period of 2026-08-30 - 2026-09-02 |', '| 06:00PM | 10 (100.00) | 20 (250.50) | 5 (50.00) | 0 (-) |', '| 07:00PM | 30 (300.00) | 0 (-) | 15 (150.25) | 1 (1,000.00) |'].join(NL);

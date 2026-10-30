@@ -247,6 +247,12 @@
   .sPieBody li i { width: 10px; height: 10px; border-radius: 3px; display: block; }
   .sPieBody li .n { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; } .sPieBody li .v { color: var(--grey); font-variant-numeric: tabular-nums; }
   @media (max-width: 860px) { .sItems { grid-template-columns: 1fr; } .sPieBody { grid-template-columns: 1fr; justify-items: center; } .sPieBody svg { max-width: 220px; } .sPieBody ul { width: 100%; } }
+  .dRow { grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); margin-top: 6px; }
+  .dMix { width: 100%; border-collapse: collapse; font-size: 11px; font-variant-numeric: tabular-nums; }
+  .dMix th { text-align: left; font-size: 9.5px; letter-spacing: .1em; text-transform: uppercase; color: var(--faint); font-weight: 600; padding: 0 6px 6px 0; }
+  .dMix td { padding: 5px 6px 5px 0; border-top: 1px solid var(--line); } .dMix td.z { color: var(--faint); } .dMix td b { font-weight: 600; }
+  .dMix tr.hk td { color: var(--red, #C8553D); font-weight: 600; }
+  @media (max-width: 860px) { .dRow { grid-template-columns: 1fr; } }
   .sKpis { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 14px; }
   .sK { background: var(--soft); border-radius: 10px; padding: 10px 12px; }
   .sK .v { font-family: var(--serif); font-size: 26px; line-height: 1.1; }
@@ -1166,6 +1172,54 @@ function itemsPie(it, c) {
     <div class="sPieBody"><svg viewBox="0 0 220 220" role="img" aria-label="Top items by sales">${slices}${centre}</svg><ul>${legend}</ul></div>
     ${it.note ? `<div class="note" style="font-size:10px;color:var(--faint);margin-top:6px">${esc(it.note)}</div>` : ''}</div>`;
 }
+// Discounts (V3.12, 30 Oct). When: the daily reports (discount £ per day). What: the discount summary (the % bands, no dates).
+// The summary covers a full 2025 and 2026 to date, so the mix is compared as each year's share, never as raw totals.
+function discountsPanel(d, Y, c) {
+  const parts = [], yrs = (d.discounts && d.discounts.years) || [], days = (Y && Y.days) || [];
+  const back = (iso, n) => new Date(Date.parse(iso + 'T12:00:00Z') - n * 86400000).toISOString().slice(0, 10);
+  parts.push('<div class="sHead" style="margin-top:22px"><b>Discounts</b></div>');
+  if (days.length && Y.to) { // year to date against the same dates last year, from the daily reports
+    const y = +Y.to.slice(0, 4), lyTo = (y - 1) + Y.to.slice(4);
+    const span = (a, b) => days.filter(r => r[0] >= a && r[0] <= b), sum = (l, i) => l.reduce((n, r) => n + (r[i] || 0), 0);
+    const cur = span(y + '-01-01', Y.to), prev = span((y - 1) + '-01-01', lyTo);
+    const dC = sum(cur, 3), dP = sum(prev, 3), tC = sum(cur, 1), tP = sum(prev, 1), shC = tC ? dC / tC * 100 : null, shP = tP ? dP / tP * 100 : null;
+    const yH = yrs.find(x => x.year === String(y)), hand = yH && yH.total ? yH.hand.discount / yH.total * 100 : null, yL = yrs.find(x => x.year === String(y - 1)), handL = yL && yL.total ? yL.hand.discount / yL.total * 100 : null;
+    const tile = (v, l, dd, prev) => `<div class="sK"><div class="v">${v}</div><div class="l">${l}</div>${dd}${prev ? `<div class="pvPrev">${prev}</div>` : ''}</div>`;
+    parts.push(`<div class="sKpis" style="grid-template-columns:repeat(auto-fit,minmax(150px,1fr))">` +
+      tile(money(dC, c), `Discounts · 1 Jan to ${fmtD(Y.to)}`, dP ? chg((dC / dP - 1) * 100, 'vs same dates ' + (y - 1)).replace(/class="d (up|dn)"/, (m, k) => 'class="d ' + (k === 'up' ? 'dn' : 'up') + '"') : '', money(dP, c) + ' in ' + (y - 1)) +
+      tile(shC == null ? '—' : shC.toFixed(2) + '%', 'Of takings · year to date', '', shP == null ? '' : shP.toFixed(2) + '% in ' + (y - 1)) +
+      (yH ? tile(money(yH.hand.discount, c), `Hand-keyed · ${yH.hand.orders.toLocaleString('en-GB')} orders · ${yH.hand.values} odd %s`, '', hand == null ? '' : `${hand.toFixed(0)}% of all discount £${handL == null ? '' : ' (' + handL.toFixed(0) + '% in ' + (y - 1) + ')'}`) : '') +
+      `</div>`);
+    // when: discount £ by month, last year against this year
+    const months = (Y.months || []).filter(m => m.discount != null);
+    if (months.length) {
+      const yrsM = [...new Set(months.map(m => m.month.slice(0, 4)))].sort().slice(-2), [a, b] = yrsM.length === 2 ? yrsM : [null, yrsM[0]];
+      const get = (yr, mo) => months.find(m => m.month === yr + '-' + mo), mos = [...Array(12).keys()].map(i => String(i + 1).padStart(2, '0'));
+      const W = 700, H = 150, pl = 44, pr = 10, pt = 10, pb = 24, max = Math.max(1, ...months.map(m => m.discount)), top = Math.ceil(max / 1000) * 1000, bw = (W - pl - pr) / 12, yy = v => pt + (1 - v / top) * (H - pt - pb), base = H - pb, w = bw * .34;
+      const grid = [0, .5, 1].map(q => `<line x1="${pl}" x2="${W - pr}" y1="${yy(top * q)}" y2="${yy(top * q)}" stroke="var(--line)"/><text x="${pl - 6}" y="${yy(top * q) + 3}" text-anchor="end" font-size="9" fill="var(--faint)">${top * q ? (top * q / 1000).toFixed(1) + 'k' : '0'}</text>`).join('');
+      const bars = mos.map((mo, i) => { const x = pl + i * bw, pa = a && get(a, mo), pb2 = get(b, mo), tip = m => `${mName(m.month)} · ${money(m.discount, c)} off · ${m.discountPct}% of takings`;
+        return (pa ? `<rect x="${x + bw * .14}" y="${yy(pa.discount)}" width="${w}" height="${base - yy(pa.discount)}" rx="2" fill="var(--faint)" fill-opacity=".55"><title>${tip(pa)}</title></rect>` : '') +
+          (pb2 ? `<rect x="${x + bw * .14 + w + 2}" y="${yy(pb2.discount)}" width="${w}" height="${base - yy(pb2.discount)}" rx="2" fill="var(--red, #C8553D)"><title>${tip(pb2)}</title></rect>` : '') +
+          `<text x="${x + bw / 2}" y="${H - 8}" text-anchor="middle" font-size="9" fill="var(--faint)">${new Date(2026, i, 1).toLocaleDateString('en-GB', { month: 'short' })}</text>`; }).join('');
+      parts.push(`<svg class="sChart" viewBox="0 0 ${W} ${H}" role="img" aria-label="Discount by month">${grid}${bars}</svg><div class="sLegend">${a ? `<span><i style="background:var(--faint)"></i>${a}</span>` : ''}<span><i style="background:var(--red, #C8553D)"></i>${b} · discount £ by month</span></div>`);
+    }
+    // the biggest discount days this year
+    const topDays = [...cur].sort((p, q) => q[3] - p[3]).slice(0, 6);
+    var daysHtml = topDays.length ? `<div><h4>Biggest discount days · ${y}</h4>${topDays.map(r => `<div class="sBar"><div class="t"><span>${new Date(r[0] + 'T12:00:00').toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' })}</span><span>${money(r[3], c)} · ${r[1] ? (r[3] / r[1] * 100).toFixed(1) : '0'}% of the day</span></div><div class="b"><i style="width:${(r[3] / topDays[0][3] * 100).toFixed(0)}%"></i></div></div>`).join('')}</div>` : '';
+  }
+  // what: the mix by discount, as each year's share of its discount £
+  if (yrs.length) {
+    const last2 = yrs.slice(-2), share = (y, v) => y.total ? (v / y.total * 100) : 0;
+    const head = last2.map(y => `<th>${y.year}${y.to.slice(5) !== '12-31' ? ' to ' + fmtD(y.to) : ''}</th>`).join('');
+    const cell = (y, b) => b.orders ? `<td>${b.orders.toLocaleString('en-GB')} · ${money(b.discount, c)} · <b>${share(y, b.discount).toFixed(0)}%</b></td>` : '<td class="z">—</td>';
+    const rows = last2[0].standard.map((b0, i) => `<tr><td>${b0.pct}%${b0.pct === 100 ? ' (free)' : ''}</td>${last2.map(y => cell(y, y.standard[i])).join('')}</tr>`).join('') +
+      `<tr class="hk"><td>Hand-keyed (odd %)</td>${last2.map(y => cell(y, y.hand)).join('')}</tr>`;
+    var mixHtml = `<div><h4>Which discounts · orders · £ off · share of the year's discount £</h4><table class="dMix"><thead><tr><th>Discount</th>${head}</tr></thead><tbody>${rows}</tbody></table></div>`;
+  }
+  parts.push(`<div class="sBars dRow">${typeof mixHtml === 'string' ? mixHtml : ''}${typeof daysHtml === 'string' ? daysHtml : ''}</div>`);
+  parts.push('<div class="note" style="font-size:10.5px;color:var(--faint);margin-top:8px">The till\'s discount report has no dates, names or staff: the days come from the daily reports. An order-level discount report from Presto would show which offer, when and who.</div>');
+  return parts.join('');
+}
 function yoyKpis(Y, c) {
   const ly = Y.year - 1, lm = Y.lastMonth;
   const tile = (v, l, d, prev) => `<div class="sK"><div class="v">${v}</div><div class="l">${l}</div>${d}${prev ? `<div class="pvPrev">${prev}</div>` : ''}</div>`;
@@ -1226,6 +1280,7 @@ function renderPos(el, cur, d) {
     parts.push(`<div class="sBars"><div style="grid-column:1/-1"><h4>When it is busy · average orders per hour · peak ${DAYS[hr.peakDay]}s, ${hLab(hr.peakHour)}</h4>
       <div class="sHeat" style="grid-template-columns:34px repeat(${order.length},1fr)"><span></span>${order.map(h => `<span class="hh">${hLab(h)}</span>`).join('')}${DAYS.map((dn, w) => `<span class="hd">${dn}</span>` + order.map(h => { const v = hr.heat[w][h]; return `<span class="hc" style="background:rgba(200,85,61,${(v / mx * .95 + (v ? .05 : 0)).toFixed(2)})" title="${dn} ${hLab(h)} · ${v} orders on average"></span>`; }).join('')).join('')}</div></div></div>`);
   }
+  if (d.discounts || (Y && Y.days)) parts.push(discountsPanel(d, Y, c)); // under the busy-hours chart (Wesley, 30 Oct)
   if (it) {
     const bars = (title, list, key, note) => { const m = Math.max(1, ...list.map(r => r[key])); return `<div><h4>${title}</h4>${list.map(r => `<div class="sBar"><div class="t"><span>${esc(r.name)}</span><span>${money(r[key], c)}</span></div><div class="b"><i style="width:${Math.round(r[key] / m * 100)}%"></i></div></div>`).join('')}${note ? `<div class="note" style="font-size:10px;color:var(--faint)">${esc(note)}</div>` : ''}</div>`; };
     parts.push(`<div class="sItems"><div class="sItemsL">${bars('Menus and channels · ' + money(it.total, c) + ' in the year', it.menus, 'sales')}${bars('Top categories', it.categories, 'sales')}</div>${itemsPie(it, c)}</div>`);

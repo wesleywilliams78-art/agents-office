@@ -70,6 +70,17 @@ export function parseDaily(text) {
   return rows.length ? rows : null;
 }
 
+// Discount Summary: one row per discount percentage (value, orders, sales after discount) for a period. It has no dates,
+// names or staff: what it does tell is the mix. Standard offers are the round percentages; any other value is a hand-keyed
+// discount (a manual price cut at the till), which is the control point worth watching.
+export const STANDARD_PCT = [5, 10, 15, 20, 25, 30, 50, 100];
+export function parseDiscounts(text) {
+  if (!/Discount Summary Report for/.test(text)) return null;
+  const per = /Generated for the period of (\d{4}-\d{2}-\d{2}) - (\d{4}-\d{2}-\d{2})/.exec(text) || [];
+  const bands = table(text, 'Discount %').map(r => ({ pct: num(r['discount%']), discount: num(r.discountvalue), orders: num(r.nooforders), sales: num(r.salestotal) })).filter(b => b.pct > 0 && b.orders > 0);
+  return bands.length ? { from: per[1] || '', to: per[2] || '', bands } : null;
+}
+
 const monthName = m => m;
 const round = (n, d = 2) => Math.round(n * 10 ** d) / 10 ** d;
 const dow = iso => (new Date(iso + 'T12:00:00Z').getUTCDay() + 6) % 7; // Monday = 0
@@ -79,11 +90,12 @@ export function build(notes, { match } = {}) {
   const want = match ? String(match).toLowerCase() : '';
   const mine = notes.filter(n => !want || String(n.text).toLowerCase().includes(want)).sort((a, b) => (uploadedAt(a.text) - uploadedAt(b.text)) || (a.name < b.name ? -1 : 1));
   let hourly = null, hourlyNote = '', item = null, itemNote = '';
-  const hourlies = [], monthly = new Map(), daily = new Map(), srcs = new Set();
+  const hourlies = [], monthly = new Map(), daily = new Map(), discounts = new Map(), srcs = new Set();
   for (const n of mine) {
     if (/Hourly Sales/.test(n.text)) { const h = parseHourly(n.text); if (h) { hourlies.push(h); hourlyNote = n.name; srcs.add(n.name); } } // every year: merged below, a later upload wins a date
     const mo = parseMonthly(n.text); if (mo) { for (const r of mo) monthly.set(r.month, r); srcs.add(n.name); }
     const da = parseDaily(n.text); if (da) { for (const r of da) daily.set(r.date, r); srcs.add(n.name); }
+    const di = parseDiscounts(n.text); if (di) { discounts.set(di.from.slice(0, 4), di); srcs.add(n.name); } // one per year, a later upload wins
     if (/Item Sales By Category/.test(n.text)) { const i = parseItems(n.text); if (i) { item = i; itemNote = n.name; } }
   }
   if (hourlies.length) {
@@ -92,7 +104,7 @@ export function build(notes, { match } = {}) {
     const dates = [...byDate.keys()].sort(), hours = [...Array(24).keys()];
     hourly = { dates, hours, cells: hours.map(hr => dates.map(d => byDate.get(d)[hr])), site, place };
   }
-  if (!hourly && !item && !daily.size && !monthly.size) return { available: false };
+  if (!hourly && !item && !daily.size && !monthly.size && !discounts.size) return { available: false };
   const out = { available: true, kind: 'pos', currency: '£', currencyNote: 'currency and VAT basis are not stated in the reports (assumed £)', sources: [...new Set([...srcs, itemNote].filter(Boolean))] };
 
   if (hourly) {
@@ -125,6 +137,15 @@ export function build(notes, { match } = {}) {
     const top = (m, n) => [...m.values()].sort((a, b) => b.sales - a.sales).slice(0, n).map(x => ({ name: x.name, qty: x.qty, sales: round(x.sales) }));
     out.items = { from: item.from, to: item.to, total: round([...menus.values()].reduce((n, m) => n + m.sales, 0)), qty: [...menus.values()].reduce((n, m) => n + m.qty, 0), menus: top(menus, 8), categories: top(cats, 7), top: top(items, 8), note: 'items are ranked by the name on the till; the same dish sold under a different name is counted separately' };
   }
+  if (discounts.size) {
+    const sum = (a, k) => round(a.reduce((n, b) => n + b[k], 0));
+    out.discounts = { years: [...discounts.values()].sort((a, b) => (a.from < b.from ? -1 : 1)).map(d => {
+      const std = STANDARD_PCT.map(p => d.bands.find(b => b.pct === p) || { pct: p, discount: 0, orders: 0, sales: 0 });
+      const hand = d.bands.filter(b => !STANDARD_PCT.includes(b.pct));
+      return { year: d.from.slice(0, 4), from: d.from, to: d.to, total: sum(d.bands, 'discount'), orders: sum(d.bands, 'orders'), standard: std,
+        hand: { values: hand.length, orders: sum(hand, 'orders'), discount: sum(hand, 'discount'), sales: sum(hand, 'sales') } };
+    }) };
+  }
   if (daily.size || monthly.size) out.yoy = yearOnYear([...daily.values()].sort((a, b) => (a.date < b.date ? -1 : 1)), [...monthly.values()].sort((a, b) => (a.month < b.month ? -1 : 1)));
   return out;
 }
@@ -143,7 +164,7 @@ function yearOnYear(days, months) {
   const pct = (a, b) => (b ? round((a / b - 1) * 100, 1) : null);
   const pair = (cur, prev) => ({ cur, prev, total: pct(cur.total, prev.total), orders: pct(cur.orders, prev.orders), avg: cur.avg && prev.avg ? pct(cur.avg, prev.avg) : null });
   out.to = to; out.partialDay = partialDay; out.year = y;
-  out.days = days.filter(d => d.date <= to).map(d => [d.date, round(d.total), d.orders]); // every full trading day, for the explorer on the page (filters, comparisons)
+  out.days = days.filter(d => d.date <= to).map(d => [d.date, round(d.total), d.orders, round(d.discount)]); // every full trading day, for the explorer on the page (filters, comparisons)
   out.ytd = pair(add(span(y + '-01-01', to)), add(span((y - 1) + '-01-01', ly)));
   out.mtd = pair(add(span(to.slice(0, 8) + '01', to)), add(span((y - 1) + to.slice(4, 8) + '01', ly)));
   const lm = new Date(Date.UTC(y, +to.slice(5, 7) - 1, 0)).toISOString().slice(0, 7), lmLy = (y - 1) + lm.slice(4);
