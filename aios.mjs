@@ -77,6 +77,33 @@ export function dedupe(items, known) {
   return { kept, dropped };
 }
 
+// V3.12 (30 Oct): a desk can put cards on the matrix itself. It ends its result with
+//   MATRIX ITEMS
+//   - <task> | due YYYY-MM-DD | priority high|medium|low | owner wesley|<seat id> | calendar yes|no
+//   END MATRIX ITEMS
+// and the office files them when the owner approves the task (never before). Urgent = due within 7 days of today;
+// important = priority high or medium. "calendar yes" means the desk is putting it on Google Calendar too.
+export const MATRIX_BLOCK = /MATRIX ITEMS\s*\n([\s\S]*?)\nEND MATRIX ITEMS/;
+export function parseMatrixBlock(text, agents, feedId, now = Date.now()) {
+  const m = MATRIX_BLOCK.exec(String(text || '').split('\r\n').join('\n')); if (!m) return null;
+  const items = [];
+  for (const raw of m[1].split('\n')) {
+    const line = raw.replace(/^\s*[-*•]\s*/, '').trim(); if (!line) continue;
+    const parts = line.split('|').map(p => p.trim()); const title = parts.shift(); if (!title) continue;
+    const field = k => (parts.find(p => p.toLowerCase().startsWith(k + ' ')) || '').slice(k.length + 1).trim();
+    const due = /^20\d{2}-\d{2}-\d{2}$/.test(field('due')) ? field('due') : '';
+    const pr = (field('priority') || 'medium').toLowerCase(), who = field('owner').toLowerCase();
+    const agent = agents.find(a => a.id === who);
+    const days = due ? (Date.parse(due + 'T12:00:00') - now) / 86400000 : null;
+    const urgent = days !== null ? days <= 7 : pr === 'high', important = pr !== 'low';
+    items.push({ id: `${feedId}-${items.length}`, feed: feedId, title: title.slice(0, 100), detail: '', urgent, important, q: quadrantOf(urgent, important),
+      dept: agent ? agent.department : 'owner', agent: agent ? agent.id : '', gap: '', due, why: `priority ${pr}${due ? ', due ' + due : ''}`, client: '',
+      state: 'open', addedAt: now, onCalendar: /^y/i.test(field('calendar')) });
+    if (items.length >= 20) break;
+  }
+  return items;
+}
+
 // the edits the page may make to an item
 export function patch(item, b) {
   if (b.q && QUADRANTS[b.q]) { item.q = b.q; item.urgent = QUADRANTS[b.q].urgent; item.important = QUADRANTS[b.q].important; }

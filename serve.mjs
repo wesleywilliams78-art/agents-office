@@ -549,7 +549,7 @@ async function runServerTask(id, { feedback, approve, answer } = {}) {
     if ((task.needsOk || REVIEW_ALL) && !approve) { task.state = 'waiting'; task.draft = out.result; task.waitingAt = Date.now(); task.ask = (task.needsOk ? (task.channel === 'email' ? `"${task.title}" is written — approve to put it in your Gmail drafts, then send it from your inbox. Reject to tell me what to change.` : routines.askLine(task)) : reviewLine(task)) + brainReview(task, out.result) + (approve ? '' : handoffReview(task, hoText)); }
     else {
       task.state = 'done'; task.doneAt = Date.now();
-      if (approve) { fileBrainUpdates(task); fireHandoffs(task); }
+      if (approve) { fileBrainUpdates(task); fireHandoffs(task); fileMatrixItems(task); }
       else if (handoff.parse(hoText).length) task.result += '\n\n---\nHANDOFF NOT SENT: this task did not wait for your review, and nothing is handed on without your OK.';
       else if (BRAIN_WRITE && brainnotes.parse(out.result).length) task.result += '\n\n---\nBRAIN UPDATE NOT FILED: this task did not wait for your review, and nothing is filed without your OK.';
       task.note = writeNote(task); await rebuildGraph();
@@ -694,8 +694,24 @@ function fromMatrix(task, list = load(), depth = 0) {
   if (task.by === 'aios' || task.matrix) return true;
   return task.handoffTask ? fromMatrix(list.find(t => t.id === task.handoffTask), list, depth + 1) : false;
 }
+// V3.12 (30 Oct): the cards a desk put in a MATRIX ITEMS block go onto the matrix when the owner approves the task, exactly
+// as listed (no extractor, no three-card cap). A card marked "calendar yes" on a task whose outbound step ran is shown as already
+// on the calendar, so its + CALENDAR tag does not offer a second event.
+function fileMatrixItems(task) {
+  const feedId = 'f' + nid(), items = aios.parseMatrixBlock(task.draft || task.result, AGENTS, feedId);
+  if (!items || !items.length) return 0;
+  const m = aios.load(DATA), known = m.items.filter(i => i.state === 'open' || i.state === 'sent').map(i => i.title);
+  const { kept, dropped } = aios.dedupe(items, known);
+  for (const i of kept) { if (i.onCalendar && task.needsOk && !task.error) i.calendar = { at: Date.now(), by: task.agent }; delete i.onCalendar; }
+  m.feeds.push({ id: feedId, at: Date.now(), source: `Filed by ${agentName(task.agent)} from "${task.title}"`, taskId: task.id, auto: false, summary: `${kept.length} card(s) put on the matrix by the desk`, count: kept.length, duplicates: dropped.length });
+  m.items.push(...kept); aios.save(DATA, m);
+  task.matrixFiled = kept.length;
+  console.log(`  matrix: ${kept.length} card(s) filed by ${agentName(task.agent)} from ${task.id}${dropped.length ? ` (${dropped.length} already on it)` : ''}`);
+  return kept.length;
+}
 function autoFeed(task) {
   if (!AUTO_FEED || task.noMatrix || task.state !== 'done' || task.error || !task.result) return; // noMatrix: a status routine's result is a report, not a to-do list
+  if (task.matrixFiled) { console.log(`  matrix: not read, ${task.id} filed its own cards`); return; }
   if (fromMatrix(task)) { console.log(`  matrix: not read, ${task.id} came from the matrix (no follow-ups of follow-ups)`); return; }
   if (HOUSEKEEPING.test(String(task.title).trim())) { console.log(`  matrix: not read, ${task.id} is housekeeping: ${task.title}`); return; }
   const m = aios.load(DATA);
@@ -1039,7 +1055,7 @@ const server = http.createServer(async (req, res) => {
       const note = String(feedback || '').trim();
       if (m[2] === 'approve' && !task.needsOk) { // V3.9: a reviewed task with nothing to send — the tick is the finish line, no second run
         Object.assign(task, { state: 'done', result: task.draft || task.result, approved: true, approvedAt: Date.now(), doneAt: Date.now() }); delete task.ask;
-        fileBrainUpdates(task); fireHandoffs(task);
+        fileBrainUpdates(task); fireHandoffs(task); fileMatrixItems(task);
         task.note = writeNote(task); save(load().map(t => t.id === task.id ? task : t)); await rebuildGraph();
         console.log(`✅ ${task.id} approved — done (note: ${task.note})`);
         autoFeed(task);
