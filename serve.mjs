@@ -919,7 +919,7 @@ const server = http.createServer(async (req, res) => {
     if (url.pathname === '/api/dashboards' && req.method === 'GET') { // the Clients sub-pages: one per entry in aios.dashboards, parsed from uploaded sales-report notes (no model involved)
       const defs = Array.isArray(cfg.aios?.dashboards) && cfg.aios.dashboards.length ? cfg.aios.dashboards : [{ id: 'creamy', name: 'Creamy', match: 'Creamy' }];
       const notes = [...vaultIndex()].filter(([n, t]) => isUpload(n) && /^SALES REPORT\s*$/m.test(t)).map(([name, text]) => ({ name, text }));
-      const tillNotes = [...vaultIndex()].filter(([n, t]) => isUpload(n) && /Hourly Sales|Item Sales By Category/.test(t)).map(([name, text]) => ({ name, text })); // a restaurant's till reports (kind: pos)
+      const tillNotes = [...vaultIndex()].filter(([n, t]) => isUpload(n) && /Hourly Sales|Item Sales By Category|Monthly Sales for|Daily Sale Summary Report for/.test(t)).map(([name, text]) => ({ name, text })); // a restaurant's till reports (kind: pos)
       const withStarDog = (d, data) => { // an optional product-mix analysis (stars, plowhorses, puzzles, dogs) kept as a data file beside the sales numbers
         if (d.stardog && data && data.available) { try { data.stardog = JSON.parse(fs.readFileSync(path.join(DATA, path.basename(String(d.stardog))), 'utf8')); } catch {} }
         return data;

@@ -142,6 +142,23 @@ await step('sales dashboard: report text becomes per-shop monthly numbers, and a
   if (build([{ name: 'x', text: 'nothing here' }]).available) throw new Error('a note with no reports made a dashboard');
   return 'two shops, two months · Norwegian number format read · totals and change vs last month · products and payments summed · empty notes ignored';
 });
+await step('till dashboard: monthly and daily reports give this year against last, like with like, to the last full day', async () => { // V3.12
+  const pos = await import('./pos.mjs');
+  const row = (...c) => '| ' + c.join(' | ') + ' |';
+  const monthly = y => ['> Uploaded 30/10/2026, 12:35:29', '', row('Monthly Sales for Test Diner (High St) Generated for the period of ' + y + '-01-01 - ' + y + '-12-31', '', ''),
+    row('Month', 'Orders', 'Sub Total', 'Discount', 'Total', 'Cash Pay', 'Card', 'Other Pay'),
+    row(y + ' September', '100', '990.00', '10.00', '1000.00', '200.00', '300.00', '500.00'), row(y + ' October', '120', '1188.00', '12.00', '1200.00', '240.00', '360.00', '600.00'), row('Total', '220', '', '', '2200.00', '', '', '')].join('\n');
+  const day = (iso, o, t) => { const [y, m, d] = iso.split('-'); return row(['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][+m - 1] + ' ' + (+d) + ',  ' + y, o, t, '0.00', t, '0', '0', t, '10', '1', '20'); };
+  const daily = (y, scale, partial) => { const rows = []; for (let d = 1; d <= 29; d++) rows.push(day(y + '-10-' + String(d).padStart(2, '0'), 100, (100 * scale).toFixed(2))); if (partial) rows.push(day(y + '-10-30', 3, '9.00'));
+    return ['> Uploaded 30/10/2026, 12:35:27', row('Daily Sale report', 'Daily Sale Summary Report for Test Diner (High St) Generated for the period', ''), row('Date', 'Orders', 'SubTotal', 'Discount', 'Total', 'Cash Pay', 'Card Pay', 'Other Pay', 'Average', 'Min', 'Max'), ...rows].join('\n'); };
+  const notes = [{ name: 'Upload - m25', text: monthly(2025) }, { name: 'Upload - m26', text: monthly(2026) }, { name: 'Upload - d25', text: daily(2025, 1, false) }, { name: 'Upload - d26', text: daily(2026, 1.1, true) }];
+  const y = pos.build(notes, { match: 'Test Diner' }).yoy;
+  if (!y || y.to !== '2026-10-29' || y.partialDay !== '2026-10-30') throw new Error('the barely started day must be left out: ' + JSON.stringify({ to: y && y.to, p: y && y.partialDay }));
+  if (y.mtd.total !== 10) throw new Error('October to the 29th should be +10%: ' + y.mtd.total);
+  if (y.months.length !== 4 || y.lastMonth.month !== '2026-09' || y.lastMonth.total !== 0) throw new Error('September against September: ' + JSON.stringify(y.lastMonth));
+  if (pos.uploadedAt('> Uploaded 17/10/2026, 11:32:16') >= pos.uploadedAt('> Uploaded 30/10/2026, 12:35:27')) throw new Error('the upload stamp must order reports by date, not by file name');
+  return 'monthly and daily read by header · a part day left out · month to date and last full month against last year · newest upload by its stamp';
+});
 await step('till dashboard: the hourly grid and item report become monthly turnover, a weekday-by-hour map and menu totals that match the report', async () => {
   const { build } = await import('./pos.mjs'); const NL = String.fromCharCode(10);
   const hourly = ['# x', '| Hour | 2026-08-30 | 2026-08-31 | 2026-09-01 | 2026-09-02 |', '| --- | --- | --- | --- | --- |', '| Hourly Sales report | Hourly Sales for Test Diner (High Street) Generated for the period of 2026-08-30 - 2026-09-02 |', '| 06:00PM | 10 (100.00) | 20 (250.50) | 5 (50.00) | 0 (-) |', '| 07:00PM | 30 (300.00) | 0 (-) | 15 (150.25) | 1 (1,000.00) |'].join(NL);
