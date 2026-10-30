@@ -181,6 +181,22 @@ await step('till dashboard: the discount summary splits standard offers from han
   if (y.total !== 179 || y.hand.values !== 1 || y.hand.discount !== 20 || y.standard.find(b => b.pct === 25).orders !== 10) throw new Error('summary: ' + JSON.stringify(y));
   return 'bands read by header · 37% counted as hand-keyed · 10%, 25% and 100% as standard offers · totals add up';
 });
+await step('delivery: Deliverect exports merge without double counting, read the unquoted location, and flag a part day', async () => { // V3.12
+  const dv = await import('./deliverect.mjs'); const os = await import('node:os');
+  const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'dv-')); fs.mkdirSync(dv.dir(tmp));
+  const H = 'OrderPlacedLocal,OrderID,Status,Channel,Brand,Location,OrderType,Currency,Revenue,AttemptedAmount,Discount,FailureType';
+  const row = (t, id, st, ch, rev, disc, fail) => [t, id, st, ch, 'Testco', ' Test Diner - High St', 'Delivery', 'GBP', rev, '', disc, fail || ''].join(',');
+  fs.writeFileSync(path.join(dv.dir(tmp), 'a.csv'), [H, row('2026-03-01 12:10:00', 'A1', 'Delivered', 'Uber Eats', '20', '-2.0'), row('2026-03-03 13:00:00', 'A2', 'Failed', 'Deliveroo', '9', '0', 'INVALID_PLU')].join('\n'));
+  fs.writeFileSync(path.join(dv.dir(tmp), 'b.csv'), [H, row('2026-03-02 18:30:00', 'B1', 'Delivered', 'Deliveroo', '30', '0'), row('2026-03-03 13:00:00', 'A2', 'Failed', 'Deliveroo', '9', '0', 'INVALID_PLU'), row('2026-03-03 20:00:00', 'B3', 'Cancelled', 'Uber Eats', '15', '0')].join('\n'));
+  if (!dv.isExport(H + '\n')) throw new Error('header not recognised');
+  const o = dv.build(tmp, { match: 'Test Diner' });
+  if (o.orders !== 4) throw new Error('an order in two files must count once: ' + o.orders);
+  if (o.location !== 'Test Diner - High St') throw new Error('location with a comma before it: ' + o.location);
+  if (o.partial.join() !== '2026-03-02') throw new Error('a file starting at 18:30 on a day nothing else covers is a part day: ' + o.partial);
+  const m = o.months[0]; if (m.ch['Uber Eats'][0] !== 20 || m.ch['Uber Eats'][2] !== 2 || m.x !== 1 || m.f !== 1 || o.fails['2026'].INVALID_PLU !== 1) throw new Error('month: ' + JSON.stringify(m));
+  fs.rmSync(tmp, { recursive: true, force: true });
+  return 'header recognised · duplicate order counted once · location read whole · part day flagged · delivered, cancelled, failed and discounts counted';
+});
 await step('till dashboard: the hourly grid and item report become monthly turnover, a weekday-by-hour map and menu totals that match the report', async () => {
   const { build } = await import('./pos.mjs'); const NL = String.fromCharCode(10);
   const hourly = ['# x', '| Hour | 2026-08-30 | 2026-08-31 | 2026-09-01 | 2026-09-02 |', '| --- | --- | --- | --- | --- |', '| Hourly Sales report | Hourly Sales for Test Diner (High Street) Generated for the period of 2026-08-30 - 2026-09-02 |', '| 06:00PM | 10 (100.00) | 20 (250.50) | 5 (50.00) | 0 (-) |', '| 07:00PM | 30 (300.00) | 0 (-) | 15 (150.25) | 1 (1,000.00) |'].join(NL);

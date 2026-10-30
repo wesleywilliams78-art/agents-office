@@ -57,6 +57,7 @@ import * as brainnotes from './brainnotes.mjs';
 import * as handoff from './handoff.mjs';
 import * as salesData from './sales.mjs';
 import * as posData from './pos.mjs';
+import * as deliverect from './deliverect.mjs'; // V3.12: delivery orders from Deliverect exports, kept raw in data/deliverect/
 import * as trackers from './trackers.mjs';
 import * as skillaudit from './skillaudit.mjs';
 import { create as createWhatsApp } from './whatsapp.mjs';
@@ -936,11 +937,15 @@ const server = http.createServer(async (req, res) => {
       const defs = Array.isArray(cfg.aios?.dashboards) && cfg.aios.dashboards.length ? cfg.aios.dashboards : [{ id: 'creamy', name: 'Creamy', match: 'Creamy' }];
       const notes = [...vaultIndex()].filter(([n, t]) => isUpload(n) && /^SALES REPORT\s*$/m.test(t)).map(([name, text]) => ({ name, text }));
       const tillNotes = [...vaultIndex()].filter(([n, t]) => isUpload(n) && /Hourly Sales|Item Sales By Category|Monthly Sales for|Daily Sale Summary Report for|Discount Summary Report for/.test(t)).map(([name, text]) => ({ name, text })); // a restaurant's till reports (kind: pos)
+      const withDelivery = (d, data) => { // a restaurant's delivery orders (Deliverect), beside its till numbers
+        if (data && data.available) { try { const dv = deliverect.build(DATA, { match: d.match }); if (dv.available) data.delivery = dv; } catch (e) { console.warn('deliverect:', e.message); } }
+        return data;
+      };
       const withStarDog = (d, data) => { // an optional product-mix analysis (stars, plowhorses, puzzles, dogs) kept as a data file beside the sales numbers
         if (d.stardog && data && data.available) { try { data.stardog = JSON.parse(fs.readFileSync(path.join(DATA, path.basename(String(d.stardog))), 'utf8')); } catch {} }
         return data;
       };
-      return json(res, 200, { dashboards: defs.map(d => ({ id: String(d.id), name: String(d.name || d.id), data: withStarDog(d, d.kind === 'pos' ? posData.build(tillNotes, { match: d.match }) : salesData.build(notes, { match: d.match })) })) });
+      return json(res, 200, { dashboards: defs.map(d => ({ id: String(d.id), name: String(d.name || d.id), data: withStarDog(d, d.kind === 'pos' ? withDelivery(d, posData.build(tillNotes, { match: d.match })) : salesData.build(notes, { match: d.match })) })) });
     }
     if (url.pathname === '/api/uploads' && req.method === 'GET') return json(res, 200, { uploads: uploadsList().slice(0, 40) }); // uploaded documents the matrix can read in full
     if (url.pathname === '/api/lessons') return json(res, 200, { dir: learn.dir(BRAIN), agents: AGENTS.map(a => ({ id: a.id, name: a.name, ...learn.read(BRAIN, a.id) })).filter(x => x.rules.length || x.oneOffs.length) });
@@ -994,6 +999,14 @@ const server = http.createServer(async (req, res) => {
       if (!filename || !dataBase64) return json(res, 400, { error: 'filename and dataBase64 required' });
       const buf = Buffer.from(dataBase64, 'base64');
       if (buf.length > (/\.zip$/i.test(filename) ? 100 : 20) * 1024 * 1024) return json(res, 400, { error: `file too large (${/\.zip$/i.test(filename) ? 100 : 20}MB max)` });
+      if (/\.csv$/i.test(filename) && deliverect.isExport(buf.subarray(0, 200).toString('utf8'))) {
+        fs.mkdirSync(deliverect.dir(DATA), { recursive: true });
+        const file = path.basename(filename).replace(/[^\w.\- ]+/g, '_');
+        fs.writeFileSync(path.join(deliverect.dir(DATA), file), buf);
+        const lines = buf.toString('utf8').split(/\r?\n/).filter(Boolean).length - 1;
+        console.log(`▤ deliverect: ${file} filed for the dashboard (${lines} orders)`);
+        return json(res, 200, { ok: true, note: 'Deliverect orders: ' + file, filename, chars: buf.length, deliverect: true, orders: lines, preview: `${lines.toLocaleString('en-GB')} delivery orders, filed for the client dashboard (not a Brain note).` });
+      }
       let text; try { text = await extractText(filename, buf); } catch (e) { return json(res, 400, { error: `could not read ${filename}: ${e.message}` }); }
       if (text === null) return json(res, 400, { error: `${path.extname(filename) || 'that file type'} is not supported yet — .zip, .txt, .md, .pdf, Word, PowerPoint, Excel, OpenDocument, .rtf, .epub, .csv, .png, .jpg, .jpeg, .webp and .gif only` });
       text = text.trim();

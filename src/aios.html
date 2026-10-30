@@ -253,6 +253,11 @@
   .dMix td { padding: 5px 6px 5px 0; border-top: 1px solid var(--line); } .dMix td.z { color: var(--faint); } .dMix td b { font-weight: 600; }
   .dMix tr.hk td { color: var(--red, #C8553D); font-weight: 600; }
   @media (max-width: 860px) { .dRow { grid-template-columns: 1fr; } }
+  .dFail { margin: 10px 0 0; padding-left: 16px; font-size: 10.5px; color: var(--grey); display: grid; gap: 4px; } .dFail b { color: var(--ink); font-weight: 600; }
+  .dMix td .z, .dMix .z { color: var(--faint); }
+  .dTease { display: flex; align-items: center; justify-content: space-between; gap: 14px; flex-wrap: wrap; margin: 0 0 16px; padding: 12px 16px; border-radius: 14px; background: var(--soft); font-size: 12.5px; }
+  .dTease b { font-family: var(--serif); font-weight: 400; font-size: 18px; } .dTease .up { color: var(--ok); } .dTease .dn { color: var(--red, #C8553D); } .dTease .z { color: var(--faint); }
+  .side .subnav button.sub2 { margin-left: 14px; font-size: 10.5px; padding: 6px 10px; opacity: .9; }
   .sKpis { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 14px; }
   .sK { background: var(--soft); border-radius: 10px; padding: 10px 12px; }
   .sK .v { font-family: var(--serif); font-size: 26px; line-height: 1.1; }
@@ -1087,7 +1092,7 @@ const mName = m => new Date(m + '-01T12:00:00').toLocaleDateString('en-GB', { mo
 const SCOL = ['var(--red, #C8553D)', 'var(--ink)', 'var(--faint)'];
 async function loadDash() {
   try { S.dash = (await api('/dashboards')).dashboards; } catch { S.dash = S.dash || []; }
-  $('navDash').innerHTML = S.dash.map(d => `<button data-go="dash-${esc(d.id)}">${esc(d.name)}</button>`).join('');
+  $('navDash').innerHTML = S.dash.map(d => `<button data-go="dash-${esc(d.id)}">${esc(d.name)}</button>` + (d.data && d.data.delivery && d.data.delivery.available ? `<button class="sub2" data-go="dash-${esc(d.id)}--delivery">Delivery</button>` : '')).join('');
   applyCat(); if (isDash(S.cat)) renderSales();
 }
 // a single restaurant site (till reports): headline, monthly turnover bars, a weekday-by-hour busyness map, menu / category / item bars
@@ -1099,11 +1104,23 @@ const fmtD = iso => new Date(iso + 'T12:00:00').toLocaleDateString('en-GB', { da
 const chg = (v, what) => v == null ? '' : `<div class="d ${v >= 0 ? 'up' : 'dn'}">${v >= 0 ? '▲' : '▼'} ${Math.abs(v).toFixed(1)}% ${what}</div>`;
 // The explorer: Revenue, Orders or Average order over a chosen period, against the same days last year or the period before.
 // Days are full trading days only (a day that has barely started is never drawn), so the line never "crashes" on today.
-const PV_DEF = { m: 'total', r: '28', cmp: 'ly', t: 'line' };
+const PV_DEF = { m: 'total', r: '28', cmp: 'ly', t: 'line', ch: 'all' };
 function pvState() { if (!S.pv) { let saved = {}; try { saved = JSON.parse(localStorage.getItem('aiosPv') || '{}'); } catch {} S.pv = { ...PV_DEF, ...saved }; } return S.pv; }
-function posExplorer(Y, c) {
+function posExplorer(Y, c, dv) {
   if (!Y.days || !Y.days.length) return '';
-  const st = pvState(), days = Y.days, byDate = new Map(days.map(d => [d[0], d]));
+  const st = pvState(), apps = dv && dv.available ? dv : null, chan = !apps ? 'all' : ['apps', ...apps.channels].includes(st.ch) ? st.ch : 'apps';
+  // the series for the chosen channel; a day an export only half covers is left out, with its comparison day
+  const skip = new Set(chan === 'all' ? [] : (apps.partial || []));
+  let days = Y.days;
+  if (chan !== 'all') {
+    const dl = new Map(apps.days.map(e => [e.d, e]));
+    days = chan === 'apps' ? apps.days.map(e => { const a = Object.values(e.ch); return [e.d, a.reduce((n, v) => n + v[0], 0), a.reduce((n, v) => n + v[1], 0)]; })
+      : chan === 'inhouse'
+      ? Y.days.filter(r => dl.has(r[0])).map(r => { const e = dl.get(r[0]), a = Object.values(e.ch); return [r[0], r[1] - a.reduce((n, v) => n + v[0], 0), r[2] - a.reduce((n, v) => n + v[1], 0)]; })
+      : apps.days.map(e => [e.d, (e.ch[chan] || [0, 0])[0], (e.ch[chan] || [0, 0])[1]]);
+  }
+  const byDate = new Map(days.map(d => [d[0], d]));
+  const lineCol = typeof CH_COL !== 'undefined' && CH_COL[chan] ? CH_COL[chan] : 'var(--red, #C8553D)';
   const back = (iso, n) => new Date(Date.parse(iso + 'T12:00:00Z') - n * 86400000).toISOString().slice(0, 10);
   const to = Y.to, nDays = st.r === 'ytd' ? Math.round((Date.parse(to) - Date.parse(to.slice(0, 4) + '-01-01')) / 86400000) + 1 : +st.r;
   const from = back(to, nDays - 1), calendar = st.cmp === 'ly' && st.r === 'ytd';
@@ -1111,13 +1128,13 @@ function posExplorer(Y, c) {
   const map = iso => st.cmp === 'prev' ? back(iso, nDays) : calendar ? lastYear(iso) : back(iso, 364); // 364 days keeps Fridays on Fridays
   const step = nDays > 31 ? 7 : 1; // daily up to a month, weekly beyond
   const buckets = []; for (let i = 0; i < nDays; i += step) buckets.push([back(to, nDays - 1 - i), back(to, Math.max(0, nDays - 1 - i - step + 1))]);
-  const sumOf = (a, b, other) => { let t = 0, o = 0, n = 0; for (let d = a; d <= b; d = back(d, -1)) { const r = byDate.get(other ? map(d) : d); if (r) { t += r[1]; o += r[2]; n++; } } return { t, o, n }; };
+  const sumOf = (a, b, other) => { let t = 0, o = 0, n = 0; for (let d = a; d <= b; d = back(d, -1)) { if (skip.has(d) || skip.has(map(d))) continue; const r = byDate.get(other ? map(d) : d); if (r) { t += r[1]; o += r[2]; n++; } } return { t, o, n }; };
   const val = x => st.m === 'orders' ? x.o : st.m === 'avg' ? (x.o ? x.t / x.o : null) : x.t;
   const cur = buckets.map(([a, b]) => sumOf(a, b, false)), cmp = buckets.map(([a, b]) => sumOf(a, b, true));
   const tot = list => list.reduce((s, x) => ({ t: s.t + x.t, o: s.o + x.o, n: s.n + x.n }), { t: 0, o: 0, n: 0 });
   const T = tot(cur), P = tot(cmp), tv = val(T), pv = P.n ? val(P) : null, pc = pv ? (tv / pv - 1) * 100 : null;
   const fmt = v => v == null ? '—' : st.m === 'orders' ? Math.round(v).toLocaleString('en-GB') : st.m === 'avg' ? c + v.toFixed(2) : money(v, c);
-  const label = { total: 'Revenue', orders: 'Orders', avg: 'Average order' }[st.m];
+  const label = { total: 'Revenue', orders: 'Orders', avg: 'Average order' }[st.m] + (chan === 'all' ? '' : ' · ' + (chan === 'inhouse' ? 'in-house' : chan === 'apps' ? 'all delivery apps' : chan));
   const cmpName = st.cmp === 'prev' ? 'the period before' : calendar ? 'same dates last year' : 'same weekdays last year';
   const rangeName = st.r === 'ytd' ? 'year to date' : st.r === '7' ? 'last 7 days' : st.r === '28' ? 'last 4 weeks' : 'last 12 weeks';
   // the chart
@@ -1133,21 +1150,22 @@ function posExplorer(Y, c) {
   if (st.t === 'bars') {
     const w = bw * .36;
     body = cv.map((v, i) => (pvs[i] == null ? '' : `<rect x="${X(i) - w - 1}" y="${Yv(pvs[i])}" width="${w}" height="${H - pb - Yv(pvs[i])}" rx="2" fill="var(--faint)" fill-opacity=".55"/>`) +
-      (v == null ? '' : `<rect x="${X(i) + 1}" y="${Yv(v)}" width="${w}" height="${H - pb - Yv(v)}" rx="2" fill="var(--red, #C8553D)"><title>${tip(i)}</title></rect>`)).join('');
+      (v == null ? '' : `<rect x="${X(i) + 1}" y="${Yv(v)}" width="${w}" height="${H - pb - Yv(v)}" rx="2" fill="${lineCol}"><title>${tip(i)}</title></rect>`)).join('');
   } else {
     const path = vs => vs.map((v, i) => v == null ? null : `${X(i).toFixed(1)},${Yv(v).toFixed(1)}`).filter(Boolean).map((p, i) => (i ? 'L' : 'M') + p).join(' ');
-    const area = cv.every(v => v != null) ? `<path d="${path(cv)} L${X(n - 1).toFixed(1)},${H - pb} L${X(0).toFixed(1)},${H - pb} Z" fill="var(--red, #C8553D)" fill-opacity=".08"/>` : '';
-    body = area + `<path d="${path(pvs)}" fill="none" stroke="var(--grey)" stroke-width="1.5" stroke-dasharray="4 4"/><path d="${path(cv)}" fill="none" stroke="var(--red, #C8553D)" stroke-width="2.2"/>` +
-      cv.map((v, i) => v == null ? '' : `<circle cx="${X(i).toFixed(1)}" cy="${Yv(v).toFixed(1)}" r="${n > 31 ? 2.4 : 3.2}" fill="var(--red, #C8553D)"><title>${tip(i)}</title></circle>`).join('');
+    const area = cv.every(v => v != null) ? `<path d="${path(cv)} L${X(n - 1).toFixed(1)},${H - pb} L${X(0).toFixed(1)},${H - pb} Z" fill="${lineCol}" fill-opacity=".08"/>` : '';
+    body = area + `<path d="${path(pvs)}" fill="none" stroke="var(--grey)" stroke-width="1.5" stroke-dasharray="4 4"/><path d="${path(cv)}" fill="none" stroke="${lineCol}" stroke-width="2.2"/>` +
+      cv.map((v, i) => v == null ? '' : `<circle cx="${X(i).toFixed(1)}" cy="${Yv(v).toFixed(1)}" r="${n > 31 ? 2.4 : 3.2}" fill="${lineCol}"><title>${tip(i)}</title></circle>`).join('');
   }
   const seg = (key, opts) => `<div class="pvSeg${key === 'm' ? ' pvTabs' : ''}">${opts.map(([v, l]) => `<button type="button" data-pv="${key}:${v}" class="${st[key] === v ? 'on' : ''}">${l}</button>`).join('')}</div>`;
   return `<div class="pv">
     <div class="pvRow">${seg('m', [['total', 'Revenue'], ['orders', 'Orders'], ['avg', 'Average order']])}${seg('t', [['line', 'Line'], ['bars', 'Bars']])}</div>
     <div class="pvRow" style="margin-top:10px">${seg('r', [['7', '7 days'], ['28', '4 weeks'], ['84', '12 weeks'], ['ytd', 'Year to date']])}${seg('cmp', [['ly', 'vs last year'], ['prev', 'vs period before']])}</div>
+    ${apps ? `<div class="pvRow" style="margin-top:10px">${seg('ch', [['apps', 'All apps'], ...apps.channels.map(x => [x, x])])}</div>` : ''}
     <div class="pvTot"><div><div class="v">${fmt(tv)}${pc == null ? '' : `<span class="pvChip ${pc >= 0 ? 'up' : 'dn'}">${pc >= 0 ? '+' : ''}${pc.toFixed(1)}%</span>`}</div><div class="l">${label} · ${rangeName} · ${fmtD(from)} to ${fmtD(to)}</div></div>
       <div class="r"><div class="v">${fmt(pv)}</div><div class="l">${cmpName} · ${fmtD(map(from))} to ${fmtD(map(to))}</div></div></div>
     <svg class="sChart" viewBox="0 0 ${W} ${H}" role="img" aria-label="${label}, ${rangeName}, against ${cmpName}">${grid}${body}${xl}</svg>
-    <div class="sLegend" style="margin:0"><span><i style="background:var(--red, #C8553D)"></i>${rangeName}${step === 7 ? ' (by week)' : ''}</span><span><i style="background:var(--grey)"></i>${cmpName} (dashed)</span></div></div>`;
+    <div class="sLegend" style="margin:0"><span><i style="background:${lineCol}"></i>${rangeName}${step === 7 ? ' (by week)' : ''}</span><span><i style="background:var(--grey)"></i>${cmpName} (dashed)</span></div></div>`;
 }
 if (!window.__pvBound) { window.__pvBound = true;
   document.addEventListener('click', e => { const b = e.target.closest('[data-pv]'); if (!b) return; const [k, v] = b.dataset.pv.split(':'); const st = pvState(); st[k] = v; try { localStorage.setItem('aiosPv', JSON.stringify(st)); } catch {} renderSales(); });
@@ -1220,6 +1238,83 @@ function discountsPanel(d, Y, c) {
   parts.push('<div class="note" style="font-size:10.5px;color:var(--faint);margin-top:8px">The till\'s discount report has no dates, names or staff: the days come from the daily reports. An order-level discount report from Presto would show which offer, when and who.</div>');
   return parts.join('');
 }
+// Delivery (V3.12, 30 Oct): Deliverect's order exports beside the till. Year to date is like for like on the same calendar dates,
+// leaving out any day an export only half covers, in both years. The apps' discounts may be funded by the app or the restaurant:
+// the export does not say which.
+const CH_COL = { 'Uber Eats': '#06C167', 'Deliveroo': '#2F8F83' }; // Uber Eats in Uber green (Wesley, 30 Oct)
+const chCol = (ch, i) => CH_COL[ch] || ['#7a6f6a', '#C98A12', '#C8553D', '#2F8F83'][i % 4];
+const FAIL_WHY = { INVALID_PLU: 'an item code on the app does not match the till: fix the menu mapping', CONNECTION_ERROR: 'Deliverect could not reach the till', INTERNAL_ERROR: 'an error inside Deliverect', INVALID_CONFIGURATION: 'a set-up problem in Deliverect' };
+// the delivery numbers year to date, like for like on the same calendar dates, any half-covered day left out of both years
+function deliveryYtd(dv, Y) {
+  const chans = dv.channels, skip = new Set(dv.partial || []);
+  const to = Y && Y.to && Y.to < dv.to ? Y.to : dv.to, y = +to.slice(0, 4), ly = y - 1, lyTo = ly + to.slice(4);
+  const counterpart = iso => (+iso.slice(0, 4) === y ? ly : y) + iso.slice(4);
+  const inYtd = (e, yr, until) => e.d >= yr + '-01-01' && e.d <= until && !skip.has(e.d) && !skip.has(counterpart(e.d));
+  const cur = dv.days.filter(e => inYtd(e, y, to)), prev = dv.days.filter(e => inYtd(e, ly, lyTo));
+  const tot = (list, ch, i) => list.reduce((n, e) => n + (ch ? (e.ch[ch] || [0, 0, 0, 0])[i] : Object.values(e.ch).reduce((m, v) => m + v[i], 0)), 0);
+  const till = Y && Y.days ? Y.days : [], tillOf = (yr, until) => till.filter(r => r[0] >= yr + '-01-01' && r[0] <= until && !skip.has(r[0]) && !skip.has(counterpart(r[0]))).reduce((n, r) => n + r[1], 0);
+  const rC = tot(cur, null, 0), rP = tot(prev, null, 0), oC = tot(cur, null, 1), oP = tot(prev, null, 1), tC = tillOf(y, to), tP = tillOf(ly, lyTo);
+  return { chans, skip, to, y, ly, rC, rP, oC, oP, shC: tC ? rC / tC * 100 : null, shP: tP ? rP / tP * 100 : null,
+    by: Object.fromEntries(chans.map(ch => [ch, { a: tot(cur, ch, 0), b: tot(prev, ch, 0), o: tot(cur, ch, 1), ob: tot(prev, ch, 1), since: dv.launch[ch] }])) };
+}
+// the main page's one line about delivery, which opens the Delivery page
+function deliveryTease(cur, d, Y, c) {
+  const k = deliveryYtd(d.delivery, Y), pc = k.rP ? (k.rC / k.rP - 1) * 100 : null;
+  const bits = k.chans.map(ch => { const v = k.by[ch]; return v.b > 0 ? `${esc(ch)} ${money(v.a, c)} <span class="${v.a >= v.b ? 'up' : 'dn'}">${v.a >= v.b ? '▲' : '▼'} ${Math.abs((v.a / v.b - 1) * 100).toFixed(1)}%</span>` : `${esc(ch)} ${money(v.a, c)} <span class="z">new since ${fmtD(v.since)}</span>`; }).join(' · ');
+  return `<div class="dTease"><div><b>Delivery</b> · ${money(k.rC, c)} year to date${pc == null ? '' : ` <span class="${pc >= 0 ? 'up' : 'dn'}">${pc >= 0 ? '▲' : '▼'} ${Math.abs(pc).toFixed(1)}%</span>`} · ${k.shC == null ? '' : k.shC.toFixed(1) + '% of takings · '}${bits}</div>
+    <button type="button" data-go="dash-${esc(cur.id)}--delivery">Open Delivery →</button></div>`;
+}
+// the Delivery page: everything Deliverect tells us, the explorer by app under the month chart
+function deliveryPanel(d, Y, c) {
+  const dv = d.delivery, parts = [], k = deliveryYtd(dv, Y), chans = k.chans, skip = k.skip, to = k.to, y = k.y, ly = k.ly;
+  const tile = (v, l, dd, pr) => `<div class="sK"><div class="v">${v}</div><div class="l">${l}</div>${dd || ''}${pr ? `<div class="pvPrev">${pr}</div>` : ''}</div>`;
+  // 1. the tiles
+  const tiles = [tile(money(k.rC, c), `Delivery apps · 1 Jan to ${fmtD(to)}`, k.rP ? chg((k.rC / k.rP - 1) * 100, 'vs same dates ' + ly) : '', money(k.rP, c) + ' in ' + ly)];
+  chans.forEach(ch => {
+    const v = k.by[ch];
+    if (v.b > 0) tiles.push(tile(money(v.a, c), `${esc(ch)} · year to date`, chg((v.a / v.b - 1) * 100, 'vs ' + ly) + (v.ob ? `<div class="pvPrev">orders ${((v.o / v.ob - 1) * 100 >= 0 ? '+' : '')}${((v.o / v.ob - 1) * 100).toFixed(1)}%</div>` : ''), money(v.b, c) + ' in ' + ly));
+    else tiles.push(tile(money(v.a, c), `${esc(ch)} · new, live since ${fmtD(v.since)}`, '', v.o.toLocaleString('en-GB') + ' orders'));
+  });
+  tiles.push(tile(k.shC == null ? '—' : k.shC.toFixed(1) + '%', 'Share of all takings', '', k.shP == null ? '' : k.shP.toFixed(1) + '% in ' + ly));
+  tiles.push(tile(k.oC ? c + (k.rC / k.oC).toFixed(2) : '—', 'Average delivery order', k.oP && k.oC ? chg(((k.rC / k.oC) / (k.rP / k.oP) - 1) * 100, 'vs ' + ly) : '', k.oP ? c + (k.rP / k.oP).toFixed(2) + ' in ' + ly : ''));
+  parts.push(`<div class="sHead"><b>${esc(dv.location)} · Delivery</b><span class="note">Deliverect orders ${fmtD(dv.from)} ${dv.from.slice(0, 4)} to ${fmtD(dv.to)} ${dv.to.slice(0, 4)}</span></div>`);
+  parts.push(`<div class="sKpis" style="grid-template-columns:repeat(auto-fit,minmax(150px,1fr))">${tiles.join('')}</div>`);
+  // 2. month by month: last year beside this year, this year stacked by app
+  const mOf = k => dv.months.find(m => m.m === k), mos = [...Array(12).keys()].map(i => String(i + 1).padStart(2, '0'));
+  const mTot = (m, ch) => m ? (ch ? (m.ch[ch] || [0])[0] : Object.values(m.ch).reduce((n, v) => n + v[0], 0)) : 0;
+  const W = 700, H = 200, pl = 44, pr = 10, pt = 12, pb = 26, max = Math.max(1, ...dv.months.map(m => mTot(m))), top = Math.ceil(max / 20000) * 20000, bw = (W - pl - pr) / 12, yy = v => pt + (1 - v / top) * (H - pt - pb), base = H - pb, w = bw * .34;
+  const grid = [0, .5, 1].map(q => `<line x1="${pl}" x2="${W - pr}" y1="${yy(top * q)}" y2="${yy(top * q)}" stroke="var(--line)"/><text x="${pl - 6}" y="${yy(top * q) + 3}" text-anchor="end" font-size="9" fill="var(--faint)">${top * q ? Math.round(top * q / 1000) + 'k' : '0'}</text>`).join('');
+  const bars = mos.map((mo, i) => {
+    const x = pl + i * bw, a = mOf(ly + '-' + mo), b = mOf(y + '-' + mo), at = mTot(a), bt = mTot(b);
+    let stack = '', acc = 0;
+    if (b) chans.forEach((ch, k) => { const v = mTot(b, ch); if (!v) return; stack += `<rect x="${x + bw * .14 + w + 2}" y="${yy(acc + v)}" width="${w}" height="${yy(acc) - yy(acc + v)}" fill="${chCol(ch, k)}"><title>${mName(b.m)} · ${esc(ch)} ${money(v, c)}${at ? ' · all apps ' + ((bt / at - 1) * 100 >= 0 ? '+' : '') + ((bt / at - 1) * 100).toFixed(1) + '% on ' + ly : ''}</title></rect>`; acc += v; });
+    return (a ? `<rect x="${x + bw * .14}" y="${yy(at)}" width="${w}" height="${base - yy(at)}" rx="2" fill="var(--faint)" fill-opacity=".55"><title>${mName(a.m)} · all apps ${money(at, c)}</title></rect>` : '') + stack +
+      `<text x="${x + bw / 2}" y="${H - 9}" text-anchor="middle" font-size="9" fill="var(--faint)">${new Date(2026, i, 1).toLocaleDateString('en-GB', { month: 'short' })}</text>`;
+  }).join('');
+  parts.push(`<svg class="sChart" viewBox="0 0 ${W} ${H}" role="img" aria-label="Delivery revenue by month and app">${grid}${bars}</svg>
+    <div class="sLegend"><span><i style="background:var(--faint)"></i>${ly}, all apps</span>${chans.map((ch, k) => `<span><i style="background:${chCol(ch, k)}"></i>${y} ${esc(ch)}</span>`).join('')}${dv.to.slice(0, 7) === y + '-' + to.slice(5, 7) ? `<span>${mName(to.slice(0, 7))} ${y} runs to ${fmtD(to)}</span>` : ''}</div>`);
+  // 3. the explorer, by app
+  if (Y) parts.push(posExplorer(Y, c, dv));
+  // 4. promotions and 5. order health, side by side
+  const yMonths = dv.months.filter(m => m.m.startsWith(String(y)));
+  const promoRows = yMonths.map(m => { const ord = Object.values(m.ch).reduce((n, v) => n + v[1], 0), dO = Object.values(m.ch).reduce((n, v) => n + v[3], 0), last = mOf(ly + m.m.slice(4)), lastD = last ? Object.values(last.ch).reduce((n, v) => n + v[2], 0) : null;
+    return `<tr><td>${mName(m.m)}</td>${chans.map(ch => { const v = m.ch[ch] || [0, 0, 0, 0]; return v[3] ? `<td>${money(v[2], c)} <span class="z">· ${v[3]}</span></td>` : '<td class="z">—</td>'; }).join('')}<td>${ord ? (dO / ord * 100).toFixed(1) + '%' : '—'}</td><td class="z">${lastD == null ? '—' : money(lastD, c)}</td></tr>`; }).join('');
+  const promo = `<div><h4>Promotions on the apps · ${y}, £ off and orders discounted</h4><table class="dMix"><thead><tr><th>Month</th>${chans.map(ch => `<th>${esc(ch)}</th>`).join('')}<th>Orders discounted</th><th>${ly}</th></tr></thead><tbody>${promoRows}</tbody></table>
+    <div class="note" style="font-size:10px;color:var(--faint);margin-top:6px">Deliverect does not say whether the app or the restaurant paid for an offer: that decides what it cost.</div></div>`;
+  const healthRows = yMonths.map(m => { const n = m.n || 1, bad = m.x + m.f; return `<tr><td>${mName(m.m)}</td><td>${m.x}</td><td>${m.f}</td><td${bad / n > .005 ? ' style="color:var(--red, #C8553D);font-weight:600"' : ''}>${(bad / n * 100).toFixed(2)}%</td></tr>`; }).join('');
+  const fy = dv.fails[String(y)] || {}, fl = dv.fails[String(ly)] || {};
+  const failRows = [...new Set([...Object.keys(fy), ...Object.keys(fl)])].sort((a, b) => (fy[b] || 0) - (fy[a] || 0)).map(k => `<li><b>${esc(k)}</b> · ${fy[k] || 0} this year, ${fl[k] || 0} in ${ly}: ${FAIL_WHY[k] || 'see Deliverect'}</li>`).join('');
+  const health = `<div><h4>Order health · ${y}, cancelled and failed</h4><table class="dMix"><thead><tr><th>Month</th><th>Cancelled</th><th>Failed</th><th>Rate</th></tr></thead><tbody>${healthRows}</tbody></table>${failRows ? `<ul class="dFail">${failRows}</ul>` : ''}</div>`;
+  parts.push(`<div class="sBars dRow" style="margin-top:10px">${promo}${health}</div>`);
+  // 6. when delivery orders come in
+  const hrs = [...Array(24).keys()].filter(h => dv.heat.some(r => r[h] >= .5)), mx = Math.max(...dv.heat.flat(), 1), order = [...hrs.filter(h => h >= 11), ...hrs.filter(h => h < 11)];
+  let pk = [0, 0]; dv.heat.forEach((r, wd) => r.forEach((v, h) => { if (v > dv.heat[pk[0]][pk[1]]) pk = [wd, h]; }));
+  parts.push(`<div class="sBars" style="margin-top:14px"><div style="grid-column:1/-1"><h4>When delivery orders come in · average orders per hour, ${y} · peak ${DAYS[pk[0]]}s, ${hLab(pk[1])}</h4>
+    <div class="sHeat" style="grid-template-columns:34px repeat(${order.length},1fr)"><span></span>${order.map(h => `<span class="hh">${hLab(h)}</span>`).join('')}${DAYS.map((dn, wd) => `<span class="hd">${dn}</span>` + order.map(h => { const v = dv.heat[wd][h]; return `<span class="hc" style="background:rgba(47,143,131,${(v / mx * .95 + (v ? .05 : 0)).toFixed(2)})" title="${dn} ${hLab(h)} · ${v} delivery orders on average"></span>`; }).join('')).join('')}</div></div></div>`);
+  // 7. the gaps, said plainly
+  parts.push(`<div class="note" style="font-size:10.5px;color:var(--faint);margin-top:10px">Not here yet: item sales by app (ask the Deliverect agent for item-level data), refunds, prep and rider times and ratings (they sit in Uber Eats Manager and Deliveroo Partner Hub).${skip.size ? ' ' + [...skip].map(fmtD).join(', ') + ' is only partly in the exports, so it is left out of both years.' : ''}</div>`);
+  return parts.join('');
+}
 function yoyKpis(Y, c) {
   const ly = Y.year - 1, lm = Y.lastMonth;
   const tile = (v, l, d, prev) => `<div class="sK"><div class="v">${v}</div><div class="l">${l}</div>${d}${prev ? `<div class="pvPrev">${prev}</div>` : ''}</div>`;
@@ -1230,7 +1325,7 @@ function yoyKpis(Y, c) {
     tile(Y.ytd.cur.avg == null ? '—' : c + Y.ytd.cur.avg.toFixed(2), 'Average order · year to date', chg(Y.ytd.avg, 'vs ' + ly), Y.ytd.prev.avg == null ? '' : c + Y.ytd.prev.avg.toFixed(2) + ' in ' + ly) +
     `</div>`;
 }
-function yoyCharts(Y, c) {
+function yoyCharts(Y, c, dv) {
   const years = [...new Set(Y.months.map(m => m.month.slice(0, 4)))].sort().slice(-2), [a, b] = years.length === 2 ? years : [null, years[0]];
   const get = (yr, mo) => Y.months.find(m => m.month === yr + '-' + mo);
   const mos = [...Array(12).keys()].map(i => String(i + 1).padStart(2, '0'));
@@ -1255,7 +1350,7 @@ function yoyCharts(Y, c) {
   const mx = Y.mix.cur, mp = Y.mix.prev || {};
   const pay = mx ? [['Other pay (delivery apps and other)', 'other'], ['Card', 'card'], ['Cash', 'cash']].map(([n, k]) => row(n, mx[k].toFixed(1) + '%', mx[k], mp[k] == null ? '' : `${Y.year - 1}: ${mp[k].toFixed(1)}%`)).join('') +
     `<div class="note" style="font-size:10.5px;color:var(--grey);margin-top:6px">Discounts ${Y.discount.cur}% of takings (${Y.year - 1}: ${Y.discount.prev}%)</div>` : '';
-  return chart + posExplorer(Y, c) + `<div class="sBars" style="margin-bottom:16px"><div><h4>Last 8 weeks · against the same weekdays last year</h4>${weeks}</div><div><h4>The average day · last 12 weeks</h4>${days}</div><div><h4>How it is paid · year to date</h4>${pay}</div></div>`;
+  return chart + posExplorer(Y, c, dv) + `<div class="sBars" style="margin-bottom:16px"><div><h4>Last 8 weeks · against the same weekdays last year</h4>${weeks}</div><div><h4>The average day · last 12 weeks</h4>${days}</div><div><h4>How it is paid · year to date</h4>${pay}</div></div>`;
 }
 
 function renderPos(el, cur, d) {
@@ -1266,6 +1361,7 @@ function renderPos(el, cur, d) {
   if (Y) parts.push(yoyKpis(Y, c)); else if (t) parts.push(`<div class="sKpis"><div class="sK"><div class="v">${money(t.turnover, c)}</div><div class="l">Turnover · ${mName(hr.latest)}${t.partial ? ' (to ' + t.to.slice(8) + 'th)' : ''}</div>${t.turnoverVsPrev == null ? '' : `<div class="d ${t.turnoverVsPrev >= 0 ? 'up' : 'dn'}">${t.turnoverVsPrev >= 0 ? '▲' : '▼'} ${Math.abs(t.turnoverVsPrev).toFixed(1)}% ${esc(t.vsNote)}</div>`}</div>
     <div class="sK"><div class="v">${(t.orders || 0).toLocaleString('en-GB')}</div><div class="l">Orders · ${mName(hr.latest)}</div>${t.ordersVsPrev == null ? '' : `<div class="d ${t.ordersVsPrev >= 0 ? 'up' : 'dn'}">${t.ordersVsPrev >= 0 ? '▲' : '▼'} ${Math.abs(t.ordersVsPrev).toFixed(1)}% ${esc(t.vsNote)}</div>`}</div>
     <div class="sK"><div class="v">${t.avg == null ? '—' : c + t.avg.toFixed(2)}</div><div class="l">Average order</div></div></div>`);
+  if (d.delivery && d.delivery.available) parts.push(deliveryTease(cur, d, Y, c));
   if (Y) parts.push(yoyCharts(Y, c));
   if (hr) {
     if (!Y) {
@@ -1399,10 +1495,12 @@ if (!window.__sdBound) {
 }
 function renderSales() {
   const el = $('salesPanel'); if (!el || !isDash(S.cat)) return;
-  const cur = (S.dash || []).find(x => 'dash-' + x.id === S.cat), d = cur && cur.data;
-  $('dashTitle').textContent = cur ? cur.name : 'Dashboard';
+  const [, dashId, sub] = /^dash-(.+?)(?:--(\w+))?$/.exec(S.cat) || [];
+  const cur = (S.dash || []).find(x => x.id === dashId), d = cur && cur.data;
+  $('dashTitle').textContent = cur ? cur.name + (sub === 'delivery' ? ' · Delivery' : '') : 'Dashboard';
   if (!cur) { el.innerHTML = '<div class="none" style="padding:14px">Loading…</div>'; return; }
   if (!d || !d.available) { el.innerHTML = `<div class="sHead"><b>${esc(cur.name)}</b><span class="note">No sales data yet</span></div><div class="none">Drop the reports into the office upload box (a zip of the monthly reports works) and this page fills itself in.</div>`; return; }
+  if (sub === 'delivery') { el.innerHTML = d.delivery && d.delivery.available ? deliveryPanel(d, d.yoy && d.yoy.ytd ? d.yoy : null, d.currency || '£') : '<div class="none" style="padding:14px">No delivery orders yet. Upload a Deliverect order export into the office.</div>'; return; }
   if (d.kind === 'pos') return renderPos(el, cur, d);
   const W = 700, H = 210, pl = 44, pr = 10, pt = 10, pb = 24, n = d.months.length;
   const max = Math.max(...d.shops.flatMap(s => d.series[s].map(x => x ? x.turnover : 0))), top = Math.ceil(max / 100000) * 100000 || 1;
@@ -1655,7 +1753,7 @@ document.addEventListener('click', e => {
   if (e.target.closest('[data-bopen]')) { const sh = S.budget?.sheet?.sheet; if (sh) window.open('https://docs.google.com/spreadsheets/d/' + encodeURIComponent(sh) + '/edit', '_blank', 'noopener'); return; }
   if (e.target.closest('[data-bled]')) { S.bLedger = !S.bLedger; renderBudget(); return; }
   const bm = e.target.closest('[data-bm]'); if (bm) { S.bMonth = bm.dataset.bm; renderBudget(); return; }
-  const nb = e.target.closest('#side button[data-go]'); if (nb) { setCat(nb.dataset.go); return; }
+  const nb = e.target.closest('button[data-go]'); if (nb) { setCat(nb.dataset.go); return; } // the menu, and buttons on a page that open another (Open Delivery)
   const pb = e.target.closest('button[data-propose]'); if (pb) { proposeRevision(pb.dataset.propose, pb); return; }
   const db = e.target.closest('button[data-doneprop]'); if (db) { db.disabled = true; api('/skill-audit/done', { method: 'POST', body: { skill: db.dataset.doneprop } }).then(poll).catch(er => { db.disabled = false; $('skMsg').className = 'msg err'; $('skMsg').textContent = 'Could not mark it done: ' + er.message; }); return; }
   const cb = e.target.closest('button[data-copyprop]'); if (cb) { const el = document.querySelector(`[data-prop="${CSS.escape(cb.dataset.copyprop)}"]`); navigator.clipboard.writeText(el ? el.textContent : '').then(() => { cb.textContent = 'COPIED ✓'; setTimeout(() => { cb.textContent = 'COPY'; }, 1500); }).catch(() => { cb.textContent = 'COPY FAILED'; }); return; }
