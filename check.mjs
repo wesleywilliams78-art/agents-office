@@ -194,8 +194,88 @@ await step('delivery: Deliverect exports merge without double counting, read the
   if (o.location !== 'Test Diner - High St') throw new Error('location with a comma before it: ' + o.location);
   if (o.partial.join() !== '2026-03-02') throw new Error('a file starting at 18:30 on a day nothing else covers is a part day: ' + o.partial);
   const m = o.months[0]; if (m.ch['Uber Eats'][0] !== 20 || m.ch['Uber Eats'][2] !== 2 || m.x !== 1 || m.f !== 1 || o.fails['2026'].INVALID_PLU !== 1) throw new Error('month: ' + JSON.stringify(m));
+  // the agent's top-items lists: the app from the file name, a pooled list as the one app with orders in its dates, the newest file wins
+  const IH = 'product_name,units,revenue,currency,data_from,data_through,grand_total_units,grand_total_revenue,total_rows';
+  const list = (rows, from, to, gu, gr, n) => [IH, ...rows.map(([nm, u, r]) => [nm, u, r, 'GBP', from, to, gu, gr, n].join(','))].join('\n');
+  fs.mkdirSync(dv.itemsDir(tmp));
+  fs.writeFileSync(path.join(dv.itemsDir(tmp), 'top_items_2026.csv'), list([['Burger, large', 3, 30]], '2026-03-01', '2026-03-01', 5, 40, 2));
+  fs.writeFileSync(path.join(dv.itemsDir(tmp), 'deliveroo_top_items_2026.csv'), list([['Wrap', 1, 9]], '2026-03-01', '2026-03-03', 1, 9, 1));
+  if (!dv.isItems(IH + '\n')) throw new Error('items header not recognised');
+  const it = dv.build(tmp, { match: 'Test Diner' }).items;
+  const ue = it.find(s => s.ch === 'Uber Eats'), dr = it.find(s => s.ch === 'Deliveroo');
+  if (it.length !== 2 || !ue || !dr) throw new Error('item lists by app: ' + JSON.stringify(it.map(s => s.ch)));
+  if (ue.top[0].n !== 'Burger, large' || ue.top[0].u !== 3 || ue.revenue !== 40 || ue.rows !== 2) throw new Error('a name with a comma, or the totals: ' + JSON.stringify(ue));
+  if (ue.orderRevenue !== 20 || ue.orders !== 1 || dr.orderRevenue !== 30) throw new Error('order revenue for the same app and dates: ' + ue.orderRevenue + ' / ' + dr.orderRevenue);
   fs.rmSync(tmp, { recursive: true, force: true });
-  return 'header recognised · duplicate order counted once · location read whole · part day flagged · delivered, cancelled, failed and discounts counted';
+  return 'header recognised · duplicate order counted once · location read whole · part day flagged · delivered, cancelled, failed and discounts counted · item lists by app with their order revenue';
+});
+await step('delivery: Uber Eats Manager reports merge across weeks, count inaccurate orders the way Uber does, and are picked up from Downloads', async () => { // V3.12
+  const ue = await import('./ubereats.mjs'); const os = await import('node:os');
+  const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'ue-')), dl = path.join(tmp, 'dl'); fs.mkdirSync(dl);
+  const EH = 'Restaurant,External restaurant ID,Shop UUID,Country,Country code,City,Order ID,Workflow UUID,Order UUID,Time customer ordered,Time merchant accepted,Order completion time,Time customer was refunded,Order issue,Item Issue Details,Items with error,Inaccurate Customisations,Customer feedback,Currency code,Ticket size,Customer refunded,Chargeback amount,Refund Not Covered by Merchant,Fulfilment Type,Order Channel,Eats Brand';
+  const IH = 'Restaurant,External restaurant ID,Shop UUID,Country,Country code,City,Workflow UUID,Order ID,Order UUID,Time customer ordered,Time merchant accepted,Order completion time,Time customer was refunded,Item name,External Item ID,External data,Order issue,Item issue,Inaccurate customisation,Item feedback,Item quantity refunded,Currency code,Incorrect item price,Fulfilment Type,Order Channel,Eats Brand';
+  const e = (uuid, t, issue, ref, cb) => ["Test's High St", '', 's', 'UK', 'GBR', 'X', 'ID', 'w', uuid, t, t, t, t, issue, '', '', '', '', 'GBP', '20', ref, cb, String(ref - cb), 'Delivery', 'iOS', 'Uber Eats'].join(',');
+  const i = (uuid, name, issue, cust) => ["Test's High St", '', 's', 'UK', 'GBR', 'X', 'w', 'ID', uuid, '2026-09-01 20:00:00.000', '', '', '', `"${name}"`, 'I1', '', 'ISSUE_WITH_ITEMS', issue, cust, '', '1', 'GBP', '5', 'Delivery', 'iOS', 'Uber Eats'].join(',');
+  const u = n => `00000000-0000-0000-0000-00000000000${n}`;
+  fs.writeFileSync(path.join(dl, u(1) + '_orders_with_errors_2026-08-31_2026-09-06.csv'), [EH, e('A', '2026-09-01 20:10:00.000', 'ISSUE_WITH_ITEMS', 5, 5), e('B', '2026-09-02 13:00:00.000', 'FOOD_QUALITY', 4, 0)].join('\n'));
+  fs.writeFileSync(path.join(dl, u(2) + '_orders_with_errors_2026-08-31_2026-09-13.csv'), [EH, e('A', '2026-09-01 20:10:00.000', 'ISSUE_WITH_ITEMS', 5, 5), e('C', '2026-09-08 21:00:00.000', 'WRONG_ORDER', 9, 9)].join('\n'));
+  fs.writeFileSync(path.join(dl, u(3) + '_items_with_errors_local_2026-08-31_2026-09-06.csv'), [IH, i('A', 'Zinger Box meal ⭐ (Popular) ⭐', 'MISSING_ITEM', 'Rubicon mango can'), i('A', 'Fries, large', 'MISSING_ITEM', ''), i('A', 'Fries, large', 'MISSING_ITEM', ''), i('B', 'Chicken Burger', 'FOOD_QUALITY', '')].join('\n'));
+  fs.writeFileSync(path.join(dl, 'not-uber.csv'), 'x');
+  if (ue.kindOf(EH + '\n') !== 'errors' || ue.kindOf(IH + '\n') !== 'items') throw new Error('headers not recognised');
+  if (ue.importDownloads(tmp, dl) !== 3 || ue.importDownloads(tmp, dl) !== 0) throw new Error('Downloads: the three Uber files once, nothing else');
+  const a = ue.build(tmp, { match: 'test', downloads: dl, delivered: () => ({ orders: 100, weeks: { '2026-08-31': 60, '2026-09-07': 40 }, hours: Array(24).fill(0).map((_, h) => (h === 20 ? 50 : 0)) }) });
+  if (a.problems !== 3 || a.refunded !== 18 || a.chargeback !== 14) throw new Error('an order in two files must count once: ' + JSON.stringify([a.problems, a.refunded, a.chargeback]));
+  if (a.inaccurate !== 2) throw new Error('inaccurate = missing or wrong items, or the wrong order (not food quality): ' + a.inaccurate);
+  if (a.lines !== 4 || a.kinds.side !== 3 || a.kinds.main !== 0 || a.items[0].n !== 'Fries, large' || a.items.find(x => x.n === 'Zinger Box meal')?.k !== 1) throw new Error('item lines: ' + JSON.stringify([a.lines, a.kinds, a.items]));
+  if (a.weeks.length !== 2 || a.weeks[0].orders !== 60 || a.weeks[0].inaccurate !== 1 || a.weeks[1].inaccurate !== 1) throw new Error('weeks: ' + JSON.stringify(a.weeks));
+  // the 12-month summaries: a month table, a leaderboard with one dish listed twice, a weekday-by-hour grid (day 1 = Monday)
+  fs.writeFileSync(path.join(dl, 'order_accuracy_issues_all_2026-10-30.csv'), ['Period,Day,Total inaccurate orders,Inaccurate orders with missing customisation,Refunds paid for missing customisation,Inaccurate orders with items missing,Refunds paid for items missing,Inaccurate orders with wrong order delivered,Refunds paid for wrong order delivered,Inaccurate orders with wrong item delivered,Refunds paid for wrong item delivered,Inaccurate orders with wrong customisation delivered,Refunds paid for wrong customisation delivered,Orders with food quality issues,Refunds paid for orders with food quality issues,Orders with food inadequate quantity issue,Refunds paid for orders with food inadequate quantity issue,Total refunds paid,Currency code', 'This period,2026-09-01,7,3,1,2,1,0,0,1,1,0,0,1,1,0,0,12.5,GBP'].join('\n'));
+  fs.writeFileSync(path.join(dl, 'item_issues_leaderboard_2025-10-01-2026-09-30.csv'), ['Item,Volume,Rate,Issue count %Δ,Top issue', 'Fish ⭐ (Popular)⭐,4,2.00,40.00,Taste and quality issues', 'Chicken Fillet Burger ⭐(Best Seller) ⭐,3,1.00,1.00,Missing customisations', 'Chicken Fillet Burger ⭐(Best Seller) ⭐,3,1.00,1.00,Missing customisations'].join('\n'));
+  fs.writeFileSync(path.join(dl, 'Inaccurate orders_hourly_data.csv'), ['Day,Hour,Items missing,Missing customisation,Wrong order delivered,Wrong item,Wrong customisations,Total', '5,20,1,1,0,0,0,2'].join('\n'));
+  if (ue.importDownloads(tmp, dl) !== 3 || ue.kindOf('Day,Hour,Online rate,Offline time (minutes)\n') !== 'hOnline') throw new Error('the 12-month summaries are not picked up');
+  const y = ue.build(tmp, { match: 'test', downloads: dl, delivered: () => ({ orders: 100, weeks: {}, months: { '2026-09': 70 }, hours: Array(24).fill(0), heat: Array.from({ length: 7 }, () => Array(24).fill(1)) }) }).year;
+  if (!y || y.months[0].inaccurate !== 7 || y.months[0].orders !== 70 || y.months[0].refunds !== 12.5) throw new Error('month table: ' + JSON.stringify(y && y.months));
+  const cfb = y.items.find(x => x.n === 'Chicken Fillet Burger');
+  if (!cfb || cfb.k !== 6 || cfb.listings !== 2 || y.items.find(x => x.n === 'Fish').chg !== 40) throw new Error('leaderboard: a dish listed twice is one dish: ' + JSON.stringify(y.items));
+  if (y.heat.inaccurate[4][20] !== 2) throw new Error('the hourly grid: day 5 is Friday (index 4)');
+  // the success score and benchmark, filed from the Monday report's block
+  const block = 'Report…\nUBER EATS SCORECARD\n{"readOn":"2026-11-02","tier":"Good","next":"Great","metrics":[{"name":"Rating","current":"4.5","goal":"4.2 or above","met":true}],"operational":[{"name":"Inaccurate orders","current":"1.10%","goal":"1.00%","impact":"Medium"}],"benchmark12w":[{"name":"Shop online hours","shop":"1,029.6h","market":"1,275.4h","diff":-19.3}],"benchmark7d":[]}\nEND UBER EATS SCORECARD';
+  const sc = ue.fileScorecard(tmp, block), back = JSON.parse(fs.readFileSync(path.join(ue.dir(tmp), 'scorecard.json'), 'utf8'));
+  if (!sc.ok || back.success.operational[0].current !== 1.1 || back.benchmark.rows[0].better !== 'up' || back.benchmark.rows[0].d7[0] !== '—') throw new Error('scorecard block: ' + JSON.stringify(back));
+  if (ue.fileScorecard(tmp, 'no block here') !== null || !ue.fileScorecard(tmp, 'UBER EATS SCORECARD\n{bad\nEND UBER EATS SCORECARD').error) throw new Error('a missing or broken block must not be filed');
+  const fx = await import('./fix.mjs'), f = fx.parse('Here: {"title":"Retrain the fish station","issue":"x","why":["a"],"actions":["b","c"],"owner":"kitchen lead","measure":"m","runnerUp":"r"}');
+  if (f.title !== 'Retrain the fish station' || f.actions.length !== 2 || fx.weekOf(new Date('2026-11-04T10:00:00')) !== '2026-11-02') throw new Error('fix: ' + JSON.stringify(f));
+  fs.rmSync(tmp, { recursive: true, force: true });
+  return 'Uber files picked up from Downloads once · an order in two weeks\' files counts once · inaccurate as Uber counts it · a side missing from a meal is a side · rated week by week · 12-month table, leaderboard and grids read · scorecard filed from the Monday block · the fix reads back';
+});
+await step('needs you: Claude Code hooks mark a session waiting, needing permission or working, read its sidebar title, and skip Telegram and office runs', async () => { // V3.12
+  const at = await import('./attention.mjs'), os = await import('node:os'), cp = await import('node:child_process');
+  const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'at-')), pdir = path.join(os.homedir(), '.claude', 'projects', 'zz-agents-office-check');
+  fs.mkdirSync(pdir, { recursive: true });
+  const line = o => JSON.stringify(o), tr = path.join(pdir, 's1.jsonl'), tg = path.join(pdir, 's2.jsonl');
+  fs.writeFileSync(tr, [line({ type: 'user', message: { role: 'user', content: 'Build the dashboard' } }), line({ type: 'custom-title', customTitle: 'Dashboard build' }), line({ type: 'assistant', message: { content: [{ type: 'text', text: 'Done. Shall I commit?' }] } })].join('\n'));
+  fs.writeFileSync(tg, line({ type: 'user', message: { content: '<channel source="telegram" chat_id="1">status</channel>' } }));
+  try {
+    at.hook(tmp, { event: 'UserPromptSubmit', session: 's1', transcript: tr, cwd: 'C:/x/agents-office' });
+    if (at.list(tmp)[0].state !== 'working') throw new Error('a prompt makes the session working');
+    at.hook(tmp, { event: 'Stop', session: 's1', transcript: tr, cwd: 'C:/x/agents-office' });
+    let s = at.list(tmp)[0];
+    if (s.state !== 'waiting' || s.title !== 'Dashboard build' || s.last !== 'Done. Shall I commit?' || s.first !== 'Build the dashboard') throw new Error('stop: ' + JSON.stringify(s));
+    at.hook(tmp, { event: 'Notification', session: 's1', transcript: tr, message: 'Claude needs your permission to use Bash' });
+    if (at.list(tmp)[0].state !== 'needs') throw new Error('a permission prompt is NEEDS');
+    at.dismiss(tmp, 's1'); if (!at.list(tmp)[0].dismissed) throw new Error('dismiss');
+    at.hook(tmp, { event: 'Stop', session: 's1', transcript: tr }); if (at.list(tmp)[0].dismissed) throw new Error('something new brings a dismissed session back');
+    at.hook(tmp, { event: 'Stop', session: 's2', transcript: tg }); if (at.list(tmp).some(x => x.id === 's2')) throw new Error('the Telegram listener is left out');
+    if (at.readTranscript(path.join(tmp, 'x.jsonl')).title !== '') throw new Error('a transcript outside ~/.claude/projects must not be read');
+    at.hook(tmp, { event: 'SessionEnd', session: 's1' }); if (at.list(tmp).length) throw new Error('an ended session goes');
+    // the hook script: an office run is skipped, and with no office listening it still exits at once
+    const r = cp.spawnSync(process.execPath, [path.join(ROOT, 'scripts', 'attention-hook.mjs')], { input: '{"hook_event_name":"Stop","session_id":"x"}', env: { ...process.env, OFFICE_PORT: '1' }, timeout: 4000 });
+    if (r.status !== 0 || String(r.stdout)) throw new Error('the hook must exit 0 quietly when the office is off');
+    const o = cp.spawnSync(process.execPath, [path.join(ROOT, 'scripts', 'attention-hook.mjs')], { input: '{}', env: { ...process.env, AGENTS_OFFICE_RUN: '1' }, timeout: 4000 });
+    if (o.status !== 0) throw new Error('an office run exits 0');
+    if (!(await import('./mcp.mjs')).freshEnv().AGENTS_OFFICE_RUN) throw new Error('office runs must carry AGENTS_OFFICE_RUN');
+  } finally { fs.rmSync(tmp, { recursive: true, force: true }); fs.rmSync(pdir, { recursive: true, force: true }); }
+  return 'prompt → working · finished → waiting with the sidebar title and last line · permission → needs · seen until something new · Telegram and office runs left out · hook never blocks';
 });
 await step('till dashboard: the hourly grid and item report become monthly turnover, a weekday-by-hour map and menu totals that match the report', async () => {
   const { build } = await import('./pos.mjs'); const NL = String.fromCharCode(10);

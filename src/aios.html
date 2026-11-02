@@ -259,6 +259,24 @@
   .dTease b { font-family: var(--serif); font-weight: 400; font-size: 18px; } .dTease .up { color: var(--ok); } .dTease .dn { color: var(--red, #C8553D); } .dTease .z { color: var(--faint); }
   .side .subnav button.sub2 { margin-left: 14px; font-size: 10.5px; padding: 6px 10px; opacity: .9; }
   .sKpis { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 14px; }
+  .sBasis { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; margin: -4px 0 16px; padding: 8px 14px; border-radius: 12px; background: var(--soft); font-size: 12px; }
+  .sBasis em { font-style: normal; color: var(--faint); font-size: 10.5px; margin-right: 6px; } .sBasis span.on { font-weight: 600; } .sBasis i { color: var(--faint); font-style: normal; }
+  .sBasis .n { flex-basis: 100%; font-size: 10.5px; color: var(--faint); }
+  .fixCard { margin: 0 0 18px; padding: 16px 18px; border-radius: 16px; background: var(--soft); border-left: 4px solid var(--red, #C8553D); }
+  .fixCard .k, .fixLine .k { font-size: 10px; letter-spacing: .12em; text-transform: uppercase; color: var(--faint); }
+  .fixHead { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+  .fixCard h3 { font-family: var(--serif); font-weight: 400; font-size: 22px; margin: 8px 0 4px; } .fixCard .issue { margin: 0 0 10px; font-size: 13px; }
+  .fixCols { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; font-size: 12.5px; } .fixCols ul, .fixCols ol { margin: 4px 0 0; padding-left: 18px; } .fixCols li { margin: 3px 0; }
+  .fixFoot { display: flex; flex-wrap: wrap; gap: 6px 22px; margin-top: 10px; font-size: 12px; } .fixFoot em { font-style: normal; color: var(--faint); margin-right: 6px; font-size: 10.5px; }
+  .fixBtns { display: flex; gap: 8px; } .fixBtns button, .fixLine button { font: inherit; font-size: 11px; padding: 5px 12px; border-radius: 999px; border: 1px solid var(--line); background: var(--panel); color: var(--ink); cursor: pointer; } .fixBtns button:disabled { opacity: .6; cursor: default; }
+  .fixCard .err { color: var(--red, #C8553D); font-size: 12px; margin: 8px 0 0; } .fixCard .z, .fixLine .z { color: var(--faint); }
+  .fixLine { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin: -8px 0 16px; padding: 10px 16px; border-radius: 14px; background: var(--soft); border-left: 4px solid var(--red, #C8553D); font-size: 13px; } .fixLine button { margin-left: auto; }
+  .ladder { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; font-size: 12px; } .ladder span { padding: 4px 10px; border-radius: 999px; color: var(--faint); border: 1px solid var(--line); } .ladder i { color: var(--faint); font-style: normal; }
+  .ladder span.on { background: #06C167; color: #fff; border-color: #06C167; font-weight: 600; } .ladder span.next { border: 1px dashed #06C167; color: var(--ink); }
+  .opRow { margin: 8px 0 12px; font-size: 12px; } .opRow .t { display: flex; justify-content: space-between; gap: 10px; } .opRow .b { position: relative; height: 8px; border-radius: 4px; background: var(--line); margin-top: 5px; }
+  .opRow .b i { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 4px; } .opRow .b s { position: absolute; top: -3px; bottom: -3px; width: 2px; background: var(--ink); }
+  .uOk { color: var(--ok); } .uNo { color: var(--red, #C8553D); } .dMix.bench td:first-child { white-space: nowrap; }
+  @media (max-width: 860px) { .fixCols { grid-template-columns: 1fr; } .dMix.bench { font-size: 11px; } }
   .sK { background: var(--soft); border-radius: 10px; padding: 10px 12px; }
   .sK .v { font-family: var(--serif); font-size: 26px; line-height: 1.1; }
   .sK .l { font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: var(--faint); margin-top: 3px; }
@@ -374,6 +392,21 @@
   .seal { width: 30px; height: 30px; border-radius: 9px; background: var(--red); color: #F3F2F2; display: grid; place-items: center; font: 300 18px/1 "Noto Serif SC", serif; flex: none; }
 
   /* the hero: one statement card with two bezier ridges */
+  .needs { margin-bottom: 18px; } .needs .nHead { display: flex; align-items: baseline; gap: 12px; margin: 0 4px 10px; } .needs .k { font-size: 10.5px; letter-spacing: .14em; text-transform: uppercase; color: var(--ink); font-weight: 600; } .needs .z { color: var(--faint); font-size: 12px; }
+  .nTiles { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+  .nTile { text-align: left; font: inherit; color: var(--ink); background: var(--panel); border: 1px solid var(--line); border-radius: 16px; padding: 12px 14px; cursor: pointer; display: grid; gap: 2px; }
+  .nTile b { font-family: var(--serif); font-weight: 400; font-size: 28px; line-height: 1; } .nTile span { font-size: 12px; font-weight: 600; } .nTile em { font-style: normal; font-size: 10.5px; color: var(--faint); }
+  .nTile.hot b { color: var(--red, #C8553D); } .nTile.on { border-color: var(--ink); box-shadow: inset 0 0 0 1px var(--ink); }
+  .nList { margin-top: 10px; background: var(--panel); border: 1px solid var(--line); border-radius: 16px; overflow: hidden; }
+  .nRow { display: grid; grid-template-columns: 128px 1fr auto auto; gap: 12px; align-items: center; padding: 10px 14px; border-top: 1px solid var(--line); color: var(--ink); text-decoration: none; font-size: 12.5px; }
+  .nRow:first-child { border-top: 0; } a.nRow:hover { background: var(--soft); }
+  .nMain { display: grid; gap: 2px; min-width: 0; } .nMain b { font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; } .nMain .z { font-size: 11px; }
+  .nLast { font-size: 11px; color: var(--faint); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .nChip { font-size: 9.5px; letter-spacing: .1em; font-weight: 700; padding: 3px 8px; border-radius: 999px; justify-self: start; }
+  .nChip.off { background: var(--soft); color: var(--ink); } .nChip.cc { background: #D97757; color: #fff; } .nChip.perm { background: var(--red, #C8553D); color: #fff; }
+  .nAgo { font-size: 11px; color: var(--faint); white-space: nowrap; } .nGo { font-size: 11px; font-weight: 600; white-space: nowrap; }
+  .nBtns { display: flex; gap: 6px; } .nBtns button { font: inherit; font-size: 11px; padding: 4px 10px; border-radius: 999px; border: 1px solid var(--line); background: var(--panel); color: var(--ink); cursor: pointer; }
+  @media (max-width: 860px) { .nTiles { grid-template-columns: repeat(2, 1fr); } .nRow { grid-template-columns: 1fr auto; } .nRow .nChip { grid-column: 1 / -1; } .nRow .nGo, .nRow .nBtns { grid-column: 1 / -1; } }
   .hero { position: relative; overflow: hidden; background: var(--hero-bg); color: var(--hero-fg); border-radius: 30px; padding: 40px 44px 96px; margin-bottom: 22px; }
   .hero .ridge { position: absolute; left: 0; right: 0; bottom: -1px; width: 100%; height: 150px; pointer-events: none; }
   .hero .ridge path { fill: var(--hero-ridge); }
@@ -615,6 +648,7 @@
       <path style="opacity:.13" d="M0 150V108C110 80 210 74 320 100S520 138 640 112 800 70 930 96s210 40 320 6 130-22 190-8V150Z"/>
     </svg>
   </div>
+  <div class="needs" id="needs" data-cat="overview"></div>
   <div class="kpis" id="kpis" data-cat="overview"></div>
   <div class="panel trend" id="trend" data-cat="overview"></div>
 
@@ -744,9 +778,43 @@ const when = t => new Date(t).toLocaleString([], { weekday: 'short', day: 'numer
 const agentBy = id => S.agents.find(a => a.id === id);
 const api = (p, o = {}) => fetch('/api' + p, { headers: { 'content-type': 'application/json' }, ...o, body: o.body ? JSON.stringify(o.body) : undefined }).then(async r => { const j = await r.json().catch(() => ({})); if (!r.ok) throw new Error(j.error || r.statusText); return j; });
 
+// Needs you (V3.12, 2 Nov): everything waiting on Wesley in one place, so many streams can run at once. Office tasks waiting for his OK
+// (a click opens that review card in the office), and Claude Code sessions on this PC that finished or want a permission, from the
+// hooks in his user settings (scripts/attention-hook.mjs → /api/attention). Claude Chat has no signal this PC can read, so it is not here.
+function renderNeeds() {
+  const el = $('needs'); if (!el) return;
+  const office = S.tasks.filter(t => t.state === 'waiting').sort((a, b) => (a.waitingAt || 0) - (b.waitingAt || 0));
+  const sess = (S.attention || []).filter(x => !x.dismissed), code = sess.filter(x => x.state === 'waiting' || x.state === 'needs'), working = sess.filter(x => x.state === 'working');
+  const doing = S.tasks.filter(t => t.state === 'doing'), show = S.needShow || 'all', who = id => agentBy(id)?.name || id;
+  const folder = p => String(p || '').split(/[\\/]/).filter(Boolean).pop() || '';
+  const tile = (k, n, l, sub) => `<button type="button" class="nTile${show === k ? ' on' : ''}${n && k !== 'work' ? ' hot' : ''}" data-need="${k}"><b>${n}</b><span>${l}</span><em>${sub}</em></button>`;
+  const rows = [];
+  if (show !== 'work') {
+    if (show !== 'code') for (const t of office) rows.push({ at: t.waitingAt || t.addedAt || 0, html: `<a class="nRow" href="/#review=${encodeURIComponent(t.id)}" target="agentsOffice"><span class="nChip off">OFFICE</span><span class="nMain"><b>${esc(t.title)}</b><span class="z">${esc(who(t.agent))}${t.channel === 'email' ? ' · email ready for your OK' : ' · ready for your review'}</span></span><span class="nAgo">${ago(t.waitingAt || t.addedAt)}</span><span class="nGo">Review →</span></a>` });
+    if (show !== 'office') for (const x of code) rows.push({ at: x.at, html: `<div class="nRow"><span class="nChip ${x.state === 'needs' ? 'perm' : 'cc'}">${x.state === 'needs' ? 'NEEDS PERMISSION' : 'CLAUDE CODE'}</span><span class="nMain"><b>${esc(x.title || x.first.slice(0, 90) || 'Untitled session')}</b><span class="z">${esc(folder(x.cwd))}${x.entry === 'claude-desktop' ? ' · desktop app' : x.entry ? ' · ' + esc(x.entry) : ''}${x.state === 'needs' && x.message ? ' · ' + esc(x.message) : ''}</span>${x.last ? `<span class="nLast">${esc(x.last.replace(/\s+/g, ' ').slice(-220))}</span>` : ''}</span><span class="nAgo">${ago(x.at)}</span>
+      <span class="nBtns">${x.entry && x.entry !== 'claude-desktop' ? `<button type="button" data-ncopy="claude --resume ${esc(x.id)}" title="Copy the command that resumes this session in a terminal">Copy resume</button>` : ''}<button type="button" data-ndone="${esc(x.id)}" title="Take it off the list until the session says something new">Seen</button></span></div>` });
+  } else {
+    for (const x of working) rows.push({ at: x.at, html: `<div class="nRow"><span class="nChip cc">WORKING</span><span class="nMain"><b>${esc(x.title || x.first.slice(0, 90) || 'Untitled session')}</b><span class="z">${esc(folder(x.cwd))} · Claude Code, started ${ago(x.at)}</span></span><span class="nAgo">${ago(x.at)}</span></div>` });
+    for (const t of doing) rows.push({ at: t.startedAt || t.addedAt || 0, html: `<div class="nRow"><span class="nChip off">OFFICE</span><span class="nMain"><b>${esc(t.title)}</b><span class="z">${esc(who(t.agent))} · working</span></span><span class="nAgo">${ago(t.startedAt || t.addedAt)}</span></div>` });
+  }
+  rows.sort((a, b) => a.at - b.at);
+  const total = office.length + code.length;
+  el.innerHTML = `<div class="nHead"><span class="k">Needs you</span><span class="z">${total ? `${total} waiting · oldest first` : 'Nothing is waiting on you'}</span></div>
+    <div class="nTiles">${tile('all', total, 'Waiting on you', 'everything')}${tile('office', office.length, 'Office', 'tasks to review')}${tile('code', code.length, 'Claude Code', 'sessions finished or asking')}${tile('work', working.length + doing.length, 'Working', 'nothing needed yet')}</div>
+    ${rows.length ? `<div class="nList">${rows.map(r => r.html).join('')}</div>` : ''}`;
+}
+if (!window.__needsBound) { window.__needsBound = true;
+  document.addEventListener('click', async e => {
+    const t = e.target.closest('[data-need]'), d = e.target.closest('[data-ndone]'), c = e.target.closest('[data-ncopy]');
+    if (t) { S.needShow = S.needShow === t.dataset.need && t.dataset.need !== 'all' ? 'all' : t.dataset.need; renderNeeds(); }
+    if (d) { const x = (S.attention || []).find(y => y.id === d.dataset.ndone); if (x) x.dismissed = true; renderNeeds(); try { await api('/attention/' + d.dataset.ndone + '/dismiss', { method: 'POST' }); } catch {} }
+    if (c) { try { await navigator.clipboard.writeText(c.dataset.ncopy); c.textContent = 'Copied'; } catch { c.textContent = c.dataset.ncopy; } }
+  });
+}
 async function poll() {
   try {
-    const [h, t, r, m, sa] = await Promise.all([api('/health'), api('/tasks'), api('/routines').catch(() => ({ routines: [] })), api('/matrix'), api('/skill-audit').catch(() => null)]);
+    const [h, t, r, m, sa, at] = await Promise.all([api('/health'), api('/tasks'), api('/routines').catch(() => ({ routines: [] })), api('/matrix'), api('/skill-audit').catch(() => null), api('/attention').catch(() => null)]);
+    if (at) S.attention = at.sessions || [];
     if (sa) S.skillAudit = sa;
     S.health = h; S.agents = h.agents || []; S.tasks = Array.isArray(t) ? t : []; S.routines = r.routines || []; S.matrix = m;
     $('live').classList.add('on'); $('liveTxt').textContent = `live · v${h.version} · ${MODEL[h.model] || h.model} by default`;
@@ -769,7 +837,7 @@ const roleSkills = a => { const h = houseSkills(); return (a.skills || []).filte
 // readiness: a role written, a standing brief, a skill that says how this seat's work is done
 const readiness = a => [!!a.does, !!a.brief, roleSkills(a).length > 0];
 
-function render() { renderNav(); renderKpis(); renderClients(); renderMatrix(); renderRoles(); renderSkills(); renderNews(); renderActivity(); renderBudget(); }
+function render() { renderNeeds(); renderNav(); renderKpis(); renderClients(); renderMatrix(); renderRoles(); renderSkills(); renderNews(); renderActivity(); renderBudget(); }
 
 // categories: the left-hand list shows one category at a time; the choice is remembered and can be linked to (#budget)
 const CAT_IDS = ['overview', 'matrix', 'clients', 'budget', 'comms', 'roles', 'skills'];
@@ -1278,7 +1346,7 @@ function deliveryPanel(d, Y, c) {
   tiles.push(tile(k.shC == null ? '—' : k.shC.toFixed(1) + '%', 'Share of all takings', '', k.shP == null ? '' : k.shP.toFixed(1) + '% in ' + ly));
   tiles.push(tile(k.oC ? c + (k.rC / k.oC).toFixed(2) : '—', 'Average delivery order', k.oP && k.oC ? chg(((k.rC / k.oC) / (k.rP / k.oP) - 1) * 100, 'vs ' + ly) : '', k.oP ? c + (k.rP / k.oP).toFixed(2) + ' in ' + ly : ''));
   parts.push(`<div class="sHead"><b>${esc(dv.location)} · Delivery</b><span class="note">Deliverect orders ${fmtD(dv.from)} ${dv.from.slice(0, 4)} to ${fmtD(dv.to)} ${dv.to.slice(0, 4)}</span></div>`);
-  parts.push(`<div class="sKpis" style="grid-template-columns:repeat(auto-fit,minmax(150px,1fr))">${tiles.join('')}</div>`);
+  parts.push(`<div class="sKpis" style="grid-template-columns:repeat(auto-fit,minmax(150px,1fr))">${tiles.join('')}</div>` + deliveryBasis(dv, k, c));
   // 2. month by month: last year beside this year, this year stacked by app
   const mOf = k => dv.months.find(m => m.m === k), mos = [...Array(12).keys()].map(i => String(i + 1).padStart(2, '0'));
   const mTot = (m, ch) => m ? (ch ? (m.ch[ch] || [0])[0] : Object.values(m.ch).reduce((n, v) => n + v[0], 0)) : 0;
@@ -1295,6 +1363,8 @@ function deliveryPanel(d, Y, c) {
     <div class="sLegend"><span><i style="background:var(--faint)"></i>${ly}, all apps</span>${chans.map((ch, k) => `<span><i style="background:${chCol(ch, k)}"></i>${y} ${esc(ch)}</span>`).join('')}${dv.to.slice(0, 7) === y + '-' + to.slice(5, 7) ? `<span>${mName(to.slice(0, 7))} ${y} runs to ${fmtD(to)}</span>` : ''}</div>`);
   // 3. the explorer, by app
   if (Y) parts.push(posExplorer(Y, c, dv));
+  // 3b. items
+  parts.push(deliveryItems(dv, c));
   // 4. promotions and 5. order health, side by side
   const yMonths = dv.months.filter(m => m.m.startsWith(String(y)));
   const promoRows = yMonths.map(m => { const ord = Object.values(m.ch).reduce((n, v) => n + v[1], 0), dO = Object.values(m.ch).reduce((n, v) => n + v[3], 0), last = mOf(ly + m.m.slice(4)), lastD = last ? Object.values(last.ch).reduce((n, v) => n + v[2], 0) : null;
@@ -1306,14 +1376,235 @@ function deliveryPanel(d, Y, c) {
   const failRows = [...new Set([...Object.keys(fy), ...Object.keys(fl)])].sort((a, b) => (fy[b] || 0) - (fy[a] || 0)).map(k => `<li><b>${esc(k)}</b> · ${fy[k] || 0} this year, ${fl[k] || 0} in ${ly}: ${FAIL_WHY[k] || 'see Deliverect'}</li>`).join('');
   const health = `<div><h4>Order health · ${y}, cancelled and failed</h4><table class="dMix"><thead><tr><th>Month</th><th>Cancelled</th><th>Failed</th><th>Rate</th></tr></thead><tbody>${healthRows}</tbody></table>${failRows ? `<ul class="dFail">${failRows}</ul>` : ''}</div>`;
   parts.push(`<div class="sBars dRow" style="margin-top:10px">${promo}${health}</div>`);
+  // 5b. Uber Eats: where the shop stands (success score, market), the last 12 months, then the last 12 weeks in detail
+  if (dv.accuracy && dv.accuracy.scorecard) parts.push(deliveryStanding(dv.accuracy.scorecard));
+  if (dv.accuracy && dv.accuracy.year) parts.push(deliveryYear(dv.accuracy.year, c));
+  if (dv.accuracy && dv.accuracy.weeks && dv.accuracy.weeks.length) parts.push(deliveryAccuracy(dv.accuracy, c));
   // 6. when delivery orders come in
   const hrs = [...Array(24).keys()].filter(h => dv.heat.some(r => r[h] >= .5)), mx = Math.max(...dv.heat.flat(), 1), order = [...hrs.filter(h => h >= 11), ...hrs.filter(h => h < 11)];
   let pk = [0, 0]; dv.heat.forEach((r, wd) => r.forEach((v, h) => { if (v > dv.heat[pk[0]][pk[1]]) pk = [wd, h]; }));
   parts.push(`<div class="sBars" style="margin-top:14px"><div style="grid-column:1/-1"><h4>When delivery orders come in · average orders per hour, ${y} · peak ${DAYS[pk[0]]}s, ${hLab(pk[1])}</h4>
     <div class="sHeat" style="grid-template-columns:34px repeat(${order.length},1fr)"><span></span>${order.map(h => `<span class="hh">${hLab(h)}</span>`).join('')}${DAYS.map((dn, wd) => `<span class="hd">${dn}</span>` + order.map(h => { const v = dv.heat[wd][h]; return `<span class="hc" style="background:rgba(47,143,131,${(v / mx * .95 + (v ? .05 : 0)).toFixed(2)})" title="${dn} ${hLab(h)} · ${v} delivery orders on average"></span>`; }).join('')).join('')}</div></div></div>`);
   // 7. the gaps, said plainly
-  parts.push(`<div class="note" style="font-size:10.5px;color:var(--faint);margin-top:10px">Not here yet: item sales by app (ask the Deliverect agent for item-level data), refunds, prep and rider times and ratings (they sit in Uber Eats Manager and Deliveroo Partner Hub).${skip.size ? ' ' + [...skip].map(fmtD).join(', ') + ' is only partly in the exports, so it is left out of both years.' : ''}</div>`);
+  parts.push(`<div class="note" style="font-size:10.5px;color:var(--faint);margin-top:10px">Not here yet: ${(dv.items || []).length ? '' : 'item sales by app (ask the Deliverect agent for item-level data), '}${dv.accuracy ? 'Deliveroo\'s refunds,' : 'refunds,'} prep and rider times and ratings (they sit in Uber Eats Manager and Deliveroo Partner Hub).${skip.size ? ' ' + [...skip].map(fmtD).join(', ') + ' is only partly in the exports, so it is left out of both years.' : ''}</div>`);
   return parts.join('');
+}
+// Items (V3.12, 30 Oct): the Deliverect agent's top-items lists, one per app and period. Item sales are base price times units (no fees,
+// tips or paid add-ons). Year on year only where an app has a list for the same dates a year apart; a dish renamed between the years
+// shows as one out of the list and one in.
+function deliveryItems(dv, c) {
+  const sets = dv.items || []; if (!sets.length) return '';
+  const parts = ['<div class="sHead" style="margin-top:22px"><b>Items</b></div>'];
+  const pct = (a, b) => b ? (a / b - 1) * 100 : null, sgn = v => v == null ? '—' : (v >= 0 ? '+' : '') + v.toFixed(0) + '%';
+  const col = v => v == null ? '' : ` style="color:${v >= 0 ? 'var(--ok)' : 'var(--red, #C8553D)'}"`;
+  const tile = (v, l, dd, pr) => `<div class="sK"><div class="v">${v}</div><div class="l">${l}</div>${dd || ''}${pr ? `<div class="pvPrev">${pr}</div>` : ''}</div>`;
+  const lastYear = iso => (+iso.slice(0, 4) - 1) + iso.slice(4);
+  let pair = null; // the same app and dates a year apart, the biggest app first
+  for (const b of sets) { const a = sets.find(s => s.ch === b.ch && s.from === lastYear(b.from) && s.to === lastYear(b.to)); if (a && (!pair || b.orderRevenue > pair[1].orderRevenue)) pair = [a, b]; }
+  const latest = sets.reduce((m, s) => s.to > m ? s.to : m, '').slice(0, 4), now = sets.filter(s => s.to.slice(0, 4) === latest).sort((p, q) => q.revenue - p.revenue);
+  // 1. the tiles
+  const tiles = [];
+  if (pair) {
+    const [a, b] = pair, ya = a.from.slice(0, 4), per = s => s.orders ? s.units / s.orders : null, food = s => s.orderRevenue ? s.revenue / s.orderRevenue * 100 : null;
+    tiles.push(tile(money(b.revenue, c), `${esc(b.ch)} item sales · ${fmtD(b.from)} to ${fmtD(b.to)}`, chg(pct(b.revenue, a.revenue), 'vs ' + ya), money(a.revenue, c) + ' in ' + ya));
+    tiles.push(tile(Math.round(b.units).toLocaleString('en-GB'), `${esc(b.ch)} items sold`, chg(pct(b.units, a.units), 'vs ' + ya), Math.round(a.units).toLocaleString('en-GB') + ' in ' + ya));
+    tiles.push(tile(per(b) == null ? '—' : per(b).toFixed(2), 'Items per order', '', per(a) == null ? '' : per(a).toFixed(2) + ' in ' + ya));
+    tiles.push(tile(food(b) == null ? '—' : food(b).toFixed(1) + '%', 'Food in the order total', '', food(a) == null ? '' : food(a).toFixed(1) + '% in ' + ya + ' · the rest is fees and add-ons'));
+  }
+  now.filter(s => !pair || s.ch !== pair[1].ch).forEach(s => tiles.push(tile(money(s.revenue, c), `${esc(s.ch)} item sales · ${fmtD(s.from)} to ${fmtD(s.to)}`, '', s.orderRevenue ? (s.revenue / s.orderRevenue * 100).toFixed(1) + '% of its order total' : '')));
+  parts.push(`<div class="sKpis" style="grid-template-columns:repeat(auto-fit,minmax(150px,1fr))">${tiles.join('')}</div>`);
+  if (pair) {
+    const [a, b] = pair, ya = a.from.slice(0, 4), yb = b.from.slice(0, 4), A = new Map(a.top.map(x => [x.n, x])), B = new Map(b.top.map(x => [x.n, x]));
+    const both = b.top.filter(x => A.has(x.n)).map(x => { const p = A.get(x.n); return { n: x.n, a: p.r, b: x.r, ua: p.u, ub: x.u, pa: p.u ? p.r / p.u : 0, pb: x.u ? x.r / x.u : 0 }; });
+    // 2. risers and fallers, by the £ they moved
+    const byMove = [...both].sort((p, q) => (q.b - q.a) - (p.b - p.a));
+    const head = `<thead><tr><th>Dish</th><th>${ya}</th><th>${yb}</th><th>£</th><th>Units</th><th>Price</th></tr></thead>`;
+    const row = x => `<tr><td>${esc(x.n)}</td><td>${money(x.a, c)}</td><td>${money(x.b, c)}</td><td${col(pct(x.b, x.a))}>${sgn(pct(x.b, x.a))}</td><td${col(pct(x.ub, x.ua))}>${sgn(pct(x.ub, x.ua))}</td><td class="z">${c}${x.pa.toFixed(2)} → ${c}${x.pb.toFixed(2)}</td></tr>`;
+    const up = byMove.filter(x => x.b > x.a).slice(0, 8), dn = byMove.filter(x => x.b < x.a).reverse().slice(0, 8);
+    parts.push(`<div class="sBars dRow"><div><h4>Growing · ${esc(b.ch)}, ${yb} against ${ya}, same dates</h4><table class="dMix">${head}<tbody>${up.map(row).join('')}</tbody></table></div>
+      <div><h4>Falling · ${esc(b.ch)}, ${yb} against ${ya}, same dates</h4><table class="dMix">${head}<tbody>${dn.map(row).join('')}</tbody></table></div></div>`);
+    // 3. price against volume: each dish in both lists, price change across, units change up, sized by this year's sales
+    const W = 700, H = 260, pl = 44, pr = 16, pt = 14, pb = 30, pts = both.map(x => ({ ...x, px: pct(x.pb, x.pa), uy: pct(x.ub, x.ua) }));
+    const xs = pts.map(p => p.px), ys = pts.map(p => p.uy), x0 = Math.min(-5, Math.floor(Math.min(...xs) / 5) * 5), x1 = Math.max(5, Math.ceil(Math.max(...xs) / 5) * 5);
+    const y0 = Math.min(-20, Math.floor(Math.min(...ys) / 20) * 20), y1 = Math.max(20, Math.ceil(Math.max(...ys) / 20) * 20);
+    const X = v => pl + (v - x0) / (x1 - x0) * (W - pl - pr), Yv = v => pt + (1 - (v - y0) / (y1 - y0)) * (H - pt - pb), rMax = Math.max(...pts.map(p => p.b));
+    const gx = []; for (let v = x0; v <= x1; v += 5) gx.push(`<line x1="${X(v)}" x2="${X(v)}" y1="${pt}" y2="${H - pb}" stroke="var(--line)"${v === 0 ? ' stroke-width="1.6"' : ''}/><text x="${X(v)}" y="${H - pb + 13}" text-anchor="middle" font-size="9" fill="var(--faint)">${v > 0 ? '+' : ''}${v}%</text>`);
+    const gy = []; for (let v = y0; v <= y1; v += 20) gy.push(`<line x1="${pl}" x2="${W - pr}" y1="${Yv(v)}" y2="${Yv(v)}" stroke="var(--line)"${v === 0 ? ' stroke-width="1.6"' : ''}/><text x="${pl - 6}" y="${Yv(v) + 3}" text-anchor="end" font-size="9" fill="var(--faint)">${v > 0 ? '+' : ''}${v}%</text>`);
+    const named = new Set(pts.filter(p => Math.abs(p.px) >= 8 || Math.abs(p.uy) >= 45).map(p => p.n)); // the outliers; the cluster reads by hover
+    const dots = pts.map(p => { const r = 3 + Math.sqrt(p.b / rMax) * 9, cx = X(p.px), cy = Yv(p.uy), left = cx > W - 170;
+      return `<circle cx="${cx.toFixed(1)}" cy="${cy.toFixed(1)}" r="${r.toFixed(1)}" fill="${p.uy >= 0 ? 'var(--ok)' : 'var(--red, #C8553D)'}" fill-opacity=".55" stroke="var(--panel)"><title>${esc(p.n)} · price ${sgn(p.px)} (${c}${p.pa.toFixed(2)} → ${c}${p.pb.toFixed(2)}) · units ${sgn(p.uy)} (${p.ua.toLocaleString('en-GB')} → ${p.ub.toLocaleString('en-GB')}) · ${money(p.b, c)} in ${yb}</title></circle>` +
+        (named.has(p.n) ? `<text x="${(cx + (left ? -r - 4 : r + 4)).toFixed(1)}" y="${(cy + 3).toFixed(1)}" text-anchor="${left ? 'end' : 'start'}" font-size="9.5" fill="var(--ink)" pointer-events="none">${esc(p.n)}</text>` : ''); }).join('');
+    parts.push(`<div class="sBars" style="margin-top:14px"><div style="grid-column:1/-1"><h4>Price against volume · ${esc(b.ch)} · each dish's price change (across) and units change (up), sized by ${yb} sales</h4>
+      <svg class="sChart" viewBox="0 0 ${W} ${H}" role="img" aria-label="Price change against units change by dish">${gx.join('')}${gy.join('')}${dots}</svg></div></div>`);
+    // 4. in and out of the list
+    const cutB = Math.min(...b.top.map(x => x.r)), cutA = Math.min(...a.top.map(x => x.r));
+    const out = a.top.filter(x => !B.has(x.n)), inn = b.top.filter(x => !A.has(x.n));
+    const li = (x, yr) => `<tr><td>${esc(x.n)}</td><td>${money(x.r, c)} in ${yr}</td></tr>`;
+    if (out.length || inn.length) parts.push(`<div class="sBars dRow"><div><h4>Out of the top ${b.top.length} · under ${money(cutB, c)} in ${yb}, renamed or gone</h4><table class="dMix"><tbody>${out.map(x => li(x, ya)).join('')}</tbody></table></div>
+      <div><h4>New in the top ${b.top.length} · under ${money(cutA, c)} in ${ya}, or new</h4><table class="dMix"><tbody>${inn.map(x => li(x, yb)).join('')}</tbody></table></div></div>`);
+  }
+  // 5. the menu mix by app, this year: each dish's share of that app's item sales
+  if (now.length) {
+    const chans = dv.channels || [];
+    parts.push(`<div class="sBars dRow" style="margin-top:10px">${now.map(s => { const top = s.top.slice(0, 10), mx = top[0] ? top[0].r : 1;
+      return `<div><h4>Menu mix · ${esc(s.ch)}, ${fmtD(s.from)} to ${fmtD(s.to)} ${latest} · share of its item sales</h4>${top.map(x => `<div class="sBar"><div class="t"><span>${esc(x.n)}</span><span>${money(x.r, c)} · ${(x.r / s.revenue * 100).toFixed(1)}%</span></div><div class="b"><i style="width:${(x.r / mx * 100).toFixed(0)}%;background:${chCol(s.ch, chans.indexOf(s.ch))}"></i></div></div>`).join('')}</div>`; }).join('')}</div>`);
+  }
+  parts.push(`<div class="note" style="font-size:10.5px;color:var(--faint);margin-top:8px">From Deliverect's top-item lists (${sets.filter(s => s.to.slice(0, 4) === latest).map(s => `${esc(s.ch)} top ${s.top.length} of ${s.rows}`).join(', ')}): base price times units, no fees, tips or paid add-ons. Each app names its dishes its own way.</div>`);
+  return parts.join('');
+}
+// The month's fix (V3.12, 30 Oct): one issue to fix, picked by the office from everything on the dashboard (fix.mjs), written again
+// whenever new data is uploaded (once a month, the first Monday). Compact on the restaurant's main page; in full, with ASK AGAIN and
+// ADD TO THE MATRIX, on the Delivery page.
+function fixCard(cur, compact) {
+  const e = cur.fix, id = esc(cur.id), busy = S.fixBusy === cur.id;
+  if (compact) return e ? `<div class="fixLine"><span class="k">This month's fix</span><b>${esc(e.fix.title)}</b><button type="button" data-go="dash-${id}--delivery">Read it →</button></div>` : '';
+  const btns = `<div class="fixBtns"><button type="button" data-fix="${id}" ${busy ? 'disabled' : ''}>${busy ? 'Reading the data…' : e ? 'Ask again' : 'Find this month\'s fix'}</button>${e ? `<button type="button" data-fixm="${id}" ${e.matrix ? 'disabled' : ''}>${e.matrix ? 'On the matrix ✓' : 'Add to the matrix'}</button>` : ''}</div>`;
+  if (!e) return `<div class="fixCard"><div class="fixHead"><span class="k">This month's fix</span>${btns}</div><p class="z">Not written yet. It is written from the till, delivery and Uber Eats data whenever new data is uploaded.</p>${S.fixErr ? `<p class="err">${esc(S.fixErr)}</p>` : ''}</div>`;
+  const f = e.fix;
+  return `<div class="fixCard"><div class="fixHead"><span class="k">This month's fix · written ${fmtD(e.week)} from the data in then</span>${btns}</div>
+    <h3>${esc(f.title)}</h3><p class="issue">${esc(f.issue)}</p>
+    <div class="fixCols"><div><h4>Why this one</h4><ul>${f.why.map(x => `<li>${esc(x)}</li>`).join('')}</ul></div>
+      <div><h4>What to do</h4><ol>${f.actions.map(x => `<li>${esc(x)}</li>`).join('')}</ol></div></div>
+    <div class="fixFoot"><span><em>Leads it</em>${esc(f.owner)}</span><span><em>When next month's data is in</em>${esc(f.measure)}</span>${f.runnerUp ? `<span><em>Next in line</em>${esc(f.runnerUp)}</span>` : ''}</div>${S.fixErr ? `<p class="err">${esc(S.fixErr)}</p>` : ''}</div>`;
+}
+if (!window.__fixBound) { window.__fixBound = true;
+  document.addEventListener('click', async ev => {
+    const a = ev.target.closest('[data-fix]'), m = ev.target.closest('[data-fixm]'); if (!a && !m) return;
+    const id = (a || m).dataset.fix || (a || m).dataset.fixm; S.fixErr = '';
+    if (a) { S.fixBusy = id; renderSales(); try { await api('/dashboards/' + id + '/fix', { method: 'POST' }); } catch (e) { S.fixErr = 'Could not write the fix: ' + e.message; } S.fixBusy = ''; }
+    else { try { await api('/dashboards/' + id + '/fix/matrix', { method: 'POST' }); } catch (e) { S.fixErr = 'Could not add it to the matrix: ' + e.message; } }
+    await loadDash();
+  });
+}
+// Uber Eats standing (V3.12, 30 Oct): the success score (tier, the four metrics, what the next tier unlocks) and the market benchmark,
+// read from Uber Eats Manager's screens into data/ubereats/scorecard.json (Uber offers no download for either).
+function deliveryStanding(sc) {
+  const parts = [], s = sc.success, b = sc.benchmark;
+  parts.push(`<div class="sHead" style="margin-top:22px"><b>Uber Eats standing</b><span class="note">read from Uber Eats Manager on ${fmtD(sc.readOn)} ${sc.readOn.slice(0, 4)}</span></div>`);
+  if (s) {
+    const ladder = s.tiers.map(t => `<span class="${t === s.tier ? 'on' : t === s.next ? 'next' : ''}">${esc(t)}</span>`).join('<i>›</i>');
+    const met = m => m.met === true ? '<b class="uOk">✓</b>' : m.met === false ? '<b class="uNo">✗</b>' : '<b class="z">–</b>';
+    const ops = s.operational.map(o => { const ok = o.current < o.goal, w = Math.min(100, o.current / (o.goal * 1.6) * 100), g = o.goal / (o.goal * 1.6) * 100;
+      return `<div class="opRow"><div class="t"><span>${esc(o.name)} <span class="z">· impact ${esc(o.impact.toLowerCase())}</span></span><span class="${ok ? 'uOk' : 'uNo'}">${o.current}% <span class="z">goal under ${o.goal}%</span></span></div><div class="b"><i style="width:${w.toFixed(0)}%;background:${ok ? 'var(--ok)' : 'var(--red, #C8553D)'}"></i><s style="left:${g.toFixed(0)}%"></s></div></div>`; }).join('');
+    const unlock = s.benefits.filter(x => x.from === s.next || (x.values && x.values[s.next] && x.values[s.tier] !== x.values[s.next]));
+    parts.push(`<div class="sBars dRow"><div><h4>Success score · tier now and next</h4><div class="ladder">${ladder}</div>
+        <table class="dMix" style="margin-top:10px"><tbody>${s.metrics.map(m => `<tr><td>${met(m)} ${esc(m.name)}</td><td><b>${esc(m.current)}</b></td><td class="z">goal ${esc(m.goal)}</td></tr>`).join('')}</tbody></table>
+        <h4 style="margin-top:14px">What ${esc(s.next)} unlocks</h4><ul class="dFail">${unlock.map(x => `<li><b>${esc(x.name)}</b>${x.values && x.values[s.next] ? ` · ${esc(x.values[s.tier] || 'none')} now, ${esc(x.values[s.next])} at ${esc(s.next)}` : ''}</li>`).join('')}</ul>
+        <div class="note" style="font-size:10px;color:var(--faint);margin-top:4px">Scored on ${esc(s.scoredOn)}. Excellent adds a 3% lower marketplace fee, full chargeback support, £200 of ads and 40% co-funded offers.</div></div>
+      <div><h4>Operational excellence · ${esc(s.window)} · the line is the goal</h4>${ops}</div></div>`);
+  }
+  if (b) {
+    const cell = (v, better) => { if (v == null) return '<td class="z">—</td>'; const good = better === 'up' ? v > 0 : v < 0; return `<td style="color:${good ? 'var(--ok)' : 'var(--red, #C8553D)'}">${v > 0 ? '+' : ''}${v}%</td>`; };
+    parts.push(`<div class="sBars" style="margin-top:6px"><div style="grid-column:1/-1"><h4>Against the local market · this shop and the market average</h4><table class="dMix bench"><thead><tr><th></th><th>${esc(b.periods.w12)}</th><th>Market</th><th>Difference</th><th>${esc(b.periods.d7)}</th><th>Market</th><th>Difference</th></tr></thead><tbody>
+      ${b.rows.map(r => `<tr><td>${esc(r.name)}</td><td><b>${esc(r.w12[0])}</b></td><td class="z">${esc(r.w12[1])}</td>${cell(r.w12[2], r.better)}<td><b>${esc(r.d7[0])}</b></td><td class="z">${esc(r.d7[1])}</td>${cell(r.d7[2], r.better)}</tr>`).join('')}</tbody></table></div></div>`);
+  }
+  return parts.join('');
+}
+// The last 12 months on Uber Eats (V3.12, 30 Oct): the month table (this year against last), cancellations, the problem mix, the item
+// leaderboard (a dish listed more than once is one dish) and when it goes wrong (weekday by hour, per 100 orders from Deliverect).
+function deliveryYear(y, c) {
+  const parts = [], tp = y.months.slice(-12), lp = y.months.slice(-24, -12), s = (l, k) => l.reduce((n, m) => n + (m[k] || 0), 0), per = (n, d) => d ? n / d * 100 : null;
+  parts.push(`<div class="sHead" style="margin-top:22px"><b>The last 12 months · Uber Eats</b><span class="note">${y.from ? `${fmtD(y.from)} ${y.from.slice(0, 4)} to ${fmtD(y.to)} ${y.to.slice(0, 4)}` : ''}</span></div>`);
+  if (tp.length) {
+    const tile = (v, l, dd, pr) => `<div class="sK"><div class="v">${v}</div><div class="l">${l}</div>${dd || ''}${pr ? `<div class="pvPrev">${pr}</div>` : ''}</div>`;
+    const inv = (v, what) => v == null ? '' : chg(v, what).replace(/class="d (up|dn)"/, (m, k) => 'class="d ' + (k === 'up' ? 'dn' : 'up') + '"');
+    const rC = per(s(tp, 'inaccurate'), s(tp, 'orders')), rP = per(s(lp.filter(m => m.orders), 'inaccurate'), s(lp, 'orders'));
+    parts.push(`<div class="sKpis" style="grid-template-columns:repeat(auto-fit,minmax(150px,1fr))">` +
+      tile(rC == null ? '—' : rC.toFixed(2), 'Problem reports per 100 orders', '', rP == null ? '' : rP.toFixed(2) + ' the year before (from Jan)') +
+      tile(money(s(tp, 'refunds'), c), 'Refunds the restaurant paid', lp.length ? inv((s(tp, 'refunds') / s(lp, 'refunds') - 1) * 100, 'on the year before') : '', lp.length ? money(s(lp, 'refunds'), c) + ' the year before' : '') +
+      tile(String(s(tp, 'quality')), 'Food quality complaints', '', lp.length ? s(lp, 'quality') + ' the year before' : '') +
+      tile(String(s(tp, 'cancelled')), 'Orders the shop cancelled', '', `${s(tp, 'timedOut')} timed out · ${s(tp, 'rejected')} rejected`) + '</div>');
+    // month by month: this year's rate against the same month last year
+    const W = 700, H = 170, pl = 36, pr = 10, pt = 12, pb = 26, rows = tp.map(m => { const l = lp.find(x => x.m.slice(5) === m.m.slice(5)); return { m, a: l && l.orders ? per(l.inaccurate, l.orders) : null, b: per(m.inaccurate, m.orders) }; });
+    const top = Math.max(1, Math.ceil(Math.max(...rows.flatMap(r => [r.a || 0, r.b || 0])))), bw = (W - pl - pr) / rows.length, yy = v => pt + (1 - v / top) * (H - pt - pb), w = bw * .34;
+    const grid = [0, .5, 1].map(q => `<line x1="${pl}" x2="${W - pr}" y1="${yy(top * q)}" y2="${yy(top * q)}" stroke="var(--line)"/><text x="${pl - 6}" y="${yy(top * q) + 3}" text-anchor="end" font-size="9" fill="var(--faint)">${(top * q).toFixed(1)}</text>`).join('');
+    const bars = rows.map((r, i) => { const x = pl + i * bw, tip = `${mName(r.m.m)} · ${r.m.inaccurate} reports, ${r.b == null ? '' : r.b.toFixed(2) + ' per 100 orders'} · ${money(r.m.refunds, c)} refunded · ${r.m.cancelled || 0} cancelled by the shop`;
+      return (r.a != null ? `<rect x="${x + bw * .14}" y="${yy(r.a)}" width="${w}" height="${H - pb - yy(r.a)}" rx="2" fill="var(--faint)" fill-opacity=".55"><title>a year earlier · ${r.a.toFixed(2)} per 100 orders</title></rect>` : '') +
+        (r.b != null ? `<rect x="${x + bw * .14 + w + 2}" y="${yy(r.b)}" width="${w}" height="${H - pb - yy(r.b)}" rx="2" fill="#06C167"><title>${tip}</title></rect>` : '') +
+        `<text x="${x + bw / 2}" y="${H - 9}" text-anchor="middle" font-size="9" fill="var(--faint)">${new Date(r.m.m + '-15').toLocaleDateString('en-GB', { month: 'short' })}</text>`; }).join('');
+    parts.push(`<svg class="sChart" viewBox="0 0 ${W} ${H}" role="img" aria-label="Problem reports per 100 orders by month">${grid}${bars}</svg><div class="sLegend"><span><i style="background:var(--faint)"></i>a year earlier</span><span><i style="background:#06C167"></i>problem reports per 100 Uber Eats orders · Uber's monthly report counts higher than its 84-day rate</span></div>`);
+    // the problem mix
+    const mix = [['Missing customisation', 'cust'], ['Items missing', 'items'], ['Food quality', 'quality'], ['Wrong item', 'wrongItem'], ['Wrong order', 'wrongOrder'], ['Wrong customisation', 'wrongCust'], ['Portion too small', 'qty']].map(([l, k]) => [l, s(tp, k), s(lp, k)]).filter(x => x[1] || x[2]);
+    const mmx = Math.max(...mix.map(x => x[1]), 1);
+    var mixHtml = `<div><h4>What goes wrong · orders, last 12 months</h4>${mix.map(([l, a, b]) => `<div class="sBar"><div class="t"><span>${l}</span><span>${a}${b ? ` <span class="z">· ${b} the year before</span>` : ''}</span></div><div class="b"><i style="width:${(a / mmx * 100).toFixed(0)}%;background:#06C167"></i></div></div>`).join('')}</div>`;
+  }
+  // the leaderboard: the dishes with the most problem reports, and the highest rates
+  if (y.items && y.items.length) {
+    const top = y.items.slice(0, 10), mx = top[0].k, chgTxt = v => v == null ? '' : v >= 1 ? ` · ×${(v + 1).toFixed(v >= 9 ? 0 : 1)} on last year` : v <= -0.2 ? ` · ${Math.round(v * 100)}% on last year` : '';
+    var itemsHtml = `<div><h4>Dishes with the most problem reports${y.leaderboard ? ` · ${fmtD(y.leaderboard[0])} to ${fmtD(y.leaderboard[1])}` : ''}</h4>${top.map(x => `<div class="sBar"><div class="t"><span>${esc(x.n)}${x.listings > 1 ? ` <span class="z">(${x.listings} listings)</span>` : ''}</span><span>${x.k} · ${esc(x.top.replace(' issues', '').toLowerCase())}<span class="${x.chg >= 1 ? 'uNo' : 'z'}">${chgTxt(x.chg)}</span></span></div><div class="b"><i style="width:${(x.k / mx * 100).toFixed(0)}%;background:${/Taste/.test(x.top) ? '#C98A12' : '#06C167'}"></i></div></div>`).join('')}
+      <div class="sLegend" style="margin-top:6px"><span><i style="background:#06C167"></i>missing or wrong</span><span><i style="background:#C98A12"></i>taste and quality</span></div></div>`;
+    const hi = y.items.filter(x => x.k >= 6 && x.rate).sort((p, q) => q.rate - p.rate).slice(0, 8);
+    var rateHtml = `<div><h4>Highest problem rates · per 100 of that dish's orders (6 reports or more)</h4><table class="dMix"><tbody>${hi.map(x => `<tr><td>${esc(x.n)}</td><td><b>${x.rate.toFixed(2)}%</b></td><td class="z">${x.k} · ${esc(x.top.replace(' issues', '').toLowerCase())}</td></tr>`).join('')}</tbody></table></div>`;
+  }
+  parts.push(`<div class="sBars dRow" style="margin-top:10px">${typeof mixHtml === 'string' ? mixHtml : ''}${typeof itemsHtml === 'string' ? itemsHtml : ''}</div>`);
+  // when it goes wrong: problem reports per 100 orders, weekday by hour (hours with fewer than 60 orders in the year are left blank)
+  const h = y.heat;
+  if (h && h.orders && (h.inaccurate || h.quality)) {
+    const hrs = [...Array(24).keys()].filter(hr => h.orders.some(r => r[hr] >= 60)), order = [...hrs.filter(x => x >= 11), ...hrs.filter(x => x < 11)];
+    const cell = (d, hr) => { const n = h.orders[d][hr], p = ((h.inaccurate || [])[d] || [])[hr] + ((h.quality || [])[d] || [])[hr]; return n >= 60 ? p / n * 100 : null; };
+    let mx = 0, pk = null; for (let d = 0; d < 7; d++) for (const hr of order) { const v = cell(d, hr); if (v != null && h.orders[d][hr] >= 150 && v > mx) { mx = v; pk = [d, hr]; } }
+    const lim = Math.max(mx, 1);
+    var heatHtml = `<div style="grid-column:1/-1"><h4>When it goes wrong · problem reports per 100 orders, weekday by hour${pk ? ` · worst ${DAYS[pk[0]]}s ${hLab(pk[1])}, ${mx.toFixed(1)}` : ''}</h4>
+      <div class="sHeat" style="grid-template-columns:34px repeat(${order.length},1fr)"><span></span>${order.map(hr => `<span class="hh">${hLab(hr)}</span>`).join('')}${DAYS.map((dn, d) => `<span class="hd">${dn}</span>` + order.map(hr => { const v = cell(d, hr), to = (h.timedOut || [])[d]?.[hr] || 0, off = (h.offline || [])[d]?.[hr] || 0;
+        return `<span class="hc" style="background:${v == null ? 'transparent' : `rgba(200,85,61,${(Math.min(v, lim) / lim * .9 + .06).toFixed(2)})`}${to >= 3 ? ';outline:2px solid #C98A12;outline-offset:-2px' : ''}" title="${dn} ${hLab(hr)}${v == null ? ' · too few orders' : ` · ${v.toFixed(1)} per 100 orders (${h.orders[d][hr]} orders)`}${to ? ` · ${to} timed out` : ''}${off ? ` · ${Math.round(off)} min offline` : ''}"></span>`; }).join('')).join('')}</div>
+      <div class="sLegend" style="margin-top:6px"><span>darker: more problems per order</span><span><i style="background:transparent;outline:2px solid #C98A12"></i>3 or more orders timed out unaccepted</span>${h.offline ? `<span>${Math.round(h.offline.flat().reduce((a, b) => a + b, 0)).toLocaleString('en-GB')} min offline in the year (hover a cell)</span>` : ''}</div></div>`;
+  }
+  if (typeof rateHtml === 'string') parts.push(`<div class="sBars dRow" style="margin-top:10px">${rateHtml}</div>`);
+  if (typeof heatHtml === 'string') parts.push(`<div class="sBars" style="margin-top:10px">${heatHtml}</div>`);
+  return parts.join('');
+}
+// Order accuracy (V3.12, 30 Oct): Uber Eats Manager's orders and items with errors, menu downtime and pauses, rated against the
+// completed Uber Eats orders in the same weeks (from Deliverect). Inaccurate is Uber's definition: an item missing or wrong, or the
+// wrong order; food-quality complaints are counted beside it. Uber keeps 12 weeks; the Monday download keeps the history here.
+function deliveryAccuracy(a, c) {
+  const parts = [], rate = (n, d) => d ? n / d * 100 : null, pc = v => v == null ? '—' : v.toFixed(2) + '%';
+  const tile = (v, l, dd, pr) => `<div class="sK"><div class="v">${v}</div><div class="l">${l}</div>${dd || ''}${pr ? `<div class="pvPrev">${pr}</div>` : ''}</div>`;
+  const wks = a.weeks.filter(w => w.orders), last = wks[wks.length - 1], prev = wks[wks.length - 2], perYear = a.chargeback / ((Date.parse(a.to) - Date.parse(a.from)) / 864e5 + 1) * 365;
+  const lineCount = Object.values(a.issues).reduce((n, v) => n + v, 0), wrongLines = a.kinds.main + a.kinds.side;
+  parts.push(`<div class="sHead" style="margin-top:22px"><b>Order accuracy · ${esc(a.app)}</b><span class="note">${fmtD(a.from)} ${a.from.slice(0, 4)} to ${fmtD(a.to)} ${a.to.slice(0, 4)} · ${wks.length} weeks</span></div>`);
+  const dn = (v, p, what) => v == null || p == null ? '' : chg(v - p, what).replace(/class="d (up|dn)"/, (m, k) => 'class="d ' + (k === 'up' ? 'dn' : 'up') + '"').replace(/%/, ' pts');
+  parts.push(`<div class="sKpis" style="grid-template-columns:repeat(auto-fit,minmax(150px,1fr))">` +
+    tile(pc(rate(a.inaccurate, a.orders)), `Inaccurate orders · ${a.inaccurate} of ${(a.orders || 0).toLocaleString('en-GB')}`, '', last ? `w/c ${fmtD(last.w)}: ${pc(rate(last.inaccurate, last.orders))}` : '') +
+    (last && prev ? tile(pc(rate(last.inaccurate, last.orders)), `Last week · w/c ${fmtD(last.w)}`, dn(rate(last.inaccurate, last.orders), rate(prev.inaccurate, prev.orders), 'on the week before'), `${last.inaccurate} orders · ${money(last.chargeback, c)} charged back`) : '') +
+    tile(money(a.chargeback, c), 'Charged back to the restaurant', '', `about ${money(perYear, c)} a year · ${money(a.uberCovered, c)} more refunded by Uber`) +
+    tile(wrongLines ? Math.round(a.kinds.side / wrongLines * 100) + '%' : '—', 'Of missing or wrong items were sides, drinks or sauces', '', `${a.issues.MISSING_ITEM || 0} missing · ${a.issues.WRONG_ITEM || 0} wrong · ${a.issues.FOOD_QUALITY || 0} food quality`) +
+    tile(a.menuMin ? (a.offlineMin / a.menuMin * 100).toFixed(2) + '%' : '—', 'Offline while the menu was open', '', `${Math.round(a.offlineMin)} min of ${Math.round(a.menuMin / 60).toLocaleString('en-GB')} h · ${a.pauses.length} pause${a.pauses.length === 1 ? '' : 's'}`) + '</div>');
+  // the week by week rate, with the £ charged back
+  if (wks.length) {
+    const W = 700, H = 170, pl = 40, pr = 10, pt = 12, pb = 26, vals = wks.map(w => rate(w.inaccurate, w.orders)), top = Math.max(1, Math.ceil(Math.max(...vals))), bw = (W - pl - pr) / wks.length, yy = v => pt + (1 - v / top) * (H - pt - pb), avg = rate(a.inaccurate, a.orders);
+    const grid = [0, .5, 1].map(q => `<line x1="${pl}" x2="${W - pr}" y1="${yy(top * q)}" y2="${yy(top * q)}" stroke="var(--line)"/><text x="${pl - 6}" y="${yy(top * q) + 3}" text-anchor="end" font-size="9" fill="var(--faint)">${(top * q).toFixed(top * q % 1 ? 1 : 0)}%</text>`).join('');
+    const bars = wks.map((w, i) => { const v = vals[i], x = pl + i * bw + bw * .2, hi = v > avg * 1.4;
+      return `<rect x="${x}" y="${yy(v)}" width="${bw * .6}" height="${H - pb - yy(v)}" rx="2" fill="${hi ? 'var(--red, #C8553D)' : 'var(--faint)'}" fill-opacity="${hi ? 1 : .6}"><title>w/c ${fmtD(w.w)} · ${w.inaccurate} of ${w.orders.toLocaleString('en-GB')} orders inaccurate (${pc(v)}) · ${money(w.refunded, c)} refunded, ${money(w.chargeback, c)} charged back${w.offline ? ' · ' + Math.round(w.offline) + ' min offline' : ''}</title></rect>` +
+        (i % Math.ceil(wks.length / 12) === 0 ? `<text x="${pl + i * bw + bw / 2}" y="${H - 9}" text-anchor="middle" font-size="9" fill="var(--faint)">${fmtD(w.w)}</text>` : ''); }).join('');
+    const mean = `<line x1="${pl}" x2="${W - pr}" y1="${yy(avg)}" y2="${yy(avg)}" stroke="var(--ink)" stroke-dasharray="4 4" stroke-opacity=".5"/>`;
+    parts.push(`<svg class="sChart" viewBox="0 0 ${W} ${H}" role="img" aria-label="Inaccurate order rate by week">${grid}${bars}${mean}</svg><div class="sLegend"><span><i style="background:var(--red, #C8553D)"></i>a bad week (40% above the average)</span><span>dashed: the average, ${pc(avg)}</span></div>`);
+  }
+  // what goes wrong, and when
+  const mx = a.items[0] ? a.items[0].k : 1;
+  const itemsHtml = `<div><h4>Items most often missing or wrong</h4>${a.items.slice(0, 8).map(x => `<div class="sBar"><div class="t"><span>${esc(x.n)}</span><span>${x.k}</span></div><div class="b"><i style="width:${(x.k / mx * 100).toFixed(0)}%"></i></div></div>`).join('')}</div>`;
+  const slots = [[12, 16, 'Lunch to teatime · 12–5pm'], [17, 19, 'Early evening · 5–8pm'], [20, 21, 'Peak · 8–10pm'], [22, 23, 'Late · 10pm–midnight'], [0, 4, 'After midnight']];
+  const slotRates = a.ordersByHour ? slots.map(([f, t, l]) => { let o = 0, e = 0; for (let h = f; h <= t; h++) { o += a.ordersByHour[h]; e += a.hours[h]; } return [l, rate(e, o), e, o]; }).filter(s => s[3]) : [];
+  const smx = Math.max(...slotRates.map(s => s[1] || 0), .01);
+  const whenHtml = slotRates.length ? `<div><h4>When it goes wrong · inaccurate orders by time of day</h4>${slotRates.map(([l, v, e, o]) => `<div class="sBar"><div class="t"><span>${l}</span><span>${pc(v)} · ${e} of ${o.toLocaleString('en-GB')}</span></div><div class="b"><i style="width:${(v / smx * 100).toFixed(0)}%"></i></div></div>`).join('')}
+    ${a.pauses.length ? `<h4 style="margin-top:14px">Pauses</h4><ul class="dFail">${a.pauses.slice(0, 5).map(p => `<li><b>${esc(new Date(p.at.replace(' ', 'T')).toLocaleString('en-GB', { weekday: 'short', day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }))}</b> · ${esc(p.dur)} · ${esc(p.why.replace(/\.$/, ''))}</li>`).join('')}</ul>` : ''}</div>` : '';
+  parts.push(`<div class="sBars dRow" style="margin-top:10px">${itemsHtml}${whenHtml}</div>`);
+  parts.push(`<div class="note" style="font-size:10.5px;color:var(--faint);margin-top:8px">From Uber Eats Manager (orders and items with errors, menu downtime, store availability), against the completed orders in Deliverect.${a.noCode ? ` ${a.noCode} problem lines had no item code on the app.` : ''} Uber keeps 12 weeks; each Monday's download adds to the history here.</div>`);
+  return parts.join('');
+}
+// What the money figures are (Wesley, 30 Oct): the till's Total is takings after discounts, VAT included. Sales before discounts is
+// SubTotal (Total plus discount on the daily report). Neither report carries VAT, so nothing here is shown net of VAT.
+const basisRow = (bits, note) => `<div class="sBasis">${bits.map(([l, v, on]) => `<span${on ? ' class="on"' : ''}><em>${l}</em>${v}</span>`).join('<i>·</i>')}${note ? `<span class="n">${note}</span>` : ''}</div>`;
+function tillBasis(Y, c) {
+  if (!Y.days || !Y.to) return '';
+  const y = Y.to.slice(0, 4), cur = Y.days.filter(r => r[0] >= y + '-01-01' && r[0] <= Y.to), net = cur.reduce((n, r) => n + r[1], 0), disc = cur.reduce((n, r) => n + (r[3] || 0), 0);
+  return basisRow([[`Gross sales, before discounts · 1 Jan to ${fmtD(Y.to)}`, money(net + disc, c)], ['Discounts', '−' + money(disc, c)], ['Net takings, after discounts', money(net, c), true]],
+    'Every figure here is net takings, VAT included, delivery apps before their commission.');
+}
+function deliveryBasis(dv, k, c) {
+  const cur = dv.days.filter(e => e.d >= k.y + '-01-01' && e.d <= k.to && !k.skip.has(e.d)), sum = i => cur.reduce((n, e) => n + Object.values(e.ch).reduce((m, v) => m + v[i], 0), 0);
+  const net = sum(0), disc = sum(2);
+  return basisRow([[`Gross, before app promotions · 1 Jan to ${fmtD(k.to)}`, money(net + disc, c)], ['Promotions', '−' + money(disc, c)], ['Order totals customers paid', money(net, c), true]],
+    'Every figure here is what customers paid, VAT and delivery fees included, before the apps\' commission (not in Deliverect\'s data).');
 }
 function yoyKpis(Y, c) {
   const ly = Y.year - 1, lm = Y.lastMonth;
@@ -1358,10 +1649,10 @@ function renderPos(el, cur, d) {
   const parts = [];
   parts.push(`<div class="sHead"><b>${esc(cur.name)}${hr && hr.place ? ' · ' + esc(hr.place) : ''}</b><span class="note">${hr ? mName(hr.from.slice(0, 7)) + ' to ' + mName(hr.to.slice(0, 7)) + ' by the hour' : ''}${hr && it ? ' · ' : ''}${it ? 'items ' + esc(it.from) + ' to ' + esc(it.to) : ''} · from the uploaded till reports</span></div>`);
   const Y = d.yoy && d.yoy.ytd ? d.yoy : null;
-  if (Y) parts.push(yoyKpis(Y, c)); else if (t) parts.push(`<div class="sKpis"><div class="sK"><div class="v">${money(t.turnover, c)}</div><div class="l">Turnover · ${mName(hr.latest)}${t.partial ? ' (to ' + t.to.slice(8) + 'th)' : ''}</div>${t.turnoverVsPrev == null ? '' : `<div class="d ${t.turnoverVsPrev >= 0 ? 'up' : 'dn'}">${t.turnoverVsPrev >= 0 ? '▲' : '▼'} ${Math.abs(t.turnoverVsPrev).toFixed(1)}% ${esc(t.vsNote)}</div>`}</div>
+  if (Y) parts.push(yoyKpis(Y, c) + tillBasis(Y, c)); else if (t) parts.push(`<div class="sKpis"><div class="sK"><div class="v">${money(t.turnover, c)}</div><div class="l">Turnover · ${mName(hr.latest)}${t.partial ? ' (to ' + t.to.slice(8) + 'th)' : ''}</div>${t.turnoverVsPrev == null ? '' : `<div class="d ${t.turnoverVsPrev >= 0 ? 'up' : 'dn'}">${t.turnoverVsPrev >= 0 ? '▲' : '▼'} ${Math.abs(t.turnoverVsPrev).toFixed(1)}% ${esc(t.vsNote)}</div>`}</div>
     <div class="sK"><div class="v">${(t.orders || 0).toLocaleString('en-GB')}</div><div class="l">Orders · ${mName(hr.latest)}</div>${t.ordersVsPrev == null ? '' : `<div class="d ${t.ordersVsPrev >= 0 ? 'up' : 'dn'}">${t.ordersVsPrev >= 0 ? '▲' : '▼'} ${Math.abs(t.ordersVsPrev).toFixed(1)}% ${esc(t.vsNote)}</div>`}</div>
     <div class="sK"><div class="v">${t.avg == null ? '—' : c + t.avg.toFixed(2)}</div><div class="l">Average order</div></div></div>`);
-  if (d.delivery && d.delivery.available) parts.push(deliveryTease(cur, d, Y, c));
+  if (d.delivery && d.delivery.available) parts.push(deliveryTease(cur, d, Y, c) + fixCard(cur, true));
   if (Y) parts.push(yoyCharts(Y, c));
   if (hr) {
     if (!Y) {
@@ -1500,7 +1791,7 @@ function renderSales() {
   $('dashTitle').textContent = cur ? cur.name + (sub === 'delivery' ? ' · Delivery' : '') : 'Dashboard';
   if (!cur) { el.innerHTML = '<div class="none" style="padding:14px">Loading…</div>'; return; }
   if (!d || !d.available) { el.innerHTML = `<div class="sHead"><b>${esc(cur.name)}</b><span class="note">No sales data yet</span></div><div class="none">Drop the reports into the office upload box (a zip of the monthly reports works) and this page fills itself in.</div>`; return; }
-  if (sub === 'delivery') { el.innerHTML = d.delivery && d.delivery.available ? deliveryPanel(d, d.yoy && d.yoy.ytd ? d.yoy : null, d.currency || '£') : '<div class="none" style="padding:14px">No delivery orders yet. Upload a Deliverect order export into the office.</div>'; return; }
+  if (sub === 'delivery') { el.innerHTML = d.delivery && d.delivery.available ? fixCard(cur) + deliveryPanel(d, d.yoy && d.yoy.ytd ? d.yoy : null, d.currency || '£') : '<div class="none" style="padding:14px">No delivery orders yet. Upload a Deliverect order export into the office.</div>'; return; }
   if (d.kind === 'pos') return renderPos(el, cur, d);
   const W = 700, H = 210, pl = 44, pr = 10, pt = 10, pb = 24, n = d.months.length;
   const max = Math.max(...d.shops.flatMap(s => d.series[s].map(x => x ? x.turnover : 0))), top = Math.ceil(max / 100000) * 100000 || 1;

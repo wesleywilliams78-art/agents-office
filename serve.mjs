@@ -57,6 +57,9 @@ import * as brainnotes from './brainnotes.mjs';
 import * as handoff from './handoff.mjs';
 import * as salesData from './sales.mjs';
 import * as posData from './pos.mjs';
+import * as attention from './attention.mjs'; // V3.12: which Claude Code sessions are waiting on Wesley ("Needs you" on /aios)
+import * as fixes from './fix.mjs'; // V3.12: the month's fix for a client restaurant, from all of its dashboard data
+import * as ubereats from './ubereats.mjs'; // V3.12: Uber Eats Manager exports (order accuracy, downtime, pauses), kept raw in data/ubereats/
 import * as deliverect from './deliverect.mjs'; // V3.12: delivery orders from Deliverect exports, kept raw in data/deliverect/
 import * as trackers from './trackers.mjs';
 import * as skillaudit from './skillaudit.mjs';
@@ -550,6 +553,7 @@ async function runServerTask(id, { feedback, approve, answer } = {}) {
     if ((task.needsOk || REVIEW_ALL) && !approve) { task.state = 'waiting'; task.draft = out.result; task.waitingAt = Date.now(); task.ask = (task.needsOk ? (task.channel === 'email' ? `"${task.title}" is written — approve to put it in your Gmail drafts, then send it from your inbox. Reject to tell me what to change.` : routines.askLine(task)) : reviewLine(task)) + brainReview(task, out.result) + (approve ? '' : handoffReview(task, hoText)); }
     else {
       task.state = 'done'; task.doneAt = Date.now();
+      try { const sc = ubereats.fileScorecard(DATA, out.result); if (sc) { task.result += sc.ok ? `\n\n---\nUBER EATS SCORECARD FILED: ${sc.tier}, read ${sc.readOn}, on the Delivery dashboard.` : `\n\n---\nUBER EATS SCORECARD NOT FILED: ${sc.error}.`; console.log('  ubereats scorecard:', sc.ok ? 'filed' : sc.error); } } catch (e) { console.warn('scorecard:', e.message); } // V3.12: read-only figures for the dashboard, filed without review
       if (approve) { fileBrainUpdates(task); fireHandoffs(task); fileMatrixItems(task); }
       else if (handoff.parse(hoText).length) task.result += '\n\n---\nHANDOFF NOT SENT: this task did not wait for your review, and nothing is handed on without your OK.';
       else if (BRAIN_WRITE && brainnotes.parse(out.result).length) task.result += '\n\n---\nBRAIN UPDATE NOT FILED: this task did not wait for your review, and nothing is filed without your OK.';
@@ -635,6 +639,28 @@ async function routinesChat(a, text) {
 // Runs after the task is saved, off the routine queue. A revised task replaces the actions its earlier version
 // put there, unless the owner has already sent, finished or moved them on.
 const AUTO_FEED = cfg.aios?.autoFeed !== false;
+// the Clients sub-pages: one per entry in aios.dashboards, parsed from uploaded sales-report notes and the delivery exports (no model involved)
+function dashboardsData() {
+  const defs = Array.isArray(cfg.aios?.dashboards) && cfg.aios.dashboards.length ? cfg.aios.dashboards : [{ id: 'creamy', name: 'Creamy', match: 'Creamy' }];
+  const notes = [...vaultIndex()].filter(([n, t]) => isUpload(n) && /^SALES REPORT\s*$/m.test(t)).map(([name, text]) => ({ name, text }));
+  const tillNotes = [...vaultIndex()].filter(([n, t]) => isUpload(n) && /Hourly Sales|Item Sales By Category|Monthly Sales for|Daily Sale Summary Report for|Discount Summary Report for/.test(t)).map(([name, text]) => ({ name, text })); // a restaurant's till reports (kind: pos)
+  const withDelivery = (d, data) => { // a restaurant's delivery orders (Deliverect), beside its till numbers
+    if (data && data.available) { try { const dv = deliverect.build(DATA, { match: d.match }); if (dv.available) data.delivery = dv; } catch (e) { console.warn('deliverect:', e.message); } }
+    if (data && data.delivery) { try { const ue = ubereats.build(DATA, { match: d.match, delivered: deliverect.delivered }); if (ue.available) data.delivery.accuracy = ue; } catch (e) { console.warn('ubereats:', e.message); } } // V3.12: Uber Eats Manager's accuracy and availability
+    return data;
+  };
+  const withStarDog = (d, data) => { // an optional product-mix analysis (stars, plowhorses, puzzles, dogs) kept as a data file beside the sales numbers
+    if (d.stardog && data && data.available) { try { data.stardog = JSON.parse(fs.readFileSync(path.join(DATA, path.basename(String(d.stardog))), 'utf8')); } catch {} }
+    return data;
+  };
+  return defs.map(d => ({ id: String(d.id), name: String(d.name || d.id), fix: fixes.latest(DATA, String(d.id)), data: withStarDog(d, d.kind === 'pos' ? withDelivery(d, posData.build(tillNotes, { match: d.match })) : salesData.build(notes, { match: d.match })) }));
+}
+// the month's fix for one dashboard (fix.mjs): the evidence is worked out here, the model picks and writes the action
+async function makeFix(id) {
+  const d = dashboardsData().find(x => x.id === id);
+  if (!d || !d.data || !d.data.available) throw Object.assign(new Error('no such dashboard, or no data in it'), { code: 404 });
+  return fixes.make(DATA, id, d.name, d.data, (system, user) => ask(system, user, { maxTokens: 2500, timeout: 240000, model: 'opus' }));
+}
 const CLIENTS = Array.isArray(cfg.aios?.clients) ? cfg.aios.clients.filter(c => c && c.id && c.name) : []; // V3.10: the client-by-client boxes on /aios
 
 // The owner's personal budget (office.config.local.json → budget: { sheet, name }): a Google Sheet Claude reads on request.
@@ -933,19 +959,30 @@ const server = http.createServer(async (req, res) => {
       return res.end(fs.readFileSync(file));
     }
     if (url.pathname === '/api/trackers' || url.pathname === '/api/trackers/sync') return trackersApi(req, res, url);
-    if (url.pathname === '/api/dashboards' && req.method === 'GET') { // the Clients sub-pages: one per entry in aios.dashboards, parsed from uploaded sales-report notes (no model involved)
-      const defs = Array.isArray(cfg.aios?.dashboards) && cfg.aios.dashboards.length ? cfg.aios.dashboards : [{ id: 'creamy', name: 'Creamy', match: 'Creamy' }];
-      const notes = [...vaultIndex()].filter(([n, t]) => isUpload(n) && /^SALES REPORT\s*$/m.test(t)).map(([name, text]) => ({ name, text }));
-      const tillNotes = [...vaultIndex()].filter(([n, t]) => isUpload(n) && /Hourly Sales|Item Sales By Category|Monthly Sales for|Daily Sale Summary Report for|Discount Summary Report for/.test(t)).map(([name, text]) => ({ name, text })); // a restaurant's till reports (kind: pos)
-      const withDelivery = (d, data) => { // a restaurant's delivery orders (Deliverect), beside its till numbers
-        if (data && data.available) { try { const dv = deliverect.build(DATA, { match: d.match }); if (dv.available) data.delivery = dv; } catch (e) { console.warn('deliverect:', e.message); } }
-        return data;
-      };
-      const withStarDog = (d, data) => { // an optional product-mix analysis (stars, plowhorses, puzzles, dogs) kept as a data file beside the sales numbers
-        if (d.stardog && data && data.available) { try { data.stardog = JSON.parse(fs.readFileSync(path.join(DATA, path.basename(String(d.stardog))), 'utf8')); } catch {} }
-        return data;
-      };
-      return json(res, 200, { dashboards: defs.map(d => ({ id: String(d.id), name: String(d.name || d.id), data: withStarDog(d, d.kind === 'pos' ? withDelivery(d, posData.build(tillNotes, { match: d.match })) : salesData.build(notes, { match: d.match })) })) });
+    if (url.pathname === '/api/dashboards' && req.method === 'GET') return json(res, 200, { dashboards: dashboardsData() });
+    if (url.pathname.startsWith('/api/attention')) { // V3.12: Claude Code sessions waiting on Wesley, from the hooks in his user settings (attention.mjs)
+      if (url.pathname === '/api/attention' && req.method === 'GET') return json(res, 200, { sessions: attention.list(DATA) });
+      if (url.pathname === '/api/attention' && req.method === 'POST') { try { attention.hook(DATA, await body(req)); } catch (e) { console.warn('attention:', e.message); } return json(res, 200, { ok: true }); }
+      const dm = /^\/api\/attention\/([\w-]+)\/dismiss$/.exec(url.pathname);
+      if (dm && req.method === 'POST') return json(res, 200, { ok: attention.dismiss(DATA, dm[1]) });
+      return json(res, 404, { error: 'not found' });
+    }
+    const fixM = /^\/api\/dashboards\/([\w-]+)\/fix(\/matrix)?$/.exec(url.pathname);
+    if (fixM) { // V3.12: the month's fix for a client restaurant (fix.mjs)
+      const [, id, toMatrix] = fixM;
+      if (req.method === 'GET') return json(res, 200, { fix: fixes.latest(DATA, id) });
+      if (req.method !== 'POST') return json(res, 405, { error: 'GET or POST' });
+      if (toMatrix) {
+        const e = fixes.latest(DATA, id); if (!e) return json(res, 404, { error: 'no fix yet' });
+        if (e.matrix) return json(res, 200, { ok: true, item: e.matrix, already: true });
+        const d = dashboardsData().find(x => x.id === id), client = CLIENTS.find(c => d && c.name === d.name);
+        const fri = new Date(); fri.setDate(fri.getDate() + ((5 - fri.getDay() + 7) % 7)); const feedId = 'f' + nid();
+        const out = aios.normalise({ items: [{ title: e.fix.title, detail: [e.fix.issue, 'Actions: ' + e.fix.actions.join(' · '), 'Owner: ' + e.fix.owner, 'Check when next month\'s data is in: ' + e.fix.measure].join('\n'), urgent: true, important: true, dept: 'owner', due: fri.toLocaleDateString('en-CA'), why: 'This month\'s fix from the delivery data', client: client ? client.id : '' }] }, AGENTS, feedId, CLIENTS);
+        const m = aios.load(DATA); m.feeds.push({ id: feedId, at: Date.now(), source: `This month's fix · ${d ? d.name : id}`, summary: e.fix.issue, input: e.fix.title, chars: 0, parts: 1, count: 1, parked: 0 }); m.items.push(...out.items); aios.save(DATA, m);
+        fixes.markMatrix(DATA, id, out.items[0].id);
+        return json(res, 200, { ok: true, item: out.items[0].id });
+      }
+      try { return json(res, 200, { fix: await makeFix(id) }); } catch (e) { return json(res, e.code || 500, { error: e.message }); }
     }
     if (url.pathname === '/api/uploads' && req.method === 'GET') return json(res, 200, { uploads: uploadsList().slice(0, 40) }); // uploaded documents the matrix can read in full
     if (url.pathname === '/api/lessons') return json(res, 200, { dir: learn.dir(BRAIN), agents: AGENTS.map(a => ({ id: a.id, name: a.name, ...learn.read(BRAIN, a.id) })).filter(x => x.rules.length || x.oneOffs.length) });
@@ -1006,6 +1043,21 @@ const server = http.createServer(async (req, res) => {
         const lines = buf.toString('utf8').split(/\r?\n/).filter(Boolean).length - 1;
         console.log(`▤ deliverect: ${file} filed for the dashboard (${lines} orders)`);
         return json(res, 200, { ok: true, note: 'Deliverect orders: ' + file, filename, chars: buf.length, deliverect: true, orders: lines, preview: `${lines.toLocaleString('en-GB')} delivery orders, filed for the client dashboard (not a Brain note).` });
+      }
+      if ((/\.csv$/i.test(filename) && ubereats.kindOf(buf.subarray(0, 600).toString('utf8'))) || ubereats.UBER_NAME.test(path.basename(filename))) { // an Uber Eats Manager report
+        fs.mkdirSync(ubereats.dir(DATA), { recursive: true });
+        const file = path.basename(filename).replace(/[^\w.\- ]+/g, '_');
+        fs.writeFileSync(path.join(ubereats.dir(DATA), file), buf);
+        console.log(`▤ ubereats: ${file} filed for the dashboard`);
+        return json(res, 200, { ok: true, note: 'Uber Eats report: ' + file, filename, chars: buf.length, ubereats: true, preview: 'Uber Eats Manager report, filed for the client dashboard (not a Brain note).' });
+      }
+      if (/\.csv$/i.test(filename) && deliverect.isItems(buf.subarray(0, 200).toString('utf8'))) { // the Deliverect agent's top-items list
+        fs.mkdirSync(deliverect.itemsDir(DATA), { recursive: true });
+        const file = path.basename(filename).replace(/[^\w.\- ]+/g, '_');
+        fs.writeFileSync(path.join(deliverect.itemsDir(DATA), file), buf);
+        const s = deliverect.parseItems(buf.toString('utf8'));
+        console.log(`▤ deliverect: ${file} filed for the dashboard (${s.top.length} of ${s.rows} items)`);
+        return json(res, 200, { ok: true, note: 'Deliverect items: ' + file, filename, chars: buf.length, deliverect: true, preview: `Item sales, top ${s.top.length} of ${s.rows} items, ${s.from} to ${s.to}, filed for the client dashboard (not a Brain note).` });
       }
       let text; try { text = await extractText(filename, buf); } catch (e) { return json(res, 400, { error: `could not read ${filename}: ${e.message}` }); }
       if (text === null) return json(res, 400, { error: `${path.extname(filename) || 'that file type'} is not supported yet — .zip, .txt, .md, .pdf, Word, PowerPoint, Excel, OpenDocument, .rtf, .epub, .csv, .png, .jpg, .jpeg, .webp and .gif only` });
@@ -1128,6 +1180,25 @@ server.listen(cfg.port, cfg.host || '127.0.0.1', () => { // this computer only: 
   const rl = loadRoutines(); const nx = rl.filter(r => !r.paused && r.nextAt).sort((a, b) => a.nextAt - b.nextAt)[0];
   console.log(`  routines: ${rl.length} loaded${rl.some(r => r.paused) ? ' (' + rl.filter(r => r.paused).length + ' paused)' : ''}${nx ? ' · next ' + untilText(nx.nextAt) + ' ' + nx.title.toUpperCase() + ' (' + nx.agent + ')' : ''} · ${rlist.path}`);
   setInterval(tickRoutines, 20000); tickRoutines(); // the clock: every 20 s; the first tick catches up anything missed while the office was off (once, marked LATE)
+  // V3.12: the fix follows the data (Wesley, 30 Oct: he uploads once a month, on the first Monday). When a restaurant's evidence differs
+  // from the evidence its last fix was written from, and has not changed for 30 minutes (the month's files have all landed), a new fix
+  // is written. Nothing new uploaded, no new fix. A failure waits three hours before the next try.
+  let fixBusy = false, fixFailedAt = 0; const fixSeen = {};
+  const fixTick = async () => {
+    if (fixBusy || Date.now() - fixFailedAt < 3 * 3600000) return;
+    fixBusy = true;
+    try {
+      for (const d of dashboardsData()) {
+        if (!d.data?.delivery?.accuracy) continue;
+        const ev = fixes.evidence(d.name, d.data), last = fixes.latest(DATA, d.id);
+        if (last && last.evidence === ev) { delete fixSeen[d.id]; continue; }
+        if (!fixSeen[d.id] || fixSeen[d.id].ev !== ev) { fixSeen[d.id] = { ev, at: Date.now() }; continue; }
+        if (Date.now() - fixSeen[d.id].at < 30 * 60000) continue;
+        try { const e = await makeFix(d.id); delete fixSeen[d.id]; console.log(`⚑ fix from the new data · ${d.name}: ${e.fix.title}`); } catch (e) { fixFailedAt = Date.now(); console.warn('fix:', e.message); }
+      }
+    } finally { fixBusy = false; }
+  };
+  setTimeout(fixTick, 90000); setInterval(fixTick, 10 * 60000);
   console.log(`  agents: 35 (${roster.customised} customised${roster.briefed ? ', ' + roster.briefed + ' briefed' : ''}${roster.files.length ? ' via ' + roster.files.join(' + ') : ''})   tools: ${backend === 'claude-cli' ? 'connected MCP servers' + (cfg.tools?.web === false ? '' : ' + web') + (mcp.browserOn() ? ' + the owner\'s Chrome (' + (mcp.browserState().installed ? 'extension paired' + (mcp.browserState().device ? ': ' + mcp.browserState().device : '') : 'extension NOT paired — run `claude --chrome` once') + ')' : '') : 'none on the API backend'}`);
   console.log(`  teams: ${TEAMS.enabled ? 'on — TEAM in the bar or "as a team" in the sentence; the lead splits it across up to ' + TEAMS.max + ' desks' : 'off (teams.enabled in office.config.json)'}`);
   const sk = skills.summary(); const setup = setupMap(); const notYet = DEPT_KEYS.filter(k => !setup[k]);

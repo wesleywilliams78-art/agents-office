@@ -28,11 +28,62 @@ export function parse(text) {
   return out;
 }
 
-let cache = { key: '', value: null };
+// Item lists (V3.12, 30 Oct): the Deliverect agent's "top items" CSVs, one per app and period, kept raw in data/deliverect/items/.
+// A list is capped (top 50) but carries the totals of every item, so the share the top makes up is known. Item revenue is base price
+// times units: no fees, tips or paid add-ons, so it sits below the orders' revenue for the same dates. The app comes from the file name
+// (uber / deliveroo); a pooled list counts as the one app that had orders in its dates, or as all apps.
+export const ITEMS_HEADER = 'product_name,units,revenue';
+export const isItems = text => String(text || '').replace(/^﻿/, '').startsWith(ITEMS_HEADER);
+export const itemsDir = dataDir => path.join(dir(dataDir), 'items');
+export function parseItems(text) {
+  const L = String(text || '').replace(/^﻿/, '').split(/\r?\n/), head = L.shift().split(',').map(h => h.trim()), at = k => head.indexOf(k);
+  const out = { from: '', to: '', units: 0, revenue: 0, rows: 0, top: [] };
+  for (const l of L) {
+    if (!l.trim()) continue;
+    // a product name may hold a comma: the six columns after it are fixed, so read them from the end
+    const c = l.split(','), tail = c.slice(-(head.length - 1)), name = c.slice(0, c.length - tail.length).join(',').replace(/^"|"$/g, '').trim();
+    const v = k => tail[at(k) - 1];
+    out.top.push({ n: name, u: +v('units') || 0, r: round(+v('revenue') || 0) });
+    out.from = v('data_from') || out.from; out.to = v('data_through') || out.to;
+    out.units = +v('grand_total_units') || out.units; out.revenue = round(+v('grand_total_revenue') || out.revenue); out.rows = +v('total_rows') || out.rows;
+  }
+  return out;
+}
+function items(dataDir, rows, channels) {
+  const d = itemsDir(dataDir); let files = [];
+  try { files = fs.readdirSync(d).filter(f => /\.csv$/i.test(f)).sort((a, b) => fs.statSync(path.join(d, a)).mtimeMs - fs.statSync(path.join(d, b)).mtimeMs); } catch { return []; }
+  const sets = new Map();
+  for (const f of files) {
+    const s = parseItems(fs.readFileSync(path.join(d, f), 'utf8')); if (!s.top.length || !s.from || !s.to) continue;
+    const inRange = rows.filter(x => x.st === 'Delivered' && x.t.slice(0, 10) >= s.from && x.t.slice(0, 10) <= s.to);
+    const named = channels.find(ch => f.toLowerCase().replace(/[^a-z]/g, '').includes(ch.toLowerCase().replace(/[^a-z]/g, '').replace('eats', '')));
+    const had = [...new Set(inRange.map(x => x.ch))];
+    const ch = named || (had.length === 1 ? had[0] : 'all');
+    const mine = inRange.filter(x => ch === 'all' || x.ch === ch);
+    sets.set(ch + '|' + s.from + '|' + s.to, { ch, file: f, ...s, orderRevenue: round(mine.reduce((n, x) => n + x.rev, 0)), orders: mine.length }); // the newest file for the same app and dates wins
+  }
+  return [...sets.values()].sort((a, b) => (a.from < b.from ? -1 : 1));
+}
+
+// delivered orders on one app between two dates, by Monday-start week and by hour: the count other reports are rated against
+// (Uber Eats Manager's accuracy report, V3.12 30 Oct). Reads the orders of the last build.
+const monday = iso => { const d = new Date(iso + 'T12:00:00Z'); d.setUTCDate(d.getUTCDate() - dow(iso)); return d.toISOString().slice(0, 10); };
+export function delivered(ch, from, to) {
+  const out = { orders: 0, weeks: {}, months: {}, hours: Array(24).fill(0), heat: Array.from({ length: 7 }, () => Array(24).fill(0)) }; // heat: Monday first
+  for (const x of cache.rows || []) {
+    const day = x.t.slice(0, 10); if (x.ch !== ch || x.st !== 'Delivered' || day < from || day > to) continue;
+    out.orders++; const w = monday(day), h = +x.t.slice(11, 13); out.weeks[w] = (out.weeks[w] || 0) + 1; out.months[day.slice(0, 7)] = (out.months[day.slice(0, 7)] || 0) + 1;
+    out.hours[h]++; out.heat[dow(day)][h]++;
+  }
+  return out;
+}
+
+let cache = { key: '', value: null, rows: [] };
 export function build(dataDir, { match } = {}) {
   const d = dir(dataDir); let files = [];
   try { files = fs.readdirSync(d).filter(f => /\.csv$/i.test(f)).sort(); } catch { return { available: false }; }
-  const key = files.map(f => f + ':' + fs.statSync(path.join(d, f)).mtimeMs).join('|') + '|' + match;
+  let itemFiles = []; try { itemFiles = fs.readdirSync(itemsDir(dataDir)).map(f => 'items/' + f + ':' + fs.statSync(path.join(itemsDir(dataDir), f)).mtimeMs); } catch {}
+  const key = files.map(f => f + ':' + fs.statSync(path.join(d, f)).mtimeMs).concat(itemFiles).join('|') + '|' + match;
   if (cache.key === key) return cache.value;
   const want = String(match || '').toLowerCase(), seen = new Set(), rows = [], fileStarts = [];
   for (const f of files) {
@@ -68,7 +119,7 @@ export function build(dataDir, { match } = {}) {
   for (const x of rows) { const day = x.t.slice(0, 10); if (x.st === 'Delivered' && day >= y0 && !partial.includes(day)) heat[dow(day)][+x.t.slice(11, 13)]++; }
   for (let w = 0; w < 7; w++) for (let h = 0; h < 24; h++) heat[w][h] = nDays[w] ? round(heat[w][h] / nDays[w], 1) : 0;
   const value = { available: true, location: rows[0].loc, files: files.length, orders: rows.length, from: dayList[0].d, to, partial, channels, launch,
-    days: dayList, months: [...months.values()].sort((a, b) => (a.m < b.m ? -1 : 1)).map(tidy), fails, heat, heatFrom: y0 };
-  cache = { key, value };
+    days: dayList, months: [...months.values()].sort((a, b) => (a.m < b.m ? -1 : 1)).map(tidy), fails, heat, heatFrom: y0, items: items(dataDir, rows, channels) };
+  cache = { key, value, rows };
   return value;
 }

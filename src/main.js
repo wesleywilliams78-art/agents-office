@@ -1421,7 +1421,11 @@ resize();
   if (h.get('cam')) setCam(h.get('cam') === '1');
   if (h.get('dark') === '1' || document.body.classList.contains('dark')) setDark(true);
   // typing #dark=1 into an OPEN tab is a same-document hash change (no reload) — react to it live
-  addEventListener('hashchange', () => { const d = new URLSearchParams(location.hash.slice(1)).get('dark'); if (d === '1') setDark(true); else if (d === '0') setDark(false); });
+  addEventListener('hashchange', () => { const q = new URLSearchParams(location.hash.slice(1)), d = q.get('dark'); if (d === '1') setDark(true); else if (d === '0') setDark(false); if (q.get('review')) openReviewFor(q.get('review')); });
+  // #review=<task id>: open that task's review card (the "Needs you" strip on /aios links here). The queue fills once the tasks load,
+  // so it keeps looking for up to 15 seconds.
+  function openReviewFor(id) { let n = 0; const go = () => { if (review && review.open(x => x.sid === id)) return; if (++n < 30) setTimeout(go, 500); }; go(); }
+  if (h.get('review')) openReviewFor(h.get('review'));
   if (h.get('board')) { // #board=1 → company board · #board=marketing → that dept's board
     const b = h.get('board');
     if (LAYOUT[b] && b !== 'brain') tasks.openFor(b); else tasks.open();
