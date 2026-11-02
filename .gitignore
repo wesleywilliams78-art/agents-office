@@ -18,3 +18,8 @@ videos/*/renders/
 
 # SOP builder outputs (finished client documents)
 output/sops/
+
+# Manual Magic University: the saved login (never commit), working renders, and the long music bed (rebuilt from the mp3)
+videos/manual-magic-ai/university/.auth/
+videos/manual-magic-ai/university/work/
+videos/manual-magic-ai/university/assets/music/*-long.wav
