@@ -24,7 +24,7 @@ const dayName = d => `${DOWN[(d.getUTCDay() + 6) % 7]} ${pad(d.getUTCDate())} ${
 /** A calendar row's day text ("Tue 3 Nov") in a given week → the date, or null. */
 function dateOf(monday, dayText) { const m = /^(mon|tue|wed|thu|fri|sat|sun)/i.exec(String(dayText || '').trim()); return m ? addDays(monday, DOW[m[1].toLowerCase()]) : null; }
 const hhmm = t => { const m = /(\d{1,2}):(\d{2})/.exec(String(t || '')); return m ? pad(+m[1]) + pad(+m[2]) : ''; };
-const where = (account, channel) => { const s = `${account} ${channel}`.toLowerCase(); return /tales of nirn/.test(s) ? 'Tales of Nirn' : /newsletter|scaling/.test(s) ? 'Newsletter' : /collab/.test(s) && /linkedin/.test(s) ? 'Collab LinkedIn' : /personal|wesley/.test(s) && /linkedin/.test(s) ? 'Wesley LinkedIn' : /linkedin/.test(s) ? 'WRW page LinkedIn' : /instagram/.test(s) ? 'Instagram' : safe(channel || account || 'Post'); };
+const where = (account, channel) => { const s = `${account} ${channel}`.toLowerCase(); return /tales of nirn/.test(s) ? 'Tales of Nirn' : /art of operations/.test(s) && /instagram/.test(s) ? 'Art of Operations' : /newsletter|scaling/.test(s) ? 'Newsletter' : /collab/.test(s) && /linkedin/.test(s) ? 'Collab LinkedIn' : /personal|wesley/.test(s) && /linkedin/.test(s) ? 'Wesley LinkedIn' : /linkedin/.test(s) ? 'WRW page LinkedIn' : /instagram/.test(s) ? 'Instagram' : safe(channel || account || 'Post'); };
 const labelOf = it => safe(`${hhmm(it.time) ? hhmm(it.time) + ' ' : ''}${where(it.account, it.channel)} ${it.format || ''}`);
 
 /** The weeks in the calendar note: [{ monday, core, rows: [{ day, time, account, channel, format, idea, owner, status, files }] }]. */
@@ -120,7 +120,7 @@ export function posts(root, brain) {
       const d = dateOf(w.monday, it.day); if (!d) continue;
       const tm = /(\d{1,2}):(\d{2})/.exec(it.time || ''), dayDir = path.join(weekDir, dayName(d)), label = labelOf(it);
       const folder = [path.join(dayDir, label), path.join(dayDir, label + '.md'), dayDir].find(exists) || '';
-      out.push({ date: iso(d), time: tm ? `${pad(+tm[1])}:${tm[2]}` : '', timeAssumed: /assumed/i.test(it.time || ''), where: where(it.account, it.channel), account: it.account, channel: it.channel, format: it.format, idea: it.idea, owner: it.owner, status: status(it), core: w.core, folder });
+      out.push({ date: iso(d), time: tm ? `${pad(+tm[1])}:${tm[2]}` : '', timeAssumed: /assumed/i.test(it.time || ''), where: where(it.account, it.channel), account: it.account, channel: it.channel, format: it.format, idea: it.idea, owner: it.owner, status: status(it), files: it.files, core: w.core, folder });
     }
   }
   return out.sort((a, b) => (a.date + a.time).localeCompare(b.date + b.time));

@@ -144,6 +144,22 @@
   .wa th { text-align: left; font: 500 11px/1 var(--sans, inherit); letter-spacing: .08em; text-transform: uppercase; color: var(--muted, #777); padding: 6px 8px; }
   .wa td { padding: 8px; border-top: 1px solid var(--line); vertical-align: top; }
   .wa select { font: inherit; font-size: 12px; background: transparent; color: inherit; border: 1px solid var(--line); border-radius: 6px; padding: 2px 4px; }
+  .sogrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 10px; }
+  .so { padding: 13px 14px 12px; border-top: 3px solid var(--sc); display: flex; flex-direction: column; gap: 7px; }
+  .so .soh { display: flex; align-items: baseline; gap: 8px; } .so .son { font-weight: 700; font-size: 13.5px; } .so .sos { font-size: 11px; color: var(--grey); }
+  .so .sost { margin-left: auto; font-size: 9.5px; letter-spacing: .1em; font-weight: 700; padding: 2px 7px; border-radius: 999px; border: 1px solid var(--line); color: var(--grey); white-space: nowrap; }
+  .so .sost.need { color: var(--bad); border-color: color-mix(in srgb, var(--bad) 45%, transparent); } .so .sost.go { color: var(--ok); border-color: color-mix(in srgb, var(--ok) 45%, transparent); } .so .sost.busy { color: var(--warn); border-color: color-mix(in srgb, var(--warn) 45%, transparent); }
+  .so .sow { font-size: 11.5px; color: var(--grey); } .so .sow b { color: var(--ink); font-weight: 600; } .so .sow .late { color: var(--bad); font-weight: 600; }
+  .so .sof { font-weight: 600; font-size: 13px; line-height: 1.35; }
+  .so .soi { font-size: 12px; color: var(--grey); line-height: 1.45; display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; } .so .soi.open { -webkit-line-clamp: unset; }
+  .so .sop { display: flex; flex-direction: column; gap: 4px; } .so .sop .k { font-size: 9.5px; letter-spacing: .12em; color: var(--faint); font-weight: 700; }
+  .so .sopl { display: flex; align-items: center; gap: 6px; font-size: 11.5px; min-width: 0; } .so .sopl span { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--ink); }
+  .so .sopl button, .so .sopl a { font-size: 10px; padding: 2px 7px; }
+  .so .sob { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; margin-top: 2px; } .so .sob .note { font-size: 11px; }
+  .so .sob .pri { background: var(--ink); color: var(--panel); border-color: var(--ink); }
+  .so a.btn { cursor: pointer; background: var(--soft); border: 1px solid var(--line); border-radius: 7px; padding: 5px 10px; font-size: 11px; letter-spacing: .06em; font-weight: 600; color: inherit; text-decoration: none; white-space: nowrap; } .so a.btn:hover { border-color: var(--grey); }
+  .so.none { opacity: .7; } .so .sol { font-size: 11px; color: var(--faint); }
+  .soCal { font-size: 11px; letter-spacing: .08em; color: var(--grey); text-decoration: none; }
   .skgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(380px, 1fr)); gap: 10px; }
   .sk { padding: 12px 13px; }
   .sk .skh { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
@@ -694,6 +710,7 @@
     <div class="gl">Today</div>
     <button data-go="overview">Overview <span class="n" id="nOverview"></span></button>
     <button data-go="matrix">Matrix <span class="n" id="nMatrix"></span></button>
+    <button data-go="social">Social <span class="n" id="nSocial"></span></button>
     <div class="gl">The business</div>
     <button data-go="clients">Clients <span class="n" id="nClients"></span></button>
     <div class="subnav" id="navDash"></div>
@@ -773,6 +790,16 @@
       <div class="seg nf" id="nShow"><button data-v="all" class="on">ALL</button><button data-v="work">WORK</button><button data-v="review">REVIEWS</button><button data-v="matrix">MATRIX</button></div>
       <div class="nl" id="news"></div>
     </aside>
+  </section>
+
+  <section id="socialSec" data-cat="social">
+    <div class="sh">
+      <h2>Social</h2>
+      <span class="note">The next post in each workstream, and only the next. Hand it to the Chief of Staff, review what comes back, sign it off, post it yourself, then mark it posted and the next one comes up. Nothing is posted by the office.</span>
+      <div class="tools"><a class="soCal" href="/" target="agentsOffice" title="The office calendar (P) has every post">CALENDAR ↗</a></div>
+    </div>
+    <div class="msg" id="soMsg"></div>
+    <div class="sogrid" id="soGrid"></div>
   </section>
 
   <section id="commsSec" data-cat="comms">
@@ -961,7 +988,7 @@ const readiness = a => [!!a.does, !!a.brief, roleSkills(a).length > 0];
 function render() { renderNeeds(); renderWeek(); renderNav(); renderKpis(); renderClients(); renderMatrix(); renderRoles(); renderSkills(); renderNews(); renderActivity(); renderBudget(); }
 
 // categories: the left-hand list shows one category at a time; the choice is remembered and can be linked to (#budget)
-const CAT_IDS = ['overview', 'matrix', 'clients', 'budget', 'comms', 'roles', 'skills', 'tokens'];
+const CAT_IDS = ['overview', 'matrix', 'social', 'clients', 'budget', 'comms', 'roles', 'skills', 'tokens'];
 const isDash = c => /^dash-[a-z0-9-]+$/.test(String(c));
 /* ---------- motion: springs for the rail and the page it drives ----------
    A damped spring sampled into a CSS linear() curve: zeta < 1 overshoots and settles, like motion.md's back.out pops.
@@ -1123,7 +1150,53 @@ async function setCat(c, push = true) {
   if (isDash(c)) renderSales();
   if (c === 'comms' && !S.wa) loadWa(false);
   if (c === 'tokens') loadTokens();
+  if (c === 'social') loadSocial();
 }
+
+// Social (V3.12, 3 Nov): the next post in each workstream. The server works out the state; this draws it and sends the buttons.
+async function loadSocial() { try { S.social = (await api('/social')).streams; } catch (e) { $('soMsg').className = 'msg err'; $('soMsg').textContent = 'Could not read the content calendar: ' + e.message; return; } renderSocial(); renderNav(); }
+const SO_STATE = { handoff: ['TO HAND OFF', ''], needs: ['NEEDS YOU', 'need'], working: ['THE OFFICE IS ON IT', 'busy'], review: ['READY FOR YOUR REVIEW', 'need'], check: ['BACK: CHECK IT', 'need'], ready: ['BUILT: CHECK IT', 'need'], signed: ['SIGNED OFF: POST IT', 'go'] };
+function renderSocial() {
+  const L = S.social; if (!L) return;
+  const today = new Date(); today.setHours(0, 0, 0, 0);
+  $('soGrid').innerHTML = L.map(s => {
+    if (!s.post) return `<div class="panel so none" style="--sc:${esc(s.colour)}"><div class="soh"><span class="son">${esc(s.name)}</span><span class="sos">${esc(s.sub)}</span></div><div class="sol">Nothing planned on the calendar for this week or next.</div></div>`;
+    const p = s.post, d = new Date(p.date + 'T12:00:00'), late = d < today, [label, cls] = SO_STATE[s.state] || ['', ''];
+    const when = d.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' }) + (p.time ? ' · ' + p.time : '');
+    const pl = s.places.map(x => { const web = /^https?:/.test(x), name = web ? x.replace(/^https?:\/\/(www\.)?/, '').slice(0, 60) : x.split(/[\\/]/).filter(Boolean).pop();
+      const file = !web && /\.[a-z0-9]{2,5}$/i.test(x);
+      return `<div class="sopl"><span title="${esc(x)}">${esc(name)}</span>${web ? `<a class="btn" href="${esc(x)}" target="_blank" rel="noopener">OPEN ↗</a>` : `<button type="button" data-soopen="${esc(x)}">OPEN</button>${file ? `<a class="btn" href="/api/files?path=${encodeURIComponent(x)}" download>SAVE A COPY</a>` : ''}`}</div>`; }).join('');
+    const k = esc(s.key), task = s.task, office = task ? `<a class="btn" href="/#review=${encodeURIComponent(task.id)}" target="agentsOffice">${s.state === 'review' ? 'REVIEW IN THE OFFICE ↗' : 'OPEN IN THE OFFICE ↗'}</a>` : '';
+    const hand = `<button type="button" class="${['handoff', 'needs'].includes(s.state) ? 'pri' : ''}" data-sohand="${k}"${S.soBusy === s.key ? ' disabled' : ''}>${S.soBusy === s.key ? 'HANDING OFF…' : task ? 'ASK AGAIN' : 'HAND TO THE CHIEF OF STAFF'}</button>`;
+    const sign = `<button type="button" class="pri" data-sosign="${k}">SIGN OFF</button>`, posted = `<button type="button" data-soposted="${k}" title="You have posted or scheduled it: the card moves to the next one (same as the tick in the calendar)">MARK POSTED</button>`;
+    const btns = s.state === 'working' ? `<span class="note">${esc(task.agentName || task.agent)}${task.team ? ' and the team' : ''} ${task.state === 'next' ? 'starts in a moment' : 'is working on it'}.</span>${office}`
+      : s.state === 'review' ? office + hand
+      : s.state === 'check' || s.state === 'ready' ? sign + office + (s.state === 'ready' ? '' : hand) + posted
+      : s.state === 'signed' ? posted + `<button type="button" data-sounsign="${k}">UNDO SIGN-OFF</button>` + office
+      : hand + posted;
+    return `<div class="panel so" style="--sc:${esc(s.colour)}">
+      <div class="soh"><span class="son">${esc(s.name)}</span><span class="sos">${esc(s.sub)}</span><span class="sost ${cls}">${label}</span></div>
+      <div class="sow"><b>${esc(when)}</b>${late ? ' <span class="late">overdue</span>' : ''}${s.later ? ` · then ${s.later} more this week and next` : ''}</div>
+      <div class="sof">${esc(p.format)}</div>
+      ${p.idea ? `<div class="soi" data-soidea title="Click to read it all">${esc(p.idea)}</div>` : ''}
+      ${pl ? `<div class="sop"><span class="k">WHERE IT IS</span>${pl}</div>` : s.state === 'check' ? '<div class="sol">The office named no file. Open it in the office to read the result.</div>' : ''}
+      <div class="sob">${btns}</div></div>`;
+  }).join('');
+}
+document.addEventListener('click', async e => {
+  const el = e.target.closest('[data-sohand],[data-sosign],[data-sounsign],[data-soposted],[data-soopen],[data-soidea]'); if (!el) return;
+  if (el.dataset.soidea !== undefined) { el.classList.toggle('open'); return; }
+  const msg = (t, err) => { $('soMsg').className = 'msg' + (err ? ' err' : ''); $('soMsg').textContent = t; };
+  try {
+    if (el.dataset.soopen) { await api('/open', { method: 'POST', body: { path: el.dataset.soopen } }); return; }
+    if (el.dataset.sohand) { S.soBusy = el.dataset.sohand; renderSocial(); const r = await api('/social/hand', { method: 'POST', body: { key: el.dataset.sohand } }); msg(`Handed to the Chief of Staff: "${r.task.title}". It starts in 20 seconds; undo it from the Chief of Staff panel in the office if you change your mind.`); }
+    else if (el.dataset.sosign) await api('/social/sign', { method: 'POST', body: { key: el.dataset.sosign } });
+    else if (el.dataset.sounsign) await api('/social/sign', { method: 'POST', body: { key: el.dataset.sounsign, on: false } });
+    else if (el.dataset.soposted) await api('/calendar-done', { method: 'POST', body: { key: el.dataset.soposted, done: true } });
+  } catch (err) { msg(err.message, true); }
+  S.soBusy = null; await loadSocial();
+});
+setInterval(() => { if (!document.hidden && S.cat === 'social') loadSocial(); }, 15000);
 
 // theme: Auto follows the computer, Light and Dark are forced; the choice is remembered in this browser
 (() => {
@@ -1288,6 +1361,7 @@ function renderNav() { // small counts beside a category: what is waiting on you
   set('nOverview', S.tasks.filter(t => t.state === 'waiting').length, true);
   set('nMatrix', (S.matrix.items || []).filter(i => i.state === 'open').length);
   set('nSkills', S.skillAudit ? S.skillAudit.summary.attention : '', true);
+  set('nSocial', S.social ? S.social.filter(s => ['review', 'check', 'ready', 'needs'].includes(s.state)).length : '', true);
 }
 (() => { let c = location.hash.slice(1); if (!c) { try { c = localStorage.getItem('aiosCat'); } catch {} } setCat(c || 'overview', false); })();
 window.addEventListener('hashchange', () => setCat(location.hash.slice(1), false));

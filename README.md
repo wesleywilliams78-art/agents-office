@@ -336,6 +336,13 @@ Open **http://localhost:4520/aios** beside the office. It has three parts and re
   replaces the open actions its earlier version added). *Happening now* shows `N IN MATRIX` beside
   each one. To switch this off, add `"aios": { "autoFeed": false }` to `office.config.json`; the
   **→ MATRIX** button then does it by hand. The matrix is kept in `data/matrix.json`.
+- **Social.** One card per workstream on the content calendar (each Instagram account, the
+  collaborative and personal LinkedIn posts, the newsletter), and on each card only the **next**
+  post. HAND TO THE CHIEF OF STAFF adds a Marketing task for it (it starts after 20 seconds, so it
+  can be undone from the Chief of Staff panel); the card follows the task, then lists WHERE IT IS:
+  the calendar's files, the Content Calendar folder and every file or link the result names, each
+  with OPEN and SAVE A COPY. SIGN OFF marks it good to go; MARK POSTED is the calendar's own tick and
+  brings up the next post. Nothing is posted by the office. Kept in `data/social.json` (`social.mjs`).
 - **Roles.** All 35 seats by department: role, what it does, the model it runs on by default,
   its tools, and whether it has a brief and a role skill (the three bars). NEEDS A BRIEF OR SKILL
   shows the seats still to set up.

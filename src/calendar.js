@@ -26,7 +26,7 @@ const mondayOf = ts => { const d = new Date(startOfDay(ts)); const k = (d.getDay
 const CADENCES = [['daily', 'Every day'], ['weekdays', 'Every weekday'], ['mon', 'Mondays'], ['tue', 'Tuesdays'], ['wed', 'Wednesdays'], ['thu', 'Thursdays'], ['fri', 'Fridays'], ['sat', 'Saturdays'], ['sun', 'Sundays'], ['hourly', 'Every hour, 9–5, weekdays']];
 
 // the content calendar's posts, one colour per place they go (the WRW page and Wesley's own LinkedIn are different accounts)
-const PLAT = { 'WRW page LinkedIn': ['WRW LinkedIn', '#0A66C2'], 'Collab LinkedIn': ['Collab LinkedIn', '#7A5CC8'], 'Wesley LinkedIn': ['Wesley LinkedIn', '#16908F'], Instagram: ['Instagram', '#C13584'], 'Tales of Nirn': ['Tales of Nirn', '#B07A2A'], Newsletter: ['Newsletter', '#B4830B'] };
+const PLAT = { 'WRW page LinkedIn': ['WRW LinkedIn', '#0A66C2'], 'Collab LinkedIn': ['Collab LinkedIn', '#7A5CC8'], 'Wesley LinkedIn': ['Wesley LinkedIn', '#16908F'], Instagram: ['Instagram', '#C13584'], 'Art of Operations': ['Art of Operations', '#EC3013'], 'Tales of Nirn': ['Tales of Nirn', '#B07A2A'], Newsletter: ['Newsletter', '#B4830B'] };
 const platOf = p => PLAT[p.where] ? p.where : 'Other';
 const platColour = p => (PLAT[platOf(p)] || ['', '#6B6A66'])[1];
 
@@ -49,10 +49,10 @@ export function initCalendar(ctx) {
   }
   const matches = s => !q || String(s || '').toLowerCase().includes(q);
   async function loadPosts(jump) { // jump: switching SOCIAL on lands on the week of the next post to go out
-    if (!isLive()) return; // the demo page (file://) has no office behind it
+    if (location.protocol === 'file:') return; // the demo page has no office behind it (not isLive(): that waits for the connector list, which can take a minute)
     try { const r = await fetch('/api/content'); const j = await r.json(); posts = Array.isArray(j.posts) ? j.posts : []; } catch { /* the calendar still works without them */ }
     if (jump && posts.length) { const t = ymd(new Date()), n = posts.find(p => p.date >= t) || posts[posts.length - 1]; anchor = startOfDay(new Date(n.date + 'T00:00:00').getTime()); }
-    if (openNow && socialOnly && E.pop.hidden) render();
+    if (openNow && (socialOnly || view !== 'month') && E.pop.hidden) render(); // DAY and WEEK carry the posts too
   }
   const postKey = p => 'p|' + p.date + '|' + (p.time || '') + '|' + p.where + '|' + p.format, focusKey = f => 'f|' + f.id;
   async function loadDone() { if (!isLive()) return; try { const j = await (await fetch('/api/calendar-done')).json(); doneKeys = j.done || {}; } catch { /* ticks are a convenience */ } if (openNow && E.pop.hidden) render(); }
@@ -140,7 +140,7 @@ export function initCalendar(ctx) {
   }
   function render() {
     const { from, to, days } = range();
-    const by = events(from, to), today = ymd(new Date());
+    const by = events(from, to), today = ymd(new Date()), social = view !== 'month' && !socialOnly ? postEvents(from, to) : {};
     const a = new Date(anchor);
     E.title.innerHTML = view === 'day' ? `${DOW_LONG[(a.getDay() + 6) % 7]} ${a.getDate()} ${MONTHS[a.getMonth()]} <small>${a.getFullYear()}</small>` : view === 'month' ? `${MONTHS[a.getMonth()]} <small>${a.getFullYear()}</small>` : (() => { const s = new Date(from), e = new Date(addDays(to, -1)); return `${s.getDate()}–${e.getDate()} ${s.getMonth() === e.getMonth() ? MONTHS[e.getMonth()] : MONTHS[s.getMonth()].slice(0, 3) + ' – ' + e.getDate() + ' ' + MONTHS[e.getMonth()]} <small>${e.getFullYear()}</small>`; })();
     E.seg.querySelectorAll('button').forEach(b => b.classList.toggle('on', b.dataset.v === view));
@@ -150,7 +150,7 @@ export function initCalendar(ctx) {
     ov.classList.toggle('social', socialOnly);
     for (let i = 0; i < days; i++) {
       const ts = addDays(from, i), d = new Date(ts), k = ymd(d), list = by[k] || [], dow = (d.getDay() + 6) % 7;
-      const dayPosts = view === 'day' && !socialOnly ? (postEvents(from, to)[k] || []) : []; // Wesley, 3 Nov: DAY shows the day's social posts under a line
+      const dayPosts = view !== 'month' && !socialOnly ? (social[k] || []) : []; // Wesley, 3 Nov: DAY and WEEK show the day's social posts under a line
       const out = view === 'month' && d.getMonth() !== a.getMonth(), past = ts < startOfDay(Date.now()), max = view === 'month' && days > 35 ? 2 : MAX[view];
       for (const ev of list) { if (ev.kind === 'done') nDone++; else if (ev.kind === 'sched') nSched++; else if (ev.kind === 'routine') nRt++; else if (ev.kind === 'post') { nPost++; if (/needs/.test(ev.p.status)) nNeed++; else if (/not drafted/.test(ev.p.status)) nPlan++; } }
       html += `<div class="cv-day${k === today ? ' today' : ''}${out ? ' out' : ''}${past ? ' past' : ''}${dow >= 5 ? ' wknd' : ''}" data-day="${k}">
@@ -329,7 +329,7 @@ export function initCalendar(ctx) {
   ov.addEventListener('keydown', e => { if (/^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName)) return; if (e.key === 'ArrowLeft') step(-1); else if (e.key === 'ArrowRight') step(1); else if (e.key === 't' || e.key === 'T') { anchor = startOfDay(Date.now()); render(); } else if (e.key === 'w' || e.key === 'W') { view = 'week'; render(); } else if (e.key === 'm' || e.key === 'M') { view = 'month'; render(); } });
 
   let timer = null;
-  function open() { if (openNow) return; openNow = true; E.co.textContent = business ? business() : ''; ov.classList.add('on'); document.body.classList.add('calOpen'); render(); loadPosts(); loadFocus(); loadGcal(); loadDone(); loadToday(); ov.tabIndex = -1; ov.focus(); timer = setInterval(() => { loadToday(); if (socialOnly) loadPosts(); else if (E.pop.hidden) render(); }, 30000); }
+  function open() { if (openNow) return; openNow = true; E.co.textContent = business ? business() : ''; ov.classList.add('on'); document.body.classList.add('calOpen'); render(); loadPosts(); loadFocus(); loadGcal(); loadDone(); loadToday(); ov.tabIndex = -1; ov.focus(); timer = setInterval(() => { loadToday(); loadPosts(); if (!socialOnly && view === 'month' && E.pop.hidden) render(); }, 30000); }
   function close() { if (!openNow) return; openNow = false; closePop(); ov.classList.remove('on'); document.body.classList.remove('calOpen'); clearInterval(timer); timer = null; }
   function toggle() { openNow ? close() : open(); }
   return { open, close, toggle, isOpen: () => openNow, refresh: () => { if (openNow && E.pop.hidden) render(); }, popOpen: () => !E.pop.hidden, closePop, get view() { return view; }, set view(v) { view = v; render(); } };

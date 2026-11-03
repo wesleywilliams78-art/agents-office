@@ -299,6 +299,27 @@ await step('google calendar: the private feed is read with repeats, moved and ca
   fs.rmSync(tmp, { recursive: true, force: true });
   return 'weekly with an exception and a moved instance · monthly first Monday in UTC · all day · cancelled left out · a failed feed keeps its last events · the address is never stored with them';
 });
+await step('social: each workstream shows only its next post, follows its task, and moves on when posted', async () => { // V3.12 (3 Nov)
+  const so = await import('./social.mjs');
+  const P = (date, where, format, status, extra = {}) => ({ date, time: '11:00', where, format, status, idea: 'x', account: 'WRW Hospitality', channel: 'Instagram', ...extra });
+  const posts = [P('2026-11-02', 'Instagram', 'Old', 'posted'), P('2026-11-04', 'Instagram', 'Carousel A', 'planned, not drafted yet'), P('2026-11-05', 'Instagram', 'Carousel B', 'planned, not drafted yet'),
+    P('2026-11-04', 'Art of Operations', 'Reel 14', 'built', { files: 'C:/Users/Wesley/Desktop/Art of Operations/Art of Operations - Reel 14.mp4' }), P('2026-10-20', 'Tales of Nirn', 'Too old', 'planned')];
+  const now = new Date(2026, 10, 3, 9).getTime(), A = posts[1], key = so.keyOf(A);
+  let s = so.streams({ posts, today: now }); const ig = s.find(x => x.id === 'Instagram'), aoo = s.find(x => x.id === 'Art of Operations');
+  if (ig.post.format !== 'Carousel A' || ig.state !== 'handoff' || ig.later !== 1) throw new Error('the next post is the first one not yet posted: ' + JSON.stringify(ig.post && ig.post.format));
+  if (aoo.state !== 'ready' || !aoo.places[0].endsWith('Reel 14.mp4')) throw new Error('a built post with a file is ready to check, and links the file');
+  if (s.find(x => x.id === 'Tales of Nirn').post) throw new Error('a post from before this week is not next');
+  const tasks = [{ id: 't1', state: 'doing' }], social = { tasks: { [key]: 't1' }, signed: {} };
+  if (so.streams({ posts, today: now, tasks, social }).find(x => x.id === 'Instagram').state !== 'working') throw new Error('a handed-off post shows the office working');
+  tasks[0] = { id: 't1', state: 'done', result: 'Done.\nWHERE IT IS: output/library/carousels/portugal-a/slides.pdf and https://drive.google.com/file/d/abc' };
+  s = so.streams({ posts, today: now, tasks, social }); const back = s.find(x => x.id === 'Instagram');
+  if (back.state !== 'check' || !back.places.includes('output/library/carousels/portugal-a/slides.pdf') || !back.places.includes('https://drive.google.com/file/d/abc')) throw new Error('a finished task is checked and its files are found: ' + JSON.stringify(back.places));
+  social.signed[key] = 1; if (so.streams({ posts, today: now, tasks, social }).find(x => x.id === 'Instagram').state !== 'signed') throw new Error('sign-off sticks');
+  if (so.streams({ posts, today: now, tasks, social, done: { [key]: 1 } }).find(x => x.id === 'Instagram').post.format !== 'Carousel B') throw new Error('posted moves the card to the next one');
+  const txt = so.handText(ig, A); if (!/WHERE IT IS/.test(txt) || !/Nothing is posted/.test(txt) || !/Wednesday 4 Nov at 11:00/.test(txt)) throw new Error('the hand-off asks for the files and posts nothing: ' + txt);
+  return 'next post only · built is ready with its file · working → check with the files it names → signed → posted moves on · the hand-off asks where it is and posts nothing';
+});
+
 await step('till dashboard: the hourly grid and item report become monthly turnover, a weekday-by-hour map and menu totals that match the report', async () => {
   const { build } = await import('./pos.mjs'); const NL = String.fromCharCode(10);
   const hourly = ['# x', '| Hour | 2026-08-30 | 2026-08-31 | 2026-09-01 | 2026-09-02 |', '| --- | --- | --- | --- | --- |', '| Hourly Sales report | Hourly Sales for Test Diner (High Street) Generated for the period of 2026-08-30 - 2026-09-02 |', '| 06:00PM | 10 (100.00) | 20 (250.50) | 5 (50.00) | 0 (-) |', '| 07:00PM | 30 (300.00) | 0 (-) | 15 (150.25) | 1 (1,000.00) |'].join(NL);

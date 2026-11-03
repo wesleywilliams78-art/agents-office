@@ -904,6 +904,7 @@
   .cv-grid.week { grid-template-rows: 1fr; }
   .cv-grid.day { grid-template-columns: 1fr; grid-template-rows: 1fr; } .cv-dow.day { grid-template-columns: 1fr; } /* DAY: one day, its cards in time order, two columns when wide */
   .cv-grid.day .cv-day { overflow-y: auto; padding-bottom: 34px; } .cv-grid.day .cv-evs { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 8px; align-content: start; }
+  .cv-split { display: flex; align-items: center; gap: 8px; margin: 6px 0 2px; font: 600 8px/1 var(--mono, monospace); letter-spacing: .14em; color: rgba(255,255,255,.45); } .cv-split::after { content: ''; flex: 1; height: 1px; background: rgba(255,255,255,.22); }
   .cv-grid.day .cv-split { grid-column: 1 / -1; display: flex; align-items: center; gap: 10px; margin: 10px 0 2px; font: 600 9px/1 var(--mono, monospace); letter-spacing: .14em; color: rgba(255,255,255,.45); } .cv-grid.day .cv-split::after { content: ''; flex: 1; height: 1px; background: rgba(255,255,255,.22); }
   .cv-grid.day .cv-ev { padding: 9px 12px; } .cv-grid.day .cv-ev-t { white-space: normal; font-size: 13px; } .cv-grid.day .cv-ev-i { -webkit-line-clamp: 6; }
   .cv-num[data-dayview] { cursor: pointer; } .cv-num[data-dayview]:hover b { text-decoration: underline; }

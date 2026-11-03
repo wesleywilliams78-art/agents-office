@@ -60,6 +60,7 @@ import * as siteupdates from './siteupdates.mjs';
 import * as handoff from './handoff.mjs';
 import * as salesData from './sales.mjs';
 import * as posData from './pos.mjs';
+import * as social from './social.mjs'; // V3.12: the AIOS Social section, the next post per workstream
 import * as gcal from './gcal.mjs'; // V3.12: Wesley's Google Calendar, read from its private feeds, on /aios and in the office calendar
 import * as attention from './attention.mjs'; // V3.12: which Claude Code sessions are waiting on Wesley ("Needs you" on /aios)
 import * as fixes from './fix.mjs'; // V3.12: the month's fix for a client restaurant, from all of its dashboard data
@@ -1111,6 +1112,27 @@ await rebuildGraph();
 const discovering = mcp.discover().then(l => { console.log(`  connectors: ${l.filter(s => s.status === 'connected').length} connected of ${l.length} (claude mcp list)`); return l; });
 const agentsOut = () => { const setup = setupMap(); return AGENTS.map(a => ({ id: a.id, name: a.name, role: a.role, does: a.does, tools: a.tools, brief: a.brief || '', model: a.model || '', effort: a.effort || '', skills: skills.names(a), lessons: learn.count(BRAIN, a.id), department: a.department, lead: a.lead,
   interviewer: leadOf(a.department).id === a.id, setUp: setup[a.department] })); };
+/** Add a task to the board: the task bar, the Chief of Staff and the AIOS Social section all come through here. → [status, task | error] */
+async function addTask({ dept, text, model, effort, team, at, by } = {}) {
+  const chief = by === 'chief'; // a task the Chief of Staff added: it waits 20 s before it starts, so Wesley can change the model or undo it
+  if (!DEPTS[dept] || dept === 'brain') return [400, { error: 'unknown department' }];
+  if (!text || !String(text).trim()) return [400, { error: 'empty task' }];
+  const dueAt = at ? (typeof at === 'number' ? at : Date.parse(at)) : null; // V3.2.1: a task for a date
+  if (at && !(dueAt > 0)) return [400, { error: 'at must be a time (ms or ISO)' }];
+  if (dueAt && dueAt < Date.now() - 60000) return [400, { error: 'that time has passed — pick one that is still ahead' }];
+  const r = await route(dept, String(text).trim());
+  const asTeam = TEAMS.enabled && (team === true || teams.intent(text) || (dept === 'marketing' && /\breels?\b/i.test(text) && /\b(make|build|produce|create|finish\w*|ready|post|deliver)\b/i.test(text))); // a Reel asked for in Marketing is a team job: script, video, music, check // V3.2 (16 Sep): TEAM in the bar, or "as a team" in the sentence → the lead owns it and splits it
+  const task = { id: nid(), dept, agent: asTeam ? leadOf(dept).id : r.agent, title: r.title, text: String(text).trim(), plan: r.plan, eta: r.eta, why: asTeam ? `team — ${leadOf(dept).name} splits it across the desks` : r.why, state: 'next', addedAt: Date.now(), by: chief ? 'chief' : 'you', model: normModel(model) || undefined, effort: normEffort(effort) || undefined, // model/effort: set on this task (beats routine, agent, office)
+    team: asTeam ? { lead: leadOf(dept).id, asked: team === true ? 'you' : 'text' } : undefined };
+  task.needsOk = r.needsOk; task.channel = r.channel || undefined; // V3.9: a task that sends, posts or pays is drafted first and only goes out after the owner's APPROVE & SEND
+  if (dueAt) { task.state = 'scheduled'; task.dueAt = dueAt; } // waits for its minute, then waits for review
+  const list = load(); list.push(task); save(list);
+  console.log(`+ ${task.id} → ${task.agent}: ${task.title}${asTeam ? ' (team)' : ''}${dueAt ? ' · scheduled ' + untilText(dueAt) : ''}`);
+  if (chief && assistantEmit) try { assistantEmit({ t: 'task', task: { id: task.id, dept, deptName: DEPTS[dept].name, agent: task.agent, agentName: agentName(task.agent), title: task.title, model: task.model || '', effort: task.effort || '', team: !!task.team, startsInMs: dueAt ? 0 : 20000 } }); } catch {} // the chip in the Chief of Staff panel
+  if (!dueAt) setTimeout(() => { Promise.resolve(discovering).then(() => { const t = load().find(x => x.id === task.id); if (t && t.state === 'next') return runServerTask(task.id); }).catch(e => console.warn('start:', e.message)); }, chief ? 20000 : 4000); // no page needed: the server starts a new task itself (the page's own start, if open, wins and this is skipped)
+  return [200, task];
+}
+
 const server = http.createServer(async (req, res) => {
   const url = new URL(req.url, 'http://x');
   try {
@@ -1246,24 +1268,34 @@ const server = http.createServer(async (req, res) => {
       if (b.effort !== undefined) patch.effort = normEffort(b.effort) || '';
       editRoutine(r.id, patch); return json(res, 200, { ok: true, routines: loadRoutines() });
     }
-    if (url.pathname === '/api/tasks' && req.method === 'POST') {
-      const { dept, text, model, effort, team, at, by } = await body(req); const chief = by === 'chief'; // a task the Chief of Staff added: it waits 20 s before it starts, so Wesley can change the model or undo it
-      if (!DEPTS[dept] || dept === 'brain') return json(res, 400, { error: 'unknown department' });
-      if (!text || !String(text).trim()) return json(res, 400, { error: 'empty task' });
-      const dueAt = at ? (typeof at === 'number' ? at : Date.parse(at)) : null; // V3.2.1: a task for a date
-      if (at && !(dueAt > 0)) return json(res, 400, { error: 'at must be a time (ms or ISO)' });
-      if (dueAt && dueAt < Date.now() - 60000) return json(res, 400, { error: 'that time has passed — pick one that is still ahead' });
-      const r = await route(dept, String(text).trim());
-      const asTeam = TEAMS.enabled && (team === true || teams.intent(text) || (dept === 'marketing' && /\breels?\b/i.test(text) && /\b(make|build|produce|create|finish\w*|ready|post|deliver)\b/i.test(text))); // a Reel asked for in Marketing is a team job: script, video, music, check // V3.2 (16 Sep): TEAM in the bar, or "as a team" in the sentence → the lead owns it and splits it
-      const task = { id: nid(), dept, agent: asTeam ? leadOf(dept).id : r.agent, title: r.title, text: String(text).trim(), plan: r.plan, eta: r.eta, why: asTeam ? `team — ${leadOf(dept).name} splits it across the desks` : r.why, state: 'next', addedAt: Date.now(), by: chief ? 'chief' : 'you', model: normModel(model) || undefined, effort: normEffort(effort) || undefined, // model/effort: set on this task (beats routine, agent, office)
-        team: asTeam ? { lead: leadOf(dept).id, asked: team === true ? 'you' : 'text' } : undefined };
-      task.needsOk = r.needsOk; task.channel = r.channel || undefined; // V3.9: a task that sends, posts or pays is drafted first and only goes out after the owner's APPROVE & SEND
-      if (dueAt) { task.state = 'scheduled'; task.dueAt = dueAt; } // waits for its minute, then waits for review
-      const list = load(); list.push(task); save(list);
-      console.log(`+ ${task.id} → ${task.agent}: ${task.title}${asTeam ? ' (team)' : ''}${dueAt ? ' · scheduled ' + untilText(dueAt) : ''}`);
-      if (chief && assistantEmit) try { assistantEmit({ t: 'task', task: { id: task.id, dept, deptName: DEPTS[dept].name, agent: task.agent, agentName: agentName(task.agent), title: task.title, model: task.model || '', effort: task.effort || '', team: !!task.team, startsInMs: dueAt ? 0 : 20000 } }); } catch {} // the chip in the Chief of Staff panel
-      if (!dueAt) setTimeout(() => { Promise.resolve(discovering).then(() => { const t = load().find(x => x.id === task.id); if (t && t.state === 'next') return runServerTask(task.id); }).catch(e => console.warn('start:', e.message)); }, chief ? 20000 : 4000); // no page needed: the server starts a new task itself (the page's own start, if open, wins and this is skipped)
-      return json(res, 200, task);
+    if (url.pathname === '/api/social' && req.method === 'GET') { // AIOS Social: the next post in each workstream and where it stands
+      let done = {}; try { done = JSON.parse(fs.readFileSync(path.join(DATA, 'calendar-done.json'), 'utf8')); } catch { /* nothing ticked yet */ }
+      const list = social.streams({ posts: weekpack.posts(ROOT, BRAIN), done, social: social.load(DATA), tasks: load() });
+      return json(res, 200, { streams: list.map(s => s.task ? { ...s, task: { ...s.task, agentName: agentName(s.task.agent) } } : s) });
+    }
+    if (url.pathname.startsWith('/api/social/') && req.method === 'POST') { // hand · sign: the card's buttons (posted is the calendar's own tick)
+      const act = url.pathname.slice(12), { key, on } = await body(req), st = social.load(DATA);
+      const s = social.streams({ posts: weekpack.posts(ROOT, BRAIN), social: st, tasks: load() }).find(x => x.key === key);
+      if (!s) return json(res, 404, { error: 'that post is no longer next in its workstream' });
+      if (act === 'sign') { if (on === false) delete st.signed[key]; else st.signed[key] = Date.now(); social.save(DATA, st); return json(res, 200, { ok: true }); }
+      if (act === 'hand') {
+        if (s.state === 'working' || s.state === 'review') return json(res, 409, { error: 'the office is already on it' });
+        const [code, task] = await addTask({ dept: 'marketing', text: social.handText(s, s.post), by: 'chief' });
+        if (code !== 200) return json(res, code, task);
+        st.tasks[key] = task.id; delete st.signed[key]; social.save(DATA, st); return json(res, 200, { ok: true, task });
+      }
+      return json(res, 404, { error: 'unknown action' });
+    }
+    if (url.pathname === '/api/tasks' && req.method === 'POST') { const [code, out] = await addTask(await body(req)); return json(res, code, out); }
+    if (url.pathname === '/api/files') { // AIOS Social's "save a copy": a finished file the office made, downloaded through the browser; inside the office, the Brain, Drive and the Desktop only
+      if (!assistantAllowed(req)) return json(res, 403, { error: 'this page may not download files' });
+      const want = String(url.searchParams.get('path') || '').trim(), abs = path.resolve(path.isAbsolute(want) ? want : path.join(ROOT, want));
+      const roots = [ROOT, BRAIN, path.join(os.homedir(), 'Desktop'), 'G:\\My Drive'], inside = roots.some(r => { const rel = path.relative(path.resolve(r), abs); return !rel.startsWith('..') && !path.isAbsolute(rel); });
+      if (!want || !inside) return json(res, 403, { error: 'that path is outside the office, the Brain and Drive' });
+      let stat; try { stat = fs.statSync(abs); } catch { return json(res, 404, { error: 'not found' }); }
+      if (!stat.isFile()) return json(res, 400, { error: 'that is a folder: open it instead' });
+      res.writeHead(200, { 'Content-Type': 'application/octet-stream', 'Content-Length': stat.size, 'Content-Disposition': `attachment; filename="${path.basename(abs).replace(/["\\\r\n]/g, '')}"` });
+      return fs.createReadStream(abs).pipe(res);
     }
     if (url.pathname === '/api/open' && req.method === 'POST') { // open an output the office made, on this computer: only inside the office, the Brain, Drive and the Desktop, never a program
       if (!assistantAllowed(req)) return json(res, 403, { error: 'this page may not open files' });
