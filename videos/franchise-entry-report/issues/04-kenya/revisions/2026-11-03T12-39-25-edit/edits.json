@@ -1,0 +1,90 @@
+{
+ "issue": "04-kenya",
+ "why": "Reach the 55-source floor: remittance rules (US State Dept 2026), a bubble-tea listing count (Uber Eats, 3 Nov), and the census Muslim share (KNBS 2019), with every line that said otherwise brought into line.",
+ "base": "videos/franchise-entry-report/issues/04-kenya/issue.json",
+ "at": "2026-11-03T12:39:25.106Z",
+ "edits": [
+  {
+   "path": "rising.headline",
+   "value": "Chicken, coffee and forecourt food are growing. Burger, kebab and plant-based have no current count."
+  },
+  {
+   "path": "rising.intro",
+   "find": "We made no locator counts for this issue: every count is a company report or press, and the row says which.",
+   "replace": "We made one listing count (bubble tea, on Uber Eats); every other count is a company report or press, and the row says which."
+  },
+  {
+   "path": "rising.rows.6.evidence",
+   "value": "No international entrant found. Uber Eats’ Nairobi bubble-tea page listed nine boba outlets under six names on 3 Nov 2026, a listing rather than a full count. Panda Tea had four, selling milk tea beside Korean fried chicken; the rest had one each. Nearest proxy for demand: Ketepa opened a Nairobi tea house in 2018 and said Kenyans drink 37m kg of tea, under 10% of what the country grows."
+  },
+  {
+   "path": "rising.rows.6.src",
+   "value": "S54, S30"
+  },
+  {
+   "path": "rising.rows.6.window",
+   "value": "Jun 2018 → Nov 2026"
+  },
+  {
+   "path": "white.gaps.3.gap",
+   "value": "A tea-drinking country where bubble tea is still small and local."
+  },
+  {
+   "path": "white.gaps.3.evidence",
+   "value": "Ketepa’s 2018 Nairobi tea house, and 37m kg of local tea consumption. The largest boba seller on Uber Eats lists four Nairobi outlets; no international entrant found. Demand data: Not found. [S30, S54]"
+  },
+  {
+   "path": "regulation.rows.3.text",
+   "find": "Muslims are about 11% of the population (2021).",
+   "replace": "Muslims were 10.9% of Kenyans at the 2019 census, and 38% in Mombasa."
+  },
+  {
+   "path": "regulation.rows.3.src",
+   "value": "S40, S55"
+  },
+  {
+   "path": "regulation.rows.5.text",
+   "find": "Remittance rules: not found from a primary source.",
+   "replace": "No restrictions on converting or transferring investment funds; profits may be repatriated after tax."
+  },
+  {
+   "path": "regulation.rows.5.src",
+   "value": "S44, S53"
+  },
+  {
+   "path": "route.risks.0.body",
+   "find": "We found no primary source on remittance rules.",
+   "replace": "Kenya places no restrictions on transferring investment funds."
+  },
+  {
+   "path": "route.risks.0.src",
+   "value": "S3, S4, S44, S53"
+  },
+  {
+   "path": "days.method",
+   "find": "Public sources only, read 30 Oct 2026.",
+   "replace": "Public sources only, read 30 Oct to 3 Nov 2026."
+  },
+  {
+   "path": "days.method",
+   "find": "All unit counts are company reports or press: we made no locator counts for this issue.",
+   "replace": "Unit counts are company reports or press, except one Uber Eats listing count for bubble tea (3 Nov 2026)."
+  },
+  {
+   "path": "accessed",
+   "value": "30 Oct to 3 Nov 2026"
+  },
+  {
+   "path": "days.sources",
+   "append": "S53 US Department of State, 2026 Investment Climate Statements: Kenya (foreign exchange and remittance policies), read 3 Nov 2026"
+  },
+  {
+   "path": "days.sources",
+   "append": "S54 Uber Eats Kenya, Bubble tea delivery near me (Nairobi listings), counted 3 Nov 2026"
+  },
+  {
+   "path": "days.sources",
+   "append": "S55 KNBS, 2019 Kenya Population and Housing Census, Table 2.30: population by religious affiliation and county (census.ke), read 3 Nov 2026"
+  }
+ ]
+}

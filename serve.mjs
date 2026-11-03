@@ -1268,14 +1268,14 @@ const server = http.createServer(async (req, res) => {
       if (b.effort !== undefined) patch.effort = normEffort(b.effort) || '';
       editRoutine(r.id, patch); return json(res, 200, { ok: true, routines: loadRoutines() });
     }
+    const calendarDone = () => { try { return JSON.parse(fs.readFileSync(path.join(DATA, 'calendar-done.json'), 'utf8')); } catch { return {}; } }; // the posts ticked as posted
     if (url.pathname === '/api/social' && req.method === 'GET') { // AIOS Social: the next post in each workstream and where it stands
-      let done = {}; try { done = JSON.parse(fs.readFileSync(path.join(DATA, 'calendar-done.json'), 'utf8')); } catch { /* nothing ticked yet */ }
-      const list = social.streams({ posts: weekpack.posts(ROOT, BRAIN), done, social: social.load(DATA), tasks: load() });
+      const list = social.streams({ posts: weekpack.posts(ROOT, BRAIN), done: calendarDone(), social: social.load(DATA), tasks: load() });
       return json(res, 200, { streams: list.map(s => s.task ? { ...s, task: { ...s.task, agentName: agentName(s.task.agent) } } : s) });
     }
     if (url.pathname.startsWith('/api/social/') && req.method === 'POST') { // hand · sign: the card's buttons (posted is the calendar's own tick)
       const act = url.pathname.slice(12), { key, on } = await body(req), st = social.load(DATA);
-      const s = social.streams({ posts: weekpack.posts(ROOT, BRAIN), social: st, tasks: load() }).find(x => x.key === key);
+      const s = social.streams({ posts: weekpack.posts(ROOT, BRAIN), done: calendarDone(), social: st, tasks: load() }).find(x => x.key === key); // same ticks as the cards, or the "next" post differs
       if (!s) return json(res, 404, { error: 'that post is no longer next in its workstream' });
       if (act === 'sign') { if (on === false) delete st.signed[key]; else st.signed[key] = Date.now(); social.save(DATA, st); return json(res, 200, { ok: true }); }
       if (act === 'hand') {

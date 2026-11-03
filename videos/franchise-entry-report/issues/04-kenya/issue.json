@@ -1,10 +1,10 @@
 {
  "issue": 4,
  "country": "Kenya",
- "dateLong": "20 NOV 2026",
+ "dateLong": "13 NOV 2026",
  "colour": "#006600",
  "verified": "OCT 2026",
- "accessed": "30 Oct 2026",
+ "accessed": "30 Oct to 3 Nov 2026",
  "accent": {
   "front": "#FFFFFF",
   "mid": "#FFFFFF",
@@ -122,8 +122,8 @@
   "sowhat": "Food prices rose 9.5% in a year and bank loans cost 14.4%, so the margin is squeezed from both sides. We found no published restaurant margin. The largest operator grew visits 14% by letting average spend fall 3%. Kenya rewards a lean, value-led unit in the five cities, paid for by phone and sold through delivery. [S9, S3, S5]"
  },
  "rising": {
-  "headline": "Chicken, coffee and forecourt food are growing. Burger, kebab, bubble tea and plant-based have no current count.",
-  "intro": "A rise or fall call needs two independent signals. Where we found only one, the row is marked Thin. We made no locator counts for this issue: every count is a company report or press, and the row says which.",
+  "headline": "Chicken, coffee and forecourt food are growing. Burger, kebab and plant-based have no current count.",
+  "intro": "A rise or fall call needs two independent signals. Where we found only one, the row is marked Thin. We made one listing count (bubble tea, on Uber Eats); every other count is a company report or press, and the row says which.",
   "rows": [
    {
     "cat": "Chicken",
@@ -188,9 +188,9 @@
    {
     "cat": "Bubble tea",
     "dir": "Not found",
-    "evidence": "We found no chain, no count and no international entrant. We searched the web, delivery-app listings and Business Daily. Nearest proxy: Ketepa opened a Nairobi tea house in 2018 and said Kenyans drink 37m kg of tea, under 10% of what the country grows. The habit exists, but no branded chain has formed.",
-    "src": "S30",
-    "window": "Jun 2018",
+    "evidence": "No international entrant found. Uber Eats’ Nairobi bubble-tea page listed nine boba outlets under six names on 3 Nov 2026, a listing rather than a full count. Panda Tea had four, selling milk tea beside Korean fried chicken; the rest had one each. Nearest proxy for demand: Ketepa opened a Nairobi tea house in 2018 and said Kenyans drink 37m kg of tea, under 10% of what the country grows.",
+    "src": "S54, S30",
+    "window": "Jun 2018 → Nov 2026",
     "conf": "Thin",
     "sat": "Low",
     "entry": "Medium"
@@ -296,8 +296,8 @@
    },
    {
     "title": "Branded tea and bubble tea",
-    "gap": "A tea-drinking country with no branded bubble-tea chain found.",
-    "evidence": "Ketepa’s 2018 Nairobi tea house, and 37m kg of local tea consumption. No chain or international entrant found. Demand data: Not found. [S30]",
+    "gap": "A tea-drinking country where bubble tea is still small and local.",
+    "evidence": "Ketepa’s 2018 Nairobi tea house, and 37m kg of local tea consumption. The largest boba seller on Uber Eats lists four Nairobi outlets; no international entrant found. Demand data: Not found. [S30, S54]",
     "suits": "Low-capex kiosk and in-mall formats.",
     "route": "Direct franchise with one strong Nairobi partner.",
     "size": "S",
@@ -381,8 +381,8 @@
    },
    {
     "area": "Licensing and halal",
-    "text": "County permit and food-hygiene fees: Not found from a primary source. We tried Nairobi County, KenInvest and a Capital FM guide (blocked), and the fees quoted in search results conflict. The Kenya Bureau of Halal Certification runs a meat and poultry standard. Muslims are about 11% of the population (2021).",
-    "src": "S40"
+    "text": "County permit and food-hygiene fees: Not found from a primary source. We tried Nairobi County, KenInvest and a Capital FM guide (blocked), and the fees quoted in search results conflict. The Kenya Bureau of Halal Certification runs a meat and poultry standard. Muslims were 10.9% of Kenyans at the 2019 census, and 38% in Mombasa.",
+    "src": "S40, S55"
    },
    {
     "area": "Tax",
@@ -391,8 +391,8 @@
    },
    {
     "area": "Royalties",
-    "text": "Withholding to a UK franchisor under the treaty: royalties 15% (20% domestic) and management fees 12.5%. Get a ruling on whether an initial fee counts as a royalty. Remittance rules: not found from a primary source.",
-    "src": "S44"
+    "text": "Withholding to a UK franchisor under the treaty: royalties 15% (20% domestic) and management fees 12.5%. Get a ruling on whether an initial fee counts as a royalty. No restrictions on converting or transferring investment funds; profits may be repatriated after tax.",
+    "src": "S44, S53"
    },
    {
     "area": "Import duty",
@@ -509,8 +509,8 @@
   "risks": [
    {
     "label": "Currency and remittance",
-    "body": "The shilling has held near 130 to the dollar for about 18 months, but royalties are earned in KES. We found no primary source on remittance rules. The treaty withholds 15% on royalties.",
-    "src": "S3, S4, S44"
+    "body": "The shilling has held near 130 to the dollar for about 18 months, but royalties are earned in KES. Kenya places no restrictions on transferring investment funds. The treaty withholds 15% on royalties.",
+    "src": "S3, S4, S44, S53"
    },
    {
     "label": "Cost of borrowing",
@@ -560,7 +560,7 @@
    "Simbisa’s counts by brand, and current Burger King and Artcaffe counts",
    "ARIPO and Madrid coverage, and delivery commission rates"
   ],
-  "method": "Public sources only, read 30 Oct 2026. Every figure is dated and coded to the list below. Rise and fall calls need two independent signals; otherwise they are marked Thin. Estimates are labelled with their method. Not found is used only after a search, with the nearest proxy. All unit counts are company reports or press: we made no locator counts for this issue. Not legal, tax or investment advice.",
+  "method": "Public sources only, read 30 Oct to 3 Nov 2026. Every figure is dated and coded to the list below. Rise and fall calls need two independent signals; otherwise they are marked Thin. Estimates are labelled with their method. Not found is used only after a search, with the nearest proxy. Unit counts are company reports or press, except one Uber Eats listing count for bubble tea (3 Nov 2026). Not legal, tax or investment advice.",
   "sources": [
    "S1 CEIC, Kenya population projection (KNBS series), read 30 Oct 2026",
    "S2 HapaKenya, Kenya’s economy hits Ksh 17.6 trillion (KNBS Economic Survey 2026), 3 May 2026",
@@ -613,7 +613,10 @@
    "S49 Grant Thornton Kenya, Revised statutory minimum wages effective 1 May 2026, 9 Jun 2026",
    "S50 Daily Nation, The 12pc minimum wage bombshell, 6 Jul 2026",
    "S51 Techweez, Uber buys out Glovo, its biggest rival in Kenya’s delivery market, 17 Jul 2026",
-   "S52 Streamline (citing Capital FM), Sinaloa Club faces closure threat over KES 16.5M rent dispute, 4 Aug 2026"
+   "S52 Streamline (citing Capital FM), Sinaloa Club faces closure threat over KES 16.5M rent dispute, 4 Aug 2026",
+   "S53 US Department of State, 2026 Investment Climate Statements: Kenya (foreign exchange and remittance policies), read 3 Nov 2026",
+   "S54 Uber Eats Kenya, Bubble tea delivery near me (Nairobi listings), counted 3 Nov 2026",
+   "S55 KNBS, 2019 Kenya Population and Housing Census, Table 2.30: population by religious affiliation and county (census.ke), read 3 Nov 2026"
   ]
  }
 }

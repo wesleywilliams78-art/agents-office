@@ -34,7 +34,7 @@ The office's 2 Nov review produced a patch it couldn't apply: desks have no file
 - **Checked on the rebuilt PDF:** no doubled strings; pages 1, 3 and 5 checked by eye; 7 pages; all 52 sources kept.
 - **The 30 Oct delivered version** is in `revisions/2026-10-30-delivered/`.
 - **Still blocking release:**
-  - 52 sources against the floor of 55;
+  - ~~52 sources~~ **done 3 Nov:** 55 sources, live since 3 Nov with Wesley's OK (from `revisions/2026-11-03T12-39-25-edit/`; the version it replaced is in `revisions/2026-11-03T12-40-59-replaced/`). It adds S53 (US State Dept 2026: no limits on transferring investment funds), S54 (Uber Eats: nine boba outlets under six names in Nairobi, Panda Tea four) and S55 (KNBS 2019 census: Muslims 10.9%, 38% in Mombasa), and brings the page 3 headline and intro, the bubble-tea row and gap, the remittance risk and the method note into line;
   - Zishan's surname, role, approved quote and disclosure;
-  - Fri 20 Nov is also Denmark's locked date, and Fri 13 Nov is empty;
+  - ~~the 20 Nov clash with Denmark~~ **done 3 Nov:** Wesley set Fri 13 Nov. The live PDF is re-dated 13 NOV 2026 (the 20 NOV version is in `revisions/2026-11-03T12-45-10-replaced/`);
   - Wesley to confirm coffee in the headline.

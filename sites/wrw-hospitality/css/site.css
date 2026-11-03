@@ -247,6 +247,13 @@ strong{font-weight:560}
 .ledger__val{font:220 clamp(56px,7vw,128px)/.9 var(--display);letter-spacing:-.04em;color:var(--red);font-variant-numeric:tabular-nums;text-align:right}
 .ledger li::after{content:"";position:absolute;left:0;bottom:-1px;height:1px;width:100%;background:var(--red);transform-origin:0 50%;transform:scaleX(var(--drawn,1))}
 @media (max-width:599px){.ledger li{grid-template-columns:auto 1fr;}.ledger__val{grid-column:1/-1;text-align:left}}
+/* The countries row: a flat grey world, the strategy countries in red */
+.ledger__map{grid-column:2/-1;margin-top:clamp(16px,2.4vw,36px)}
+.map{display:block;width:100%;height:auto;max-height:72vh}
+.map__land{fill:#DAD3C9}
+.map__c{fill:var(--red);stroke:var(--bone);stroke-width:.6;vector-effect:non-scaling-stroke}
+.map__pin{fill:none;stroke:var(--red);stroke-width:1.5;vector-effect:non-scaling-stroke}
+@media (max-width:599px){.ledger__map{grid-column:1/-1}}
 .is-empty{color:transparent!important;-webkit-text-stroke:1px var(--red);opacity:.55} /* a figure still to come: an outline slot, not a broken rule */
 
 /* Marquee: two rows, opposite ways, they speed up with the scroll */

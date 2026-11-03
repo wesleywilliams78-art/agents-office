@@ -20,10 +20,29 @@ function Write-Log($msg) {
     $line | Out-File -FilePath $log -Append -Encoding utf8
 }
 
+# 3 Nov 2026: the Telegram plugin is switched off in the user settings so no other Claude session starts a
+# connector of its own; this listener switches it back on for itself with telegram-listener.settings.json.
+# Claude Code also skips a plugin server for 15 minutes after any session saw it fail (~\.claude\mcp-needs-auth-cache.json),
+# which left the listener deaf, so that entry is cleared before every launch.
+$settings = Join-Path $PSScriptRoot 'telegram-listener.settings.json'
+$failCache = Join-Path $env:USERPROFILE '.claude\mcp-needs-auth-cache.json'
+function Clear-TelegramFailure {
+    try {
+        if (-not (Test-Path $failCache)) { return }
+        $c = Get-Content $failCache -Raw | ConvertFrom-Json
+        if ($c.PSObject.Properties.Name -contains 'plugin:telegram:telegram') {
+            $c.PSObject.Properties.Remove('plugin:telegram:telegram')
+            [IO.File]::WriteAllText($failCache, ($c | ConvertTo-Json -Compress -Depth 5))
+            Write-Log "cleared a cached Telegram failure"
+        }
+    } catch { Write-Log ("could not read the failure cache: " + $_.Exception.Message) }
+}
+
 Write-Log "watchdog started"
 while ($true) {
+    Clear-TelegramFailure
     Write-Log "launching claude --channels plugin:telegram@claude-plugins-official"
-    claude --channels plugin:telegram@claude-plugins-official
+    claude --settings $settings --channels plugin:telegram@claude-plugins-official
     Write-Log ("claude exited (code " + $LASTEXITCODE + ") - restarting in 10s")
     Start-Sleep -Seconds 10
 }

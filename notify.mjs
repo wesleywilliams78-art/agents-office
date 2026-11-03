@@ -32,6 +32,27 @@ export async function telegramVideo(file, caption = '') {
   } catch (e) { return { ok: false, reason: 'could not send the video: ' + e.message }; }
 }
 
+// how each kind of file goes: a video plays inline, audio gets a player, a picture shows, anything else arrives as a document
+const KINDS = [
+  [/\.(mp4|mov|m4v)$/i, 'sendVideo', 'video', 49], [/\.(mp3|m4a|wav|ogg|flac)$/i, 'sendAudio', 'audio', 49],
+  [/\.(jpe?g|png|webp)$/i, 'sendPhoto', 'photo', 9], [/./, 'sendDocument', 'document', 49],
+];
+/** Send any file (a reel, an audio draft, a picture, a PDF) to Wesley's own Telegram chat with a short caption. Returns { ok, reason }. */
+export async function telegramFile(file, caption = '') {
+  const { token, chat } = creds();
+  if (!token || !chat) return { ok: false, reason: 'Telegram is not set up (no bot token or allow-listed chat)' };
+  const [, method, field, mb] = KINDS.find(([re]) => re.test(file));
+  try {
+    if (fs.statSync(file).size > mb * 1024 * 1024) return { ok: false, reason: `the file is over Telegram's ${mb + 1} MB limit for this kind of file` };
+    const fd = new FormData(); fd.append('chat_id', chat); fd.append('caption', String(caption).slice(0, 1000));
+    if (field === 'video') fd.append('supports_streaming', 'true');
+    fd.append(field, new Blob([fs.readFileSync(file)]), path.basename(file));
+    const r = await fetch(`https://api.telegram.org/bot${token}/${method}`, { method: 'POST', body: fd, signal: AbortSignal.timeout(180000) });
+    const j = await r.json().catch(() => ({}));
+    return j.ok ? { ok: true } : { ok: false, reason: `Telegram refused it (${r.status}${j.description ? ': ' + j.description : ''})` };
+  } catch (e) { return { ok: false, reason: 'could not send the file: ' + e.message }; }
+}
+
 /** Send `text` to Wesley's own Telegram chat. Returns { ok, reason }. */
 export async function telegram(text) {
   const { token, chat } = creds();

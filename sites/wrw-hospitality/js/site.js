@@ -246,9 +246,11 @@
     gsap.utils.toArray('.reel').forEach(reel => {
       const track = reel.querySelector('.reel__track');
       reel.classList.add('is-moving');
+      // Same pace however many tiles a reel holds: seconds per tile as first tuned (6 brands in 46 s, 7 partners in 52 s)
+      const tiles = track.querySelectorAll('.reel__group:not([aria-hidden]) .logo').length;
       const loop = reel.classList.contains('reel--right')
-        ? gsap.fromTo(track, { xPercent: -50 }, { xPercent: 0, duration: 52, ease: 'none', repeat: -1 })
-        : gsap.to(track, { xPercent: -50, duration: 46, ease: 'none', repeat: -1 });
+        ? gsap.fromTo(track, { xPercent: -50 }, { xPercent: 0, duration: tiles * 52 / 7, ease: 'none', repeat: -1 })
+        : gsap.to(track, { xPercent: -50, duration: tiles * 46 / 6, ease: 'none', repeat: -1 });
       ST.create({ trigger: reel, start: 'top bottom', end: 'bottom top', onToggle: self => (self.isActive ? loop.play() : loop.pause()) });
       const stop = () => gsap.to(loop, { timeScale: 0, duration: .5, overwrite: true });
       const go = () => gsap.to(loop, { timeScale: 1, duration: .8, overwrite: true });
@@ -263,6 +265,17 @@
 
     // Ledger rows: a red rule draws under each figure
     gsap.utils.toArray('.ledger li').forEach(li => gsap.fromTo(li, { '--drawn': 0 }, { '--drawn': 1, duration: 1.2, ease, scrollTrigger: { trigger: li, start: 'top 88%', once: true } }));
+
+    // The countries map: the strategy countries turn from grey to red, west to east; Qatar's marker follows its turn
+    const map = document.querySelector('.ledger__map');
+    if (map) {
+      const lit = map.querySelectorAll('.map__c, .map__pin');
+      const countries = [...map.querySelectorAll('.map__c')];
+      const tl = gsap.timeline({ scrollTrigger: { trigger: map, start: 'top 78%', once: true } });
+      tl.fromTo(countries, { fill: '#DAD3C9' }, { fill: '#FF3131', duration: .45, ease: 'power2.out', stagger: .13 })
+        .fromTo(map.querySelectorAll('.map__pin'), { opacity: 0 }, { opacity: 1, duration: .4 }, .13 * Math.max(0, countries.findIndex(c => c.hasAttribute('data-small'))));
+      cleanups.push(() => { tl.kill(); gsap.set(lit, { clearProps: 'fill,opacity' }); });
+    }
 
     // Marquee: two rows, opposite ways; scrolling speeds them up and skews them
     const rows = gsap.utils.toArray('.marquee__row');

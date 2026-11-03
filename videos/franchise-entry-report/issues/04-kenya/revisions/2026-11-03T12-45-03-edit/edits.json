@@ -1,0 +1,12 @@
+{
+ "issue": "04-kenya",
+ "why": "Wesley set Kenya for Fri 13 Nov 2026 (3 Nov); the cover date said 20 NOV.",
+ "base": "videos/franchise-entry-report/issues/04-kenya/issue.json",
+ "at": "2026-11-03T12:45:03.467Z",
+ "edits": [
+  {
+   "path": "dateLong",
+   "value": "13 NOV 2026"
+  }
+ ]
+}

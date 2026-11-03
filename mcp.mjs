@@ -56,6 +56,9 @@ function freshPath() {
 // MAX_MCP_OUTPUT_TOKENS: Claude Code cuts any tool result (a Plaud transcript, a long Doc) at 25,000 tokens by default, so an agent saw only the first part of a long
 // transcript and reviewed it as if it were all. The office lifts the cut-off so a whole transcript arrives (a hard ceiling, not a target).
 // AGENTS_OFFICE_RUN marks a Claude run the office started, so the "Needs you" hook (scripts/attention-hook.mjs) leaves it out
+// The Telegram plugin is switched off in Wesley's user settings and on only for the listener window (scripts/telegram-listener.settings.json),
+// so office runs never start it. Do not make it fail here instead (3 Nov 2026): Claude Code caches a plugin server's failure for 15 minutes for
+// every session, and runs that failed it on purpose kept the listener from ever connecting.
 export function freshEnv(base = process.env) { return { ...base, PATH: freshPath(), MAX_MCP_OUTPUT_TOKENS: base.MAX_MCP_OUTPUT_TOKENS || '200000', AGENTS_OFFICE_RUN: '1' }; }
 
 // known brands → logo key in src/mcplogos.js. Anything else gets a generated tile.
@@ -70,7 +73,7 @@ const ALIASES = {
   ltx: ['ltxlocal', 'ltx'], // the local video generator (connectors/ltx-local)
   higgsfield: ['higgsfield', 'higgfield'], territool: ['territool'],
   chrome: ['claudeinchrome', 'chrome', 'claudechrome', 'browser'],
-  telegram: ['telegram', 'plugintelegramtelegram'],
+  telegram: ['telegram', 'plugintelegramtelegram', 'telegramsend'], // telegramsend: the desks' send-only connector (connectors/telegram-send)
   whatsapp: ['whatsapp', 'openwa'], // OpenWA, the self-hosted WhatsApp gateway (read-only MCP)
 };
 // which pods a known brand feeds (mirrors the demo's MCP_BY_DEPT)

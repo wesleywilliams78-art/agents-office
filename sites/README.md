@@ -32,12 +32,13 @@ Then the theme became site 1 → site 10 → site 100 (never 1,000):
 - **Close:** ends on one, ten and a hundred squares.
 - **Brands section (03):** two reels of square logo tiles running opposite ways; they pause under the pointer or on keyboard focus, and stand still with reduced motion. The shopfront photos are gone (Wesley: "no pictures of businesses").
   - **"Learned on these floors."** Heavenly Desserts, McDonald's, Turtle Bay, KFC, Asda, ASK Italian.
-  - **"And the partners I bring my clients onto."** KATE One (formerly KATE Media Dojo), 3S POS, Pro Insight, Mystery Visits, Sentiment Search, Uber Eats, Deliveroo.
+  - **"And the partners I bring my clients onto."** KATE One (formerly KATE Media), Dojo, 3S POS, Pro Insight, Sentiment Search, Harlyy, Manual Magic AI, Attensi, then the delivery platforms: Uber Eats, Deliveroo, Just Eat, DoorDash, SkipTheDishes, Wolt, Foodora, Foodpanda. Mystery Visits was removed on 3 Nov 2026.
 
 Logos are one-colour silhouettes in `img/logos/` (WebP, about 200 KB together), tinted ink by CSS and red on hover. Sources:
-- **Wikimedia Commons** (public-domain or CC0 logo files): McDonald's, KFC, Asda, ASK Italian, Uber Eats, Deliveroo.
-- **The company's own website header:** Turtle Bay, Heavenly Desserts, 3S POS, Sentiment Search, KATE One, Pro Insight (proinsight.org).
-- **Mystery Visits:** shows its name in type until Wesley supplies its logo or website.
+- **Wikimedia Commons** (public-domain or CC0 logo files): McDonald's, KFC, Asda, ASK Italian, Uber Eats, Deliveroo, DoorDash, SkipTheDishes, Foodora, Foodpanda. Just Eat's orange logo is from English Wikipedia (a logo file used there under fair use).
+- **The company's own website header:** Turtle Bay, Heavenly Desserts, 3S POS, Sentiment Search, KATE One, Pro Insight (proinsight.org), Dojo (dojo.tech), Wolt (wolt.com), Attensi (attensi.com).
+- **Manual Magic AI:** the lettering only, keyed out of the square logo in the repo (`videos/manual-magic-ai/university/assets/logo.png`).
+- **Harlyy:** its logo is the word "harlyy" in Alfa Slab One (an open-licence font), as in harlyy.com's header, redrawn as a silhouette.
 
 Logos are trademarks. Before publishing, Wesley confirms each brand is happy to be listed. Partners such as Uber and Deliveroo have their own brand rules.
 
@@ -96,7 +97,7 @@ On the page, unwritten copy shows as `[PLACEHOLDER: …]` and unconfirmed choice
 - the franchising and timeline options on the form
 - two lines of wording
 
-**Cleared 3 Nov 2026** (numbers ledger, `00-Meta/numbers-ledger.md`): £1.7M–£2.1M additional revenue a year, £40M estate, 9 new country strategies developed, 15+ years. No percentages on the site (the 19% stays off), and no company name beside a figure.
+**Cleared 3 Nov 2026** (numbers ledger, `00-Meta/numbers-ledger.md`): in this order: 15+ years, £40M estate, £1.7M–£2.1M additional revenue a year, 10 country strategies developed, the UK included (shown on a grey world map with the ten in red; the map is made from Natural Earth outlines, public domain). No percentages on the site (the 19% stays off), and no company name beside a figure.
 
 ## Settings (`js/config.js`)
 - `CAL_LINK`: the Cal.com event path. Set the event to "requires confirmation". While it is empty, step 2 shows a placeholder.

@@ -272,7 +272,7 @@ export function report({ sessions = [], ledger = [], tasks = [], agents = [], de
   return {
     at: now, since, window: WINDOW,
     headline: { today: win(1), d7: win(7), d30: win(30) },
-    days, chats: chatRows.slice(0, 40), chatCount: chatRows.length, heavy: heavy.length,
+    days, chats: chatRows.filter((c, i) => i < 40 || c.last >= now - DAY), chatCount: chatRows.length, heavy: heavy.length, // every chat used in the last 24 hours, however small: the page lists those on top
     jobs, roi: { perDeliverable, rework: rework.slice(0, 12), approval, modelFit },
     coach: coach({ chats: chatRows, rework, modelFit, now }),
     oldOffice: oldOffice.reduce((n, s) => n + s.calls, 0),

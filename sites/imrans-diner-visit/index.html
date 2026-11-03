@@ -1,0 +1,1065 @@
+<title>Imran's Diner Site Visit</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=Newsreader:opsz,wght@6..72,300;6..72,400&display=swap">
+<style>
+/* Layout: one phone-width column; a sticky bar with the two visit days and the report; each agenda area folds open to its prompts, capture lines and its own camera */
+:root {
+  --bg: #F2F0EB; --card: #FFFFFF; --field: #FAF9F6; --ink: #181615; --sub: #6B6561; --faint: #958E89;
+  --line: rgba(24,22,21,.13); --soft: rgba(24,22,21,.05);
+  --red: #DC2F16; --red-ink: #B4250E; --on-red: #FFFFFF;
+  --ok: #2E7A4C; --on-ok: #FFFFFF; --warn: #A86400; --on-warn: #FFFFFF;
+  --display: "Newsreader", Georgia, "Times New Roman", serif;
+  --ui: "Archivo", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #181615; --card: #232120; --field: #1D1B1A; --ink: #F3F2F2; --sub: #B79C8F; --faint: #857D78;
+  --line: rgba(243,242,242,.13); --soft: rgba(243,242,242,.06);
+  --red: #EC3013; --red-ink: #FF7A5E; --on-red: #FFFFFF;
+  --ok: #5FBF86; --on-ok: #0F2418; --warn: #E8A33A; --on-warn: #2A1A00; color-scheme: dark;
+} }
+:root[data-theme="dark"] {
+  --bg: #181615; --card: #232120; --field: #1D1B1A; --ink: #F3F2F2; --sub: #B79C8F; --faint: #857D78;
+  --line: rgba(243,242,242,.13); --soft: rgba(243,242,242,.06);
+  --red: #EC3013; --red-ink: #FF7A5E; --on-red: #FFFFFF;
+  --ok: #5FBF86; --on-ok: #0F2418; --warn: #E8A33A; --on-warn: #2A1A00; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font: 400 15px/1.5 var(--ui); -webkit-text-size-adjust: 100%;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 0 64px; }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--bg); }
+.wrap { max-width: 760px; margin: 0 auto; }
+button { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--red); outline-offset: 2px; }
+
+header.top { padding-block: 20px 12px; }
+.eyebrow { font-size: 11px; letter-spacing: .16em; text-transform: uppercase; font-weight: 600; color: var(--red-ink); }
+h1 { font: 300 32px/1.08 var(--display); margin: 8px 0 6px; text-wrap: balance; letter-spacing: -.005em; }
+.sub { color: var(--sub); font-size: 13.5px; margin: 0; }
+
+.bar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--bg); padding-block: 8px 10px; border-bottom: 1px solid var(--line); }
+.tabs { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; }
+.tab { appearance: none; border: 1px solid var(--line); background: var(--card); font-weight: 600; font-size: 14px; line-height: 1.2; padding: 9px 4px; border-radius: 10px; min-height: 48px; cursor: pointer; }
+.tab small { display: block; font-weight: 400; font-size: 11.5px; color: var(--sub); margin-top: 3px; font-variant-numeric: tabular-nums; }
+.tab[aria-selected="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+.tab[aria-selected="true"] small { color: inherit; opacity: .75; }
+.status { display: flex; align-items: center; gap: 8px; font-size: 12.5px; color: var(--sub); margin-top: 8px; min-height: 18px; }
+.status i { flex: none; width: 8px; height: 8px; border-radius: 50%; background: var(--faint); }
+.status.synced i { background: var(--ok); }
+.status.saving i, .status.offline i, .status.unreached i { background: var(--warn); }
+
+.day { display: grid; gap: 10px; padding-top: 16px; }
+.intro { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 16px; display: grid; gap: 12px; }
+.intro h2 { font: 400 22px/1.15 var(--display); margin: 0; text-wrap: balance; }
+.intro p { margin: 0; color: var(--sub); font-size: 14px; }
+.intro .row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.howto summary { cursor: pointer; font-weight: 600; font-size: 13.5px; color: var(--red-ink); list-style: none; }
+.howto summary::-webkit-details-marker { display: none; }
+.howto ul { margin: 10px 0 0; padding-left: 18px; color: var(--sub); font-size: 14px; display: grid; gap: 4px; }
+.busy { font-size: 13.5px; border-left: 3px solid var(--red); padding: 2px 0 2px 10px; }
+.busy b { color: var(--ink); font-weight: 600; }
+
+.area { background: var(--card); border: 1px solid var(--line); border-radius: 14px; scroll-margin-top: calc(112px + env(safe-area-inset-top, 0px)); }
+.area > summary { list-style: none; display: grid; grid-template-columns: 2.6em minmax(0, 1fr) auto; gap: 2px 10px; align-items: baseline; padding: 14px; cursor: pointer; }
+.area > summary::-webkit-details-marker { display: none; }
+.code { font-weight: 600; font-size: 13px; color: var(--red-ink); font-variant-numeric: tabular-nums; }
+.ttl { font: 400 18px/1.25 var(--display); min-width: 0; text-wrap: balance; }
+.ttl em { font: 500 11px/1 var(--ui); font-style: normal; letter-spacing: .06em; text-transform: uppercase; color: var(--sub); white-space: nowrap; }
+.mins { font-size: 12px; color: var(--sub); white-space: nowrap; font-variant-numeric: tabular-nums; }
+.st { grid-column: 2 / 4; display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
+.st:empty { display: none; }
+.area[open] > summary { border-bottom: 1px solid var(--line); }
+.body { padding: 14px; display: grid; gap: 16px; }
+.look { margin: 0; color: var(--sub); font-size: 14px; }
+.look b { color: var(--ink); font-weight: 600; margin-right: 4px; }
+.flag { margin: 0; font-size: 13.5px; padding: 10px 12px; border-left: 3px solid var(--red); background: var(--soft); border-radius: 0 8px 8px 0; }
+
+.fld { display: grid; gap: 6px; min-width: 0; }
+.fld > label, .lbl { font-size: 11.5px; letter-spacing: .09em; text-transform: uppercase; font-weight: 600; color: var(--sub); }
+.fld small { color: var(--faint); font-size: 12.5px; margin-top: -3px; }
+textarea, input[type="text"], input[type="time"], select { width: 100%; min-width: 0; font: 400 16px/1.45 var(--ui); color: var(--ink); background: var(--field); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; }
+textarea { resize: none; overflow: hidden; min-height: 70px; }
+textarea.big { min-height: 120px; }
+textarea:focus, input:focus, select:focus { outline: none; border-color: var(--ink); box-shadow: 0 0 0 1px var(--ink); }
+
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip { appearance: none; border: 1px solid var(--line); background: var(--field); font-weight: 500; font-size: 14px; line-height: 1; padding: 12px 14px; border-radius: 999px; min-height: 44px; cursor: pointer; }
+.chip[aria-pressed="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+.chip[aria-pressed="true"][data-v="Strong"], .chip[aria-pressed="true"][data-v="Matches"] { background: var(--ok); border-color: var(--ok); color: var(--on-ok); }
+.chip[aria-pressed="true"][data-v="Needs work"] { background: var(--red); border-color: var(--red); color: var(--on-red); }
+.chip[aria-pressed="true"][data-v="Differs"] { background: var(--warn); border-color: var(--warn); color: var(--on-warn); }
+
+.pill { font-size: 11.5px; font-weight: 600; padding: 3px 8px; border-radius: 999px; border: 1px solid var(--line); color: var(--sub); }
+.pill.r-strong { border-color: var(--ok); color: var(--ok); }
+.pill.r-needs-work { border-color: var(--red); color: var(--red-ink); }
+.pc { font-size: 12px; color: var(--sub); }
+.dot { width: 7px; height: 7px; border-radius: 50%; background: var(--ok); }
+
+.tool, .order { border-top: 1px solid var(--line); padding-top: 12px; display: grid; gap: 8px; min-width: 0; }
+.tool:first-child, .order:first-child { border-top: 0; padding-top: 0; }
+.tool h4, .order h4 { margin: 0; font: 600 14px/1.35 var(--ui); }
+.tool h4 span, .order h4 span { color: var(--red-ink); margin-right: 6px; font-variant-numeric: tabular-nums; }
+.ticks { display: flex; flex-wrap: wrap; gap: 6px; }
+.tick { display: inline-flex; align-items: center; gap: 8px; font-size: 14px; padding: 10px 12px; border-radius: 999px; border: 1px solid var(--line); background: var(--field); cursor: pointer; min-height: 44px; }
+.tick input { width: 18px; height: 18px; margin: 0; accent-color: var(--ok); }
+.list { display: grid; gap: 14px; }
+.otimes { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 8px; }
+.tin { display: grid; gap: 4px; min-width: 0; }
+.tin span { font-size: 12px; color: var(--sub); }
+.tin div { display: flex; gap: 6px; min-width: 0; }
+.tin input { flex: 1 1 auto; width: auto; min-width: 0; }
+.now { appearance: none; border: 1px solid var(--line); background: var(--card); border-radius: 10px; padding: 0 10px; font-size: 13px; font-weight: 600; min-height: 44px; cursor: pointer; flex: none; }
+.dur { font-size: 13.5px; font-variant-numeric: tabular-nums; color: var(--sub); }
+.dur b { color: var(--ink); font-weight: 600; }
+
+.photos { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; }
+.photos:empty { display: none; }
+.ph { margin: 0; display: grid; gap: 6px; min-width: 0; }
+.frame { position: relative; aspect-ratio: 4 / 3; max-width: 100%; border-radius: 10px; overflow: hidden; background: var(--soft); }
+.frame img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.frame.missing::after { content: "Photo on another device"; position: absolute; inset: 0; display: grid; place-items: center; font-size: 12px; color: var(--sub); text-align: center; padding: 8px; }
+.badge { position: absolute; left: 6px; top: 6px; font-size: 11px; font-weight: 600; padding: 3px 8px; border-radius: 999px; background: rgba(24,22,21,.72); color: #F3F2F2; }
+.badge.ok { background: rgba(46,122,76,.9); color: #FFFFFF; }
+.cap { font-size: 16px !important; padding: 8px 10px !important; }
+.del { appearance: none; border: 0; background: none; color: var(--sub); font-size: 13px; padding: 6px 0; text-align: left; cursor: pointer; min-height: 32px; }
+.del.armed { color: var(--red-ink); font-weight: 600; }
+.cam { display: flex; flex-wrap: wrap; gap: 8px; }
+.btn { position: relative; display: inline-flex; align-items: center; justify-content: center; gap: 8px; font-weight: 600; font-size: 14px; line-height: 1; padding: 12px 16px; border-radius: 999px; border: 1px solid var(--line); background: var(--card); min-height: 46px; cursor: pointer; }
+.btn svg { width: 18px; height: 18px; flex: none; }
+.btn.primary { background: var(--red); border-color: var(--red); color: var(--on-red); }
+.btn:focus-within { outline: 2px solid var(--red); outline-offset: 2px; }
+.vh { position: absolute; width: 1px; height: 1px; opacity: 0; overflow: hidden; clip: rect(0 0 0 0); }
+
+.rep { display: grid; gap: 12px; padding-top: 16px; }
+.panel { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 16px; display: grid; gap: 10px; min-width: 0; }
+.panel h2 { font: 400 22px/1.15 var(--display); margin: 0; }
+.panel h3 { margin: 0; font-size: 11.5px; letter-spacing: .09em; text-transform: uppercase; font-weight: 600; color: var(--sub); }
+.panel p { margin: 0; color: var(--sub); font-size: 14px; }
+.nums { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.num b { display: block; font: 300 34px/1 var(--display); font-variant-numeric: tabular-nums; }
+.num span { font-size: 12px; color: var(--sub); }
+.tally { display: flex; flex-wrap: wrap; gap: 6px; }
+.items { margin: 0; padding: 0; list-style: none; display: grid; gap: 8px; }
+.items li { display: grid; grid-template-columns: 2.6em minmax(0, 1fr); gap: 8px; font-size: 14.5px; }
+.items li b { color: var(--red-ink); font-weight: 600; font-size: 13px; font-variant-numeric: tabular-nums; }
+.items li em { font-style: normal; color: var(--sub); font-size: 13px; }
+.empty { color: var(--faint); font-size: 14px; }
+.actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.save { display: none; }
+body.can-save .save { display: inline-flex; }
+#copyWrap textarea { min-height: 200px; font-size: 13px; overflow: auto; }
+ol.outline { margin: 0; padding-left: 20px; color: var(--sub); font-size: 14px; display: grid; gap: 4px; }
+
+.purpose { margin: 0; font: 400 17px/1.35 var(--display); text-wrap: pretty; }
+.when { margin: -8px 0 0; font-size: 12.5px; color: var(--sub); }
+.dos { margin: 0; padding: 0; list-style: none; display: grid; gap: 4px; }
+.dos label { display: grid; grid-template-columns: 22px minmax(0, 1fr); gap: 8px; align-items: start; font-size: 14.5px; padding: 6px 0; cursor: pointer; }
+.dos input { width: 18px; height: 18px; margin: 2px 0 0; accent-color: var(--ok); }
+.dos input:checked + span { color: var(--sub); text-decoration: line-through; text-decoration-color: var(--faint); }
+.std { background: var(--soft); border-radius: 10px; padding: 10px 12px; }
+.std > summary { cursor: pointer; list-style: none; font-size: 13.5px; font-weight: 600; color: var(--red-ink); }
+.std > summary::-webkit-details-marker { display: none; }
+.std ul { margin: 10px 0 0; padding: 0; list-style: none; display: grid; gap: 8px; font-size: 14px; }
+.std li .ref { margin-right: 6px; }
+.std li.gap { color: var(--sub); }
+.howto ul.std-list .ref { margin-right: 6px; white-space: normal; }
+.ref { font-size: 11.5px; font-weight: 600; color: var(--red-ink); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.qs { display: grid; gap: 12px; }
+.q { display: grid; gap: 6px; min-width: 0; }
+.q p { margin: 0; font-size: 14.5px; font-weight: 500; }
+.q p .ref { margin-left: 6px; }
+.q textarea.ans { min-height: 46px; }
+.q .chips .chip { padding: 9px 12px; min-height: 40px; font-size: 13.5px; }
+.chip[aria-pressed="true"][data-v="Shown"] { background: var(--ok); border-color: var(--ok); color: var(--on-ok); }
+.chip[aria-pressed="true"][data-v="Partly"] { background: var(--warn); border-color: var(--warn); color: var(--on-warn); }
+.chip[aria-pressed="true"][data-v="Could not show"], .chip[aria-pressed="true"][data-v="Critical"] { background: var(--red); border-color: var(--red); color: var(--on-red); }
+.chip[aria-pressed="true"][data-v="High"] { background: var(--warn); border-color: var(--warn); color: var(--on-warn); }
+.painrow { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; border-top: 1px dashed var(--line); padding-top: 14px; }
+.painrow .pc a { color: var(--red-ink); font-weight: 600; }
+.btn.pain { border-color: var(--red); color: var(--red-ink); }
+.pain { border-left: 3px solid var(--red); }
+.pain > summary { grid-template-columns: 2.6em minmax(0, 1fr) auto; }
+.pain .ttl { font-size: 16.5px; }
+.pill.s-critical { border-color: var(--red); background: var(--red); color: var(--on-red); }
+.pill.s-high { border-color: var(--warn); color: var(--warn); }
+.pill.awk { border-style: dashed; }
+.whos { display: flex; flex-wrap: wrap; gap: 6px; }
+.pfoot { display: flex; flex-wrap: wrap; gap: 8px; justify-content: space-between; align-items: center; }
+.items li i { font-style: normal; display: block; color: var(--sub); font-size: 13px; }
+.rank li { grid-template-columns: 2.6em minmax(0, 1fr); }
+.rank li b small { display: block; font-weight: 500; color: var(--sub); font-size: 11px; }
+.toast { position: fixed; left: 50%; bottom: calc(16px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); background: var(--ink); color: var(--bg); padding: 10px 16px; border-radius: 999px; font-size: 14px; font-weight: 500; max-width: calc(100% - 32px); z-index: 20; }
+@media (max-width: 420px) { h1 { font-size: 28px; } .ttl { font-size: 17px; } }
+@media (prefers-reduced-motion: no-preference) { .chip, .tab, .btn { transition: background-color .12s, color .12s, border-color .12s; } }
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <div class="eyebrow">WRW Hospitality · Internal, not for the client</div>
+    <h1>Imran's Diner site visit</h1>
+    <p class="sub">Thu 5 and Fri 6 Nov 2026 · London Road · role titles only, no names</p>
+  </header>
+
+  <div class="bar">
+    <div class="tabs" role="tablist" aria-label="Visit day">
+      <button class="tab" role="tab" id="tab-thu" data-tab="thu" aria-controls="view-thu" aria-selected="true">Thursday<small id="prog-thu">0 of 15</small></button>
+      <button class="tab" role="tab" id="tab-fri" data-tab="fri" aria-controls="view-fri" aria-selected="false">Friday<small id="prog-fri">0 of 11</small></button>
+      <button class="tab" role="tab" id="tab-pains" data-tab="pains" aria-controls="view-pains" aria-selected="false">Pains<small id="prog-pains">0 logged</small></button>
+      <button class="tab" role="tab" id="tab-report" data-tab="report" aria-controls="view-report" aria-selected="false">Report<small id="prog-rep">0 photos</small></button>
+    </div>
+    <div class="status" id="status" aria-live="polite"><i></i><span>Saved on this phone</span></div>
+  </div>
+
+  <section class="day" id="view-thu" role="tabpanel" aria-labelledby="tab-thu">
+    <div class="intro">
+      <div class="eyebrow">Thursday 5 Nov · 8 hours · the deep dive</div>
+      <h2>Is the business set up and working properly, and where does it hurt?</h2>
+      <p>Fifteen blocks, 480 minutes, ending on the evening service. Every block has a purpose, the steps, the questions to ask and the things to ask to see, all taken from Imran's Diner's own Operations Manual and SOPs. When something hurts, log it as a pain point, even when it is awkward to say.</p>
+      <div class="row">
+        <div class="fld"><label for="META-thuStart">Start</label><input type="time" id="META-thuStart" data-a="META" data-k="thuStart"></div>
+        <div class="fld"><label for="META-thuEnd">End</label><input type="time" id="META-thuEnd" data-a="META" data-k="thuEnd"></div>
+      </div>
+      <p class="busy" id="planLine">Set the start time and each block shows its planned clock time.</p>
+      <details class="howto" id="howto-thu">
+        <summary>How to run the day</summary>
+        <ul>
+          <li>Open a block: read the purpose, tick the steps as you go, ask the questions and type or dictate the answer under each.</li>
+          <li>Show me: ask to see the thing itself. Mark it Shown, Partly or Could not show. What cannot be shown is evidence too.</li>
+          <li>"What the manual says" holds the written standard for that block, with its chapter. Score against it: Matches, Differs, or No standard yet. With no written standard, use No standard yet, not Needs work.</li>
+          <li>Log a pain point the moment you find one: what hurts, the evidence, who feels it, how bad and how often. The Report ranks them.</li>
+          <li>T13 and T14 are the evening: prep as the second shift arrives, then the live service as the trade builds. T11 conversations can be spread through the day.</li>
+          <li>Use role titles, not names. Nothing is shared on site.</li>
+        </ul>
+      </details>
+      <details class="howto" id="howto-incon">
+        <summary id="incon-h">Where the manual contradicts itself</summary>
+        <p style="margin-top:10px">The manual's cover says "working draft, pending review", and the SOPs are drafts for internal review. Ask which version the team works to, and log a pain point where a contradiction causes one.</p>
+        <ul class="std-list" id="incon"></ul>
+      </details>
+    </div>
+    <div id="areas-thu"></div>
+  </section>
+
+  <section class="day" id="view-fri" role="tabpanel" aria-labelledby="tab-fri" hidden>
+    <div class="intro">
+      <div class="eyebrow">Friday 6 Nov · peak and pressure</div>
+      <h2>How does it hold up when it is busy?</h2>
+      <p>About 5 hours (assumed). F2 to F9 run during the peak, in any order.</p>
+      <p class="busy">Last week's busiest hour: <b>6PM, Sat 31 Oct 2026</b> (sales data).</p>
+      <div class="row">
+        <div class="fld"><label for="META-peakFrom">Peak from</label><input type="time" id="META-peakFrom" data-a="META" data-k="peakFrom"></div>
+        <div class="fld"><label for="META-peakTo">Peak to</label><input type="time" id="META-peakTo" data-a="META" data-k="peakTo"></div>
+      </div>
+      <details class="howto" id="howto-fri">
+        <summary>How to score</summary>
+        <ul>
+          <li>Same shape as Thursday: purpose, questions from the manual, then Working well, Issue, Rating, Quote. No manual score on the day; F10 collects where it holds or breaks.</li>
+          <li>Keep logging pain points. Friday's are the ones that only show under pressure.</li>
+          <li>Guest journey timings (F2): tap Now when the order goes in and again when it is handed over.</li>
+          <li>No order-to-hand-over target is agreed yet, so record the times and do not score them against a number.</li>
+        </ul>
+      </details>
+    </div>
+    <div id="areas-fri"></div>
+  </section>
+
+  <section class="day" id="view-pains" role="tabpanel" aria-labelledby="tab-pains" hidden>
+    <div class="intro">
+      <div class="eyebrow">Pain log · both days</div>
+      <h2>Where it hurts</h2>
+      <p>One card per pain point. Say it plainly, even if it is embarrassing for someone: the report is internal and the office reviews it first. Evidence makes it stick: a photo, a document that could not be shown, the words someone used.</p>
+      <ul class="dos" style="color:var(--sub);font-size:14px">
+        <li>How bad: Critical means someone could be hurt, or the business could be fined or closed.</li>
+        <li>Awkward to say: it goes on the Report's "uncomfortable truths" list so it is not softened away.</li>
+        <li>Office review only: pay, discipline or anything about one person. It never goes near the client draft.</li>
+      </ul>
+      <div class="actions"><button type="button" class="btn primary" data-newpain="">Log a pain point</button></div>
+    </div>
+    <div id="pains"></div>
+  </section>
+
+  <section class="rep" id="view-report" role="tabpanel" aria-labelledby="tab-report" hidden>
+    <div class="panel">
+      <h2>What you have so far</h2>
+      <div class="nums">
+        <div class="num"><b id="n-areas">0</b><span>of 26 areas started</span></div>
+        <div class="num"><b id="n-pains">0</b><span id="n-pains-l">pain points</span></div>
+        <div class="num"><b id="n-photos">0</b><span id="n-photos-l">photos</span></div>
+      </div>
+      <div class="tally" id="tally"></div>
+    </div>
+    <div class="panel"><h3>Pain points, ranked</h3><p>How bad times how often. Unscored ones sit at the bottom until you score them.</p><ul class="items rank" id="ranked"></ul></div>
+    <div class="panel"><h3>Uncomfortable truths</h3><p>The ones marked awkward to say. Keep them in the report; word them about systems, not people.</p><ul class="items" id="truths"></ul></div>
+    <div class="panel"><h3>Asked to see, could not be shown</h3><ul class="items" id="unshown"></ul></div>
+    <div class="panel">
+      <h3>Take the notes away</h3>
+      <p>Copy everything to paste into the office chat or a doc, or save a file. The file with photos is one page you can open anywhere.</p>
+      <div class="actions">
+        <button type="button" class="btn primary" id="copyAll">Copy all notes</button>
+        <button type="button" class="btn save" id="saveTxt">Save notes (.txt)</button>
+        <button type="button" class="btn save" id="saveHtml">Save notes with photos (.html)</button>
+      </div>
+      <div id="copyWrap" class="fld" hidden><label for="copyBox">Your phone blocked copying. The notes are selected: copy them from here.</label><textarea id="copyBox" readonly></textarea></div>
+    </div>
+    <div class="panel"><h3>Issues noted in the areas</h3><ul class="items" id="issues"></ul></div>
+    <div class="panel"><h3>Working well</h3><ul class="items" id="wells"></ul></div>
+    <div class="panel"><h3>Quotes and moments worth keeping</h3><ul class="items" id="quotes"></ul></div>
+    <div class="panel">
+      <h3>After-visit report outline</h3>
+      <ol class="outline">
+        <li>Purpose, dates and scope</li>
+        <li>Summary of findings</li>
+        <li>What is working well, with evidence</li>
+        <li>Issues, ranked: food safety and compliance first, then guest, team and cost</li>
+        <li>Recommendations, each linked to a manual chapter, with an owner role, a date and a way to check it is fixed</li>
+        <li>Next steps</li>
+      </ol>
+      <p>Balanced and constructive: systems and routines, not individuals. Lead with strengths. Anything about pay or deductions goes to the office review first. You write it up, the office reviews it, then you send it to the Imran's Diner team.</p>
+    </div>
+  </section>
+</div>
+<div class="toast" id="toast" role="status" hidden></div>
+
+<script>
+(() => {
+const VISIT = 'nov26';
+const RATING = ['Strong', 'OK', 'Needs work', 'Not seen'];
+const MANUAL = ['Matches', 'Differs', 'No standard yet'];
+const ROUTES = ['Counter', 'Kiosk', 'Delivery app', 'Collection', 'Phone'];
+const TOOLS = ['Opening and closing checklists', 'SOPs on site, and where kept', 'Recipe cards and one-pagers (check two against a live build)',
+  'SOP 5.5 Guest Journey, draft v0.9 (walk counter, kiosk, delivery hand-off)', 'Pre-shift briefings', 'Shift handovers', 'Cash-up and the till', 'Waste log', 'Temperature and cleaning logs'];
+const SHOWN = ['Shown', 'Partly', 'Could not show'];
+const SEV = ['Critical', 'High', 'Medium', 'Low'], SEV_W = { Critical: 8, High: 4, Medium: 2, Low: 1 };
+const FREQ = ['Every shift', 'Daily', 'Weekly', 'Seen once'], FREQ_W = { 'Every shift': 4, Daily: 3, Weekly: 2, 'Seen once': 1 };
+const AGAINST = ['Manual covers it, not followed', 'Manual unclear', 'Not in the manual'];
+const WHO = [['g', 'Guests'], ['t', 'Team'], ['o', 'Owner'], ['c', 'Compliance']];
+
+// The agenda. Thursday is the 8-hour deep dive (T1–T15, 480 minutes, ending on the evening service); Friday is the peak (F1–F11).
+// purpose: what the block is for. do: the steps, ticked as they are done. cap: the capture lines (Thursday adds the manual check).
+// The questions, show-me requests and standards for each block come from the Operations Manual and SOPs (MAN, below).
+const AREAS = [
+  { id: 'T1', day: 'thu', title: 'Arrival as a guest', mins: 20, cap: true,
+    purpose: 'See the diner the way a paying guest does, before anyone knows you are looking.',
+    do: ['Stand outside for two minutes: signage, lighting, windows, litter, the hygiene rating on show', 'Walk in and order as a guest; note the greeting and how long the order takes',
+      'Hold the menu boards and the till against each other: items, prices, anything missing', 'Sit for ten minutes: tables, floor, bins, toilets, how the team talks to each other',
+      'Then introduce yourself to the person in charge and note who is on shift by station'],
+    fields: [{ k: 'site', label: 'Site and address', hint: 'London Road per the planning session and sales data. Confirm the full address on arrival.' }, { k: 'arrival', label: 'Arrival time and who is on shift' }] },
+  { id: 'T2', day: 'thu', title: "Walk the site with an inspector's eyes", mins: 40, cap: true,
+    purpose: 'Find what an environmental health officer would find, before they do.',
+    do: ['Walk back to front with the person in charge; ask what they are proud of and what worries them', 'Fridges and freezers: the display reading, then what is inside (covered, labelled, dated, how raw and ready-to-eat are kept)',
+      'Dry store: off the floor, dates, open packs sealed and labelled', 'Hand-wash sinks: soap, paper towels, hot water, nothing stored in them',
+      'Pest signs: droppings, gnawing, gaps, fly screens, the pest contract and the last visit report', 'Bins, back yard, staff toilet, changing area, the extraction canopy and filters',
+      'Photograph anything you would not want a guest or an inspector to see'] },
+  { id: 'T3', day: 'thu', title: 'Food safety records, and one delivery traced', mins: 40, cap: true,
+    purpose: 'Do the records prove the food is safe, or only fill a folder?',
+    do: ['Ask for the last four weeks of temperature and cleaning records', 'Count the missing days and missing signatures; note who signs most',
+      'Look for readings that never change: the same figure every day, the same pen, a page filled in at once', 'Pick one out-of-range reading and ask what was done about it',
+      'Trace one delivery: the invoice, the check on arrival, the date label, where it is now', 'Hold the cleaning schedule against what is in front of you'],
+    fields: [{ k: 'records', label: 'Records seen and dates covered' }] },
+  { id: 'T4', day: 'thu', title: 'Allergens', mins: 30, cap: true,
+    purpose: 'Could a guest with an allergy be hurt here today?',
+    do: ["Find the allergen information and check its date against today's menu, specials and drinks included", 'Pick two dishes and check the ingredient labels in the store against the allergen information',
+      'Ask a counter team member the allergen question the way a guest would', 'Check the delivery app listings carry the allergen information',
+      'Note whether anyone guesses, or says "allergen-free"'] },
+  { id: 'T5', day: 'thu', title: 'People: files, contracts, rotas and pay', mins: 40, cap: true,
+    purpose: "Are people employed legally, paid correctly and rota'd sensibly?",
+    do: ['Sample five people files, mixing the newest starters and the longest-serving', 'For each: signed contract, right-to-work check, payroll start date against the first shift worked',
+      'Rota: how far ahead it is published, how it is shared, who signs it off', "Hold one week's rota against the hours actually worked (clock-ins, till log-ins)",
+      'Holiday, sickness and probation records', 'Ask how deductions from pay work, and write down exactly what you are told'],
+    note: 'Pay deductions used as staff penalties: record what you find here and log it as a pain point marked Office review only. It goes to the office review first and stays out of anything the client sees.',
+    fields: [{ k: 'files', label: 'Files checked (how many, any gaps)' }] },
+  { id: 'T6', day: 'thu', title: 'Licences, certificates and safety checks', mins: 20, cap: true,
+    purpose: 'Is anything expired or missing that could close the doors or void the insurance?',
+    do: ['Premises licence and the hours on it, against the hours traded', 'Food hygiene rating and where it is shown',
+      'Insurance, gas safety, electrical, fire risk assessment: the date and expiry of each', 'Fire alarm tests, extinguisher checks, emergency lighting, fire exits clear',
+      'Photograph each certificate and where it is kept'],
+    fields: [{ k: 'certs', label: 'Each one, with its expiry date' }] },
+  { id: 'T7', day: 'thu', title: 'Stock, ordering and waste', mins: 35, cap: true,
+    purpose: 'Where does money leak between the supplier and the bin?',
+    do: ['Who orders, how, how often, and from which suppliers', 'The last stock count: when, who, and what happened about the difference',
+      'Spot-count three critical items (chicken, chips, oil, sauces) against the count sheet', 'The waste log for the last two weeks: filled in daily, and read by anyone?',
+      'Hold one invoice against its delivery note and what went into the store', 'Ask what ran out last month and what happened on that shift'] },
+  { id: 'T8', day: 'thu', title: 'Opening, handover and closing', mins: 25, cap: true,
+    purpose: 'Does the day start and end the same way whoever is on?',
+    do: ['Ask for the last seven days of opening and closing checklists', 'Check each is complete and signed, not ticked in one go',
+      'Ask the shift lead to walk you through a close, step by step', "Read last night's handover note, if there is one",
+      "Hold one day's cash-up sheet against the till's end-of-day report"],
+    fields: [{ k: 'walk', label: 'Walk-through notes' }] },
+  { id: 'T9', day: 'thu', title: 'Training and show-me tests', mins: 35, cap: true,
+    purpose: "Can each person on shift do their station to the manual's standard?",
+    do: ['Ask for the skills grid by station, and who is signed off on what', 'Ask a team member to build an item from its one-pager (rice, chicken tikka, lamb chop) while you watch',
+      'Hold the build against the card: quantities, steps, timings, the finished look', 'Read the induction record of the newest starter, first shift to sign-off',
+      'Ask who trains, when, and what happens to training on a busy day'],
+    fields: [{ k: 'trained', label: 'Trained people per station' }, { k: 'build', label: 'Show-me build: the item, against its card' }] },
+  { id: 'T10', day: 'thu', title: "The manual's own tools in use", mins: 25, cap: true, tools: true,
+    purpose: 'Is the manual a living tool on the floor, or a document on a shelf?',
+    do: ['For each tool below: is it on site, does the team know it, is it used as written', 'Ask a team member where the SOPs are kept and to find one for you',
+      'Walk SOP 5.5 Guest Journey with the counter: counter, kiosk and the delivery hand-off'] },
+  { id: 'T11', day: 'thu', title: 'One-to-ones with the team', mins: 40, cap: true,
+    purpose: 'Hear what the team will not say in front of the boss.',
+    do: ['Three or four people, ten minutes each, away from the counter', 'Mix the roles and the time served: newest starter, longest-serving, a shift lead, the kitchen',
+      'Say it first: no names go in the report', 'Same core questions to each, then follow what they bring up',
+      'Listen for what wastes their time, what they fear getting wrong, and what they would fix first'],
+    fields: [1, 2, 3, 4].map(i => ({ k: 'c' + i, label: `Conversation ${i}: role, time here, what they said` })) },
+  { id: 'T12', day: 'thu', title: 'The owner or manager', mins: 30, cap: true,
+    purpose: 'Set what the owner believes against what you have seen.',
+    do: ['Ask for their top three worries before you share anything', 'Ask what they believe happens in each routine: opening, closing, training, ordering',
+      'Note every gap between what they believe and what you saw today', 'Ask what they have tried before, and why it stuck or did not',
+      'Agree nothing on the day; the findings come in the report'],
+    fields: [{ k: 'worries', label: 'Their top three worries' }, { k: 'belief', label: 'What they believe against what you saw' }] },
+  { id: 'T13', day: 'thu', title: 'Evening prep and readiness', mins: 40, cap: true,
+    purpose: 'Will the evening service start ready, or start behind?',
+    do: ['The prep list: what it is based on, and who sets the quantities', 'Chicken cut and portioned; sauces and marinades done and labelled',
+      'Stations: fryers and oil, grills, hot-hold, station fridges, packaging', 'Critical stock against the expected trade, and the plan if something is short',
+      'Staffing against the rota, the day-to-evening handover, the pre-shift briefing, and who is in charge tonight',
+      'Counter, kiosk, till and screens working; the rider area; delivery apps on with the menus right; the dining area and upstairs'],
+    fields: [{ k: 'evening', label: 'Evening staffing and who is in charge tonight' }] },
+  { id: 'T14', day: 'thu', title: 'The evening service, live', mins: 45, cap: true, orders: 3,
+    purpose: 'See whether the standards hold when orders are flowing.',
+    do: ['Run this as the evening trade builds, whatever the clock says', 'Stand where you can see the pass and the counter',
+      'Time three orders, order to hand-over', 'Watch hand-washing, glove changes, and raw kept apart from cooked',
+      'Watch who leads, who calls the orders, and what happens when something goes wrong'],
+    fields: [{ k: 'window', label: 'When the evening trade built, and who was on' }] },
+  { id: 'T15', day: 'thu', title: 'Close-out', mins: 15,
+    purpose: "Leave with the pains ranked, the evidence in hand and Friday's watch list.",
+    do: ['Score every pain point in the Pains tab: how bad and how often', 'Check each pain has evidence: a photo, a document, a quote',
+      'Write what Friday must confirm or disprove', 'Thank the team; share no findings on site'],
+    fields: [{ k: 'well3', label: 'Top three working well' }, { k: 'gaps3', label: 'Top three gaps' }, { k: 'qs', label: 'Questions for the owners or the team' }, { k: 'watch', label: 'What to watch on Friday' }] },
+
+  { id: 'F1', day: 'fri', title: 'Pre-peak set-up and briefing', mins: 20, cap: true,
+    purpose: 'Is the team set up to win the rush before it starts?',
+    look: "Staffing against the rota and expected volume; stations and breaks; prep and critical stock; briefing held; the person in charge's plan.",
+    fields: [{ k: 'peak', label: 'Peak window and staffing' }] },
+  { id: 'F2', day: 'fri', title: 'Guest journey timings', tag: 'SOP 5.5 draft', mins: 45, cap: true, orders: 10,
+    purpose: 'How long does a guest wait, by route, and where does the time go?',
+    look: 'Walk counter, kiosk, delivery and collection. Phone orders: how much staff time they take.',
+    note: 'No order-to-hand-over target is set yet. Record the times you see; do not score them against a number.' },
+  { id: 'F3', day: 'fri', title: 'Ticket and service times', mins: 30, cap: true,
+    purpose: 'Is the kitchen in control of the order queue?',
+    look: 'Kitchen screen or ticket use; oldest ticket and why; how orders are recalled; app orders against in-store; where riders wait and for how long; remakes or refunds.' },
+  { id: 'F4', day: 'fri', title: 'Queue and table flow', mins: 30, cap: true,
+    purpose: 'Do guests and riders know where to go and how long it will take?',
+    look: 'Longest queue; kiosk calls; collection point and rider area; do guests know where their order is; tables reset; seating, upstairs if used.' },
+  { id: 'F5', day: 'fri', title: 'Communication on the pass', mins: 30, cap: true,
+    purpose: 'Do orders leave the pass right first time?',
+    look: 'Who calls orders; kitchen to counter clarity; the check before hand-over; how errors are caught; noise.' },
+  { id: 'F6', day: 'fri', title: 'Team behaviour under pressure', mins: 30, cap: true,
+    purpose: 'Do the roles and the standards survive the pressure?',
+    look: 'Roles held or dropped; helping across stations; tone; hygiene at peak; recovery after a mistake; breaks and fatigue.' },
+  { id: 'F7', day: 'fri', title: 'Quality consistency', mins: 30, cap: true,
+    purpose: 'Is the food the same whoever cooks it and however busy it is?',
+    look: 'Three items against the recipe card (portion, look, packaging, hold time); temperature and freshness; same item, different cook; recipe cards in use at peak.' },
+  { id: 'F8', day: 'fri', title: 'Manager presence and decisions', mins: 20, cap: true,
+    purpose: 'Is someone leading the shift, or only working in it?',
+    look: 'Where the person in charge stands; calls made (staff moves, items off, complaints); speed and clarity; who leads if they step away.' },
+  { id: 'F9', day: 'fri', title: 'Guest reactions and complaints', mins: 20, cap: true,
+    purpose: 'What are guests telling you, in words and in faces?',
+    look: 'Mood while waiting; compliments; complaints and how they are handled; common questions; allergen questions and answers.' },
+  { id: 'F10', day: 'fri', title: 'Where the manual holds or breaks', mins: 20, cap: true,
+    purpose: 'Which parts of the manual survive a Friday peak?',
+    fields: [{ k: 'holds', label: 'Holds up' }, { k: 'breaks', label: 'Breaks down' }, { k: 'missing', label: 'Missing from the manual' }] },
+  { id: 'F11', day: 'fri', title: 'After peak and close-out', mins: 45,
+    purpose: 'How does the shift recover, and what does the person in charge think happened?',
+    look: 'Recovery, waste, cash-up, handover.',
+    fields: [{ k: 'pic', label: 'Person in charge: what went well, what would they change' }, { k: 'well3', label: 'Top three working well under pressure' },
+      { k: 'issues3', label: 'Top three issues to rank' }, { k: 'recs', label: 'Recommendations forming' }, { k: 'follow', label: 'Follow-ups before the report' }] },
+];
+// From the Operations Manual and SOPs: per block, the chapters, the written standards, the questions, the show-me requests and the gaps.
+const CHAP = /* CHAPTERS:BEGIN */{"1.1":"Brand story & vision","1.2":"Values","1.3":"How to use this manual","1.4":"Brand standards overview","2.1":"Site selection criteria","2.2":"Fit-out & equipment spec","2.3":"Pre-opening checklist","2.4":"Supplier & procurement setup","2.5":"Launch marketing","3.1":"Recruitment & onboarding","3.2":"Roles & responsibilities","3.3":"Training programme","3.4":"Rotas & labour model","3.5":"HR policies & conduct","3.6":"Food safety/H\\&S","4.1":"Brand guidelines","4.2":"Local marketing toolkit","4.3":"Social & digital","4.4":"Promotions & loyalty","5.1":"Opening/closing","5.2":"Product prep & recipes","5.3":"Stock & inventory","5.4":"EPOS & systems use","5.5":"Customer service standards","5.6":"Cleaning & maintenance","5.7":"Complaint handling","5.8":"Business continuity & contingency procedures","6.1":"Financial reporting & KPIs","6.2":"Unit economics & margin management","6.3":"Performance review cadence","6.4":"Multi-site/franchise expansion criteria","6.5":"Franchisee support & escalation","6.6":"Cash flow & capital governance","6.7":"Franchisee performance remediation & exit"}/* CHAPTERS:END */;
+const MAN = /* MANUAL:BEGIN */{"T1":{"refs":["1.2","1.4","2.2","5.1","5.5","5.6"],"standards":[{"ref":"1.4","text":"Non-negotiables: premises and staff clean every shift; uniform on point at all times; every customer greeted correctly, no exceptions on busy days."},{"ref":"2.2","text":"Six front-of-house principles: 2 m landing zone, staff face the door, separate order and collection, easy menu board, food visible from the door, zoned lighting."},{"ref":"2.2","text":"Counter and order zone lit to 500 lux at 4000K; any seating area 200-300 lux at 2700-3000K."},{"ref":"5.5","text":"Every customer acknowledged within seconds of walking in, by a team member facing the door."},{"ref":"5.6","text":"Customer WC checked and cleaned at least every hour; each check signed and timed on the WC check sheet displayed in the WC."},{"ref":"5.1","text":"Before opening: front of house, seating, counter, menu boards, windows and entrance clean and presentable."}],"ask":[{"ref":"5.5","q":"What greeting does the team use for every guest, who decided it, and where is it written down?"},{"ref":"2.2","q":"Which of the six front-of-house principles does this unit meet today, and what is the dated plan for the rest?"},{"ref":"2.2","q":"How does a guest know where to order, where to collect and where their order has got to?"},{"ref":"1.2","q":"Between rushes, who does a lap of the customer area, and how do you know it happens when nobody is asking?"},{"ref":"5.6","q":"Who checks the customer toilet, how often, and what happens when a check is missed?"},{"ref":"1.4","q":"Which version of the logo and signage do you want guests to see, and who approves a new sign or menu board?"},{"ref":"1.4","q":"Who can change what is on the menu boards, and what has to happen first?"}],"showMe":[{"ref":"5.6","q":"Show me today's WC check sheet with the times and signatures."},{"ref":"2.2","q":"Walk me through what a guest sees from the door to the counter, and how the order numbers are used."},{"ref":"5.5","q":"Show me where a guest or team member would find allergen information at the counter."}],"gaps":["The manual has no written greeting wording yet; it is marked for the owner to supply (5.5).","The manual says units must hold a hygiene rating of 5 and never below 4, but does not say the rating must be displayed.","No single approved logo or visual identity yet; several versions of logo and signage are live in store (1.4, 4.1).","The order-status screen is the network standard but is not yet in place; units run the number system by hand (2.2)."]},"T2":{"refs":["2.2","3.6","5.3","5.6","5.8"],"standards":[{"ref":"5.6","text":"Daily, weekly and deep-clean schedules signed by the person who did the task and verified by the team leader or owner."},{"ref":"5.6","text":"Colour-coded cleaning equipment: red for WC and sanitary areas, green for food contact, blue for general front of house, yellow for kitchen floors; red never leaves the WC."},{"ref":"5.6","text":"Only approved food-safe chemicals, stored apart from food, labelled, used at manufacturer dilution; COSHH data sheets on file for all chemicals."},{"ref":"5.6","text":"Pest control contract with a BPCA (or equivalent) member; inspections quarterly, every 6 weeks if activity in the last 12 months; bait stations mapped."},{"ref":"5.6","text":"Waste out of the building at least daily and kept in lidded bins in the designated area; external doors kept closed when not in use."},{"ref":"5.6","text":"Full extraction clean every 3 months by a professional contractor to BESA TR19, with a report including a Deposit Thickness Test result."}],"ask":[{"ref":"5.6","q":"Walk me through what the daily, weekly and deep cleans cover here, and who signs each off."},{"ref":"5.6","q":"When was the extraction system last cleaned, by whom, and where is the report with the test result?"},{"ref":"5.6","q":"How do you know the pest control visits are happening, and what do you do if one is missed?"},{"ref":"5.6","q":"What do the team do if they spot droppings, gnaw marks or a gap in the building? When did that last happen?"},{"ref":"2.2","q":"Who maintains the gas, electrical and refrigeration equipment here, and who is not allowed to touch it?"},{"ref":"5.6","q":"Where are the chemical data sheets, and who on shift knows what they say?"},{"ref":"5.3","q":"How is waste stored and collected, and who is the registered waste carrier?"},{"ref":"5.8","q":"If a fridge or freezer fails during service, what is the first thing you do and who do you tell?"}],"showMe":[{"ref":"5.6","q":"Show me the pest control contract, the latest visit report and the bait station map."},{"ref":"5.6","q":"Show me the cleaning chemicals store, the data sheets and the colour-code scheme display."},{"ref":"5.6","q":"Show me the equipment maintenance log and the latest gas safety and electrical certificates."},{"ref":"5.6","q":"Show me the weekly cleaning schedule for last week, signed and verified."}],"gaps":["There is no written equipment register yet (the kitchen has only been shared as photographs), so no critical equipment list exists (2.2, 5.8).","No approved contractors in place and no emergency cover arranged; second-hand equipment is maintained in house by a family member and an employee (2.2).","The pest control provider, the extraction cleaner and the date of the last extraction clean are all marked for the owner to confirm (5.6).","No written standard for the condition of the yard or external areas beyond lidded bins, daily waste removal and doors kept closed."]},"T3":{"refs":["1.2","1.4","3.6","5.1","5.2","5.3","5.8"],"standards":[{"ref":"3.6","text":"Fridges 0-4°C, freezers -18°C or below; temperatures checked and logged at least twice daily (morning and afternoon)."},{"ref":"3.6","text":"Cooking core temperature at least 75°C (or an equivalent time/temperature combination); hot holding at 63°C or above."},{"ref":"3.6","text":"Goods receiving: chilled must arrive at 0-4°C, frozen at -18°C or below; check use-by dates and packaging integrity."},{"ref":"5.3","text":"Reject deliveries that are damaged, chilled above 4°C, frozen above -18°C, or have under 3 days' life left on any fresh item; record short-dated deliveries."},{"ref":"3.6","text":"Delivery records and batch information kept 12 months; temperature, cooking and cleaning records 12 months beyond shelf life; allergen documents 5 years."},{"ref":"3.6","text":"SFBB/HACCP file on site: plan, temperature logs, cleaning, training and pest records, supplier specifications, allergen matrix, corrective actions."}],"ask":[{"ref":"3.6","q":"Talk me through how fridge, freezer and hot-hold temperatures are checked and logged each day, and by whom."},{"ref":"3.6","q":"What do you do when a reading is outside the limit, and when did that last happen?"},{"ref":"3.6","q":"How do you know the probe thermometer is accurate, and when was it last checked?"},{"ref":"1.2","q":"What happens when a temperature check is missed on a shift, who finds out, and when?"},{"ref":"5.3","q":"Who receives deliveries, and what happens if the driver arrives in the middle of a rush?"},{"ref":"3.6","q":"Pick a delivery from last week. How would you trace it from the supplier to what went out in a customer's order?"},{"ref":"5.2","q":"How do you decide when prepped food must be thrown away, and who checks the labels?"},{"ref":"3.6","q":"Who is the designated food safety lead for the unit, and what qualification do they hold?"}],"showMe":[{"ref":"3.6","q":"Show me this week's fridge, freezer and hot-hold logs, with the morning and afternoon readings."},{"ref":"5.3","q":"Show me the goods-receiving checks and supplier paperwork for the most recent delivery."},{"ref":"3.6","q":"Show me the corrective action record for the last out-of-limit reading."},{"ref":"3.6","q":"Show me the SFBB/HACCP file and the HACCP plan for this menu."}],"gaps":["The manual gives no written frequency or method for calibrating probe thermometers; it only says to check probe accuracy after an out-of-limit reading (3.6).","No written standards for cooling, reheating or defrosting food were found in the manual.","No written standard for fryer oil quality or oil changes was found in the manual.","The non-negotiables say temperatures are logged daily; chapter 3.6 says at least twice daily. The two differ (1.4, 3.6).","Maximum shelf life and storage temperature for each prepped item are marked for the owner to provide (5.2).","No written staff illness or fitness-to-work rule for food handlers was found in the manual."]},"T4":{"refs":["3.3","3.6","5.5","SOP 3.6","SOP 5.5 Guest"],"standards":[{"ref":"3.6","text":"All 14 mandatory allergens declared; every menu item has a documented allergen profile, updated whenever a recipe or ingredient changes."},{"ref":"3.6","text":"Non-pre-packed food: allergen information given orally on request, backed by a written reference (matrix or menu annotation) for staff."},{"ref":"3.6","text":"On an allergy declaration: flag verbally and on the EPOS ticket, check the matrix, a manager or trained senior verifies before service; if in doubt say it cannot be guaranteed."},{"ref":"5.5","text":"The allergy flag should be a structured Presto field that prints on the kitchen ticket and at handoff, not a free-text note; until then confirm verbally at each step."},{"ref":"SOP 3.6","text":"Ask 'Any allergies?' at every order; never say allergen-free; the team leader checks every allergy order against ticket and matrix before hand-over."},{"ref":"3.6","text":"Allergen training in onboarding and refresher at least annually; matrix, supplier specifications and incident records kept 5 years."}],"ask":[{"ref":"5.5","q":"A guest tells you they have a nut allergy. Walk me through everything that happens until the food is handed over."},{"ref":"5.5","q":"How does the kitchen know an order is an allergy order, and what happens if the note on the ticket is missed?"},{"ref":"SOP 3.6","q":"Who checks allergy orders before they leave, and who does it when that person is busy or not on shift?"},{"ref":"3.6","q":"When was the allergen matrix last reviewed, who owns it, and what makes you change it?"},{"ref":"SOP 3.6","q":"Who has had allergen training, when, and where is it recorded? The SOP aimed for everyone by 28 October."},{"ref":"3.6","q":"Has there been an allergen complaint, reaction or near-miss, and where would it be recorded?"},{"ref":"3.6","q":"What happens to the matrix when a supplier changes a product or an ingredient?"},{"ref":"SOP 3.6","q":"How do phone, app and online guests get allergen information before they pay?"}],"showMe":[{"ref":"3.6","q":"Show me the allergen matrix, where it is kept, and whether the counter and kitchen copies match."},{"ref":"3.6","q":"Pick a menu item: show me its row in the matrix, then the ingredients behind each allergen."},{"ref":"5.5","q":"Walk me through how you would answer a guest who asks whether a named item contains a named allergen."},{"ref":"SOP 3.6","q":"Show me the allergen incident and near-miss log and the training record."}],"gaps":["The Allergens SOP says that today there is no formal allergen training, no check at order, no ticket flag and no incident log; confirm what is true on site.","The manual gives allergen information on request (3.6); the SOP says ask every guest at every order. The two are different standards.","How Presto flags an allergy order is still marked for the owner to confirm (5.5); the SOP says write ALLERGY on the ticket.","The SOP leaves open whether a team leader is on every shift to do the hand-over check.","The core recipe book (5.2) is empty, so the manual holds no written recipes to check the matrix against."]},"T5":{"refs":["1.4","3.1","3.2","3.3","3.4","3.5"],"standards":[{"ref":"3.1","text":"Right-to-work check before the first shift, evidence kept for the length of engagement plus two years; covers drivers and subcontractors too."},{"ref":"3.1","text":"Written statement of employment particulars on or before day one; every role has a written, Head Office-approved job description."},{"ref":"3.1","text":"Probation is 4 months, with a midpoint review and a final review at month 3, documented and signed by employee and manager."},{"ref":"3.4","text":"Rotas published at least 2 weeks ahead; 11 hours' rest between shifts; 20-minute break over 6 hours; 24 hours off per 7 days (or 48 per 14)."},{"ref":"3.5","text":"Sickness self-certified up to 7 calendar days; unplanned absence reported by phone call before the shift and recorded in the rota system that day."},{"ref":"3.5","text":"Annual leave at least 5.6 weeks; requests 4 weeks ahead for a week or more, 1 week ahead for single days."}],"ask":[{"ref":"3.1","q":"Take me through a new starter's first day and first week. Where is that recorded and who signs it off?"},{"ref":"3.1","q":"How do you make sure nobody works a first shift before their right-to-work check is done and copied?"},{"ref":"3.1","q":"How is a probation review run here, and when was the last one done?"},{"ref":"3.4","q":"How are rotas built, when are they published, and how far ahead do the team actually know their shifts?"},{"ref":"3.5","q":"What happens when someone calls in sick an hour before their shift, and who records it?"},{"ref":"3.4","q":"How do you check that hours worked match the rota, and that pay for those hours meets the minimum wage?"},{"ref":"1.2","q":"When did you last deal with someone who was difficult to work with, and what happened?"},{"ref":"3.5","q":"If a team member has a grievance about a team leader or the owner, who do they take it to, and has that worked?"}],"showMe":[{"ref":"3.1","q":"Show me two personnel files: contract or statement, job description, right-to-work evidence, signed code of conduct."},{"ref":"3.4","q":"Show me last week's rota alongside the hours actually worked in the rota system."},{"ref":"3.1","q":"Show me a completed probation review form and the date of the next one due."},{"ref":"3.5","q":"Show me last month's absence record and a completed self-certification form."}],"gaps":["Chapter 5.4 says no staff records are held beyond payroll basics; chapters 3.1, 3.3 and 3.5 require full personnel files. Check which is true.","The rota/scheduling system is not named (still to be confirmed) and its usage guide (5.4) has no content.","Peak headcount per day part is marked as to be completed once the labour model is issued (3.4); the labour-to-sales model has no content.","Whether the company pays sick pay above the statutory minimum is left open (3.5).","The manual names a whistleblowing policy as a tool (3.2) but does not set out the channel."]},"T6":{"refs":["1.4","2.2","2.3","3.6","5.4","5.6"],"standards":[{"ref":"1.4","text":"Units must hold a hygiene rating of 5 and never operate below a 4."},{"ref":"2.3","text":"Food business registered with the local authority; documented HACCP-based system (SFBB); fire risk assessment completed and documented."},{"ref":"2.3","text":"Late Night Refreshment authorisation required where hot food or drink is supplied between 11pm and 5am (Licensing Act 2003)."},{"ref":"2.3","text":"Insurance in place before trading incl. public liability, employers' liability (minimum £5 million), contents and business interruption; EL certificate displayed or accessible."},{"ref":"2.2","text":"Annual gas safety inspection by a Gas Safe engineer; current EICR; F-gas certified refrigeration engineer; extraction cleaned to TR19."},{"ref":"2.3","text":"Licence register per unit: permission type, date obtained, renewal date, responsible person; reviewed at the pre-opening audit."}],"ask":[{"ref":"2.3","q":"Which licences, registrations and certificates does the unit hold, and who tracks the renewal dates?"},{"ref":"2.3","q":"The unit trades to midnight, and to 1am Friday to Sunday. How is hot food after 11pm covered under the licensing rules?"},{"ref":"3.6","q":"When was the last Environmental Health visit, what rating did you get, and what changed afterwards?"},{"ref":"2.2","q":"Who services the gas appliances, the electrics and the fridges, and when was each last done?"},{"ref":"2.3","q":"When was the insurance last reviewed with a broker, and what exactly does it cover?"},{"ref":"2.3","q":"Where is the fire risk assessment, when was it last reviewed, and when was the last evacuation drill?"},{"ref":"3.6","q":"Who is the trained first aider on each shift, and when was the first aid kit last checked?"},{"ref":"5.4","q":"Is the business registered for the ICO data protection fee, given caller ID data and CCTV? Who handles that?"}],"showMe":[{"ref":"2.3","q":"Show me the food business registration, the latest hygiene rating letter and any Late Night Refreshment authorisation."},{"ref":"2.2","q":"Show me the gas safety record, the EICR, the extraction (TR19) report and the refrigeration service record."},{"ref":"2.3","q":"Show me the employers' liability certificate where staff can read it, and the current insurance schedule."},{"ref":"3.6","q":"Show me the fire risk assessment, the written health and safety policy and the first aid kit check log."}],"gaps":["No approved contractors are in place and emergency cover for breakdowns, electrical faults and technical issues has not been arranged (2.2).","The manual does not say whether this unit holds a Late Night Refreshment authorisation.","The insurance policy is still to be reviewed with a broker; employers' liability has to be confirmed first (2.3).","Whether data processing agreements are in place and the ICO fee is paid is marked for the owner to confirm (5.4).","The pest control provider and the extraction cleaner are marked for the owner to confirm (5.6)."]},"T7":{"refs":["2.4","3.2","5.2","5.3","5.5","5.8"],"standards":[{"ref":"5.3","text":"The team leader (people and stock) checks the stock list and places the weekly stock orders; orders are placed the day before they are needed."},{"ref":"5.3","text":"Par level = average daily usage x (supplier lead time in days + 1 day safety stock), rounded up to the minimum order unit; reviewed quarterly."},{"ref":"5.3","text":"FIFO: oldest stock used first; everything date-labelled; use-by dates never extended; expired items removed daily and logged on the waste sheet."},{"ref":"5.3","text":"Reject deliveries that are damaged, chilled above 4°C, frozen above -18°C, or under 3 days' life on fresh items; record short-dated deliveries."},{"ref":"5.3","text":"Waste recorded on the daily waste log at disposal; waste cost as % of food purchases reported weekly and judged on a rolling four-week average."},{"ref":"2.4","text":"Approved suppliers only; approved brand or specification fixed for core items; no substitution without written Head Office approval."}],"ask":[{"ref":"5.3","q":"How do you decide what to order each week, and how do you know your par levels are right?"},{"ref":"2.4","q":"Which ingredients would stop you trading if they ran out, and what is the minimum you hold of each?"},{"ref":"5.8","q":"What happens if the meat supplier can't deliver on a Friday morning?"},{"ref":"5.3","q":"How is waste recorded, and who looks at the waste log each week and what do they do with it?"},{"ref":"5.3","q":"What would a delivery have to look like for you to refuse it, and when did you last refuse one?"},{"ref":"5.2","q":"Is there a baseline waste figure yet? The manual asks for four weeks of recording to set one."},{"ref":"3.2","q":"How is stock accuracy checked each month, and who raises a recurring loss?"},{"ref":"5.5","q":"Which meat suppliers do you buy from, and do you hold a current halal certificate for each?"}],"showMe":[{"ref":"5.3","q":"Show me last week's stock orders and the stock list they were placed from."},{"ref":"5.3","q":"Show me the waste log for the last seven days and the weekly waste summary."},{"ref":"5.3","q":"Show me the goods-receiving checklist for a recent delivery."},{"ref":"5.5","q":"Show me the halal certificates and delivery records that tie meat purchases to those suppliers."}],"gaps":["Average daily usage per key ingredient, needed to calculate par levels, is marked for the owner to provide (5.3).","Ordering days and lead time for each supplier are marked for the owner to confirm (5.3).","There is no waste target yet; it is to be set from a four-week baseline (5.2, 5.3).","Chapter 2.4 (quality and spec standards for ingredients) has no content, so the approved brand or specification is not written down.","Meat has no approved backup supplier; a meat failure means a menu reduction or closure (5.8).","The named halal meat suppliers and copies of their certificates are marked for the owner to provide (5.5)."]},"T8":{"refs":["3.2","5.1","6.1","SOP 5.1"],"standards":[{"ref":"5.1","text":"Opening lead arrives at least 45 minutes before published opening time and works the 12-step opening checklist, then signs it; kept 12 months."},{"ref":"5.1","text":"Opening includes recording fridge and freezer temperatures (fridges 0-4°C, freezers -18°C or below) and verifying the till float."},{"ref":"5.1","text":"Back-of-house close-down may start up to 30 minutes before closing; full menu served to full standard until closing time; live cooking equipment stays on."},{"ref":"5.1","text":"10-step closing checklist ends with the closing lead's sign-off; nobody leaves until the final walk-through; kept 12 months."},{"ref":"5.1","text":"Till float £100 per till, counted at open and close; cash above £300 dropped to the safe; a daily variance over £10 investigated and reported."},{"ref":"SOP 5.1","text":"Flat grill close: doner blade switched off and disconnected before cleaning; chicken doner stickered USE FIRST; gas controls OFF; closing lead signs the station."}],"ask":[{"ref":"5.1","q":"Talk me through a normal opening. What do you check first, and how long does it take?"},{"ref":"5.1","q":"What do you do when something on the opening checklist can't be done, such as equipment or staffing?"},{"ref":"5.1","q":"How do you know the closing checklist was done properly and not just ticked?"},{"ref":"5.1","q":"What does the opening team find in the morning that should have been done at close?"},{"ref":"SOP 5.1","q":"Who is the named closing lead each night, and how is that decided?"},{"ref":"5.1","q":"How does the closing shift tell the morning team about faults, short stock or problems? Is it written anywhere?"},{"ref":"5.1","q":"When did you last start close-down tasks before closing time, and what was switched off or cleaned down early?"}],"showMe":[{"ref":"5.1","q":"Show me last Tuesday's opening checklist and closing checklist, signed."},{"ref":"SOP 5.1","q":"Show me last Saturday's closing sheet for the flat grill and doner station."},{"ref":"5.1","q":"Show me last night's daily cash sheet and end-of-day Presto report."},{"ref":"5.1","q":"Show me the equipment start-up and shut-down guides."}],"gaps":["The manual has no written shift handover or pre-shift briefing standard.","The start-up and shut-down guides depend on the equipment register (2.2), which does not exist yet; the unit uses its own list.","Only the flat grill and doner closing SOP was provided; there are no closing SOPs for other stations in these files.","The SOP leaves the owner of the closing standard blank (name and review cadence not filled in)."]},"T9":{"refs":["3.1","3.2","3.3","5.2","OP 5.2 Rice","OP 5.2 Lamb","OP 5.2 Tikka"],"standards":[{"ref":"3.3","text":"New starter programme completed within the first 2 weeks, 7 modules each signed by trainer and trainee; no unsupervised work until signed off."},{"ref":"3.1","text":"Module 1 (Food Safety & Hygiene) and Module 2 (Health & Safety) signed off before the end of Week 1; remaining modules by end of Week 2."},{"ref":"3.3","text":"Every food handler holds Level 2 Food Safety and Hygiene (or equivalent) before working unsupervised; the unit manager holds Level 3."},{"ref":"3.3","text":"Signed off as competent on each station before working it alone; 'not yet competent' means retraining and reassessment within 1 week."},{"ref":"3.3","text":"Food safety and allergen refresher at least annually; health and safety refresher annually; skills matrix kept; all training documented."},{"ref":"3.1","text":"Onboarding checklist signed by starter and unit manager at end of Week 1; manual orientation within the first week."}],"ask":[{"ref":"3.2","q":"Take me through how a new starter learns the stations. Who trains them, and where is their progress recorded?"},{"ref":"3.3","q":"How do you decide someone is ready to work a station on their own?"},{"ref":"3.3","q":"Who holds a food hygiene certificate, at what level, and when does each need renewing?"},{"ref":"3.3","q":"How do you keep track of who is trained on which stations and who can cover which?"},{"ref":"3.3","q":"What happens when someone is assessed as not yet competent?"},{"ref":"3.3","q":"The last time a recipe or menu item changed, how was the team trained before it went live?"},{"ref":"3.2","q":"Who reviews each team member's training progress every month, and what happens to anyone falling behind?"},{"ref":"3.2","q":"The manual says training cards and written prep standards didn't exist. Where are you on that now?"}],"showMe":[{"ref":"3.3","q":"Show me the training record for the newest starter: modules, dates and who signed them off."},{"ref":"3.3","q":"Show me the skills matrix and the competency sign-offs for the kitchen team."},{"ref":"3.3","q":"Show me the food hygiene certificates for three team members and the unit manager."},{"ref":"OP 5.2 Rice","q":"Ask a team member to make basmati rice, or a lamb or tikka marinade batch, from the one-pager while I watch."}],"gaps":["Chapter 3.2 records that there were no training cards for trainee progress and no documented recipe or prep standards at the time of writing.","The competency checklists, practical assessment sheets and training materials are listed as tools but are not in the manual.","No written per-station skills list: core competency areas are general (3.3) and stations are only named in 3.4.","The core recipe book (5.2) has no content; only three one-pagers exist (rice, lamb chop marinade, chicken tikka marinade).","The rice one-pager says 'cook the rice as the unit currently does'; no cooking method or time is written.","The two marinade one-pagers leave marinating time, storage and use-by marked as to be confirmed."]},"T10":{"refs":["1.3","3.6","5.1","5.3","5.6","5.7","5.8","6.3"],"standards":[{"ref":"1.3","text":"One controlled master copy of the manual, view-only for sites; a printed quick-reference guide displayed in back of house; staff can find key chapters when asked."},{"ref":"1.3","text":"Contact sheet displayed in back of house: day-to-day operations, HR, food safety, marketing, IT/systems and Head Office escalation."},{"ref":"3.6","text":"SFBB/HACCP file on site: plan, temperature logs, cleaning, training and pest records, supplier specifications, allergen matrix, corrective actions."},{"ref":"5.1","text":"Opening and closing checklists signed and kept 12 months; daily cash sheet, till reconciliation and Presto end-of-day report filed."},{"ref":"5.7","text":"Complaint register and void/refund log kept and reviewed weekly; escalation reference card kept at the service counter."},{"ref":"5.8","text":"Each unit holds pre-printed order pads, paper sign-in sheets and a calculator, checked monthly, as the fallback when a system is down."}],"ask":[{"ref":"1.3","q":"Where is the manual kept on site, who can open it, and where would I find the allergen rule in it?"},{"ref":"1.3","q":"Which of the checklists, logs and SOPs are used every day, and which ones don't get used?"},{"ref":"1.3","q":"When something in the manual doesn't fit how the shift really works, who do you tell?"},{"ref":"1.3","q":"Where are the contact sheet and the quick-reference guide, and when were they last checked?"},{"ref":"5.8","q":"What does the team do when Presto or another system stops working mid-service?"},{"ref":"6.3","q":"Which meetings run weekly or monthly here, and is there a written record of each?"},{"ref":"5.7","q":"Who last changed a log, checklist or sheet because something went wrong, and what changed?"}],"showMe":[{"ref":"SOP 5.5 Guest","q":"Show me where each poster or SOP is displayed: closing poster, guest journey, delivery one-pager, allergen card, escalation card."},{"ref":"1.3","q":"Show me the contact sheet and the escalation reference card."},{"ref":"5.8","q":"Show me the pre-printed order pads, paper sign-in sheets and paper templates for temperature and cleaning checks."},{"ref":"6.3","q":"Show me the last weekly ops review record and the weekly report it used."}],"gaps":["The due diligence system is not named and what it captures is marked for the owner to confirm (5.4, 5.8).","The EPOS, rota and due diligence systems are not integrated, and their three usage guides (5.4) have no content.","No internal audit framework exists yet, so the audit score KPI is not reported (6.1).","The cover says working draft, September 2026, pending the owner's review, although the Drive file is titled Final Draft.","The manual does not say whether the quick-reference guide and contact sheet have been produced."]},"T11":{"refs":["1.2","1.4","3.2","3.3","3.5","3.6","5.5","5.7"],"standards":[{"ref":"3.2","text":"Team member daily: prepares and cooks to standard, serves customers, completes station checklist items, follows food safety and allergen procedures, keeps station clean."},{"ref":"3.2","text":"Team leader (people and stock): rota and cover, onboarding, stock list, checks front-of-house, packing and back-of-house checklists. Team leader (kitchen quality): checks food is cooked to standard."},{"ref":"5.7","text":"A team member may remake or replace one item at no charge, entered on Presto with a reason; anything more goes to the team leader."},{"ref":"3.2","text":"Team leaders may authorise up to £20 per transaction; above £20, or a repeat remedy for the same customer, needs the owner."},{"ref":"1.4","text":"Staff are cross-trained to help other team members; nobody works unsupervised until training is signed off."},{"ref":"3.5","text":"Grievances go to the unit manager (owner) first, or the franchisee if it concerns the owner; acknowledged in 5 working days, meeting within 10, outcome within 5."}],"ask":[{"ref":"3.3","q":"Team member: what were you shown in your first week, and who showed you? What do you wish you'd been shown?"},{"ref":"1.2","q":"Team member: what is your job on a busy Saturday night, and what gets in the way of doing it to standard?"},{"ref":"5.5","q":"Team member: what do you do if you aren't sure whether an item contains an allergen?"},{"ref":"3.6","q":"Team member: if you spot a fridge running warm or a hygiene problem, who do you tell and what happens next?"},{"ref":"5.7","q":"Team member: a guest is unhappy with their food. What are you allowed to do yourself?"},{"ref":"1.2","q":"Team member: has anyone ever asked you to skip a check or cut a corner to keep up? What did you do?"},{"ref":"3.2","q":"Team leader: what do you decide without asking the owner, and what do you pass up? Give me a recent example."},{"ref":"3.5","q":"Team member: if something isn't right at work, who do you go to, and has that worked?"}],"showMe":[{"ref":"3.6","q":"Ask a team member to find the allergen matrix and tell you how they would use it."},{"ref":"5.6","q":"Ask a team member to show you their station's cleaning sheet and what 'signed off' means."},{"ref":"3.4","q":"Ask a team member to show you the rota and how they would request a shift swap or leave."},{"ref":"3.2","q":"Ask a team leader to show the checklists they confirmed this week and any gaps."}],"gaps":["The manual sets no regular one-to-one or appraisal routine for team members beyond probation reviews and annual refreshers.","Job descriptions are issued as templates by Head Office; none are in the manual (3.1).","Chapter 3.2 describes two team leader roles; the Allergens SOP names three team leaders (front of house, assembly, back of house).","The whistleblowing channel is named as a requirement and a tool, but no detail is given (3.2)."]},"T12":{"refs":["1.1","1.4","3.2","4.4","6.1","6.2","6.3","6.4"],"standards":[{"ref":"3.2","text":"Owner holds all decisions above team leader level, does daily spot-checks and handles complaints received on the store complaints phone."},{"ref":"6.1","text":"Food cost target 25% of revenue (75% gross margin) against 63% gross margin today; labour cost target 24% fully loaded."},{"ref":"6.1","text":"Order accuracy 98%; speed of service 10-12 minutes; complaints below 3 per 1,000 transactions; Google rating 4.5 or above with a 4.3 floor."},{"ref":"6.1","text":"Staff turnover below 70% annualised; absence 3% or below; training compliance 100%."},{"ref":"6.3","text":"Weekly ops review every Monday for one hour with the weekly report in by 9am; monthly business review within 10 working days of month end."},{"ref":"1.4","text":"Thirteen non-negotiables are what a surprise visit checks first, including temperature records, allergen information, every sale through the till and right to work."}],"ask":[{"ref":"1.1","q":"What worries you most about the unit today, and what makes you say that?"},{"ref":"3.2","q":"If you were away for a month, who decides what, and what would slip first?"},{"ref":"3.2","q":"How do you know the standards are being followed when you are not on shift?"},{"ref":"1.4","q":"Which of the thirteen non-negotiables are you most and least sure about right now?"},{"ref":"6.3","q":"What do your weekly numbers tell you about revenue, labour, waste and complaints, and when did you last act on one?"},{"ref":"5.7","q":"What was the last thing that went wrong here, and what changed afterwards?"},{"ref":"1.3","q":"Which parts of the manual are true today, and which describe where you want to get to?"},{"ref":"6.4","q":"Who could run the unit day to day without you, and what would they need first?"}],"showMe":[{"ref":"6.3","q":"Show me the last weekly report and the record of the last Monday review, including actions."},{"ref":"6.3","q":"Show me the last monthly report and the action list that came out of it."},{"ref":"5.7","q":"Show me the complaint register, the void/refund log and this week's review of team leader authorisations."},{"ref":"6.2","q":"Show me where the 63% gross margin figure comes from and what the till reports for margin."}],"gaps":["Presto shows 100% margin because recipe costs are not loaded, and the 63% gross margin is unverified until the VAT set-up is corrected (6.1, 6.2).","The pricing workshop has not been held and product margin targets are not set (6.2).","No internal operational audit framework exists, so the audit score KPI is not reported (6.1).","Brand identity is not agreed and the loyalty system is not chosen (1.1, 4.4).","Several KPI targets are open: average transaction value, net margin, repeat customer rate (6.1)."]},"T14":{"refs":["1.2","3.4","3.6","5.5","5.8","SOP 5.5 Guest"],"standards":[{"ref":"5.5","text":"Greet, take the order and confirm it back, issue the receipt and give the wait time; update the customer before they ask if the wait runs long."},{"ref":"5.5","text":"Order accuracy 98%; speed 10-12 minutes order to complete order for dine-in and collection; delivery 10-12 minutes from acceptance to driver handoff."},{"ref":"5.5","text":"Order read back before confirming on EPOS; the EPOS ticket is the single source of truth; the assembler verifies each item against the ticket before handoff."},{"ref":"3.4","text":"Five positions covered at all times (counter, assembly, peri grill, flat grill, prep); fryer opens at 5pm; full peak coverage by 6pm."},{"ref":"3.6","text":"Wash hands before handling food and after raw ingredients, toilet, waste, sneezing or coughing; sanitiser is not a substitute for handwashing."},{"ref":"SOP 5.5 Guest","text":"Every order on the kitchen display with a paper ticket; matched to its ticket at the pass; guests called by name."}],"ask":[{"ref":"3.4","q":"What is the team doing differently at 8pm compared with 3pm, and why?"},{"ref":"SOP 5.5 Guest","q":"Who is running this shift, and how would I know? How does the kitchen know which order to cook next?"},{"ref":"5.5","q":"What do you do when the queue builds, and when do you tell a guest their wait is longer than usual?"},{"ref":"5.5","q":"When did you last stop an order from going out because it didn't match the ticket? What was wrong?"},{"ref":"5.8","q":"What happens if the printer or Presto stops mid-service?"},{"ref":"1.2","q":"Where do hand washing, date labels and cleaning fit when the rush is on?"},{"ref":"5.5","q":"How do you handle a group of six or more arriving at once?"}],"showMe":[{"ref":"5.5","q":"Ask the team leader how ticket times are measured today, by Presto report or by manual timing."},{"ref":"5.5","q":"If an allergy order comes in, watch it move from the till to the hand-over and ask who checked it."},{"ref":"5.5","q":"Ask to see the order error log and the latest entries."},{"ref":"SOP 5.5 Delivery","q":"Watch a rider collection and ask the counter team member how they match platform, name and order number."}],"gaps":["The Guest Journey and Delivery SOPs mark order-to-hand-over, cook-to-hand-over and rider waiting targets as to be set, while chapter 5.5 sets 10-12 minutes.","No manual standard for phone orders or kiosk orders; the kiosk appears only in the Guest Journey SOP.","Whether Presto tracks ticket times is not stated; the manual says use EPOS where supported, else weekly manual timing at peak (5.5).","The greeting wording is still to be supplied (5.5)."]},"T15":{"refs":["1.3","3.2","5.7","6.3","6.5"],"standards":[{"ref":"6.3","text":"Weekly ops review keeps a written record: date, attendees, key points, and actions that are specific, owned and time-bound."},{"ref":"6.3","text":"Monthly business review summary shared with attendees within 3 working days."},{"ref":"5.7","text":"Complaint register reviewed weekly; recurring themes trigger process or training changes, not just individual fixes."},{"ref":"3.2","text":"Escalations above unit manager level are logged with date, issue, who was notified and resolution."},{"ref":"6.5","text":"Support SLAs: emergency 1 hour, urgent 4 hours in trading hours, standard 2 business days, non-urgent 5 business days; WhatsApp requests do not start the clock."},{"ref":"1.3","text":"Procedural changes follow four steps: communicate, train, implement, verify; implementation of moderate and major changes confirmed in writing in 5 working days."}],"ask":[{"ref":"6.3","q":"Which of the things we've seen would you act on first, and who would own each action?"},{"ref":"6.3","q":"Where will these actions be recorded, and how will you know by next Monday whether they are done?"},{"ref":"6.5","q":"What would you want Head Office to decide or support, and how do you raise that today?"},{"ref":"6.5","q":"Which of the issues raised would you treat as emergency, urgent or standard, and why?"},{"ref":"3.2","q":"Who needs to be told about anything serious we found, such as a regulator contact or a food safety issue?"},{"ref":"1.3","q":"How will the team hear about what we found, and how will you check the change has stuck?"},{"ref":"5.7","q":"What would you want to see in the complaint register or review figures to know it's working?"}],"showMe":[{"ref":"6.3","q":"Show me the action tracker and how last week's actions were closed."},{"ref":"6.3","q":"Show me where an agreed action will be written, with owner and deadline."},{"ref":"3.2","q":"Show me the escalation log."}],"gaps":["The field visit and audit cadence chapter (6.5) has no content: no audit framework, visit frequency or follow-up process is written.","The support SLAs are drafted for a network; Head Office is currently the owner personally (6.5).","The Head Office contact details page at the front of the manual is blank in the draft.","The manual's own rollout log and verification step (1.3) assume a franchise network; none of it is yet running."]},"F1":{"refs":["3.4","5.1","5.2","5.3","5.8"],"standards":[{"ref":"3.4","text":"Quiet period 12pm-4pm; second shift arrives 5pm Monday-Thursday and 4pm Friday-Sunday; protein prep starts 5pm; fryer opens; full peak coverage at 6pm."},{"ref":"3.4","text":"Minimum five positions covered at all times: counter, assembly, peri grill, flat grill and prep."},{"ref":"3.4","text":"Friday-Sunday trade runs around 30-40% higher than Monday-Thursday; peak is 7pm-9pm."},{"ref":"5.2","text":"Prep quantities set from the demand forecast and adjusted weekly against sales and the waste log; every prepped item labelled with prep and discard date and time."},{"ref":"3.4","text":"Weekly forecast prepared each Thursday; forecast above 85% of documented capacity for a period is flagged to the owner."},{"ref":"5.8","text":"Team leader (people and stock) checks critical ingredients against minimum trading quantity before service."}],"ask":[{"ref":"3.4","q":"What is tonight's forecast, who made it, and how close was last Friday's?"},{"ref":"3.4","q":"How many people are on tonight and in which positions? Is that what the rota says?"},{"ref":"5.1","q":"What needs to be ready before the second shift arrives, and how do you know it is?"},{"ref":"5.2","q":"How do you decide how much to prep for the evening?"},{"ref":"3.4","q":"At what point in the evening does the kitchen reach its limit, and where is that written down?"},{"ref":"3.5","q":"What happens if someone doesn't turn up for a Friday evening shift?"},{"ref":"5.8","q":"How do you check your critical ingredients are in stock before service starts?"},{"ref":"1.2","q":"What does the team get told before the rush starts, and who tells them?"}],"showMe":[{"ref":"5.2","q":"Show me the prep list for tonight and what is already labelled."},{"ref":"3.4","q":"Show me tonight's rota against who is actually on."},{"ref":"5.8","q":"Show me the check of critical ingredients against minimum trading quantities."},{"ref":"3.4","q":"Show me the documented capacity figures for the kitchen and the counter."}],"gaps":["The manual has no written pre-shift briefing standard.","Peak headcount for Monday-Thursday and Friday-Sunday is marked as to be completed once the labour model is issued (3.4).","The prep-in-advance or made-to-order choice and prep timing for each item are marked for the owner to provide (5.2).","Documented maximum throughput figures are to be measured at the Sheffield unit and issued by Head Office; they are not in the manual (3.4)."]},"F2":{"refs":["2.2","5.5","SOP 5.5 Guest","SOP 5.5 Delivery"],"standards":[{"ref":"5.5","text":"Speed of service 10-12 minutes from order placement to complete order for dine-in and collection."},{"ref":"5.5","text":"Delivery: 10-12 minutes from order acceptance to handoff to the driver; total delivery time is monitored but not held against the unit."},{"ref":"5.5","text":"Greet within seconds; confirm the order back; give the wait time at the receipt; update the customer before they ask if it runs long."},{"ref":"2.2","text":"Separate order and collection points; order numbers issued at the point of order and called at collection."},{"ref":"SOP 5.5 Delivery","text":"Hand a bag to a rider only when platform, customer first name and order number all match; riders collect at their own point, not the guest counter."},{"ref":"SOP 5.5 Guest","text":"Guests order and pay before cooking starts; asked about allergies before they pay; called by name at hand-over."}],"ask":[{"ref":"5.5","q":"How long should a guest wait at the counter tonight, and how do you tell them?"},{"ref":"5.5","q":"How do you measure order to hand-over, and what did last Friday look like?"},{"ref":"SOP 5.5 Delivery","q":"Where do riders collect, and how are they kept apart from waiting guests?"},{"ref":"SOP 5.5 Guest","q":"How does a kiosk order reach the kitchen, and who watches for it?"},{"ref":"5.5","q":"How are phone and collection orders taken and timed, and who tells the guest when it's ready?"},{"ref":"5.5","q":"What do you do when a guest has waited longer than you told them?"},{"ref":"5.5","q":"For delivery orders, how do you know whether you hit 10-12 minutes from acceptance to handoff?"}],"showMe":[{"ref":"5.5","q":"Show me the Presto ticket-time report for last Friday evening."},{"ref":"5.5","q":"Time three orders with me: counter, delivery and collection, from order to hand-over."},{"ref":"SOP 5.5 Delivery","q":"Show me the rider collection area and the order numbers written on the bags."},{"ref":"5.5","q":"Show me the manual time-and-motion sheet, if Presto doesn't track ticket times."}],"gaps":["The SOPs leave the order-to-hand-over, cook-to-hand-over and rider waiting targets as to be set; the manual sets 10-12 minutes (5.5).","The manual has no written standard for phone orders or kiosk orders.","The Delivery SOP leaves the rider hand-over area unfilled ([rider shelf or area]).","The order-status screen is not in place; the number system runs by hand (2.2)."]},"F3":{"refs":["3.2","3.4","5.5","6.1"],"standards":[{"ref":"5.5","text":"Average 10-12 minutes order to complete order; monitor ticket times through EPOS where supported, otherwise manual time-and-motion at least weekly at peak."},{"ref":"5.5","text":"Order accuracy target: 98% of orders exactly as ordered."},{"ref":"5.5","text":"On an order error: apologise, remake at no charge, log item, cause and time, brief the team; do not blame team members publicly."},{"ref":"5.5","text":"The EPOS ticket or screen is the single source of truth for the make station."},{"ref":"3.4","text":"Forecast above 85% of documented capacity for a trading period: adjust prep, add staff, simplify the menu for peak, or extend hours."},{"ref":"6.1","text":"Speed of service and order accuracy reviewed at the weekly ops review."}],"ask":[{"ref":"5.5","q":"What is the longest ticket time on a normal Friday, and how do you know?"},{"ref":"3.4","q":"When did the kitchen last hit its limit, and what did you do about it?"},{"ref":"5.5","q":"What do you do when tickets start to stack up at the pass?"},{"ref":"3.2","q":"Who can decide to take an item off the menu during the rush, and how quickly can that happen?"},{"ref":"5.5","q":"When an order goes wrong, how is it logged, and what changed afterwards?"},{"ref":"6.1","q":"Who sees the ticket times and accuracy figures each week, and what do they do with them?"},{"ref":"5.5","q":"What would stop the kitchen hitting 10-12 minutes on a busy night?"}],"showMe":[{"ref":"5.5","q":"Show me the order error log for the last four weeks."},{"ref":"6.1","q":"Show me the accuracy and average ticket time figures in the last weekly report."},{"ref":"5.5","q":"Show me a live ticket and how it is checked before hand-off."}],"gaps":["Documented maximum kitchen throughput is not in the manual; reference figures are to be measured at Sheffield and issued (3.4).","Whether Presto records ticket times is not stated (5.5).","The SOPs leave target times as to be set."]},"F4":{"refs":["2.2","3.4","5.5","5.6","SOP 5.5 Guest","SOP 5.5 Delivery"],"standards":[{"ref":"2.2","text":"Landing zone of at least 2 metres from door to counter; queue area that does not block the door when three or more customers are waiting."},{"ref":"2.2","text":"Order and collection are separate; customers can see where their order is; order numbers issued at order and called at collection."},{"ref":"5.5","text":"A group of six or more is taken as a single order with one order number, and told the realistic wait before ordering."},{"ref":"5.5","text":"At peak, suggest one item, once; scripted multi-item upsells at peak are not approved."},{"ref":"SOP 5.5 Guest","text":"Guests queue by the steel rail, order and pay, wait at the counter or the small seating by the stairs, and collect over the counter."},{"ref":"5.6","text":"Tables and counters wiped throughout the day; customer WC checked and cleaned every hour, signed and timed."}],"ask":[{"ref":"2.2","q":"Where does the queue form on a busy night, and does it ever block the door?"},{"ref":"2.2","q":"How do guests know where to wait and where to collect?"},{"ref":"5.5","q":"How do you handle a group of six or more walking in at 8pm?"},{"ref":"5.6","q":"Who clears tables and checks the toilets when it's busy?"},{"ref":"SOP 5.5 Delivery","q":"What happens when a rider and a walk-in guest arrive at the same counter at the same moment?"},{"ref":"5.5","q":"How long does a guest wait to be acknowledged when the counter is full?"},{"ref":"5.5","q":"What do you do when a guest says they are leaving because the wait is too long?"}],"showMe":[{"ref":"2.2","q":"Show me how order numbers are issued and called."},{"ref":"SOP 5.5 Delivery","q":"Show me where riders collect during peak and how their bags are held."},{"ref":"5.6","q":"Show me tonight's WC check sheet so far."}],"gaps":["The manual has no seating, table-service or queue-length standard beyond the 2 m landing zone and the door-clear rule.","The Guest Journey SOP says one counter serves guests, kiosk users and riders; the Delivery SOP says riders collect at a separate point.","The order-status screen is not yet in place (2.2)."]},"F5":{"refs":["1.2","5.5","SOP 5.5 Guest","SOP 5.5 Delivery"],"standards":[{"ref":"5.5","text":"Order read back before confirming on EPOS; EPOS ticket is the single source of truth; assembler verifies each item against the ticket before handoff."},{"ref":"5.5","text":"Allergy orders: structured Presto flag; verbal confirmation between order taker, make station and handoff; team leader verifies before handoff."},{"ref":"5.5","text":"Mitigations for errors: read back the order, standard button labels, clear ticket formatting, a dedicated make station with no multitasking at peak."},{"ref":"SOP 5.5 Guest","text":"No order leaves the counter until matched to its paper ticket; kiosk orders show on the till as Kiosk orders."},{"ref":"SOP 5.5 Delivery","text":"Every delivery order carries an order number on the ticket and bag matching the app, and is checked line by line against the paper ticket."},{"ref":"1.2","text":"A clash between team members mid-rush is sorted after service, not in front of customers."}],"ask":[{"ref":"5.5","q":"How does the kitchen get told about a change or a remake in the middle of a rush?"},{"ref":"SOP 5.5 Guest","q":"Who calls the orders and who checks them at the pass?"},{"ref":"SOP 5.5 Guest","q":"What happens when the paper ticket says one thing and the kitchen display says another?"},{"ref":"5.5","q":"How does an allergy order get called across the pass, and who answers?"},{"ref":"SOP 5.5 Delivery","q":"When did a bag last go to the wrong rider, and what changed?"},{"ref":"5.5","q":"How do the grill, fryer and assembly stations tell each other they are behind?"},{"ref":"1.2","q":"What happens when two team members disagree in front of customers?"}],"showMe":[{"ref":"5.5","q":"Show me how a remake or modifier appears on the kitchen display and the printed ticket."},{"ref":"5.5","q":"Show me an allergy-flagged ticket and how it is marked at the pass."},{"ref":"SOP 5.5 Delivery","q":"Show me the rider check: platform, customer first name and order number against the bag."}],"gaps":["How Presto flags an allergy order is marked for the owner to confirm (5.5).","The manual has no written pass-calling script or terms for how stations talk to each other.","The staffing positions in 3.4 do not include a pass or hand-over position; the SOPs give it to counter staff at the pass."]},"F6":{"refs":["1.2","1.4","3.2","3.4","3.5","3.6","5.5"],"standards":[{"ref":"1.2","text":"Four values: do it to standard every time; food safety is not negotiable; run a clean house; get on with each other. The standard does not move because it is busy."},{"ref":"1.2","text":"No 'just this once' on temperature checks; rudeness and friction in the kitchen are treated as exit problems, dealt with directly."},{"ref":"3.5","text":"Code of conduct: respect for customers and colleagues; no mobile phones in working hours except designated breaks; clean uniform, hair tied back."},{"ref":"3.6","text":"Hand washing before handling food and after raw ingredients, toilet, waste, sneezing; sanitiser is not a substitute for handwashing."},{"ref":"1.4","text":"Staff are cross-trained to assist other team members; the unit works as a team, not individuals in fixed roles."},{"ref":"5.5","text":"Any allergen question involving a child goes to the team leader without exception, never shortened because the unit is busy."}],"ask":[{"ref":"1.2","q":"What does a good team member do differently on a Friday night compared with a quiet shift?"},{"ref":"1.2","q":"When did someone last say 'just get them out', and what happened to the standard?"},{"ref":"1.4","q":"How do team members help each other when one station is behind?"},{"ref":"1.2","q":"What happens when two people clash during service?"},{"ref":"3.6","q":"How do temperature checks, hand washing and date labelling keep going when it's frantic?"},{"ref":"3.2","q":"Who covers the team leader's checking role when they are cooking?"},{"ref":"3.4","q":"How are breaks managed on a night with no gaps?"},{"ref":"3.5","q":"What happens with a team member who isn't pulling their weight at peak?"}],"showMe":[{"ref":"3.6","q":"After peak, show me the temperature and cleaning sheets for tonight and what was completed during the rush."},{"ref":"3.6","q":"Watch whether hands are washed between raw and ready food, then ask the team leader how that is monitored."},{"ref":"3.4","q":"Show me how breaks are rostered for tonight."}],"gaps":["No written standard for breaks at peak beyond the Working Time minimum of a 20-minute break over 6 hours (3.4).","The five positions in 3.4 do not include a supervisor; where the team leader or owner stands at peak is not written.","The manual has no staff illness or fitness-to-work rule for food handlers."]},"F7":{"refs":["1.2","3.2","5.2","OP 5.2 Rice","OP 5.2 Lamb","OP 5.2 Tikka"],"standards":[{"ref":"5.2","text":"Every product has a set portion and measuring tool in the recipe book; default tolerance is ±5% of weight or ±2g, whichever is greater; pass/fail at spot-check."},{"ref":"5.2","text":"Portioning by eye is not permitted for any item; proteins, cheese and sauces by weight or fixed measure; lower-cost items with a named tool of defined size."},{"ref":"5.2","text":"Every prepped item labelled with item, prep date and time, and discard date and time; thrown away at expiry however it looks or smells."},{"ref":"OP 5.2 Rice","text":"Soak 7 cups rice in warm water 2 to 3 hours; base 300g oil, 150g rice masala, 70g fried onions, 8 cups water, 100g tomato paste; same cup for rice and water; rice goes in last."},{"ref":"OP 5.2 Lamb","text":"Lamb chop batch 1 kg: 50g masala, 20g yoghurt, 30g oil, 15g ketchup, 5g vinegar. Tikka batch 1 kg chicken: 40g masala, 20g yoghurt, 20g oil. Supervisor checks each batch."},{"ref":"3.2","text":"Team leader (kitchen quality) checks food daily during service and runs a documented weekly quality review of core dishes against the specification."}],"ask":[{"ref":"5.2","q":"Who decides what a product should look like and weigh, and where is that written down?"},{"ref":"3.2","q":"How is quality checked during service, and by whom?"},{"ref":"3.2","q":"What did the last weekly food-quality review find, and what was corrected?"},{"ref":"5.2","q":"How do you know portions aren't drifting on a busy night?"},{"ref":"OP 5.2 Lamb","q":"What happens to a marinade batch that doesn't pass the supervisor's check?"},{"ref":"OP 5.2 Tikka","q":"How long can a marinated batch be kept, where, and who decided that?"},{"ref":"OP 5.2 Rice","q":"How is the rice cooked, for how long, and where is that written?"},{"ref":"OP 5.2 Rice","q":"Which products draw the most complaints or refunds, and what has been done about it?"}],"showMe":[{"ref":"OP 5.2 Rice","q":"Ask a kitchen team member to make the basmati rice from the one-pager while I watch, using the measuring cup."},{"ref":"OP 5.2 Lamb","q":"Ask them to make a batch of lamb chop or chicken tikka marinade and weigh each component."},{"ref":"5.2","q":"Pick a built item during service and weigh its main components against the recipe card."},{"ref":"OP 5.2 Lamb","q":"Show me the batch sign-off records for the last week."}],"gaps":["The core recipe book (5.2) has no content, and the recipe and portion directory is marked for the owner to provide.","Only three one-pagers exist (rice, lamb chop marinade, chicken tikka marinade); no other product has a written build.","Marinating time, storage and use-by for both marinades are marked as to be confirmed; the rice cooking method is 'as the unit currently does'.","Maximum shelf life per prepped item, and which items are weighed versus measured by a named tool, are marked for the owner (5.2).","Product photography of each finished item is requested in 5.2 but is not in the manual."]},"F8":{"refs":["3.2","5.1","5.7","5.8","SOP 5.5 Guest"],"standards":[{"ref":"3.2","text":"Owner is available for anything either team leader escalates, does daily spot-checks, and handles complaints on the store complaints phone."},{"ref":"3.2","text":"Team leaders may decide shift swaps within the rota, sending someone home early, stock top-ups within the approved list, and emergency repairs up to £150."},{"ref":"3.2","text":"Reducing the menu or closing temporarily is the owner's decision only."},{"ref":"3.2","text":"A single void or discount above £20, or voids and discounts above 1% of a shift's sales, are reported to the owner."},{"ref":"5.7","text":"Team leaders authorise up to £20 per transaction; above £20 or a second remedy for the same customer needs the owner; reviewed weekly in aggregate."},{"ref":"5.8","text":"An EPOS outage is notified to the owner immediately on confirmation, not after an hour."}],"ask":[{"ref":"SOP 5.5 Guest","q":"Who is in charge on a Friday night, and how do the team know?"},{"ref":"3.2","q":"What decisions did you take or hand up last Friday?"},{"ref":"3.2","q":"When do you step in, and when do you leave it to the team leaders?"},{"ref":"5.8","q":"What would make you reduce the menu or close mid-service?"},{"ref":"5.7","q":"How do you find out about a complaint or a large void that happened when you weren't on site?"},{"ref":"3.2","q":"Who reviews the voids and refunds of the team leader who holds Presto admin access?"},{"ref":"5.1","q":"How quickly can you be reached by phone during service, and who covers if you can't be?"}],"showMe":[{"ref":"3.2","q":"Show me the void and discount flags from Presto for last Friday."},{"ref":"5.7","q":"Show me the complaint register and the complaints phone record for the weekend."},{"ref":"5.7","q":"Show me this week's review of team leader authorisations."}],"gaps":["There is no Unit Manager layer; every decision above team leader rests with the owner, which chapter 3.2 names as the main risk at two or three units.","The manual sets no minimum manager presence or on-site cover for peak; the owner is available but not necessarily on site.","The SOPs name a shift owner at the start of each shift; the manual has no place to record who that is."]},"F9":{"refs":["3.2","4.3","5.5","5.7","6.1","SOP 5.7"],"standards":[{"ref":"5.7","text":"In person: listen without interrupting, apologise sincerely, fix it within your authority, escalate if beyond it so the guest does not have to re-explain."},{"ref":"SOP 5.7","text":"Team member remakes or replaces one item; team leader up to £20 per transaction; owner above £20 or for a repeat remedy; every remedy on the void/refund log."},{"ref":"5.7","text":"Every complaint logged on the register (date, nature, how received, resolution, outcome); reviewed weekly by the unit manager."},{"ref":"5.7","text":"Hair or foreign object, suspected illness or allergic reaction: put it right, tell the owner at once and record it as a food safety incident."},{"ref":"5.7","text":"Written or online complaints acknowledged within 24 hours, substantive reply within 72 hours; review replies within 48 hours, 24 hours for one or two stars."},{"ref":"6.1","text":"Complaints below 3 per 1,000 transactions; Google rating 4.5 or above, 4.3 floor, one-star share below 8%."}],"ask":[{"ref":"5.7","q":"Tell me about the last complaint you took at the counter. What happened and what did you offer?"},{"ref":"5.7","q":"What are you allowed to do yourself, and when do you get the team leader?"},{"ref":"5.7","q":"Where does a complaint get recorded, and when does someone look for patterns?"},{"ref":"5.7","q":"What do you do if a guest says they have found a hair or had a reaction?"},{"ref":"3.2","q":"How does the owner find out about a complaint on the complaints phone, and what happens next?"},{"ref":"5.7","q":"Which complaint themes keep coming back, and what changed because of them?"},{"ref":"4.3","q":"How are Google and delivery-app reviews checked and answered, and by when?"}],"showMe":[{"ref":"5.7","q":"Show me the complaint register for the last four weeks and the void/refund log with reasons and who authorised."},{"ref":"4.3","q":"Show me the last few Google and delivery-platform reviews and the replies."},{"ref":"SOP 5.7","q":"Show me the counter escalation card and where it is kept."}],"gaps":["The Complaint SOP leaves the complaints phone number as a placeholder ([number]).","The complaint resolution script and customer feedback form are listed as tools but are not in the manual.","All complaints currently go to a single phone held by the owner, which chapter 5.7 says reflects owner dependence.","The manual does not name the delivery platforms the unit trades on; that sits on a unit channel record (4.3)."]},"F10":{"refs":["1.2","1.3","1.4","3.2","5.1","5.5"],"standards":[{"ref":"1.4","text":"Thirteen non-negotiables: hygiene, temperature records, a hygiene rating of 5 and never below 4, SOPs as written, every sale through the till, and training before unsupervised work."},{"ref":"1.2","text":"The standard 'doesn't move depending on how busy the shift is'; food safety has no 'just this once'."},{"ref":"1.3","text":"A chapter with highlighted text is not complete; chapters follow a five-heading format and the manual is the single authoritative source for SOPs."},{"ref":"3.2","text":"Both team leader roles run on experience, not written standards; at two or three units quality would depend on whichever team leader is on shift."},{"ref":"5.1","text":"A lengthening opening is a closing checklist problem: check what the opening team finds that should have been done at close."},{"ref":"5.5","text":"Greeting, order updates and helping undecided customers are named as areas still being improved."}],"ask":[{"ref":"1.2","q":"Which parts of the manual does the team follow exactly on a Friday, and which do they bend?"},{"ref":"1.2","q":"Where does the shift most often fall behind, and what gives first?"},{"ref":"1.4","q":"If I checked the thirteen non-negotiables tonight, where would you expect me to find a gap?"},{"ref":"1.3","q":"What does the team do that the manual doesn't mention?"},{"ref":"1.3","q":"What is in the manual that doesn't happen here?"},{"ref":"3.2","q":"Which checks depend on one particular person being on shift?"},{"ref":"1.2","q":"When a rule is skipped to keep up, who finds out and what happens?"},{"ref":"5.5","q":"Which check would worry you most to see skipped at 8pm on a Friday?"}],"showMe":[{"ref":"1.4","q":"Walk me through the thirteen non-negotiables with one piece of evidence for each from tonight."},{"ref":"3.6","q":"Show me which temperature, cleaning and waste sheets were completed during the rush, against what I watched."},{"ref":"1.4","q":"Show me the till report to confirm every sale, including cash and delivery, went through it."}],"gaps":["The manual contradicts itself in places, for example temperatures 'logged daily' (1.4) against 'at least twice daily' (3.6).","Fifteen sub-chapters have no content: six await the owner's input and nine describe tools not yet built.","No internal audit framework or field visit cadence exists to test the manual against practice (6.1, 6.5).","Several cross-references point to the wrong chapter (see the inconsistencies list)."]},"F11":{"refs":["3.6","5.1","5.3","6.1","SOP 5.1"],"standards":[{"ref":"5.1","text":"10-step closing checklist ending with the closing lead's sign-off; nobody leaves until the final walk-through is done and the team dismissed; kept 12 months."},{"ref":"5.1","text":"Close-down covers surfaces, floors, bins, equipment, cover and date-label open ingredients, discard expired items, log fridge and freezer temperatures."},{"ref":"5.1","text":"Cash counted against EPOS; a daily variance over £10 investigated and reported; cash above £300 dropped to the safe; Presto end-of-day report filed."},{"ref":"SOP 5.1","text":"Flat grill: doner blade off and disconnected first; food stickered USE FIRST; gas controls OFF; if a gas control can't be confirmed off, do not leave."},{"ref":"5.3","text":"Waste recorded on the daily log at the point of disposal."},{"ref":"6.1","text":"Daily report completed by the closing lead (revenue, transactions, labour hours, variances, operational note) and submitted before the next trading day."}],"ask":[{"ref":"5.1","q":"What does close-down look like after a Friday peak? What gets left, and what never does?"},{"ref":"SOP 5.1","q":"How does the closing lead know the grill station is safe to leave?"},{"ref":"5.1","q":"Who counts the cash, who checks the count, and what was last night's variance?"},{"ref":"6.1","q":"Who writes the daily report, and who reads it the next morning?"},{"ref":"5.1","q":"What did the opening team find this morning that should have been done last night?"},{"ref":"5.3","q":"What was thrown away tonight, and where was it recorded?"},{"ref":"3.6","q":"If there was an incident or near-miss tonight, who is told and how does it get recorded?"}],"showMe":[{"ref":"5.1","q":"Show me tonight's closing checklist as it is completed, and the signed flat grill sheet."},{"ref":"5.1","q":"Show me the cash reconciliation, the variance record and the end-of-day Presto report."},{"ref":"6.1","q":"Show me the daily report template and last night's completed report."},{"ref":"5.3","q":"Show me the waste log and the final fridge and freezer readings of the night."}],"gaps":["The shared reporting location for the daily report is marked for the owner to confirm (6.1).","There is no written shift handover standard for the morning team.","Only the flat grill closing SOP was provided; there are no closing SOPs for the other stations in these files."]},"T13":{"refs":["1.2","3.4","5.1","5.2","5.3","5.8"],"standards":[{"ref":"3.4","text":"Quiet period 12pm-4pm; second shift arrives 5pm Monday-Thursday and 4pm Friday-Sunday; protein prep starts 5pm; fryer opens; full peak coverage at 6pm."},{"ref":"3.4","text":"Minimum five positions covered at all times: counter, assembly, peri grill, flat grill and prep."},{"ref":"5.2","text":"Prep quantities set from the demand forecast and adjusted weekly against sales and the waste log; every prepped item labelled with prep and discard date and time."},{"ref":"3.4","text":"Weekly forecast prepared each Thursday; forecast above 85% of documented capacity for a period is flagged to the owner."},{"ref":"5.8","text":"Team leader (people and stock) checks critical ingredients against minimum trading quantity before service."}],"ask":[{"ref":"3.4","q":"How many people are on tonight and in which positions? Is that what the rota says?"},{"ref":"5.1","q":"What needs to be ready before the second shift arrives, and how do you know it is?"},{"ref":"5.2","q":"How do you decide how much to prep for the evening?"},{"ref":"3.4","q":"At what point in the evening does the kitchen reach its limit, and where is that written down?"},{"ref":"5.8","q":"How do you check your critical ingredients are in stock before service starts?"},{"ref":"1.2","q":"What does the team get told before the rush starts, and who tells them?"}],"showMe":[{"ref":"5.2","q":"Show me the prep list for tonight and what is already labelled."},{"ref":"3.4","q":"Show me tonight's rota against who is actually on."},{"ref":"5.8","q":"Show me the check of critical ingredients against minimum trading quantities."},{"ref":"3.4","q":"Show me the documented capacity figures for the kitchen and the counter."}],"gaps":["The manual has no written pre-shift briefing standard.","Peak headcount for Monday-Thursday and Friday-Sunday is marked as to be completed once the labour model is issued (3.4).","The prep-in-advance or made-to-order choice and prep timing for each item are marked for the owner to provide (5.2).","Documented maximum throughput figures are to be measured at the Sheffield unit and issued by Head Office; they are not in the manual (3.4)."]}}/* MANUAL:END */;
+// Places where the manual and its SOPs disagree with each other: worth raising, and pain points in their own right.
+const INCON = /* INCON:BEGIN */[{"refs":["1.4","3.6","5.1"],"note":"Temperature records: the non-negotiables (1.4) say fridge, freezer, hot hold and probe checks are logged daily; 3.6 says fridge and freezer at least twice daily; 5.1 adds a check at opening and at close."},{"refs":["5.5","SOP 5.5 Guest","SOP 5.5 Delivery"],"note":"Chapter 5.5 sets 10-12 minutes order to complete order; the Guest Journey and Delivery SOPs show target times as 'to be set'."},{"refs":["3.6","SOP 3.6","5.5"],"note":"Allergens: 3.6 gives allergen information on request and flags on declaration; the SOP asks every guest at every order. 5.5 wants a structured Presto flag, the SOP says write ALLERGY on the ticket."},{"refs":["3.2","SOP 3.6"],"note":"Chapter 3.2 describes two team leader roles (people and stock; kitchen quality); the Allergens SOP lists three team leaders (front of house, assembly, back of house)."},{"refs":["3.2","3.3","3.1"],"note":"Chapter 3.2 says no training cards or documented prep standards exist; 3.1 and 3.3 require signed modules, competency sign-offs, a skills matrix and training records."},{"refs":["5.4","3.1","3.5"],"note":"Chapter 5.4 says no staff records are held beyond payroll basics; 3.1, 3.3 and 3.5 require personnel files, training records and disciplinary and grievance records."},{"refs":["SOP 5.5 Guest","SOP 5.5 Delivery"],"note":"Guest Journey SOP: one counter serves guests, kiosk users and riders. Delivery SOP: riders collect at their own point, not the guest counter."},{"refs":["SOP 3.6","SOP 5.1","SOP 5.5 Guest","SOP 5.5 Delivery","SOP 5.7"],"note":"The SOPs name two different sites: London Road (allergens, guest journey, complaints) and Wicker (grill closing, delivery). The manual describes a single Sheffield unit."},{"refs":["5.6","2.2"],"note":"Chapter 5.6 refers to the approved contractor list as Chapter 2.6; no 2.6 exists. The contractor list is in 2.2 (Approved suppliers/contractors)."},{"refs":["5.1","2.3"],"note":"Cash handling (5.1) points to the Head Office insurance schedule in Chapter 2.4; insurance is in 2.3."},{"refs":["3.3","3.5","3.1"],"note":"3.3 and 3.5 refer to 'Chapter 3.4 - Probation review'; probation review is in 3.1."},{"refs":["6.6","5.8"],"note":"Chapter 6.6 cites 'Chapter 5.7 - Supply disruption contingency'; it is in 5.8. 5.1 cites reporting cadence in 6.3; it is in 6.1."},{"refs":["3.4","6.1"],"note":"3.4 marks the target labour cost % as 'to be set from the labour model'; 6.1 already sets 24% fully loaded as 'locked as written'."},{"refs":["front matter","1.3"],"note":"Drive title says Final Draft; the cover says working draft, pending review. 1.3 says every chapter has five standard headings, but many chapters do not."}]/* INCON:END */;
+const BY = Object.fromEntries(AREAS.map(a => [a.id, a]));
+const KEY = 'idv-' + VISIT;
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const slug = s => String(s).toLowerCase().replace(/[^a-z]+/g, '-');
+const clone = o => JSON.parse(JSON.stringify(o));
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+const has = v => v !== undefined && v !== null && v !== false && String(v).trim() !== '';
+
+/* ---------- state: one record per area, kept on the phone at once and in the account when there is signal ---------- */
+let S = {};
+try { S = JSON.parse(localStorage.getItem(KEY + '-state')) || {}; } catch { S = {}; }
+const area = id => (S[id] ||= { f: {}, photos: [], t: 0 });
+function saveLocal() { try { localStorage.setItem(KEY + '-state', JSON.stringify(S)); } catch {} }
+
+/* ---------- building the areas ---------- */
+const ta = (a, k, label, hint = '', big = false) => `<div class="fld"><label for="${a}-${k}">${esc(label)}</label>${hint ? `<small>${esc(hint)}</small>` : ''}<textarea id="${a}-${k}" data-a="${a}" data-k="${k}" rows="${big ? 4 : 2}"${big ? ' class="big" placeholder="Dictate freely here; tidy it later"' : ''}></textarea></div>`;
+const chips = (a, k, label, opts) => `<div class="fld"><span class="lbl" id="${a}-${k}-l">${esc(label)}</span><div class="chips" role="group" aria-labelledby="${a}-${k}-l">${opts.map((o, i) =>
+  `<button type="button" class="chip" id="${a}-${k}-${i}" data-a="${a}" data-k="${k}" data-v="${esc(o)}" aria-pressed="false">${esc(o)}</button>`).join('')}</div></div>`;
+const line = (a, k, label, ph = '') => `<div class="fld"><label for="${a}-${k}">${esc(label)}</label><input type="text" id="${a}-${k}" data-a="${a}" data-k="${k}" placeholder="${esc(ph)}" autocomplete="off"></div>`;
+const CAM = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h3l1.6-2.4h6.8L17 8h3v11H4z"/><circle cx="12" cy="13.2" r="3.6"/></svg>';
+const PIC = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="4.5" width="17" height="15" rx="2"/><circle cx="9" cy="10" r="1.8"/><path d="m4 18 5.5-5 4 3.5 2.5-2 4 3.5"/></svg>';
+
+function toolsHTML(a) {
+  return `<div class="list">${TOOLS.map((t, i) => { const k = 'tool' + (i + 1); return `<div class="tool"><h4><span>${i + 1}</span>${esc(t)}</h4>
+    <div class="ticks">${[['on', 'On site'], ['knows', 'Team knows it'], ['used', 'Used as written']].map(([s, l]) =>
+      `<label class="tick"><input type="checkbox" id="${a}-${k}_${s}" data-a="${a}" data-k="${k}_${s}">${l}</label>`).join('')}</div>
+    <div class="chips" role="group" aria-label="${esc(t)} against the manual">${MANUAL.map((o, j) =>
+      `<button type="button" class="chip" id="${a}-${k}_m-${j}" data-a="${a}" data-k="${k}_m" data-v="${esc(o)}" aria-pressed="false">${esc(o)}</button>`).join('')}</div>
+    <input type="text" id="${a}-${k}_note" data-a="${a}" data-k="${k}_note" placeholder="Note" aria-label="${esc(t)}: note" autocomplete="off"></div>`; }).join('')}</div>`;
+}
+function ordersHTML(a, n) {
+  let h = '<div class="list">';
+  for (let i = 1; i <= n; i++) {
+    const k = 'ord' + i;
+    h += `<div class="order"><h4><span>${i}</span>Order</h4>
+      <select id="${a}-${k}_route" data-a="${a}" data-k="${k}_route" aria-label="Order ${i}: route"><option value="">Route…</option>${ROUTES.map(r => `<option>${r}</option>`).join('')}</select>
+      <div class="otimes">
+        <div class="tin"><span>Ordered</span><div><input type="time" step="1" id="${a}-${k}_in" data-a="${a}" data-k="${k}_in" aria-label="Order ${i}: time ordered"><button type="button" class="now" data-now="${a}-${k}_in">Now</button></div></div>
+        <div class="tin"><span>Handed over</span><div><input type="time" step="1" id="${a}-${k}_out" data-a="${a}" data-k="${k}_out" aria-label="Order ${i}: time handed over"><button type="button" class="now" data-now="${a}-${k}_out">Now</button></div></div>
+      </div>
+      <div class="dur" id="dur-${a}-${i}"></div>
+      <input type="text" id="${a}-${k}_note" data-a="${a}" data-k="${k}_note" placeholder="What happened" aria-label="Order ${i}: note" autocomplete="off"></div>`;
+  }
+  return h + '</div>';
+}
+function areaHTML(A) {
+  const a = A.id;
+  let h = `<details class="area" id="area-${a}" data-area="${a}"><summary><span class="code">${a}</span><span class="ttl">${esc(A.title)}${A.tag ? ` <em>${esc(A.tag)}</em>` : ''}</span><span class="mins" id="at-${a}">${A.mins} min</span><span class="st" id="st-${a}"></span></summary><div class="body">`;
+  if (A.purpose) h += `<p class="purpose">${esc(A.purpose)}</p>`;
+  if (A.look) h += `<p class="look"><b>Look for</b>${esc(A.look)}</p>`;
+  if (A.note) h += `<p class="flag">${esc(A.note)}</p>`;
+  if (A.do) h += `<div class="fld"><span class="lbl">Do</span><ul class="dos">${A.do.map((d, i) =>
+    `<li><label><input type="checkbox" id="${a}-do${i + 1}" data-a="${a}" data-k="do${i + 1}"><span>${esc(d)}</span></label></li>`).join('')}</ul></div>`;
+  h += manualHTML(a);
+  for (const x of A.fields || []) h += ta(a, x.k, x.label, x.hint);
+  if (A.tools) h += toolsHTML(a);
+  if (A.orders) h += ordersHTML(a, A.orders);
+  h += ta(a, 'notes', 'Notes', '', true);
+  if (A.cap) h += ta(a, 'well', 'Working well') + ta(a, 'issue', 'Issue') + chips(a, 'rating', 'Rating', RATING)
+    + (A.day === 'thu' ? chips(a, 'manual', 'Against the manual', MANUAL) : '') + line(a, 'quote', 'Quote or moment worth keeping');
+  h += photoHTML(a);
+  h += `<div class="painrow"><button type="button" class="btn pain" data-newpain="${a}">Log a pain point</button><span class="pc" id="pp-${a}"></span></div>`;
+  return h + '</div></details>';
+}
+const photoHTML = a => `<div class="fld"><span class="lbl">Photos</span><div class="photos" id="ph-${a}"></div><div class="cam">
+    <label class="btn primary">${CAM}Take photo<input class="vh" type="file" accept="image/*" capture="environment" id="cam-${a}" data-photo="${a}"></label>
+    <label class="btn">${PIC}Add from library<input class="vh" type="file" accept="image/*" multiple id="lib-${a}" data-photo="${a}"></label></div></div>`;
+const refTag = r => r ? `<span class="ref" title="${esc(CHAP[r] ? r + ' ' + CHAP[r] : r)}">${esc(r)}</span>` : '';
+// What the manual says, then the questions to ask (an answer under each) and the things to ask to see.
+function manualHTML(a) {
+  const M = MAN[a]; if (!M) return '';
+  let h = '';
+  if ((M.standards || []).length || (M.gaps || []).length) {
+    h += `<details class="std"><summary>What the manual says${(M.refs || []).length ? ' · ' + esc(M.refs.join(', ')) : ''}</summary><ul>`
+      + (M.standards || []).map(s => `<li>${refTag(s.ref)}${esc(s.text)}</li>`).join('')
+      + (M.gaps || []).map(g => `<li class="gap"><b>Gap:</b> ${esc(g)}</li>`).join('') + '</ul></details>';
+  }
+  if ((M.ask || []).length) h += `<div class="fld"><span class="lbl">Ask</span><div class="qs">${M.ask.map((q, i) =>
+    `<div class="q"><p id="${a}-q${i + 1}-l">${esc(q.q)}${refTag(q.ref)}</p><textarea class="ans" id="${a}-q${i + 1}" data-a="${a}" data-k="q${i + 1}" rows="1" placeholder="Their answer" aria-labelledby="${a}-q${i + 1}-l"></textarea></div>`).join('')}</div></div>`;
+  if ((M.showMe || []).length) h += `<div class="fld"><span class="lbl">Show me</span><div class="qs">${M.showMe.map((q, i) => {
+    const k = 'sm' + (i + 1);
+    return `<div class="q"><p id="${a}-${k}-l">${esc(q.q)}${refTag(q.ref)}</p><div class="chips" role="group" aria-labelledby="${a}-${k}-l">${SHOWN.map((o, j) =>
+      `<button type="button" class="chip" id="${a}-${k}-${j}" data-a="${a}" data-k="${k}" data-v="${esc(o)}" aria-pressed="false">${esc(o)}</button>`).join('')}</div>
+      <input type="text" id="${a}-${k}_n" data-a="${a}" data-k="${k}_n" placeholder="What you saw" aria-label="What you saw" autocomplete="off"></div>`; }).join('')}</div></div>`;
+  return h;
+}
+$('areas-thu').innerHTML = AREAS.filter(A => A.day === 'thu').map(areaHTML).join('');
+$('areas-fri').innerHTML = AREAS.filter(A => A.day === 'fri').map(areaHTML).join('');
+$('incon').innerHTML = INCON.map(x => `<li>${refTag(x.refs.join(', '))}${esc(x.note)}</li>`).join('');
+$('incon-h').textContent = `Where the manual contradicts itself (${INCON.length})`;
+$('howto-incon').hidden = !INCON.length;
+
+/* ---------- pain points: one record each (P-…), kept in the same store as the areas; deleting one marks it gone ---------- */
+const isPain = id => id.startsWith('P-');
+const livePains = () => Object.keys(S).filter(id => isPain(id) && !S[id].gone).sort((x, y) => (S[x].at || 0) - (S[y].at || 0));
+const painNo = id => livePains().indexOf(id) + 1;
+const score = id => { const f = area(id).f; return (SEV_W[f.sev] || 0) * (FREQ_W[f.freq] || 0); };
+const ranked = () => livePains().map((id, i) => ({ id, n: i + 1, s: score(id) })).sort((x, y) => y.s - x.s || x.n - y.n);
+const placeOf = id => isPain(id) ? 'pain point P' + painNo(id) : id;
+function painHTML(a) {
+  return `<details class="area pain" id="area-${a}" data-area="${a}"><summary><span class="code">P${painNo(a)}</span><span class="ttl" id="pt-${a}"></span><span class="mins" id="pa-${a}"></span><span class="st" id="st-${a}"></span></summary><div class="body">
+    <div class="fld"><label for="${a}-area">Found in</label><select id="${a}-area" data-a="${a}" data-k="area"><option value="">Elsewhere</option>${AREAS.map(A => `<option value="${A.id}">${A.id} ${esc(A.title)}</option>`).join('')}</select></div>
+    ${ta(a, 'what', 'What hurts', 'Say it plainly, the way you would say it to the office.')}
+    ${ta(a, 'evidence', 'Evidence', 'What you saw, the document, or the words someone used.')}
+    <div class="fld"><span class="lbl">Who feels it</span><div class="whos">${WHO.map(([k, l]) => `<label class="tick"><input type="checkbox" id="${a}-who_${k}" data-a="${a}" data-k="who_${k}">${l}</label>`).join('')}</div></div>
+    ${chips(a, 'sev', 'How bad', SEV)}${chips(a, 'freq', 'How often', FREQ)}${chips(a, 'man', 'Against the manual', AGAINST)}
+    ${line(a, 'ref', 'Manual chapter', 'For example 3.6')}
+    ${ta(a, 'why', 'Why it happens (your best guess)')}
+    <div class="whos"><label class="tick"><input type="checkbox" id="${a}-awk" data-a="${a}" data-k="awk">Awkward to say</label><label class="tick"><input type="checkbox" id="${a}-office" data-a="${a}" data-k="office">Office review only</label></div>
+    ${photoHTML(a)}
+    <div class="pfoot"><button type="button" class="btn" data-goarea="${a}">Back to the area</button><button type="button" class="del" data-delpain="${a}">Delete this pain point</button></div>
+  </div></details>`;
+}
+function renderPains() {
+  const box = $('pains'), ids = livePains().reverse(), open = new Set([...box.querySelectorAll('details[open]')].map(d => d.dataset.area)), focus = document.activeElement?.id;
+  box.innerHTML = ids.length ? ids.map(painHTML).join('') : '<p class="empty">No pain points yet. Log one from any area, or with the button above.</p>';
+  for (const id of ids) { if (open.has(id)) $('area-' + id).open = true; fill(id); }
+  if (focus && $(focus) && box.contains($(focus))) $(focus).focus();
+  painCounts();
+}
+function painSummary(a) {
+  const t = $('pt-' + a); if (!t) return;
+  const f = area(a).f, n = area(a).photos.length;
+  t.textContent = String(f.what || '').trim().split('\n')[0].slice(0, 90) || 'New pain point';
+  $('pa-' + a).textContent = f.area || '';
+  $('st-' + a).innerHTML = [f.sev && `<span class="pill s-${slug(f.sev)}">${esc(f.sev)}</span>`, f.freq && `<span class="pill">${esc(f.freq)}</span>`,
+    f.awk && '<span class="pill awk">Awkward</span>', f.office && '<span class="pill">Office only</span>', n && `<span class="pc">${n} photo${n > 1 ? 's' : ''}</span>`].filter(Boolean).join('');
+}
+function painCounts() {
+  const by = {}; for (const id of livePains()) { const a = area(id).f.area; if (a) by[a] = (by[a] || 0) + 1; }
+  for (const A of AREAS) { const n = by[A.id] || 0, el = $('pp-' + A.id); if (el) el.innerHTML = n ? `<a href="#pains" data-tab="pains">${n} pain point${n > 1 ? 's' : ''} logged here</a>` : ''; }
+}
+function newPain(from) {
+  const id = 'P-' + Date.now().toString(36) + Math.random().toString(36).slice(2, 5);
+  S[id] = { kind: 'pain', at: Date.now(), f: { area: from || '' }, photos: [], t: 0 };
+  touch(id); renderPains(); show('pains', true);
+  const d = $('area-' + id); d.open = true; d.scrollIntoView({ block: 'start' });
+  $(id + '-what').focus({ preventScroll: true });
+}
+function delPain(btn) {
+  if (!btn.classList.contains('armed')) {
+    btn.classList.add('armed'); btn.textContent = 'Tap again to delete';
+    return setTimeout(() => { if (btn.isConnected) { btn.classList.remove('armed'); btn.textContent = 'Delete this pain point'; } }, 3500);
+  }
+  const id = btn.dataset.delpain, s = area(id);
+  for (const p of s.photos) { if (p.id && assets) assets.delete(p.id).catch(() => {}); delBlob(p.pid); mem.delete(p.pid); }
+  s.gone = true; s.photos = []; touch(id); renderPains(); toast('Pain point deleted');
+}
+function goArea(id) {
+  const A = BY[area(id).f.area]; if (!A) return toast('This pain point is not tied to an area. Set "Found in" first.');
+  show(A.day, true); const d = $('area-' + A.id); d.open = true; d.scrollIntoView({ block: 'start' });
+}
+
+/* ---------- planned clock times for Thursday, from its start time ---------- */
+const hhmm = m => { m = ((Math.round(m) % 1440) + 1440) % 1440; return String(Math.floor(m / 60)).padStart(2, '0') + ':' + String(m % 60).padStart(2, '0'); };
+function planTimes() {
+  const st = secs(area('META').f.thuStart); let m = st == null ? null : st / 60;
+  for (const A of AREAS.filter(x => x.day === 'thu')) {
+    $('at-' + A.id).textContent = m == null ? `${A.mins} min` : `${hhmm(m)} · ${A.mins} min`;
+    if (m != null) m += A.mins;
+  }
+  $('planLine').innerHTML = st == null ? 'Set the start time and each block shows its planned clock time.'
+    : `Plan: <b>${hhmm(st / 60)} to ${hhmm(m)}</b>, 480 minutes. Slide blocks to fit the shift; T13 and T14 should land on the evening build.`;
+}
+
+/* ---------- showing the state ---------- */
+function grow(el) { if (el.tagName !== 'TEXTAREA' || !el.offsetParent) return; el.style.height = 'auto'; el.style.height = el.scrollHeight + 2 + 'px'; }
+const secs = v => { const m = /^(\d{1,2}):(\d{2})(?::(\d{2}))?$/.exec(v || ''); return m ? +m[1] * 3600 + +m[2] * 60 + +(m[3] || 0) : null; };
+function dur(a, b) {
+  const x = secs(a), y = secs(b); if (x == null || y == null) return '';
+  let d = y - x; if (d < 0) d += 86400;
+  return `${Math.floor(d / 60)}:${String(d % 60).padStart(2, '0')}`;
+}
+function updDur(a, i) {
+  const el = $(`dur-${a}-${i}`); if (!el) return;
+  const f = area(a).f, d = dur(f[`ord${i}_in`], f[`ord${i}_out`]);
+  el.innerHTML = d ? `Order to hand-over <b>${d}</b> min` : '';
+}
+function fill(a) {
+  const f = area(a).f;
+  document.querySelectorAll(`[data-a="${a}"][data-k]`).forEach(el => {
+    const v = f[el.dataset.k];
+    if (el.classList.contains('chip')) return el.setAttribute('aria-pressed', String(v === el.dataset.v));
+    if (el === document.activeElement) return;
+    if (el.type === 'checkbox') el.checked = !!v;
+    else { el.value = v ?? ''; grow(el); }
+  });
+  if (BY[a]?.orders) for (let i = 1; i <= BY[a].orders; i++) updDur(a, i);
+  if (a === 'META') planTimes();
+  renderPhotos(a);
+  summary(a);
+}
+const started = a => { const s = S[a]; return !!s && (Object.values(s.f || {}).some(has) || (s.photos || []).length > 0); };
+function summary(a) {
+  if (isPain(a)) { painSummary(a); painCounts(); return progress(); }
+  const el = $('st-' + a);
+  if (el) {
+    const s = area(a), n = s.photos.length, r = s.f.rating;
+    el.innerHTML = `${started(a) ? '<span class="dot" title="Has notes"></span>' : ''}${r ? `<span class="pill r-${slug(r)}">${esc(r)}</span>` : ''}${n ? `<span class="pc">${n} photo${n > 1 ? 's' : ''}</span>` : ''}`;
+  }
+  progress();
+}
+function photoCounts() { let n = 0, local = 0; for (const s of Object.values(S)) for (const p of s.photos || []) { n++; if (!p.id) local++; } return { n, local }; }
+function progress() {
+  for (const d of ['thu', 'fri']) { const list = AREAS.filter(A => A.day === d); $('prog-' + d).textContent = `${list.filter(A => started(A.id)).length} of ${list.length}`; }
+  $('prog-pains').textContent = `${livePains().length} logged`;
+  const { n } = photoCounts(); $('prog-rep').textContent = `${n} photo${n === 1 ? '' : 's'}`;
+  if (tab === 'report') renderReport();
+}
+
+/* ---------- typing, tapping, timing ---------- */
+function touch(a) { area(a).t = Date.now(); saveLocal(); dirty.add(a); setStatus(db ? 'saving' : 'local'); scheduleFlush(); summary(a); }
+function onField(e) {
+  const el = e.target; if (!el.dataset || !el.dataset.k || !el.dataset.a || el.classList.contains('chip')) return;
+  const a = el.dataset.a, v = el.type === 'checkbox' ? el.checked : el.value;
+  if (area(a).f[el.dataset.k] === v) return;
+  area(a).f[el.dataset.k] = v;
+  if (el.tagName === 'TEXTAREA') grow(el);
+  const m = /^ord(\d+)_/.exec(el.dataset.k); if (m) updDur(a, +m[1]);
+  if (a === 'META') planTimes();
+  touch(a);
+}
+document.addEventListener('input', onField);
+document.addEventListener('change', e => { if (e.target.dataset?.photo) return addPhotos(e.target.dataset.photo, e.target); if (e.target.dataset?.cap) return onCaption(e); onField(e); });
+document.addEventListener('input', e => { if (e.target.dataset?.cap) onCaption(e); });
+document.addEventListener('click', e => {
+  const chip = e.target.closest('.chip');
+  if (chip) {
+    const a = chip.dataset.a, k = chip.dataset.k, f = area(a).f;
+    f[k] = f[k] === chip.dataset.v ? '' : chip.dataset.v;
+    chip.parentElement.querySelectorAll('.chip').forEach(c => c.setAttribute('aria-pressed', String(f[k] === c.dataset.v)));
+    return touch(a);
+  }
+  const now = e.target.closest('[data-now]');
+  if (now) {
+    const inp = $(now.dataset.now), d = new Date();
+    inp.value = [d.getHours(), d.getMinutes(), d.getSeconds()].map(n => String(n).padStart(2, '0')).join(':');
+    return inp.dispatchEvent(new Event('input', { bubbles: true }));
+  }
+  const del = e.target.closest('[data-del]');
+  if (del) return onDelete(del);
+  const np = e.target.closest('[data-newpain]');
+  if (np) return newPain(np.dataset.newpain);
+  const dp = e.target.closest('[data-delpain]');
+  if (dp) return delPain(dp);
+  const ga = e.target.closest('[data-goarea]');
+  if (ga) return goArea(ga.dataset.goarea);
+  const t = e.target.closest('[data-tab]');
+  if (t) return show(t.dataset.tab, true);
+});
+document.addEventListener('toggle', e => {
+  const d = e.target; if (!d.matches?.('details.area')) return;
+  if (d.open) d.querySelectorAll('textarea').forEach(grow);
+  try { const open = new Set(JSON.parse(localStorage.getItem(KEY + '-open') || '[]')); d.open ? open.add(d.dataset.area) : open.delete(d.dataset.area); localStorage.setItem(KEY + '-open', JSON.stringify([...open])); } catch {}
+}, true);
+
+/* ---------- tabs ---------- */
+let tab = 'thu';
+const TABS = ['thu', 'fri', 'pains', 'report'];
+function show(name, user) {
+  tab = name;
+  for (const n of TABS) { $('tab-' + n).setAttribute('aria-selected', String(n === name)); $('view-' + n).hidden = n !== name; }
+  if (name === 'report') renderReport(); else $('view-' + name).querySelectorAll('details[open] textarea').forEach(grow);
+  try { localStorage.setItem(KEY + '-tab', name); } catch {}
+  if (user) { try { history.replaceState(null, '', '#' + name); } catch {} window.scrollTo({ top: 0 }); }
+}
+
+/* ---------- photos: shrunk on the phone, kept there until the account has them ---------- */
+const mem = new Map(), urls = new Map();
+const idb = (() => { let p; return () => p ||= new Promise((res, rej) => { const r = indexedDB.open(KEY + '-photos', 1); r.onupgradeneeded = () => r.result.createObjectStore('p'); r.onsuccess = () => res(r.result); r.onerror = () => rej(r.error); }); })();
+async function store(mode, fn) {
+  try { const d = await idb(); return await new Promise((res, rej) => { const tx = d.transaction('p', mode), req = fn(tx.objectStore('p')); tx.oncomplete = () => res(req.result); tx.onerror = () => rej(tx.error); }); }
+  catch { return undefined; }
+}
+const putBlob = (k, b) => store('readwrite', s => s.put(b, k));
+const getBlob = k => store('readonly', s => s.get(k));
+const delBlob = k => store('readwrite', s => s.delete(k));
+async function shrink(file) {
+  const url = URL.createObjectURL(file);
+  try {
+    const img = await new Promise((res, rej) => { const i = new Image(); i.onload = () => res(i); i.onerror = rej; i.src = url; });
+    const s = Math.min(1, 1600 / Math.max(img.naturalWidth, img.naturalHeight));
+    const c = document.createElement('canvas'); c.width = Math.round(img.naturalWidth * s); c.height = Math.round(img.naturalHeight * s);
+    c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+    const b = await new Promise(r => c.toBlob(r, 'image/jpeg', 0.82));
+    if (!b) throw new Error('no jpeg');
+    return b;
+  } finally { URL.revokeObjectURL(url); }
+}
+async function addPhotos(a, input) {
+  const files = [...(input.files || [])]; input.value = '';
+  if (!files.length) return;
+  const box = $('area-' + a); if (box) box.open = true;
+  for (const file of files) {
+    let blob; try { blob = await shrink(file); } catch { toast('That photo could not be read. Try Take photo instead.'); continue; }
+    const pid = 'p' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+    mem.set(pid, blob); urls.set(pid, URL.createObjectURL(blob)); await putBlob(pid, blob);
+    area(a).photos.push({ pid, id: null, cap: '', at: Date.now() });
+    touch(a);
+  }
+  renderPhotos(a);
+  toast(files.length > 1 ? `${files.length} photos added to ${placeOf(a)}` : `Photo added to ${placeOf(a)}`);
+  uploadPending();
+}
+async function srcFor(p) {
+  if (p.id) return '/_blob/' + p.id;
+  if (urls.has(p.pid)) return urls.get(p.pid);
+  const b = mem.get(p.pid) || await getBlob(p.pid); if (!b) return '';
+  const u = URL.createObjectURL(b); urls.set(p.pid, u); return u;
+}
+async function renderPhotos(a) {
+  const box = $('ph-' + a); if (!box) return;
+  const ps = area(a).photos, keep = document.activeElement?.dataset?.cap;
+  box.innerHTML = ps.map((p, i) => `<figure class="ph" data-pid="${p.pid}"><div class="frame"><img id="img-${p.pid}" alt="${esc(p.cap || `Photo ${i + 1}, ${a}`)}"><span class="badge${p.id ? ' ok' : ''}" id="b-${p.pid}">${p.id ? 'Saved' : 'On this phone'}</span></div>
+    <input type="text" class="cap" id="cap-${p.pid}" data-cap="${p.pid}" data-area="${a}" value="${esc(p.cap)}" placeholder="Caption" aria-label="Caption for photo ${i + 1}" autocomplete="off">
+    <button type="button" class="del" data-del="${p.pid}" data-area="${a}">Delete photo</button></figure>`).join('');
+  if (keep && $('cap-' + keep)) { const el = $('cap-' + keep); el.focus(); el.setSelectionRange(el.value.length, el.value.length); }
+  for (const p of ps) {
+    const img = $('img-' + p.pid); if (!img) continue;
+    img.onerror = () => img.parentElement.classList.add('missing');
+    const s = await srcFor(p); if (s) img.src = s; else img.parentElement.classList.add('missing');
+  }
+}
+function onCaption(e) {
+  const el = e.target, a = el.dataset.area, p = area(a).photos.find(x => x.pid === el.dataset.cap);
+  if (!p || p.cap === el.value) return; p.cap = el.value; touch(a);
+}
+function onDelete(btn) {
+  if (!btn.classList.contains('armed')) {
+    btn.classList.add('armed'); btn.textContent = 'Tap again to delete';
+    return setTimeout(() => { if (btn.isConnected) { btn.classList.remove('armed'); btn.textContent = 'Delete photo'; } }, 3500);
+  }
+  const a = btn.dataset.area, s = area(a), p = s.photos.find(x => x.pid === btn.dataset.del); if (!p) return;
+  s.photos = s.photos.filter(x => x !== p); touch(a); renderPhotos(a);
+  if (p.id && assets) assets.delete(p.id).catch(() => {});
+  delBlob(p.pid); mem.delete(p.pid);
+  toast('Photo deleted');
+}
+let uploading = false;
+async function uploadPending() {
+  if (!assets || uploading) return; uploading = true;
+  try {
+    for (const a of Object.keys(S)) for (const p of [...(S[a].photos || [])]) {
+      if (p.id) continue;
+      const b = mem.get(p.pid) || await getBlob(p.pid); if (!b) continue;
+      let r = null;
+      for (let tries = 0; tries < 2 && !r; tries++) {
+        try { r = await assets.upload(b, { type: 'image/jpeg' }); }
+        catch (e) { if (e?.code === 'store_unavailable' && !tries) await sleep(1500 + Math.random() * 1000); else { setStatus('offline'); return; } }
+      }
+      if (!r) continue;
+      const cur = (S[a].photos || []).find(x => x.pid === p.pid); if (!cur) { assets.delete(r.id).catch(() => {}); continue; }
+      cur.id = r.id; touch(a);
+      const badge = $('b-' + p.pid); if (badge) { badge.textContent = 'Saved'; badge.classList.add('ok'); }
+      delBlob(p.pid); mem.delete(p.pid);
+    }
+  } finally { uploading = false; setStatus(); }
+}
+
+/* ---------- the account: notes in the page's private store, photos in its file store ---------- */
+let db = null, assets = null, downloads = null, col = null, live = false, flushT = null, mode = 'local';
+const dirty = new Set(), busy = new Set();
+function setStatus(m) {
+  if (m) mode = m;
+  const { local } = photoCounts(), el = $('status');
+  const text = { local: 'Saved on this phone', saving: 'Saving…', synced: 'Saved to your account', offline: 'No signal: saved on this phone, will sync', unreached: 'Saved on this phone; your account is not reachable yet' }[mode];
+  el.className = 'status ' + mode;
+  el.querySelector('span').textContent = text + (local && assets ? ` · ${local} photo${local > 1 ? 's' : ''} to upload` : '');
+}
+function scheduleFlush(ms = 1200) { clearTimeout(flushT); flushT = setTimeout(flush, ms); }
+async function flush() {
+  if (!col || !live) return setStatus(db ? 'unreached' : 'local');
+  let failed = false;
+  for (const a of [...dirty]) {
+    if (busy.has(a)) continue;
+    busy.add(a); const body = clone(S[a]), t = body.t;
+    try { await col.doc(a).set(body); if (S[a].t === t) dirty.delete(a); }
+    catch (e) { failed = true; if (['invalid_argument', 'revoked', 'not_granted'].includes(e?.code)) { dirty.delete(a); col = null; } }
+    finally { busy.delete(a); }
+  }
+  if (!col) return setStatus('local');
+  if (dirty.size) scheduleFlush(failed ? 20000 : 600);
+  setStatus(failed ? 'offline' : dirty.size ? 'saving' : 'synced');
+}
+async function connect() {
+  if (!window.claude?.use) return setStatus('local');
+  const use = n => window.claude.use(n).catch(() => null);
+  [db, assets, downloads] = await Promise.all([use('db'), use('assets'), use('downloads')]);
+  if (downloads) document.body.classList.add('can-save');
+  if (!db) { setStatus('local'); return uploadPending(); }
+  col = db.collection('visit/' + VISIT + '/areas');
+  setStatus('saving');
+  const timer = setTimeout(() => { if (!live) setStatus('unreached'); }, 10000);
+  col.onSnapshot(snap => {
+    let pains = false;
+    for (const d of snap.docs) {
+      const r = d.data(); if (!r) continue;
+      if (dirty.has(d.id) || (r.t || 0) <= (S[d.id]?.t || 0)) continue;
+      S[d.id] = clone(r);
+      if (isPain(d.id) && (r.gone || !$('area-' + d.id))) pains = true; else fill(d.id);
+    }
+    if (pains) renderPains();
+    if (!snap.metadata.fromCache && !live) {
+      live = true; clearTimeout(timer);
+      const remote = Object.fromEntries(snap.docs.map(d => [d.id, d.data()?.t || 0]));
+      for (const a of Object.keys(S)) if ((S[a].t || 0) > (remote[a] || 0)) dirty.add(a);
+      saveLocal(); flush(); uploadPending();
+    }
+  }, () => { clearTimeout(timer); col = null; setStatus('local'); });
+}
+window.addEventListener('online', () => { scheduleFlush(0); uploadPending(); });
+setInterval(() => { if (photoCounts().local && assets && navigator.onLine !== false) uploadPending(); }, 45000);
+
+/* ---------- the report tab and what leaves the page ---------- */
+const withRef = (s, r) => r ? `${s} (${r})` : s;
+function linesFor(A) {
+  const f = area(A.id).f, M = MAN[A.id] || {}, out = [];
+  if (A.do) {
+    const left = A.do.filter((_, i) => !f['do' + (i + 1)]);
+    if (left.length < A.do.length) out.push(['Steps', left.length ? `${A.do.length - left.length} of ${A.do.length} done. Not done: ${left.join('; ')}` : 'All done']);
+  }
+  for (const x of A.fields || []) out.push([x.label, f[x.k]]);
+  (M.ask || []).forEach((q, i) => out.push(['Q: ' + withRef(q.q, q.ref), f['q' + (i + 1)]]));
+  (M.showMe || []).forEach((q, i) => { const k = 'sm' + (i + 1); out.push([withRef(q.q, q.ref), [f[k], f[k + '_n']].filter(has).join(' · ')]); });
+  if (A.tools) TOOLS.forEach((t, i) => {
+    const k = 'tool' + (i + 1), ticks = [f[k + '_on'] && 'on site', f[k + '_knows'] && 'team knows it', f[k + '_used'] && 'used as written'].filter(Boolean).join(', ');
+    out.push([`${i + 1} ${t}`, [ticks, f[k + '_m'], f[k + '_note']].filter(has).join(' · ')]);
+  });
+  if (A.orders) for (let i = 1; i <= A.orders; i++) {
+    const k = 'ord' + i, d = dur(f[k + '_in'], f[k + '_out']);
+    out.push([`Order ${i}`, [f[k + '_route'], f[k + '_in'] && 'ordered ' + f[k + '_in'], f[k + '_out'] && 'handed over ' + f[k + '_out'], d && d + ' min', f[k + '_note']].filter(has).join(' · ')]);
+  }
+  out.push(['Notes', f.notes]);
+  if (A.cap) { out.push(['Working well', f.well], ['Issue', f.issue], ['Rating', f.rating]); if (A.day === 'thu') out.push(['Against the manual', f.manual]); out.push(['Quote or moment worth keeping', f.quote]); }
+  return out.filter(([, v]) => has(v));
+}
+function painLines(id) {
+  const f = area(id).f;
+  return [['Found in', f.area ? `${f.area} ${BY[f.area]?.title || ''}` : 'Elsewhere'], ['What hurts', f.what], ['Evidence', f.evidence],
+    ['Who feels it', WHO.filter(([k]) => f['who_' + k]).map(([, l]) => l).join(', ')], ['How bad', f.sev], ['How often', f.freq],
+    ['Against the manual', [f.man, f.ref].filter(has).join(' · ')], ['Why it happens', f.why],
+    ['Flags', [f.awk && 'Awkward to say', f.office && 'OFFICE REVIEW ONLY, keep out of the client draft'].filter(Boolean).join('; ')]].filter(([, v]) => has(v));
+}
+// Show-me requests that were not met in full: evidence in their own right.
+function unshown() {
+  const rows = [];
+  for (const A of AREAS) (MAN[A.id]?.showMe || []).forEach((q, i) => {
+    const f = area(A.id).f, k = 'sm' + (i + 1);
+    if (f[k] === 'Could not show' || f[k] === 'Partly') rows.push([A.id, withRef(q.q, q.ref), f[k], f[k + '_n']]);
+  });
+  return rows;
+}
+const painHead = r => `P${r.n}${r.s ? ' · score ' + r.s : ' · not scored'}`;
+const DAYS =[['thu', 'THURSDAY 5 NOV · IS THE BUSINESS SET UP AND WORKING PROPERLY?'], ['fri', 'FRIDAY 6 NOV · PEAK AND PRESSURE']];
+function dayTimes(d) { const m = area('META').f; return d === 'thu' ? [m.thuStart && 'Start ' + m.thuStart, m.thuEnd && 'End ' + m.thuEnd] : [m.peakFrom && 'Peak from ' + m.peakFrom, m.peakTo && 'to ' + m.peakTo]; }
+function buildText() {
+  const when = new Date().toLocaleString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+  let t = `IMRAN'S DINER · SITE ASSESSMENT · THU 5 AND FRI 6 NOV 2026\nInternal working notes. Not for the client.\nCopied ${when}\n`;
+  const rk = ranked();
+  t += `\nPAIN POINTS, RANKED (how bad × how often)\n`;
+  if (!rk.length) t += '  (none logged)\n';
+  for (const r of rk) {
+    const ps = area(r.id).photos;
+    t += `\n${painHead(r)}\n`;
+    for (const [l, v] of painLines(r.id)) t += `  ${l}: ${String(v).trim().replace(/\n+/g, '\n    ')}\n`;
+    if (ps.length) t += `  Photos: ${ps.length}${ps.some(p => p.cap) ? ' (' + ps.map((p, i) => `${i + 1} ${p.cap || 'no caption'}`).join('; ') + ')' : ''}\n`;
+  }
+  const un = unshown();
+  if (un.length) { t += `\nASKED TO SEE, NOT SHOWN IN FULL\n`; for (const [a, q, s, n] of un) t += `  ${a} · ${s}: ${q}${has(n) ? ' · ' + n : ''}\n`; }
+  for (const [d, head] of DAYS) {
+    const times = dayTimes(d).filter(Boolean).join(' · ');
+    t += `\n${head}\n${times ? times + '\n' : ''}`;
+    for (const A of AREAS.filter(x => x.day === d)) {
+      const ls = linesFor(A), ps = area(A.id).photos;
+      t += `\n${A.id}. ${A.title}\n`;
+      if (!ls.length && !ps.length) { t += '  (nothing recorded)\n'; continue; }
+      for (const [l, v] of ls) t += `  ${l}: ${String(v).trim().replace(/\n+/g, '\n    ')}\n`;
+      if (ps.length) t += `  Photos: ${ps.length}${ps.some(p => p.cap) ? ' (' + ps.map((p, i) => `${i + 1} ${p.cap || 'no caption'}`).join('; ') + ')' : ''}\n`;
+    }
+  }
+  return t;
+}
+function renderReport() {
+  const counts = Object.fromEntries(RATING.map(r => [r, 0]));
+  const issues = [], wells = [], quotes = [];
+  for (const A of AREAS) {
+    const f = area(A.id).f;
+    if (f.rating) counts[f.rating]++;
+    if (has(f.issue)) issues.push([A.id, f.issue, f.rating]);
+    if (has(f.well)) wells.push([A.id, f.well]);
+    if (has(f.quote)) quotes.push([A.id, f.quote]);
+  }
+  const { n, local } = photoCounts(), rk = ranked();
+  $('n-areas').textContent = AREAS.filter(A => started(A.id)).length;
+  $('n-pains').textContent = rk.length;
+  $('n-pains-l').textContent = rk.length === 1 ? 'pain point' : 'pain points';
+  $('n-photos').textContent = n;
+  $('n-photos-l').textContent = (n === 1 ? 'photo' : 'photos') + (local ? `, ${local} on this phone only` : '');
+  $('tally').innerHTML = RATING.map(r => `<span class="pill r-${slug(r)}">${esc(r)} · ${counts[r]}</span>`).join('');
+  const none = '<li class="empty">Nothing yet.</li>';
+  const li = (rows, extra) => rows.length ? rows.map(r => `<li><b>${r[0]}</b><span>${esc(r[1])}${extra && r[2] ? ` <em>· ${esc(r[2])}</em>` : ''}</span></li>`).join('') : none;
+  const painLi = r => { const f = area(r.id).f; return `<li><b>P${r.n}<small>${r.s || '–'}</small></b><span>${esc(String(f.what || '').trim() || 'No description yet')}<i>${esc([f.area || 'Elsewhere', f.sev, f.freq, f.office && 'Office review only'].filter(Boolean).join(' · '))}</i></span></li>`; };
+  $('ranked').innerHTML = rk.length ? rk.map(painLi).join('') : none;
+  const truths = rk.filter(r => area(r.id).f.awk);
+  $('truths').innerHTML = truths.length ? truths.map(painLi).join('') : none;
+  const un = unshown();
+  $('unshown').innerHTML = un.length ? un.map(([a, q, s, nt]) => `<li><b>${a}</b><span>${esc(q)}<i>${esc([s, nt].filter(has).join(' · '))}</i></span></li>`).join('') : none;
+  $('issues').innerHTML = li(issues, true); $('wells').innerHTML = li(wells); $('quotes').innerHTML = li(quotes);
+}
+$('copyAll').addEventListener('click', () => {
+  const text = buildText(), fallback = () => { $('copyWrap').hidden = false; const b = $('copyBox'); b.value = text; b.focus(); b.select(); };
+  try { navigator.clipboard.writeText(text).then(() => { $('copyWrap').hidden = true; toast('All notes copied'); }, fallback); } catch { fallback(); }
+});
+async function saveFile(filename, data) {
+  if (!downloads) return toast('Saving files is not available here. Use Copy all notes.');
+  try { await downloads.save({ filename, data }); toast('Saved'); }
+  catch (e) { if (e?.code !== 'declined') toast(e?.code === 'rate_limited' ? 'One save at a time. Try again in a moment.' : 'That did not save. Use Copy all notes.'); }
+}
+$('saveTxt').addEventListener('click', () => saveFile('imrans-diner-site-visit-notes.txt', buildText()));
+async function dataUrl(p) {
+  let b = mem.get(p.pid) || await getBlob(p.pid);
+  if (!b && p.id) { try { const r = await fetch('/_blob/' + p.id); if (r.ok) b = await r.blob(); } catch {} }
+  if (!b) {
+    const img = $('img-' + p.pid);
+    if (img?.complete && img.naturalWidth) { try { const c = document.createElement('canvas'); c.width = img.naturalWidth; c.height = img.naturalHeight; c.getContext('2d').drawImage(img, 0, 0); return c.toDataURL('image/jpeg', 0.85); } catch {} }
+    return '';
+  }
+  return new Promise(res => { const fr = new FileReader(); fr.onload = () => res(fr.result); fr.onerror = () => res(''); fr.readAsDataURL(b); });
+}
+$('saveHtml').addEventListener('click', async () => {
+  const btn = $('saveHtml'); btn.disabled = true; btn.textContent = 'Packing photos…';
+  try {
+    let body = '<h2>PAIN POINTS, RANKED (HOW BAD × HOW OFTEN)</h2>';
+    const rk = ranked();
+    if (!rk.length) body += '<p class="m">None logged.</p>';
+    for (const r of rk) {
+      const ps = area(r.id).photos;
+      body += `<section><h3><span>${esc(painHead(r))}</span></h3><dl>` + painLines(r.id).map(([l, v]) => `<dt>${esc(l)}</dt><dd>${esc(String(v).trim()).replace(/\n/g, '<br>')}</dd>`).join('') + '</dl>';
+      if (ps.length) {
+        body += '<div class="g">';
+        for (const p of ps) { const u = await dataUrl(p); body += `<figure>${u ? `<img src="${u}" alt="${esc(p.cap || 'P' + r.n)}">` : '<div class="x">Photo not available on this device</div>'}<figcaption>${esc(p.cap || '')}</figcaption></figure>`; }
+        body += '</div>';
+      }
+      body += '</section>';
+    }
+    const un = unshown();
+    if (un.length) body += '<h2>ASKED TO SEE, NOT SHOWN IN FULL</h2><section><dl>' + un.map(([a, q, s, nt]) => `<dt>${esc(a)} · ${esc(s)}</dt><dd>${esc(q)}${has(nt) ? ' · ' + esc(nt) : ''}</dd>`).join('') + '</dl></section>';
+    for (const [d, head] of DAYS) {
+      body += `<h2>${esc(head)}</h2><p class="m">${esc(dayTimes(d).filter(Boolean).join(' · '))}</p>`;
+      for (const A of AREAS.filter(x => x.day === d)) {
+        const ls = linesFor(A), ps = area(A.id).photos;
+        body += `<section><h3><span>${A.id}</span> ${esc(A.title)}</h3>`;
+        if (!ls.length && !ps.length) { body += '<p class="m">Nothing recorded.</p></section>'; continue; }
+        body += '<dl>' + ls.map(([l, v]) => `<dt>${esc(l)}</dt><dd>${esc(String(v).trim()).replace(/\n/g, '<br>')}</dd>`).join('') + '</dl>';
+        if (ps.length) {
+          body += '<div class="g">';
+          for (const p of ps) { const u = await dataUrl(p); body += `<figure>${u ? `<img src="${u}" alt="${esc(p.cap || A.id)}">` : '<div class="x">Photo not available on this device</div>'}<figcaption>${esc(p.cap || '')}</figcaption></figure>`; }
+          body += '</div>';
+        }
+        body += '</section>';
+      }
+    }
+    const doc = `<!doctype html><html lang="en-GB"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Imran's Diner site visit notes, 5 and 6 Nov 2026</title><style>
+body{font:15px/1.5 Archivo,system-ui,sans-serif;color:#181615;background:#F2F0EB;max-width:860px;margin:0 auto;padding:24px 16px 64px}
+h1{font:300 32px/1.1 Newsreader,Georgia,serif;margin:4px 0}h2{font:600 13px/1.3 system-ui,sans-serif;letter-spacing:.12em;margin:36px 0 4px;color:#B4250E}
+h3{font:400 20px/1.25 Newsreader,Georgia,serif;margin:0 0 8px}h3 span{font:600 13px system-ui,sans-serif;color:#B4250E;margin-right:6px}
+section{background:#fff;border:1px solid rgba(24,22,21,.13);border-radius:12px;padding:16px;margin:10px 0}.m{color:#6B6561;margin:0}
+.e{font-size:11px;letter-spacing:.16em;text-transform:uppercase;font-weight:600;color:#B4250E}dl{margin:0;display:grid;gap:2px}
+dt{font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;font-weight:600;color:#6B6561;margin-top:8px}dd{margin:0}
+.g{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px;margin-top:12px}figure{margin:0}
+img{width:100%;border-radius:8px;display:block}figcaption{font-size:13px;color:#6B6561;margin-top:4px}.x{padding:30px 10px;text-align:center;background:#eee;border-radius:8px;color:#6B6561;font-size:13px}
+</style></head><body><div class="e">WRW Hospitality · Internal, not for the client</div><h1>Imran's Diner site visit notes</h1><p class="m">Thu 5 and Fri 6 Nov 2026 · London Road · saved ${esc(new Date().toLocaleString('en-GB'))}</p>${body}
+<p class="m" style="margin-top:32px">© ${new Date().getFullYear()} WRW Hospitality. Internal working notes, not for distribution.</p></body></html>`;
+    await saveFile('imrans-diner-site-visit-with-photos.html', doc);
+  } finally { btn.disabled = false; btn.textContent = 'Save notes with photos (.html)'; }
+});
+let toastT;
+function toast(msg) { const t = $('toast'); t.textContent = msg; t.hidden = false; clearTimeout(toastT); toastT = setTimeout(() => { t.hidden = true; }, 2600); }
+
+/* ---------- start ---------- */
+for (const a of [...AREAS.map(A => A.id), 'META']) fill(a);
+renderPains();
+try { for (const a of JSON.parse(localStorage.getItem(KEY + '-open') || '[]')) { const d = $('area-' + a); if (d) d.open = true; } } catch {}
+let start = (location.hash || '').slice(1);
+if (!TABS.includes(start)) { try { start = localStorage.getItem(KEY + '-tab') || ''; } catch { start = ''; } }
+const today = new Date();
+if (today.getFullYear() === 2026 && today.getMonth() === 10 && (today.getDate() === 5 || today.getDate() === 6) && !location.hash) start = today.getDate() === 5 ? 'thu' : 'fri';
+show(TABS.includes(start) ? start : 'thu');
+setStatus('local');
+connect();
+})();
+</script>
