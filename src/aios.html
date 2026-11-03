@@ -541,6 +541,8 @@
   #tokDays .trd span { min-height: 1.2em; }
   .tokpanel { padding: 20px 24px; margin-bottom: 22px; }
   .tokwrap { overflow-x: auto; }
+  .tokph.tokold { margin: 18px 0 0; padding-top: 16px; border-top: 1px solid var(--line, rgba(127,127,127,.25)); }
+  .tokph.tokold + .tokwrap { margin-top: 14px; }
   #tokSec .wa th.num, #tokSec .wa td.num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
   #tokSec .wa td { vertical-align: middle; }
   #tokSec .wa .note { color: var(--meta, var(--grey)); font-size: 11px; margin-top: 2px; }
@@ -710,7 +712,6 @@
     <div class="gl">Today</div>
     <button data-go="overview">Overview <span class="n" id="nOverview"></span></button>
     <button data-go="matrix">Matrix <span class="n" id="nMatrix"></span></button>
-    <button data-go="social">Social <span class="n" id="nSocial"></span></button>
     <div class="gl">The business</div>
     <button data-go="clients">Clients <span class="n" id="nClients"></span></button>
     <div class="subnav" id="navDash"></div>
@@ -721,6 +722,7 @@
     <button data-go="roles">Roles <span class="n" id="nRoles"></span></button>
     <button data-go="skills">Skills <span class="n" id="nSkills"></span></button>
     <button data-go="tokens">Tokens</button>
+    <button data-go="social">Social <span class="n" id="nSocial"></span></button>
     <span class="ind" id="sideInd" aria-hidden="true"></span>
   </nav>
   <div class="main">
@@ -838,6 +840,8 @@
     <div class="panel tokpanel">
       <div class="tokph"><h3>CHATS</h3><span class="note" id="tokChatNote"></span><div class="seg"><button type="button" id="tokAllBtn">SHOW ALL</button></div></div>
       <div class="tokwrap"><table class="wa" id="tokChats"></table></div>
+      <div class="tokph tokold"><h3>OLDER THAN 24 HOURS</h3><span class="note" id="tokOldNote"></span><div class="seg"><button type="button" id="tokOldBtn">SHOW</button></div></div>
+      <div class="tokwrap" id="tokOldWrap" style="display:none"><table class="wa" id="tokOld"></table></div>
     </div>
     <div class="panel tokpanel">
       <div class="tokph"><h3>OFFICE JOBS</h3><span class="note" id="tokJobNote"></span>
@@ -1251,7 +1255,7 @@ $('waFeed').addEventListener('click', async e => {
   b.disabled = false; b.textContent = 'READ WAITING CHATS INTO MATRIX';
 });
 /* ---------- Tokens (3 Nov 2026): the server reads the chats' transcripts and the office's ledger (tokens.mjs); this draws them ---------- */
-S.tokBy = 'desk'; S.tokMetric = 'all'; S.tokAll = false;
+S.tokBy = 'desk'; S.tokMetric = 'all'; S.tokAll = false; S.tokOld = false;
 const fmtTok = n => { n = n || 0; return n >= 1e9 ? (n / 1e9).toFixed(2) + 'B' : n >= 1e6 ? (n / 1e6).toFixed(n >= 1e8 ? 0 : 1) + 'M' : n >= 1e3 ? Math.round(n / 1e3) + 'k' : String(Math.round(n)); };
 const usd = n => n == null ? '—' : '$' + (n >= 100 ? Math.round(n).toLocaleString() : n.toFixed(2));
 const hrs = h => h == null ? '—' : h < 1 ? Math.round(h * 60) + ' min' : h < 48 ? (h < 10 ? h.toFixed(1) : Math.round(h)) + ' h' : Math.round(h / 24) + ' days';
@@ -1321,15 +1325,21 @@ function renderTokens() {
     <div class="trbars tokbars">${t.days.map(d => { const dt = new Date(d.d + 'T12:00:00');
       const tip = `${dt.toLocaleDateString([], { weekday: 'short', day: 'numeric', month: 'short' })}: chats ${fmtTok(d.chats.total)} (${fmtTok(d.chats.out)} written, ${fmtTok(d.chats.cr)} cache reads) · office ${fmtTok(d.office.total)}, ${d.office.runs} run${d.office.runs === 1 ? '' : 's'}, ${ocost(d.office)}`;
       return `<div class="trd" title="${esc(tip)}"><div class="trb">${h(val(d.office), 'o')}${h(val(d.chats), 'c')}</div><span>${dt.getDay() === 1 || d.d === today ? dt.getDate() : ''}</span></div>`; }).join('')}</div>`);
-  // 3. the chats, biggest first
-  const rows = S.tokAll ? t.chats : t.chats.slice(0, 12), VCLS = { handover: 'miss', heavy: 'warn', ok: 'good' };
-  put('tokChatNote', `${t.chatCount} chat${t.chatCount === 1 ? '' : 's'} active in 30 days${t.heavy ? ` · <b>${t.heavy}</b> ran heavy` : ''}. Peak context is the most one call carried, of the ${fmtTok(t.window)} window. Read per written is cache-read tokens for each token Claude wrote: a long chat re-reads itself on every turn.`);
-  $('tokAllBtn').textContent = S.tokAll ? 'TOP 12' : `SHOW ALL ${t.chats.length}`; $('tokAllBtn').style.display = t.chats.length > 12 ? '' : 'none';
-  put('tokChats', '<tr><th>Chat</th><th class="num">Turns</th><th class="num">Peak context</th><th class="num">Tokens</th><th class="num">Written</th><th class="num">Cache reads</th><th class="num">Read per written</th><th>Verdict</th></tr>' + (rows.map(c =>
-    `<tr><td><div class="tokt" title="${esc(c.title)}">${esc(c.title)}</div><div class="note">${esc(c.project)} · ${ago(c.last)}${c.models[0] ? ' · ' + esc(modelShort(c.models[0])) : ''}${c.subagents ? ` · ${c.subagents} sub-agent${c.subagents === 1 ? '' : 's'}` : ''}</div></td>
+  // 3. the chats, biggest first: the ones used in the last 24 hours on top; older ones drop into a folded list below (kept, not shown)
+  const cut = (t.at || Date.now()) - 864e5, live = t.chats.filter(c => c.last >= cut), old = t.chats.filter(c => c.last < cut), oldCount = t.chatCount - live.length;
+  const rows = S.tokAll ? live : live.slice(0, 12), VCLS = { handover: 'miss', heavy: 'warn', ok: 'good' }, liveHeavy = live.filter(c => c.verdict.key !== 'ok').length;
+  put('tokChatNote', `${live.length} chat${live.length === 1 ? '' : 's'} used in the last 24 hours${liveHeavy ? ` · <b>${liveHeavy}</b> running heavy` : ''}. Peak context is the most one call carried, of the ${fmtTok(t.window)} window. Read per written is cache-read tokens for each token Claude wrote: a long chat re-reads itself on every turn.`);
+  $('tokAllBtn').textContent = S.tokAll ? 'TOP 12' : `SHOW ALL ${live.length}`; $('tokAllBtn').style.display = live.length > 12 ? '' : 'none';
+  const head = '<tr><th>Chat</th><th class="num">Turns</th><th class="num">Peak context</th><th class="num">Tokens</th><th class="num">Written</th><th class="num">Cache reads</th><th class="num">Read per written</th><th>Verdict</th></tr>';
+  const chatRow = c => `<tr><td><div class="tokt" title="${esc(c.title)}">${esc(c.title)}</div><div class="note">${esc(c.project)} · ${ago(c.last)}${c.models[0] ? ' · ' + esc(modelShort(c.models[0])) : ''}${c.subagents ? ` · ${c.subagents} sub-agent${c.subagents === 1 ? '' : 's'}` : ''}</div></td>
     <td class="num">${c.turns}</td><td class="num"><div class="tokpk"><span class="bar"><i${c.peak >= 0.6 * t.window ? ' class="hot"' : ''} style="width:${Math.min(100, c.peak / t.window * 100).toFixed(1)}%"></i></span>${fmtTok(c.peak)}</div></td>
     <td class="num">${fmtTok(c.total)}</td><td class="num">${fmtTok(c.out)}</td><td class="num">${pc(c.share)}</td><td class="num">${Math.round(c.perOut).toLocaleString()}</td>
-    <td><span class="tag ${VCLS[c.verdict.key]}"${c.verdict.why ? ` title="${esc(c.verdict.why)}"` : ''}>${esc(c.verdict.text.toUpperCase())}</span></td></tr>`).join('') || '<tr><td colspan="8" class="none">No chats in the last 30 days.</td></tr>'));
+    <td><span class="tag ${VCLS[c.verdict.key]}"${c.verdict.why ? ` title="${esc(c.verdict.why)}"` : ''}>${esc(c.verdict.text.toUpperCase())}</span></td></tr>`;
+  put('tokChats', head + (rows.map(chatRow).join('') || '<tr><td colspan="8" class="none">No chats used in the last 24 hours.</td></tr>'));
+  put('tokOldNote', `${oldCount} chat${oldCount === 1 ? '' : 's'} from the last 30 days not used since ${new Date(cut).toLocaleString([], { weekday: 'short', hour: '2-digit', minute: '2-digit' })}${old.length < oldCount ? ` (the ${old.length} biggest listed)` : ''}. Still counted in the totals above.`);
+  $('tokOldBtn').textContent = S.tokOld ? 'HIDE' : `SHOW ${old.length}`; $('tokOldBtn').parentElement.style.display = old.length ? '' : 'none';
+  $('tokOldWrap').style.display = S.tokOld && old.length ? '' : 'none';
+  put('tokOld', S.tokOld ? head + old.map(chatRow).join('') : '');
   // 4. the office's jobs, from the day capture started
   const BY = { desk: 'Desk', dept: 'Department', routine: 'Routine', model: 'Model', kind: 'Kind of run' }, jobs = t.jobs[S.tokBy] || [];
   const from = t.since ? new Date(t.since).toLocaleDateString([], { day: 'numeric', month: 'short', year: 'numeric' }) : '';
@@ -1350,6 +1360,7 @@ function renderTokens() {
 }
 $('tokRefresh').addEventListener('click', () => loadTokens());
 $('tokAllBtn').addEventListener('click', () => { S.tokAll = !S.tokAll; renderTokens(); });
+$('tokOldBtn').addEventListener('click', () => { S.tokOld = !S.tokOld; renderTokens(); });
 $('tokBy').addEventListener('click', e => { const v = e.target.dataset?.v; if (v) { S.tokBy = v; renderTokens(); } });
 $('tokDays').addEventListener('click', e => { const v = e.target.closest('#tokMetric button')?.dataset.v; if (v) { S.tokMetric = v; renderTokens(); } });
 function renderNav() { // small counts beside a category: what is waiting on you, what is open, what needs attention
