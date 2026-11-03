@@ -1012,7 +1012,11 @@ let indAnim = null;
 function indTarget() {
   const side = $('side'), on = side.querySelector('button.on');
   if (!on || on.offsetParent === null) return null;
+  // the client sub-menu may be mid-fold: measure where the rail ends up, not where it is this frame (else the pill lands one sub-menu too low)
+  const anims = $('navDash').getAnimations({ subtree: true }), saved = anims.map(a => a.currentTime);
+  anims.forEach(a => { try { a.currentTime = a.effect.getComputedTiming().endTime; } catch {} });
   const s = side.getBoundingClientRect(), r = on.getBoundingClientRect();
+  anims.forEach((a, i) => { try { a.currentTime = saved[i]; } catch {} });
   return { x: r.left - s.left + side.scrollLeft - side.clientLeft, y: r.top - s.top + side.scrollTop - side.clientTop, w: r.width, h: r.height };
 }
 function placeInd(animate) {
