@@ -277,6 +277,28 @@ await step('needs you: Claude Code hooks mark a session waiting, needing permiss
   } finally { fs.rmSync(tmp, { recursive: true, force: true }); fs.rmSync(pdir, { recursive: true, force: true }); }
   return 'prompt → working · finished → waiting with the sidebar title and last line · permission → needs · seen until something new · Telegram and office runs left out · hook never blocks';
 });
+await step('google calendar: the private feed is read with repeats, moved and cancelled events, and a failed feed keeps its last events', async () => { // V3.12
+  const g = await import('./gcal.mjs'), os = await import('node:os');
+  const ics = ['BEGIN:VCALENDAR',
+    'BEGIN:VEVENT', 'UID:w1', 'SUMMARY:Catch-up', 'DTSTART;TZID=Europe/London:20261020T160000', 'DTEND;TZID=Europe/London:20261020T170000', 'RRULE:FREQ=WEEKLY;BYDAY=TU;UNTIL=20261124T235959Z', 'EXDATE;TZID=Europe/London:20261110T160000', 'END:VEVENT',
+    'BEGIN:VEVENT', 'UID:w1', 'RECURRENCE-ID;TZID=Europe/London:20261103T160000', 'SUMMARY:Catch-up (moved)', 'DTSTART;TZID=Europe/London:20261104T110000', 'DTEND;TZID=Europe/London:20261104T120000', 'END:VEVENT',
+    'BEGIN:VEVENT', 'UID:a1', 'SUMMARY:Bank holiday\\, test', 'DTSTART;VALUE=DATE:20261105', 'DTEND;VALUE=DATE:20261106', 'END:VEVENT',
+    'BEGIN:VEVENT', 'UID:m1', 'SUMMARY:Monthly review', 'DTSTART:20260907T080000Z', 'DTEND:20260907T090000Z', 'RRULE:FREQ=MONTHLY;BYDAY=1MO', 'END:VEVENT',
+    'BEGIN:VEVENT', 'UID:c1', 'SUMMARY:Cancelled', 'DTSTART:20261106T100000Z', 'DTEND:20261106T110000Z', 'STATUS:CANCELLED', 'END:VEVENT', 'END:VCALENDAR'].join('\r\n');
+  const from = Date.UTC(2026, 9, 26), to = Date.UTC(2026, 11, 31), ev = g.instances(g.parse(ics), from, to, { name: 'Me' });
+  const iso = e => new Date(e.start).toISOString().slice(0, 16), titles = ev.map(e => iso(e) + ' ' + e.title);
+  const want = ['2026-10-27T16:00 Catch-up', '2026-11-02T08:00 Monthly review', '2026-11-04T11:00 Catch-up (moved)', '2026-11-17T16:00 Catch-up', '2026-11-24T16:00 Catch-up', '2026-12-07T08:00 Monthly review'];
+  for (const w of want) if (!titles.includes(w)) throw new Error('missing ' + w + ' in ' + JSON.stringify(titles));
+  if (titles.some(t => /11-10|11-03T16|Cancelled|12-01/.test(t))) throw new Error('an excluded, moved, cancelled or after-UNTIL instance came through: ' + JSON.stringify(titles));
+  const bh = ev.find(e => e.title === 'Bank holiday, test'); if (!bh || !bh.allDay) throw new Error('all-day event, escaped comma');
+  const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'gc-')), cal = [{ name: 'Me', ics: 'https://example.invalid/secret.ics' }];
+  const ok = await g.sync(tmp, cal, { now: Date.UTC(2026, 10, 3), fetchFn: async () => ({ ok: true, text: async () => ics }) });
+  const bad = await g.sync(tmp, cal, { now: Date.UTC(2026, 10, 3), fetchFn: async () => { throw new Error('offline'); } });
+  if (!ok.calendars[0].ok || bad.calendars[0].ok || bad.events.length !== ok.events.length) throw new Error('a failed feed must keep its last good events');
+  if (JSON.stringify(bad).includes('secret.ics')) throw new Error('the feed address must not be stored with the events');
+  fs.rmSync(tmp, { recursive: true, force: true });
+  return 'weekly with an exception and a moved instance · monthly first Monday in UTC · all day · cancelled left out · a failed feed keeps its last events · the address is never stored with them';
+});
 await step('till dashboard: the hourly grid and item report become monthly turnover, a weekday-by-hour map and menu totals that match the report', async () => {
   const { build } = await import('./pos.mjs'); const NL = String.fromCharCode(10);
   const hourly = ['# x', '| Hour | 2026-08-30 | 2026-08-31 | 2026-09-01 | 2026-09-02 |', '| --- | --- | --- | --- | --- |', '| Hourly Sales report | Hourly Sales for Test Diner (High Street) Generated for the period of 2026-08-30 - 2026-09-02 |', '| 06:00PM | 10 (100.00) | 20 (250.50) | 5 (50.00) | 0 (-) |', '| 07:00PM | 30 (300.00) | 0 (-) | 15 (150.25) | 1 (1,000.00) |'].join(NL);

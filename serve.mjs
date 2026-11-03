@@ -57,6 +57,7 @@ import * as brainnotes from './brainnotes.mjs';
 import * as handoff from './handoff.mjs';
 import * as salesData from './sales.mjs';
 import * as posData from './pos.mjs';
+import * as gcal from './gcal.mjs'; // V3.12: Wesley's Google Calendar, read from its private feeds, on /aios and in the office calendar
 import * as attention from './attention.mjs'; // V3.12: which Claude Code sessions are waiting on Wesley ("Needs you" on /aios)
 import * as fixes from './fix.mjs'; // V3.12: the month's fix for a client restaurant, from all of its dashboard data
 import * as ubereats from './ubereats.mjs'; // V3.12: Uber Eats Manager exports (order accuracy, downtime, pauses), kept raw in data/ubereats/
@@ -661,6 +662,10 @@ async function makeFix(id) {
   if (!d || !d.data || !d.data.available) throw Object.assign(new Error('no such dashboard, or no data in it'), { code: 404 });
   return fixes.make(DATA, id, d.name, d.data, (system, user) => ask(system, user, { maxTokens: 2500, timeout: 240000, model: 'opus' }));
 }
+// Wesley's Google calendars (office.config.local.json → aios.calendars: [{ name, ics, colour }]), read every five minutes
+const GCALS = Array.isArray(cfg.aios?.calendars) ? cfg.aios.calendars.filter(c => c && c.name && c.ics) : [];
+let gcalBusy = null;
+const syncCalendars = () => { if (!GCALS.length) return Promise.resolve(); if (!gcalBusy) gcalBusy = gcal.sync(DATA, GCALS).then(g => { const bad = g.calendars.filter(c => !c.ok); if (bad.length) console.warn('google calendar:', bad.map(c => `${c.name}: ${c.error}`).join('; ')); }).catch(e => console.warn('google calendar:', e.message)).finally(() => { gcalBusy = null; }); return gcalBusy; };
 const CLIENTS = Array.isArray(cfg.aios?.clients) ? cfg.aios.clients.filter(c => c && c.id && c.name) : []; // V3.10: the client-by-client boxes on /aios
 
 // The owner's personal budget (office.config.local.json → budget: { sheet, name }): a Google Sheet Claude reads on request.
@@ -960,6 +965,11 @@ const server = http.createServer(async (req, res) => {
     }
     if (url.pathname === '/api/trackers' || url.pathname === '/api/trackers/sync') return trackersApi(req, res, url);
     if (url.pathname === '/api/dashboards' && req.method === 'GET') return json(res, 200, { dashboards: dashboardsData() });
+    if (url.pathname === '/api/gcal' && req.method === 'GET') { // V3.12: Wesley's Google Calendar, read-only, from the private feeds (gcal.mjs); the feed addresses never leave the server
+      if (url.searchParams.get('refresh') === '1') await syncCalendars();
+      const g = gcal.load(DATA), from = +url.searchParams.get('from') || Date.now() - 7 * 86400000, to = +url.searchParams.get('to') || Date.now() + 42 * 86400000;
+      return json(res, 200, { configured: GCALS.length > 0, at: g.at || 0, calendars: (g.calendars || []).map(({ name, colour, ok, error, events, at }) => ({ name, colour, ok, error, events, at })), events: (g.events || []).filter(e => e.start < to && e.end > from) });
+    }
     if (url.pathname.startsWith('/api/attention')) { // V3.12: Claude Code sessions waiting on Wesley, from the hooks in his user settings (attention.mjs)
       if (url.pathname === '/api/attention' && req.method === 'GET') return json(res, 200, { sessions: attention.list(DATA) });
       if (url.pathname === '/api/attention' && req.method === 'POST') { try { attention.hook(DATA, await body(req)); } catch (e) { console.warn('attention:', e.message); } return json(res, 200, { ok: true }); }
@@ -1180,6 +1190,7 @@ server.listen(cfg.port, cfg.host || '127.0.0.1', () => { // this computer only: 
   const rl = loadRoutines(); const nx = rl.filter(r => !r.paused && r.nextAt).sort((a, b) => a.nextAt - b.nextAt)[0];
   console.log(`  routines: ${rl.length} loaded${rl.some(r => r.paused) ? ' (' + rl.filter(r => r.paused).length + ' paused)' : ''}${nx ? ' · next ' + untilText(nx.nextAt) + ' ' + nx.title.toUpperCase() + ' (' + nx.agent + ')' : ''} · ${rlist.path}`);
   setInterval(tickRoutines, 20000); tickRoutines(); // the clock: every 20 s; the first tick catches up anything missed while the office was off (once, marked LATE)
+  setTimeout(syncCalendars, 5000); setInterval(syncCalendars, 5 * 60000); // V3.12: Google Calendar every five minutes
   // V3.12: the fix follows the data (Wesley, 30 Oct: he uploads once a month, on the first Monday). When a restaurant's evidence differs
   // from the evidence its last fix was written from, and has not changed for 30 minutes (the month's files have all landed), a new fix
   // is written. Nothing new uploaded, no new fix. A failure waits three hours before the next try.
