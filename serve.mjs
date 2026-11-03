@@ -736,7 +736,7 @@ async function runServerTaskNow(id, { feedback, approve, answer } = {}) {
     if (!approve && /\[content-build\]/i.test(task.text || '')) { // the week's finished content is filed into the Content Calendar folder Wesley posts from
       try { const f = weekpack.fromResult(ROOT, BRAIN, out.result); out.result = weekpack.strip(out.result) + '\n\n---\nFILED IN THE CONTENT CALENDAR FOLDER\n' + (f.filed ? `${f.filed} item(s) in ${f.dir}` : 'not filed: ' + f.reason); console.log(`🗓 content calendar: ${f.filed ? f.filed + ' item(s) filed in ' + f.dir : 'not filed, ' + f.reason}`); } catch (e) { console.warn('content calendar:', e.message); }
     }
-    if (!approve && ferfile.isIssue(task)) { // a finished Franchise Entry Report issue: file the text and build the A4 PDF
+    if (!approve && ferfile.isIssue(task, out.result)) { // a finished Franchise Entry Report issue: file the text and build the A4 PDF
       try { const b = await ferfile.build(ROOT, task, out.result); out.result += '\n\n---\nA4 PDF\n' + ferfile.report(b); console.log(`📄 franchise report: ${b.pdf || 'not built, ' + b.reason}`); } catch (e) { console.warn('franchise report:', e.message); }
     }
     if (!approve) { // a NEXT: line is a suggestion for the review card, not part of the deliverable

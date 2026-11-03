@@ -6,7 +6,16 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { execFile } from 'node:child_process';
 
-export const isIssue = task => /franchise entry report/i.test(`${task?.title || ''} ${task?.text || ''}`) && /issue\s*\d+/i.test(`${task?.title || ''} ${task?.text || ''}`);
+// A task BUILDS the report when its title says so ("Build / Write / Produce / Rerun / Fix … Franchise Entry Report …"), or when its result
+// actually carries the report (an ISSUE JSON block or a REVISION READY line). Anything else that merely mentions the report and an issue
+// number (a carousel, a country row, a recap, a review, a schedule change) is work FROM the report: it gets no "A4 PDF" line.
+const BUILD_VERB = /\b(build|write|produce|rerun|rebuild|refresh|redo|fix|fixes|apply|revise|update)\b/i, SPIN_OFF = /\b(recap|carousel|reel|row|stories|story|video|slides?|post|walkthrough|caption)\b/i;
+export const isIssue = (task, result) => {
+  const title = String(task?.title || ''), both = `${title} ${task?.text || ''}`;
+  if (!/franchise entry report/i.test(both)) return false;
+  if (/franchise entry report/i.test(title) && BUILD_VERB.test(title) && !SPIN_OFF.test(title)) return true;
+  return !!result && (/ISSUE JSON[\s\S]*END ISSUE JSON/i.test(String(result)) || !!revisionLine(result));
+};
 const slug = s => String(s).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 const KEYS = { cover: ['verdict', 'stats'], market: ['headline', 'intro', 'tiles', 'eats', 'sowhat'], rising: ['headline', 'rows', 'chart', 'reading'], white: ['headline', 'gaps', 'matrix', 'position'], regulation: ['headline', 'rows', 'tiles', 'wage'], route: ['headline', 'routes', 'fits', 'risks'], days: ['headline', 'moves', 'check', 'method', 'sources'] };
 const words = o => JSON.stringify(o).replace(/"[A-Za-z]+":/g, ' ').replace(/[{}\[\]",]/g, ' ').split(/\s+/).filter(Boolean).length;

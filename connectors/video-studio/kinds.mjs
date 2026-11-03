@@ -13,8 +13,8 @@ export const html = t => esc(t).replace(/\*([^*]+)\*/g, '<span class="em">$1<i c
 
 /** Slow drifting mountain ridges behind the type (the WRW motif), three layers that move at different speeds. */
 export function ridges(id, g, F, start, dur) {
-  const c = g.fg, h = Math.round(F.h * 0.3);
-  const layer = (cls, d, op) => `<svg class="ridge ${cls}" style="height:${h}px;opacity:${op}" viewBox="0 0 1920 480" preserveAspectRatio="none"><path d="${d}" fill="${c}"/></svg>`;
+  const c = g.fg, rc = g.ridge, h = rc ? F.bottom - 10 : Math.round(F.h * 0.3); // g.ridge: [back, mid, front] in the report's second flag colour (a country ground)
+  const layer = (cls, d, op) => { const i = cls === 'rb' ? 0 : cls === 'rm' ? 1 : 2; return `<svg class="ridge ${cls}" style="height:${h}px;opacity:${rc ? (g.ridgeOp ?? 1) : op}" viewBox="0 0 1920 480" preserveAspectRatio="none"><path d="${d}" fill="${rc ? rc[i] : c}"/></svg>`; };
   const html = layer('rb', 'M0,260 C220,120 420,90 640,170 C860,250 1000,60 1260,90 C1520,120 1700,230 1920,150 L1920,480 L0,480 Z', 0.05)
     + layer('rm', 'M0,330 C260,230 470,210 720,290 C970,370 1130,200 1400,230 C1670,260 1800,330 1920,290 L1920,480 L0,480 Z', 0.08)
     + layer('rf', 'M0,400 C300,350 560,330 840,380 C1120,430 1380,340 1640,350 C1760,356 1850,372 1920,366 L1920,480 L0,480 Z', 0.12);
@@ -31,7 +31,7 @@ export function stat(id, c, g, F, t0, dur, accent, scale = 1, capSpace = 0) {
   const html = `
         <div class="stat" style="left:${F.side}px;top:${F.top}px;width:${F.w - 2 * F.side}px;height:${F.h - F.top - F.bottom - capSpace}px">
           <div class="statlabel" style="color:${accent}">${esc(plain(c.text))}</div>
-          <div class="statnum" style="font-size:${size}px"><span class="num">${money(0, c.prefix, c.suffix, dp)}</span></div>
+          <div class="statnum" style="font-size:${size}px${g.figure ? `;color:${g.figure}` : ''}"><span class="num">${money(0, c.prefix, c.suffix, dp)}</span></div>
           <div class="statrule"><i style="background:${accent}"></i></div>
           ${c.sub ? `<div class="sub">${esc(c.sub)}</div>` : ''}
         </div>`;

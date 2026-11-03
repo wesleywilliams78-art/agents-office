@@ -5,6 +5,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { BRAND, FORMATS, MAX_CARDS, MAX_SECONDS, HF, tokens } from './shared.mjs';
+import { reportPalette } from '../franchise-report/palette.mjs';
 import { html as emHtml, kindCss, kineticEntrance, plain, ridges, stat as statKind, waterfall as waterfallKind } from './kinds.mjs';
 
 const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
@@ -26,11 +27,26 @@ export const STYLES = {
   impact: { transition: 'push', textMotion: 'kinetic', backdrop: 'ridges' }, // a different entrance per card, drifting mountains: the Reel look
 };
 
+const BONE = '#F3F2F2', INK = '#201E1D';
+/** The brand's grounds. With a report palette (Franchise Entry Report, read from its issue.json by palette.mjs): bone and ink take the report's
+ *  colours for figures and emphasis, and a "country" ground is the report's cover (country colour, bone type, second flag colour as the accent
+ *  and the mountains). Nothing here is typed from memory: change a colour in the report and the slides follow. */
+export function groundsOf(brand, pal) {
+  const g = JSON.parse(JSON.stringify(brand?.grounds || {})); if (!pal || !g.bone) return g;
+  const A = pal.accent;
+  g.bone.accent = pal.colour; g.bone.figure = pal.colour; g.ink.accent = A ? A.front : g.ink.accent; // the figure on a stat card is the report colour, as the hero numbers in the PDF
+  g.bone.ridges = g.ink.ridges = false; // a report's slides draw the mountains on the country ground only
+  g.country = { bg: pal.colour, fg: BONE, accent: A ? A.front : INK, logo: 'wrw-mark-white.png', ridge: A ? [A.back, A.mid, A.front] : ['#FFFFFF', '#FFFFFF', '#FFFFFF'], ridgeOp: A ? 1 : 0.5 }; // the report draws white mountains at half strength where the second flag colour is white
+  return g;
+}
+
 /** Check a spec and fill in the defaults. Returns { spec } or { problems }. */
 export function normalise(input) {
   const T = tokens(), p = [], s = input || {};
   const brand = T[s.brand || 'wrw']; if (!brand) p.push('brand must be one of ' + Object.keys(T).join(', '));
   const format = s.format || '9:16'; if (!FORMATS[format]) p.push('format must be one of ' + Object.keys(FORMATS).join(', '));
+  let palette; if (s.report !== undefined) { const r = reportPalette(s.report); if (r.error) p.push(r.error); else palette = r; }
+  const grounds = groundsOf(brand, palette);
   const cards = Array.isArray(s.cards) ? s.cards : [];
   if (!cards.length) p.push('cards: give at least one card'); if (cards.length > MAX_CARDS) p.push(`cards: at most ${MAX_CARDS}`);
   const out = [];
@@ -40,7 +56,7 @@ export function normalise(input) {
     if (!text && kind !== 'waterfall') return p.push(`${n}: text is empty`);
     if (text.length > 300) p.push(`${n}: text is over 300 characters`);
     const ground = c.ground || Object.keys(brand?.grounds || {})[0];
-    if (brand && !brand.grounds[ground]) p.push(`${n}: ground must be one of ${Object.keys(brand.grounds).join(', ')}`);
+    if (brand && !grounds[ground]) p.push(`${n}: ground must be one of ${Object.keys(grounds).join(', ')}${ground === 'country' ? ' ("country" needs report: the issue, for example "02-sweden")' : ''}`);
     const seconds = c.seconds ?? 3; if (!(seconds >= 1 && seconds <= 60)) p.push(`${n}: seconds must be 1 to 60`);
     const card = { kind, text, ground, seconds, kicker: String(c.kicker || '').slice(0, 60), sub: String(c.sub || '').slice(0, 200), say: c.say ? String(c.say).slice(0, 400) : undefined };
     if (kind === 'stat') {
@@ -69,7 +85,7 @@ export function normalise(input) {
   const music = s.music && (s.music.file || s.music.prompt) ? { file: s.music.file ? String(s.music.file) : undefined, prompt: s.music.prompt ? String(s.music.prompt).slice(0, 500) : undefined, volume: Math.min(1, Math.max(0.05, s.music.volume ?? 0.25)) } : undefined;
   const voice = vIn ? { voice: vIn.voice || 'wesley', speed: Math.min(1.25, Math.max(0.8, vIn.speed ?? 1)) } : undefined;
   const captions = s.captions ?? (!!voice && out.some(c => c.say && plain(c.say).trim() !== plain(c.text).trim()));
-  return { spec: { deliver, title: String(s.title || 'video').slice(0, 80), brand: s.brand || 'wrw', format, cards: out, logo: s.logo === 'none' ? 'none' : 'auto', style: s.style || 'calm', transition, textMotion, backdrop: s.backdrop || st.backdrop, overlap, align: s.align === 'center' ? 'center' : 'left', fade: Math.min(1.2, Math.max(0.2, s.fade ?? 0.5)), music, voice, captions: !!(voice && captions), totalSeconds: total } };
+  return { spec: { deliver, title: String(s.title || 'video').slice(0, 80), brand: s.brand || 'wrw', report: palette?.ref, palette, format, cards: out, logo: s.logo === 'none' ? 'none' : 'auto', style: s.style || 'calm', transition, textMotion, backdrop: s.backdrop || st.backdrop, overlap, align: s.align === 'center' ? 'center' : 'left', fade: Math.min(1.2, Math.max(0.2, s.fade ?? 0.5)), music, voice, captions: !!(voice && captions), totalSeconds: total } };
 }
 
 /** The timing of one card: when it starts, when its words start, and when everything on it has settled (measure and still time). */
@@ -100,7 +116,7 @@ const wordsHtml = text => text.split(/\s+/).map(w => { const m = /^\*([^*]+)\*([
 
 /** Write the HyperFrames project for a normalised spec into dir. `scale` shrinks the type when the check found overflow. */
 export function writeProject(spec, dir, scale = 1) {
-  const T = tokens()[spec.brand], F = FORMATS[spec.format];
+  const T = tokens()[spec.brand], F = FORMATS[spec.format]; T.grounds = groundsOf(T, spec.palette);
   fs.rmSync(dir, { recursive: true, force: true });
   for (const d of ['fonts', 'assets', 'audio']) fs.mkdirSync(path.join(dir, d), { recursive: true });
   const fonts = Object.values(T.fonts); const faces = [];
@@ -120,7 +136,7 @@ export function writeProject(spec, dir, scale = 1) {
     const size = fit(c.text, boxW, boxH, display.family, scale);
     const logo = spec.logo !== 'none' && g.logo ? `<img class="logo" src="assets/${g.logo}" alt="" style="left:${F.side}px;top:${logoTop}px;width:${logoW}px">` : spec.logo !== 'none' && g.wordmark ? `<div class="logo wordmark" style="left:${F.side}px;top:${logoTop}px;color:${g.accent}">creamy</div>` : '';
     const dur = c.seconds + (ov && i < last ? ov : 0);
-    const back = spec.backdrop === 'ridges' ? ridges(id, g, F, t, dur) : { html: '', js: '' };
+    const back = spec.backdrop === 'ridges' && g.ridges !== false ? ridges(id, g, F, t, dur) : { html: '', js: '' };
     let body = '', bodyJs = '';
     if (c.kind === 'stat') { const k = statKind(id, c, g, F, tg.ts, c.seconds, accent, scale, capSpace); body = k.html; bodyJs = k.js; }
     else if (c.kind === 'waterfall') { const k = waterfallKind(id, c, g, F, tg.ts, c.seconds, accent, capSpace); body = k.html; bodyJs = k.js; }
@@ -225,7 +241,7 @@ export function writeProject(spec, dir, scale = 1) {
 
 /** Measure the real page: everything inside the safe area, captions clear of the type, logo clear, fonts loaded, contrast. Returns { pass, issues, overflow }. */
 export async function measure(spec, dir) {
-  const T = tokens()[spec.brand], F = FORMATS[spec.format], issues = [], warnings = []; let overflow = false;
+  const T = tokens()[spec.brand], F = FORMATS[spec.format], issues = [], warnings = []; T.grounds = groundsOf(T, spec.palette); let overflow = false;
   for (const [i, c] of spec.cards.entries()) { const g = T.grounds[c.ground], r = contrast(g.fg, g.bg); if (r < 3) issues.push(`card ${i + 1}: contrast ${r.toFixed(1)}:1 is below 3:1 (${g.fg} on ${g.bg})`); else if (r < 4.5) warnings.push(`card ${i + 1}: contrast ${r.toFixed(1)}:1 (large type only)`); }
   let chromium; try { ({ chromium } = await import('playwright')); } catch { try { ({ chromium } = await import('playwright-core')); } catch {} }
   if (!chromium) return { pass: !issues.length, issues, warnings: [...warnings, 'layout was not measured: playwright is not installed'], overflow: false };

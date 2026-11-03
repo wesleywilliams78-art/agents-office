@@ -5,6 +5,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { chromium } from 'playwright-core';
+import { accentFor } from './palette.mjs';
 
 const [inFile, outFile] = process.argv.slice(2);
 if (!inFile || !outFile) { console.error('usage: node build2.mjs <issue.json> <out.pdf>'); process.exit(2); }
@@ -16,8 +17,7 @@ const TINT = mix(C, 0.14), TINT2 = mix(C, 0.32), N = String(D.issue).padStart(2,
 // Secondary flag colour (Norway 25 Oct 2026, approved): the cover rules and the mountains on the cover and closing band are drawn in the country's second
 // flag colour in three shades (front ridge and rules, bottom wave, back ridge), not white. A country whose second flag colour is white (Denmark, Finland) stays white.
 // Override per issue with "accent": { "front": "#hex", "mid": "#hex", "back": "#hex" }.
-const ACCENTS = { norway: { front: '#00205B', mid: '#2F6FD0', back: '#9CC7F5' }, sweden: { front: '#FECC02', mid: '#D9A600', back: '#FFE88A' }, portugal: { front: '#046A38', mid: '#2E8B57', back: '#9FD3AE' } };
-const ACC = D.accent || ACCENTS[String(D.country || '').toLowerCase()] || null;
+const ACC = accentFor(D); // the table of second flag colours lives in palette.mjs, shared with the video studio
 const ACC_F = ACC ? ACC.front : '#fff', ACC_M = ACC ? ACC.mid : '#fff', ACC_B = ACC ? ACC.back : '#fff', ACC_OP = ACC ? '1' : '.5', ACC_RULE = ACC ? ACC.front : 'rgba(255,255,255,.55)';
 const CLASH = C.toLowerCase() !== WRWRED.toLowerCase(), LOGOBG = CLASH ? C : WRWRED, GREEN = '#1E9E57', DOWN = '#D8362B'; // the logo tile follows the report colour when it would clash with red
 const esc = s => String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
