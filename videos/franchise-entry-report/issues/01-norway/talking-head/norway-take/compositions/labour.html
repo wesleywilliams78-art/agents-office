@@ -1,0 +1,41 @@
+<template>
+  <style>
+    @font-face { font-family: "Archivo"; font-weight: 500; src: url("assets/fonts/archivo-latin-500-normal.woff2"); }
+    @font-face { font-family: "Newsreader"; font-style: italic; font-weight: 300; src: url("assets/fonts/newsreader-latin-300-italic.woff2"); }
+    #root { position: absolute; inset: 0; }
+    #lab-card { position: absolute; left: 96px; right: 96px; top: 180px; background: rgba(32, 30, 29, 0.88); border-left: 10px solid #ec3013; padding: 22px 40px 24px; transform-origin: 0% 50%; }
+    #lab-kicker { font-family: "Archivo"; font-weight: 500; font-size: 28px; letter-spacing: 0.22em; color: #d6d2cf; text-transform: uppercase; }
+    #lab-row { display: flex; align-items: center; gap: 26px; margin-top: 2px; height: 156px; }
+    #lab-num { font-family: "Archivo Black"; font-size: 148px; line-height: 1; color: #ec3013; font-variant-numeric: tabular-nums; min-width: 300px; }
+    #lab-side { display: flex; flex-direction: column; gap: 4px; }
+    #lab-lead { font-family: "Newsreader"; font-style: italic; font-weight: 300; font-size: 44px; line-height: 1; color: #f3f2f2; }
+    #lab-unit { font-family: "Archivo"; font-weight: 500; font-size: 44px; color: #f3f2f2; line-height: 1.05; }
+    #lab-foot { margin-top: 2px; font-family: "Archivo"; font-weight: 500; font-size: 28px; color: #d6d2cf; }
+  </style>
+  <div id="root" data-composition-id="labour" data-width="1080" data-height="1920">
+    <div id="lab-card" class="clip" data-start="0" data-duration="6.4">
+      <div id="lab-kicker">Norway · hospitality labour</div>
+      <div id="lab-row">
+        <div id="lab-num">£0</div>
+        <div id="lab-side"><div id="lab-lead">roughly</div><div id="lab-unit">an hour, all-in</div></div>
+      </div>
+      <div id="lab-foot">Estimate · NOK 204.79/hr floor + on-costs</div>
+    </div>
+  </div>
+  <script>
+    const spring = (z, w) => { const wd = w * Math.sqrt(1 - z * z), dur = 6 / (z * w); return { dur, ease: (p) => { const t = p * dur; return 1 - Math.exp(-z * w * t) * (Math.cos(wd * t) + ((z * w) / wd) * Math.sin(wd * t)); } }; };
+    const pop = spring(0.48, 15), firm = spring(0.82, 16);
+    const tl = gsap.timeline({ paused: true });
+    // scene starts at 42.0 s: "Labour" 42.12, "£21" 44.5, "hour" 45.86, "So you need volume" 47.4
+    tl.fromTo("#lab-card", { opacity: 0, scaleX: 0.86, x: -40 }, { opacity: 1, scaleX: 1, x: 0, duration: firm.dur, ease: firm.ease }, 1.62);
+    tl.fromTo("#lab-kicker", { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: firm.dur, ease: firm.ease }, 1.7);
+    tl.fromTo("#lab-lead", { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: firm.dur, ease: firm.ease }, 1.9);
+    tl.fromTo("#lab-num", { opacity: 0, y: 30, scale: 0.7 }, { opacity: 1, y: 0, scale: 1, duration: pop.dur, ease: pop.ease }, 2.4);
+    const n = { v: 0 };
+    tl.fromTo(n, { v: 0 }, { v: 21, duration: 0.7, ease: "power2.out", onUpdate: () => { document.querySelector("#lab-num").textContent = "£" + Math.round(n.v); } }, 2.46);
+    tl.fromTo("#lab-unit", { opacity: 0, x: -20 }, { opacity: 1, x: 0, duration: firm.dur, ease: firm.ease }, 3.3);
+    tl.fromTo("#lab-foot", { opacity: 0 }, { opacity: 0.9, duration: 0.4, ease: "power2.out" }, 3.6);
+    tl.to("#lab-card", { opacity: 0, y: -30, duration: 0.3, ease: "power2.in" }, 6.05);
+    window.__timelines["labour"] = tl;
+  </script>
+</template>

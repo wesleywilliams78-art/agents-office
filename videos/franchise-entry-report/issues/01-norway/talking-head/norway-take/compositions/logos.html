@@ -1,0 +1,42 @@
+<template>
+  <style>
+    #root { position: absolute; inset: 0; }
+    .logo { position: absolute; }
+    .logo-ring { position: absolute; left: 50%; top: 50%; width: 240px; height: 240px; margin: -120px 0 0 -120px; border: 6px solid #ec3013; border-radius: 50%; opacity: 0; }
+    .logo-art { position: absolute; inset: 0; }
+    .logo-art img { display: block; width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 10px 22px rgba(32, 30, 29, 0.28)); }
+    .logo-strike { position: absolute; left: -6%; right: -6%; top: 50%; height: 12px; margin-top: -6px; background: #ec3013; transform-origin: 0% 50%; box-shadow: 0 4px 14px rgba(32, 30, 29, 0.3); }
+  </style>
+  <div id="root" data-composition-id="logos" data-width="1080" data-height="1920">
+    <!-- Popeyes: he points up-left of his head at 29.0 s; Wingstop: straight up beside his right cheek at 30.4 s.
+         Logos: Popeyes (Wikimedia Commons, public domain), Wingstop (en.wikipedia, the company's trade mark), used to name them. -->
+    <div id="pop" class="logo clip" data-start="0" data-duration="4.6" style="left: 40px; top: 470px; width: 250px; height: 278px">
+      <div id="pop-ring" class="logo-ring"></div>
+      <div id="pop-art" class="logo-art"><img id="pop-img" src="assets/logos/popeyes-stacked.png" alt="Popeyes" /><div id="pop-strike" class="logo-strike" style="rotate: -24deg"></div></div>
+    </div>
+    <div id="wing" class="logo clip" data-start="0" data-duration="4.6" style="left: 726px; top: 520px; width: 300px; height: 104px">
+      <div id="wing-ring" class="logo-ring"></div>
+      <div id="wing-art" class="logo-art"><img id="wing-img" src="assets/logos/wingstop.png" alt="Wingstop" /><div id="wing-strike" class="logo-strike" style="rotate: -10deg"></div></div>
+    </div>
+  </div>
+  <script>
+    const spring = (z, w) => { const wd = w * Math.sqrt(1 - z * z), dur = 6 / (z * w); return { dur, ease: (p) => { const t = p * dur; return 1 - Math.exp(-z * w * t) * (Math.cos(wd * t) + ((z * w) / wd) * Math.sin(wd * t)); } }; };
+    const pop = spring(0.5, 17), firm = spring(0.82, 18);
+    const tl = gsap.timeline({ paused: true });
+    // scene starts at 28.8 s. Popeyes lands as he points (29.1), Wingstop on the word "Wingstop" (30.64), strikes on "nobody" (31.46)
+    const land = (id, at, tilt) => {
+      tl.fromTo(`#${id}-art`, { scale: 0.2, rotation: tilt * 4, opacity: 0, y: 30 }, { scale: 1, rotation: tilt, opacity: 1, y: 0, duration: pop.dur, ease: pop.ease }, at);
+      tl.set(`#${id}-ring`, { scale: 0.3, opacity: 0.85 }, at);
+      tl.to(`#${id}-ring`, { scale: 1.8, opacity: 0, duration: 0.55, ease: "power2.out" }, at + 0.001);
+    };
+    land("pop", 0.3, -4);
+    land("wing", 1.84, 3);
+    tl.fromTo("#pop-strike", { scaleX: 0 }, { scaleX: 1, duration: 0.2, ease: "power3.out" }, 2.66);
+    tl.fromTo("#wing-strike", { scaleX: 0 }, { scaleX: 1, duration: 0.2, ease: "power3.out" }, 2.78);
+    tl.fromTo(["#pop-img", "#wing-img"], { opacity: 1 }, { opacity: 0.5, duration: 0.3, ease: "power2.out" }, 2.74);
+    tl.to("#pop-art", { y: 8, scale: 0.93, duration: firm.dur, ease: firm.ease }, 2.74);
+    tl.to("#wing-art", { y: 8, scale: 0.93, duration: firm.dur, ease: firm.ease }, 2.86);
+    tl.to(["#pop-art", "#wing-art"], { opacity: 0, scale: 0.8, duration: 0.26, ease: "power2.in" }, 4.22);
+    window.__timelines["logos"] = tl;
+  </script>
+</template>

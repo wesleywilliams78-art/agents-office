@@ -28,10 +28,10 @@ A LinkedIn explainer series (10 episodes planned) under **WRW Hospitality**, Wes
 ## Episodes
 | # | Folder | Status |
 |---|---|---|
-| 01 | `ep01-unit-economics/` | Posted/scheduled. Pilot rendered 24 Oct 2026 (`renders/`). The brief is `episode-01-brief.md`; `REVIEW.md` records what was decided and measured. |
-| 02 | `ep02-five-forces/` | Rendered 24 Oct 2026, for Monday 2 Nov. Cued from word timings by `.vo/build.py`. |
-| 03 | `ep03-littles-law/` | Rendered 24 Oct 2026, for Monday 9 Nov. Introduces the guests and the till counter. |
-| 04 | `ep04-stp/` | Rendered 24 Oct 2026, for Monday 16 Nov. Closes SITE 10's arc: positioning takes it past break-even. |
+| 01 | `episodes/ep01-unit-economics/` | **Modern version approved 25 Oct 2026, replacing the original:** `renders/operators-ledger-ep01-unit-economics-modern.mp4` (+ `.srt`, thumbnail), made in the Motion Studio; source and notes in `modern/`. The original pilot (24 Oct 2026) stays beside it in `renders/`; its brief is `episode-01-brief.md`, `REVIEW.md` records what was decided then. |
+| 02 | `episodes/ep02-five-forces/` | **Modern version approved 26 Oct 2026, replacing the original:** `renders/operators-ledger-ep02-five-forces-modern.mp4` (+ `.srt`, thumbnail), made in the Motion Studio; source and notes in `modern/`. For Monday 2 Nov. The original (24 Oct 2026) stays beside it in `renders/`, cued from word timings by `.vo/build.py`. |
+| 03 | `episodes/ep03-littles-law/` | **Modern version approved 26 Oct 2026, replacing the original:** `renders/operators-ledger-ep03-littles-law-modern.mp4` (+ `.srt`, thumbnail), made in the Motion Studio; source and notes in `modern/`. For Monday 9 Nov. The original (24 Oct 2026) stays beside it in `renders/`. |
+| 04 | `episodes/ep04-stp/` | Rendered 24 Oct 2026, for Monday 16 Nov. Closes SITE 10's arc: positioning takes it past break-even. |
 
 ### Starting the next episode
 1. Copy the Episode 01 brief's shape: script table, numbers check, acceptance checks.
@@ -41,6 +41,9 @@ A LinkedIn explainer series (10 episodes planned) under **WRW Hospitality**, Wes
    - `compositions/captions.html`, built by `.vo/captions.py` from word timings;
    - the bars and break-even scenes, for charts;
    - `endcard.html`.
+
+## Making an episode now (25 Oct 2026)
+Ask the Motion Director in the office side panel's Motion Studio tab, for example "Make Operator's Ledger Episode 05". It reads this series through `connectors/motion-studio/series/operators-ledger/`, voices the script in Wesley's cloned voice (VoiceStudio must be running), drafts, gets every frame scored, renders the final with its captions `.srt`, and sends it to Telegram for review. The steps below are how Episodes 01 to 04 were made by hand.
 
 ## Tools this series uses
 - **HyperFrames** renders the episodes (`npx hyperframes …`).

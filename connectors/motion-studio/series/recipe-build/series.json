@@ -1,0 +1,16 @@
+{
+  "name": "recipe-build",
+  "title": "The Operator's Ledger, visual walk-through (recipe build, style 02): that week's concept explained in general, never Monday's figures",
+  "narration": false,
+  "format": {
+    "width": 1080,
+    "height": 1080
+  },
+  "loudness": {
+    "lufs": -14,
+    "truePeak": -1.5
+  },
+  "version": "1.0 (untested; the first production sets 1.1)",
+  "companionOf": "ledger-fresh",
+  "plan": "videos/operators-ledger/EPISODES.md"
+}

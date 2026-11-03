@@ -14,9 +14,11 @@ import { loadConnectors } from './connectors.js';
 import { initTasks } from './tasks.js';
 import { initReview } from './review.js';
 import { initBrain } from './brain.js';
+import { initAssistant } from './assistant.js';
 import { initHero, HERO } from './hero.js';
 if (HERO) document.body.classList.add('hero'); // the website hero: no Sahni.ai mark or licence line on top of the page that already carries them // sahni.ai/custom hero mode (16 Sep 2026): opt-in via window.HERO, no-op otherwise
 let tasks = null; // V3 task boards — initialised after the rail constants exist
+let assistant = null; // the Chief of Staff side panel (A)
 let review = null; // V3.9: the pop-up reader for every finished task (review.js)
 
 /* ---------- renderer / scene / camera ---------- */
@@ -37,7 +39,7 @@ const CAM_DIST = 220;
 // float above their back rows instead of being shoved out to the screen edges.
 // V3.3: the Task Status panel owns the right ~430px at every zoom, so the overview target slides
 // along screen-right by half the panel width — the scene sits centred in what is left.
-const OVERVIEW = { base: [-9, 0, -9], zoom: 0.8 }; // (-9,-9) shifts the scene straight DOWN the screen, no sideways drift
+const OVERVIEW = { base: [-9, 0, -9], zoom: 0.68 }; // (-9,-9) shifts the scene straight DOWN the screen, no sideways drift
 const SR_ = new THREE.Vector3(1, 0, -1).normalize();
 function overviewPos() {
   const pw = (tasks ? tasks.panelWidth() : 400) + 30;
@@ -453,7 +455,7 @@ addEventListener('wheel', (e) => {
   view.arc = 0;
   const nx = (e.clientX / innerWidth) * 2 - 1, ny = -(e.clientY / innerHeight) * 2 + 1;
   const before = worldAt(nx, ny);
-  view.zoom = clamp(view.zoom * Math.exp(-e.deltaY * 0.0032), 0.72, 5.2);
+  view.zoom = clamp(view.zoom * Math.exp(-e.deltaY * 0.0032), 0.55, 5.2);
   applyCamera();
   const after = worldAt(nx, ny);
   if (before && after) view.target.add(before.sub(after));
@@ -506,7 +508,8 @@ addEventListener('pointerup', (e) => {
 });
 addEventListener('keydown', (e) => {
   if (/^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName)) return; // typing in the bar, the big editor or a menu never fires a hotkey
-  if (e.key === 'Escape') { if (tasks && tasks.calendar && tasks.calendar.isOpen()) { if (tasks.calendar.popOpen()) tasks.calendar.closePop(); else tasks.calendar.close(); } else if (brain.isOpen()) brain.close(); else if (tasks && tasks.isOpen()) tasks.close(); else zoomOut(); }
+  if (e.key === 'Escape') { if (assistant && assistant.isOpen()) assistant.close(); else if (tasks && tasks.calendar && tasks.calendar.isOpen()) { if (tasks.calendar.popOpen()) tasks.calendar.closePop(); else tasks.calendar.close(); } else if (brain.isOpen()) brain.close(); else if (tasks && tasks.isOpen()) tasks.close(); else zoomOut(); }
+  else if (e.key === 'a' || e.key === 'A') { if (assistant) assistant.toggle(); } // the Chief of Staff: one conversation with the office
   else if (e.key === 'p' || e.key === 'P') { if (tasks && tasks.calendar) tasks.calendar.toggle(); } // V3.2.1 (16 Sep 2026): the calendar
   else if (tasks && tasks.calendar && tasks.calendar.isOpen()) return; // the calendar has its own keys (← → W M T)
   else if (e.key === 'g' || e.key === 'G') brain.toggle(); // V3.6: the full-screen Brain graph
@@ -1392,7 +1395,7 @@ review = initReview({ esc, agentOf: id => R[id] && R[id].a, onApprove: t => task
 tasks = initTasks({
   hud, R, deptRT, RAIL_SIDE, spawnEmote, chatPush, chatHist, feedPush, zoomToApproval, enterFocus, openAgent, esc,
   brainWrite: (id, title) => brain.write(id, title), brain,
-  onLive: (h) => { document.querySelector('#topbar .brand .ver').textContent = 'BETA'; document.title = `${h.name} — Agents Office`; brain.setOwner(h.name); brain.setQuiet(true); applyRoster(h.agents); },
+  onLive: (h) => { document.querySelector('#topbar .brand .ver').textContent = 'BETA'; document.title = `${h.name} — Agents Office`; brain.setOwner(h.name); brain.setQuiet(true); document.body.classList.add('cos'); applyRoster(h.agents); }, // cos: live, the Chief of Staff is where tasks are added, so the old composer is hidden (demo keeps it)
   onTools: (agentId, keys) => mcp.onToolsUsed(agentId, keys),
   requestApproval, setStuck: setStuckLive, review, onDecided: decidedLive,
   onUsage: (u) => { if (mcp && mcp.setUsage) mcp.setUsage(u); }, // V3.6: the plan's gauge in the top bar
@@ -1435,6 +1438,7 @@ resize();
 window.CC = { hero, flyTo, zoomToDept, zoomOut, zoomToApproval, requestApproval, openAgent, view, applyCamera, R, emotes,
   setCam, setDark, brain, connectorReveal: () => mcp.startReveal(performance.now()),
   toggleBoard: () => tasks.toggle(), addTask: (agentId, title) => tasks.addTask(agentId, title), tasks, routines: () => tasks.routines };
+assistant = initAssistant({ refresh: () => { if (tasks && tasks.refresh) tasks.refresh(); } }); window.CC.assistant = assistant;
 
 let last = performance.now();
 function loop(now) {

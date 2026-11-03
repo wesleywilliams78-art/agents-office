@@ -141,9 +141,9 @@ export function initTasks(ctx) {
   let seq = 1;
   // V3.5 routines. Live: the server's list (polled). Demo: session-only, fired by this tick.
   const routines = []; let rseq = 1, polling = false, railAgent = null, railExp = false;
-  const RT_DEPTS = ['emails', 'fin', 'sales'];
+  const RT_DEPTS = ['emails', 'fin', 'sales', 'ops', 'delivery'];
   const RT_NAMES = PROFILE ? Object.fromEntries(Object.entries(PROFILE.pods).map(([k, v]) => [k, titleCase(v)])) : { emails: 'Emails', fin: 'Accounting', sales: 'Sales', marketing: 'Marketing', ops: 'Operations', delivery: 'Delivery' };
-  const rtRefuse = k => `Routines come to ${RT_NAMES[k] || k} in a later release. This release: Emails, Accounting and Sales.`;
+  const rtRefuse = k => `Routines come to ${RT_NAMES[k] || k} in a later release. This release: Emails, Accounting, Sales, Operations and Delivery.`;
   const deptRoutines = k => routines.filter(r => r.dept === k);
   const agentRoutines = id => routines.filter(r => r.agent === id);
   const nextOf = list => list.filter(r => !r.paused && r.nextAt).sort((a, b) => a.nextAt - b.nextAt)[0];
@@ -602,6 +602,7 @@ export function initTasks(ctx) {
     if (usageDue || ++pollN % 5 === 0) { usageDue = false; pollUsage(); }
     try {
       const [rl, tl] = await Promise.all([fetch(API + '/routines').then(r => r.json()), fetch(API + '/tasks').then(r => r.json())]);
+      if (Array.isArray(rl.depts) && rl.depts.length) RT_DEPTS.splice(0, RT_DEPTS.length, ...rl.depts); // the departments the owner allowed routines for
       if (Array.isArray(rl.routines)) setRoutines(rl.routines);
       if (Array.isArray(tl)) for (const st of tl) reconcile(st);
       if (calendar) calendar.refresh();

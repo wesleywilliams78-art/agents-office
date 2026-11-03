@@ -10,7 +10,9 @@ import { fileURLToPath } from 'node:url';
 export const ROOT = path.dirname(fileURLToPath(import.meta.url));
 
 function readJSON(p) {
-  try { return JSON.parse(fs.readFileSync(p, 'utf8')); } catch { return {}; }
+  // a BOM at the start (Windows editors and PowerShell add one) is not valid JSON: strip it, or the whole file is silently ignored
+  // and the office falls back to the sample brain. A file that exists but cannot be read is said out loud.
+  try { return JSON.parse(fs.readFileSync(p, 'utf8').replace(/^﻿/, '')); } catch (e) { if (fs.existsSync(p)) console.warn(`config: ${path.basename(p)} could not be read (${e.message}), using defaults`); return {}; }
 }
 
 export function loadConfig() {

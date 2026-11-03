@@ -344,11 +344,20 @@ await step('brain updates: a proposed note change is parsed, refused when unsafe
   const text = 'Done.\n\nBRAIN UPDATE\nnote: billing\nmode: replace-section\nsection: Numbering\nreason: new number\n---\nLast used INV002.\n---\nsecond line\nEND BRAIN UPDATE\n\n```\nBRAIN UPDATE\nnote: 80-Finance/water.md\nmode: create\n---\n# Water\nPaid monthly.\nEND BRAIN UPDATE\n```';
   const blocks = bn.parse(text);
   if (blocks.length !== 2 || blocks[0].section !== 'Numbering' || !/second line/.test(blocks[0].body) || blocks[1].mode !== 'create') throw new Error('parse wrong: ' + JSON.stringify(blocks));
-  const bad = [['../outside.md', 'append'], ['Agents Office/skills/x/SKILL.md', 'append'], ['CLAUDE.md', 'append'], ['a', 'append'], ['10-Business/billing.md', 'create'], ['10-Business/missing.md', 'append'], ['10-Business/billing.md', 'replace-section', 'Nope']]
+  const bad = [['../outside.md', 'append'], ['Agents Office/skills/x/SKILL.md', 'append'], ['CLAUDE.md', 'append'], ['a', 'append'], ['10-Business/billing.md', 'create'], ['10-Business/billing.md', 'replace-section', 'Nope']]
     .map(([note, mode, section]) => bn.plan(brain, { note, mode, section: section || 'Numbering', body: 'x' }));
   if (bad.some(p => p.ok)) throw new Error('an unsafe or impossible update was allowed: ' + JSON.stringify(bad.filter(p => p.ok)));
+  const app = bn.plan(brain, { note: '10-Business/missing.md', mode: 'append', section: '', body: 'x' }); // appending to a note that is not there yet starts it
+  if (!app.ok || app.mode !== 'create') throw new Error('an append to a missing note should create it: ' + JSON.stringify(app));
   if (bn.plan(brain, { note: '80-Finance/b.md', mode: 'create', body: 'Sort code 12-34-56, account 12345678' }).ok) throw new Error('bank details were allowed');
-  if (bn.planAll(brain, [1, 2, 3, 4].map(i => ({ note: `80-Finance/n${i}.md`, mode: 'create', body: 'x' }))).filter(p => p.ok).length !== 3) throw new Error('more than three updates per task were allowed');
+  if (bn.planAll(brain, [1, 2, 3, 4].map(i => ({ note: `80-Finance/n${i}.md`, mode: 'create', body: 'x' }))).filter(p => p.ok).length !== 3) throw new Error('more than three different notes per task were allowed');
+  { // a week of day-by-day sections in ONE note must all file (a limit of three updates in total once lost Fri and Sun and started a hand-over loop)
+    const wk = path.join(brain, '10-Business', 'week.md'); fs.writeFileSync(wk, '# Week\n\n## Mon\n\n(to fill)\n\n## Tue\n\n(to fill)\n\n## Wed\n\n(to fill)\n\n## Fri\n\n(to fill)\n\n## Sun\n\n(to fill)\n');
+    const days = ['Mon', 'Tue', 'Wed', 'Fri', 'Sun'].map(d => ({ note: '10-Business/week.md', mode: 'replace-section', section: d, body: 'frames for ' + d }));
+    const filed = bn.applyAll(brain, days, {}), txt = fs.readFileSync(wk, 'utf8');
+    if (filed.filter(d => d.ok).length !== 5 || /\(to fill\)/.test(txt)) throw new Error('five sections of one note did not all file: ' + JSON.stringify(filed.map(d => d.ok || d.message)));
+    fs.rmSync(wk, { force: true });
+  }
   const done = bn.applyAll(brain, blocks, { backupDir: bak });
   if (!done.every(d => d.ok)) throw new Error('could not file: ' + JSON.stringify(done));
   const billing = fs.readFileSync(path.join(brain, '10-Business/billing.md'), 'utf8');
@@ -359,12 +368,43 @@ await step('brain updates: a proposed note change is parsed, refused when unsafe
   fs.rmSync(tmp, { recursive: true, force: true });
   return 'parsed (even inside a code fence) · unsafe paths, the agents\' area, rules file, bank details and a 4th update refused · section replaced, rest of the note intact · backup kept · a repeat refused';
 });
+await step('site updates: a proposed website edit is parsed, refused when unsafe, and applied only inside the site with a backup', async () => {
+  const su = await import('./siteupdates.mjs'); const os = await import('node:os');
+  const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'ao-site-')), site = path.join(tmp, 'site'), bak = path.join(tmp, 'bak');
+  const w = (rel, txt) => { fs.mkdirSync(path.dirname(path.join(site, rel)), { recursive: true }); fs.writeFileSync(path.join(site, rel), txt); };
+  w('index.html', '<h1>Site one made money.</h1>\n<p class="lede">Old lede.</p>\n<a href="https://www.linkedin.com/in/x/">LinkedIn</a>\n<p>twice</p><p>twice</p>\n');
+  w('css/site.css', ':root{--red:#FF3131}\n.lede{font-size:20px}\n'); w('js/config.js', "window.WRW_CONFIG={FORM_ENDPOINT:''}\n"); w('js/vendor/gsap.min.js', 'x');
+  const text = 'Fixes below.\n\n```\nSITE UPDATE\nfile: index.html\nreason: sharper lede\n--- find\n<p class="lede">Old lede.</p>\n--- replace\n<p class="lede">New lede.</p>\nEND SITE UPDATE\n```\n\nSITE UPDATE\nfile: css/site.css\nreason: bigger lede\n--- find\n.lede{font-size:20px}\n--- replace\n.lede{font-size:24px}\nEND SITE UPDATE\n\nSITE UPDATE\nfile: about-2.html\nmode: create\n--- replace\n<h1>New page</h1>\nEND SITE UPDATE';
+  const blocks = su.parse(text);
+  if (blocks.length !== 3 || blocks[0].find !== '<p class="lede">Old lede.</p>' || blocks[1].replace !== '.lede{font-size:24px}' || blocks[2].mode !== 'create') throw new Error('parse wrong: ' + JSON.stringify(blocks));
+  const e = (file, find, replace, mode = 'edit') => ({ file, find, replace, mode });
+  const bad = [e('../outside.html', 'x', 'y'), e('js/config.js', 'FORM_ENDPOINT', 'FORM'), e('js/vendor/gsap.min.js', 'x', 'y'), e('index.html', 'not there', 'y'), e('index.html', '<p>twice</p>', 'y'),
+    e('index.html', 'Old lede.', '<script src="https://evil.example/x.js"></script>'), e('index.html', 'Old lede.', 'WRW Consulting'), e('index.html', 'Old lede.', 'api_key: sk-abcdefghijklmnopqrstu'), e('index.html', null, '<h1>x</h1>', 'create'), e('new.js', null, 'x', 'create')];
+  const refused = su.planAll(site, bad).plans;
+  if (refused.some(p => p.ok)) throw new Error('an unsafe or impossible change was allowed: ' + JSON.stringify(refused.filter(p => p.ok)));
+  if (!su.planAll(site, [e('index.html', 'Old lede.', 'See <a href="https://www.linkedin.com/in/x/">me</a>')]).plans[0].ok) throw new Error('a host the site already uses was refused');
+  if (!su.planAll(site, [e('index.html', 'Site one\n   made money.', 'Site one made more money.')]).plans[0].ok) throw new Error('a find copied with different spacing was not found');
+  if (su.planAll(site, Array.from({ length: 13 }, (_, i) => e('css/site.css', ':root', ':root' + i))).plans.filter(p => p.ok).length !== 12) throw new Error('more than 12 changes per task were allowed');
+  const done = su.applyAll(site, blocks, { backupDir: bak });
+  if (!done.every(d => d.ok)) throw new Error('could not apply: ' + JSON.stringify(done));
+  if (!/New lede\./.test(fs.readFileSync(path.join(site, 'index.html'), 'utf8')) || !/font-size:24px/.test(fs.readFileSync(path.join(site, 'css/site.css'), 'utf8')) || !fs.existsSync(path.join(site, 'about-2.html'))) throw new Error('changes not on disk');
+  if (fs.readdirSync(bak).length !== 2) throw new Error('backups missing: ' + fs.readdirSync(bak).join(', '));
+  if (su.applyAll(site, [blocks[0]], { backupDir: bak })[0].ok) throw new Error('the same change applied twice');
+  const fake = () => ({ code: 0, body: '', writeHead(c) { this.code = c; return this; }, end(b) { this.body = String(b || ''); return this; } });
+  const pv = fake(); su.preview(site, pv, new URL('http://x/site-preview/?page=index.html&w=375'));
+  if (pv.code !== 200 || !/<iframe[^>]+src="\/site\/index\.html"/.test(pv.body) || !/width:375px;height:812px/.test(pv.body)) throw new Error('the phone preview frame is wrong');
+  const pvBad = fake(); su.preview(site, pvBad, new URL('http://x/site-preview/?page=../serve.mjs'));
+  if (pvBad.code !== 404) throw new Error('the preview opened something outside the site');
+  fs.rmSync(tmp, { recursive: true, force: true });
+  return 'parsed (even in a code fence) · outside the folder, config.js, vendor, a missing or doubled find, a new outside address, WRW Consulting, a key, a new .js refused · spacing-tolerant find · 12 per task · backups kept · a repeat refused';
+});
 await step('restart recovery: a task left running by a restart starts again, one already past the owner\'s OK is held, nothing else is touched', async () => {
   const { recover } = await import('./recover.mjs');
   const list = [{ id: 'a', state: 'doing', title: 'First pass' }, { id: 'b', state: 'doing', title: 'After the OK', draft: 'x', waitingAt: 1 },
-    { id: 'c', state: 'waiting', title: 'Waiting' }, { id: 'd', state: 'done', title: 'Done' }, { id: 'e', state: 'doing', title: 'Team', team: { pieces: [{ state: 'doing' }, { state: 'done' }] } }];
+    { id: 'c', state: 'waiting', title: 'Waiting' }, { id: 'd', state: 'done', title: 'Done' }, { id: 'e', state: 'doing', title: 'Team', team: { pieces: [{ state: 'doing' }, { state: 'done' }] } },
+    { id: 'f', state: 'next', title: 'Queued, never started' }, { id: 'g', state: 'next', title: 'A team piece', piece: 'x' }, { id: 'h', state: 'next', title: 'Restarted earlier, never ran again', startedAt: 1 }];
   const r = recover(list);
-  if (r.requeue.join() !== 'a,e' || r.held.join() !== 'b') throw new Error('wrong sort: ' + JSON.stringify(r));
+  if (r.requeue.join() !== 'a,e,f,h' || r.held.join() !== 'b') throw new Error('wrong sort: ' + JSON.stringify(r));
   if (list[0].state !== 'next' || list[1].state !== 'waiting' || !/restarted/.test(list[1].ask) || list[2].state !== 'waiting' || list[3].state !== 'done') throw new Error('states wrong');
   if (list[4].team.pieces[0].state !== 'next' || list[4].team.pieces[1].state !== 'done') throw new Error('team pieces wrong');
   return 'a first-pass task restarts · one past the OK is held · waiting and done tasks untouched · a team piece resets';
@@ -435,6 +475,170 @@ await step('local video connector: speaks MCP, refuses bad requests without queu
   const worker = fs.readFileSync(path.join(dir, 'worker.mjs'), 'utf8');
   if (!/userPrefersLtxApiVideoGenerations:\s*false/.test(worker)) throw new Error('the worker no longer forces local generation');
   return 'five tools, no send-like tool · too-short length and a one-word prompt refused, nothing queued · any length chains into parts of 10 s or less · the worker forces the local (free) route every job';
+});
+await step('local music connector: speaks MCP, refuses bad requests without queueing', async () => {
+  const dir = path.join(ROOT, 'connectors', 'music-local');
+  const { listJobs } = await import('./connectors/music-local/shared.mjs');
+  const before = listJobs().length;
+  const p = spawn(process.execPath, [path.join(dir, 'mcp.mjs')], { stdio: ['pipe', 'pipe', 'ignore'] });
+  let buf = ''; const waits = new Map();
+  p.stdout.on('data', d => { buf += d; let i; while ((i = buf.indexOf(String.fromCharCode(10))) >= 0) { const l = buf.slice(0, i); buf = buf.slice(i + 1); try { const m = JSON.parse(l); waits.get(m.id)?.(m); } catch {} } });
+  let n = 0; const rpc = (method, params) => new Promise((res, rej) => { const id = ++n; const t = setTimeout(() => rej(new Error(method + ' timed out')), 8000); waits.set(id, m => { clearTimeout(t); res(m); }); p.stdin.write(JSON.stringify({ jsonrpc: '2.0', id, method, params }) + String.fromCharCode(10)); });
+  try {
+    await rpc('initialize', { protocolVersion: '2025-06-18', capabilities: {}, clientInfo: { name: 'check', version: '0' } });
+    const names = (await rpc('tools/list', {})).result.tools.map(t => t.name);
+    for (const t of ['music_status', 'music_submit', 'music_job', 'music_list_jobs', 'music_cancel']) if (!names.includes(t)) throw new Error('missing tool ' + t);
+    if (names.some(t => /(^|_)(send|reply|forward)(_|$)/.test(t))) throw new Error('a tool looks like a send');
+    if (!(await rpc('tools/call', { name: 'music_submit', arguments: { prompt: 'short' } })).result.isError) throw new Error('a one-word prompt was accepted');
+    if (!(await rpc('tools/call', { name: 'music_submit', arguments: { prompt: 'slow warm ambient piano for a presentation', duration_seconds: 5 } })).result.isError) throw new Error('a piece under the minimum length was accepted');
+    if (listJobs().length !== before) throw new Error('a refused request still queued a job');
+  } finally { p.kill(); }
+  return 'five tools, no send-like tool · a one-word prompt and a too-short piece refused, nothing queued';
+});
+await step('video studio: speaks MCP, refuses a bad spec with reasons, and its title-card page passes its own layout check', async () => {
+  const dir = path.join(ROOT, 'connectors', 'video-studio');
+  const { listJobs } = await import('./connectors/video-studio/shared.mjs');
+  const { normalise, writeProject, measure, contrast } = await import('./connectors/video-studio/compose.mjs');
+  const before = listJobs().length;
+  const p = spawn(process.execPath, [path.join(dir, 'mcp.mjs')], { stdio: ['pipe', 'pipe', 'ignore'] });
+  let buf = ''; const waits = new Map();
+  p.stdout.on('data', d => { buf += d; let i; while ((i = buf.indexOf(String.fromCharCode(10))) >= 0) { const l = buf.slice(0, i); buf = buf.slice(i + 1); try { const m = JSON.parse(l); waits.get(m.id)?.(m); } catch {} } });
+  let n = 0; const rpc = (method, params) => new Promise((res, rej) => { const id = ++n; const t = setTimeout(() => rej(new Error(method + ' timed out')), 8000); waits.set(id, m => { clearTimeout(t); res(m); }); p.stdin.write(JSON.stringify({ jsonrpc: '2.0', id, method, params }) + String.fromCharCode(10)); });
+  try {
+    await rpc('initialize', { protocolVersion: '2025-06-18', capabilities: {}, clientInfo: { name: 'check', version: '0' } });
+    const names = (await rpc('tools/list', {})).result.tools.map(t => t.name);
+    for (const t of ['video_status', 'video_build', 'video_job', 'video_list_jobs', 'video_cancel']) if (!names.includes(t)) throw new Error('missing tool ' + t);
+    const bad = await rpc('tools/call', { name: 'video_build', arguments: { brand: 'wrw', cards: [{ text: 'x', ground: 'purple', seconds: 99 }] } });
+    if (!bad.result.isError || !/ground must be one of/.test(bad.result.content[0].text) || !/seconds must be 1 to 60/.test(bad.result.content[0].text)) throw new Error('a bad spec was not refused with reasons: ' + bad.result.content[0].text);
+    if (listJobs().length !== before) throw new Error('a refused request still queued a job');
+  } finally { p.kill(); }
+  const ok = normalise({ brand: 'wrw', format: '9:16', cards: [{ text: "Not written down? You can't enforce it.", ground: 'bone', seconds: 3 }, { text: 'Ink card', ground: 'ink', seconds: 2 }] });
+  if (!ok.spec) throw new Error('a good spec was refused: ' + ok.problems);
+  const pk = normalise({ brand: 'wrw', style: 'punchy', cards: [{ text: 'Revenue is not profit.', ground: 'red', seconds: 3 }, { text: 'Profit per unit is.', ground: 'bone', seconds: 3 }], music: { prompt: 'calm piano, no vocals' } });
+  if (!pk.spec || pk.spec.transition !== 'push' || pk.spec.textMotion !== 'words' || !(pk.spec.overlap > 0) || !pk.spec.music?.prompt) throw new Error('the punchy style did not set push, words, an overlap and a music prompt: ' + JSON.stringify(pk));
+  if (!normalise({ brand: 'wrw', style: 'wild', cards: [{ text: 'x', seconds: 3 }] }).problems) throw new Error('an unknown style was accepted');
+  const rich = normalise({ brand: 'wrw', style: 'impact', voice: { voice: 'bm_george' }, cards: [
+    { text: 'Your *profit* hides in one order.', ground: 'ink', seconds: 3, say: 'Most owners know their sales.' },
+    { kind: 'waterfall', text: 'One order', ground: 'bone', seconds: 7, prefix: '£', items: [{ label: 'Order', value: 20, type: 'total' }, { label: 'Food', value: -6 }, { label: 'Labour', value: -6 }, { label: 'Left', value: 8, type: 'total' }] },
+    { kind: 'stat', text: 'Left per order', ground: 'red', seconds: 3, value: 8, prefix: '£' }] });
+  if (!rich.spec || rich.spec.textMotion !== 'kinetic' || rich.spec.backdrop !== 'ridges' || !rich.spec.captions) throw new Error('the impact style, voice or captions were not set: ' + JSON.stringify(rich.problems || rich.spec));
+  if (!normalise({ brand: 'wrw', cards: [{ kind: 'stat', text: 'x', seconds: 3 }] }).problems) throw new Error('a stat card with no value was accepted');
+  if (!normalise({ brand: 'wrw', cards: [{ kind: 'waterfall', text: 'x', seconds: 3, items: [{ label: 'a', value: 1 }] }] }).problems) throw new Error('a waterfall with one row was accepted');
+  if (contrast('#201E1D', '#F3F2F2') < 10) throw new Error('contrast maths is wrong');
+  const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'vs-')); writeProject(ok.spec, tmp, 1);
+  const m = await measure(ok.spec, tmp);
+  if (!m.pass) throw new Error('the page failed its own layout check: ' + m.issues.join('; '));
+  const tmp2 = fs.mkdtempSync(path.join(os.tmpdir(), 'vs-')); writeProject(pk.spec, tmp2, 1);
+  const m2 = await measure(pk.spec, tmp2);
+  if (!m2.pass) throw new Error('the punchy page failed its own layout check: ' + m2.issues.join('; '));
+  const wav = path.join(fs.mkdtempSync(path.join(os.tmpdir(), 'vs-wav-')), 'quiet.wav'); { const n = 24000 * 2, h = Buffer.alloc(44); h.write('RIFF', 0); h.writeUInt32LE(36 + n * 2, 4); h.write('WAVEfmt ', 8); h.writeUInt32LE(16, 16); h.writeUInt16LE(1, 20); h.writeUInt16LE(1, 22); h.writeUInt32LE(24000, 24); h.writeUInt32LE(48000, 28); h.writeUInt16LE(2, 32); h.writeUInt16LE(16, 34); h.write('data', 36); h.writeUInt32LE(n * 2, 40); fs.writeFileSync(wav, Buffer.concat([h, Buffer.alloc(n * 2)])); }
+  for (const c of rich.spec.cards) c.vo = { file: wav, dur: 2 }; // with a voice every card carries a caption: the chart and the number must stay clear of it
+  const tmp3 = fs.mkdtempSync(path.join(os.tmpdir(), 'vs-')); writeProject(rich.spec, tmp3, 1); // text, waterfall and stat cards with ridges, emphasis, kinetic entrances and captions
+  const m3 = await measure(rich.spec, tmp3);
+  if (!m3.pass) throw new Error('the impact page (waterfall, stat, emphasis) failed its own layout check: ' + m3.issues.join('; '));
+  return 'five tools · a bad spec refused with reasons, nothing queued · title cards build, type inside the safe area, contrast passes · motion styles (push, words) and a music prompt are accepted and measured';
+});
+await step('office assistant: it can look and add work, and it has no way to approve, send, post, pay, delete or run a command', async () => {
+  const p = spawn(process.execPath, [path.join(ROOT, 'connectors', 'office-control', 'mcp.mjs')], { stdio: ['pipe', 'pipe', 'ignore'], env: { ...process.env, OFFICE_URL: 'http://127.0.0.1:1' } });
+  let buf = ''; const waits = new Map(); p.stdout.on('data', d => { buf += d; let i; while ((i = buf.indexOf('\n')) >= 0) { const l = buf.slice(0, i); buf = buf.slice(i + 1); try { const m = JSON.parse(l); waits.get(m.id)?.(m); } catch {} } });
+  let n = 0; const rpc = (method, params) => new Promise((res, rej) => { const id = ++n; const t = setTimeout(() => rej(new Error(method + ' timed out')), 8000); waits.set(id, m => { clearTimeout(t); res(m); }); p.stdin.write(JSON.stringify({ jsonrpc: '2.0', id, method, params }) + '\n'); });
+  try {
+    await rpc('initialize', { protocolVersion: '2025-06-18', capabilities: {}, clientInfo: { name: 'check', version: '0' } });
+    const names = (await rpc('tools/list', {})).result.tools.map(t => t.name);
+    for (const t of ['office_overview', 'office_list_tasks', 'office_get_task', 'office_add_task', 'office_add_routine', 'office_routines', 'office_run_routine', 'office_agents', 'office_content_week', 'office_brain_search', 'office_brain_read']) if (!names.includes(t)) throw new Error('missing tool ' + t);
+    const bad = names.filter(t => /approve|reject|send|post|pay|delete|remove|restart|shell|exec|write|edit|publish/.test(t.replace('office_', '')));
+    if (bad.length || names.length !== 11) throw new Error('the assistant has a tool it must not have: ' + bad.join(', ') + ' (' + names.length + ' tools)');
+    const short = await rpc('tools/call', { name: 'office_add_task', arguments: { dept: 'emails', text: 'short' } });
+    if (!short.result.isError) throw new Error('a one-word task was accepted');
+    const baddept = await rpc('tools/call', { name: 'office_add_task', arguments: { dept: 'legal', text: 'a long enough instruction for a desk that does not exist' } });
+    if (!baddept.result.isError) throw new Error('a task for a department that does not exist was accepted');
+  } finally { p.kill(); }
+  const srv = fs.readFileSync(path.join(ROOT, 'serve.mjs'), 'utf8');
+  if (!/'--allowedTools', 'mcp__office-control'/.test(srv) || !/--strict-mcp-config/.test(srv) || !/'--disallowedTools', 'Bash,Edit,Write,Read,Glob,Grep,Agent,NotebookEdit,Task,WebFetch,WebSearch'/.test(srv)) throw new Error('the assistant is not locked to its one tool server');
+  return 'ten tools: look, add a task, run a routine, read the Brain · nothing that approves, sends, posts, pays, deletes or runs a command · runs with only that server and every shell, file and web tool switched off';
+});
+await step('motion studio: house rules refused, a composition paints, scores and checks in Chrome, the Director is locked to its one server on Opus 5.5 extra-high', async () => {
+  const eng = await import('./connectors/motion-studio/engine.mjs'), sh = await import('./connectors/motion-studio/shared.mjs');
+  const ex = fs.readFileSync(path.join(ROOT, 'connectors', 'motion-studio', 'examples', 'scale-is-a-system.html'), 'utf8');
+  if (eng.lint(ex).rules.length) throw new Error('the worked example breaks a house rule: ' + eng.lint(ex).rules.join('; '));
+  const bad = eng.lint(ex.replace(/M\.spring/g, 'M.tween').replace('</style>', '.x{transition:all 1s} @keyframes y{}</style>').replace('kit/sound-kit.js', 'x.js') + 'back.out(2) <audio src="a.mp3">');
+  if (bad.rules.length < 5) throw new Error('a composition with CSS motion, fake bounce, no springs and an audio file was not refused: ' + bad.rules.join('; '));
+  const g = eng.lint(ex.replace('</body>', '<script src="kit/gsap/gsap.min.js"></script><script>gsap.to("#h0", { y: 10, ease: "elastic" }); const tl = gsap.timeline(); tl.play();</script></body>'));
+  if (g.rules.filter(r => /GSAP|bounce/.test(r)).length < 4) throw new Error('GSAP moving on its own (gsap.to, an unpaused timeline, play, an elastic ease) was not refused: ' + g.rules.join('; '));
+  if (eng.lint(ex.replace('</body>', '<script src="kit/gsap/gsap.min.js"></script><script type="module">import * as THREE from "./kit/three/three.module.min.js"; const tl = gsap.timeline({ paused: true }); tl.seek(0);</script></body>')).rules.length) throw new Error('GSAP seeked in render(t) or three.js from the kit was refused');
+  const srv = fs.readFileSync(path.join(ROOT, 'serve.mjs'), 'utf8');
+  if (!/'--allowedTools', 'mcp__motion-studio'/.test(srv) || !/'--model', motionMod\.MODEL, '--effort', motionMod\.EFFORT/.test(srv)) throw new Error('the Motion Director is not locked to its one tool server and its model');
+  const mm = await import('./motion.mjs'), cr = await import('./connectors/motion-studio/critic.mjs');
+  if (mm.MODEL !== 'claude-opus-5-5' || mm.EFFORT !== 'xhigh' || cr.MODEL !== 'claude-opus-5-5' || cr.EFFORT !== 'xhigh') throw new Error('the motion session must run on Opus 5.5 at extra-high effort');
+  const p = spawn(process.execPath, [path.join(ROOT, 'connectors', 'motion-studio', 'mcp.mjs')], { stdio: ['pipe', 'pipe', 'ignore'] });
+  let buf = ''; const waits = new Map(); p.stdout.on('data', d => { buf += d; let i; while ((i = buf.indexOf('\n')) >= 0) { const l = buf.slice(0, i); buf = buf.slice(i + 1); try { const m = JSON.parse(l); waits.get(m.id)?.(m); } catch {} } });
+  let n = 0; const rpc = (method, params) => new Promise((res, rej) => { const id = ++n; const t = setTimeout(() => rej(new Error(method + ' timed out')), 8000); waits.set(id, m => { clearTimeout(t); res(m); }); p.stdin.write(JSON.stringify({ jsonrpc: '2.0', id, method, params }) + '\n'); });
+  try {
+    await rpc('initialize', { protocolVersion: '2025-06-18', capabilities: {}, clientInfo: { name: 'check', version: '0' } });
+    const names = (await rpc('tools/list', {})).result.tools.map(t => t.name);
+    if (names.length !== 11 || names.some(t => /send|post|publish|delete|shell|exec|write_file|approve/.test(t))) throw new Error('the motion studio has an unexpected tool: ' + names.join(', '));  // 11 = the studio's 9 plus brain_search and brain_read (read-only, 27 Oct 2026)
+    const nar = await rpc('tools/call', { name: 'motion_narrate', arguments: { series: 'art-of-operations', lines: [{ id: 's1', text: 'A line that must be refused.' }] } });
+    if (!nar.result.isError) throw new Error('narration was accepted for a series that is not narrated');
+    const fin = await rpc('tools/call', { name: 'motion_final', arguments: { draft_id: 'nosuchjob' } });
+    if (!fin.result.isError) throw new Error('a final was accepted without a clean draft');
+  } finally { p.kill(); }
+  if (!sh.findChrome()) return 'rules and lock checked · Chrome not found, so no frames painted here';
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'ms-')), out = path.join(dir, 'out');
+  fs.cpSync(sh.KIT, path.join(dir, 'kit'), { recursive: true });
+  for (const [from, to] of [[path.join(ROOT, 'connectors', 'video-studio', 'brand', 'fonts'), 'fonts'], [path.join(ROOT, 'connectors', 'video-studio', 'brand', 'logos'), 'logos'], [path.join(ROOT, 'assets', 'brand'), 'brand']]) fs.cpSync(from, path.join(dir, 'kit', to), { recursive: true });
+  fs.writeFileSync(path.join(dir, 'index.html'), ex);
+  const r = await eng.render({ dir, out, mode: 'stills' });
+  if (r.errors.length) throw new Error('the worked example failed in the engine: ' + r.errors.join('; '));
+  if (!r.sheets.length || !fs.existsSync(r.sheets[0]) || !r.audio || !fs.existsSync(r.audio)) throw new Error('no contact sheet or no synthesised score');
+  if (!r.checks.some(c => /same picture for the same moment/.test(c))) throw new Error('the determinism check did not run');
+  fs.rmSync(dir, { recursive: true, force: true });
+  return `nine tools (narration only for narrated series) · CSS motion, fake bounce, missing springs and audio files refused · the worked example painted ${r.stills.length} stills in Chrome with a synthesised score in ${r.seconds} s · Opus 5.5 extra-high, critic on request only`;
+});
+await step('content calendar: each week gets a folder and a SCHEDULE page, and the finished package is filed under its day', async () => {
+  const wp = await import('./weekpack.mjs');
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'ao-cc-')), brain = path.join(root, 'brain'); fs.mkdirSync(path.join(brain, '20-Brand'), { recursive: true });
+  fs.writeFileSync(path.join(brain, '20-Brand/content-calendar.md'), '# Calendar\n\n## Week of Mon D Mon YYYY\n(template)\n\n## Week of Mon 2 Nov 2026\nCore idea (WRW Hospitality): write it down.\n| Day | Time | Account | Channel | Format | Idea / angle | Owner | Status | Files |\n|---|---|---|---|---|---|---|---|---|\n| Mon 2 Nov | 07:45 (assumed) | WRW Hospitality | LinkedIn, WRW Hospitality page | Teach post | A post | LINKEDIN | planned | none |\n| Tue 3 Nov | 11:00 | WRW Hospitality | Instagram | Reel | A reel | INSTAGRAM ORGANIC | planned | none |\n| Fri 6 Nov | 12:00 | Scaling Without Borders | LinkedIn newsletter | Edition | An edition | NEWSLETTER | planned | none |\n');
+  const weeks = wp.parseWeeks(fs.readFileSync(path.join(brain, '20-Brand/content-calendar.md'), 'utf8'));
+  if (weeks.length !== 1 || weeks[0].rows.length !== 3 || weeks[0].core !== 'write it down.') throw new Error('the calendar was not read: ' + JSON.stringify(weeks).slice(0, 200));
+  wp.sync(root, brain); const wd = path.join(root, 'Content Calendar', '2026-11-02 Week of 2 Nov');
+  if (!fs.existsSync(path.join(wd, 'SCHEDULE.md')) || !fs.existsSync(path.join(wd, 'Mon 02 Nov', '0745 WRW page LinkedIn Teach post.md'))) throw new Error('the week folder and its stubs were not made');
+  const mp4 = path.join(root, 'reel.mp4'); fs.writeFileSync(mp4, 'v');
+  const block = 'Done.\n\nCONTENT PACKAGE\nweek: 2026-11-02\n---\n' + JSON.stringify([{ day: 'Mon 2 Nov', time: '07:45', account: 'WRW Hospitality page', channel: 'LinkedIn', format: 'Teach post', text: 'The finished post.', status: 'drafted' }, { day: 'Tue 3 Nov', time: '11:00', account: 'WRW Hospitality', channel: 'Instagram', format: 'Reel', caption: 'A caption', hashtags: '#a #b', files: [mp4], status: 'built' }, { day: 'Fri 6 Nov', time: '12:00', account: 'Scaling Without Borders', channel: 'LinkedIn newsletter', format: 'Edition', text: 'Edition text', status: 'needs-Wesley', notes: 'Confirm the angle' }]) + '\nEND CONTENT PACKAGE';
+  const f = wp.fromResult(root, brain, block); if (f.filed !== 3) throw new Error('the package was not filed: ' + JSON.stringify(f));
+  const post = fs.readFileSync(path.join(wd, 'Mon 02 Nov', '0745 WRW page LinkedIn Teach post.md'), 'utf8');
+  if (!/The finished post\./.test(post)) throw new Error('the post text was not filed');
+  if (!fs.existsSync(path.join(wd, 'Tue 03 Nov', '1100 Instagram Reel', 'video.mp4')) || !/#a #b/.test(fs.readFileSync(path.join(wd, 'Tue 03 Nov', '1100 Instagram Reel', 'caption.txt'), 'utf8'))) throw new Error('the Reel folder is missing its video or caption');
+  if (!/needs you/.test(fs.readFileSync(path.join(wd, 'SCHEDULE.md'), 'utf8'))) throw new Error('the schedule does not show what needs Wesley');
+  if (/CONTENT PACKAGE/.test(wp.strip(block))) throw new Error('the machine block was not stripped');
+  return 'a week folder with SCHEDULE.md and a stub per row · the Lead\'s package files text as notes and a Reel as a folder (video, caption, POST THIS) · needs-you shows on the schedule';
+});
+await step('notes named in a task or a skill are put in front of the agent (it has no file tools)', async () => {
+  const { pinnedNotes } = await import('./pins.mjs');
+  const keys = ['brands', 'content-calendar', 'linkedin-log', 'voice', 'CLAUDE', 'SKILL', 'Upload - 10-15 Interview - abc'], up = k => k.startsWith('Upload - ');
+  const got = pinnedNotes(keys, up, 'Read `20-Brand/brands.md`, then 20-Brand/Content-Calendar.md and the log in linkedin-log.md. Never CLAUDE.md or the SKILL.md. Also Upload - 10-15 Interview - abc.md and missing-note.md.');
+  if (got.join(',') !== 'brands,content-calendar,linkedin-log') throw new Error('pinned the wrong notes: ' + got.join(','));
+  if (pinnedNotes(['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'], () => false, 'a.md b.md c.md d.md e.md f.md g.md h.md').length !== 6) throw new Error('more than 6 notes were pinned');
+  return 'a note named by path or by name is pinned (case-insensitive) · CLAUDE, SKILL, uploads and unknown names are ignored · at most 6';
+});
+await step('storage: finished work is filed and findable, only rebuildable leftovers are cleared, and finished files survive a clean-up', async () => {
+  const sg = await import('./storage.mjs');
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'ao-storage-')), w = (rel, body = 'x') => { const f = path.join(root, rel); fs.mkdirSync(path.dirname(f), { recursive: true }); fs.writeFileSync(f, body); return f; };
+  const old = Date.now() - 10 * 86400000, mp4 = w('output/video/xold1.mp4', 'video'), slide = w('output/video/xold1-slides/slide-01.png', 'png');
+  w('data/video/projects/xold1/index.html'); w('data/video/projects/xold1-voice/vo-1.wav');
+  w('data/video/jobs/xold1.json', JSON.stringify({ id: 'xold1', state: 'done', finishedAt: old, createdAt: old, requestedBy: 'MARKETING LEAD', file: mp4, slides: [slide], spec: { title: 'Unit economics Reel', format: '9:16', totalSeconds: 20, cards: [{ text: 'A *hook*', say: 'Said' }] } }));
+  const t = w('output/video/xtest.mp4', 'video'), older = Date.now() - 20 * 86400000; w('data/video/jobs/xtest.json', JSON.stringify({ id: 'xtest', state: 'done', finishedAt: older, createdAt: older, requestedBy: 'test', file: t, spec: { title: 'a test', cards: [{ text: 'T' }] } }));
+  const lib = sg.buildLibrary(root); const index = fs.readFileSync(path.join(root, 'output/library/INDEX.md'), 'utf8');
+  if (lib.items !== 2 || !/Unit economics Reel/.test(index) || !/Test builds/.test(index)) throw new Error('the library did not list the finished work: ' + index.slice(0, 300));
+  if (!fs.existsSync(path.join(root, 'output/library/video', `${new Date(old).toISOString().slice(0, 10)} Unit economics Reel (xold1)`, 'video.mp4'))) throw new Error('the finished video was not filed under a readable name');
+  const c = sg.cleanup(root, {});
+  if (fs.existsSync(path.join(root, 'data/video/projects/xold1')) || fs.existsSync(path.join(root, 'data/video/projects/xold1-voice'))) throw new Error('the rebuildable working folders were not cleared');
+  if (!fs.existsSync(mp4) || !fs.existsSync(slide) || !fs.existsSync(t)) throw new Error('a clean-up deleted a finished file');
+  const r = sg.report(root, {}); if (r.oldTests !== 1) throw new Error('the old test build was not flagged: ' + JSON.stringify(r));
+  sg.cleanup(root, {}, { deleteTests: true });
+  if (fs.existsSync(t) || !fs.existsSync(mp4)) throw new Error('--delete-tests removed the wrong thing');
+  const lv = l => ({ level: l, freeGB: 30, totalGB: 1862, officeMB: 1, warn: [] }), h = 3600000;
+  if (sg.shouldAlert({}, lv('warn')) !== 'worse' || sg.shouldAlert({ level: 'warn', at: Date.now() }, lv('warn')) !== null || sg.shouldAlert({ level: 'warn', at: Date.now() - 25 * h }, lv('warn')) !== 'reminder' || sg.shouldAlert({ level: 'warn', at: Date.now() }, lv('critical')) !== 'worse' || sg.shouldAlert({ level: 'warn', at: Date.now() }, lv('ok')) !== 'recovered' || sg.shouldAlert({}, lv('ok')) !== null) throw new Error('the disk alert would speak at the wrong times');
+  return `a disk alert only fires when the level worsens, once a day while it stays bad, and once on recovery · filed under a readable name with an INDEX · working folders cleared (${c.freedMB} MB) · finished video and slides untouched · an old test build is flagged, and only removed when asked`;
 });
 await step('SOP builder: both house styles build the full SOP and one-pager, bad content is refused with reasons, and the poster blocks are limit-checked', async () => {
   const dir = path.join(ROOT, 'connectors', 'sop-builder');
@@ -553,7 +757,11 @@ await step('routines: outside Emails, Accounting and Sales is refused, bad ones 
   const rt = await import('./routines.mjs'); const { loadRoster } = await import('./roster.mjs'); const agents = loadRoster().agents;
   const bad = rt.validate({ id: 'x', dept: 'marketing', agent: 'iggy', text: 'post the reel', when: { kind: 'daily', at: '09:00' } }, agents);
   if (!bad.problems.some(p => /later release/.test(p))) throw new Error('marketing routine not refused: ' + bad.problems);
-  if (!/Emails, Accounting and Sales/.test(rt.refusal('ops'))) throw new Error('refusal sentence');
+  if (!/Emails, Accounting, Sales, Operations and Delivery/.test(rt.refusal('marketing'))) throw new Error('refusal sentence');
+  rt.allow(['emails', 'fin', 'sales', 'ops', 'delivery', 'marketing']); // an owner who allows Marketing in office.config.json can own routines there
+  const okm = rt.validate({ id: 'cw', dept: 'marketing', agent: 'iggy', text: 'plan the week', when: { kind: 'weekly', days: [1], at: '08:00' } }, agents);
+  if (okm.problems.some(p => /later release/.test(p)) || !rt.ALLOWED.includes('marketing')) throw new Error('allowing marketing did not take: ' + okm.problems);
+  rt.allow(['emails', 'fin', 'sales', 'ops', 'delivery']);
   const wrong = rt.validate({ dept: 'fin', agent: 'ghost', text: 'x', when: { kind: 'weekly', days: [] } }, agents);
   if (!wrong.problems.some(p => /no agent/.test(p)) || !wrong.problems.some(p => /not complete/.test(p))) throw new Error('unknown agent / incomplete schedule not named: ' + wrong.problems);
   const cross = rt.validate({ dept: 'fin', agent: 'lexi', text: 'x', when: { kind: 'daily', at: '09:00' } }, agents);
@@ -621,6 +829,62 @@ await step('usage: the gauge parses Claude\'s answer and the office\'s own count
   const later = u.fallback(st, now + u.WINDOW + 1); if (later.window.tokens !== 0 || later.window.runs !== 0 || later.window.startedAt !== null) throw new Error('window did not reset');
   const tok = u.readToken(); // read into memory only — never printed
   return `parses percent + reset · unknown shape → null · 2 runs = 14,060 tokens · window resets after 5 h · login token on this machine: ${tok ? 'found' : 'none'}`;
+});
+await step('tokens: chats are totalled from their transcripts and re-read only where they grew; office runs are captured with what they were for and costed per approved deliverable', async () => { // 3 Nov 2026
+  const tk = await import('./tokens.mjs');
+  const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'tok-')), root = path.join(tmp, 'projects'), data = path.join(tmp, 'data'), officeProject = 'C--tmp-agents-office-cli';
+  const proj = path.join(root, 'C--x-agents-office'), office = path.join(root, officeProject);
+  fs.mkdirSync(path.join(proj, 's1', 'subagents'), { recursive: true }); fs.mkdirSync(office, { recursive: true }); fs.mkdirSync(data, { recursive: true });
+  const L = o => JSON.stringify(o) + '\n', now = Date.now(), ts = new Date(now).toISOString();
+  const call = (id, i, o, cr, cw, extra = {}) => L({ type: 'assistant', timestamp: ts, cwd: 'C:\\x\\agents-office', message: { id, model: 'claude-opus-5-5', usage: { input_tokens: i, output_tokens: o, cache_read_input_tokens: cr, cache_creation_input_tokens: cw } }, ...extra });
+  try {
+    fs.writeFileSync(path.join(proj, 's1.jsonl'), L({ type: 'user', timestamp: ts, cwd: 'C:\\x\\agents-office', message: { role: 'user', content: 'Build the tokens page' } }) +
+      call('m1', 2, 10, 1000, 500) + call('m1', 2, 40, 1000, 500) + // one response written as two lines: counted once, the last line wins
+      L({ type: 'user', timestamp: ts, message: { role: 'user', content: [{ type: 'tool_result', tool_use_id: 't1', content: '{"type":"assistant","usage":{}}' }] } }) + // a tool result is not a turn
+      L({ type: 'custom-title', customTitle: 'Tokens page' }) + call('m2', 1, 100, 700000, 0) + L({ type: 'user', timestamp: ts, isMeta: true, message: { role: 'user', content: 'meta' } }));
+    fs.writeFileSync(path.join(proj, 's1', 'subagents', 'agent-a.jsonl'), call('m3', 5, 20, 900000, 0, { isSidechain: true })); // a sub-agent: its tokens count, its context does not
+    fs.writeFileSync(path.join(office, 'v1.jsonl'), call('m4', 1, 3, 0, 30000)); // an office run from before capture that left a transcript
+    let s = await tk.scanChats(data, { root }), c = s.find(x => x.id === 's1');
+    const m = c?.models['claude-opus-5-5'] || [];
+    if (!c || c.calls !== 3 || c.turns !== 1 || c.subagents !== 1 || c.title !== 'Tokens page' || c.peak !== 700001 || m.join() !== '8,160,1601000,500,3') throw new Error('chat totals: ' + JSON.stringify(c));
+    fs.appendFileSync(path.join(proj, 's1.jsonl'), call('m5', 1, 1, 1, 1).trimEnd()); // half-written: no newline yet
+    s = await tk.scanChats(data, { root }); if (s.find(x => x.id === 's1').calls !== 3) throw new Error('a half-written line was read');
+    fs.appendFileSync(path.join(proj, 's1.jsonl'), '\n');
+    s = await tk.scanChats(data, { root }); if (s.find(x => x.id === 's1').calls !== 4) throw new Error('the finished line was not read on the next pass');
+    if (s.find(x => x.id === 's1').firstCtx !== 1502 || s.find(x => x.id === 's1').lastCtx !== 3) throw new Error('first and latest context: ' + JSON.stringify(s.find(x => x.id === 's1')));
+    // the coach: a chat used today with a heavy context first (the biggest saving per turn), then Opus that Sonnet could do, then rework, then the habit
+    const W = tk.WINDOW, hot = { id: 'a', title: 'Reels', project: 'agents-office', last: now - 3600000, lastCtx: 0.5 * W, firstCtx: 90000, calls: 40, turns: 4, peak: 0.5 * W, cr: 1e8 };
+    const busier = { ...hot, id: 'b', lastCtx: 0.4 * W, calls: 80 }, stale = { ...hot, id: 'c', last: now - 3 * 86400000, lastCtx: 0.9 * W, peak: 0.9 * W };
+    let k = tk.coach({ chats: [hot, busier, stale], now });
+    if (k.kind !== 'handover' || k.chat.id !== 'b' || k.perTurn !== (0.4 * W - 90000) * 20 || k.others !== 1) throw new Error('coach, hand over: ' + JSON.stringify(k));
+    k = tk.coach({ chats: [stale], modelFit: { lightBy: [{ k: 'SCOUT', agent: 'scout', cost: 2.5, runs: 9 }] }, rework: [{ desk: 'OPS', tasks: 6, revised: 3, rate: 0.5 }], now }); if (k.kind !== 'model' || k.desk !== 'SCOUT') throw new Error('coach, model: ' + JSON.stringify(k));
+    k = tk.coach({ chats: [stale], rework: [{ desk: 'OPS', tasks: 6, revised: 3, rate: 0.5 }], now }); if (k.kind !== 'rework' || k.desk !== 'OPS') throw new Error('coach, rework: ' + JSON.stringify(k));
+    k = tk.coach({ chats: [stale, { ...stale, id: 'd' }], now }); if (k.kind !== 'habit' || k.late !== 2) throw new Error('coach, habit: ' + JSON.stringify(k));
+    if (tk.coach({ chats: [], now }).kind !== 'ok') throw new Error('coach with nothing to fix');
+    const cache = JSON.parse(fs.readFileSync(path.join(data, 'tokens-cache.json'), 'utf8')), st = cache.files['C--x-agents-office/s1.jsonl'];
+    if (st.offset !== fs.statSync(path.join(proj, 's1.jsonl')).size) throw new Error('the cache does not hold where reading stopped');
+    // the office: a run's final result event becomes a ledger row, and the task keeps its own sum
+    const result = (cost, out) => ({ type: 'result', total_cost_usd: cost, duration_ms: 9000, num_turns: 1, modelUsage: { 'claude-opus-5-5': { inputTokens: 3, outputTokens: out, cacheReadInputTokens: 1000, cacheCreationInputTokens: 2000, costUSD: cost - 0.05 }, 'claude-haiku-5-5': { inputTokens: 1, outputTokens: 1, cacheReadInputTokens: 0, cacheCreationInputTokens: 0, costUSD: 0.05 } } });
+    const f = tk.fromResult(result(0.5, 400), 'claude-opus-5-5'); if (f.in !== 4 || f.out !== 401 || f.cr !== 1000 || f.cw !== 2000 || f.cost !== 0.5 || f.ms !== 9000) throw new Error('result event: ' + JSON.stringify(f));
+    const task = { id: 'T1', agent: 'scout', dept: 'marketing', title: 'Art of Operations reel 7', text: 'Make the Art of Operations reel', addedAt: now - 3 * 3600000, waitingAt: now - 3600000, approved: true, approvedAt: now - 1800000, revisions: 1, state: 'done' };
+    tk.addTo(task, tk.record(data, { kind: 'task', task: 'T1', agent: 'scout', dept: 'marketing', mode: 'draft', ...f }));
+    tk.addTo(task, tk.record(data, { kind: 'task', task: 'T1', agent: 'scout', dept: 'marketing', mode: 'revise', ...tk.fromResult(result(0.25, 200), 'claude-opus-5-5') }));
+    if (task.usage.runs !== 2 || task.usage.cost !== 0.75 || task.usage.reviseCost !== 0.25 || task.usage.out !== 602) throw new Error('task sum: ' + JSON.stringify(task.usage));
+    const r = tk.report({ sessions: s, ledger: tk.readLedger(data), tasks: [task], agents: [{ id: 'scout', name: 'SCOUT' }], officeProject, deliverable: [['Art of Operations reel', t => /art of operations/i.test(t.text)]] });
+    if (r.chats.length !== 1 || r.chats[0].verdict.key !== 'handover' || r.headline.today.office.runs !== 3 || r.days.length !== 30 || !r.since) throw new Error('report: ' + JSON.stringify({ chats: r.chats.length, v: r.chats[0]?.verdict, runs: r.headline.today.office.runs }));
+    const desk = r.jobs.desk[0], per = r.roi.perDeliverable[0];
+    if (desk.key !== 'SCOUT' || desk.runs !== 2 || desk.cost !== 0.75 || desk.approved !== 1 || desk.revised !== 1 || desk.perApproved !== 0.75) throw new Error('by desk: ' + JSON.stringify(desk));
+    if (per?.kind !== 'Art of Operations reel' || per.perApproved !== 0.75 || per.reviseCost !== 0.25) throw new Error('per deliverable: ' + JSON.stringify(per));
+    if (r.roi.modelFit.lightRuns !== 2 || r.roi.approval.yourTurn !== 0.5 || r.roi.approval.endToEnd !== 2.5 || r.roi.rework[0].rate !== 1) throw new Error('roi: ' + JSON.stringify(r.roi));
+  } finally { fs.rmSync(tmp, { recursive: true, force: true }); }
+  // capture: every way the office starts Claude writes its run to the ledger, and every call says what it was for
+  const srv = fs.readFileSync(path.join(ROOT, 'serve.mjs'), 'utf8'), lines = srv.split('\n');
+  for (const [what, re] of [['the upload reader keeps no transcript and is costed', /'--no-session-persistence', \/\/ its cost goes to data\/tokens\.jsonl[\s\S]{0,600}spent\(\{ kind: 'upload' \}/], ['desk runs', /bumpUsage\(usageOut\); spent\(job, ran\)/], ['the API backend', /spent\(job, tokens\.fromApi/], ['the Chief of Staff', /spent\(\{ kind: 'chief' \}/], ['the Motion Director', /spent\(\{ kind: 'motion' \}/]]) if (!re.test(srv)) throw new Error(what + ' is not captured');
+  const critic = fs.readFileSync(path.join(ROOT, 'connectors', 'motion-studio', 'critic.mjs'), 'utf8'); // it runs in the render worker, so it writes the office's ledger itself
+  if (!/tokens\.record\(path\.join\(ROOT, 'data'\), \{ kind: 'critic', \.\.\.tokens\.fromResult\(j, MODEL\) \}\)/.test(critic)) throw new Error('the Motion critic is not captured');
+  const unlabelled = lines.map((l, i) => [l, i]).filter(([l, i]) => /\b(ask|askX)\(/.test(l) && !/^\s*(async function askX|const ask = )/.test(l) && !/job:/.test(lines.slice(i, i + 3).join(' '))).map(([, i]) => 'serve.mjs:' + (i + 1));
+  if (unlabelled.length) throw new Error('a Claude call with no job label: ' + unlabelled.join(', '));
+  return 'repeated lines counted once · a half-written line waits · sub-agents count tokens, not context · a run carries its desk, task and pass · $0.75 per approved reel incl. a $0.25 revision · the coach picks the biggest saving · every Claude call in the server is labelled';
 });
 
 /* ---------- 1e. Agent Teams + Claude in Chrome (V3.2 (16 Sep)) ---------- */
@@ -788,7 +1052,7 @@ else {
       if (!await page.$eval('#calOv', e => e.classList.contains('on'))) throw new Error('P did not open the calendar');
       const cells = await page.$$eval('.cv-day', e => e.length); if (cells !== 35 && cells !== 42) throw new Error('month cells: ' + cells);
       if (!await page.$('.cv-day.today')) throw new Error('no today cell');
-      const rt = await page.$$eval('.cv-ev.routine', e => e.length); if (rt < 3) throw new Error('routine occurrences on the grid: ' + rt);
+      const rt = await page.$$eval('.cv-ev.routine', e => e.length), left = await page.$$eval('.cv-day', (els) => { const i = els.findIndex(e => e.classList.contains('today')); return els.length - 1 - i; }); if (rt < (left >= 7 ? 3 : 0)) throw new Error('routine occurrences on the grid: ' + rt + ' (' + left + ' days left on it)'); // routines are projected forward only, and the demo ones run on weekdays, so near the end of the grid (a weekend) none may remain
       const rail = await page.$eval('#cvRtN', e => +e.textContent); if (rail < 1) throw new Error('rail empty');
       // a task for a day next week (the second day after today on the grid)
       const days = await page.$$eval('.cv-day', els => els.map(e => e.dataset.day)); const ti = days.indexOf(await page.$eval('.cv-day.today', e => e.dataset.day));
@@ -846,7 +1110,7 @@ else {
 /* ---------- 3. server smoke ---------- */
 {
   const port = 4600 + Math.floor(Math.random() * 300);
-  const env = { ...process.env, PORT: String(port) };
+  const env = { ...process.env, PORT: String(port), OFFICE_ROUTINE_DEPTS: 'emails,fin,sales,ops,delivery' }; // the shipped default, whatever the owner's own config allows
   const srv = spawn('node', ['serve.mjs'], { cwd: ROOT, env, stdio: ['ignore', 'pipe', 'pipe'] });
   let log = ''; srv.stdout.on('data', d => { log += d; }); srv.stderr.on('data', d => { log += d; });
   const base = `http://localhost:${port}`;
@@ -883,6 +1147,13 @@ else {
       if (!u.ok || !['claude', 'office'].includes(u.source)) throw new Error(JSON.stringify(u).slice(0, 120));
       return u.source === 'claude' ? `Claude's gauge: session ${u.session?.percent}% · week ${u.week?.percent}%` : `office count (${u.reason})`;
     });
+    await step('server: /api/tokens totals the chats and the office, and answers pages on this computer only', async () => { // 3 Nov 2026
+      const far = await fetch(base + '/api/tokens', { headers: { origin: 'https://example.com' } }); if (far.status !== 403) throw new Error('a page from another site got ' + far.status);
+      const t = await (await fetch(base + '/api/tokens')).json();
+      if (!t.headline?.d30?.chats || t.days?.length !== 30 || !Array.isArray(t.chats) || !Array.isArray(t.jobs?.desk) || !t.roi?.approval || !['handover', 'model', 'rework', 'habit', 'ok'].includes(t.coach?.kind)) throw new Error('bad shape: ' + JSON.stringify(t).slice(0, 160));
+      const fm = n => (n / 1e6).toFixed(1) + 'M';
+      return `30 days: chats ${fm(t.headline.d30.chats.total)} · office ${fm(t.headline.d30.office.total)} ($${t.headline.d30.office.cost}) · ${t.chatCount} chats, ${t.heavy} heavy · capture ${t.since ? 'since ' + new Date(t.since).toLocaleDateString() : 'not started'} · another site's page refused`;
+    });
     await step('server: /api/skills lists the skills and who has them', async () => {
       const s = await (await fetch(base + '/api/skills')).json(); if (!s.count || !Array.isArray(s.skills)) throw new Error('no skills');
       const piper = up.agents.find(a => a.id === 'piper'); if (!piper.skills?.includes('proposal')) throw new Error('health roster has no skills on piper');
@@ -895,7 +1166,7 @@ else {
       return `sales set up: ${up.setup.sales} · lessons dir ${path.basename(r.dir)}`;
     });
     await step('server: /api/routines lists the timetable and names the departments', async () => {
-      const r = await (await fetch(base + '/api/routines')).json(); if (!Array.isArray(r.routines) || JSON.stringify(r.depts) !== '["emails","fin","sales"]') throw new Error(JSON.stringify(r).slice(0, 120));
+      const r = await (await fetch(base + '/api/routines')).json(); if (!Array.isArray(r.routines) || JSON.stringify(r.depts) !== '["emails","fin","sales","ops","delivery"]') throw new Error(JSON.stringify(r).slice(0, 120));
       if (typeof up.routines?.count !== 'number') throw new Error('health has no routines');
       return `${r.routines.length} routines${r.routines.length ? ' · next ' + (r.routines.filter(x => x.nextAt).sort((a, b) => a.nextAt - b.nextAt)[0]?.title || '—') : ''} · ${path.basename(path.dirname(r.path))}/${path.basename(r.path)}`;
     });
@@ -921,6 +1192,15 @@ else {
       const e = await fetch(base + '/api/matrix/feed', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ text: '  ' }) });
       if (e.status !== 400) throw new Error('an empty feed was accepted');
       return `${m.items.filter(i => i.state === 'open').length} open actions · ${m.items.filter(i => i.state === 'open' && i.gap).length} gaps`;
+    });
+    await step('server: the assistant answers only to the office page on this computer', async () => {
+      const evil = await fetch(base + '/api/assistant', { headers: { origin: 'https://evil.example.com' } });
+      if (evil.status !== 403) throw new Error('a page from another site was not refused: ' + evil.status);
+      const evil2 = await fetch(base + '/api/assistant', { method: 'POST', headers: { origin: 'http://localhost.evil.com', 'content-type': 'application/json' }, body: JSON.stringify({ text: 'hi' }) });
+      if (evil2.status !== 403) throw new Error('a look-alike origin was not refused: ' + evil2.status);
+      const ok = await fetch(base + '/api/assistant', { headers: { origin: base } });
+      if (!ok.ok) throw new Error('the office page itself was refused: ' + ok.status);
+      return 'another site and a look-alike host are refused (403) · the office page is allowed';
     });
     await step('server: a task scheduled for a time that has passed is refused', async () => { // V3.2.1
       const r = await fetch(base + '/api/tasks', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ dept: 'sales', text: 'call the leads', at: Date.now() - 3600000 }) });

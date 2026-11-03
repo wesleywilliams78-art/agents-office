@@ -1,0 +1,662 @@
+{
+  "issue": 3,
+  "country": "Portugal",
+  "dateLong": "6 NOV 2026",
+  "colour": "#FF3131",
+  "verified": "OCT 2026",
+  "accessed": "28 Oct 2026",
+  "cover": {
+    "verdict": "Open, cheap to staff and free of franchise law, but a few big operators hold burger and chicken. The opening is a second chicken brand, built on cost, because takeaway gets no VAT break.",
+    "stats": [
+      {
+        "big": "11.42m",
+        "label": "people at 31 Dec 2025, up 0.32% on the year"
+      },
+      {
+        "big": "€920",
+        "label": "monthly minimum wage, mainland 2026, paid 14 times a year"
+      },
+      {
+        "big": "13%",
+        "label": "VAT on a meal, eaten in or taken away (mainland)"
+      }
+    ]
+  },
+  "market": {
+    "headline": "Visitors and low wages, but restaurant prices are outrunning sales",
+    "intro": "GDP grew 1.9% in 2025 and tourism was the least seasonal since 2013. But restaurant prices rose faster than sales, and the sector and the central bank disagree on margins.",
+    "tiles": [
+      {
+        "label": "Population",
+        "big": "11.42m",
+        "body": "At 31 Dec 2025, up 0.32% on the year. Foreign nationals are 14.0% of residents, more than double 2021. INE will revise per-head figures by year-end.",
+        "src": "INE [S1]"
+      },
+      {
+        "label": "GDP per head",
+        "pre": "about",
+        "big": "€26,900",
+        "body": "2025. Estimate: GDP of about €307bn ÷ 11.42m people. Real growth 1.9%. Accounts still preliminary.",
+        "src": "INE via RTP [S2]"
+      },
+      {
+        "label": "Food-service spend",
+        "big": "€23.4bn",
+        "body": "Value added by the restaurant chain, suppliers included, 2025: 7.6% of GDP and 523,000 jobs. A sector study, not an official figure. Household restaurant spend: Not found.",
+        "src": "EY-Parthenon for AHRESP via RTP [S3]"
+      },
+      {
+        "label": "Franchise count",
+        "big": "542",
+        "body": "brands, says the franchise association (Oct 2025), 52 of them in restaurants and fast food. It claims over 50,000 units; its own density figure implies about 32,000 (Estimate). No official census.",
+        "src": "APF via Lusa [S4] · Forbes Portugal [S5]"
+      },
+      {
+        "label": "Consumer spending",
+        "big": "+3.5%",
+        "body": "Real private consumption, 2025. Banco de Portugal sees GDP +2.3% in 2026, with consumption slowing. Inflation 3.6% in Sep 2026 (flash), energy +15.4%.",
+        "src": "INE via RTP [S2] · Banco de Portugal via AICEP [S6] · INE via Lusa [S7]"
+      },
+      {
+        "label": "Currency",
+        "big": "£1 = €1.195",
+        "body": "€1 = £0.8366 on 27 Oct 2026. ECB deposit rate 2.50% at 28 Oct 2026, after rises on 17 Jun and 16 Sep. Next decision after 29 Oct: 17 Dec 2026.",
+        "src": "ECB [S8, S9, S10]"
+      }
+    ],
+    "eatsTitle": "How Portugal eats out",
+    "eatsNote": "Official takeaway and delivery shares: Not found.",
+    "eats": [
+      {
+        "label": "Price level",
+        "big": "75.5",
+        "body": "Restaurant and hotel prices, 2024, EU = 100. About a quarter below the EU average.",
+        "bars": [
+          {
+            "label": "Portugal",
+            "value": 75.5,
+            "show": "75.5"
+          },
+          {
+            "label": "Spain",
+            "value": 83.9,
+            "show": "83.9"
+          },
+          {
+            "label": "France",
+            "value": 110,
+            "show": "110.0"
+          },
+          {
+            "label": "Germany",
+            "value": 112.1,
+            "show": "112.1"
+          }
+        ],
+        "src": "Eurostat price level index, 2024, via Access Portugal [S11]"
+      },
+      {
+        "label": "Tourism",
+        "big": "36.4%",
+        "body": "seasonality rate in 2025, the lowest since 2013. 29.9m visitors; non-residents spent 67.1% of nights.",
+        "src": "INE Tourism Statistics 2025, via ECO [S12]"
+      },
+      {
+        "label": "Lisbon and Porto",
+        "pre": "€",
+        "big": "17.42",
+        "body": "per m², median new-lease home rent in Lisbon, Q1 2026. A site-cost signal. Restaurant data by city: Not found.",
+        "bars": [
+          {
+            "label": "Lisbon",
+            "value": 17.42,
+            "show": "€17.42"
+          },
+          {
+            "label": "Greater Lisbon",
+            "value": 14.38,
+            "show": "€14.38"
+          },
+          {
+            "label": "Porto metro",
+            "value": 10.13,
+            "show": "€10.13"
+          },
+          {
+            "label": "Portugal",
+            "value": 9.46,
+            "show": "€9.46"
+          }
+        ],
+        "src": "INE rents, Q1 2026, via Access Portugal [S11]"
+      }
+    ],
+    "sowhat": "Two readings of margin. A sector study puts restaurant net margin at **3.0%**, against 8.2% for the economy. The central bank governor calls margins near pre-pandemic levels, with 4,991 hospitality firms opened against 1,307 exits in 2025. Both agree real sales fell: turnover rose 2.9% while prices rose 6%. Plan for the thin case. [S3, S13]"
+  },
+  "rising": {
+    "headline": "Burger and chicken grow through a few big operators; most other categories are standing still",
+    "intro": "A Rising or Falling call needs two independent signals. Neutral means we found no count change, entry or exit worth calling. Not found means no data. Local category: the padaria-café chain.",
+    "rows": [
+      {
+        "cat": "Chicken",
+        "dir": "Rising",
+        "evidence": "KFC: 81 sites (May 2026), from about 56 at end 2022 (Estimate, back-counted from openings). One operator since 1996, now opening in smaller towns. Popeyes has missed two planned entries; no Wingstop.",
+        "src": "S14, S15, S16, S17, S18, S19",
+        "window": "end 2022 → May 2026",
+        "conf": "Medium",
+        "sat": "Medium",
+        "entry": "Medium"
+      },
+      {
+        "cat": "Burger",
+        "dir": "Rising",
+        "evidence": "Burger King 164 → 185 → 213 sites (Sep 2022 to Nov 2025), now under Restaurant Brands Iberia. McDonald’s 200 → 220 (2024 to Dec 2025), 92% franchised. Five Guys promised 2025; not open.",
+        "src": "S20, S21, S22, S23, S24, S25, S26, S27",
+        "window": "Sep 2022 → Dec 2025",
+        "conf": "High",
+        "sat": "High",
+        "entry": "High"
+      },
+      {
+        "cat": "Pizza",
+        "dir": "Neutral",
+        "evidence": "Sites are moving between chains. Domino’s has 66 stores and adds about 5 a year (company claim). Telepizza fell 143 → 133 and Little Caesars 4 → 1. Pizza Hut 108 → 110. Little net change across the four.",
+        "src": "S14, S16, S27, S28, S29, S30",
+        "window": "Jun 2021 → Sep 2026",
+        "conf": "Medium",
+        "sat": "High",
+        "entry": "Medium"
+      },
+      {
+        "cat": "Kebab / grill",
+        "dir": "Neutral",
+        "evidence": "No entries, exits or deals found. Ali Baba Kebab Haus: 19 sites on its locator (we counted, 28 Oct 2026; the brand claims 21). Al Sultão claims 12 (2018 page). KFC added a kebab range in 2026.",
+        "src": "S31, S32, S33",
+        "window": "Oct 2026 snapshot",
+        "conf": "Thin",
+        "sat": "Low",
+        "entry": "Low"
+      },
+      {
+        "cat": "Coffee",
+        "dir": "Neutral",
+        "evidence": "Starbucks 30 → 33 stores in 20 months (Jul 2024 to Mar 2026). Delta franchises 12 stores and says half of coffee is now drunk at home. Pret has one Lisbon shop. Costa and Caffè Nero: absent.",
+        "src": "S34, S35, S36, S37",
+        "window": "Jul 2024 → Mar 2026",
+        "conf": "Medium",
+        "sat": "High",
+        "entry": "Medium"
+      },
+      {
+        "cat": "Bakery / dessert",
+        "sub": "padaria chains are on the local row",
+        "dir": "Not found",
+        "evidence": "No dated count for any dessert or ice-cream chain (Llaollao, Santini, Natas searched). The association lists 39 café and ice-cream brands, without unit counts.",
+        "src": "S4",
+        "window": "Oct 2025",
+        "conf": "Thin",
+        "sat": "Not found",
+        "entry": "Not found"
+      },
+      {
+        "cat": "Bubble tea",
+        "dir": "Neutral",
+        "evidence": "Gong Cha opened 3 shops through a master franchisee (Dec 2022 to Apr 2023). We found no openings reported since then, and no other chain.",
+        "src": "S38, S39",
+        "window": "Dec 2022 → Apr 2023",
+        "conf": "Thin",
+        "sat": "Low",
+        "entry": "Low"
+      },
+      {
+        "cat": "Fast casual",
+        "dir": "Neutral",
+        "evidence": "Deals signed, few openings. Pret: 70-site Iberian deal (2022), one Lisbon shop (2024). Pomodoro: 20-site deal (2021), current count Not found. Five Guys not open. Telepizza is testing Grab&Go in Lisbon.",
+        "src": "S27, S28, S37, S40",
+        "window": "Oct 2021 → Sep 2026",
+        "conf": "Thin",
+        "sat": "Low",
+        "entry": "Medium"
+      },
+      {
+        "cat": "Plant-based",
+        "dir": "Not found",
+        "evidence": "No chain found, only independents. Counts, entries and exits: Not found.",
+        "src": "—",
+        "window": "—",
+        "conf": "Thin",
+        "sat": "Not found",
+        "entry": "Not found"
+      },
+      {
+        "cat": "Bakery-café (padaria)",
+        "sub": "local category",
+        "dir": "Rising",
+        "evidence": "A Padaria Portuguesa: 84 shops (Aug 2025), 78 in Greater Lisbon. Plans 120 by 2028 (company claim). Put up for sale, then agreed to Spain’s Rodilla in Aug 2025. One chain, so Thin.",
+        "src": "S41, S42, S43",
+        "window": "Oct 2024 → Aug 2025",
+        "conf": "Thin",
+        "sat": "Medium",
+        "entry": "Medium"
+      }
+    ],
+    "chart": {
+      "title": "Net change in sites between two dated counts",
+      "note": "Plain number of sites gained or lost. KFC’s starting count is an Estimate.",
+      "items": [
+        {
+          "label": "Burger King",
+          "sub": "164 → 213 · Sep 22–Nov 25",
+          "delta": 49
+        },
+        {
+          "label": "KFC",
+          "sub": "56 → 81 · end 22–May 26",
+          "delta": 25
+        },
+        {
+          "label": "McDonald’s",
+          "sub": "200 → 220 · 2024–Dec 25",
+          "delta": 20
+        },
+        {
+          "label": "Starbucks",
+          "sub": "30 → 33 · Jul 24–Mar 26",
+          "delta": 3
+        },
+        {
+          "label": "Pizza Hut",
+          "sub": "108 → 110 · 2023–Dec 25",
+          "delta": 2
+        },
+        {
+          "label": "Little Caesars",
+          "sub": "4 → 1 · mid 24–Apr 26",
+          "delta": -3
+        },
+        {
+          "label": "Telepizza",
+          "sub": "143 → 133 · Jun 21–Sep 26",
+          "delta": -10
+        }
+      ],
+      "source": "Sources: Burger King [S20, S22]; KFC [S14, S15, S16] (start is an Estimate); McDonald’s [S23, S24]; Starbucks [S34, S35]; Pizza Hut [S14, S16]; Little Caesars [S27]; Telepizza [S28, S29]."
+    },
+    "reading": {
+      "title": "What it means",
+      "paras": [
+        "**Burger is growing and taken.** Burger King added 49 sites in three years and McDonald’s 20, through two large operators. [S20, S22, S23, S24]",
+        "**Chicken has one scaled player.** KFC runs 81 sites through one operator; Popeyes has missed two planned entries. [S14, S19]",
+        "**Pizza is reshuffling, not growing.** Domino’s gains are offset by Telepizza and Little Caesars losses. [S27, S28, S29, S30]"
+      ]
+    }
+  },
+  "white": {
+    "headline": "The open ground: a second chicken brand, bakery-café beyond Lisbon, fast casual through a local operator",
+    "intro": "Three gaps and one small test. Every entry we traced came through a local partner, and each of these will need one too.",
+    "gaps": [
+      {
+        "title": "A second chicken brand",
+        "gap": "KFC is the only chicken chain at scale, and its nearest rival has not arrived.",
+        "evidence": "KFC 81 sites (May 2026), up about 25 since end 2022 (Estimate). Popeyes missed 2022 and 2025. No Wingstop. [S14, S19]",
+        "suits": "A chicken brand proven in two or more countries, with a simple kitchen and a takeaway menu.",
+        "route": "Master or area development with a Portuguese multi-brand operator.",
+        "size": "L",
+        "sizeText": "national roll-out, mainland first"
+      },
+      {
+        "title": "Bakery-café beyond Lisbon",
+        "gap": "The one scaled padaria chain is almost all in Greater Lisbon.",
+        "evidence": "A Padaria Portuguesa: 78 of 84 shops in Greater Lisbon, 6 in the north (Aug 2025); new Spanish owner. Porto-area rents run well below Lisbon’s. [S11, S41, S42]",
+        "suits": "A bakery-café brand with central production.",
+        "route": "Area developer for the north or the Centre.",
+        "size": "M",
+        "sizeText": "regional",
+        "thin": true
+      },
+      {
+        "title": "Fast casual through a local operator",
+        "gap": "Few international fast-casual brands are open, and promised arrivals have slipped.",
+        "evidence": "Pret has one Lisbon shop on a 70-site deal; Pomodoro signed for 20 in 2021; Five Guys has not opened. [S27, S37, S40]",
+        "suits": "A fast-casual brand proven in two or more markets.",
+        "route": "Franchise to a local multi-brand operator.",
+        "size": "M",
+        "sizeText": "Lisbon and Porto first",
+        "thin": true
+      },
+      {
+        "title": "A branded kebab and grill format",
+        "gap": "Only small domestic kebab chains, and the chicken leader is testing kebab.",
+        "evidence": "Ali Baba Kebab Haus 19 sites (our count); Al Sultão claims 12; KFC kebab range 2026. [S31, S32, S33]",
+        "suits": "A kebab or grill brand with a tight menu and low fit-out cost.",
+        "route": "Direct franchise or one area developer.",
+        "size": "S",
+        "sizeText": "test small in Greater Lisbon",
+        "thin": true
+      }
+    ],
+    "matrix": {
+      "intro": "Our assessment from the page 3 evidence. Judgement, not measurement.",
+      "note": "Bakery / dessert and plant-based are left off: Not found. Source: WRW Hospitality analysis of the page 3 evidence.",
+      "points": [
+        {
+          "name": "Burger",
+          "x": 88,
+          "y": 35
+        },
+        {
+          "name": "Pizza",
+          "x": 75,
+          "y": 30
+        },
+        {
+          "name": "Coffee",
+          "x": 65,
+          "y": 35
+        },
+        {
+          "name": "Chicken",
+          "x": 45,
+          "y": 75,
+          "hot": true
+        },
+        {
+          "name": "Bakery-café",
+          "x": 40,
+          "y": 65,
+          "hot": true
+        },
+        {
+          "name": "Fast casual",
+          "x": 30,
+          "y": 58
+        },
+        {
+          "name": "Kebab / grill",
+          "x": 25,
+          "y": 45
+        },
+        {
+          "name": "Bubble tea",
+          "x": 12,
+          "y": 25
+        }
+      ]
+    },
+    "position": {
+      "quote": "If I had a brand, I’d take chicken to Portugal’s smaller cities through one strong local operator, and I’d plan without a takeaway tax break.",
+      "paras": [
+        "Burger is crowded, pizza is reshuffling, and chicken has one scaled player. Wages are low, but every €100 of monthly pay costs about €146 once the two extra months and social security are in.",
+        "I’d pick the partner before the city. Every brand we traced came in through a local operator, and the best ones already carry several brands. I’d model the thin margin, not the stable one."
+      ]
+    }
+  },
+  "regulation": {
+    "headline": "No franchise law to clear; payroll and a 13% meal rate shape the numbers",
+    "intro": "No disclosure or registration duty. The costs sit in payroll and VAT, and the islands have their own rates. Not legal, tax or investment advice.",
+    "rows": [
+      {
+        "area": "Franchise law",
+        "text": "**No franchise law, no disclosure or registration.** General contract law applies, with a duty of good faith (Civil Code arts 227, 762). Courts sometimes apply agency termination and indemnity rules to franchisees, which can raise exit costs. No reform found (source from 2019).",
+        "src": "S44"
+      },
+      {
+        "area": "Trade mark",
+        "text": "INPI: €148.71 online for one class, €37.69 per extra class. EU trade mark: €850 for one class, €50 for the second, €150 each after; 10 years. **An EU mark covers Portugal;** a UK mark does not.",
+        "src": "S45, S46, S47"
+      },
+      {
+        "area": "Food safety",
+        "text": "Notify each site for registration and run HACCP (EU Reg. 852/2004); ASAE inspects (Thin: page not opened). Most premises licences are now a simple prior notice. **Check municipal land use first.**",
+        "src": "S48"
+      },
+      {
+        "area": "Alcohol",
+        "text": "A separate restaurant alcohol licence: Not found either way. **Alcohol and soft drinks served are outside the 13% meal rate** and pay 23% on the mainland.",
+        "src": "S49"
+      },
+      {
+        "area": "Halal and supply",
+        "text": "Halal certification bodies, slaughter rules and import quotas: Not found in a primary source.",
+        "src": "—"
+      },
+      {
+        "area": "Tax",
+        "text": "VAT 13% on meals eaten in, taken away or delivered, so **takeaway has no VAT edge**; drinks served 23%. Madeira 12% and 22%, Azores 9% and 16%. Corporate tax 19% mainland in 2026 (15% on an SME’s first €50,000), 13% on the islands, plus surtaxes. Royalties: 25% domestic, 5% under the UK treaty; new treaty from 1 Jan 2026 (Thin).",
+        "src": "S49, S50, S51, S52, S53, S54, S55"
+      },
+      {
+        "area": "Company set-up",
+        "text": "Form a Lda or SA online for €220 (standard articles) or €360 (custom). Foreign partners need a Portuguese tax number. Register beneficial owners within 30 days. Director residency rules: Not found.",
+        "src": "S56"
+      }
+    ],
+    "tiles": [
+      {
+        "label": "VAT on a meal",
+        "big": "13%",
+        "body": "Eaten in or taken away, mainland. Drinks served 23%. Madeira 12%, Azores 9%.",
+        "src": "S49, S50"
+      },
+      {
+        "label": "Corporate tax",
+        "big": "19%",
+        "body": "Mainland 2026; 15% on an SME’s first €50,000. Islands 13%.",
+        "src": "S52"
+      },
+      {
+        "label": "Royalty withholding",
+        "big": "5%",
+        "body": "Under the UK treaty, against 25% domestic. 0% within the EU.",
+        "src": "S53, S54"
+      }
+    ],
+    "wage": {
+      "title": "The wage engine",
+      "sub": "What every €100 of monthly base pay costs the employer",
+      "parts": [
+        {
+          "label": "Base pay 100.00",
+          "value": 100,
+          "short": "Pay"
+        },
+        {
+          "label": "Holiday and Christmas pay 16.67",
+          "value": 16.67,
+          "short": "13th, 14th"
+        },
+        {
+          "label": "Employer social security 27.71",
+          "value": 27.71,
+          "short": "TSU"
+        },
+        {
+          "label": "Work-accident insurance 1.17",
+          "value": 1.17,
+          "short": "Insurance"
+        }
+      ],
+      "total": "€145.55",
+      "method": "Pay comes in 14 instalments: 12 months plus holiday and Christmas pay. Employer social security is 23.75% on all of it, uncapped. Accident insurance uses a 1% average (restaurant premium Not found). Guarantee-fund charge suspended to 31 Dec 2026. Excludes meal subsidy, overtime and shifts. [S57, S58]",
+      "floorPre": "€",
+      "floor": "5.31",
+      "floorNote": "Per hour, lowest grade of the restaurant agreement (€920 a month, the national minimum), on a 40-hour week (assumed). Azores €966, Madeira €980. The 2026 table ends 31 Dec 2026, so pay talks fall in your first year. [S59, S60, S61, S62, S63]",
+      "allIn": "£6.47",
+      "allInNote": "**ESTIMATE** €5.31 × 1.4555 ≈ €7.73 an hour, at €1 = £0.83658 on 27 Oct 2026. [S8, S58]"
+    },
+    "advice": "Not legal, tax or investment advice. Check each rule with a Portuguese lawyer and tax adviser before you sign."
+  },
+  "route": {
+    "headline": "Every brand we traced came in through a local operator, a master franchisee or an acquisition",
+    "intro": "Direct entry by an overseas franchisor: none found. The short list of operators is the real gate. Each route is scored 1 to 3: 3 is the most control kept, the most capital put in, or the fastest to open.",
+    "routes": [
+      {
+        "name": "Master franchise",
+        "control": 1,
+        "capital": 1,
+        "speed": 3,
+        "seen": "Restaurant Brands Iberia holds Burger King, Tim Hortons and Popeyes for Portugal and Spain; in 2022 it bought Ibersol’s 121 Portuguese Burger Kings (158 in Iberia, €260m). Gong Cha came in via an individual master franchisee. [S20, S26, S39]"
+      },
+      {
+        "name": "Area development with a multi-brand operator",
+        "control": 2,
+        "capital": 1,
+        "speed": 2,
+        "seen": "Ibersol runs KFC (81) and Pizza Hut (110) and signed Pret for 70 Iberian sites. Pomodoro signed Grupo Novacasta for 20 sites in 2021. [S14, S15, S37, S40]"
+      },
+      {
+        "name": "Direct franchise",
+        "control": 2,
+        "capital": 2,
+        "speed": 2,
+        "seen": "Domino’s opened company-owned in 2015, then franchised: 66 stores. McDonald’s franchises 92% of 220. Delta franchises 12 stores. [S25, S30, S36]"
+      },
+      {
+        "name": "Company-owned or acquisition",
+        "control": 3,
+        "capital": 3,
+        "speed": 1,
+        "seen": "Rodilla agreed to buy A Padaria Portuguesa (84 shops) in Aug 2025. Starbucks (33) is run by Alsea. [S34, S41]"
+      }
+    ],
+    "fits": [
+      {
+        "label": "Under 25 units",
+        "title": "Find one local operator",
+        "body": "Without an overseas record, go through a Portuguese multi-brand operator that knows the pay tables, landlords and supply."
+      },
+      {
+        "label": "Proven in 2+ countries",
+        "title": "Area development, region by region",
+        "body": "Sign one region first. Burger King is still adding in Porto and Aveiro, and KFC in interior towns."
+      },
+      {
+        "label": "Regional group",
+        "title": "One Iberian partner",
+        "body": "Burger King, Telepizza and the padaria buyer treat Portugal and Spain as one market. Back a partner who can take both."
+      }
+    ],
+    "riskTitle": "Six risks to price in",
+    "risks": [
+      {
+        "label": "Prices ahead of sales",
+        "body": "2025 turnover rose 2.9% while prices rose 6%, so real sales fell. Inflation 3.6% in Sep 2026.",
+        "src": "S7, S13"
+      },
+      {
+        "label": "Insolvencies",
+        "body": "Restaurant insolvencies up 23% in Jan to Jul 2026, while closures across the economy fell 8.6%.",
+        "src": "S64"
+      },
+      {
+        "label": "Thin margins",
+        "body": "Sector study: 3.0% net margin, 71% of balance sheets on debt at 4.5%. The central bank says margins are stable. Plan for thin.",
+        "src": "S3, S13"
+      },
+      {
+        "label": "Wage rises",
+        "body": "Minimum wage up 5.7% to €920 in 2026; hospitality pay per worker up about 6% in 2025. The agreement ends 31 Dec 2026.",
+        "src": "S13, S59, S60, S63"
+      },
+      {
+        "label": "Few partners",
+        "body": "RBI runs about 90% of Burger King; Ibersol holds KFC, Pizza Hut and Pret. The best operators may already carry a rival.",
+        "src": "S15, S26"
+      },
+      {
+        "label": "Rates and support",
+        "body": "ECB deposit rate raised twice in 2026, to 2.50%. A Jan 2026 restaurant support package was still unpaid at 20 Apr; later status Not found.",
+        "src": "S9, S13"
+      }
+    ]
+  },
+  "days": {
+    "headline": "The first 90 days: price the payroll, pick the partner, then the region",
+    "moves": [
+      "**Clear the brand:** EU trade mark (€850) or INPI (€148.71).",
+      "**Rebuild the unit P&L** on 14 pay instalments: about €146 per €100 of monthly pay.",
+      "**Price at 13% VAT** on meals either way, 23% on drinks served.",
+      "**Model the thin case:** a 3.0% net margin.",
+      "**Shortlist 3 to 5 Portuguese or Iberian multi-brand operators.**",
+      "**Check each partner’s brands** for rivals before the first call.",
+      "**Pick a first region:** Greater Lisbon, the Porto area or interior towns.",
+      "**Walk the sites:** Lisbon against Porto rents and footfall.",
+      "**Take tax advice** on royalties (5% under the UK treaty) and the initial fee.",
+      "**Set up the company** online (from €220) and plan for the 2027 pay round."
+    ],
+    "check": [
+      "Is your category Rising on two signals, or Thin?",
+      "Does the P&L hold at €146 per €100 of pay and 13% VAT?",
+      "Does your partner already run a rival?",
+      "Have you modelled falling real sales?",
+      "Has a Portuguese lawyer checked the contract and royalty route?"
+    ],
+    "method": "Public sources only, read 28 Oct 2026. Every figure is dated and coded to the list below. Rising or Falling needs two independent signals; Neutral means no count change, entry or exit worth calling; Thin means one signal. Estimates state their method; missing data reads Not found. Unit counts are company reports, press or brand claims, except one locator count we made (Ali Baba Kebab Haus, 28 Oct 2026). Sources marked Thin were not opened. Sterling at the ECB rate of 27 Oct 2026. Not legal, tax or investment advice.",
+    "sources": [
+      "S1 INE, INEWS no. 66, resident population at 31 Dec 2025, Jul 2026",
+      "S2 RTP/Lusa, INE confirms the economy grew 1.9% in 2025 (preliminary annual national accounts), 27 Feb 2026",
+      "S3 RTP/Lusa, EY-Parthenon study for AHRESP: restaurants 7.6% of GDP and 523,000 jobs in 2025, 1 Oct 2026",
+      "S4 Lusa via AMAN Alliance, APF franchising figures ahead of Expofranchise, 1 Oct 2025",
+      "S5 Forbes Portugal, Expofranchise 2025: Portugal leads Europe in franchising, Oct 2025",
+      "S6 AICEP Portugal Global, Banco de Portugal forecasts 2.3% growth in 2026 (Boletim Económico), 7 Oct 2026",
+      "S7 HR Portugal/Lusa, INE flash estimate: inflation 3.6% in September, 1 Oct 2026",
+      "S8 ECB, euro reference exchange rate, pound sterling, 27 Oct 2026",
+      "S9 ECB, Key ECB interest rates, accessed 28 Oct 2026",
+      "S10 ECB, Meetings of the Governing Council calendar, accessed 28 Oct 2026",
+      "S11 Access Portugal, Portugal’s cost of living compared to Europe (Eurostat 2024 price levels; INE Q1 2026 rents), 19 Sep 2026",
+      "S12 ECO, Tourism slowed in 2025: 29.9m tourists (INE Tourism Statistics 2025), 9 Jul 2026",
+      "S13 Observador, Banco de Portugal governor questions restaurant crisis; AHRESP replies, 20 Apr 2026",
+      "S14 ECO, Ibersol pays €6m for KFC restaurants in Galicia (81 KFC and 110 Pizza Hut in Portugal), 14 May 2026",
+      "S15 Ibersol, Annual Report 2024",
+      "S16 Ibersol, Annual Report 2023",
+      "S17 Ibersol, Annual Report 2022",
+      "S18 Echo Boomer, KFC opens in Castelo Branco, 28 Oct 2025",
+      "S19 Echo Boomer, Popeyes misses its promise and does not reach Portugal in 2025, 26 Dec 2025",
+      "S20 Lusa via Notícias ao Minuto, Competition Authority clears Burger King sale, 8 Sep 2022",
+      "S21 Echo Boomer, Burger King opens at Parque das Nações, 22 Dec 2023",
+      "S22 Grande Consumo, Burger King opens three restaurants (213 in Portugal), 28 Nov 2025",
+      "S23 McDonald’s Portugal, press release on the 200-restaurant initiative, 2024 (undated)",
+      "S24 Echo Boomer, McDonald’s opens restaurant 220 in Mealhada, 22 Dec 2025",
+      "S25 AICEP Portugal Global, McDonald’s Portugal contributed €777m to GDP in 2025 (Oxford Economics), 27 Jul 2026",
+      "S26 Forbes Portugal, RB Iberia completes purchase of Ibersol’s 158 Burger King restaurants for €260m, 3 Aug 2022",
+      "S27 Echo Boomer, Little Caesars almost disappears from Portugal, 7 Apr 2026",
+      "S28 Echo Boomer, Telepizza opens first Grab&Go shop in Lisbon, 14 Sep 2026",
+      "S29 Echo Boomer, Telepizza opens in Santo Tirso and Taveiro, 17 Jun 2021",
+      "S30 AICEP Portugal Global / Jornal Económico, Domino’s plans six to ten openings this year, 12 Aug 2026",
+      "S31 Ali Baba Kebab Haus, Onde Estamos store locator, counted 28 Oct 2026; homepage claim of 21",
+      "S32 Doner Kebab Al Sultão, Franchising page, undated (last edited 2018)",
+      "S33 BestFranchising, KFC launches kebab range, undated (2026)",
+      "S34 Echo Boomer, Starbucks opens at NorteShopping, 31 Mar 2026; HR Portugal, 7 Apr 2026",
+      "S35 Echo Boomer, Starbucks reaches 30 stores at Vila do Conde, Jul 2024",
+      "S36 ECO, Delta Cafés: half of coffee is drunk at home, 22 Feb 2026",
+      "S37 World Coffee Portal, Pret A Manger makes Portugal debut with Lisbon outlet, 25 Oct 2024",
+      "S38 Echo Boomer, Gong Cha opens third shop in Portugal, 21 Apr 2023",
+      "S39 World Coffee Portal, Gong Cha launches in Portugal, 5 Jan 2023",
+      "S40 Alimarket, Pomodoro signs Grupo Novacasta for 20 sites in Portugal, 14 Oct 2021",
+      "S41 Time Out Lisboa, Spain’s Rodilla buys A Padaria Portuguesa, 5 Aug 2025",
+      "S42 ECO, A Padaria Portuguesa to open 40 shops by 2028, 28 Oct 2024",
+      "S43 Time Out Lisboa, A Padaria Portuguesa is for sale, undated",
+      "S44 SRS Legal, Franchising in Portugal (Lexology), 24 Jun 2019",
+      "S45 INPI, Industrial property fees (Deliberação 429/2025), from 1 Jul 2025",
+      "S46 EUIPO, Fees and payments, accessed 28 Oct 2026",
+      "S47 EUIPO, Trade Mark Guidelines, territorial aspects, current edition",
+      "S48 ASAE, HACCP system FAQ, accessed 28 Oct 2026 (not opened, Thin)",
+      "S49 AT Portal das Finanças, VAT Code Lists I and II, viewed 28 Oct 2026",
+      "S50 AT, Sistema Fiscal Português: Taxas aplicáveis 2025",
+      "S51 AT Portal das Finanças, VAT Code art. 18 (as amended by Decree-Law 33/2025), viewed 28 Oct 2026",
+      "S52 PwC Worldwide Tax Summaries, Portugal: taxes on corporate income, reviewed 24 Jul 2026",
+      "S53 PwC Worldwide Tax Summaries, Portugal: withholding taxes, reviewed 24 Jul 2026",
+      "S54 HMRC, Double Taxation Relief Manual DT15602, Portugal, updated 4 Aug 2026",
+      "S55 EY Tax News, Portugal’s new convention with the UK ratified, 21 Jan 2026 (not opened, Thin)",
+      "S56 Justiça, Empresa 2.0 online company creation, accessed 28 Oct 2026",
+      "S57 simula.pt, Social security contributions 2026, accessed 28 Oct 2026",
+      "S58 simula.pt, Employee cost simulator 2026, accessed 28 Oct 2026",
+      "S59 APCMC, National minimum wage for 2026 set at €920, 29 Dec 2025",
+      "S60 SITESE, AHRESP restaurants and drinks pay table 2026, 24 Feb 2026",
+      "S61 AHRESP, Information on the AHRESP-SITESE collective agreements 2026, 23 Dec 2025",
+      "S62 WageIndicator, Portugal: revised collective agreements for restaurants and hotels, 31 Dec 2025",
+      "S63 Pérez-Llorca, Employment Flash News 01/2026, Feb 2026",
+      "S64 HR Portugal, Informa D&B barometer: closures fell, insolvencies rose to July, 10 Aug 2026"
+    ]
+  }
+}

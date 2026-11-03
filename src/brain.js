@@ -8,6 +8,7 @@
 import * as THREE from 'three';
 import { BRAIN as BRAIN0 } from './braingraph.js';
 import { PROFILE } from './profile.js';
+import { initBrainMap } from './brainmap.js';
 const BRAIN = (PROFILE && PROFILE.graph && PROFILE.graph.nodes && PROFILE.graph.nodes.length) ? PROFILE.graph : BRAIN0; // INDUSTRY PROFILE: the demo company's own graph
 import { AGENTS } from './data.js';
 
@@ -229,7 +230,8 @@ export function initBrain({ scene, brainGroup, getR, esc, hud, toScreen, getCame
   const bcv = document.getElementById('bvCv'); const bctx = bcv.getContext('2d');
   const search = document.getElementById('bvSearch'); const chipsEl = document.getElementById('bvChips');
   const pane = document.getElementById('bvPane'); const meta = document.getElementById('bvMeta');
-  let openNow = false, k = 1.2, tx = 0, ty = 0, hover = null, sel = null, drag = null, match = null, freshOnly = false;
+  let openNow = false, k = 1.2, tx = 0, ty = 0, hover = null, sel = null, drag = null, match = null, freshOnly = false, mapMode = false;
+  const map = initBrainMap({ ov, canvas: bcv, search, chipsEl, pane, meta, esc }); // the live strand map (needs the office running); the old graph below stays for the demo page
   const groups = [...new Set(nodes.map(n => n.g))].sort();
   const on = new Set(groups);
   function chips() {
@@ -237,25 +239,28 @@ export function initBrain({ scene, brainGroup, getR, esc, hud, toScreen, getCame
       `<button class="bv-chip live${freshOnly ? ' on' : ''}" data-g="__fresh">New today · ${state.newToday}</button>`;
   }
   chipsEl.addEventListener('click', e => {
+    if (mapMode) return;
     const b = e.target.closest('.bv-chip'); if (!b) return;
     if (b.dataset.g === '__fresh') freshOnly = !freshOnly; else on.has(b.dataset.g) ? on.delete(b.dataset.g) : on.add(b.dataset.g);
     chips();
   });
-  search.addEventListener('input', () => { const q = search.value.trim().toLowerCase(); match = q ? new Set(nodes.filter(n => n.id.toLowerCase().includes(q)).map(n => n.i)) : null; });
+  search.addEventListener('input', () => { if (mapMode) return; const q = search.value.trim().toLowerCase(); match = q ? new Set(nodes.filter(n => n.id.toLowerCase().includes(q)).map(n => n.i)) : null; });
   search.addEventListener('keydown', e => { e.stopPropagation(); if (e.key === 'Escape') { search.value = ''; match = null; search.blur(); } });
   const visible = n => on.has(n.g) && (!freshOnly || n.fresh);
   function S() { return Math.min(bcv.clientWidth, bcv.clientHeight) * 0.44 * k; }
   function sx(n) { return bcv.clientWidth * 0.42 + n.x * S() + tx; }
   function sy(n) { return bcv.clientHeight * 0.5 + n.y * S() + ty; }
   bcv.addEventListener('mousemove', e => {
+    if (mapMode) return;
     if (drag) { tx += e.clientX - drag.x; ty += e.clientY - drag.y; drag = { x: e.clientX, y: e.clientY }; drag.moved = true; return; }
     let best = null, bd = 12;
     for (const n of nodes) { if (!visible(n)) continue; const d = Math.hypot(sx(n) - e.clientX, sy(n) - e.clientY); if (d < bd) { bd = d; best = n; } }
     hover = best; bcv.style.cursor = best ? 'pointer' : 'grab';
   });
-  bcv.addEventListener('mousedown', e => { drag = { x: e.clientX, y: e.clientY, moved: false }; });
-  addEventListener('mouseup', e => { if (!drag) return; const moved = drag.moved; drag = null; if (!moved && hover && openNow) select(hover); });
+  bcv.addEventListener('mousedown', e => { if (mapMode) return; drag = { x: e.clientX, y: e.clientY, moved: false }; });
+  addEventListener('mouseup', e => { if (mapMode || !drag) return; const moved = drag.moved; drag = null; if (!moved && hover && openNow) select(hover); });
   bcv.addEventListener('wheel', e => {
+    if (mapMode) return;
     e.preventDefault(); e.stopPropagation();
     const f = Math.exp(-e.deltaY * 0.0025); const nk = Math.max(0.5, Math.min(7, k * f)); const r = nk / k;
     const cx = bcv.clientWidth * 0.42, cy = bcv.clientHeight * 0.5;
@@ -303,14 +308,16 @@ export function initBrain({ scene, brainGroup, getR, esc, hud, toScreen, getCame
   }
   let owner = PROFILE && PROFILE.company ? String(PROFILE.company).toUpperCase() : 'YOUR NOTES'; // V3.1: the business name when served (was hard-coded to one company); INDUSTRY PROFILE: the demo company
   function setOwner(name) { owner = String(name || 'YOUR NOTES').toUpperCase(); if (openNow) meta.textContent = `${owner} · ${state.notes.toLocaleString('en-NZ')} NOTES · ${links.length} LINKS`; }
-  function open() {
+  async function open() {
     if (openNow) return;
     openNow = true; ov.classList.add('on'); document.body.classList.add('brainOpen');
+    if (location.protocol !== 'file:' && await map.open()) { mapMode = true; return; } // the live strand map
+    mapMode = false;
     meta.textContent = `${owner} · ${state.notes.toLocaleString('en-NZ')} NOTES · ${links.length} LINKS`;
     chips(); if (!sel) pane.innerHTML = '<div class="bv-empty">Click a note to read it. Hover to see its neighbours.</div>';
     requestAnimationFrame(draw);
   }
-  function close() { if (!openNow) return; openNow = false; ov.classList.remove('on'); document.body.classList.remove('brainOpen'); }
+  function close() { if (!openNow) return; openNow = false; map.close(); mapMode = false; ov.classList.remove('on'); document.body.classList.remove('brainOpen'); }
   function toggle() { openNow ? close() : open(); }
   document.getElementById('bvClose').addEventListener('click', close);
   addEventListener('resize', () => { if (openNow) draw(); });

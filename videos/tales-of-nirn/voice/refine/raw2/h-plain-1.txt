@@ -1,0 +1,14 @@
+HTTP/1.1 100 Continue
+
+HTTP/1.1 200 OK
+date: Mon, 02 Nov 2026 14:55:08 GMT
+server: uvicorn
+x-audio-id: fc2bb051
+x-gen-time: 9.61
+x-audio-path: fc2bb051.wav
+x-seed: 53
+x-audio-duration: 8.48
+content-length: 814124
+content-type: audio/wav
+x-omnivoice-backend: 0.5.6
+

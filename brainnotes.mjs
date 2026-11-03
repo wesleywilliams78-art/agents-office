@@ -10,10 +10,11 @@ export const INSTRUCTIONS = 'BRAIN NOTES\n' +
   'You cannot edit notes yourself. When the task is to record, file, correct or maintain something in a Brain note (an existing one or a new one), end your result with one block per note, exactly like this:\n' +
   'BRAIN UPDATE\nnote: <folder/name.md>\nmode: append | replace-section | create\nsection: <the exact heading to replace; replace-section only>\nreason: <one line>\n---\n<the markdown to file>\nEND BRAIN UPDATE\n' +
   'The owner sees it on the review card and it is filed only when he approves, so never say it has been filed. append adds to the end of a note, replace-section rewrites the content under one heading (leave the heading out of your text), create makes a note that does not exist yet. ' +
+  'One task may change up to 3 different notes and up to 12 sections in all (for example every day of a week in one note, one block per day). Anything beyond that is refused, so if you need more, finish what fits and say plainly what is left. ' +
   'Check the note first and only file what is new: an update already in the note is refused. Keep each one short and factual, in the note\'s own style. Never include passwords, API keys, card numbers or bank sort codes and account numbers.';
 
 const MODES = ['append', 'replace-section', 'create'];
-const MAX_BODY = 20000, MAX_PER_TASK = 3;
+const MAX_BODY = 20000, MAX_PER_TASK = 3, MAX_UPDATES = 12; // different notes per task, and updates in all
 
 export function parse(text) {
   const t = String(text || '').replace(/```[a-z]*[ \t]*\r?\n(?=[ \t]*BRAIN UPDATE)/g, '').replace(/(END BRAIN UPDATE)[ \t]*\r?\n[ \t]*```/g, '$1');
@@ -69,6 +70,7 @@ export function plan(brain, b, { deny = [] } = {}) {
   r.rel = n; r.abs = abs;
   const exists = fs.existsSync(abs);
   if (b.mode === 'create' && exists) return fail('that note already exists: use append or replace-section');
+  if (b.mode === 'append' && !exists) { b.mode = 'create'; r.mode = 'create'; } // appending to a note that is not there yet starts the note
   if (b.mode !== 'create' && !exists) return fail('no such note: use create');
   if (exists) {
     const text = fs.readFileSync(abs, 'utf8');
@@ -83,7 +85,17 @@ export function plan(brain, b, { deny = [] } = {}) {
   r.ok = true; return r;
 }
 
-export function planAll(brain, blocks, opts) { return blocks.map((b, i) => i >= MAX_PER_TASK ? { note: b.note, mode: b.mode, ok: false, problem: `only ${MAX_PER_TASK} updates per task` } : plan(brain, b, opts)); }
+// A task may change up to MAX_PER_TASK different notes and up to MAX_UPDATES sections in all. The limit used to be three updates in total, so a week of
+// day-by-day sections in one note (five updates) silently lost the last two, and the follow-up tasks re-did it in a loop.
+export function planAll(brain, blocks, opts) {
+  const notes = new Set();
+  return blocks.map((b, i) => {
+    const key = String(b.note || '').trim().toLowerCase();
+    if (i >= MAX_UPDATES) return { note: b.note, mode: b.mode, ok: false, problem: `only ${MAX_UPDATES} updates per task` };
+    if (!notes.has(key) && notes.size >= MAX_PER_TASK) return { note: b.note, mode: b.mode, ok: false, problem: `only ${MAX_PER_TASK} different notes per task` };
+    notes.add(key); return plan(brain, b, opts);
+  });
+}
 
 function spliceSection(text, section, body) {
   const lines = text.split(/\r?\n/);

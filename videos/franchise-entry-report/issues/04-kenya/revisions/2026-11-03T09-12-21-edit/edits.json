@@ -1,0 +1,312 @@
+{
+ "issue": "04-kenya",
+ "why": "Kenya fix pass: route control/capital dots empty, doubled S-numbers in the source list, overlapping matrix labels",
+ "base": "videos/franchise-entry-report/issues/04-kenya/issue.json",
+ "at": "2026-11-03T09:12:21.972Z",
+ "edits": [
+  {
+   "path": "route.routes.0.control",
+   "value": 1,
+   "change_type": true
+  },
+  {
+   "path": "route.routes.0.capital",
+   "value": 1,
+   "change_type": true
+  },
+  {
+   "path": "route.routes.1.control",
+   "value": 2,
+   "change_type": true
+  },
+  {
+   "path": "route.routes.1.capital",
+   "value": 2,
+   "change_type": true
+  },
+  {
+   "path": "route.routes.2.control",
+   "value": 2,
+   "change_type": true
+  },
+  {
+   "path": "route.routes.2.capital",
+   "value": 1,
+   "change_type": true
+  },
+  {
+   "path": "route.routes.3.control",
+   "value": 3,
+   "change_type": true
+  },
+  {
+   "path": "route.routes.3.capital",
+   "value": 3,
+   "change_type": true
+  },
+  {
+   "path": "white.matrix.points.5.y",
+   "value": 33
+  },
+  {
+   "path": "days.sources.0",
+   "find": "S1 ",
+   "replace": ""
+  },
+  {
+   "path": "days.sources.1",
+   "find": "S2 ",
+   "replace": ""
+  },
+  {
+   "path": "days.sources.2",
+   "find": "S3 ",
+   "replace": ""
+  },
+  {
+   "path": "days.sources.3",
+   "find": "S4 ",
+   "replace": ""
+  },
+  {
+   "path": "days.sources.4",
+   "find": "S5 ",
+   "replace": ""
+  },
+  {
+   "path": "days.sources.5",
+   "find": "S6 ",
+   "replace": ""
+  },
+  {
+   "path": "days.sources.6",
+   "find": "S7 ",
+   "replace": ""
+  },
+  {
+   "path": "days.sources.7",
+   "find": "S8 ",
+   "replace": ""
+  },
+  {
+   "path": "days.sources.8",
+   "find": "S9 ",
+   "replace": ""
+  },
+  {
+   "path": "days.sources.9",
+   "find": "S10 ",
+   "replace": ""
+  },
+  {
+   "path": "days.sources.10",
+   "find": "S11 ",
+   "replace": ""
+  },
+  {
+   "path": "days.sources.11",
+   "find": "S12 ",
+   "replace": ""
+  },
+  {
+   "path": "days.sources.12",
+   "find": "S13 ",
+   "replace": ""
+  },
+  {
+   "path": "days.sources.13",
+   "find": "S14 ",
+   "replace": ""
+  },
+  {
+   "path": "days.sources.14",
+   "find": "S15 ",
+   "replace": ""
+  },
+  {
+   "path": "days.sources.15",
+   "find": "S16 ",
+   "replace": ""
+  },
+  {
+   "path": "days.sources.16",
+   "find": "S17 ",
+   "replace": ""
+  },
+  {
+   "path": "days.sources.17",
+   "find": "S18 ",
+   "replace": ""
+  },
+  {
+   "path": "days.sources.18",
+   "find": "S19 ",
+   "replace": ""
+  },
+  {
+   "path": "days.sources.19",
+   "find": "S20 ",
+   "replace": ""
+  },
+  {
+   "path": "days.sources.20",
+   "find": "S21 ",
+   "replace": ""
+  },
+  {
+   "path": "days.sources.21",
+   "find": "S22 ",
+   "replace": ""
+  },
+  {
+   "path": "days.sources.22",
+   "find": "S23 ",
+   "replace": ""
+  },
+  {
+   "path": "days.sources.23",
+   "find": "S24 ",
+   "replace": ""
+  },
+  {
+   "path": "days.sources.24",
+   "find": "S25 ",
+   "replace": ""
+  },
+  {
+   "path": "days.sources.25",
+   "find": "S26 ",
+   "replace": ""
+  },
+  {
+   "path": "days.sources.26",
+   "find": "S27 ",
+   "replace": ""
+  },
+  {
+   "path": "days.sources.27",
+   "find": "S28 ",
+   "replace": ""
+  },
+  {
+   "path": "days.sources.28",
+   "find": "S29 ",
+   "replace": ""
+  },
+  {
+   "path": "days.sources.29",
+   "find": "S30 ",
+   "replace": ""
+  },
+  {
+   "path": "days.sources.30",
+   "find": "S31 ",
+   "replace": ""
+  },
+  {
+   "path": "days.sources.31",
+   "find": "S32 ",
+   "replace": ""
+  },
+  {
+   "path": "days.sources.32",
+   "find": "S33 ",
+   "replace": ""
+  },
+  {
+   "path": "days.sources.33",
+   "find": "S34 ",
+   "replace": ""
+  },
+  {
+   "path": "days.sources.34",
+   "find": "S35 ",
+   "replace": ""
+  },
+  {
+   "path": "days.sources.35",
+   "find": "S36 ",
+   "replace": ""
+  },
+  {
+   "path": "days.sources.36",
+   "find": "S37 ",
+   "replace": ""
+  },
+  {
+   "path": "days.sources.37",
+   "find": "S38 ",
+   "replace": ""
+  },
+  {
+   "path": "days.sources.38",
+   "find": "S39 ",
+   "replace": ""
+  },
+  {
+   "path": "days.sources.39",
+   "find": "S40 ",
+   "replace": ""
+  },
+  {
+   "path": "days.sources.40",
+   "find": "S41 ",
+   "replace": ""
+  },
+  {
+   "path": "days.sources.41",
+   "find": "S42 ",
+   "replace": ""
+  },
+  {
+   "path": "days.sources.42",
+   "find": "S43 ",
+   "replace": ""
+  },
+  {
+   "path": "days.sources.43",
+   "find": "S44 ",
+   "replace": ""
+  },
+  {
+   "path": "days.sources.44",
+   "find": "S45 ",
+   "replace": ""
+  },
+  {
+   "path": "days.sources.45",
+   "find": "S46 ",
+   "replace": ""
+  },
+  {
+   "path": "days.sources.46",
+   "find": "S47 ",
+   "replace": ""
+  },
+  {
+   "path": "days.sources.47",
+   "find": "S48 ",
+   "replace": ""
+  },
+  {
+   "path": "days.sources.48",
+   "find": "S49 ",
+   "replace": ""
+  },
+  {
+   "path": "days.sources.49",
+   "find": "S50 ",
+   "replace": ""
+  },
+  {
+   "path": "days.sources.50",
+   "find": "S51 ",
+   "replace": ""
+  },
+  {
+   "path": "days.sources.51",
+   "find": "S52 ",
+   "replace": ""
+  }
+ ]
+}

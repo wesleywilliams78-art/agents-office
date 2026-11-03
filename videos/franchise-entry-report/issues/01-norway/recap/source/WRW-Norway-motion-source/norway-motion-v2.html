@@ -1,0 +1,351 @@
+<!doctype html>
+<html lang="en-GB"><head><meta charset="utf-8">
+<title>Norway Franchise Entry Report: motion v2</title>
+<style>
+@font-face{font-family:Geist;src:url(assets/Geist-Regular.woff2) format("woff2");font-weight:400}
+@font-face{font-family:Geist;src:url(assets/Geist-Medium.woff2) format("woff2");font-weight:500}
+@font-face{font-family:Geist;src:url(assets/Geist-SemiBold.woff2) format("woff2");font-weight:600}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:100%;height:100%;overflow:hidden;background:#F1ECE2}
+body{font-family:Geist,sans-serif;color:#111;-webkit-font-smoothing:antialiased}
+#stage{position:absolute;inset:0;overflow:hidden}
+#world{position:absolute;left:0;top:0;transform-origin:0 0}
+#shape{position:absolute;overflow:hidden}
+.c{position:absolute;white-space:nowrap}
+.chip{display:inline-block;padding:10px 22px;border-radius:999px;font-size:26px;font-weight:500}
+#ridges,#boneflood{position:absolute;left:0;width:100%}
+#flood{position:absolute;left:0;top:0;border-radius:50%}
+#chrome{position:absolute;inset:0;pointer-events:none}
+#cursor{position:absolute;left:0;top:0;transform-origin:0 0}
+.src{position:absolute;white-space:nowrap}
+</style></head>
+<body>
+<div id="stage">
+  <img id="ridges" src="assets/ridges-report.svg" alt="">
+  <div id="world"><div id="shape"></div></div>
+  <div id="flood"></div>
+  <div id="boneflood"><svg viewBox="0 0 1920 480" preserveAspectRatio="none" style="display:block;width:100%;height:100%"><path d="M0,260 C220,120 420,90 640,170 C860,250 1000,60 1260,90 C1520,120 1700,230 1920,150 L1920,480 L0,480 Z" fill="#F1ECE2" fill-opacity="0.3"/><path d="M0,330 C260,230 470,210 720,290 C970,370 1130,200 1400,230 C1670,260 1800,330 1920,290 L1920,480 L0,480 Z" fill="#F1ECE2" fill-opacity="0.55"/><path d="M0,400 C300,350 560,330 840,380 C1120,430 1380,340 1640,350 C1760,356 1850,372 1920,366 L1920,480 L0,480 Z" fill="#F1ECE2"/></svg><div id="bonefill" style="background:#F1ECE2;width:100%"></div></div>
+  <div id="chrome"></div>
+  <svg id="cursor" viewBox="0 0 28 36" width="28" height="36"><path d="M2 2 L2 28 L9 21.5 L13.6 32 L18 30 L13.5 19.8 L23 19.5 Z" fill="#111111" stroke="#FFFFFF" stroke-width="2" stroke-linejoin="round"/></svg>
+</div>
+<script>
+"use strict";
+// ================================================================ grid: 120 BPM, 30 bars; the content moves in half-time (one change per two beats)
+const BEAT = 0.5, BAR = 2, DUR = 60;
+const T = (bar, beat = 1) => (bar - 1) * BAR + (beat - 1) * BEAT;
+const COL = {bone:[241,236,226], bone2:[230,223,210], ink:[17,17,17], lift:[35,33,32], white:[255,255,255], red:[255,49,49], blue:[0,32,91]};
+
+// ================================================================ closed-form springs; every value is a pure function of time
+function step(dt, f, z) {
+  if (dt <= 0) return 0;
+  const w = 2 * Math.PI * f;
+  if (z >= 1) return 1 - Math.exp(-w * dt) * (1 + w * dt);
+  const wd = w * Math.sqrt(1 - z * z);
+  return 1 - Math.exp(-z * w * dt) * (Math.cos(wd * dt) + (z * w / wd) * Math.sin(wd * dt));
+}
+const SP = {ui:[2.0,0.84], soft:[1.4,0.92], cam:[1.0,0.94], text:[2.6,1.0], fast:[4,0.86], lead:[3.0,0.8], trail:[1.7,0.88], press:[7,1.0], flood:[1.15,1.0], gone:[9,1]};
+class Track {
+  constructor(v0, sp = SP.ui) { this.v0 = v0; this.last = v0; this.sp = sp; this.ch = []; }
+  to(t, v, sp) { const s = sp || this.sp; if (v !== this.last) this.ch.push([t, v - this.last, s[0], s[1]]); this.last = v; return this; }
+  at(t) { let v = this.v0; for (const [ti, d, f, z] of this.ch) v += d * (step(t - ti, f, z) + step(t + DUR - ti, f, z)); return v; } // this loop + the previous one
+  check(n) { if (Math.abs(this.last - this.v0) > 1e-6) console.warn("track does not loop:", n); return this; }
+}
+function vis(wins, sp = SP.text) {
+  const on = wins.some(([a, b]) => a < 0 || b > DUR);
+  const tr = new Track(on ? 1 : 0, sp); const evs = [];
+  for (let [a, b] of wins) { if (a < 0) a += DUR; if (b > DUR) b -= DUR; evs.push([a, 1], [b, 0]); }
+  evs.sort((p, q) => p[0] - q[0]); for (const [t, v] of evs) tr.to(t, v);
+  return tr.check("vis");
+}
+const lerp = (a, b, k) => a + (b - a) * k, clamp = (x, a = 0, b = 1) => Math.max(a, Math.min(b, x));
+const rgb = c => `rgb(${c.map(v => Math.round(clamp(v, 0, 255))).join(",")})`;
+const mix = (a, b, k) => a.map((v, i) => lerp(v, b[i], k));
+
+const W = innerWidth, H = innerHeight, ASPECT = W / H, U = Math.min(W, H) / 1440;
+const UC = ASPECT < 1 ? (W / 1080) * 0.95 : U;
+const mctx = document.createElement("canvas").getContext("2d");
+const tw = (s, size, wt = 500) => { mctx.font = `${wt} ${size}px Geist`; return mctx.measureText(s).width; };
+
+const shapeEl = document.getElementById("shape"), world = document.getElementById("world"), chrome = document.getElementById("chrome");
+const EVENTS = []; const ev = (t, type) => EVENTS.push({t: +t.toFixed(4), type});
+let SH, CAM, items = [], cursorKeys = [], SOURCES = [], FLOODS = [], B = {};
+
+// ================================================================ build
+function build() {
+  const HOOK = ["Fancy", "franchising", "into", "Norway?"], HS = 54, HP = 60;
+  const hookW = HOOK.map((_, i) => tw(HOOK.slice(0, i + 1).join(" "), HS) + 2 * HP);
+  const wordX = HOOK.map((_, i) => i ? tw(HOOK.slice(0, i).join(" ") + " ", HS) : 0);
+  const W0 = hookW[0];
+  const hookQW = tw("Fancy franchising?", HS) + 2 * HP;   // the loop rests on "Fancy franchising?"
+
+  // ---------- the one shape: [time, w, h, radius, colour]
+  const K = []; const key = (t, w, h, r, c) => K.push([t, w, h, r, c]);
+  key(T(1,1), hookW[2], 132, 66, "ink"); key(T(1,3), hookW[3], 132, 66, "ink");
+  key(T(2,1), 880, 620, 52, "white");                 // stat tile          (bone ground)
+  key(T(5,3) + 0.5, 1000, 240, 52, "white");          // toggle card        (red ground)
+  key(T(7,1), 1000, 330, 52, "white");
+  key(T(8,1), 1020, 440, 52, "white");                // wage slider
+  key(T(10,3) + 0.5, 1140, 760, 48, "lift");          // chart              (black ground)
+  key(T(15,3) + 0.5, 880, 880, 40, "white");          // 2x2                (bone ground)
+  key(T(20,3) + 0.5, 1160, 660, 48, "ink");           // verdict            (red ground)
+  key(T(24,1), 880, 150, 75, "ink");                  // CTA button
+  key(T(25,3) + 0.5, 880, 150, 75, "red");            // CTA on black       (black ground)
+  key(T(29,1) + 1.0, W0, 132, 66, "ink");             // home, under the bone flood
+  key(T(30,3), hookQW, 132, 66, "ink");
+  const sw = new Track(hookQW), sh = new Track(132), sr = new Track(66), cr = new Track(17), cg = new Track(17), cb = new Track(17);
+  for (const [t, w, h, r, c] of K) { sw.to(t, w); sh.to(t, h); sr.to(t, r); cr.to(t, COL[c][0]); cg.to(t, COL[c][1]); cb.to(t, COL[c][2]); }
+  [sw, sh, sr, cr, cg, cb].forEach(x => x.check("shape"));
+  const press = new Track(0, SP.press);
+  const clicks = [T(2,1), T(6,3), T(25,3)];
+  for (const c of clicks) { press.to(c - 0.06, 1); press.to(c + 0.1, 0); } press.check("press");
+  SH = {sw, sh, sr, cr, cg, cb, press};
+
+  // ---------- camera
+  const FW = ASPECT > 1.4 ? 0.62 : ASPECT < 0.7 ? 0.94 : ASPECT < 0.95 ? 0.88 : 0.80;
+  const FH = ASPECT > 1.4 ? 0.66 : ASPECT < 0.7 ? 0.52 : 0.62;
+  const zfor = (w, h) => Math.min(W * FW / w, H * FH / h, 2.2 * U);
+  const cz = new Track(zfor(hookW[3], 132), SP.cam);
+  for (const [t, w, h] of K) cz.to(t, zfor(t < T(2,1) || t >= T(29,1) ? hookW[3] : w, h));
+  cz.check("cam"); CAM = {cz, zfor};
+
+  // ---------- content items
+  const add = (html, x, y, wins, o = {}) => {
+    const el = document.createElement("div"); el.className = "c"; el.innerHTML = html; shapeEl.appendChild(el);
+    items.push({el, x, y, v: vis(wins, o.sp), dy: o.dy ?? 14, blur: o.blur ?? 10, top: o.top}); return el;
+  };
+  const txt = (s, size, wt = 500, color = "#111", extra = "") => `<span style="font-size:${size}px;font-weight:${wt};color:${color};letter-spacing:${size > 60 ? "-0.02em" : "-0.005em"};${extra}">${s}</span>`;
+  const chipW = s => tw(s, 26) + 44, chipXs = (arr, x0) => { const r = []; let x = x0; for (const c of arr) { r.push(x); x += chipW(c) + 14; } return r; };
+  const chip = (s, bg = "#F1ECE2", fg = "#111", fs = 26) => `<span class="chip" style="background:${bg};color:${fg};font-size:${fs}px">${s}</span>`;
+
+  // ===== S1 · bone · hook, people, eating out
+  const hookIn = [T(30,1) - DUR, T(30,3) - DUR, T(1,1), T(1,3)];
+  HOOK.forEach((w, i) => add(txt(w, HS, 500, i === 3 ? "#FF3131" : "#fff"), (t, cw) => -cw / 2 + HP + wordX[i], -HS * 0.62, [[hookIn[i], T(2,1)]]));
+  const qX = tw("Fancy franchising", HS);
+  add(txt("?", HS, 500, "#fff"), (t, cw) => -cw / 2 + HP + qX, -HS * 0.62, [[T(30,3) - DUR, T(1,1)]], {sp: [6, 1]});
+  ev(T(30,1), "tick"); ev(T(30,3), "tick"); ev(T(1,1), "tick"); ev(T(1,3), "pop"); ev(T(2,1), "click");
+  const L0 = -360;
+  add(txt("People in Norway", 32, 500, "#4A4743"), L0, -230, [[T(2,1) + 0.15, T(3,3)]]);
+  B.c1 = add(txt("0.00m", 200), L0, -170, [[T(2,1) + 0.15, T(3,3)]]);
+  B.n1 = new Track(0, [0.75, 1]).to(T(2,1), 5.64).to(T(3,3) + 0.4, 0, SP.gone).check("n1");
+  add(txt("Small market, high incomes", 34, 400, "#4A4743"), L0, 100, [[T(3,1), T(3,3)]]);
+  add(txt("Eat out every week", 32, 500, "#4A4743"), L0, -230, [[T(3,3) + 0.12, T(5,3) + 0.4]]);
+  B.c3 = add(txt("0%", 200, 500, "#FF3131"), L0, -170, [[T(3,3) + 0.12, T(5,3) + 0.45]], {sp: [6, 1]});
+  B.n3 = new Track(0, [0.75, 1]).to(T(3,3), 7).to(T(5,3) + 0.6, 0, SP.gone).check("n3");
+  add(txt("of Norwegians", 34, 400, "#4A4743"), L0, 96, [[T(4,1), T(5,3) + 0.4]]);
+  add(txt("About half eat out less than monthly", 30, 400, "#8A857D"), L0, 150, [[T(4,3), T(5,3) + 0.4]]);
+  ev(T(3,1), "tick"); ev(T(3,3), "swipe"); ev(T(4,1), "tick"); ev(T(4,3), "tick"); ev(T(5,1), "tick"); ev(T(5,3), "click");
+  const sevenC = [L0 + tw("7%", 200) / 2, -170 + 112];
+  FLOODS.push({t: T(5,3), world: () => sevenC, r0: 100, col: COL.red}); ev(T(5,3), "flood");
+
+  // ===== S2 · red · rules and the wage floor
+  add(txt("Franchise-specific law?", 40), -430, 52, [[T(6,1) + 0.1, T(8,1)]], {top: true});
+  add(txt("None", 40, 600, "#FF3131"), -430, 110, [[T(6,3) + 0.1, T(8,1)]], {top: true});
+  const tc = ["No disclosure rule", "Your contract does the work"], tx = chipXs(tc, -430);
+  tc.forEach((s, i) => add(chip(s), tx[i], 210, [[T(7, 1 + 2 * i), T(8,1)]], {top: true}));
+  add(`<svg width="160" height="92" viewBox="0 0 160 92"><rect id="tgt" x="4" y="4" width="152" height="84" rx="42"/><rect id="tgk" y="12" height="68" rx="34"/></svg>`, 270, 74, [[T(6,1) + 0.1, T(8,1) + 0.02]], {top: true, sp: [6, 1]});
+  B.kL = new Track(12, SP.trail); B.kR = new Track(80, SP.lead); B.kC = new Track(0);
+  B.kL.to(T(5,3) + 0.6, 80, SP.trail); B.kR.to(T(5,3) + 0.6, 148, SP.lead); B.kC.to(T(5,3) + 0.6, 1);
+  B.kL.to(T(6,3), 12, SP.lead); B.kR.to(T(6,3), 80, SP.trail); B.kC.to(T(6,3), 0);
+  [B.kL, B.kR, B.kC].forEach(x => x.check("tog"));
+  ev(T(6,1), "pop"); ev(T(6,3), "toggle"); ev(T(7,1), "pop"); ev(T(7,3), "pop");
+  // slider (direct manipulation)
+  B.SX0 = -400; B.SX1 = 300; B.SY = 120;
+  add(`<svg width="1300" height="200" viewBox="0 0 1300 200" style="overflow:visible"><rect id="trk" height="12" rx="6" fill="#E6DFD2"/><rect id="fil" height="12" rx="6" fill="#111"/><rect id="ext" height="12" rx="6" fill="#FF3131"/><circle id="knb" r="24" fill="#111" stroke="#fff" stroke-width="5"/></svg>`, -550, 0, [[T(8,1) + 0.1, T(10,3) + 0.6]], {sp: [6, 1]});
+  add(txt("Hospitality wage floor, per hour", 32, 500, "#4A4743"), B.SX0, -150, [[T(8,1) + 0.15, T(9,1)]]);
+  add(txt("Add holiday pay, pension and employer NI", 32, 500, "#4A4743"), B.SX0, -150, [[T(9,1) + 0.1, T(10,1)]]);
+  add(txt("All-in cost of the legal floor", 32, 500, "#4A4743"), B.SX0, -150, [[T(10,1) + 0.1, T(10,3) + 0.45]]);
+  B.valEl = add(txt("NOK 0", 110), B.SX0, -104, [[T(8,1) + 0.15, T(10,1)]]);
+  add(txt("≈ £21 / hr", 110) + `<span style="display:inline-block;margin-left:22px;vertical-align:middle;transform:translateY(-14px);font-size:22px;font-weight:600;letter-spacing:.12em;border:2px solid #111;border-radius:6px;padding:5px 10px">ESTIMATE</span>`, B.SX0, -104, [[T(10,1) + 0.1, T(10,3) + 0.45]]);
+  add(chip("+ holiday pay, pension, employer NI ≈ +30%"), B.SX0, 30, [[T(9,3), T(10,3) + 0.45]]);
+  B.HOLD1 = [T(8,1) + 0.2, T(8,4) + 0.25]; B.HOLD2 = [T(9,1) + 0.05, T(10,3) + 1.2];
+  ev(T(8,1), "swipe"); ev(B.HOLD1[0], "grab"); ev(T(8,3), "tick"); ev(B.HOLD1[1], "release"); ev(B.HOLD2[0], "grab"); ev(T(9,3), "pop"); ev(T(10,1), "pop");
+  FLOODS.push({t: T(10,3), world: () => [B.SX1 + rubber(cursorAt(T(10,3))[0] - B.SX1), B.SY], r0: 30, col: COL.ink}); ev(T(10,3), "flood");
+
+  // ===== S3 · black · what's moving
+  const AX = 150, SC = 12, ROWS = [
+    {n: "McDonald's", s: "85 → 100 · Jan 2025 to Oct 2026", v: 15, y: -150, tb: T(12,1)},
+    {n: "Fly Chicken → KFC", s: "11 → 19 · 2022 to 2026", v: 8, y: -40, tb: T(12,3), red: true},
+    {n: "Domino's", s: "47 → 43 · 2020 to 2025", v: -4, y: 70, tb: T(13,1)},
+    {n: "Dolly Dimple's", s: "43 → 21 · 2016 to 2026", v: -22, y: 180, tb: T(13,3)}];
+  const S3 = [T(11,1), T(15,3) + 0.4];
+  add(txt("Change in units, selected chains", 40, 600, "#fff"), -490, -330, [[S3[0], S3[1]]]);
+  add(txt("Windows differ: compare direction, not size", 26, 400, "rgba(255,255,255,.55)"), -490, -276, [[T(11,3), S3[1]]]);
+  B.axis = add(`<div style="width:3px;background:#fff"></div>`, AX - 1.5, -190, [[T(11,3), S3[1]]], {blur: 0, dy: 0});
+  B.axP = new Track(0).to(T(11,3), 1).to(S3[1] + 0.3, 0, SP.gone).check("ax");
+  B.bars = ROWS.map(r => {
+    add(txt(r.n, 32, 600, "#fff"), -490, r.y - 6, [[T(11,3), S3[1]]]);
+    add(txt(r.s, 22, 400, "rgba(255,255,255,.55)"), -490, r.y + 36, [[T(11,3), S3[1]]]);
+    const el = add(`<div style="height:56px;border-radius:6px;background:${r.red ? "#FF3131" : "#F1ECE2"}"></div>`, 0, r.y, [[T(11,3), S3[1]]], {blur: 0, dy: 0});
+    const tr = new Track(0).to(r.tb, 1).to(S3[1] + 0.3, 0, SP.gone).check("bar");
+    const lab = (r.v > 0 ? "+" : "−") + Math.abs(r.v);
+    add(txt(lab, 36, 600, "#fff"), r.v > 0 ? AX + r.v * SC + 18 : AX + r.v * SC - 18 - tw(lab, 36, 600), r.y + 4, [[r.tb + 0.5, S3[1]]]);
+    ev(r.tb, "tick");
+    return {el, tr, r};
+  });
+  B.AX = AX; B.SC = SC;
+  add(`<div style="width:380px;height:150px;border-radius:16px;background:#F1ECE2"></div>`, 170, 26, [[T(14,1), S3[1]]]);
+  add(txt("Fly Chicken → KFC", 28, 600), 196, 46, [[T(14,1) + 0.06, S3[1]]]);
+  add(txt("Converting to KFC", 24, 400, "#4A4743"), 196, 92, [[T(14,3), S3[1]]]);
+  add(txt("First openings expected 2027", 24, 400, "#4A4743"), 196, 126, [[T(15,1), S3[1]]]);
+  ev(T(11,1), "swipe"); ev(T(11,3), "tick"); ev(T(14,1), "pop"); ev(T(14,3), "tick"); ev(T(15,1), "tick");
+  FLOODS.push({t: T(15,3), world: () => [360, 101], r0: 80, col: COL.bone}); ev(T(15,3), "click"); ev(T(15,3), "flood");
+
+  // ===== S4 · bone · where the gap is
+  const S4 = [T(16,1), T(20,3) + 0.4], Q = 330;
+  add(`<svg width="700" height="700" viewBox="0 0 700 700"><line id="qx" y1="350" y2="350" stroke="#111" stroke-width="3"/><line id="qy" x1="350" x2="350" stroke="#111" stroke-width="3"/></svg>`, -350, -350, [[S4[0], S4[1]]], {blur: 0, dy: 0});
+  B.qP = new Track(0).to(T(16,1), 1).to(S4[1] + 0.3, 0, SP.gone).check("q");
+  const ql = (s, x, y) => add(txt(s, 24, 600, "#4A4743", "letter-spacing:.14em"), x, y, [[T(16,3), S4[1]]]);
+  ql("MOVE NOW", -Q, -Q); ql("OUT-EXECUTE", Q - tw("OUT-EXECUTE", 24, 600) - 40, -Q); ql("TEST SMALL", -Q, Q - 30); ql("AVOID", Q - tw("AVOID", 24, 600) - 26, Q - 30);
+  add(txt("Up: more opportunity · Right: more saturated", 22, 500, "#8A857D"), -Q, 372, [[T(16,3), S4[1]]]);
+  const DOTS = [["Burger", 200, -180], ["Pizza", 210, 170], ["Coffee", 262, 252], ["Kebab", 40, 60], ["Bubble tea", -220, 90]];
+  B.dim = new Track(0).to(T(18,1), 1).to(S4[1] + 0.3, 0, SP.gone).check("dim");
+  B.dots = DOTS.map(([n, x, y]) => add(`<div style="display:flex;align-items:center;gap:12px"><div style="width:26px;height:26px;border-radius:13px;background:#111"></div>${txt(n, 26)}</div>`, x - 13, y - 13, [[T(17,1), S4[1]]], {dy: 0}));
+  B.drop = new Track(0).to(T(17,3), 1).to(S4[1] + 0.3, 0, SP.gone).check("drop");
+  B.chick = add(`<div style="width:44px;height:44px;border-radius:22px;background:#FF3131"></div>`, 0, 0, [[T(17,3) - 0.05, S4[1]]], {blur: 0, dy: 0, sp: [9, 1]});
+  add(txt("Chicken", 34, 600), -184, -252, [[T(18,1), S4[1]]]);
+  add(chip("↑ Rising · low saturation", "#F1ECE2", "#111", 22), -330, -186, [[T(18,3), S4[1]]]);
+  add(chip("KFC expected from 2027", "#F1ECE2", "#111", 22), -330, -130, [[T(19,1), S4[1]]]);
+  ev(T(16,1), "swipe"); ev(T(16,3), "tick"); ev(T(17,1), "pop"); ev(T(17,3), "drop"); ev(T(18,1), "tick"); ev(T(18,3), "pop"); ev(T(19,1), "pop"); ev(T(20,1), "tick"); ev(T(20,3), "click");
+  FLOODS.push({t: T(20,3), world: () => [-220, -230], r0: 22, col: COL.red}); ev(T(20,3), "flood");
+
+  // ===== S5 · red · the verdict, then the button
+  const S5 = T(24,1);
+  add(txt("IF I HAD A BRAND", 24, 600, "rgba(255,255,255,.6)", "letter-spacing:.16em"), -480, -262, [[T(21,1) + 0.1, S5]]);
+  const QL = ["International chicken brand?", "I’d be in a Norwegian", "master-franchise conversation", "this quarter."];
+  QL.forEach((s, i) => add(txt(s, 68, i ? 500 : 400, i === 3 ? "#FF3131" : i ? "#fff" : "rgba(255,255,255,.66)"), -480, -206 + i * 92, [[[T(21,3), T(22,1), T(22,3), T(23,1)][i], S5]]));
+  B.ul = add(`<div style="height:4px;background:#fff"></div>`, -480, -206 + 2 * 92 + 84, [[T(23,1) + 0.5, S5]], {blur: 0, dy: 0});
+  B.ulP = new Track(0).to(T(23,1) + 0.5, 1).to(S5 + 0.3, 0, SP.gone).check("ul");
+  add(txt("Wesley Williams", 32, 600, "#fff") + "<br>" + txt("WRW Hospitality", 32, 400, "rgba(255,255,255,.62)"), -480, 172, [[T(23,3), S5]]);
+  add(txt("Read the full report", 46, 500, "#fff"), -tw("Read the full report", 46) / 2, -30, [[T(24,1) + 0.25, T(25,3) + 0.4]]);
+  ev(T(21,1), "pop"); for (const t of [T(21,3), T(22,1), T(22,3), T(23,1)]) ev(t, "tick"); ev(T(23,3), "tick"); ev(T(24,1), "swipe"); ev(T(24,3), "tick"); ev(T(25,1), "tick"); ev(T(25,3), "click");
+  FLOODS.push({t: T(25,3), world: () => [0, 0], r0: 75, col: COL.ink}); ev(T(25,3), "flood");
+
+  // ===== S6 · black · follow, then the ridges carry us home
+  const ctaL = ["Free · Issue 01 · Norway", "A new country every Friday", "Follow WRW Hospitality"];
+  ctaL.forEach((s, i) => add(txt(s, 46, 500, "#fff"), -tw(s, 46) / 2, -30, [[T(26 + i, 1) + 0.05, i < 2 ? T(27 + i, 1) : T(29,1) + 0.9]]));
+  ev(T(26,1), "pop"); ev(T(27,1), "tick"); ev(T(28,1), "tick"); ev(T(29,1), "flood"); ev(T(29,3) + 0.5, "swipe");
+  B.boneT = T(29,1);   // bone ridges rise from here; ground is bone once they cover the frame
+
+  // ---------- grounds: bone → red → black → bone → red → black → bone
+  B.grounds = [[0, COL.bone], ...FLOODS.map(f => [f.t + 1.0, f.col]), [B.boneT + 1.6, COL.bone]];
+  // chrome and ridges
+  const m = 64 * UC;
+  chrome.innerHTML = `<img id="lgA" src="assets/logo-white-on-red.svg" style="position:absolute;left:${m}px;top:${m}px;width:${78 * UC}px">
+  <img id="lgB" src="assets/logo-red-on-white.svg" style="position:absolute;left:${m}px;top:${m}px;width:${78 * UC}px;opacity:0">
+  <div id="h1" style="position:absolute;left:${m + 100 * UC}px;top:${m + 10 * UC}px;font-size:${24 * UC}px;font-weight:600">Franchise Entry Report</div>
+  <div id="h2" style="position:absolute;left:${m + 100 * UC}px;top:${m + 44 * UC}px;font-size:${22 * UC}px;font-weight:400">Norway · Issue 01 · 23 Oct 2026</div>`;
+  const S = (s, a, b) => { const el = document.createElement("div"); el.className = "src"; el.textContent = s; el.style.left = m + "px"; el.style.bottom = m * 0.85 + "px"; el.style.fontSize = 20 * UC + "px"; chrome.appendChild(el); SOURCES.push({el, v: vis([[a, b]])}); };
+  S("Source: SSB, 1 Jul 2026 · NHO Reiseliv Gallup, Oct 2025", T(2,1) + 0.2, T(5,3) + 0.4);
+  S("Source: Bird & Bird franchise law tracker · Arbeidstilsynet, from 15 Jun 2025 · Skatteetaten 2026 · £1 = NOK 12.52", T(6,1), T(10,3) + 0.4);
+  S("Brand releases, locators, filings and press, counted 23 Oct 2026 · Apollo Group, Aug 2026", T(11,1), T(15,3) + 0.4);
+  S("WRW Hospitality analysis of the Issue 01 evidence", T(16,1), T(20,3) + 0.4);
+  S("From Franchise Entry Report: Norway, Issue 01", T(21,1), T(24,1));
+  B.ridgeV = new Track(1, SP.soft).to(T(2,1), 0).to(B.boneT + 1.7, 1).check("ridge");
+
+  // ---------- cursor (world coordinates, relative to the shape centre)
+  const ck = (t, x, y) => cursorKeys.push([t, x, y]);
+  ck(0, 400, 160); ck(T(1,3), 340, 40); ck(T(2,1), 330, 28); ck(T(2,3), 470, 360); ck(T(4,1), 470, 380);
+  ck(T(5,1), sevenC[0] + 30, sevenC[1] + 60); ck(T(5,3), sevenC[0] + 6, sevenC[1] + 6); ck(T(5,3) + 0.7, 470, 200); ck(T(6,2), 380, 20); ck(T(6,3), 352, 0); ck(T(7,3), 470, 230);
+  ck(T(8,1), B.SX0 + 4, B.SY); ck(B.HOLD1[0], B.SX0, B.SY); ck(T(8,3), -40, B.SY + 2); ck(T(8,4), 230, B.SY); ck(B.HOLD1[1], B.SX1, B.SY);
+  ck(B.HOLD2[0], B.SX1 + 2, B.SY); ck(T(9,3), 430, B.SY - 4); ck(T(10,1), 540, B.SY - 6); ck(T(10,3), 576, B.SY - 6);
+  ck(T(11,3), 480, 330); ck(T(13,3), 470, 340); ck(T(14,1), 206, -14); ck(T(15,1), 300, 90); ck(T(15,3), 340, 100); ck(T(15,3) + 0.6, 330, 200);
+  ck(T(16,3), 420, 400); ck(T(17,3), -200, -250); ck(T(18,3), 420, 400); ck(T(20,1), -190, -205); ck(T(20,3), -214, -224); ck(T(20,3) + 0.6, 300, 300);
+  ck(T(22,1), 480, 380); ck(T(23,3), 470, 370); ck(T(24,3), 140, 40); ck(T(25,1), 120, 30); ck(T(25,3), 114, 26); ck(T(25,3) + 0.6, 300, 160);
+  ck(T(27,1), 470, 200); ck(T(28,3), 440, 230); ck(T(30,1), 450, 200);
+  cursorKeys.sort((a, b) => a[0] - b[0]);
+  B.cp = new Track(0, SP.press);
+  for (const c of [T(2,1), T(5,3), T(6,3), T(15,3), T(17,3), T(20,3), T(25,3)]) { B.cp.to(c - 0.05, 1); B.cp.to(c + 0.09, 0); }
+  B.cp.to(B.HOLD1[0] - 0.04, 1); B.cp.to(B.HOLD1[1], 0); B.cp.to(B.HOLD2[0] - 0.04, 1); B.cp.to(B.HOLD2[1], 0); B.cp.check("cp");
+}
+
+const rubber = d => d <= 0 ? 0 : 0.62 * d / (1 + d / 520);
+function cursorAt(t) {
+  const K = cursorKeys, n = K.length;
+  const ext = [[K[n - 2][0] - DUR, K[n - 2][1], K[n - 2][2]], [K[n - 1][0] - DUR, K[n - 1][1], K[n - 1][2]], ...K, [K[0][0] + DUR, K[0][1], K[0][2]], [K[1][0] + DUR, K[1][1], K[1][2]]];
+  let i = 1; while (i < ext.length - 2 && ext[i + 1][0] <= t) i++;
+  const p0 = ext[i - 1], p1 = ext[i], p2 = ext[i + 1], p3 = ext[i + 2], h = p2[0] - p1[0], s = (t - p1[0]) / h;
+  const tan = (a, b, c, k) => ((c[k] - a[k]) / (c[0] - a[0])) * h * 0.85;
+  const H00 = 2 * s ** 3 - 3 * s ** 2 + 1, H10 = s ** 3 - 2 * s ** 2 + s, H01 = -2 * s ** 3 + 3 * s ** 2, H11 = s ** 3 - s ** 2;
+  return [1, 2].map(k => H00 * p1[k] + H10 * tan(p0, p1, p2, k) + H01 * p2[k] + H11 * tan(p1, p2, p3, k));
+}
+const camAt = t => ({z: CAM.cz.at(t) * (1 - 0.035 * SH.press.at(t)), cx: W / 2, cy: H * (ASPECT < 0.7 ? 0.5 : 0.515)});
+const toScreen = (t, p) => { const c = camAt(t); return [c.cx + p[0] * c.z, c.cy + p[1] * c.z]; };
+
+// ================================================================ seek(t)
+function seek(t) {
+  t = ((t % DUR) + DUR) % DUR;
+  const w = SH.sw.at(t), h = SH.sh.at(t), r = Math.min(SH.sr.at(t), Math.min(w, h) / 2);
+  const cam = camAt(t);
+  world.style.transform = `translate(${cam.cx}px,${cam.cy}px) scale(${cam.z})`;
+  shapeEl.style.cssText = `left:${-w / 2}px;top:${-h / 2}px;width:${w}px;height:${h}px;border-radius:${r}px;background:${rgb([SH.cr.at(t), SH.cg.at(t), SH.cb.at(t)])}`;
+  for (const it of items) {
+    const v = clamp(it.v.at(t)), st = it.el.style;
+    if (v < 0.002) { st.display = "none"; continue; }
+    st.display = "block";
+    const x = typeof it.x === "function" ? it.x(t, w) : it.x;
+    st.left = (w / 2 + x) + "px"; st.top = (it.top ? it.y : h / 2 + it.y) + "px";
+    st.opacity = v.toFixed(4); const bl = (1 - v) * it.blur;
+    st.filter = bl > 0.05 ? `blur(${bl.toFixed(2)}px)` : "none"; st.transform = `translateY(${((1 - v) * it.dy).toFixed(2)}px)`;
+  }
+  B.c1.firstChild.textContent = clamp(B.n1.at(t), 0, 5.64).toFixed(2) + "m";
+  B.c3.firstChild.textContent = Math.round(clamp(B.n3.at(t), 0, 7)) + "%";
+  // toggle
+  const tgk = document.getElementById("tgk"), tgt = document.getElementById("tgt");
+  { const l = B.kL.at(t), rr = B.kR.at(t), on = clamp(B.kC.at(t));
+    tgk.setAttribute("x", l.toFixed(2)); tgk.setAttribute("width", Math.max(68, rr - l).toFixed(2));
+    tgt.setAttribute("fill", rgb(mix(COL.bone2, COL.ink, on))); tgk.setAttribute("fill", rgb(mix(COL.ink, COL.white, on))); }
+  // slider
+  const cur = cursorAt(t);
+  { const x0 = B.SX0, x1 = B.SX1, y = B.SY, OX = 550;
+    const h1 = t >= B.HOLD1[0] && t <= B.HOLD1[1], h2 = t >= B.HOLD2[0] && t <= B.HOLD2[1];
+    let val = t < B.HOLD1[0] ? 0 : h1 ? clamp((cur[0] - x0) / (x1 - x0)) : 1;
+    const relV = rubber(576 - x1); const stretch = h2 ? rubber(cur[0] - x1) : 0;
+    const set = (id, a) => { const e = document.getElementById(id); for (const k in a) e.setAttribute(k, (+a[k]).toFixed(2)); };
+    set("trk", {x: x0 + OX, y: y - 6, width: x1 - x0 + stretch}); set("fil", {x: x0 + OX, y: y - 6, width: Math.max(12, (x1 - x0) * val)});
+    set("ext", {x: x1 + OX - 6, y: y - 6, width: stretch > 0.5 ? stretch + 6 : 0});
+    set("knb", {cx: x0 + (x1 - x0) * val + stretch + OX, cy: y, r: 24 + 4 * clamp(B.cp.at(t))});
+    B.valEl.firstChild.textContent = t < B.HOLD2[0] ? (h1 ? "NOK " + Math.round(204.79 * val) : (t < B.HOLD1[0] ? "NOK 0" : "NOK 204.79")) : "NOK " + Math.round(204.79 * (1 + 0.30 * clamp(stretch / relV))); }
+  // chart
+  B.axis.firstChild.style.height = (440 * clamp(B.axP.at(t))) + "px";
+  for (const {el, tr, r} of B.bars) { const len = Math.abs(r.v) * B.SC * Math.max(0, tr.at(t)); el.firstChild.style.width = len + "px"; el.style.left = (w / 2 + (r.v > 0 ? B.AX + 2 : B.AX - 2 - len)) + "px"; el.style.top = (h / 2 + r.y - 4) + "px"; }
+  // 2x2
+  { const q = clamp(B.qP.at(t)), qx = document.getElementById("qx"), qy = document.getElementById("qy");
+    qx.setAttribute("x1", 350 - 330 * q); qx.setAttribute("x2", 350 + 330 * q); qy.setAttribute("y1", 350 - 330 * q); qy.setAttribute("y2", 350 + 330 * q);
+    const dm = clamp(B.dim.at(t)); B.dots.forEach(e => e.style.opacity = (parseFloat(e.style.opacity || 0) * (1 - 0.6 * dm)).toFixed(3));
+    const cd = B.drop.at(t); B.chick.style.left = (w / 2 + lerp(-100, -220, cd) - 22) + "px"; B.chick.style.top = (h / 2 + lerp(-430, -230, cd) - 22) + "px"; }
+  B.ul.firstChild.style.width = (930 * clamp(B.ulP.at(t))) + "px";
+
+  // grounds and the flood that carries each change
+  let g = B.grounds[0][1]; for (const [gt, c] of B.grounds) if (t >= gt) g = c;
+  document.getElementById("stage").style.background = rgb(g);
+  const fl = document.getElementById("flood"); fl.style.display = "none";
+  for (const f of FLOODS) {
+    if (t < f.t || t >= f.t + 1.0) continue;
+    const c = toScreen(f.t, f.world()), z = camAt(f.t).z;
+    const R = 1.06 * Math.max(...[[0, 0], [W, 0], [0, H], [W, H]].map(p => Math.hypot(p[0] - c[0], p[1] - c[1])));
+    const r0 = f.r0 * z, rr = r0 + (R - r0) * step(t - f.t, SP.flood[0], SP.flood[1]);
+    fl.style.cssText = `display:block;left:${c[0] - rr}px;top:${c[1] - rr}px;width:${2 * rr}px;height:${2 * rr}px;background:${rgb(f.col)}`;
+  }
+  // bone ridges rising over the black ground, then gone once the ground is bone
+  const bf = document.getElementById("boneflood"), rh = W * 0.25;
+  if (t >= B.boneT && t < B.boneT + 1.6) { const s = step(t - B.boneT, 0.78, 1); bf.style.display = "block"; bf.style.top = (H - (H + rh) * s) + "px"; bf.style.height = (rh + H + 10) + "px"; document.getElementById("bonefill").style.height = (H + 10) + "px"; bf.firstChild.style.height = rh + "px"; }
+  else bf.style.display = "none";
+  // ink ridges for the hook
+  const rv = clamp(B.ridgeV.at(t), 0, 1.03), rg = document.getElementById("ridges");
+  rg.style.top = (H - rh * rv + 2) + "px"; rg.style.height = rh + "px"; rg.style.opacity = clamp(rv * 1.4);
+
+  // chrome colours follow the ground
+  let gc = B.grounds[0][1]; for (const [gt, c] of B.grounds) if (t >= gt - 0.45) gc = c;
+  const dark = gc !== COL.bone;
+  document.getElementById("h1").style.color = dark ? "#fff" : "#111";
+  document.getElementById("h2").style.color = dark ? "rgba(255,255,255,.72)" : "#4A4743";
+  const onRed = gc === COL.red; document.getElementById("lgA").style.opacity = onRed ? 0 : 1; document.getElementById("lgB").style.opacity = onRed ? 1 : 0;
+  for (const s of SOURCES) { const v = clamp(s.v.at(t)); s.el.style.opacity = v; s.el.style.color = dark ? "rgba(255,255,255,.7)" : "#8A857D"; }
+
+  const sc = toScreen(t, cur), cs = 1.55 * UC * (1 - 0.14 * clamp(B.cp.at(t)));
+  document.getElementById("cursor").style.transform = `translate(${sc[0].toFixed(2)}px,${sc[1].toFixed(2)}px) scale(${cs.toFixed(4)})`;
+}
+window.seek = seek; window.EVENTS = EVENTS; window.DUR = DUR;
+window.ready = Promise.all(["400", "500", "600"].map(wt => document.fonts.load(`${wt} 40px Geist`))).then(() => document.fonts.ready).then(() => { build(); seek(0); return true; });
+</script>
+</body></html>

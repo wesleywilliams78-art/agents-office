@@ -1,0 +1,10 @@
+{
+  "name": "operators-ledger",
+  "title": "The Operator's Ledger",
+  "narration": true,
+  "voice": { "engine": "voxcpm2", "profile": "ca7acc09", "profileName": "Wesley", "pause": 0.42, "seed": 7 },
+  "format": { "width": 1080, "height": 1350 },
+  "safe": { "top": 135, "bottom": 135, "side": 86 },
+  "loudness": { "lufs": -15, "truePeak": -1.5 },
+  "plan": "videos/operators-ledger/EPISODES.md"
+}

@@ -1,0 +1,632 @@
+{
+  "issue": 2,
+  "country": "Sweden",
+  "dateLong": "30 OCT 2026",
+  "colour": "#006AA7",
+  "verified": "OCT 2026",
+  "accessed": "26 Oct 2026",
+  "accent": {
+    "front": "#FECC02",
+    "mid": "#D9A600",
+    "back": "#FFE88A"
+  },
+  "cover": {
+    "verdict": "Open, but the growth is in fast food, not the seated restaurant, and pizza and coffee chains are failing. The live window is takeaway-led fast food while takeaway VAT stays at 6% to the end of 2027.",
+    "stats": [
+      {
+        "big": "+5.6%",
+        "label": "fast food volume in H1 2026, against −0.8% for lunch and evening restaurants"
+      },
+      {
+        "big": "6%",
+        "label": "VAT on takeaway food, against 12% eating in, to 31 Dec 2027"
+      },
+      {
+        "big": "SEK 183bn",
+        "label": "restaurant market in 2025, still 1.2% below its Q2 2022 volume peak"
+      }
+    ]
+  },
+  "market": {
+    "headline": "Consumers are returning, and they are spending at the quick end",
+    "intro": "Household confidence is at its highest since December 2021, and restaurant sales rose 4.9% in value in the first half of 2026. The volume is going to fast food, so the brands that win sell a quick, full basket. [S2, S6]",
+    "tiles": [
+      {
+        "label": "Population",
+        "big": "10.61m",
+        "body": "10,610,500 residents at 30 Jun 2026, up 5,000 in the half year, one of the lowest first-half rises of the 2000s. Stockholm county share: Not found.",
+        "src": "S1"
+      },
+      {
+        "label": "GDP per head",
+        "big": "Not found",
+        "body": "We could not open the Eurostat table, so no GDP per head or EU comparison is printed.",
+        "src": "None opened"
+      },
+      {
+        "label": "Restaurant market",
+        "pre": "SEK",
+        "big": "183bn",
+        "body": "About SEK 183bn including VAT in 2025 (Visita, from SCB data). Q2 2026 sales were SEK 50,823m: value +6.1%, volume +2.8%. Total volume is still 1.2% below its Q2 2022 peak.",
+        "src": "S2"
+      },
+      {
+        "label": "Franchising",
+        "big": "Not found",
+        "body": "There is no official count. The association claims more than SEK 300bn of turnover and more than 150,000 jobs. An undated directory cites about 800 systems, about 35,000 franchisees and SEK 292bn. These are claims, not statistics. Outlet count: Not found.",
+        "src": "S4, S5"
+      },
+      {
+        "label": "Consumers",
+        "big": "102.2",
+        "body": "Household confidence in Sep 2026, up from 98.4 in Aug, the highest since Dec 2021 but still within the normal range. CPI rose 1.1% in Sep. Restaurant and café prices rose 2.6% on the year, and food prices fell 6.5% after the VAT cut.",
+        "src": "S6, S7"
+      },
+      {
+        "label": "Rates and currency",
+        "big": "1.75%",
+        "body": "The Riksbank held its policy rate on 24 Sep 2026 and expects inflation to rise. The next decision is published on 4 Nov 2026 at 09:30. The krona rate used for sterling estimates, £1 = SEK 13.29 on 23 Oct 2026, was not re-checked (assumed).",
+        "src": "S9, S10"
+      }
+    ],
+    "eatsTitle": "How Sweden eats out",
+    "eatsNote": "Survey data, not spend. The two surveys measure different things, so they are not added together.",
+    "eats": [
+      {
+        "label": "Eating out",
+        "big": "24%",
+        "body": "eat restaurant food at least weekly, and 55% at least monthly, so 45% do so less often (derived). 21% eat a restaurant dinner weekly, against 13% before the pandemic.",
+        "bars": [
+          {
+            "label": "Weekly",
+            "value": 24,
+            "show": "24%"
+          },
+          {
+            "label": "Monthly or more",
+            "value": 55,
+            "show": "55%"
+          }
+        ],
+        "src": "S3"
+      },
+      {
+        "label": "Price pressure",
+        "big": "60%",
+        "body": "say they have become more price-conscious in the past year, and 40% would eat out more if their finances allowed. A supplier-commissioned survey of 1,000 adults, 13 Oct 2026.",
+        "src": "S11"
+      },
+      {
+        "label": "Taking food away",
+        "big": "51%",
+        "body": "of restaurant lunches are eaten somewhere other than the restaurant, about 11 points more than before the pandemic. This is a lunch survey, not a share of spend. Official takeaway share of spend: Not found.",
+        "src": "S3"
+      }
+    ],
+    "sowhat": "Fast food is 17.5% of sales but grew 5.6% in volume, while lunch and evening restaurants, 46.3% of sales, fell 0.8%. The 6% takeaway VAT widens that gap, and the industry body says it disadvantages seated restaurants most. A quick, takeaway-friendly format has room. A labour-heavy seated format does not. Sector operating margins: Not found. [S2, S12]"
+  },
+  "rising": {
+    "headline": "Fast food and chicken are growing; pizza and coffee chains are shrinking",
+    "intro": "Each row rests on dated counts. Most are company reports or press, not locator counts. A call needs two signals; otherwise it reads Thin.",
+    "rows": [
+      {
+        "cat": "Chicken",
+        "dir": "Rising",
+        "evidence": "KFC had 24 restaurants through one franchisee (press, Oct 2025), and its Stockholm-area count doubled in 2024. Loco Chicken, from Germany, announced a first Swedish site in Lund for 5 Sep 2026; we did not confirm it opened. We did not prove Popeyes or Wingstop absent.",
+        "src": "S13, S14",
+        "window": "2024 → Oct 2025",
+        "conf": "Medium",
+        "sat": "Low",
+        "entry": "Medium"
+      },
+      {
+        "cat": "Burger",
+        "dir": "Mixed",
+        "evidence": "MAX Sweden went from 147 sites (end 2022) to 150 (end 2023) to 163 (end 2025). McDonald’s was about to open its 200th restaurant in Nov 2025. Bastard Burgers: 67 on its press-release footer list (our proxy count, 26 Oct 2026) against a claimed ‘about 70’. Burger King’s 114 comes from an undated page. Brödernas, at about 75, entered reconstruction in Oct 2024.",
+        "src": "S15, S16, S17, S18, S19, S20, S21, S22, S23",
+        "window": "2022 → Oct 2026",
+        "conf": "Medium",
+        "sat": "High",
+        "entry": "High"
+      },
+      {
+        "cat": "Pizza",
+        "dir": "Falling",
+        "evidence": "Pizza Hut went from 25 restaurants at reconstruction (Nov 2025) to bankruptcy on 9 Sep 2026 with 18 closed; 7 sites are unaccounted for. Domino’s had 14 units in Jun 2024 and 15 in press in Oct 2026, but staff went unpaid on 25 Sep 2026 and the operator reports a dispute with Domino’s. Our own Domino’s count: Not found.",
+        "src": "S24, S25, S26, S27, S28",
+        "window": "Jun 2024 → Oct 2026",
+        "conf": "High",
+        "sat": "Low",
+        "entry": "High"
+      },
+      {
+        "cat": "Kebab / grill",
+        "dir": "Not found",
+        "evidence": "Holy Kebab has 8 sites (we counted its list on 26 Oct 2026; first site 2021). Sibylla, the hot-dog and grill chain, has about 120 outlets per press and is being bought to reach 200+. There is no earlier count on the same basis. German Doner Kebab: Not found.",
+        "src": "S29, S30",
+        "window": "2021 → Oct 2026",
+        "conf": "Thin",
+        "sat": "Medium",
+        "entry": "Thin"
+      },
+      {
+        "cat": "Coffee",
+        "dir": "Falling",
+        "evidence": "Espresso House’s Swedish shops fell from 253 (end 2023) to 238 (end 2024), with closures reported in 2024. Wayne’s Coffee went from 90 cafés (2017) to 58, and its franchisor was declared bankrupt on 4 Jul 2026.",
+        "src": "S31, S32, S33, S34, S35",
+        "window": "2023 → Jul 2026",
+        "conf": "High",
+        "sat": "High",
+        "entry": "High"
+      },
+      {
+        "cat": "Bakery / dessert",
+        "dir": "Flat",
+        "evidence": "Fabrique went from about 20 sites (Oct 2022) to 22 (press quoting a March figure, read as 2026, assumed). Café volume rose 5.0% in Q2 2026, from a low base. We found no international dessert chain. Starbucks fell from 17 cafés to two by 2021.",
+        "src": "S36, S37, S2, S38",
+        "window": "Oct 2022 → Mar 2026",
+        "conf": "Thin",
+        "sat": "Medium",
+        "entry": "Thin"
+      },
+      {
+        "cat": "Bubble tea",
+        "dir": "Not found",
+        "evidence": "One blog claimed ‘over 60’ shops in 2022 and named no chain. We found no chain count and no international franchise. Demand data: Not found.",
+        "src": "S39",
+        "window": "Mar 2022",
+        "conf": "Thin",
+        "sat": "Not found",
+        "entry": "Thin"
+      },
+      {
+        "cat": "Fast casual",
+        "dir": "Mixed",
+        "evidence": "Pinchos has over 60 Swedish sites (press, Aug 2026) and is for sale; its own page claims more than 80% are franchised. Taco Bell opened its first site on 27 Nov 2025. Vapiano entered reconstruction in Jan 2025, and Brödernas collapsed in 2024 and 2025.",
+        "src": "S40, S41, S42, S43, S44, S22",
+        "window": "Jan 2025 → Oct 2026",
+        "conf": "Medium",
+        "sat": "Medium",
+        "entry": "Medium"
+      },
+      {
+        "cat": "Plant-based",
+        "dir": "Not found",
+        "evidence": "We found no plant-based restaurant chain with a count and no demand data. We tried Swedish searches and directory sites.",
+        "src": "None opened",
+        "window": "Not found",
+        "conf": "Thin",
+        "sat": "Not found",
+        "entry": "Thin"
+      },
+      {
+        "cat": "Asian fast casual / sushi",
+        "sub": "local category",
+        "dir": "Not found",
+        "evidence": "Sushi Yama had over 45 restaurants in Mar 2020, and its investor saw room for 100 to 150 more. Current count: Not found. Sticks’n’Sushi, from Denmark, plans a first Stockholm site for spring 2027; its route is not stated.",
+        "src": "S45, S46",
+        "window": "Mar 2020 → 2027",
+        "conf": "Thin",
+        "sat": "Low",
+        "entry": "Thin"
+      }
+    ],
+    "chart": {
+      "title": "Change in Swedish sites, latest dated counts",
+      "note": "Company reports and press; the Wayne’s and Pizza Hut ends are bankruptcy reports.",
+      "items": [
+        {
+          "label": "MAX",
+          "sub": "147 → 163 · 2022–25",
+          "delta": 16,
+          "star": true
+        },
+        {
+          "label": "Fabrique",
+          "sub": "20 → 22 · 2022–26",
+          "delta": 2
+        },
+        {
+          "label": "Espresso House",
+          "sub": "253 → 238 · 2023–24",
+          "delta": -15
+        },
+        {
+          "label": "Pizza Hut",
+          "sub": "25 → 0 · Nov 25–Sep 26",
+          "delta": -25
+        },
+        {
+          "label": "Wayne’s Coffee",
+          "sub": "90 → 58 · 2017–26",
+          "delta": -32
+        }
+      ],
+      "source": "Sources: MAX reports [S15, S16, S17]; Espresso House reports [S31, S32]; Wayne’s [S34, S35]; Pizza Hut [S25, S26]; Fabrique [S36, S37]."
+    },
+    "reading": {
+      "title": "How to read the table",
+      "paras": [
+        "Fast food volume rose **5.6%** in the first half of 2026, while lunch and evening restaurants fell **0.8%**. The growth is at the quick, takeaway-friendly end. [S2]",
+        "Pizza and coffee chains are **failing or shrinking**. Pizza Hut and Wayne’s franchisor are bankrupt, and Espresso House closed 15 Swedish shops in a year. [S26, S34, S31, S32]",
+        "Chicken has **one scaled player** in KFC and one announced challenger. Direction for kebab, bubble tea, plant-based and sushi cannot be called. [S13, S14]"
+      ]
+    }
+  },
+  "white": {
+    "headline": "The open space is takeaway-led, in cuisines the big chains have not taken",
+    "intro": "Four gaps, from our reading of the page 3 evidence. Three of the four rest on thin data, and each says so.",
+    "gaps": [
+      {
+        "title": "Takeaway-first fast food",
+        "gap": "Takeaway pays half the VAT of a seated meal until the end of 2027, and fast food is the segment growing fastest. The scaled players we found are burger and hot-dog chains, so other cuisines sold quickly for takeaway are open.",
+        "evidence": "Fast food volume +5.6% in H1 2026 and traffic-adjacent +1.7%. Takeaway VAT 6% against 12% eating in. Sibylla is being bought to reach 200+ outlets. [S2, S12, S30]",
+        "suits": "A brand with a quick, portable menu and a proven delivery or counter model.",
+        "route": "Master or area partner with an existing multi-site operator.",
+        "size": "M",
+        "sizeText": "before takeaway VAT may return to 12% on 1 Jan 2028 (inference)",
+        "window": "To 31 Dec 2027"
+      },
+      {
+        "title": "Chicken beyond KFC",
+        "gap": "KFC runs 24 sites through one franchisee, and the only challenger found is a German brand with one announced site.",
+        "evidence": "KFC 24 restaurants, Oct 2025. Loco Chicken announced Lund for 5 Sep 2026, opening unconfirmed. We did not prove Popeyes or Wingstop absent. [S13, S14]",
+        "suits": "A chicken brand with a distinct product and a strong operator partner.",
+        "route": "Master franchise or area developer.",
+        "size": "M",
+        "sizeText": "KFC needed about a decade to reach 24 sites (press, assumed from its 2015 start)"
+      },
+      {
+        "title": "Asian fast casual and sushi",
+        "gap": "Sweden has one named sushi chain with investor backing and a European brand entering in 2027, but no current count.",
+        "evidence": "Sushi Yama over 45 restaurants in Mar 2020. Sticks’n’Sushi due spring 2027 (Thin). [S45, S46]",
+        "suits": "A concept with a clear price point that can open in Stockholm first.",
+        "route": "Single-city test with a local operator.",
+        "size": "S",
+        "sizeText": "a few Stockholm sites first",
+        "thin": true
+      },
+      {
+        "title": "Bubble tea",
+        "gap": "We found no chain and no count, only a 2022 blog claim of ‘over 60’ shops.",
+        "evidence": "Chain count and demand data: Not found. [S39]",
+        "suits": "A brand that wants a small, low-cost test.",
+        "route": "Pilot site with a local partner.",
+        "size": "S",
+        "sizeText": "pilot only",
+        "thin": true
+      }
+    ],
+    "matrix": {
+      "intro": "Our assessment from the page 3 evidence. Position is judgement, not measurement.",
+      "note": "Bakery and dessert, and plant-based, are left off: too little data to place. Source: WRW Hospitality analysis of the page 3 evidence.",
+      "points": [
+        {
+          "name": "Chicken",
+          "x": 30,
+          "y": 65,
+          "hot": true
+        },
+        {
+          "name": "Takeaway fast food",
+          "x": 45,
+          "y": 70,
+          "hot": true
+        },
+        {
+          "name": "Burger",
+          "x": 90,
+          "y": 25
+        },
+        {
+          "name": "Coffee",
+          "x": 80,
+          "y": 15
+        },
+        {
+          "name": "Pizza",
+          "x": 35,
+          "y": 12
+        },
+        {
+          "name": "Kebab / grill",
+          "x": 50,
+          "y": 45
+        },
+        {
+          "name": "Fast casual",
+          "x": 55,
+          "y": 40
+        },
+        {
+          "name": "Sushi",
+          "x": 30,
+          "y": 42
+        },
+        {
+          "name": "Bubble tea",
+          "x": 20,
+          "y": 30
+        }
+      ]
+    },
+    "position": {
+      "quote": "If I had a brand, I would go in where the tax tilt helps me: quick, takeaway-led, through one strong Swedish operator.",
+      "paras": [
+        "Takeaway pays half the VAT of a seated meal until the end of 2027, and fast food is the one segment growing fast. The brand in early gets its sites before that window can close. [S2, S12]",
+        "I would not go alone. Wayne’s franchisor and Pizza Hut’s operator both failed in the last year, so I would choose the partner on its balance sheet and write my standards into the contract. [S34, S26]"
+      ]
+    }
+  },
+  "regulation": {
+    "headline": "Sweden asks for disclosure, not registration, and wages carry about 54% on top",
+    "intro": "These are the rules we could open. Where we could not, the row says Not found. [S52]",
+    "rows": [
+      {
+        "area": "Franchise law",
+        "text": "**A disclosure duty, no registration.** Lag (2006:484) requires written information in good time before signing, covering 8 listed areas. The Patent and Market Court can order it, with a fine. Live proposals for change: Not found.",
+        "src": "S52"
+      },
+      {
+        "area": "Trade marks",
+        "text": "PRV charges SEK 2,700 for one class online (SEK 3,900 by other routes) and SEK 1,000 per extra class. The first answer takes about 6 weeks and registration lasts 10 years. **Whether an EU mark covers Sweden and how a UK mark is treated: Not found; take advice.**",
+        "src": "S53, S54"
+      },
+      {
+        "area": "Food business registration",
+        "text": "Register the business before opening; you may start 2 weeks after sending the notice. A fee is charged but the agency page gives no amount. **The municipal route, municipal fees and any inspection rating: Not found.**",
+        "src": "S55"
+      },
+      {
+        "area": "Alcohol licensing",
+        "text": "The municipality grants the licence and may refuse it, for example near schools. **The food and own-kitchen requirement was removed on 1 Jun 2026.** One municipality charges SEK 11,850 plus SEK 2,950 a year. Only the holder’s own staff may serve, which matters for concessions.",
+        "src": "S56, S57"
+      },
+      {
+        "area": "Halal and supply",
+        "text": "Animals must be stunned before slaughter, with an exception that points to an EU regulation we did not open. **Whether unstunned halal is banned in practice: Not found.** Import limits on halal meat, packaging and deforestation rules: Not found.",
+        "src": "S58"
+      },
+      {
+        "area": "Tax",
+        "text": "VAT is 6% on food including takeaway until 31 Dec 2027, and 12% eating in. Corporate tax is 20.6%. A tax adviser’s summary gives 0% on royalties to the UK; whether an initial fee counts as a royalty is Not found.",
+        "src": "S12, S59, S60"
+      },
+      {
+        "area": "Company set-up",
+        "text": "An AB needs SEK 25,000 share capital and a SEK 2,700 registration fee (SEK 2,400 online). A residency rule exists, with a SEK 1,000 exemption fee; its scope: Not found. Restaurants must keep a staff ledger. The cash register rule: Not found.",
+        "src": "S61, S62, S63"
+      }
+    ],
+    "tiles": [
+      {
+        "label": "Takeaway VAT",
+        "big": "6%",
+        "body": "Lasts to 31 Dec 2027. Outlets that do both run two rates.",
+        "src": "S12"
+      },
+      {
+        "label": "Wage floor",
+        "pre": "SEK",
+        "big": "153.64",
+        "body": "Per hour, lowest adult grade, from 1 Apr 2026, under the HRF and Visita agreement.",
+        "src": "S64"
+      },
+      {
+        "label": "Trade mark",
+        "pre": "SEK",
+        "big": "2,700",
+        "body": "One class, filed online with PRV.",
+        "src": "S53"
+      }
+    ],
+    "wage": {
+      "title": "The wage engine",
+      "sub": "What every SEK 100 of pay costs the employer",
+      "parts": [
+        {
+          "label": "Pay",
+          "value": "100.00"
+        },
+        {
+          "label": "Holiday pay 12.72",
+          "value": "12.72",
+          "short": "Holiday"
+        },
+        {
+          "label": "Employer contributions 35.42",
+          "value": "35.42",
+          "short": "Contributions"
+        },
+        {
+          "label": "Pension and insurance 5.47",
+          "value": "5.47",
+          "short": "Pension"
+        }
+      ],
+      "total": "153.61",
+      "method": "Holiday pay is 12.72% of pay. Employer contributions are 31.42% on pay plus holiday pay. Pension and insurance premiums are 4.85% on the same base, using a premium sheet for the LO workers’ scheme; that this scheme applies to hospitality staff is an assumption. Adult, day shift, no unsocial hours, overtime or sick pay. [S64, S65, S66]",
+      "floorPre": "SEK",
+      "floor": "153.64",
+      "floorNote": "Per hour, lowest adult grade, from 1 Apr 2026. The pay tables run to 31 Mar 2027, so talks may fall in your first year (inference). [S64]",
+      "allIn": "SEK 236 an hour",
+      "allInNote": "**ESTIMATE** SEK 153.64 × 1.536 ≈ SEK 236 an hour, about £17.80 at £1 = SEK 13.29 (rate not re-checked, assumed). [S64, S65, S66]"
+    },
+    "advice": "This page is general information, not legal, tax or investment advice. Take local advice before you commit."
+  },
+  "route": {
+    "headline": "One master partner is the documented route, and failures cluster at the operator",
+    "intro": "Four routes, with the Swedish examples we could open.",
+    "routes": [
+      {
+        "name": "Master franchise",
+        "control": "Low to medium",
+        "capital": "Low",
+        "speed": 3,
+        "seen": "Subway signed a Nordic master with Nordic Bites Group on 20 May 2025 for Finland, Sweden, Denmark and Norway, targeting 250 new sites by 2032. Domino’s sold its Swedish master, with 14 stores, for EUR 2m in 2021. [S47, S48]"
+      },
+      {
+        "name": "Area developer",
+        "control": "Medium",
+        "capital": "Medium",
+        "speed": 2,
+        "seen": "Subway’s 2010 development agreement for Finland and Sweden is the one example we found. [S47]"
+      },
+      {
+        "name": "Direct franchise to single operators",
+        "control": "Medium",
+        "capital": "Medium",
+        "speed": 2,
+        "seen": "Taco Bell opened through franchisee TB Group Scandinavia in Nov 2025. KFC grows through one franchisee. Pinchos claims over 80% franchised. Sibylla is a franchise chain. [S42, S43, S13, S41, S30]"
+      },
+      {
+        "name": "Company-owned",
+        "control": "High",
+        "capital": "High",
+        "speed": 1,
+        "seen": "MAX owned 141 of its 147 Swedish sites in 2022. No foreign owned-route case found. Five Guys’ structure is unverified, and its owner was reported in Nov 2025 to be seeking a buyer for 50%. [S17, S49]"
+      }
+    ],
+    "fits": [
+      {
+        "label": "Small brand",
+        "title": "Few units, no overseas record",
+        "body": "Use one Swedish multi-site operator who knows wages, licences and property. Plan a slow ramp: KFC took about a decade to reach 24 sites (assumed). [S13]"
+      },
+      {
+        "label": "Proven brand",
+        "title": "Working in one or two countries",
+        "body": "Direct franchising is how Pinchos and Sibylla grew, but both are changing hands, so write your standards into the contract. [S40, S30]"
+      },
+      {
+        "label": "Scaled brand",
+        "title": "Multi-country system",
+        "body": "Subway chose one Nordic master for four countries. Back a partner who can take Sweden and its neighbours, and watch the concentration risk. [S47]"
+      }
+    ],
+    "riskTitle": "Six risks for a foreign franchisor",
+    "risks": [
+      {
+        "label": "Franchisor failure",
+        "body": "Wayne’s Coffee Sweden AB, the franchisor, went bankrupt on 4 Jul 2026 with debts of at least SEK 10m after cafés could not pay rent. Another company will carry on the 58 cafés.",
+        "src": "S34"
+      },
+      {
+        "label": "Operator failure",
+        "body": "Pizza Hut’s operator filed for reconstruction in Nov 2025 and went bankrupt on 9 Sep 2026, closing 18 restaurants.",
+        "src": "S25, S26"
+      },
+      {
+        "label": "Over-fast expansion",
+        "body": "Brödernas grew from 2017 to about 70 to 75 restaurants, applied for reconstruction on 16 Oct 2024, and by 18 Mar 2025 had 33 subsidiaries bankrupt and 53 in reconstruction.",
+        "src": "S23, S22"
+      },
+      {
+        "label": "Lease cost",
+        "body": "Starbucks’ Nordic CEO blamed ‘far too expensive leases’ when only two Swedish cafés remained in 2021. This is a 2021 company quote and shows a pattern, not 2026 rents.",
+        "src": "S38"
+      },
+      {
+        "label": "Seated-format weakness",
+        "body": "Lunch and evening restaurants lost 0.8% of volume in H1 2026, and the industry body says the food VAT cut disadvantages them. Total volume is 1.2% below its 2022 peak.",
+        "src": "S2"
+      },
+      {
+        "label": "Failure-prone sector",
+        "body": "Hotels and restaurants were the most bankruptcy-exposed industry in 2025, at 2.8% of firms. Restaurant bankruptcies fell 13% in Q3 2026, the fourth quarterly fall, but chains still fail.",
+        "src": "S50, S51"
+      }
+    ]
+  },
+  "days": {
+    "headline": "The first 30 days: decide the format, then find the partner",
+    "moves": [
+      "**Pick the format:** a quick, takeaway-led menu that sells a full basket.",
+      "**Run the conflict check** on the country and on each category before you contact anyone.",
+      "**Prepare the franchise disclosure document** to the 8 areas in Lag (2006:484), with a Swedish lawyer.",
+      "**Take trade mark advice** on the EU, UK and Swedish routes before you file.",
+      "**Rebuild the unit P&L** at Swedish wages: about 1.54 times pay once costs are added.",
+      "**Model both VAT rates:** 6% takeaway, 12% eating in, and a return to 12% from 1 Jan 2028 (inference).",
+      "**Shortlist 3 to 5 Nordic multi-brand operators** as master or area partners, and check each one’s balance sheet.",
+      "**Ask each operator** whether it applies the HRF and Visita agreement and how it plans for the 2027 talks.",
+      "**Check licensing** with the municipality for each target site, including alcohol.",
+      "**Map local supply** for meat, dairy and halal, and take advice on the rules we could not verify."
+    ],
+    "check": [
+      "Is the format takeaway-led, not seated?",
+      "Does the unit P&L hold at 54% on-costs?",
+      "Does it still work at 12% VAT from 2028?",
+      "Is the partner’s balance sheet sound?",
+      "Are your standards written into the contract?"
+    ],
+    "method": "Public sources only, read 24 to 26 Oct 2026. Every figure is dated and coded to the list below. Rise and fall calls need two independent signals; otherwise they are marked Thin. Estimates carry their method. Missing data is shown as Not found. Most unit counts are company reports, press or brand claims; only Holy Kebab and a Bastard Burgers footer list are our own counts. Not legal, tax or investment advice.",
+    "sources": [
+      "S1 SCB, Fortsatt låg befolkningsökning under första halvåret 2026, 21 Aug 2026",
+      "S2 Visita, Restaurangindex andra kvartalet 2026, 15 Sep 2026",
+      "S3 Infostat for Visita, Restaurangkonsumtionen väntas öka under 2026, 21 Jan 2026",
+      "S4 Svenska Franchise Föreningen, Franchisegalan 2026 finalists release (association claim), 2026",
+      "S5 Franchise Finder, Statistik (cites Svensk Franchise and HUI; undated)",
+      "S6 Konjunkturinstitutet, Konjunkturbarometern, 29 Sep 2026",
+      "S7 SCB, Konsumentprisindex (KPI) september 2026, 14 Oct 2026",
+      "S8 SCB, Konsumentprisindex (KPI) augusti 2026, Sep 2026",
+      "S9 Riksbank, Monetary policy decision, September 2026, 24 Sep 2026",
+      "S10 Riksbank, Calendar 2026",
+      "S11 Norstat for Martin & Servera, Restaurangbarometern 2026, 13 Oct 2026",
+      "S12 Skatteverket, Livsmedelsmomsen sänks till 6 procent, 26 Feb 2026",
+      "S13 Foodnet, KFC-expansionen fortsätter ut i landet, 10 Oct 2025 (company-reported)",
+      "S14 LundNytt, Loco Chicken öppnar i Lund, 11 Aug 2026",
+      "S15 MAX Burgers, Hållbarhetsrapport 2025",
+      "S16 MAX Burgers, Sustainability Report 2023",
+      "S17 MAX Burgers, Sustainability Report 2022",
+      "S18 Dagens PS, McDonald’s toppen om svenska burgarkampen, 21 Nov 2025",
+      "S19 Nordic Service Partners, Burger King page (undated, footer 2019)",
+      "S20 Bastard Burgers, press release on Malmö opening, 31 Mar 2026",
+      "S21 Ekonomibladet, Hamburgerkedja expanderar, 12 Feb 2026",
+      "S22 EFN, Burgarimperiet i spillror, 18 Mar 2025",
+      "S23 TT via TV4, Kris för hamburgerkedjan Brödernas, 16 Oct 2024",
+      "S24 Placera and Finwire, Pizza Hut i Sverige i konkurs, 9 Sep 2026",
+      "S25 TT via TV4, Snabbmatskedjan i rekonstruktion, 26 Nov 2025",
+      "S26 EFN, Rekonstruktionen räckte inte: Pizza Hut-bolaget i konkurs, 9 Sep 2026",
+      "S27 Foodnet, Domino’s Pizza stänger i Göteborg, 13 Jun 2024",
+      "S28 Arbetet, Anställda på amerikanska pizzakedjan fick inte ut sin lön, 7 Oct 2026",
+      "S29 holykebab.se, restaurant list counted 26 Oct 2026",
+      "S30 Placera, Di: snabbmatskedjan Sibylla säljs, 3 Sep 2026",
+      "S31 Espresso House, Sustainability Report 2024",
+      "S32 Espresso House, Sustainability Report 2023",
+      "S33 Foodnet, Flera stängningar på kort tid för Espresso House, 21 Oct 2024",
+      "S34 TT via TV4, Svensk kafejätte i konkurs (Wayne’s Coffee), 4 Jul 2026",
+      "S35 Fastighetstidningen, Wayne’s Coffee, 21 Mar 2017",
+      "S36 Börsvärlden, Hufvudstaden hyr ut till bageri i Gamla stan, 6 Oct 2022",
+      "S37 East Side Feed, The former Shakespeare & Co space (quoting WWD), 26 Aug 2026",
+      "S38 Dagens PS, Enorm flopp för Starbucks, 25 Oct 2021",
+      "S39 Bobatea.se, Vart kan man köpa boba tea (blog), 11 Mar 2022",
+      "S40 EFN, Restaurangkedjan Pinchos till salu, 28 Aug 2026",
+      "S41 Pinchos, franchise page (brand claim, undated)",
+      "S42 Ekonomibladet, Två dagar kvar: Taco Bell öppnar i Sverige, 25 Nov 2025",
+      "S43 TT via TV4, Uppgifter: Taco Bell till Sverige, 12 Sep 2025",
+      "S44 EFN, Rekonstruktion för Vapiano säljer restauranger, 16 Jan 2025",
+      "S45 Litorina, Litorina invests in Sushi Yama, 6 Mar 2020",
+      "S46 QSR Media, Sticks’n’Sushi to open first Swedish restaurant in 2027 (undated; about Jul 2026, assumed)",
+      "S47 Subway newsroom, Subway expands in the Nordics with Nordic Bites Group, 20 May 2025",
+      "S48 IFA Magazine, Domino’s sells Sweden unit for EUR 2m, 9 Mar 2021",
+      "S49 TT via TV4, Hamburgerägare letar efter ny delägare, 10 Nov 2025",
+      "S50 Tillväxtanalys, Konkurser och offentliga ackord 2025",
+      "S51 Företagarna, Fler konkurser i september (citing UC), 1 Oct 2026",
+      "S52 Lag (2006:484) om franchisegivares informationsskyldighet, lagen.nu",
+      "S53 PRV, Avgifter för varumärke, 26 Oct 2026",
+      "S54 PRV, Handläggningstid varumärke, 22 Sep 2026",
+      "S55 Livsmedelsverket, Registrering av livsmedelsanläggning",
+      "S56 Folkhälsomyndigheten, Ändring i alkohollagen: mat- och kökskravet slopas, 29 May 2026",
+      "S57 Åtvidabergs kommun, Taxor och avgifter 2026",
+      "S58 Djurskyddslagen (2018:1192), lagen.nu",
+      "S59 PwC Worldwide Tax Summaries, Sweden corporate taxes on income, 22 Sep 2026",
+      "S60 PwC Worldwide Tax Summaries, Sweden withholding taxes, 22 Sep 2026",
+      "S61 Aktiebolagslagen (2005:551), lagen.nu",
+      "S62 SFS 2025:343, Förordning om avgifter, Bolagsverket, in force 19 Jun 2025",
+      "S63 Skatteverket, Så fungerar personalliggare",
+      "S64 HRF and Visita, Gröna Riksavtalet 2025–2027 (agreement text)",
+      "S65 Skatteverket, Arbetsgivaravgifter 2026",
+      "S66 Avtalat, Premier per arbetare 2026, 22 Dec 2025"
+    ]
+  }
+}

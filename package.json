@@ -9,7 +9,9 @@
     "build": "node build.mjs",
     "check": "node check.mjs",
     "check:live": "CHECK_LIVE=1 node check.mjs",
-    "graph": "node graph-build.mjs"
+    "graph": "node graph-build.mjs",
+    "storage": "node storage.mjs",
+    "media": "node scripts/media-to-d.mjs"
   },
   "engines": {
     "node": ">=20"
@@ -24,6 +26,7 @@
   },
   "devDependencies": {
     "esbuild": "^0.28.1",
+    "gsap": "3.14.2",
     "playwright-core": "^1.62.0",
     "three": "^0.185.1"
   },

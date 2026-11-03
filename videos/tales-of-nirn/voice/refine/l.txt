@@ -1,0 +1,5 @@
+file 'C:/Users/Wesley/agents-office/videos/tales-of-nirn/voice/refine/raw2/deep2-1.wav'
+file 'C:/Users/Wesley/agents-office/videos/tales-of-nirn/voice/refine/raw2/deep2-2.wav'
+file 'C:/Users/Wesley/agents-office/videos/tales-of-nirn/voice/refine/raw2/deep2-3.wav'
+file 'C:/Users/Wesley/agents-office/videos/tales-of-nirn/voice/refine/raw2/deep2-4.wav'
+file 'C:/Users/Wesley/agents-office/videos/tales-of-nirn/voice/refine/raw2/deep2-5.wav'

@@ -191,8 +191,8 @@ export function nextRun(when, from = Date.now()) {
   }
   const [hh, mi] = when.at.split(':').map(Number);
   const allowed = when.kind === 'daily' ? [0, 1, 2, 3, 4, 5, 6] : when.kind === 'weekdays' ? [1, 2, 3, 4, 5] : when.days;
-  const d = new Date(f); d.setHours(hh, mi, 0, 0);
-  for (let i = 0; i < 9; i++, d.setDate(d.getDate() + 1)) {
+  for (let i = 0; i < 9; i++) { // built fresh for each calendar day, so a clock change cannot carry an hour over to the next day
+    const d = new Date(f.getFullYear(), f.getMonth(), f.getDate() + i, hh, mi, 0, 0);
     if (d.getTime() <= from) continue;
     if (allowed.includes(d.getDay())) return d.getTime();
   }

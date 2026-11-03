@@ -1,0 +1,18 @@
+/* WRW brand for motion compositions: fonts, colours and a clean stage. Link it with <link rel="stylesheet" href="kit/brand.css">. */
+@font-face { font-family: 'Newsreader'; font-weight: 300; font-style: normal; src: url(fonts/newsreader-latin-300-normal.woff2) format('woff2'); }
+@font-face { font-family: 'Newsreader'; font-weight: 300; font-style: italic; src: url(fonts/newsreader-latin-300-italic.woff2) format('woff2'); }
+@font-face { font-family: 'Archivo'; font-weight: 400; src: url(fonts/archivo-latin-400-normal.woff2) format('woff2'); }
+@font-face { font-family: 'Archivo'; font-weight: 500; src: url(fonts/archivo-latin-500-normal.woff2) format('woff2'); }
+
+:root {
+  --bone: #F3F2F2; --ink: #201E1D; --red: #EC3013; --deep-red: #B6240E; --warm-grey: #4A4644; --rule: #D6D2CF;
+  --serif: 'Newsreader', Georgia, serif; --sans: 'Archivo', Arial, sans-serif;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { width: 100%; height: 100%; overflow: hidden; background: var(--bone); color: var(--ink); -webkit-font-smoothing: antialiased; }
+#stage { position: relative; overflow: hidden; }
+.headline { font-family: var(--serif); font-weight: 300; line-height: 1.04; letter-spacing: -0.01em; }
+.kicker { font-family: var(--sans); font-weight: 500; text-transform: uppercase; letter-spacing: .22em; }
+.body { font-family: var(--sans); font-weight: 400; color: var(--warm-grey); }
+.mask { display: inline-block; overflow: hidden; vertical-align: top; padding-bottom: .08em; }
+.mask > span { display: inline-block; will-change: transform; }

@@ -84,6 +84,10 @@ The one thing an agent can ask for beyond that is a change to a note in your bra
 change as a `BRAIN UPDATE`, the review card shows what approving would file, and the office files it
 only when you approve (Markdown notes inside the brain only, the previous version is kept in
 `data/brain-backups/`). Turn it off with `"brainWrite": { "enabled": false }`.
+The website works the same way: the office serves it at http://localhost:4520/site/, the website desks
+propose exact edits as `SITE UPDATE` blocks, and the office applies them only when you approve (files inside
+`sites/wrw-hospitality/` only, never the libraries or the booking settings; the old file is kept in
+`data/site-backups/`). Turn it off with `"siteWrite": { "enabled": false }`.
 
 Decide what the agents may touch in `office.config.json`:
 
@@ -336,6 +340,17 @@ Open **http://localhost:4520/aios** beside the office. It has three parts and re
   its tools, and whether it has a brief and a role skill (the three bars). NEEDS A BRIEF OR SKILL
   shows the seats still to set up.
 - **Happening now.** Working, waiting on your OK, recently done, and what is on the timetable.
+- **Tokens.** A coach on top names the one thing to do now that saves the most: hand over a heavy
+  chat used today (with a copy button for the handover prompt and the tokens saved per turn), move
+  a desk's light Opus runs to Sonnet, fold a desk's corrections into its skill, or hand over earlier
+  as a habit. Below it, where the tokens go: today, 7 days and 30 days; a bar per day, chats against the
+  office; every Claude Code chat with its turns, peak context, cache-read share and a verdict
+  (*should have handed over* past 60% of the 1M window); the office's runs by desk, department,
+  routine, model or kind, with cost, approvals and sends-back; and the return on it (cost per
+  approved deliverable, rework by desk, Opus runs Sonnet could do, time to approval). Chats are read
+  from the transcripts under `~/.claude/projects` (only what they added since the last read);
+  every Claude run the office starts is written to `data/tokens.jsonl` and summed on its task
+  (`task.usage`). Office runs from before 3 Nov 2026 were never saved. This computer only.
 
 ## Which model, and how much of your plan
 

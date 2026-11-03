@@ -1,10 +1,11 @@
 // A task that was running when the office stopped has no process behind it any more, and would sit at "doing" for ever.
 // On start-up each one is put right: a task that was still on its first pass only reads and drafts, so it simply starts
-// again; one that was already past the owner's OK is put back in front of the owner instead of being repeated,
+// again; a task still queued at "next" (never started) is started too; one that was already past the owner's OK is put back in front of the owner instead of being repeated,
 // because its outbound step (a draft, a post) may or may not have gone through.
 export function recover(list) {
   const requeue = [], held = [];
   for (const t of list) {
+    if (t.state === 'next' && !t.piece) { requeue.push(t.id); continue; } // queued but never started: the in-memory queue died with the old process (a routine that fired just before a restart)
     if (t.state !== 'doing') continue;
     if (t.draft && t.waitingAt) {
       t.state = 'waiting';

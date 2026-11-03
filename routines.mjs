@@ -18,7 +18,9 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { describe, nextRun, valid } from './src/when.js';
 
-export const ALLOWED = ['emails', 'fin', 'sales'];
+export const ALLOWED = ['emails', 'fin', 'sales', 'ops', 'delivery']; // the departments that can own a routine; the owner can add more in office.config.json: "routines": { "departments": [...] }
+/** Replace the allowed list in place (every module holding the array sees it). Unknown keys are ignored; the default stays if nothing valid is given. */
+export function allow(list) { const ok = (Array.isArray(list) ? list : []).filter(k => k in NAMES); if (ok.length) ALLOWED.splice(0, ALLOWED.length, ...ok); return ALLOWED; }
 export const NAMES = { emails: 'Emails', fin: 'Accounting', sales: 'Sales', marketing: 'Marketing', ops: 'Operations', delivery: 'Delivery' };
 export const file = brainPath => path.join(brainPath, 'Agents Office', 'routines.json');
 export const stateFile = dataDir => path.join(dataDir, 'routines.json');
@@ -29,7 +31,8 @@ const readJSON = (p, fallback) => { try { return JSON.parse(fs.readFileSync(p, '
 
 /** "Routines come to Marketing in a later release. This release: Emails, Accounting, Sales." */
 export function refusal(dept) {
-  return `Routines come to ${NAMES[dept] || dept} in a later release. This release: Emails, Accounting and Sales.`;
+  const names = ALLOWED.map(k => NAMES[k] || k), list = names.length > 1 ? names.slice(0, -1).join(', ') + ' and ' + names.at(-1) : names[0];
+  return `Routines come to ${NAMES[dept] || dept} in a later release. This release: ${list}.`;
 }
 
 /** Normalise + check one routine against the roster. Returns { routine, problems }. Fixed fields are kept as given; bad ones are named. */

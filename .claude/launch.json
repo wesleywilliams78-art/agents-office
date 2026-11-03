@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "wrw-site",
+      "runtimeExecutable": "node",
+      "runtimeArgs": ["sites/serve.mjs", "wrw-hospitality", "4610"],
+      "port": 4610
+    }
+  ]
+}

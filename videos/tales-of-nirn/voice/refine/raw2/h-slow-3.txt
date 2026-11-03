@@ -1,0 +1,14 @@
+HTTP/1.1 100 Continue
+
+HTTP/1.1 200 OK
+date: Mon, 02 Nov 2026 14:55:54 GMT
+server: uvicorn
+x-audio-id: 6d650a8e
+x-gen-time: 8.95
+x-audio-path: 6d650a8e.wav
+x-seed: 53
+x-audio-duration: 7.84
+content-length: 752684
+content-type: audio/wav
+x-omnivoice-backend: 0.5.6
+

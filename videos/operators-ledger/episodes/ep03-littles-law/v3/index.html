@@ -1,0 +1,354 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<title>The Queue That Costs (v3)</title>
+<link rel="stylesheet" href="kit/brand.css">
+<script src="narration/words.js"></script>
+<script src="kit/motion-kit.js"></script>
+<script src="kit/sound-kit.js"></script>
+<style>
+#stage{background:#F3F2F2;overflow:hidden}
+#g3d,#fx{position:absolute;left:0;top:0;width:1080px;height:1350px}
+#g3d{z-index:1}
+.L{position:absolute;left:0;top:0;width:1080px;height:1350px}
+.eb{position:absolute;left:88px;top:136px;font:500 26px/1 var(--sans);letter-spacing:.22em;text-transform:uppercase;color:#B6240E;white-space:nowrap}
+.hl{position:absolute;left:88px;font-family:var(--serif);font-weight:300;line-height:1.06;letter-spacing:-.015em;white-space:nowrap;font-variant-numeric:lining-nums}
+.st{position:absolute;width:480px;margin-left:-240px;text-align:center}
+.n{font-family:var(--serif);font-weight:300;font-size:120px;line-height:1;letter-spacing:-.02em;font-variant-numeric:tabular-nums lining-nums;white-space:nowrap}
+.lb{margin-top:16px;font:500 26px/1.3 var(--sans);letter-spacing:.2em;text-transform:uppercase;white-space:nowrap}
+.ul{height:3px;margin:14px auto 0;width:0}
+.tag{position:absolute;left:0;top:0;font:500 28px/1 var(--sans);letter-spacing:.2em;text-transform:uppercase;white-space:nowrap}
+.chipa{position:absolute;left:88px}
+.chip{position:relative;display:inline-block;padding:16px 22px;border:2px solid #F3F2F2;color:#F3F2F2;font:500 28px/1 var(--sans);letter-spacing:.18em;text-transform:uppercase;white-space:nowrap}
+.chip .sk{position:absolute;left:-10px;top:50%;height:3px;margin-top:-1px;background:#EC3013;width:0}
+.eq{position:absolute;font-family:var(--serif);font-weight:300;line-height:1;letter-spacing:-.02em;white-space:nowrap;font-variant-numeric:tabular-nums lining-nums}
+.eql{position:absolute;font:500 24px/1.3 var(--sans);letter-spacing:.2em;text-transform:uppercase;white-space:nowrap}
+.srow{position:absolute;left:88px;width:904px;height:72px}
+.srow .k{position:absolute;left:0;top:26px;font:500 24px/1 var(--sans);letter-spacing:.2em;text-transform:uppercase;white-space:nowrap}
+.srow .rr{position:absolute;left:0;top:-6px;height:2px;width:904px}
+.blank{position:absolute;width:150px;height:56px;box-sizing:border-box;border:2px solid}
+#cap{position:absolute;left:0;width:1080px;bottom:150px;display:flex;justify-content:center;z-index:100}
+#capP{max-width:900px;padding:0;background:none;font:500 48px/1.16 var(--sans);letter-spacing:-.012em;text-align:center}
+#capP span{display:inline-block;white-space:pre}
+#tile{position:absolute;left:88px;top:270px;width:160px;height:160px}
+#tile img{width:100%;height:100%;display:block}
+</style></head>
+<body><div id="stage"><canvas id="g3d" width="1080" height="1350"></canvas><canvas id="fx" width="1080" height="1350"></canvas><div id="cap"><div id="capP"></div></div></div>
+<script>
+const W=1080,H=1350,B=0.6;
+const BONE='#F3F2F2',INK='#201E1D',RED='#EC3013',DRED='#B6240E',WG='#4A4644',GREY='#A7A4A3',GRB='#7D7A78',RULE='#D6D2CF';
+// the clock, built once from the voice: scene lines start on their cut; the three parts follow the tool's line; the sums wait for the ink
+const NR=window.NARRATION||{};const DUR=k=>(NR[k]&&NR[k].duration)||4;
+const onBeat=x=>Math.ceil(x/B-1e-6)*B;
+const SC={},AT={s0:0.6};AT.sp=AT.s0+DUR('s0')+0.35;
+function at(l,w,n,fb){n=n||1;const L=NR[l];if(L&&w){let c=0;for(const x of L.words)if(x.text.toLowerCase().replace(/[^a-z0-9£'−-]/g,'').startsWith(w)&&++c===n)return AT[l]+x.start;}return AT[l]+(fb||0);}
+{ let prev='sp';for(const[k,gap,lead]of [['s1',0.25,0],['s2',0.3,0],['s3',0.45,0],['s4',0.4,0],['s5',0.35,0],['s6',0.35,0.45]]){SC[k]=onBeat(AT[prev]+DUR(prev)+gap);AT[k]=SC[k]+lead;prev=k;} }
+AT.sf=AT.s6+DUR('s6')+0.25;
+const W1E=onBeat(AT.sf+DUR('sf')+0.45),WIPE1=[W1E-1.2,W1E];
+AT.sk=W1E+0.25;
+{ let prev='sk';for(const[k,gap]of [['sq',0.4],['s7',0.4],['s8',0.3]]){SC[k]=onBeat(AT[prev]+DUR(prev)+gap);AT[k]=SC[k];prev=k;} }
+AT.s9=AT.s8+DUR('s8')+0.6; // the sign-off ("This is the Operator's Ledger.", no "Case closed") plays over the Monday card, after a breath
+SC.J=onBeat(AT.s9+DUR('s9')-0.9); // the Monday card holds through the sign-off
+const END=Math.max(SC.J+2.5,AT.s9+DUR('s9')+0.1); // never over two minutes
+const VOICE=Object.keys(AT).map(k=>({line:k,at:AT[k]}));
+const C={ // cues: the words things land on
+ queue0:at('s0','queue',1,1.8),door0:at('s0','door',1,2.6),loses:at('s0','loses',1,4.6),
+ twelve1:at('s1','twelve',1,0),three1:at('s1','three',1,3.6),how1:at('s1','how',1,6.0),
+ wrong:at('s2','wrong',1,0.3),hire:at('s2','hire',1,1.0),so2:at('s2','so',1,3.0),doing:at('s2','doing',1,4.4),
+ till:at('s3','till',1,1.0),two3:at('s3','two',1,2.4),however:at('s3','however',1,3.8),
+ door4:at('s4','door',1,1.0),see:at('s4','see',1,2.0),walk:at('s4','walk',1,2.8),counted:at('s4','counted',1,4.0),ten4:at('s4','ten',1,4.6),
+ spend:at('s5','spend',1,1.0),eight:at('s5','eight',1,3.4),
+ little:at('s6','little',1,0),pq:at('sf','queue',1,0),pr:at('sf','rate',1,2.6),pw:at('sf','wait',2,5.5),
+ turn:at('sk','turn',1,0),twelveK:at('sk','twelve',1,0.9),twoK:at('sk','two',1,2.4),sixK:at('sk','six',1,3.2),tenK:at('sk','ten',1,5.0),daysK:at('sk','six',2,6.6),fiveK:at('sk','five',1,8.2),
+ howq:at('sq','how',1,0.4),verdict:at('s7','verdict',1,0.4),dont:at('s7','don',1,1.4),day7:at('s7','day',1,2.4),move:at('s7','move',1,3.0),second:at('s7','second',1,4.6),twelve7:at('s7','twelve',1,5.6),three7:at('s7','three',1,6.8),four7:at('s7','four',1,8.6),profit:at('s7','profit',1,10.2),
+ queue8:at('s8','queue',1,0.3),wait8:at('s8','wait',1,2.0),monday:at('s8','monday',1,3.0),how8:at('s8','how',1,4.0),really:at('s8','really',1,5.4)
+};
+const WIPE2=[SC.s8-0.75,SC.s8+0.6],TIDE=[SC.J-1.8,SC.J];
+const clamp=(x,a,b)=>Math.max(a,Math.min(b,x));
+const half=x=>Math.round(x/(B/2))*(B/2);
+const $=id=>document.getElementById(id);
+function hx(h){const n=parseInt(h.slice(1),16);return[(n>>16)&255,(n>>8)&255,n&255];}
+function mix(a,b,k){k=clamp(k,0,1);const A=hx(a),Z=hx(b);return'#'+A.map((v,i)=>Math.round(v+(Z[i]-v)*k).toString(16).padStart(2,'0')).join('');}
+const comma=n=>String(n).replace(/\B(?=(\d{3})+(?!\d))/g,',');
+const gbp=v=>{const r=Math.round(v);return(r<0?'−':r>0?'+':'')+'£'+comma(Math.abs(r));};
+// the world: site ten, with its lunch queue out of the door. The queue is the hero all the way through.
+const DX=200,DS=1.15,DOORX=DX+55*DS,FRONTZ=-80*DS-2,QZ=-182,GAP=44; // café centre, scale, door, front face, queue line, spacing
+const MAT={body:['#E2DFDC','#CBC6C2','#B8B2AE'],plinth:['#D6D2CF','#C4BFBB','#B3ADA9'],roof:['#CBC6C2','#BDB7B2','#AEA8A3'],ink:['#3A3735','#201E1D','#2A2826'],glass:['#3A3735','#201E1D','#2A2826'],
+ guest:['#8F8A87','#7D7A78','#6F6B69'],kerb:['#B8B2AE','#A7A4A3','#99948F'],guestDark:['#3A3735','#201E1D','#2A2826'],lost:['#EC3013','#C92A10','#B6240E'],pave:['#DCD8D5','#CFCAC6','#C2BDB8']};
+const VMAT={plinth:['#D6D2CF','#B8B2AE','#A39E9B'],body:['#F3F2F2','#DCD8D5','#C4BFBB'],roof:['#F3F2F2','#E2DFDC','#CFCAC6'],guest:['#F3F2F2','#DCD8D5','#C4BFBB']};
+const cam={tx:0,ty:0,tz:0,yaw:0,pitch:0,dist:1000,f:1250,cx:540,cy:720};
+let ctx,fctx,fxEl,capP,capW,LY,faces=[],qV=null,qL=null;
+const items=[],lines=[],tags=[],A={};
+function cs(x,y,z){const dx=x-cam.tx,dy=y-cam.ty,dz=z-cam.tz;const c=Math.cos(cam.yaw),s=Math.sin(cam.yaw);const x1=dx*c-dz*s,z1=dx*s+dz*c;const cp=Math.cos(cam.pitch),sp=Math.sin(cam.pitch);return[x1,dy*cp+z1*sp,-dy*sp+z1*cp+cam.dist];}
+function P(x,y,z){const q=cs(x,y,z);const zc=Math.max(q[2],30);const s=cam.f/zc;return[cam.cx+q[0]*s,cam.cy-q[1]*s,zc];}
+function nr(x,y,z){const c=Math.cos(cam.yaw),s=Math.sin(cam.yaw);const x1=x*c-z*s,z1=x*s+z*c;const cp=Math.cos(cam.pitch),sp=Math.sin(cam.pitch);return[x1,y*cp+z1*sp,-y*sp+z1*cp];}
+function box(x0,x1,y0,y1,z0,z1,m,fog,bg,bias){ // bias: façade details sort in front of the wall they sit on
+ const F=[[[x0,y1,z0],[x1,y1,z0],[x1,y1,z1],[x0,y1,z1],[0,1,0],0],[[x0,y0,z0],[x1,y0,z0],[x1,y1,z0],[x0,y1,z0],[0,0,-1],1],[[x1,y0,z1],[x0,y0,z1],[x0,y1,z1],[x1,y1,z1],[0,0,1],1],[[x0,y0,z1],[x0,y0,z0],[x0,y1,z0],[x0,y1,z1],[-1,0,0],2],[[x1,y0,z0],[x1,y0,z1],[x1,y1,z1],[x1,y1,z0],[1,0,0],2]];
+ for(const f of F){const cc=cs((f[0][0]+f[2][0])/2,(f[0][1]+f[2][1])/2,(f[0][2]+f[2][2])/2);if(cc[2]<40)continue;const n=nr(f[4][0],f[4][1],f[4][2]);if(n[0]*cc[0]+n[1]*cc[1]+n[2]*cc[2]>=0)continue;faces.push({p:[P(...f[0]),P(...f[1]),P(...f[2]),P(...f[3])],z:cc[2]-(bias||0),c:fog?mix(m[f[5]],bg,fog):m[f[5]]});}
+}
+function flush(){faces.sort((a,b)=>b.z-a.z);ctx.lineJoin='round';for(const f of faces){ctx.fillStyle=f.c;ctx.beginPath();ctx.moveTo(f.p[0][0],f.p[0][1]);for(let i=1;i<4;i++)ctx.lineTo(f.p[i][0],f.p[i][1]);ctx.closePath();ctx.fill();ctx.strokeStyle=mix(f.c,INK,0.3);ctx.lineWidth=1.25;ctx.stroke();}faces=[];} // thin, crisp edges (Episode 02 lesson 8)
+const EDG=[[0,1],[1,2],[2,3],[3,0],[0,4],[1,5],[2,6],[3,7],[4,5],[5,6],[6,7],[7,4]];
+function wire(x0,x1,y0,y1,z0,z1,col,prog,lw,al){if(prog<=0||al<=0)return;const V=[[x0,y0,z0],[x1,y0,z0],[x1,y0,z1],[x0,y0,z1],[x0,y1,z0],[x1,y1,z0],[x1,y1,z1],[x0,y1,z1]].map(v=>P(...v));ctx.globalAlpha=al;ctx.strokeStyle=col;ctx.lineWidth=lw;ctx.lineCap='square';EDG.forEach((e,i)=>{const k=clamp(prog*12-i,0,1);if(k<=0)return;const a=V[e[0]],b=V[e[1]];ctx.beginPath();ctx.moveTo(a[0],a[1]);ctx.lineTo(a[0]+(b[0]-a[0])*k,a[1]+(b[1]-a[1])*k);ctx.stroke();});ctx.globalAlpha=1;}
+function cafe(ox,oy,oz,s,fog,bg,hb,mt,door2){mt=mt||MAT;const y=oy;
+ box(ox-140*s,ox+140*s,y-14*s,y,oz-110*s,oz+110*s,mt.plinth,fog,bg);
+ const hh=150*s*(hb==null?1:hb);if(hh<0.5)return;
+ box(ox-105*s,ox+105*s,y,y+hh,oz-80*s,oz+80*s,mt.body,fog,bg);
+ box(ox-109*s,ox+109*s,y+hh,y+hh+8*s,oz-84*s,oz+84*s,mt.roof,fog,bg);
+ if(hh>=109*s)box(ox-112*s,ox+112*s,y+104*s,y+109*s,oz-100*s,oz-80*s,MAT.ink,fog,bg,60);
+ if(hh>=90*s)box(ox-90*s,ox+12*s,y+18*s,y+90*s,oz-82*s,oz-80*s,MAT.glass,fog,bg,60);
+ if(hh>=83*s)box(ox+32*s,ox+78*s,y,y+83*s,oz-82*s,oz-80*s,MAT.ink,fog,bg,60);
+ if(door2&&hh>=83*s){const k=door2;box(ox-60*s,ox-14*s,y,y+83*s*k,oz-82*s,oz-80*s,MAT.ink,fog,bg,60);}}
+function seg(a,b,col,lw,al,k){if(al<=0||k<=0)return;const p=P(...a),q=P(a[0]+(b[0]-a[0])*k,a[1]+(b[1]-a[1])*k,a[2]+(b[2]-a[2])*k);ctx.globalAlpha=al;ctx.strokeStyle=col;ctx.lineWidth=lw;ctx.lineCap='butt';ctx.beginPath();ctx.moveTo(p[0],p[1]);ctx.lineTo(q[0],q[1]);ctx.stroke();ctx.globalAlpha=1;}
+function quadLine(pts,col,lw,al){if(al<=0)return;const q=pts.map(v=>P(...v));ctx.globalAlpha=al;ctx.strokeStyle=col;ctx.lineWidth=lw;ctx.lineJoin='miter';ctx.beginPath();q.forEach((p,i)=>i?ctx.lineTo(p[0],p[1]):ctx.moveTo(p[0],p[1]));ctx.closePath();ctx.stroke();ctx.globalAlpha=1;}
+// a guest: a slim body and a head, the series' simplest figure
+const GT=[['#5A5552','#4A4644','#423E3C'],['#8F8A87','#7D7A78','#6F6B69'],['#3A3735','#201E1D','#2A2826'],['#A7A4A3','#99948F','#8C8783']];
+function guest(x,y,z,m,fog,bg,lift){lift=lift||0;box(x-11,x+11,y+lift,y+lift+50,z-10,z+10,m,fog,bg);box(x-8,x+8,y+lift+54,y+lift+70,z-8,z+8,m,fog,bg);}
+// the queue, always flowing: one guest goes in at the till every period, the line steps up, and one joins at the back. Twelve stay in line.
+function queueAt(t,period,t0){const ph=Math.max(0,t-t0)/period,n=Math.floor(ph),fr=ph-n;const e=fr<0.42?M.spring(fr*period,0,0,1,{stiffness:260,damping:30}):1;return{n,e};}
+function drawQueue(t,o){o=o||{};const period=o.period||1.25,y=o.y||0,m=o.m||MAT.guest,fog=o.fog||0,bg=o.bg||BONE,len=o.len||12;
+ const q=queueAt(t,period,1.0);
+ for(let k=0;k<=len;k++){const s=k-q.e;let x=DOORX-46-s*GAP;let al=1,lift=0,zz=QZ;
+  if(s<0){al=1+s*1.6;zz=QZ+(-s)*70;if(o.two&&(k+q.n)%2)x=DOORX-46+((DX-37*DS)-(DOORX-46))*clamp(-s*1.5,0,1);} // into the door, or the second till's
+  if(k===len){al=clamp(1-(s-(len-1)),0,1);} // arriving at the back
+  if(al<=0.02)continue;const id=k+q.n,tone=o.m?m:GT[(id*7)%4];const mm=o.dark&&k<len?MAT.guestDark:tone;lift=1.6*Math.sin(Math.max(0,t-0.6)*3.1+id*1.7)*(t>0.6?1:0);guest(x,y,zz,mm,clamp(fog+(1-al),0,1),bg,lift);}
+}
+// guests who see the line and walk on: they join, pause, turn red and leave
+const coins=[];
+function drawWalkers(t,starts,y,bg){for(const a of starts){if(t<a)continue;const u=t-a;const x0=DOORX-46-12.4*GAP;if(t>=a+0.5&&t<a+2.3)coins.push({a:a+0.5,x:x0});const walk=Math.max(0,u-0.75);const x=x0-150*walk-60*walk*walk;const red=M.p(t,a+0.5,0.3,'sine.inOut');const al=1-M.p(t,a+2.4,0.6,'sine.inOut');if(al<=0.02)continue;
+  const m={0:mix(MAT.guest[0],RED,red),1:mix(MAT.guest[1],'#C92A10',red),2:mix(MAT.guest[2],'#B6240E',red)};guest(x,y,QZ-40,m,1-al,bg);}}
+function drawCoins(t){for(const c of coins){const rise=110*M.p(t,c.a,1.6,'power2.out'),sc=Math.max(0,M.spring(t,c.a,0,1,'pop')),al=1-M.p(t,c.a+1.3,0.45,'sine.inOut');if(al<=0.01||sc<=0.01)continue;
+ const p=P(c.x,86+rise,QZ-40),k=cam.f/p[2],r=24*k*sc;ctx.globalAlpha=al;ctx.fillStyle=RED;ctx.beginPath();ctx.arc(p[0],p[1],r,0,Math.PI*2);ctx.fill();ctx.strokeStyle='#B6240E';ctx.lineWidth=2;ctx.stroke();
+ ctx.fillStyle=BONE;ctx.font='500 '+(28*k*sc).toFixed(1)+'px Archivo';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('£',p[0],p[1]+1);ctx.globalAlpha=1;}coins.length=0;}
+// the camera: poses blended by calm springs, each with its own slow drift and push
+function pose(t,list){let cur=null;for(const p of list){const e=Math.max(0,t-p.t);const tgt={tx:p.tx,ty:p.ty,tz:p.tz||0,dist:p.dist-(p.push||0)*e,pitch:p.pitch,yaw:p.yaw+(p.rate||0)*e,cy:p.cy,f:p.f||1250};if(!cur){cur=tgt;continue;}if(t<p.t)break;const k=M.spring(t,p.t,0,1,p.cfg||'calm');for(const key in tgt)cur[key]+=(tgt[key]-cur[key])*k;}
+ cam.tx=cur.tx;cam.ty=cur.ty;cam.tz=cur.tz;cam.dist=cur.dist;cam.pitch=cur.pitch;cam.yaw=cur.yaw;cam.cy=cur.cy;cam.cx=540;cam.f=cur.f;}
+
+const POSES=[
+ {t:0.6,tx:10,ty:70,dist:1160,pitch:0.40,yaw:-0.26,rate:0.003,push:5,cy:810},
+ {t:SC.s2-0.6,tx:20,ty:70,dist:1110,pitch:0.38,yaw:-0.32,rate:0.002,push:5,cy:810},
+ {t:SC.s3-0.6,tx:DOORX-90,ty:70,dist:930,pitch:0.34,yaw:-0.46,rate:0.004,push:6,cy:740,cfg:{stiffness:95,damping:13}},
+ {t:SC.s4-0.6,tx:-25,ty:70,dist:1220,pitch:0.34,yaw:-0.14,rate:-0.003,push:6,cy:820,cfg:{stiffness:95,damping:13}},
+ {t:SC.s5-0.6,tx:-10,ty:70,dist:1160,pitch:0.38,yaw:-0.28,rate:0.003,push:6,cy:810,cfg:{stiffness:95,damping:13}},
+ {t:SC.s6-0.6,tx:0,ty:60,dist:1200,pitch:0.48,yaw:-0.20,rate:0.002,push:7,cy:810}
+];
+// the street at lunch (bone): site ten, its queue, the guests who walk on, and the three parts of the law
+function mainWorld(t){
+ pose(t,POSES);
+ { const k=M.p(t,WIPE1[0]-0.3,WIPE1[1]-WIPE1[0]+0.3,'power2.in');cam.dist*=1-0.38*k;cam.tx+=(-60-cam.tx)*k; } // the dive into the queue as the ink rises
+ box(-640,440,-14,0,-252,-112,MAT.pave,0,BONE);box(-640,440,0,1.5,-252,-246,MAT.kerb,0,BONE);
+ cafe(DX,0,0,DS,0,BONE);
+ const dark=M.p(t,C.pq,0.4,'sine.inOut')*(t<WIPE1[1]?1:0);
+ drawQueue(t,{dark:dark>0.5});
+ drawWalkers(t,[C.see,C.see+0.75,C.walk+0.5,C.counted+0.2],0,BONE);
+ flush();drawCoins(t);
+ // the till: the door framed in red while it is the clue and while the rate is named
+ const tk=M.p(t,C.till,0.4,'sine.inOut')*(1-M.p(t,SC.s4-0.8,0.4,'sine.inOut'))+M.p(t,C.pr,0.4,'sine.inOut')*(1-M.p(t,WIPE1[0],0.3,'sine.inOut'));
+ quadLine([[DX+30*DS,0,FRONTZ],[DX+80*DS,0,FRONTZ],[DX+80*DS,86*DS,FRONTZ],[DX+30*DS,86*DS,FRONTZ]],RED,3,clamp(tk,0,1));
+ // the queue, bracketed as it is named; the wait, a red line from the back of the queue to the till
+ const qb=M.p(t,C.pq,0.5,'power3.out')*(1-M.p(t,WIPE1[0],0.3,'sine.inOut'));const xb=DOORX-46-11*GAP,xf=DOORX-46;
+ if(qb>0){seg([xb-12,80,QZ],[xf+12,80,QZ],RED,3,qb,1);seg([xb-12,80,QZ],[xb-12,66,QZ],RED,3,qb,1);seg([xf+12,80,QZ],[xf+12,66,QZ],RED,3,qb,1);}
+ const wl=M.p(t,C.pw,1.0,'power2.inOut')*(1-M.p(t,WIPE1[0],0.3,'sine.inOut'));if(wl>0)seg([xb,0.5,QZ-44],[xf+40,0.5,QZ-44],RED,4,1,wl);
+ qL=[P(xb,0.5,QZ-44),P(xf,0.5,QZ-44)];
+ tags.forEach(g=>{if(g.w)g.p=P(...(typeof g.w==='function'?g.w():g.w));});
+}
+// the verdict (ink): the same café, a second till opens, the line moves at three a minute
+function verdictWorld(t){
+ cam.tx=0;cam.ty=70;cam.tz=0;cam.pitch=0.36;cam.yaw=-0.26+0.006*(t-SC.sq);cam.dist=1180-6*Math.max(0,t-SC.sq);cam.cx=540;cam.cy=830;cam.f=1250;
+ const en=M.p(t,SC.sq-0.4,0.8,'sine.inOut');const fog=1-en;const d2=clamp(M.spring(t,C.second,0,1,'weight'),0,1.03);
+ box(-640,440,-14,0,-252,-112,{0:'#3A3735',1:'#2E2B2A',2:'#2A2826'},fog,INK);
+ cafe(DX,0,0,DS,fog,INK,1,VMAT,t>=C.second?d2:0);
+ const fast=t>=C.three7?1:0;drawQueue(t,{m:VMAT.guest,fog,bg:INK,period:fast?0.83:1.25,two:t>=C.second+0.6});
+ flush();
+ if(t>=C.second){const k=M.p(t,C.second,0.5,'power3.out');quadLine([[DX-60*DS,0,FRONTZ],[DX-14*DS,0,FRONTZ],[DX-14*DS,86*DS*d2,FRONTZ],[DX-60*DS,86*DS*d2,FRONTZ]],RED,3,k*(1-M.p(t,SC.s8-1.2,0.5,'sine.inOut')));}
+ const xb=DOORX-46-11*GAP,xf=DOORX-46;const wl=M.p(t,SC.sq+0.4,0.8,'power2.inOut')*en;if(wl>0)seg([xb,0.5,QZ-44],[xf+40,0.5,QZ-44],RED,4,1,wl);
+ const top=150*DS+8*DS;qV=[P(DX-109*DS,top,-84*DS),P(DX+109*DS,top,-84*DS),P(DX+109*DS,top,84*DS),P(DX-109*DS,top,84*DS)];
+ tags.forEach(g=>{if(g.wv)g.p=P(...g.wv);});
+}
+// the lesson (bone): the café with a short line that keeps moving
+function lessonWorld(t){
+ cam.tx=60;cam.ty=70;cam.tz=0;cam.pitch=0.34;cam.yaw=-0.26+0.006*(t-SC.s8);cam.dist=1120-8*Math.max(0,t-SC.s8);cam.cx=540;cam.cy=830;cam.f=1250;
+ const ex=M.p(t,C.how8-0.8,0.7,'sine.inOut');if(ex>=1)return;
+ box(-640,440,-14,0,-252,-112,MAT.pave,ex,BONE);cafe(DX,0,0,DS,ex,BONE);drawQueue(t,{len:4,period:0.83,fog:ex});flush();
+}
+function dial(cx,cy,r,mins,al,lab,num){if(al<=0.01)return;const g=ctx;g.save();g.globalAlpha=al;
+ g.lineWidth=6;g.strokeStyle='#3A3735';g.beginPath();g.arc(cx,cy,r,0,Math.PI*2);g.stroke();
+ for(let i=0;i<10;i++){const a=-Math.PI/2+i/10*Math.PI*2,r0=r-(i%5?14:24);g.strokeStyle=i%5?'#5A5552':GREY;g.lineWidth=i%5?2:3;g.beginPath();g.moveTo(cx+Math.cos(a)*r0,cy+Math.sin(a)*r0);g.lineTo(cx+Math.cos(a)*(r-4),cy+Math.sin(a)*(r-4));g.stroke();}
+ if(mins>0.02){const a1=-Math.PI/2+clamp(mins,0,10)/10*Math.PI*2;g.strokeStyle=RED;g.lineWidth=12;g.lineCap='butt';g.beginPath();g.arc(cx,cy,r,-Math.PI/2,a1);g.stroke();g.fillStyle=RED;g.beginPath();g.arc(cx+Math.cos(a1)*r,cy+Math.sin(a1)*r,10,0,Math.PI*2);g.fill();}
+ g.fillStyle=BONE;g.textAlign='center';g.textBaseline='alphabetic';g.font='300 '+Math.round(r*0.86)+'px Newsreader';g.fillText(num,cx,cy+r*0.3);
+ g.fillStyle=GREY;g.font='500 22px Archivo';if(g.letterSpacing!==undefined)g.letterSpacing='4px';g.fillText(lab,cx,cy+r+52);g.restore();}
+function dials(t){
+ // the sums: 12 ÷ 2 = a stopwatch that sweeps to six
+ const a0=C.twelveK-0.1,a1=C.tenK-0.45;if(t>=a0-0.2&&t<a1+0.4){const al=M.p(t,a0,0.3,'sine.inOut')*(1-M.p(t,a1,0.3,'sine.inOut'));const sc=M.spring(t,a0,0.85,1,'snap')*(1-0.12*M.p(t,a1,0.3,'sine.inOut'));
+  const m=t<C.sixK-0.1?0:M.spring(t,C.sixK-0.1,0,6,{stiffness:150,damping:13});dial(842,604,128*sc,m,al,'MINUTES WAITING',m<0.5?'?':String(Math.round(m)));}
+ // the verdict: six minutes, then the second till winds it back to four
+ const v0=C.three7-0.3,v1=C.profit-0.45;if(t>=v0-0.2&&t<v1+0.4){const al=M.p(t,v0,0.35,'sine.inOut')*(1-M.p(t,v1,0.3,'sine.inOut'));
+  const m=t<C.four7-0.1?6:M.spring(t,C.four7-0.1,6,4,{stiffness:150,damping:12});dial(860,320,96*M.spring(t,v0,0.85,1,'snap'),m,al,'MINUTES WAITING',String(Math.round(m)));}
+}
+function wipe(t,w,q,cA,cB,z){if(t<w[0]||t>=w[1]||!q)return;const k=M.p(t,w[0],w[1]-w[0],'sine.inOut');const T=[[-8,H+8],[W+8,H+8],[W+8,-8],[-8,-8]];fctx.fillStyle=mix(cA,cB,k);fctx.beginPath();for(let i=0;i<4;i++){const x=q[i][0]+(T[i][0]-q[i][0])*k,y=q[i][1]+(T[i][1]-q[i][1])*k;i?fctx.lineTo(x,y):fctx.moveTo(x,y);}fctx.closePath();fctx.fill();fxEl.style.zIndex=z;}
+function ridgeFill(g,topY,amp,seed,ph,col,al){g.globalAlpha=al==null?1:al;g.fillStyle=col;g.beginPath();g.moveTo(-10,H+20);for(let x=-10;x<=W+10;x+=12){const u=x/W;const y=topY+amp*(0.55*Math.sin(u*8.2+seed+ph)+0.45*Math.sin(u*17.0+seed*1.7-ph*0.6));g.lineTo(x,y);}g.lineTo(W+10,H+20);g.closePath();g.fill();g.globalAlpha=1;}
+function tide(t,w,z){w=w||TIDE;if(t<w[0]||t>=w[1])return;const k=M.p(t,w[0],w[1]-w[0],'sine.inOut');fxEl.style.zIndex=z||25;
+ [[mix(INK,BONE,0.55),0,11],[INK,0.12,5]].forEach(([col,lag,seed])=>{const kk=clamp((k-lag)/(1-lag),0,1);ridgeFill(fctx,(H+90)-kk*(H+210),90,seed,t*0.6,col,1);});}
+// captions: the spoken word red, lifting in on its beat; ink or bone by the ground beneath them
+function groundDark(){let px=fctx.getImageData(540,1170,1,1).data;if(px[3]<128)px=ctx.getImageData(540,1170,1,1).data;return px[0]*.3+px[1]*.59+px[2]*.11<110;}
+function caption(t,dark){
+ const cp=M.caption(t,6);if(!cp||!cp.words||!cp.words.length){capW.style.visibility='hidden';return;}
+ const base=dark?BONE:INK;let act=-1;cp.words.forEach((w,i)=>{if(w.spoken)act=i;});
+ capP.innerHTML=cp.words.map((w,i)=>{const sp=w.spoken,y=sp?M.spring(t,w.at,10,0,'snap'):4,op=sp?1:0.26,col=i===act?RED:base;
+  return '<span style="color:'+col+';opacity:'+op+';transform:translateY('+y.toFixed(1)+'px)">'+w.text+'</span>';}).join(' ');
+ capW.style.visibility='visible';
+}
+function mk(p,tag,cls,html,css){const e=document.createElement(tag);if(cls)e.className=cls;if(html!=null)e.innerHTML=html;if(css)Object.assign(e.style,css);p.appendChild(e);return e;}
+function item(e,a,b,o){items.push(Object.assign({el:e,a,b},o||{}));return e;}
+function line(p,txt,y,col,a,b,o){o=o||{};const e=mk(p,'div','hl',txt,{top:y+'px',color:col,fontSize:(o.size||100)+'px'});lines.push({el:e,a,b,size:o.size||100,drift:o.drift||0,wt:o.wt||null});return e;}
+function said(l,ws,fb){return ws.map((w,i)=>{const[word,n]=Array.isArray(w)?w:[w,1];return at(l,word,n,fb+i*0.3)-0.08;});}
+function stat(p,num,lab,col,a,b,o){o=o||{};const e=mk(p,'div','st');const n=mk(e,'div','n',num,{color:col});const l=mk(e,'div','lb',lab,{color:o.lc||WG});const u=o.ul?mk(e,'div','ul','',{background:o.ul}):null;if(o.x!=null)e.style.left=o.x+'px';if(o.y!=null)e.style.top=o.y+'px';item(e,a,b,o.drift?{drift:o.drift}:null);const rec=items[items.length-1];rec.n=n;rec.l=l;rec.u=u;rec.ua=o.ua;if(o.count!=null){rec.count=o.count;rec.from=o.from||0;rec.fmt=o.fmt;}if(o.size)n.style.fontSize=o.size+'px';if(o.w){e.style.width=o.w+'px';e.style.marginLeft=(-o.w/2)+'px';}return rec;}
+function drawItem(it,t){const dy=it.dy==null?24:it.dy,a=it.a,b=it.b;const op=M.p(t,a,0.14,'sine.inOut')*(b==null?1:1-M.p(t,b-0.16,0.15,'sine.inOut'));let y=M.spring(t,a,dy,0,'snap');if(b!=null)y+=M.spring(t,b-0.16,0,it.down?dy*2.4:-dy*0.25,'snap');if(it.drift)y-=it.drift*Math.max(0,t-Math.max(a,0.3));M.set(it.el,{y,opacity:op,visible:op>0.003});if(it.n)M.set(it.n,{scale:M.spring(t,a,0.9,1,'snap')});if(it.count!=null&&it.n)it.n.textContent=it.fmt(M.tween(t,a+0.15,0.6,it.from,it.count,'power4.out'));if(it.u)it.u.style.width=(it.ua!=null?M.tween(t,it.ua,0.7,0,200,'power4.out'):0)+'px';}
+function drawLine(L,t){const a=L.a,b=L.b,s=L.size;const outK=b==null?0:M.p(t,b,0.22,'sine.inOut');const vis=t>=a-0.05&&outK<1;M.set(L.el,{visible:vis,opacity:1-outK,y:(b==null?0:M.spring(t,b,0,-s*0.06,'snap'))-L.drift*Math.max(0,t-Math.max(a,0.3))});L.words.forEach((w,i)=>M.set(w,{y:M.spring(t,L.wt&&L.wt[i]!=null?L.wt[i]:a+i*0.1,s*1.15,0,'snap')}));}
+function tag(p,txt,col,a,b,w,dx,dy){const e=mk(p,'div','tag',txt,{color:col});const g={el:e,a,b,w,dx:dx||0,dy:dy||0,p:null};tags.push(g);return g;}
+function drawTag(g,t){const op=M.p(t,g.a,0.2,'sine.inOut')*(g.b==null?1:1-M.p(t,g.b-0.2,0.2,'sine.inOut'));if(op<=0.003||!g.p){M.set(g.el,{visible:false});return;}
+ const w=g.el.offsetWidth;const x=clamp(g.al==='r'?g.p[0]+g.dx-w:g.al==='l'?g.p[0]+g.dx:g.p[0]+g.dx-w/2,88,992-w);g.el.style.left=x.toFixed(1)+'px';g.el.style.top=(g.p[1]+g.dy).toFixed(1)+'px';M.set(g.el,{visible:true,opacity:op,y:M.spring(t,g.a,10,0,'snap')});}
+const EQ=[];function eq(p,txt,x,y,size,col,a,b){const e=mk(p,'div','eq',txt,{left:x+'px',top:y+'px',fontSize:size+'px',color:col});item(e,a,b,{dy:18,drift:2});return e;}
+function eql(p,txt,x,y,col,a,b){const e=mk(p,'div','eql',txt,{left:x+'px',top:y+'px',color:col});item(e,a,b,{dy:12,drift:2});return e;}
+M.scene({
+ width:W,height:H,fps:30,duration:END,bpm:100,
+ cuts:[SC.s1,SC.s2,SC.s3,SC.s4,SC.s5,SC.s6,W1E,SC.sq,SC.s7,SC.s8,SC.J].map(x=>Math.round(x/B)),
+ voice:VOICE,
+ setup(){
+  const st=$('stage');
+  ctx=$('g3d').getContext('2d');fxEl=$('fx');fctx=fxEl.getContext('2d');capP=$('capP');capW=$('cap');
+  LY={};[['w',8],['a',10],['b',12],['c',14],['d',18],['e',20],['f',22],['h',26]].forEach(([k,z])=>{LY[k]=mk(st,'div','L','',{zIndex:z});});
+  // world labels (beside their object, never on it)
+  tag(LY.w,'Till',DRED,C.till,SC.s4-0.6,[DOORX,182,100*DS],0,-46);
+  tag(LY.w,'Rate · 2 a minute',DRED,C.pr,WIPE1[0]+0.2,[DOORX,182,100*DS],0,-46);
+  tag(LY.w,'Queue · 12',DRED,C.pq,WIPE1[0]+0.2,()=>[DOORX-46-5.5*GAP,80,QZ],0,-50);
+  const tw0=tag(LY.w,'Wait · ?',DRED,C.pw+0.3,WIPE1[0]+0.2,()=>[DOORX-46-5.5*GAP,-14,QZ-100],0,10);
+  // the entry: frame 0 is this card, finished (the thumbnail)
+  item(mk(LY.a,'div','eb','The Operator’s Ledger · Little’s Law'),-10,SC.s1-0.6);
+  line(LY.a,'Queue out of the door.',196,INK,-10,at('sp','one',1,2.4)-0.55,{size:96});line(LY.a,'Still losing money.',298,GRB,-10,at('sp','one',1,2.4)-0.5,{size:96});
+  line(LY.a,'One puzzle.',200,INK,at('sp','one',1,2.4)-0.1,SC.s1-0.7,{wt:said('sp',['one','puzzle'],2.4)});line(LY.a,'One framework.',306,INK,at('sp','one',2,3.4)-0.1,SC.s1-0.65,{wt:said('sp',[['one',2],'framework'],3.4)});line(LY.a,'One verdict.',412,GRB,at('sp','one',3,4.6)-0.1,SC.s1-0.6,{wt:said('sp',[['one',3],'verdict'],4.6)});
+  // the puzzle: the figures, then the question
+  item(mk(LY.b,'div','eb','The puzzle · Illustrative figures, weekly'),SC.s1-0.15,SC.s2-0.3);
+  stat(LY.b,'12','In line<br>at 12:10',INK,C.twelve1-0.2,C.how1-0.4,{x:300,y:226,count:12,fmt:v=>String(Math.round(v)),ul:INK,ua:C.twelve1+0.3});
+  stat(LY.b,'−£300','Site 10<br>every week',RED,C.three1-0.2,C.how1-0.4,{x:780,y:226,count:-300,fmt:gbp,ul:RED,ua:C.three1+0.3});
+  line(LY.b,'How can a queue',200,INK,C.how1-0.1,SC.s2-0.55,{wt:[C.how1-0.1,C.how1+0.05,C.how1+0.2,C.how1+0.35]});line(LY.b,'lose money?',306,GRB,C.how1+0.3,SC.s2-0.55,{wt:[C.how1+0.3,C.how1+0.45]});
+  // the stakes
+  item(mk(LY.b,'div','eb','The stakes'),SC.s2-0.15,SC.s3-0.3);
+  line(LY.b,'Wrong answer,',200,INK,SC.s2-0.25,C.so2-0.36,{wt:[SC.s2-0.25,C.wrong]});line(LY.b,'wrong hire.',306,GRB,C.hire-0.1,C.so2-0.36,{wt:[C.hire-0.25,C.hire-0.1]});
+  line(LY.b,'What is the queue',200,INK,C.so2+0.3,SC.s3-0.55,{wt:said('s2',['what','is','the','queue'],3.4)});line(LY.b,'really doing?',306,GRB,at('s2','really',1,4.2)-0.1,SC.s3-0.55,{wt:said('s2',['really','doing'],4.2)});
+  // clue 01: the till
+  item(mk(LY.c,'div','eb','Clue 01 · The till'),SC.s3-0.15,SC.s4-0.3);
+  line(LY.c,'Clue one.',200,INK,SC.s3-0.25,C.two3-0.6,{wt:[SC.s3-0.25,at('s3','one',1,0.2)-0.08]});line(LY.c,'The till.',306,GRB,at('s3','the',1,0.6)-0.1,C.two3-0.6,{wt:said('s3',['the','till'],0.6)});
+  const ev=(num,lab,col,x,a,b,o)=>stat(LY.c,num,lab,col,a,b,Object.assign({x:540,y:206,w:700,size:150},o||{}));
+  ev('2 a minute','Served at the till',INK,540,C.two3-0.2,SC.s4-0.6,{ul:INK,ua:C.two3+0.3});
+  // clue 02: the door
+  item(mk(LY.c,'div','eb','Clue 02 · The door'),SC.s4-0.15,SC.s5-0.3);
+  line(LY.c,'Clue two.',200,INK,SC.s4-0.25,C.ten4-0.6,{wt:[SC.s4-0.25,at('s4','two',1,0.2)-0.08]});line(LY.c,'The door.',306,GRB,at('s4','the',1,0.6)-0.1,C.ten4-0.6,{wt:said('s4',['the','door'],0.6)});
+  ev('10 a day','See the line, walk on',RED,540,C.ten4-0.2,SC.s5-0.6,{count:10,fmt:v=>Math.round(v)+' a day',ul:RED,ua:C.ten4+0.3});
+  // clue 03: the spend
+  item(mk(LY.c,'div','eb','Clue 03 · The spend'),SC.s5-0.15,SC.s6-0.3);
+  line(LY.c,'Clue three.',200,INK,SC.s5-0.25,C.eight-0.6,{wt:[SC.s5-0.25,at('s5','three',1,0.2)-0.08]});line(LY.c,'The spend.',306,GRB,at('s5','the',1,0.6)-0.1,C.eight-0.6,{wt:said('s5',['the','spend'],0.6)});
+  ev('£8.50','Each would have spent',INK,540,C.eight-0.2,SC.s6-0.6,{count:8.5,fmt:v=>'£'+v.toFixed(2),ul:INK,ua:C.eight+0.3});
+  // the tool: Little's Law, in three parts, on the street
+  item(mk(LY.d,'div','eb','The tool · Little’s Law'),SC.s6-0.15,SC.sq-0.3);
+  line(LY.d,'Little’s Law,',200,INK,SC.s6-0.2,WIPE1[0]+0.3,{wt:[SC.s6-0.2,C.little+0.15]});line(LY.d,'in three parts.',306,GRB,C.pq-0.1,WIPE1[0]+0.3,{wt:[C.pq-0.1,C.pq+0.05,C.pq+0.2]});
+  // the sums, on ink
+  A.hs1=line(LY.d,'Turn it round.',200,INK,WIPE1[1]-0.3,SC.sq-0.6,{drift:1.5,wt:said('sk',['turn','it','round'],0)});A.hs2=line(LY.d,'Wait = queue ÷ rate.',306,GRB,C.turn+0.55,SC.sq-0.6,{drift:1.5});
+  { const row=(txt,size,col,a,b,y)=>{const e=mk(LY.d,'div','eq',txt,{left:'88px',width:'904px',textAlign:'center',top:y+'px',fontSize:size+'px',color:col});item(e,a,b,{dy:22,drift:2});return e;};
+    const lab=(txt,col,a,b,y)=>{const e=mk(LY.d,'div','eql',txt,{left:'88px',width:'904px',textAlign:'center',top:y+'px',color:col});item(e,a,b,{dy:14,drift:2});return e;};
+    // 1) the wait, built term by term on the words, into the stopwatch (drawn on the canvas)
+    const A1=C.tenK-0.45;
+    A.q12=row('12',170,BONE,C.twelveK-0.1,A1,520);A.q12.style.width='300px';A.q12.style.left='88px';
+    A.q2=row('÷ 2 =',170,BONE,C.twoK-0.1,A1,520);A.q2.style.width='380px';A.q2.style.left='350px';
+    lab('In the<br>queue',GREY,C.twelveK,A1,712).style.cssText+=';width:300px;left:88px';lab('Served<br>a minute',GREY,C.twoK,A1,712).style.cssText+=';width:380px;left:350px';
+    // 2) what walks away: a till receipt feeds up out of the slot, a line on each word, ending on the one red figure
+    const SLOT=1000;A.slot=mk(LY.d,'div','',null,{position:'absolute',left:'190px',top:(SLOT-2)+'px',width:'700px',height:'5px',background:'#4A4644'});item(A.slot,C.tenK-0.5,SC.sq-0.6,{dy:0});
+    A.rcl=mk(LY.d,'div','',null,{position:'absolute',left:'0',top:'0',width:'1080px',height:'1350px',clipPath:'inset(0 0 '+(1350-SLOT)+'px 0)'});
+    const zig=n=>{let p='polygon(0% 14px';for(let i=0;i<=n;i++)p+=','+(i/n*100).toFixed(2)+'% '+(i%2?0:14)+'px';return p+',100% 100%,0% 100%)';};
+    A.paper=mk(A.rcl,'div','',null,{position:'absolute',left:'230px',top:'0px',width:'620px',background:BONE,color:INK,padding:'40px 34px 22px',boxSizing:'border-box',clipPath:zig(24)});
+    const rl=(k,v,o)=>{o=o||{};const r=mk(A.paper,'div','',null,{display:'flex',justifyContent:'space-between',alignItems:'baseline',height:(o.h||66)+'px',boxSizing:'border-box',font:'500 26px/1 Archivo',letterSpacing:'.14em',textTransform:'uppercase',color:o.kc||'#4A4644',borderTop:o.rule?'2px dashed #A7A4A3':'none',paddingTop:o.rule?'22px':'0'});mk(r,'span','',k,{whiteSpace:'nowrap'});mk(r,'span','',v,{whiteSpace:'nowrap',font:(o.vf||'300 52px/1 Newsreader'),letterSpacing:'0',textTransform:'none',color:o.vc||INK,fontVariantNumeric:'tabular-nums lining-nums'});return o.h||66;};
+    A.rh=[[rl('Site 10 · lunch','',{h:62,kc:INK}),C.tenK-0.3],[rl('Walked on, a day','10'),C.tenK+0.05],[rl('Each would spend','£8.50'),C.tenK+0.9],[rl('Days a week','× 6'),C.daysK],[rl('Lost weekly','−£510',{h:150,rule:true,vf:'300 104px/1 Newsreader',vc:RED,kc:'#B6240E'}),C.fiveK-0.05]];
+    A.paperH=A.rh.reduce((q,[h])=>q+h,0)+62;A.paper.style.height=A.paperH+'px';A.SLOT=SLOT;
+    }
+  // the question into the verdict, then the verdict
+  item(mk(LY.e,'div','eb','The verdict',{color:RED}),SC.sq-0.15,SC.s8-0.6);
+  line(LY.e,'How does Athena',200,BONE,C.howq-0.1,C.dont-0.45,{wt:said('sq',['how','does','athena'],0.4)});line(LY.e,'win them back?',306,GREY,at('sq','win',1,1.6)-0.1,C.dont-0.4,{wt:said('sq',['win','them','back'],1.6)});
+  A.c1=mk(LY.e,'div','chipa',null,{top:'200px'});const ch1=mk(A.c1,'div','chip','More staff all day');A.sk1=mk(ch1,'div','sk');item(A.c1,C.dont-0.1,C.second-0.45);
+  line(LY.e,'A second till,',200,BONE,C.second-0.2,SC.s8-0.6,{wt:[C.second-0.2,C.second-0.05,at('s7','till',1,5.0)-0.08]});line(LY.e,'twelve to one.',306,GREY,C.twelve7-0.1,SC.s8-0.55,{wt:said('s7',['twelve','to','one'],5.6)});
+  stat(LY.e,'+£57','Site 10, weekly<br>£510 back × 70p',BONE,C.profit-0.15,SC.s8-0.6,{x:300,y:450,lc:GREY,count:57,from:-300,fmt:gbp,w:420,size:96,ul:BONE,ua:C.profit+0.4});
+  const tv=tag(LY.e,'Wait · 6 min',DRED,SC.sq+0.8,C.four7-0.2,null,0,4);tv.wv=[DOORX-46-5.5*GAP,0,QZ-74];
+  const tv2=tag(LY.e,'Wait · 4 min',RED,C.four7,SC.s8-0.6,null,0,4);tv2.wv=[DOORX-46-5.5*GAP,0,QZ-74];
+  const t2=tag(LY.e,'Second till',RED,C.second+0.2,SC.s8-0.6,null,0,-48);t2.wv=[DX-37*DS,182,100*DS];t2.dy=-46;
+  // the lesson and the Monday card (the Wednesday QUEUE tool, blank): it holds through the sign-off to the end card
+  item(mk(LY.f,'div','eb','The lesson'),SC.s8-0.15,C.monday-0.4);item(mk(LY.f,'div','eb','For Monday'),C.monday-0.1,SC.J-0.1);
+  line(LY.f,'The queue isn’t',200,INK,C.queue8-0.3,C.how8-0.5,{wt:said('s8',['the','queue','isn'],0)});line(LY.f,'the problem.',306,INK,at('s8','problem',1,1.0)-0.3,C.how8-0.46,{wt:said('s8',[['the',2],'problem'],0.8)});line(LY.f,'The wait is.',412,GRB,C.wait8-0.3,C.how8-0.42,{wt:said('s8',[['the',3],'wait','is'],1.8)});
+  line(LY.f,'How long is your',200,INK,C.how8-0.1,SC.J-0.3,{wt:said('s8',['how','long','is','your'],4.0)});line(LY.f,'queue really',306,INK,at('s8','queue',2,5.0)-0.1,SC.J-0.3,{wt:said('s8',[['queue',2],'really'],5.0)});line(LY.f,'waiting?',412,GRB,at('s8','waiting',1,5.8)-0.1,SC.J-0.3,{wt:said('s8',['waiting'],5.8)});
+  const bs=mk(LY.f,'div','',null,{position:'absolute',left:'0',top:'0',width:'1080px',height:'1350px'});item(bs,C.how8+0.4,SC.J-0.1,{dy:16,drift:3});
+  mk(bs,'div','eql','Your site · 12:10',{left:'88px',top:'574px',color:WG});A.bl=[];
+  [['In the queue','÷'],['Served a minute','='],['Minutes waiting','']].forEach(([k,op],i)=>{const r=mk(bs,'div','srow',null,{top:(626+i*84)+'px'});mk(r,'div','rr',null,{background:RULE});mk(r,'div','k',k,{color:WG});A.bl.push(mk(bs,'div','blank',null,{left:'842px',top:(636+i*84)+'px',borderColor:i===2?RED:GREY}));});
+  A.caret=mk(bs,'div','',null,{position:'absolute',left:'858px',top:'650px',width:'4px',height:'28px',background:RED,opacity:'0'});
+  // end card, on ink
+  const tl=mk(LY.h,'div','','<img src="kit/series/ledger-fresh/assets/brand/WRW-logo-white-on-red.svg" alt="">');tl.id='tile';item(tl,SC.J+0.05,null);
+  item(mk(LY.h,'div','','The Operator’s Ledger',{position:'absolute',left:'88px',top:'470px',font:'500 40px/1 var(--sans)',letterSpacing:'.22em',textTransform:'uppercase',color:BONE,whiteSpace:'nowrap'}),SC.J+0.1,null,{drift:3});
+  item(mk(LY.h,'div','','Episode 03 · Little’s Law',{position:'absolute',left:'88px',top:'534px',font:'500 32px/1 var(--sans)',letterSpacing:'.2em',textTransform:'uppercase',color:GREY,whiteSpace:'nowrap'}),SC.J+0.15,null,{drift:3});
+  line(LY.h,'Shorter wait.',600,BONE,SC.J+0.2,null,{drift:3});line(LY.h,'Fuller till.',706,GREY,SC.J+0.35,null,{drift:3});
+  item(mk(LY.h,'div','','Next case: who is site ten for?',{position:'absolute',left:'88px',top:'840px',font:'300 48px/1.25 var(--serif)',color:BONE}),SC.J+0.6,null,{drift:3});
+  item(mk(LY.h,'div','','WRW Hospitality',{position:'absolute',left:'88px',top:'952px',font:'500 32px/1 var(--sans)',letterSpacing:'.2em',textTransform:'uppercase',color:GREY}),SC.J+0.8,null,{drift:3});
+  item(mk(LY.h,'div','','Wesley Williams',{position:'absolute',left:'88px',top:'1000px',font:'400 40px/1.2 var(--sans)',color:BONE}),SC.J+0.9,null,{drift:3});
+  lines.forEach(L=>{L.words=M.split(L.el,'words');});
+ },
+ render(t){
+  const ink=t>=WIPE1[1]&&t<WIPE2[1]||t>=SC.J;
+  ctx.globalAlpha=1;ctx.fillStyle=t<WIPE1[1]?BONE:t<WIPE2[1]?INK:t<SC.J?BONE:INK;ctx.fillRect(0,0,W,H);fctx.clearRect(0,0,W,H);faces=[];
+  if(t<WIPE1[1])mainWorld(t);else if(t>=SC.sq-0.8&&t<WIPE2[1])verdictWorld(t);else if(t>=WIPE2[0]&&t<C.how8+0.2)lessonWorld(t);
+  if(t>=WIPE1[1]-0.2&&t<WIPE2[1])dials(t);
+  if(t>=SC.J){const fa=M.p(t,SC.J,0.8,'sine.inOut');ridgeFill(ctx,H-230,46,21,(t-SC.J)*0.35,BONE,0.07*fa);ridgeFill(ctx,H-140,34,23,-(t-SC.J)*0.25,BONE,0.12*fa);}
+  LY.w.style.display=t<WIPE1[1]?'':'none';
+  items.forEach(it=>drawItem(it,t));lines.forEach(L=>drawLine(L,t));tags.forEach(g=>drawTag(g,t));
+  { const k=M.p(t,WIPE1[0],WIPE1[1]-WIPE1[0],'sine.inOut');A.hs1.style.color=mix(INK,BONE,k);A.hs2.style.color=mix(GRB,GREY,k); }
+  { let h=0,printed=0;for(const[hh,ta]of A.rh){const k=clamp(M.spring(t,ta,0,1,{stiffness:240,damping:20}),0,1.08);h+=hh*k;if(t>=ta)printed++;}if(printed)h+=62;const out=M.p(t,SC.sq-0.75,0.3,'sine.inOut');
+    A.paper.style.transform='translateY('+(A.SLOT-h).toFixed(1)+'px)';A.paper.style.opacity=(1-out).toFixed(3);A.rcl.style.display=t>=C.tenK-0.4&&t<SC.sq?'':'none'; }
+  const sp=M.p(t,C.day7,0.4,'power4.out');A.sk1.style.width='calc('+(sp*100).toFixed(2)+'% + '+(20*sp).toFixed(2)+'px)';
+  const ph=((t/B)%1+1)%1;A.caret.style.opacity=t>C.how8+1.2?(0.3+0.7*Math.exp(-4*ph)).toFixed(3):'0';
+  tide(t,WIPE1,16);
+  wipe(t,WIPE2,qV,BONE,BONE,21);
+  tide(t);
+  if(t<SC.J)caption(t,ink||groundDark());else capW.style.visibility='hidden';
+ },
+ score(S){
+  const b=n=>n*B;
+  const NN=['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
+  const mi=n=>{const m=/^([A-G]#?)(-?\d)$/.exec(n);return NN.indexOf(m[1])+12*(+m[2]+1);};const nm=m=>NN[((m%12)+12)%12]+(Math.floor(m/12)-1);
+  const CH={Dm9:{v:['F3','A3','C4','E4'],w:['D2','F2','A2','C3']},G13:{v:['F3','B3','E4','A4'],w:['G1','B1','D2','F2']},Cmaj9:{v:['E3','G3','B3','D4'],w:['C2','E2','G2','B2']},A7:{v:['G3','C#4','F#4','B4'],w:['A1','C#2','E2','G2']},Em7:{v:['G3','B3','D4','F#4'],w:['E2','G2','B2','D3']},Fmaj9:{v:['A3','C4','E4','G4'],w:['F1','A1','C2','E2']},Am9:{v:['G3','B3','C4','E4'],w:['A1','C2','E2','G2']},D9:{v:['F#3','A3','C4','E4'],w:['D2','F#2','A2','C3']},E7:{v:['D3','G#3','C#4','F#4'],w:['E2','G#2','B2','D3']}};
+  // each scene its own turn of the ii–V–I family; the chord changes on the scene's first beat
+  const PROG={e:['Cmaj9','A7','Dm9','G13'],s1:['Dm9','G13','Cmaj9','A7'],s2:['Fmaj9','Em7','A7','Dm9'],s3:['Dm9','G13','Em7','A7'],s4:['Fmaj9','G13','Em7','A7'],s5:['Dm9','G13','Cmaj9','E7'],s6:['Am9','D9','Dm9','G13'],sq:['Fmaj9','E7'],s7:['Am9','D9','Dm9','G13'],s8:['Dm9','G13','Cmaj9','A7'],J:['Cmaj9']};
+  const starts=[['e',0],['s1',SC.s1],['s2',SC.s2],['s3',SC.s3],['s4',SC.s4],['s5',SC.s5],['s6',SC.s6],['sq',SC.sq],['s7',SC.s7],['s8',SC.s8],['J',SC.J]];
+  const chart=[];starts.forEach(([k,t0],i)=>{const b0=Math.round(t0/B),b1=i<starts.length-1?Math.round(starts[i+1][1]/B):Math.round(END/B);let bt=b0,j=0;while(bt<b1){const n=Math.min(4,b1-bt);chart.push([bt,PROG[k][j%PROG[k].length],n]);bt+=n;j++;}});
+  const quietA=Math.round(SC.sq/B),quietB=Math.round(SC.s8/B);
+  chart.forEach((r,ix)=>{const[sb,sym,n]=r;const nx=chart[ix+1];const w=CH[sym].w;
+   for(let k=0;k<n;k++){let note=w[[0,1,2,3][k%4]];if(k===n-1&&nx)note=nm(mi(CH[nx[1]].w[0])-1);S.upright(b(sb+k),note,B*0.92,{gain:sb<4?.0:.85});}
+   const quiet=sb>=quietA&&sb<quietB;
+   if(!quiet&&sb<Math.round(SC.J/B)){S.keys(b(sb),CH[sym].v,B*Math.min(n,4)*0.55,{gain:.34,verb:.25});if(n>=4){S.keys(b(sb+1.6),CH[sym].v,B*0.45,{gain:.2,verb:.25});S.keys(b(sb+3.6),CH[sym].v,B*0.35,{gain:.14,verb:.25});}}
+  });
+  const GR={ride:'x.xxx.xx',chick:'..x...x.',brush:'..o...o.'};
+  const bars=x=>Math.floor(x/(4*B));
+  S.groove(1,bars(SC.sq)-1,GR,{swing:.6,gain:.6});
+  for(let k=quietA;k<quietB;k++){S.brush(b(k),{gain:.5});S.brush(b(k+0.6),{gain:.28});}
+  S.groove(Math.ceil(SC.s8/(4*B)),bars(SC.J)-Math.ceil(SC.s8/(4*B)),GR,{swing:.6,gain:.6});
+  // reveals: a keys stab only on the moments that matter
+  const up=v=>v.map(n=>nm(mi(n)+12));const chordAt=t=>{let s=chart[0];for(const r of chart)if(r[0]*B<=t+1e-6)s=r;return s[1];};
+  const stab=x=>{x=half(x);const v=up(CH[chordAt(x)].v);S.keys(x,[v[1],v[2],v[3]],0.45,{gain:.24,verb:.3});S.ride(x,{gain:.4});};
+  [C.loses,C.two3,C.ten4,C.eight,C.sixK,C.second,C.profit,C.really].forEach(stab);
+  // money, where it is counted; one drop for the loss
+  S.tally(C.eight+0.1,0.5,4,{gain:.4});S.tally(C.fiveK+0.15,0.6,6,{gain:.5});S.tally(C.profit+0.15,0.6,5,{gain:.45});
+  S.drop(C.three1,{gain:.35});S.drop(C.fiveK+0.05,{gain:.5});
+  // the till: a soft tick each time a guest goes in, while the till is the clue
+  for(let x=1.0+1.25;x<SC.s4;x+=1.25)if(x>SC.s3)S.tick(x+0.05,{pitch:2200,gain:.06});
+  [C.pq,C.pr,C.pw].forEach((x,i)=>S.tick(x,{pitch:1900+i*180,gain:.12})); // each part as it is named
+  S.whoosh(WIPE1[1],1.2,{gain:.28});S.whoosh(WIPE2[1],1.2,{gain:.28});S.whoosh(TIDE[1],1.6,{gain:.3});S.whoosh(SC.s3,0.9,{gain:.16});
+  S.brush(C.day7,{gain:.7});
+  [C.tenK-0.3,C.tenK+0.05,C.tenK+0.9,C.daysK,C.fiveK-0.05].forEach(x=>{for(let i=0;i<6;i++)S.tick(x+i*0.045,{pitch:3400-i*60,gain:.045});});
+  S.tick(C.sixK,{pitch:1500,gain:.2});S.tick(C.four7,{pitch:1300,gain:.2});
+  S.keys(b(0),CH.Cmaj9.v,B*2.2,{gain:.3,verb:.28});
+  S.keys(b(Math.round(SC.J/B)),['E3','G3','B3','D4','G4'],3.0,{gain:.42,verb:.4});S.upright(b(Math.round(SC.J/B)),'C2',2.8,{gain:.9});S.ride(b(Math.round(SC.J/B)),{gain:.7});
+ }
+});
+</script></body></html>

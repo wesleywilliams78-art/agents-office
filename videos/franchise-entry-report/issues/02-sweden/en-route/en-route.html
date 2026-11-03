@@ -1,0 +1,439 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<title>Sweden En Route</title>
+<style>
+  /* Franchise Entry Report Issue 02 (Sweden), the Wednesday recap in the En Route style: location-led, real footage in
+     rounded windows on ink, giant country type, handwritten place names, a filmic grade. 60 s at 120 BPM (bar = 2 s).
+     Everything is painted on one canvas as a pure function of t: render.mjs calls seek(t) for each frame. */
+  html, body { margin: 0; background: #201E1D; overflow: hidden; }
+  canvas { display: block; }
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<script>
+const W = innerWidth, H = innerHeight, U = Math.min(W, H) / 1080;
+const MODE = W / H > 1.5 ? 'land' : W / H < 0.7 ? 'port' : 'sq';
+const cv = document.getElementById('c'); cv.width = W; cv.height = H;
+const X = cv.getContext('2d');
+const INK = '#201E1D', BONE = '#F3F2F2', BLUE = '#006AA7', YEL = '#FECC02', RED = '#EC3013', GREY = '#4A4644', RULE = '#D6D2CF';
+const FPS = 30;
+
+// ---------- springs (step response of a damped spring; f in Hz, z damping ratio) ----------
+function spr(t, f = 1.4, z = 0.8) {
+  if (t <= 0) return 0;
+  const w = 2 * Math.PI * f;
+  if (z < 1) { const wd = w * Math.sqrt(1 - z * z); return 1 - Math.exp(-z * w * t) * (Math.cos(wd * t) + z * w / wd * Math.sin(wd * t)); }
+  return 1 - Math.exp(-w * t) * (1 + w * t);
+}
+// time from release to the first moment an underdamped spring reaches its target: start it this early to land on a beat
+function landT(f, z) { const w = 2 * Math.PI * f, wd = w * Math.sqrt(1 - z * z); return (Math.PI - Math.atan(Math.sqrt(1 - z * z) / z)) / wd; }
+const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
+const lerp = (a, b, k) => a + (b - a) * k;
+function mix(c1, c2, k) {
+  const p = c => [1, 3, 5].map(i => parseInt(c.slice(i, i + 2), 16)); const a = p(c1), b = p(c2);
+  return '#' + a.map((v, i) => Math.round(lerp(v, b[i], k)).toString(16).padStart(2, '0')).join('');
+}
+function hash(n) { const s = Math.sin(n * 127.1 + 311.7) * 43758.5453; return s - Math.floor(s); }
+
+// ---------- layout ----------
+const L = (() => {
+  const o = {};
+  if (MODE === 'land') { o.win = { x: .065 * W, y: .15 * H, w: .5 * W, h: .7 * H }; o.tx = .615 * W; o.ty = .2 * H; o.tw = .33 * W; }
+  else if (MODE === 'port') { o.win = { x: .07 * W, y: .13 * H, w: .86 * W, h: .39 * H }; o.tx = .07 * W; o.ty = .565 * H; o.tw = .86 * W; }
+  else { o.win = { x: .07 * W, y: .11 * H, w: .86 * W, h: .35 * H }; o.tx = .07 * W; o.ty = .52 * H; o.tw = .86 * W; }
+  o.r = 26 * U; o.pad = .065 * Math.min(W, H) / (MODE === 'land' ? .6 : 1);
+  o.big = Math.min(o.tw / 3.4, H * (MODE === 'land' ? .2 : .13));
+  o.body = (MODE === 'land' ? 30 : MODE === 'sq' && W > 1200 ? 32 : 37) * U;
+  o.kick = 17 * U; o.routeY = H - (MODE === 'land' ? .075 : .06) * H;
+  return o;
+})();
+
+// ---------- assets ----------
+const fonts = [['ArchR', 'assets/Archivo-Regular.ttf'], ['ArchM', 'assets/Archivo-Medium.ttf'], ['News', 'assets/newsreader-latin-300-normal.woff2'], ['Prist', 'assets/pristina.ttf']];
+const img = s => new Promise(r => { const i = new Image(); i.onload = () => r(i); i.src = s; });
+const ORI = MODE === 'port' ? 'p' : 'l';
+// clip id, timeline time of its local 0, local hold (seconds frozen at the start)
+const CLIPS = { c0: [0, .5], c1: [6, 0], c2: [11, 0], c3: [16, 0], c4: [26, 0], c5: [31, 0], c6: [36, 0], c7: [41, 0], c8: [45.6, 0], c9: [53.5, 0] };
+const V = {}; let LOGO_W, LOGO_I;
+function loadVideo(id) {
+  return new Promise(r => { const v = document.createElement('video'); v.muted = true; v.preload = 'auto'; v.playsInline = true;
+    v.addEventListener('loadeddata', () => r(v), { once: true }); v.src = `proxies1440/${id}-${ORI}.mp4`; V[id] = v; });
+}
+window.ready = (async () => {
+  await Promise.all(fonts.map(async ([n, u]) => { const f = new FontFace(n, `url(${u})`); await f.load(); document.fonts.add(f); }));
+  [LOGO_W, LOGO_I] = await Promise.all([img('assets/wrw-mark-white.png'), img('assets/wrw-mark-ink.png')]);
+  await Promise.all(Object.keys(CLIPS).map(loadVideo));
+  buildGrain(); buildStamps();
+  await seek(0); return true;
+})();
+
+// ---------- video ----------
+function localT(id, t) { const [t0, hold] = CLIPS[id]; const v = V[id]; return clamp(t - t0 - hold, 0, v.duration - 1 / FPS); }
+async function setClip(id, t) {
+  const v = V[id]; const lt = (Math.floor(localT(id, t) * FPS) + .5) / FPS;
+  if (Math.abs(v.currentTime - lt) < 1e-4) return;
+  await new Promise(r => { v.addEventListener('seeked', r, { once: true }); v.currentTime = lt; });
+}
+function rr(x, y, w, h, r) { X.beginPath(); X.roundRect(x, y, w, h, Math.max(0, Math.min(r, w / 2, h / 2))); }
+// footage inside a rounded window: cover-fit, slow push, gate weave, flicker and an inner vignette
+function footage(id, rect, r, t, o = {}) {
+  const v = V[id]; if (!v || rect.w < 1 || rect.h < 1) return;
+  const f = Math.floor(t * FPS), zoom = (o.zoom || 1) * (1 + .035 * clamp((t - CLIPS[id][0]) / 8));
+  const vw = v.videoWidth, vh = v.videoHeight, s = Math.max(rect.w / vw, rect.h / vh) * zoom;
+  const dw = vw * s, dh = vh * s, wx = (hash(f) - .5) * 1.2 * U, wy = (hash(f + 77) - .5) * 1.2 * U;
+  X.save(); rr(rect.x, rect.y, rect.w, rect.h, r); X.clip();
+  X.globalAlpha = o.alpha == null ? 1 : o.alpha;
+  X.drawImage(v, rect.x + (rect.w - dw) * (o.ax == null ? .5 : o.ax) + wx, rect.y + (rect.h - dh) * .5 + wy, dw, dh);
+  X.globalAlpha = 1;
+  X.fillStyle = `rgba(0,0,0,${.025 + .03 * hash(f * 3.1)})`; X.fillRect(rect.x, rect.y, rect.w, rect.h);
+  const g = X.createRadialGradient(rect.x + rect.w / 2, rect.y + rect.h / 2, Math.min(rect.w, rect.h) * .35, rect.x + rect.w / 2, rect.y + rect.h / 2, Math.hypot(rect.w, rect.h) * .62);
+  g.addColorStop(0, 'rgba(0,0,0,0)'); g.addColorStop(1, `rgba(0,0,0,${o.vig == null ? .38 : o.vig})`); X.fillStyle = g; X.fillRect(rect.x, rect.y, rect.w, rect.h);
+  if (o.dim) { X.fillStyle = `rgba(32,30,29,${o.dim})`; X.fillRect(rect.x, rect.y, rect.w, rect.h); }
+  X.restore();
+}
+
+// ---------- type ----------
+function font(fam, px) { X.font = `${px}px ${fam}`; }
+function fitPx(str, fam, px, maxW, ls = 0) { font(fam, px); X.letterSpacing = ls + 'px'; const w = X.measureText(str).width; X.letterSpacing = '0px'; return w > maxW ? px * maxW / w : px; }
+function wrap(str, fam, px, maxW) {
+  font(fam, px); const out = []; let line = '';
+  for (const w of str.split(' ')) { const tryL = line ? line + ' ' + w : w; if (X.measureText(tryL).width > maxW && line) { out.push(line); line = w; } else line = tryL; }
+  if (line) out.push(line); return out;
+}
+// a line that rises into place from behind its own baseline mask, and leaves upward the same way
+function line(str, x, y, o, t, tIn, tOut = 1e9) {
+  if (t < tIn) return;
+  const px = o.px, sIn = spr(t - tIn, o.f || 1.5, o.z || .82), sOut = t > tOut ? spr(t - tOut, 1.8, .9) : 0;
+  const off = (1 - sIn) * px * 1.05 - sOut * px * 1.2; if (sOut > .995) return;
+  font(o.fam || 'ArchR', px); X.letterSpacing = (o.ls || 0) + 'px';
+  const tw = X.measureText(str).width, cx = o.align === 'center' ? x - tw / 2 : o.align === 'right' ? x - tw : x;
+  X.save(); X.beginPath(); X.rect(cx - px, y - px * 1.02, tw + px * 2, px * 1.32); X.clip(); X.fillStyle = o.c || BONE; X.textAlign = o.align || 'left'; X.textBaseline = 'alphabetic';
+  X.globalAlpha = (o.a == null ? 1 : o.a) * clamp(sIn * 1.6) * (1 - sOut);
+  X.fillText(str, x, y + off); X.restore(); X.letterSpacing = '0px'; X.textAlign = 'left'; X.globalAlpha = 1;
+}
+function para(str, x, y, o, t, tIn, tOut, step = .09) {
+  const ls = wrap(str, o.fam || 'ArchR', o.px, o.maxW); ls.forEach((s, i) => line(s, x, y + i * o.px * (o.lh || 1.22), o, t, tIn + i * step, tOut));
+  return y + ls.length * o.px * (o.lh || 1.22);
+}
+// handwriting: Pristina written on left to right, with a nib underline
+function hand(str, x, y, px, c, t, tIn, tOut = 1e9, shadow = true) {
+  if (t < tIn) return; const p = clamp(spr(t - tIn, .9, 1)), out = t > tOut ? clamp(spr(t - tOut, 1.6, 1)) : 0; if (out > .99) return;
+  font('Prist', px); const w = X.measureText(str).width;
+  X.save(); X.beginPath(); X.rect(x - px * .3, y - px * 1.2, (w + px * .6) * p, px * 1.9); X.clip(); X.globalAlpha = 1 - out;
+  if (shadow) { X.shadowColor = 'rgba(20,18,17,.55)'; X.shadowBlur = 14 * U; X.shadowOffsetY = 2 * U; }
+  X.fillStyle = c; X.fillText(str, x, y);
+  X.strokeStyle = c; X.lineWidth = Math.max(2, px * .045); X.lineCap = 'round'; X.beginPath();
+  const uy = y + px * .28; X.moveTo(x + px * .05, uy + px * .04); X.bezierCurveTo(x + w * .35, uy - px * .05, x + w * .7, uy + px * .07, x + w * 1.02, uy - px * .03); X.stroke();
+  X.restore();
+}
+function kicker(str, x, y, c, t, tIn, tOut) { line(str, x, y, { px: L.kick, fam: 'ArchM', ls: L.kick * .32, c }, t, tIn, tOut); }
+function counter(val, dec, suffix, x, y, o, t, tIn, tOut, prefix = '') {
+  if (t < tIn) return; const k = clamp(spr(t - tIn, .75, 1) * 1.003);
+  line(prefix + (val * k).toFixed(dec) + suffix, x, y, o, t, tIn, tOut);
+}
+
+// ---------- texture: grain tiles, ridges, light leaks ----------
+let GRAIN = [];
+function buildGrain() {
+  let seed = 9; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+  for (let k = 0; k < 6; k++) { const c = document.createElement('canvas'); c.width = c.height = 256; const g = c.getContext('2d'), d = g.createImageData(256, 256);
+    for (let i = 0; i < d.data.length; i += 4) { const v = 128 + (rnd() + rnd() + rnd() - 1.5) * 120; d.data[i] = d.data[i + 1] = d.data[i + 2] = v; d.data[i + 3] = 255; }
+    g.putImageData(d, 0, 0); GRAIN.push(X.createPattern(c, 'repeat')); }
+}
+function grain(t) {
+  const f = Math.floor(t * FPS); X.save(); X.globalCompositeOperation = 'overlay'; X.globalAlpha = .07;
+  X.translate((hash(f) * 256) | 0, (hash(f + 5) * 256) | 0); X.fillStyle = GRAIN[f % 6]; X.fillRect(-256, -256, W + 512, H + 512); X.restore();
+}
+function ridgePath(base, amp, ph, k) {
+  X.beginPath(); X.moveTo(0, H + 10); X.lineTo(0, base);
+  const n = 4; for (let i = 0; i < n; i++) { const x0 = W * i / n, x1 = W * (i + 1) / n, a = amp * (i % 2 ? .6 : 1) * (1 + .2 * Math.sin(ph + i * 1.7 + k));
+    X.bezierCurveTo(x0 + W / n * .33, base - a, x0 + W / n * .66, base - a * .9, x1, base + amp * .15 * Math.sin(ph + i)); }
+  X.lineTo(W, H + 10); X.closePath();
+}
+// a ground change: three ridges rise from the foot of the frame, pale back ridge first, and land on the beat at t1
+function tide(t, t1, from, to, dur = .95) {
+  const t0 = t1 - dur; if (t < t0 || t > t1 + .02) return t > t1 ? 2 : 0;
+  const amp = H * .16;
+  [[.13, mix(from, to, .45)], [.06, mix(from, to, .75)], [0, to]].forEach(([lead, c], i) => {
+    const p = clamp(spr(t - t0 + lead, .7, 1) * 1.02); const base = lerp(H + amp * 1.3, -amp * 1.15, p);
+    X.fillStyle = c; ridgePath(base, amp, t * 1.3 + i, i * 2.1); X.fill();
+  });
+  return 1;
+}
+function leak(t, t0, dur, side = 0) {
+  const p = (t - t0) / dur; if (p < 0 || p > 1) return; const a = Math.sin(Math.PI * p);
+  X.save(); X.globalCompositeOperation = 'screen';
+  [[YEL, .35, .4], ['#FFB27A', .5, .3], [BONE, .2, .25]].forEach(([c, oy, al], i) => {
+    const cx = (side ? 1 - p : p) * W * 1.3 - W * .15 + i * W * .08, cy = H * oy, r = Math.max(W, H) * (.45 + i * .1);
+    const g = X.createRadialGradient(cx, cy, 0, cx, cy, r); g.addColorStop(0, c); g.addColorStop(1, 'rgba(0,0,0,0)');
+    X.globalAlpha = a * al; X.fillStyle = g; X.fillRect(0, 0, W, H);
+  });
+  X.restore();
+}
+function vignette(a = .45) { const g = X.createRadialGradient(W / 2, H / 2, Math.min(W, H) * .35, W / 2, H / 2, Math.hypot(W, H) * .6); g.addColorStop(0, 'rgba(0,0,0,0)'); g.addColorStop(1, `rgba(0,0,0,${a})`); X.fillStyle = g; X.fillRect(0, 0, W, H); }
+function shade(top, bottom) {
+  let g = X.createLinearGradient(0, 0, 0, H * .3); g.addColorStop(0, `rgba(20,18,17,${top})`); g.addColorStop(1, 'rgba(20,18,17,0)'); X.fillStyle = g; X.fillRect(0, 0, W, H * .3);
+  g = X.createLinearGradient(0, H * .35, 0, H); g.addColorStop(0, 'rgba(20,18,17,0)'); g.addColorStop(1, `rgba(20,18,17,${bottom})`); X.fillStyle = g; X.fillRect(0, H * .35, W, H * .65);
+}
+
+// ---------- stamps (drawn once, inked with a grain mask so they read as rubber on paper) ----------
+const STAMP = {};
+function stampCanvas(lines, c, w, h) {
+  const k = document.createElement('canvas'); k.width = w; k.height = h; const g = k.getContext('2d');
+  g.strokeStyle = c; g.fillStyle = c; g.lineWidth = h * .035; g.beginPath(); g.roundRect(g.lineWidth, g.lineWidth, w - g.lineWidth * 2, h - g.lineWidth * 2, h * .12); g.stroke();
+  g.lineWidth = h * .012; g.beginPath(); g.roundRect(h * .075, h * .075, w - h * .15, h - h * .15, h * .08); g.stroke();
+  g.textAlign = 'center'; g.textBaseline = 'middle';
+  lines.forEach(([s, fam, px, y, ls]) => { g.font = `${px}px ${fam}`; g.letterSpacing = (ls || 0) + 'px'; g.fillText(s, w / 2 + (ls || 0) / 2, h * y); });
+  g.globalCompositeOperation = 'destination-out'; let seed = 3; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+  for (let i = 0; i < w * h / 55; i++) { g.globalAlpha = .25 + rnd() * .75; const s = rnd() * 2.6 * U + .6; g.fillRect(rnd() * w, rnd() * h, s, s); }
+  for (let i = 0; i < 9; i++) { g.globalAlpha = .18; g.beginPath(); g.ellipse(rnd() * w, rnd() * h, rnd() * w * .2, rnd() * h * .12, rnd() * 3, 0, 7); g.fill(); }
+  return k;
+}
+function buildStamps() {
+  const s = MODE === 'land' ? 1 : MODE === 'port' ? .95 : W > 1200 ? .64 : .75, w = 430 * U * s, h = 250 * U * s;
+  STAMP.entry = stampCanvas([['ENTRY', 'ArchM', h * .11, .27, h * .05], ['SWEDEN', 'ArchM', h * .22, .53, h * .015], ['ISSUE 02 · 30 OCT 2026', 'ArchR', h * .07, .76, h * .025]], BLUE, w, h);
+  STAMP.bank = stampCanvas([['BANKRUPT', 'ArchM', h * .2, .45, h * .025], ['9 SEP 2026', 'ArchR', h * .095, .7, h * .05]], RED, w * .92, h * .78);
+}
+// drops from above and lands on the beat at tLand
+function stamp(k, x, y, rot, t, tLand, tOut = 1e9) {
+  const f = 2.3, z = .5, t0 = tLand - landT(f, z); if (t < t0) return;
+  const s = spr(t - t0, f, z), sc = lerp(1.45, 1, s), a = clamp((t - t0) / .07) * (t > tOut ? 1 - clamp((t - tOut) / .35) : 1);
+  X.save(); X.translate(x, y); X.rotate(rot); X.scale(sc, sc); X.globalAlpha = a * .92; X.globalCompositeOperation = 'source-over';
+  X.drawImage(k, -k.width / 2, -k.height / 2); X.restore();
+}
+
+// ---------- persistent chrome: logo, issue label, the route line ----------
+function header(t, dark) {
+  const lh = 30 * U, lw = lh * LOGO_W.width / LOGO_W.height, y = (MODE === 'land' ? .06 : .045) * H, x = MODE === 'land' ? .065 * W : .07 * W;
+  X.drawImage(dark ? LOGO_I : LOGO_W, x, y, lw, lh);
+  font('ArchM', 14 * U); X.letterSpacing = 14 * U * .3 + 'px'; X.fillStyle = dark ? INK : BONE; X.globalAlpha = .82; X.textAlign = 'right'; X.textBaseline = 'middle';
+  X.fillText(MODE === 'land' ? 'FRANCHISE ENTRY REPORT · ISSUE 02' : 'ISSUE 02 · SWEDEN', W - x, y + lh / 2); X.textAlign = 'left'; X.letterSpacing = '0px'; X.globalAlpha = 1; X.textBaseline = 'alphabetic';
+}
+const STOPS = [[6, '01 MARKET'], [16, '02 TAX'], [26, '03 MOVING'], [36, '04 ROUTE IN'], [46, '05 VERDICT']];
+function route(t, dark) {
+  if (t < 5.4 || t > 53.6) return;
+  const x0 = MODE === 'land' ? .065 * W : .07 * W, x1 = W - x0, y = L.routeY;
+  const grow = clamp(spr(t - 5.4, 1.1, 1)), shrink = t > 53.0 ? clamp(spr(t - 53.0, 1.6, 1)) : 0, vis = grow * (1 - shrink);
+  const c = dark ? INK : BONE; X.save(); X.globalAlpha = vis;
+  X.strokeStyle = c; X.globalAlpha = .32 * vis; X.lineWidth = 2 * U; X.setLineDash([2 * U, 9 * U]); X.beginPath(); X.moveTo(x0, y); X.lineTo(lerp(x0, x1, grow), y); X.stroke(); X.setLineDash([]);
+  let idx = -1; STOPS.forEach(([ts], i) => { if (t >= ts - .5) idx = i; });
+  STOPS.forEach(([ts, lab], i) => {
+    const sx = lerp(x0, x1, i / (STOPS.length - 1)); X.globalAlpha = vis * (i <= idx ? .9 : .35);
+    X.fillStyle = c; X.beginPath(); X.arc(sx, y, 4.5 * U, 0, 7); X.fill();
+    const on = i === idx; font('ArchM', 14 * U); X.letterSpacing = 14 * U * .28 + 'px'; X.textAlign = i === 0 ? 'left' : i === STOPS.length - 1 ? 'right' : 'center';
+    if (MODE === 'land' || on) { X.globalAlpha = vis * (on ? .95 : .4); X.fillText(lab, sx, y - 16 * U); }
+    X.letterSpacing = '0px'; X.textAlign = 'left';
+  });
+  // the traveller: a yellow dot that springs from stop to stop on each chapter's downbeat
+  let px = x0; STOPS.forEach(([ts], i) => { if (i === 0) return; px = lerp(px, lerp(x0, x1, i / (STOPS.length - 1)), clamp(spr(t - (ts - .5), 1.2, .78), 0, 1.2)); });
+  X.globalAlpha = vis; X.fillStyle = dark ? BLUE : YEL; X.beginPath(); X.arc(px, y, 8 * U, 0, 7); X.fill();
+  X.restore();
+}
+
+// ---------- the giant country word ----------
+function giant(t, tIn, y, mode) {
+  const word = 'SWEDEN', maxW = W * (MODE === 'land' ? .86 : .88), ls = -0.02;
+  let px = fitPx(word, 'ArchM', 400 * U, maxW, 0); font('ArchM', px);
+  const widths = [...word].map(ch => X.measureText(ch).width), tot = widths.reduce((a, b) => a + b, 0) + ls * px * (word.length - 1);
+  let x = (W - tot) / 2;
+  [...word].forEach((ch, i) => {
+    let off = 0, a = 1;
+    if (mode === 'out') { const s = clamp(spr(t - (tIn + i * .06), 1.7, .9), 0, 1.1); off = s * px * 1.1; a = 1 - clamp(s); }
+    else if (mode === 'in') { if (t < tIn + i * .07) { x += widths[i] + ls * px; return; } const s = spr(t - (tIn + i * .07), 1.5, .72); off = (1 - s) * px * .9; a = clamp(s * 2); }
+    X.save(); X.beginPath(); X.rect(x - px * .1, y - px * .78, widths[i] + px * .2, px * .82); X.clip();
+    X.fillStyle = YEL; X.globalAlpha = a; X.fillText(ch, x, y + off); X.restore();
+    x += widths[i] + ls * px;
+  });
+  return px;
+}
+
+// ---------- scenes ----------
+const winR = () => L.win;
+function popWin(t, tIn) { const s = spr(t - tIn, 1.5, .72), w = L.win, k = lerp(.86, 1, s); return { x: w.x + w.w * (1 - k) / 2, y: w.y + w.h * (1 - k) / 2, w: w.w * k, h: w.h * k, a: clamp(s * 2.2) }; }
+function coords(str, rect, t, tIn, tOut) { line(str, rect.x + 22 * U, rect.y + 38 * U, { px: 13 * U, fam: 'ArchM', ls: 13 * U * .3, c: BONE, a: .9 }, t, tIn, tOut); }
+function source(str, t, tIn, tOut, dark) {
+  const y = MODE === 'land' ? L.win.y + L.win.h : L.routeY - 50 * U;
+  line(str, L.tx, y, { px: 13 * U, fam: 'ArchR', ls: 13 * U * .12, c: dark ? GREY : BONE, a: dark ? .9 : .55, maxW: L.tw }, t, tIn, tOut);
+}
+
+function sceneTitle(t) {
+  // 0-6: frame 0 is the finished thumbnail: Stockholm at sunset, SWEDEN in Swedish yellow
+  const s = t < 4.95 ? 0 : clamp(spr(t - 4.95, 1.0, 1) * 1.01);
+  const full = { x: 0, y: 0, w: W, h: H }, w = L.win, rect = { x: lerp(full.x, w.x, s), y: lerp(full.y, w.y, s), w: lerp(full.w, w.w, s), h: lerp(full.h, w.h, s) };
+  footage('c0', rect, L.r * s, t, { vig: lerp(.45, .38, s), ax: .5 });
+  X.save(); rr(rect.x, rect.y, rect.w, rect.h, L.r * s); X.clip(); X.globalAlpha = 1 - s; shade(.55, .72); X.restore(); X.globalAlpha = 1;
+  const gy = MODE === 'land' ? H * .79 : MODE === 'port' ? H * .64 : H * .76;
+  const px = giant(t, 4.5, gy, t > 4.5 ? 'out' : 'hold');
+  const ky = gy - px * .82 - 22 * U, kx = (W - Math.min(W * (MODE === 'land' ? .86 : .88), 1e9)) / 2;
+  line('FRANCHISE ENTRY REPORT · ISSUE 02', kx + px * .03, ky, { px: 24 * U, fam: 'ArchM', ls: 24 * U * .3, c: BONE }, t, -1, 4.4);
+  line('STOCKHOLM   59.33° N   18.07° E', kx, gy + 44 * U, { px: 14 * U, fam: 'ArchM', ls: 14 * U * .3, c: BONE, a: .85 }, t, -1, 4.45);
+  line('30 OCT 2026', W - kx, gy + 44 * U, { px: 14 * U, fam: 'ArchM', ls: 14 * U * .3, c: YEL, align: 'right' }, t, -1, 4.45);
+}
+
+function sceneMarket(t) {
+  const w = winR(), cut = t >= 11;
+  footage(cut ? 'c2' : 'c1', w, L.r, t, { ax: cut ? .5 : .62 });
+  coords(cut ? 'STOCKHOLM   59.33° N   18.07° E' : 'STOCKHOLM   59.33° N   18.07° E', w, t, 6.25, 14.6);
+  hand('Stockholm', w.x + 30 * U, w.y + w.h - 34 * U, 76 * U, BONE, t, 6.5, 14.7);
+  const x = L.tx; let y = L.ty;
+  kicker('01   THE MARKET', x, y, YEL, t, 6.15, 14.6); y += L.big * 1.02;
+  counter(10.61, 2, 'm', x, y, { px: L.big, fam: 'ArchM', c: BONE }, t, 6.4, 10.55);
+  counter(24, 0, '%', x, y, { px: L.big, fam: 'ArchM', c: YEL }, t, 11.0, 14.55);
+  const by = y + L.body * 1.6;
+  para('people in Sweden. Up just 5,000 in the first half of 2026.', x, by, { px: L.body, maxW: L.tw, c: BONE, a: .82 }, t, 6.9, 10.5);
+  const ny = para('eat restaurant food every week.', x, by, { px: L.body, maxW: L.tw, c: BONE, a: .82 }, t, 11.4, 14.5);
+  // weekly v monthly bars
+  [[24, 'Weekly', YEL, 11.8], [55, 'Monthly or more', BONE, 12.05]].forEach(([v, lab, c, ti], i) => {
+    if (t < ti || t > 14.9) return; const s = clamp(spr(t - ti, 1.2, .8), 0, 1.15), out = t > 14.5 ? clamp(spr(t - 14.5, 1.8, 1)) : 0;
+    const yy = ny + 26 * U + i * (MODE === 'sq' ? 40 : 46) * U, bw = L.tw * .85 * v / 55 * s;
+    X.globalAlpha = 1 - out; X.fillStyle = c; X.fillRect(x, yy, bw, 8 * U); X.globalAlpha = 1;
+    line(`${lab}  ${v}%`, x, yy + 32 * U, { px: 15 * U, fam: 'ArchM', ls: 15 * U * .12, c, a: .9 }, t, ti + .1, 14.5);
+  });
+  source('Franchise Entry Report: Sweden, Issue 02 · pages 1–2', t, 6.6, 14.5);
+}
+
+function sceneTax(t) {
+  const p = popWin(t, 16.05); footage('c3', p, L.r, t, { alpha: p.a, ax: .55 });
+  hand('takeaway', p.x + 30 * U, p.y + p.h - 34 * U, 76 * U, BONE, t, 17.2, 24.7);
+  const x = L.tx; let y = L.ty;
+  kicker('02   THE TAX TILT', x, y, YEL, t, 16.15, 24.6);
+  // two columns: takeaway 6% (yellow, big) and eating in 12% (bone, smaller), with bars in proportion
+  const bigPx = L.big * 1.15, base = y + L.big * 1.25; font('ArchM', bigPx); const colW = X.measureText('6%').width + 56 * U;
+  counter(6, 0, '%', x, base, { px: bigPx, fam: 'ArchM', c: YEL }, t, 16.5, 24.55);
+  counter(12, 0, '%', x + colW, base, { px: bigPx * .62, fam: 'ArchM', c: BONE, a: .8 }, t, 17.0, 24.55);
+  line('TAKEAWAY', x, base + 34 * U, { px: 14 * U, fam: 'ArchM', ls: 14 * U * .3, c: YEL }, t, 16.8, 24.5);
+  line('EATING IN', x + colW, base + 34 * U, { px: 14 * U, fam: 'ArchM', ls: 14 * U * .3, c: BONE, a: .8 }, t, 17.2, 24.5);
+  const ly = base + 34 * U + L.body * 1.9;
+  const ey = para('VAT on food, until 31 Dec 2027.', x, ly, { px: L.body, maxW: L.tw, c: BONE, a: .88 }, t, 18.2, 24.5);
+  para('Takeaway pays half the VAT of a seated meal.', x, ey + L.body * .9, { px: L.body * 1.35, fam: 'News', maxW: L.tw, c: BONE, lh: 1.14 }, t, 20.0, 24.45, .12);
+  source('Franchise Entry Report: Sweden, Issue 02 · page 1', t, 18.5, 24.5);
+}
+
+function sceneMoving(t) {
+  const first = t < 31, p = first ? popWin(t, 26.05) : winR();
+  footage(first ? 'c4' : 'c5', p, L.r, t, { alpha: first ? p.a : 1 });
+  const x = L.tx; let y = L.ty;
+  kicker("03   WHAT'S MOVING", x, y, YEL, t, 26.15, 34.6); y += L.big * 1.02;
+  counter(5.6, 1, '%', x, y, { px: L.big, fam: 'ArchM', c: YEL }, t, 26.5, 30.55, '+');
+  const ly = para('fast food volume, first half of 2026.', x, y + L.body * 1.6, { px: L.body, maxW: L.tw, c: BONE, a: .82 }, t, 27.0, 30.5);
+  // diverging bars from one axis: fast food +5.6 against lunch and evening restaurants -0.8
+  const ax = x + L.tw * .22, sc = L.tw * .7 / 5.6;
+  [[5.6, '+5.6%  Fast food', YEL, 27.6], [-0.8, '−0.8%  Lunch and evening restaurants', BONE, 27.9]].forEach(([v, lab, c, ti], i) => {
+    if (t < ti || t > 31) return; const s = clamp(spr(t - ti, 1.2, .78), 0, 1.15), out = t > 30.5 ? clamp(spr(t - 30.5, 1.8, 1)) : 0;
+    const yy = ly + 22 * U + i * 50 * U; X.globalAlpha = (1 - out) * (v < 0 ? .7 : 1); X.fillStyle = c;
+    const bw = v * sc * s; X.fillRect(Math.min(ax, ax + bw), yy, Math.abs(bw), 9 * U); X.globalAlpha = 1;
+    line(lab, x, yy + 34 * U, { px: 15 * U, fam: 'ArchM', ls: 15 * U * .1, c, a: .9, maxW: L.tw }, t, ti + .1, 30.5);
+  });
+  if (t >= 27.5 && t < 31) { const out = t > 30.5 ? clamp(spr(t - 30.5, 1.8, 1)) : 0; X.globalAlpha = .5 * clamp(spr(t - 27.5)) * (1 - out); X.fillStyle = BONE; X.fillRect(ax - 1 * U, ly + 10 * U, 2 * U, 92 * U); X.globalAlpha = 1; }
+  // Pizza Hut
+  const py = L.ty + L.big * .62;
+  line('Pizza Hut Sweden', x, py, { px: L.body * 1.7, fam: 'ArchM', c: BONE, maxW: L.tw }, t, 31.0, 34.55);
+  const sy = py + L.body * 1.2 + STAMP.bank.height * .55;
+  stamp(STAMP.bank, x + STAMP.bank.width * .52, sy, -.07, t, 31.5, 34.6);
+  const ry = sy + STAMP.bank.height * .5 + L.body * 1.8;
+  const qy = para('18 restaurants closed.', x, ry, { px: L.body, maxW: L.tw, c: BONE, a: .88 }, t, 32.3, 34.5);
+  para('Pizza and coffee chains are failing.', x, qy + L.body * .6, { px: L.body * 1.35, fam: 'News', maxW: L.tw, c: BONE, lh: 1.14 }, t, 33.0, 34.45, .12);
+  source('Franchise Entry Report: Sweden, Issue 02 · pages 1 and 3', t, 26.8, 34.5);
+}
+
+function guilloche(t, a) {
+  X.save(); X.strokeStyle = RULE; X.lineWidth = 1.1 * U; X.globalAlpha = a;
+  for (let k = 0; k < 14; k++) { X.beginPath(); const y0 = H * (.08 + k * .065);
+    for (let x = 0; x <= W; x += 8 * U) { const y = y0 + Math.sin(x / (90 * U) + k * .7 + t * .35) * 16 * U + Math.sin(x / (37 * U) - k * .4) * 5 * U; x ? X.lineTo(x, y) : X.moveTo(x, y); } X.stroke(); }
+  X.restore();
+}
+function sceneRoute(t) {
+  guilloche(t, clamp((t - 36) / .6) * .55);
+  const first = t < 41, p = first ? popWin(t, 36.05) : winR();
+  footage(first ? 'c6' : 'c7', p, L.r, t, { alpha: first ? p.a : 1, vig: .3 });
+  coords('MALMÖ   55.60° N   13.00° E', p, t, 36.3, 44.6);
+  hand('Malmö', p.x + 30 * U, p.y + p.h - 34 * U, 80 * U, BONE, t, 36.6, 44.7);
+  const x = L.tx; let y = L.ty;
+  kicker('04   THE ROUTE IN', x, y, BLUE, t, 36.15, 44.6);
+  const hp = Math.min(L.body * 2.3, L.big * .55);
+  const ey = para('One strong Swedish operator.', x, y + hp * 1.25, { px: hp, fam: 'ArchM', maxW: L.tw, c: INK, lh: 1.08 }, t, 36.5, 40.5, .1);
+  para('A master or area partner who already runs several sites.', x, ey + L.body * .7, { px: L.body, maxW: L.tw, c: GREY }, t, 37.2, 40.45);
+  // the entry stamp lands across the window's lower edge
+  const w = L.win, sxp = MODE === 'land' ? w.x + w.w - STAMP.entry.width * .32 : w.x + w.w - STAMP.entry.width * .55, syp = w.y + w.h - STAMP.entry.height * .32;
+  stamp(STAMP.entry, sxp, syp, -.11, t, 38.0, 44.7);
+  const ky = para('KFC reached 24 sites through one franchisee.', x, y + hp * 1.25, { px: hp * .82, fam: 'ArchM', maxW: L.tw, c: INK, lh: 1.08 }, t, 41.0, 44.5, .1);
+  // labour chip
+  if (t >= 42.4 && t < 45) {
+    const s = spr(t - 42.4, 1.5, .72), out = t > 44.5 ? clamp(spr(t - 44.5, 1.8, 1)) : 0, txt = 'Staff, all in: ≈ £17.76 an hour (estimate)';
+    const px = L.body * .82; font('ArchM', px); const tw = Math.min(X.measureText(txt).width, L.tw - px * 1.6), cy = ky + L.body * 1.1;
+    X.save(); X.globalAlpha = clamp(s * 2) * (1 - out); X.translate(x, cy); X.scale(lerp(.9, 1, s), lerp(.9, 1, s));
+    X.strokeStyle = BLUE; X.lineWidth = 2 * U; rr(0, 0, tw + px * 1.6, px * 2.1, px * 1.05); X.stroke();
+    X.fillStyle = BLUE; X.textBaseline = 'middle'; X.fillText(txt, px * .8, px * 1.07, tw); X.restore();
+  }
+  source('Franchise Entry Report: Sweden, Issue 02 · pages 2, 4 and 5', t, 37.6, 44.5, true);
+}
+
+function sceneVerdict(t) {
+  // the Gotland sea opens out of a band across the middle and closes to one again before the end card
+  const o = clamp(spr(t - 46.0, 1.1, .9) * 1.01), c = t > 53.3 ? clamp(spr(t - 53.3, 1.5, 1) * 1.02) : 0, k = o * (1 - c);
+  const hh = Math.max(2 * U, H * k), rect = { x: 0, y: (H - hh) / 2, w: W, h: hh };
+  footage('c8', rect, 0, t, { dim: .5, vig: .5 });
+  const x = MODE === 'land' ? W * .14 : W * .08, mw = MODE === 'land' ? W * .72 : W * .84;
+  let y = MODE === 'land' ? H * .33 : MODE === 'port' ? H * .33 : H * .3;
+  kicker('05   THE VERDICT', x, y - 120 * U, YEL, t, 46.3, 53.05);
+  hand('If I had a brand,', x, y, (MODE === 'land' ? 92 : 86) * U, BONE, t, 46.6, 53.1);
+  const px = (MODE === 'land' ? 56 : MODE === 'port' ? 50 : 50) * U;
+  y = para('I would go in where the tax tilt helps me:', x, y + px * 1.5, { px, fam: 'News', maxW: mw, c: BONE, lh: 1.16 }, t, 47.4, 53.1, .14);
+  y = para('quick, takeaway-led, through one strong Swedish operator.', x, y + px * .25, { px: px * 1.08, fam: 'News', maxW: mw, c: YEL, lh: 1.14 }, t, 48.6, 53.1, .16);
+  line('WESLEY WILLIAMS   ·   WRW HOSPITALITY', x, y + px * .9, { px: 14 * U, fam: 'ArchM', ls: 14 * U * .3, c: BONE, a: .85 }, t, 50.4, 53.05);
+}
+
+function sceneClose(t) {
+  const o = clamp(spr(t - 54.0, 1.1, .9) * 1.01), hh = Math.max(2 * U, H * o), rect = { x: 0, y: (H - hh) / 2, w: W, h: hh };
+  footage('c9', rect, 0, t, { vig: .45 });
+  X.save(); X.beginPath(); X.rect(rect.x, rect.y, rect.w, rect.h); X.clip(); shade(.5, .75); X.restore();
+  const gy = MODE === 'land' ? H * .7 : MODE === 'port' ? H * .6 : H * .66;
+  const px = giant(t, 54.55, gy, 'in');
+  const kx = (W - W * (MODE === 'land' ? .86 : .88)) / 2;
+  line('—  ISSUE 02  —', W / 2, gy - px * .82 - 22 * U, { px: L.kick, fam: 'ArchM', ls: L.kick * .4, c: BONE, align: 'center' }, t, 54.35);
+  line('A new country every Friday.', W / 2, gy + 64 * U, { px: (MODE === 'land' ? 40 : 44) * U, fam: 'News', c: BONE, align: 'center' }, t, 55.6);
+  if (t >= 56.4) {
+    const s = spr(t - 56.4, 1.4, .8), lh = 34 * U, lw = lh * LOGO_W.width / LOGO_W.height; font('ArchM', 17 * U); X.letterSpacing = 17 * U * .3 + 'px';
+    const tw = X.measureText('HOSPITALITY').width, tot = lw + 14 * U + tw, lx = (W - tot) / 2, ly = (MODE === 'land' ? H * .86 : H * .82) + (1 - s) * 30 * U;
+    X.globalAlpha = clamp(s * 1.8); X.drawImage(LOGO_W, lx, ly, lw, lh); X.fillStyle = BONE; X.textBaseline = 'middle'; X.fillText('HOSPITALITY', lx + lw + 14 * U, ly + lh / 2 + 1 * U);
+    X.textBaseline = 'alphabetic'; X.letterSpacing = '0px'; X.globalAlpha = 1;
+  }
+  line('Follow WRW Hospitality for the next one', W / 2, (MODE === 'land' ? H * .86 : H * .82) + 34 * U + 48 * U, { px: 17 * U, fam: 'ArchR', c: BONE, a: .8, align: 'center' }, t, 56.9);
+}
+
+// ---------- the frame ----------
+const ACTIVE = t => {
+  const a = [];
+  if (t < 6.02) a.push('c0'); if (t >= 6 && t < 11) a.push('c1'); if (t >= 11 && t < 16.02) a.push('c2'); if (t >= 15.9 && t < 26.02) a.push('c3');
+  if (t >= 25.9 && t < 31) a.push('c4'); if (t >= 31 && t < 36.02) a.push('c5'); if (t >= 35.9 && t < 41) a.push('c6'); if (t >= 41 && t < 46.02) a.push('c7');
+  if (t >= 45.9 && t < 54.02) a.push('c8'); if (t >= 53.9) a.push('c9'); return a;
+};
+async function seek(t) {
+  await Promise.all(ACTIVE(t).map(id => setClip(id, t)));
+  X.setTransform(1, 0, 0, 1, 0, 0); X.globalAlpha = 1; X.globalCompositeOperation = 'source-over';
+  // grounds: ink 0-16, blue 16-26, ink 26-36, bone 36-46, ink 46-60; each change is a ridge tide landing on the bar
+  const G = t < 16 ? INK : t < 26 ? BLUE : t < 36 ? INK : t < 46 ? BONE : INK;
+  X.fillStyle = G; X.fillRect(0, 0, W, H);
+  if (t < 6) sceneTitle(t);
+  else if (t < 16) sceneMarket(t);
+  else if (t < 26) sceneTax(t);
+  else if (t < 36) sceneMoving(t);
+  else if (t < 46) sceneRoute(t);
+  else if (t < 54) sceneVerdict(t);
+  else sceneClose(t);
+  // the tides are drawn over the outgoing scene; the incoming one starts as they land
+  tide(t, 16, INK, BLUE); tide(t, 26, BLUE, INK); tide(t, 36, INK, BONE); tide(t, 46, BONE, INK);
+  const dark = t >= 36 && t < 46;
+  if (t >= 5.6 && t < 54) { X.globalAlpha = t < 6 ? clamp((t - 5.6) / .4) : t > 53.4 ? 1 - clamp((t - 53.4) / .4) : 1; header(t, dark && !(t > 45.5)); X.globalAlpha = 1; }
+  else if (t < 5.6) header(t, false);
+  route(t, dark && !(t > 45.5));
+  leak(t, 5.3, 1.3); leak(t, 15.35, 1.1, 1); leak(t, 25.35, 1.1); leak(t, 35.35, 1.1, 1); leak(t, 45.4, 1.2); leak(t, 53.6, 1.4, 1);
+  if (t < 6 || t >= 46) vignette(.3);
+  grain(t);
+}
+</script>
+</body>
+</html>

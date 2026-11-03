@@ -4,6 +4,7 @@
 // the reason goes back to the agent, which reworks the task and learns from it (learn.mjs keeps it as a
 // standing rule or a one-off). The same reader opens any delivered file from the chat, read-only.
 import { DEPTS } from './data.js';
+import { linkify, wireLinks } from './links.js';
 
 const CSS = `
 #rv { position: fixed; inset: 0; z-index: 60; display: none; align-items: center; justify-content: center; padding: 24px 16px; }
@@ -33,7 +34,9 @@ body.dark #rv .rv-meta, body.dark #rv .rv-foot { border-color: rgba(236,234,227,
 #rv .rv-body hr { border: 0; border-top: 1px solid var(--hairline); margin: 1.2em 0; }
 #rv .rv-body code { font: 12.5px/1.4 Menlo, Consolas, monospace; background: rgba(127,127,127,.14); padding: 1px 4px; border-radius: 4px; }
 #rv .rv-foot { display: flex; align-items: center; gap: 10px; padding: 12px 18px; border-top: 1px solid var(--hairline); flex-wrap: wrap; }
-#rv .rv-foot .rv-hint { font: 11.5px/1.4 var(--ui); color: var(--grey); flex: 1 1 220px; }
+#rv .rv-foot .rv-hint { font: 11.5px/1.4 var(--ui); color: var(--grey); flex: 1 1 0; min-width: 0; max-width: 300px; margin-right: auto; }
+#rv .rv-foot .rv-btns { display: flex; gap: 10px; align-items: center; flex-wrap: nowrap; }
+#rv .rv-foot .rv-btn { white-space: nowrap; }
 body.dark #rv .rv-foot .rv-hint { color: #A3A29C; }
 #rv .rv-btn { font: 700 11px/1 var(--ui); letter-spacing: .12em; padding: 11px 18px; border-radius: 99px; cursor: pointer; border: 1px solid var(--hairline); background: none; color: inherit; }
 #rv .rv-btn:disabled { opacity: .4; cursor: default; }
@@ -72,7 +75,7 @@ body.dark #rv .rv-reason p { color: #A3A29C; }
 
 // the agents write plain text with light markdown: headings, bullets, **bold**, rules — enough to read comfortably
 function render(text, esc) {
-  const inline = s => esc(s).replace(/\*\*(.+?)\*\*/g, '<b>$1</b>').replace(/`([^`]+)`/g, '<code>$1</code>');
+  const inline = s => linkify(esc(s).replace(/\*\*(.+?)\*\*/g, '<b>$1</b>').replace(/`([^`]+)`/g, '<code>$1</code>').replace(/\[([^\]]+)\]\((https?:[^)\s]+)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>'));
   const out = []; let list = null;
   const close = () => { if (list) { out.push(`</${list}>`); list = null; } };
   for (const raw of String(text || '').split(/\r?\n/)) {
@@ -103,6 +106,7 @@ export function initReview({ esc, agentOf, onApprove, onReject, onAnswer, onHand
       <div class="rv-ex"><button>Too long</button><button>Wrong tone</button><button>Missing the numbers</button><button>Not what I asked for</button></div></div>
     <div class="rv-foot"><span class="rv-hint"></span><button class="rv-btn rv-copy" title="Copy the whole answer as text">COPY</button><span class="rv-btns"></span></div></div>`;
   document.body.appendChild(el);
+  wireLinks(el);
   const $ = s => el.querySelector(s);
   const ta = $('.rv-reason textarea');
   const REJ = { h: $('.rv-reason h3').textContent, p: $('.rv-reason p').textContent, ph: ta.placeholder, chips: $('.rv-ex').innerHTML }; // the rejection wording, so ANSWER can swap it and put it back

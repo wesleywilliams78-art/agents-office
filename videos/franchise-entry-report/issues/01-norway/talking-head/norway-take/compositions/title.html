@@ -1,0 +1,24 @@
+<template>
+  <style>
+    @font-face { font-family: "Archivo"; font-weight: 500; src: url("assets/fonts/archivo-latin-500-normal.woff2"); }
+    @font-face { font-family: "Newsreader"; font-style: italic; font-weight: 300; src: url("assets/fonts/newsreader-latin-300-italic.woff2"); }
+    #root { position: absolute; inset: 0; }
+    #title-card { position: absolute; left: 96px; right: 96px; top: 214px; background: rgba(32, 30, 29, 0.9); border-left: 10px solid #ec3013; padding: 34px 44px 40px; }
+    #title-kicker { font-family: "Archivo"; font-weight: 500; font-size: 28px; letter-spacing: 0.22em; color: #ec3013; text-transform: uppercase; }
+    #title-head { margin-top: 14px; font-family: "Newsreader"; font-style: italic; font-weight: 300; font-size: 76px; line-height: 1.02; color: #f3f2f2; }
+  </style>
+  <div id="root" data-composition-id="title" data-width="1080" data-height="1920">
+    <!-- frame 0 is the thumbnail: the card is finished at t = 0, it only leaves -->
+    <div id="title-card" class="clip" data-start="0" data-duration="4.3">
+      <div id="title-kicker" data-var-text="title-kicker">Franchise Entry Report · Norway</div>
+      <div id="title-head" data-var-text="title-head">Nobody holds the second rung.</div>
+    </div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    tl.fromTo("#title-kicker", { opacity: 1, y: 0 }, { opacity: 0, y: -18, duration: 0.24, ease: "power2.in" }, 3.86);
+    tl.fromTo("#title-head", { opacity: 1, y: 0 }, { opacity: 0, y: -24, duration: 0.26, ease: "power2.in" }, 3.94);
+    tl.to("#title-card", { opacity: 0, duration: 0.2, ease: "power2.in" }, 4.06);
+    window.__timelines["title"] = tl;
+  </script>
+</template>

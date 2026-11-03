@@ -1,0 +1,181 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<title>Ten Sites, One System</title>
+<link rel="stylesheet" href="kit/brand.css">
+<script src="kit/motion-kit.js"></script>
+<script src="kit/sound-kit.js"></script>
+<style>
+#stage{background:#F3F2F2;overflow:hidden}
+#g3d,#fx{position:absolute;left:0;top:0;width:1080px;height:1920px}
+#g3d{z-index:1}
+.L{position:absolute;left:0;top:0;width:1080px;height:1920px}
+.eb{position:absolute;left:0;width:1080px;top:300px;text-align:center;font:500 28px/1 var(--sans);letter-spacing:.24em;text-transform:uppercase;color:#B6240E;white-space:nowrap}
+.hl{position:absolute;left:0;width:1080px;text-align:center;font-family:var(--serif);font-weight:300;line-height:1.06;letter-spacing:-.015em;white-space:nowrap}
+.card{position:absolute;left:0;top:0;background:#F3F2F2;border:3px solid #201E1D;padding:22px 30px 24px;white-space:nowrap}
+.card .k{font:500 28px/1 var(--sans);letter-spacing:.22em;text-transform:uppercase;color:#B6240E}
+.card .v{margin-top:14px;font:500 42px/1.1 var(--sans);color:#201E1D;font-variant-numeric:lining-nums}
+.tag{position:absolute;left:0;top:0;font:500 28px/1 var(--sans);letter-spacing:.22em;text-transform:uppercase;white-space:nowrap}
+#tile{position:absolute;left:440px;top:640px;width:200px;height:200px}
+#tile img{width:100%;height:100%;display:block}
+</style></head>
+<body><div id="stage"><canvas id="g3d" width="1080" height="1920"></canvas><canvas id="fx" width="1080" height="1920"></canvas></div>
+<script>
+const W=1080,H=1920,B=0.6; // 100 bpm: a beat is 0.6 s, a bar 2.4 s
+const BONE='#F3F2F2',INK='#201E1D',RED='#EC3013',DRED='#B6240E',WG='#4A4644',GREY='#A7A4A3',GRB='#7D7A78',RULE='#D6D2CF';
+// one continuous camera: the street (A), down through the ground into the system underneath (B), up at site ten and away (C), the end card
+const T={hold:0.6,tilt:2.4,dive:6.6,inW:[7.2,8.4],under:8.4,outW:[11.2,12.6],up:12.6,away:15.0,end:17.4,END:20.4};
+const clamp=(x,a,b)=>Math.max(a,Math.min(b,x));
+const $=id=>document.getElementById(id);
+function hx(h){const n=parseInt(h.slice(1),16);return[(n>>16)&255,(n>>8)&255,n&255];}
+function mix(a,b,k){k=clamp(k,0,1);const A=hx(a),Z=hx(b);return'#'+A.map((v,i)=>Math.round(v+(Z[i]-v)*k).toString(16).padStart(2,'0')).join('');}
+// the route: along the streets, from site one to site ten
+const RT=[[0,-200],[0,780],[520,780],[520,1560],[1040,1560],[1040,2470]];
+const SEGL=RT.slice(1).map((p,i)=>Math.hypot(p[0]-RT[i][0],p[1]-RT[i][1]));const RLEN=SEGL.reduce((a,b)=>a+b,0);
+function rp(d){d=clamp(d,0,RLEN);for(let i=0;i<SEGL.length;i++){if(d<=SEGL[i]||i===SEGL.length-1){const k=SEGL[i]?d/SEGL[i]:0,a=RT[i],b=RT[i+1];return[a[0]+(b[0]-a[0])*k,a[1]+(b[1]-a[1])*k];}d-=SEGL[i];}}
+function heading(d){const a=rp(d),b=rp(d+320);return Math.atan2(b[0]-a[0],b[1]-a[1]);}
+const SITES=[[80,-80],[-80,440],[180,860],[440,1120],[700,1480],[960,1640],[1120,1900],[960,2000],[1120,2260],[1120,2420]];
+const SD=SITES.map(([x,z])=>{let best=0,bd=1e9;for(let d=0;d<=RLEN;d+=10){const p=rp(d),q=Math.hypot(p[0]-x,p[1]-z);if(q<bd){bd=q;best=d;}}return best;}); // where the route passes each site
+const PORTAL=[520,1040],PD=1500+260; // the square in the ground, at a crossroads on the way
+const MAT={b:['#ECEAE8','#DAD6D3','#C9C4C0'],b2:['#E5E2DF','#D3CFCB','#C2BDB8'],plinth:['#D6D2CF','#C4BFBB','#B3ADA9'],body:['#E2DFDC','#CBC6C2','#B8B2AE'],roof:['#CBC6C2','#BDB7B2','#AEA8A3'],ink:['#3A3735','#201E1D','#2A2826'],glass:['#3A3735','#201E1D','#2A2826'],red:['#EC3013','#C92A10','#B6240E'],tree:['#C9C4C0','#B8B2AE','#A7A4A3'],node:['#F3F2F2','#DCD8D5','#C4BFBB']};
+const cam={tx:0,ty:0,tz:0,yaw:0,pitch:0,dist:1000,f:1500,cx:540,cy:1000};
+let ctx,fctx,fxEl,LY,faces=[];const items=[],lines=[],cards=[];const A={};
+function cs(x,y,z){const dx=x-cam.tx,dy=y-cam.ty,dz=z-cam.tz;const c=Math.cos(cam.yaw),s=Math.sin(cam.yaw);const x1=dx*c-dz*s,z1=dx*s+dz*c;const cp=Math.cos(cam.pitch),sp=Math.sin(cam.pitch);return[x1,dy*cp+z1*sp,-dy*sp+z1*cp+cam.dist];}
+function P(x,y,z){const q=cs(x,y,z);const zc=Math.max(q[2],30);const s=cam.f/zc;return[cam.cx+q[0]*s,cam.cy-q[1]*s,zc];}
+function nr(x,y,z){const c=Math.cos(cam.yaw),s=Math.sin(cam.yaw);const x1=x*c-z*s,z1=x*s+z*c;const cp=Math.cos(cam.pitch),sp=Math.sin(cam.pitch);return[x1,y*cp+z1*sp,-y*sp+z1*cp];}
+let FOGBG=BONE,FOGNEAR=2600,FOGFAR=5200;
+function box(x0,x1,y0,y1,z0,z1,m,fog,bg){bg=bg||FOGBG;
+ const F=[[[x0,y1,z0],[x1,y1,z0],[x1,y1,z1],[x0,y1,z1],[0,1,0],0],[[x0,y0,z0],[x1,y0,z0],[x1,y1,z0],[x0,y1,z0],[0,0,-1],1],[[x1,y0,z1],[x0,y0,z1],[x0,y1,z1],[x1,y1,z1],[0,0,1],1],[[x0,y0,z1],[x0,y0,z0],[x0,y1,z0],[x0,y1,z1],[-1,0,0],2],[[x1,y0,z0],[x1,y0,z1],[x1,y1,z1],[x1,y1,z0],[1,0,0],2]];
+ for(const f of F){const cc=cs((f[0][0]+f[2][0])/2,(f[0][1]+f[2][1])/2,(f[0][2]+f[2][2])/2);if(cc[2]<40)continue;const n=nr(f[4][0],f[4][1],f[4][2]);if(n[0]*cc[0]+n[1]*cc[1]+n[2]*cc[2]>=0)continue;
+  const fd=clamp((cc[2]-FOGNEAR)/(FOGFAR-FOGNEAR),0,1),k=clamp((fog||0)+fd*(1-(fog||0)),0,1);faces.push({p:[P(...f[0]),P(...f[1]),P(...f[2]),P(...f[3])],z:cc[2],c:k?mix(m[f[5]],bg,k):m[f[5]]});}}
+let TOPF=820;function flush(){faces.sort((a,b)=>b.z-a.z);ctx.lineJoin='round';for(const f of faces){const cy=(f.p[0][1]+f.p[1][1]+f.p[2][1]+f.p[3][1])/4,k=clamp((TOPF-cy)/280,0,1);if(k>0)f.c=mix(f.c,FOGBG,k);ctx.fillStyle=f.c;ctx.beginPath();ctx.moveTo(f.p[0][0],f.p[0][1]);for(let i=1;i<4;i++)ctx.lineTo(f.p[i][0],f.p[i][1]);ctx.closePath();ctx.fill();if(k<1){ctx.globalAlpha=1-k;ctx.strokeStyle=mix(f.c,INK,0.28);ctx.lineWidth=1.2;ctx.stroke();ctx.globalAlpha=1;}}faces=[];}
+function cafe(ox,oy,oz,s,fog,lit){const y=oy;
+ box(ox-140*s,ox+140*s,y-14*s,y,oz-110*s,oz+110*s,MAT.plinth,fog);
+ box(ox-105*s,ox+105*s,y,y+150*s,oz-80*s,oz+80*s,MAT.body,fog);
+ box(ox-109*s,ox+109*s,y+150*s,y+158*s,oz-84*s,oz+84*s,lit?MAT.red:MAT.roof,fog);
+ box(ox-112*s,ox+112*s,y+104*s,y+109*s,oz-100*s,oz-80*s,MAT.ink,fog);box(ox-90*s,ox+12*s,y+18*s,y+90*s,oz-82*s,oz-80*s,MAT.glass,fog);box(ox+32*s,ox+78*s,y,y+83*s,oz-82*s,oz-80*s,MAT.ink,fog);}
+// the city: blocks between streets every 260; four lots a block; a site takes its lot
+const LOTS=[];{const r=M.rand(11);for(let i=-2;i<=5;i++)for(let j=-2;j<=10;j++){const bx=i*260+130,bz=j*260+130;for(const[ox,oz]of [[-50,-50],[50,-50],[-50,50],[50,50]]){const x=bx+ox,z=bz+oz;const site=SITES.findIndex(([sx,sz])=>Math.abs(sx-x)<6&&Math.abs(sz-z)<6);const h=40+Math.floor(r()*r()*190),tree=r()<0.12;LOTS.push({x,z,site,h,tree,m:r()<0.5?MAT.b:MAT.b2});}}}
+function drawCity(t,o){o=o||{};const tA=o.siteT||(()=>-1);
+ for(const L of LOTS){const c=cs(L.x,0,L.z);if(c[2]<60||c[2]>FOGFAR+400)continue;if(Math.abs(c[0])>c[2]*1.1+300)continue;
+  if(L.site>=0){const a=tA(L.site);if(a<0||t<a){box(L.x-40,L.x+40,0,4,L.z-40,L.z+40,MAT.plinth,0);continue;}const k=M.spring(t,a,0,1,'weight');cafe(L.x,0,L.z,0.36,0,o.lit?o.lit(L.site):false);continue;}
+  if(L.tree){box(L.x-14,L.x+14,0,26,L.z-14,L.z+14,MAT.tree,0);box(L.x+20,L.x+40,0,18,L.z+10,L.z+30,MAT.tree,0);continue;}
+  box(L.x-40,L.x+40,0,L.h,L.z-40,L.z+40,L.m,0);}
+}
+function sitePop(t,i,a){} // reserved
+function polyline(pts,col,lw,al){if(al<=0||pts.length<2)return;ctx.save();ctx.beginPath();ctx.rect(0,TOPF-200,W,H);ctx.clip();ctx.globalAlpha=al;ctx.strokeStyle=col;ctx.lineWidth=lw;ctx.lineJoin='round';ctx.lineCap='round';ctx.beginPath();pts.forEach((p,i)=>{const q=P(p[0],p[1],p[2]);i?ctx.lineTo(q[0],q[1]):ctx.moveTo(q[0],q[1]);});ctx.stroke();ctx.globalAlpha=1;ctx.restore();}
+function routePts(d0,d1,y){const pts=[];for(let d=d0;d<=d1;d+=20){const q=rp(d);pts.push([q[0],y,q[1]]);}const e=rp(d1);pts.push([e[0],y,e[1]]);return pts;}
+function streets(col,al){ctx.globalAlpha=al;ctx.strokeStyle=col;ctx.lineWidth=2;for(let i=-2;i<=6;i++){const x=i*260;polyline([[x,0.2,-520],[x,0.2,2860]],col,2,al);}for(let j=-2;j<=11;j++){const z=j*260;polyline([[-520,0.2,z],[1560,0.2,z]],col,2,al);}ctx.globalAlpha=1;}
+function groundQuad(col,al,pad){pad=pad||0;const q=[[-520-pad,0,-520-pad],[1560+pad,0,-520-pad],[1560+pad,0,2860+pad],[-520-pad,0,2860+pad]].map(v=>P(...v));ctx.globalAlpha=al;ctx.fillStyle=col;ctx.beginPath();q.forEach((p,i)=>i?ctx.lineTo(p[0],p[1]):ctx.moveTo(p[0],p[1]));ctx.closePath();ctx.fill();ctx.globalAlpha=1;}
+function quadAt(cx,cz,s,y){return[[cx-s,y,cz-s],[cx+s,y,cz-s],[cx+s,y,cz+s],[cx-s,y,cz+s]].map(v=>P(...v));}
+function fillQ(q,col,al,g){g=g||ctx;g.globalAlpha=al;g.fillStyle=col;g.beginPath();q.forEach((p,i)=>i?g.lineTo(p[0],p[1]):g.moveTo(p[0],p[1]));g.closePath();g.fill();g.globalAlpha=1;}
+function wipe(t,w,q,col){if(t<w[0]||t>=w[1]||!q)return;const k=M.p(t,w[0],w[1]-w[0],'sine.inOut');const Tq=[[-8,-8],[W+8,-8],[W+8,H+8],[-8,H+8]];const o=q.map((p,i)=>[p[0]+(Tq[i][0]-p[0])*k,p[1]+(Tq[i][1]-p[1])*k]);fctx.fillStyle=col;fctx.beginPath();o.forEach((p,i)=>i?fctx.lineTo(p[0],p[1]):fctx.moveTo(p[0],p[1]));fctx.closePath();fctx.fill();fxEl.style.zIndex=16;}
+let qIn=null,qOut=null;
+// A: the street. Site one, the route draws itself, sites open as it reaches them, a square opens in the ground ahead
+function worldA(t){
+ const dCam=M.tween(t,T.hold,T.dive-T.hold+0.6,0,PD-180,'sine.inOut');const p=rp(dCam);
+ const tilt=M.spring(t,T.tilt-0.6,0,1,'calm'),dive=M.p(t,T.dive,T.inW[1]-T.dive,'power2.in');
+ cam.tx=p[0]+(PORTAL[0]-p[0])*dive;cam.tz=p[1]+(PORTAL[1]-p[1])*dive;cam.ty=40;
+ cam.yaw=heading(dCam)*(tilt)+0*(1-tilt);cam.pitch=1.42-0.82*tilt+0.78*dive;cam.dist=820+340*tilt-760*dive;cam.f=1500;cam.cx=540;cam.cy=1060-60*tilt;
+ FOGBG=BONE;FOGNEAR=2000;FOGFAR=4600;TOPF=800-260*dive;
+ streets(RULE,0.9);
+ const dRoute=M.tween(t,0.9,T.dive-0.9,0,PD+40,'sine.inOut');polyline(routePts(0,dRoute,1),RED,8,1);
+ const open=M.spring(t,T.dive-0.9,0,1,'calm');if(open>0.01)fillQ(quadAt(PORTAL[0],PORTAL[1],90*open,0.6),INK,1);
+ drawCity(t,{siteT:i=>i===0?-10:(SD[i]<PD+300?0.9+(SD[i]/(PD+40))*(T.dive-0.9)-0.1:-1),lit:i=>i===0});
+ flush();
+ qIn=quadAt(PORTAL[0],PORTAL[1],90*Math.max(open,0.01),0.6);
+}
+// B: the system underneath: every site a node, the route and the links between them in red; the camera runs the line at speed
+function worldB(t){
+ const d=M.tween(t,T.under-0.2,T.outW[1]-T.under+0.2,PD,SD[9]-300,'power2.inOut');const p=rp(d);
+ cam.tx=p[0];cam.tz=p[1];cam.ty=30;cam.yaw=heading(d);cam.pitch=0.42+0.4*M.p(t,T.outW[0]-0.6,1.2,'sine.inOut');cam.dist=560-80*M.p(t,T.outW[0]-0.6,1.2,'sine.inOut');cam.f=1500;cam.cx=540;cam.cy=1060;
+ FOGBG=INK;FOGNEAR=900;FOGFAR=3400;TOPF=780;
+ // speed marks on the floor, fixed in the world, so the camera's pace reads
+ ctx.fillStyle='#3A3735';for(let i=-2;i<=6;i++)for(let j=-2;j<=11;j++)for(const[ox,oz]of [[0,130],[130,0]]){const x=i*260+ox,z=j*260+oz;const c=cs(x,0,z);if(c[2]<60||c[2]>3600)continue;const q=P(x,0,z),s=420/c[2]*6;ctx.globalAlpha=clamp(1-(c[2]-900)/2500,0,1);ctx.fillRect(q[0]-s,q[1]-s*0.4,s*2,s*0.8);}
+ ctx.globalAlpha=1;
+ for(let i=0;i<SITES.length;i++)for(const j of [i+1,i+3]){if(j>=SITES.length)continue;const a=SITES[i],b=SITES[j];polyline([[a[0],8,a[1]],[b[0],8,b[1]]],DRED,j===i+1?3:2,j===i+1?0.75:0.45);}
+ polyline(routePts(0,RLEN,4),RED,8,1);
+ SITES.forEach(([x,z],i)=>{const k=M.spring(t,T.under+0.1+i*0.06,0,1,'snap');box(x-22,x+22,0,44*clamp(k,0.02,1.1),z-22,z+22,MAT.node,0);});
+ flush();
+ const s10=SITES[9],op=0;
+ qOut=quadAt(s10[0],s10[1],120*Math.max(op,0.01),50);
+}
+// C: up at site ten, then away: the whole city becomes one card on the ink, every site lit, the route joining them
+function worldC(t){
+ const k1=M.spring(t,T.up-0.1,0,1,'calm'),k2=M.spring(t,T.away-0.3,0,1,'breath');const s10=SITES[9],ctr=[520,1170];
+ cam.tx=s10[0]+(ctr[0]-s10[0])*k2;cam.tz=s10[1]+(ctr[1]-s10[1])*k2;cam.ty=40;
+ cam.yaw=Math.PI+0.45-0.45*k2-0.05*Math.max(0,t-T.up)*(1-k2);cam.pitch=1.36-0.62*k1+(1.52-0.74)*k2;cam.dist=380+520*k1+(5200-900)*k2-30*Math.max(0,t-T.up)*(1-k2);cam.f=1500;cam.cx=540;cam.cy=1040-80*k2;
+ FOGBG=BONE;FOGNEAR=2400+9000*k2;FOGFAR=5600+12000*k2;TOPF=800*(1-k2);
+ const fade=M.p(t,T.end-0.6,0.8,'sine.inOut');
+ groundQuad(BONE,1-fade,0);
+ streets(RULE,0.9*(1-fade));polyline(routePts(0,RLEN,1),RED,8,1-fade);
+ if(fade<1){drawCity(t,{siteT:()=>-10,lit:()=>true});
+  if(fade>0){for(const f of faces)f.c=mix(f.c,INK,fade);}flush();}
+}
+function mk(p,tag,cls,html,css){const e=document.createElement(tag);if(cls)e.className=cls;if(html!=null)e.innerHTML=html;if(css)Object.assign(e.style,css);p.appendChild(e);return e;}
+function item(e,a,b,o){items.push(Object.assign({el:e,a,b},o||{}));return e;}
+function line(p,txt,y,col,a,b,o){o=o||{};const e=mk(p,'div','hl',txt,{top:y+'px',color:col,fontSize:(o.size||112)+'px'});lines.push({el:e,a,b,size:o.size||112,drift:o.drift||0});return e;}
+function drawItem(it,t){const dy=it.dy==null?24:it.dy,a=it.a,b=it.b;const op=M.p(t,a,0.16,'sine.inOut')*(b==null?1:1-M.p(t,b-0.18,0.16,'sine.inOut'));let y=M.spring(t,a,dy,0,'snap');if(b!=null)y+=M.spring(t,b-0.18,0,-dy*0.3,'snap');if(it.drift)y-=it.drift*Math.max(0,t-Math.max(a,0.3));M.set(it.el,{y,opacity:op,visible:op>0.003});}
+function drawLine(L,t){const a=L.a,b=L.b,s=L.size;const outK=b==null?0:M.p(t,b,0.22,'sine.inOut');const vis=t>=a-0.05&&outK<1;M.set(L.el,{visible:vis,opacity:1-outK,y:(b==null?0:M.spring(t,b,0,-s*0.06,'snap'))-L.drift*Math.max(0,t-Math.max(a,0.3))});L.words.forEach((w,i)=>M.set(w,{y:M.spring(t,a+i*0.12,s*1.15,0,'snap')}));}
+// cards in the world: panels pinned above a site, rising on a spring
+function card(k,v,a,b,site,world){const e=mk(LY.w,'div','card','<div class="k">'+k+'</div><div class="v">'+v+'</div>');cards.push({el:e,a,b,site,world});return e;}
+function drawCard(c,t){const op=M.p(t,c.a,0.18,'sine.inOut')*(c.b==null?1:1-M.p(t,c.b-0.18,0.18,'sine.inOut'));const s=SITES[c.site];if(op<=0.003||c.world!==WORLD){M.set(c.el,{visible:false});return;}
+ const p=P(s[0],80,s[1]),w=c.el.offsetWidth,h=c.el.offsetHeight;const x=clamp(p[0]-w/2,110,W-110-w),y=clamp(p[1]-h-30,620,H-480-h);c.el.style.left=x.toFixed(1)+'px';c.el.style.top=y.toFixed(1)+'px';M.set(c.el,{visible:true,opacity:op,y:M.spring(t,c.a,30,0,'snap'),scale:M.spring(t,c.a,0.94,1,'snap')});}
+let WORLD='A';
+M.scene({
+ width:W,height:H,fps:30,duration:T.END,bpm:100,
+ cuts:[Math.round(T.under/B),Math.round(T.up/B),Math.round(T.end/B)],
+ setup(){
+  const st=$('stage');ctx=$('g3d').getContext('2d');fxEl=$('fx');fctx=fxEl.getContext('2d');
+  LY={};[['w',8],['a',10],['b',12],['c',14],['h',20]].forEach(([k,z])=>{LY[k]=mk(st,'div','L','',{zIndex:z});});
+  // A: frame 0 is this card, finished
+  item(mk(LY.a,'div','eb','WRW Hospitality'),-10,T.dive+0.4);
+  line(LY.a,'One site.',352,INK,-10,T.dive+0.3);line(LY.a,'Then ten.',470,GRB,3.6,T.dive+0.35);
+  card('Site 1','Open · £20,000 a week',1.0,4.4,0,'A');card('Site 3','Opening Monday',4.6,T.dive+0.2,2,'A');
+  // B
+  item(mk(LY.b,'div','eb','Underneath',{color:RED}),T.under+0.2,T.outW[0]+0.1);
+  line(LY.b,'The system',352,BONE,T.under+0.3,T.outW[0]);line(LY.b,'under every site.',470,GREY,T.under+0.7,T.outW[0]+0.05);
+  A.tags=[];['Playbook','Rota','Numbers','Training'].forEach((txt,n)=>item(mk(LY.b,'div','eb',txt,{top:(610+n*52)+'px',color:BONE}),T.under+1.0+n*0.5,T.outW[0]-0.1,{dy:14}));
+  // C
+  item(mk(LY.c,'div','eb','Site 10'),T.up+0.2,T.away+0.15);
+  line(LY.c,'Runs like',352,INK,T.up+0.3,T.away-0.05);line(LY.c,'the first.',470,GRB,T.up+0.6,T.away-0.05);
+  card('Site 10','Same playbook · same numbers',T.up+0.5,T.away+0.2,9,'C');
+  // end card, on ink
+  const tl=mk(LY.h,'div','','<img src="kit/brand/WRW-logo-white-on-red.svg" alt="">');tl.id='tile';item(tl,T.end+0.05,null,{dy:30});
+  item(mk(LY.h,'div','eb','WRW Hospitality',{top:'900px',color:GREY}),T.end+0.25,null);
+  line(LY.h,'Ten sites.',960,BONE,T.end+0.4,null,{size:120});line(LY.h,'One system.',1088,GREY,T.end+0.6,null,{size:120});
+  item(mk(LY.h,'div','eb','Wesley Williams',{top:'1260px',color:BONE,letterSpacing:'.12em',textTransform:'none',fontSize:'34px'}),T.end+0.9,null);
+  lines.forEach(L=>{L.words=M.split(L.el,'words');});
+ },
+ render(t){
+  WORLD=t<T.inW[1]?'A':t<T.outW[1]?'B':'C';
+  const bg=WORLD==='A'?BONE:WORLD==='B'?INK:mix(BONE,INK,M.p(t,T.away+0.2,1.2,'sine.inOut'));ctx.globalAlpha=1;ctx.fillStyle=bg;ctx.fillRect(0,0,W,H);fctx.clearRect(0,0,W,H);faces=[];
+  if(WORLD==='A')worldA(t);else if(WORLD==='B')worldB(t);else if(t<T.end+0.4)worldC(t);
+  if(t>=T.end){const fa=M.p(t,T.end,1.0,'sine.inOut');ridge(ctx,H-420,60,21,(t-T.end)*0.35,BONE,0.07*fa);ridge(ctx,H-300,44,23,-(t-T.end)*0.25,BONE,0.12*fa);}
+  LY.a.style.display=WORLD==='A'?'':'none';LY.b.style.display=WORLD==='B'?'':'none';LY.c.style.display=WORLD==='C'?'':'none';
+  items.forEach(it=>drawItem(it,t));lines.forEach(L=>drawLine(L,t));cards.forEach(c=>drawCard(c,t));
+  tideC(t,T.inW,INK,BONE);tideC(t,T.outW,BONE,INK); // through the ground and back up: the series' ridge line carries each change of ground
+ },
+ score(S){
+  const b=n=>n*B;
+  // A: a light pulse on the street; plucks in A minor turning bright
+  S.drums(1,2,{kick:'x-------x-------',hat:'--o---o---o---o-'});S.drums(3,0.75,{kick:'x-------x-------',hat:'--x---x---x---x-'});
+  [['A1',4],['F1',4],['C2',4]].forEach(([n,len],i)=>S.sub(b(4+i*4),n,b(len)*0.95,{gain:.8}));
+  S.arp(4,8,['A4','C5','E5','B4'],{rate:4,gain:.55});S.arp(12,2,['F4','A4','C5','E5'],{rate:4,gain:.5});
+  for(let i=1;i<4;i++)S.tick(0.9+(SD[i]/(PD+40))*(T.dive-0.9),{pitch:2400+i*200,gain:.12}); // sites opening
+  S.riser(T.under,1.8,{gain:.5});S.whoosh(T.under,1.0,{gain:.4});S.impact(T.under,{gain:.6});
+  // B: underneath, half-time and lower; a tick as each label lands
+  S.drums(Math.round(T.under/(4*B)),1.5,{kick:'x---------x-----',hat:'----x-------x---'});
+  S.sub(T.under,'A1',1.8,{gain:.9});S.sub(T.under+2.4,'G1',1.6,{gain:.9});S.arp(Math.round(T.under/B),6,['A3','E4','G4','C4'],{rate:4,gain:.4});
+  [0,1,2,3].forEach(n=>S.tick(T.under+1.0+n*0.5,{pitch:1800+n*150,gain:.14}));
+  S.whoosh(T.up,0.9,{gain:.4});S.impact(T.up,{gain:.35});
+  // C: back up, bright and open; the band thins out as the city becomes a card
+  S.drums(Math.round(T.up/(4*B)),1,{kick:'x-------x-------',hat:'--x---x---x---x-',snare:'----x-------x---'});
+  S.sub(T.up,'C2',2.3,{gain:.8});S.sub(T.up+2.4,'F1',2.3,{gain:.8});S.arp(Math.round(T.up/B),8,['C5','E5','G5','D5'],{rate:4,gain:.5});
+  S.pad(T.away,['C4','E4','G4','B4'],2.6,{gain:.5});
+  // the end card: one bell, the root, then the room
+  S.bell(T.end,'E5',{gain:.5});S.sub(T.end,'C2',2.6,{gain:.8});S.pluck(T.end+0.6,'G4',0.8,{gain:.4});
+ }
+});
+function tideC(t,w,to,from){if(t<w[0]||t>=w[1])return;const k=M.p(t,w[0],w[1]-w[0],'sine.inOut');fxEl.style.zIndex=16;[[mix(to,from,0.55),0,11],[to,0.14,5]].forEach(([col,lag,seed])=>{const kk=clamp((k-lag)/(1-lag),0,1);ridge(fctx,(H+120)-kk*(H+300),110,seed,t*0.6,col,1);});}
+function ridge(g,topY,amp,seed,ph,col,al){g.globalAlpha=al==null?1:al;g.fillStyle=col;g.beginPath();g.moveTo(-10,H+20);for(let x=-10;x<=W+10;x+=12){const u=x/W;const y=topY+amp*(0.55*Math.sin(u*8.2+seed+ph)+0.45*Math.sin(u*17.0+seed*1.7-ph*0.6));g.lineTo(x,y);}g.lineTo(W+10,H+20);g.closePath();g.fill();g.globalAlpha=1;}
+</script></body></html>

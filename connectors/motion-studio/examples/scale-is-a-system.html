@@ -1,0 +1,84 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<link rel="stylesheet" href="kit/brand.css">
+<script src="kit/motion-kit.js"></script>
+<script src="kit/sound-kit.js"></script>
+<style>
+  .layer { position: absolute; inset: 0; }
+  #title { padding: 0 96px; }
+  #title .kicker { position: absolute; left: 96px; top: 560px; font-size: 30px; color: var(--red); }
+  #title .headline { position: absolute; left: 96px; top: 640px; width: 860px; font-size: 128px; }
+  #logo0 { position: absolute; left: 96px; top: 300px; width: 150px; }
+  #ridges svg { position: absolute; left: 0; bottom: 0; }
+  #red { background: var(--red); height: calc(100% + 260px); }
+  #red .headline { position: absolute; left: 96px; top: 520px; width: 900px; font-size: 150px; color: var(--bone); }
+  #grid { position: absolute; left: 96px; top: 1080px; }
+  #grid i { position: absolute; width: 112px; height: 112px; background: var(--bone); }
+  #ink { background: var(--ink); height: calc(100% + 260px); }
+  #ink .num { position: absolute; left: 96px; top: 560px; font: 300 400px/1 var(--serif); color: var(--bone); }
+  #ink .kicker { position: absolute; left: 104px; top: 1010px; font-size: 32px; color: var(--red); }
+  #ink .line { position: absolute; left: 96px; top: 1090px; height: 3px; background: var(--red); }
+  #logo { position: absolute; left: 96px; top: 300px; width: 150px; }
+</style></head>
+<body><div id="stage">
+  <div class="layer" id="ridges"></div>
+  <div class="layer" id="title">
+    <img id="logo0" src="kit/logos/wrw-mark-ink.png">
+    <div class="kicker">The Art of Operations</div>
+    <div class="headline" id="h0">One site is a shop. Ten is a&nbsp;system.</div>
+  </div>
+  <div class="layer" id="red"><div class="headline" id="h1">Scale is a system, not a&nbsp;hustle.</div><div id="grid"></div></div>
+  <div class="layer" id="ink"><div class="num" id="num">0</div><div class="kicker">Sites, one operating rhythm</div><div class="line" id="line"></div><img id="logo" src="kit/logos/wrw-mark-white.png"></div>
+</div>
+<script>
+const W = 1080, H = 1920, B = M.beat;
+let words1, cells = [], ridgeEls = [];
+M.scene({
+  width: W, height: H, fps: 30, duration: 8, bpm: 120,
+  cuts: [4, 10],
+  setup() {
+    words1 = M.split(document.getElementById('h1'));
+    const g = document.getElementById('grid');
+    for (let r = 0; r < 3; r++) for (let c = 0; c < 6; c++) { const i = document.createElement('i'); i.style.left = c * 128 + 'px'; i.style.top = r * 128 + 'px'; g.appendChild(i); cells.push({ el: i, r, c }); }
+    const svg = (fill, op) => `<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}"><path fill="${fill}" fill-opacity="${op}"/></svg>`;
+    document.getElementById('ridges').innerHTML = svg('#201E1D', .12) + svg('#201E1D', .22) + svg('#201E1D', .9);
+    ridgeEls = [...document.querySelectorAll('#ridges path')];
+  },
+  render(t) {
+    // scene 1 (beats 0–4): the finished title, held on frame 0, ridges breathing on the beat
+    ridgeEls.forEach((p, i) => p.setAttribute('d', M.ridgePath(W, H, { base: [.2, .13, .05][i], amp: [.2, .16, .1][i], seed: 3 + i, drift: -Math.max(0, t - .3) * (8 + i * 10) - M.pulse(t, { decay: 7 }) * (i + 1) * 3 })));
+    M.set(document.getElementById('h0'), { y: -Math.max(0, t - .3) * 6, opacity: 1 });
+    // cut on beat 4: the red panel springs up from the bottom, words pop in one by one
+    // a change of colour is never a bang: the red ground rises like a tide behind a ridge, settling on beat 4
+    const red = document.getElementById('red');
+    M.set(red, { y: M.spring(t, B(2.25), H + 260, -260, 'calm'), visible: t >= B(2.25) }); red.style.clipPath = `path('${M.ridgePath(W, H + 260, { base: (H + 60) / (H + 260), amp: 170 / (H + 260), seed: 11, drift: -t * 30 })}')`;
+    words1.forEach((w, i) => M.set(w, { y: M.spring(t, B(4) + M.stagger(i, .09), 180, 0, 'pop') }));
+    cells.forEach(({ el, r, c }) => { const s0 = B(6) + (r + c) * .06; M.set(el, { scale: M.spring(t, s0, 0, 1, 'drop'), rotate: M.spring(t, s0, 25, 0, 'pop') }); el.style.background = r === 1 && c === 4 && t > B(8.5) ? '#201E1D' : '#F3F2F2'; });
+    // cut on beat 10: ink ground, the numeral drops and counts, the WRW logo lands on beat 12
+    const ink = document.getElementById('ink'); M.set(ink, { y: M.spring(t, B(8.25), H + 260, -260, 'calm'), visible: t >= B(8.25) }); ink.style.clipPath = `path('${M.ridgePath(W, H + 260, { base: (H + 60) / (H + 260), amp: 170 / (H + 260), seed: 5, drift: t * 25 })}')`;
+    document.getElementById('num').textContent = Math.round(M.tween(t, B(10), B(3), 0, 40, 'power4.out'));
+    M.set(document.getElementById('num'), { y: M.spring(t, B(10), -220, 0, 'drop') });
+    document.getElementById('line').style.width = M.spring(t, B(11), 0, 700, 'gentle') + 'px';
+    M.set(document.getElementById('logo'), { scale: M.spring(t, B(12), 2.4, 1, 'stamp'), rotate: M.spring(t, B(12), -14, 0, 'stamp'), opacity: t >= B(12) ? 1 : 0 });
+    M.set(document.getElementById('num'), { y: M.spring(t, B(10), -220, 0, 'drop') - M.pulse(t, { from: 12, decay: 10 }) * 10 });
+  },
+  score(S) {
+    S.pad(0, ['A3', 'C4', 'E4'], S.beat(4), { gain: .8 });
+    S.sub(0, 'A1', S.beat(4));
+    S.riser(S.beat(4), S.beat(3));
+    S.whoosh(S.beat(4));
+    S.impact(S.beat(4));
+    S.drums(1, 1, { kick: 'x---x---x---x---', hat: '--x---x---x---x-', clap: '----x-------x---' });
+    S.drums(2, 1, { kick: 'x---x---x---x-x-', hat: '--x-x-x---x-x-xo', clap: '----x-------x---' });
+    S.arp(4, 6, ['A4', 'C5', 'E5', 'G5'], { rate: 4, gain: .7 });
+    S.bass(S.beat(4), 'A1', S.beat(2)); S.bass(S.beat(6), 'F1', S.beat(2)); S.bass(S.beat(8), 'C2', S.beat(2));
+    for (let i = 0; i < 18; i++) S.tick(S.beat(6) + (Math.floor(i / 6) + i % 6) * .06, { pitch: 1800 + i * 40 });
+    S.whoosh(S.beat(10)); S.impact(S.beat(10));
+    S.drums(3, 1, { kick: 'x-------x---x---', hat: '--x---x---x---x-' });
+    S.pad(S.beat(10), ['F3', 'A3', 'C4', 'E4'], S.beat(6), { gain: .9 });
+    S.sub(S.beat(10), 'F1', S.beat(6));
+    S.stamp(S.beat(12)); S.clap(S.beat(12));
+  },
+});
+</script>
+</body></html>

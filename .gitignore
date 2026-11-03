@@ -19,7 +19,41 @@ videos/*/renders/
 # SOP builder outputs (finished client documents)
 output/sops/
 
-# Manual Magic University: the saved login (never commit), working renders, and the long music bed (rebuilt from the mp3)
+# finished video, slides, music and the filed library (large, regenerable)
+output/video/
+output/music/
+output/motion/
+output/library/
+
+# the folder Wesley posts from (his content, regenerable)
+Content Calendar/
+
+# Manual Magic University: the saved login (never commit) and working renders
 videos/manual-magic-ai/university/.auth/
 videos/manual-magic-ai/university/work/
 videos/manual-magic-ai/university/assets/music/*-long.wav
+
+# Consultants' Corner lives on the external D: Extreme SSD (D:\Consultants Corner); this path is a junction to it
+videos/consultants-corner
+# media on the D: drive (junctions, 3 Nov 2026)
+output/blender/
+output/teleprompter/
+# media under videos/: the junction folders at any depth, and audio, video and archives anywhere (source, scripts and stills stay in git)
+videos/**/renders/
+videos/**/out*/
+videos/**/proxies*/
+videos/**/stills/
+videos/**/footage/
+videos/**/frames/
+videos/**/work/
+videos/**/music-samples/
+videos/**/.hyperframes/
+videos/**/.thumbnails/
+videos/**/candidates/
+videos/**/*.mp4
+videos/**/*.mov
+videos/**/*.webm
+videos/**/*.wav
+videos/**/*.m4a
+videos/**/*.mp3
+videos/**/*.zip

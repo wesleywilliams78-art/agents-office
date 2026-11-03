@@ -72,14 +72,16 @@ async function stopBackend() {
 async function run(job) {
   const freeGb = os.freemem() / 2 ** 30;
   if (appOpen()) throw new Error('LTX Desktop is open and holds the GPU. Close it and submit again.');
-  if (freeGb < MIN_FREE_RAM_GB) throw new Error(`Only ${freeGb.toFixed(1)} GB of RAM is free (needs ${MIN_FREE_RAM_GB}+). Close Chrome and other heavy apps, then submit again.`);
+  // the RAM check is for starting the backend; once it is up it holds the model's memory itself, so the next job must not trip on it
+  if (!(backend && backend.exitCode === null) && freeGb < MIN_FREE_RAM_GB) throw new Error(`Only ${freeGb.toFixed(1)} GB of RAM is free (needs ${MIN_FREE_RAM_GB}+). Close Chrome and other heavy apps, then submit again.`);
   await ensureBackend();
   // never the paid cloud API for video: force local generation every time
   await call('POST', '/api/settings', { userPrefersLtxApiVideoGenerations: false });
   // a video is a chain of segments: each starts from the last frame of the one before, so it carries on rather than cutting
   const plan = job.segments?.length ? job.segments : [job.duration];
   const dir = path.join(TMP, job.id); fs.mkdirSync(dir, { recursive: true });
-  const parts = []; let image = null;
+  // job.image: the first part starts from this still (a chosen frame) instead of from text alone
+  const parts = []; let image = job.image || null;
   for (let i = 0; i < plan.length; i++) {
     const cur = readJob(job.id); if (cur?.state === 'cancelled') throw new Error('cancelled');
     const body = { prompt: job.scenes?.[i] || job.prompt, resolution: job.resolution, model: 'fast', duration: plan[i], fps: 24, aspectRatio: job.aspectRatio, cameraMotion: job.cameraMotion, audio: false };

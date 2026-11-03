@@ -1,0 +1,619 @@
+{
+ "issue": 4,
+ "country": "Kenya",
+ "dateLong": "20 NOV 2026",
+ "colour": "#006600",
+ "verified": "OCT 2026",
+ "accessed": "30 Oct 2026",
+ "accent": {
+  "front": "#FFFFFF",
+  "mid": "#FFFFFF",
+  "back": "#FFFFFF"
+ },
+ "cover": {
+  "verdict": "Open, with no franchise law found and a legal wage floor of under £1 an hour, but the buyers are a small urban middle class and money costs 14.4% to borrow. Chicken, coffee and forecourt formats are growing, and the entries and exits we found point the same way: choose the partner before the category.",
+  "stats": [
+   {
+    "big": "257",
+    "label": "Simbisa counters in Kenya, Jun 2026, the largest food network we found"
+   },
+   {
+    "big": "14.4%",
+    "label": "average bank lending rate, Sep 2026, against a policy rate of 8.75%"
+   },
+   {
+    "big": "£0.58",
+    "label": "all-in hourly cost of a Nairobi waiter or cook at the legal floor (Estimate)"
+   }
+  ]
+ },
+ "market": {
+  "headline": "A mobile-money market of 58 million, with its buyers in five cities",
+  "intro": "Kenya pays by phone, orders more by app every year, and keeps most of its buying power in Nairobi. Growth is in value and delivery, not in the bill per head.",
+  "tiles": [
+   {
+    "label": "Population",
+    "big": "58.4m",
+    "body": "Estimate for 2026: a straight line between KNBS projections of 57.0m for 2025 and 63.9m for 2030. We did not find a national urban share in the sources we could open.",
+    "src": "KNBS via CEIC [S1]"
+   },
+   {
+    "label": "GDP per head",
+    "pre": "USD",
+    "big": "2,549",
+    "body": "2025, KNBS Economic Survey 2026. About £1,910 at the CBK rate of 30 Oct 2026 (Estimate). Real growth was 4.6% in 2025. The CBK had estimated 5.0%, so we use the lower KNBS figure.",
+    "src": "KNBS via HapaKenya [S2] · CBK [S3, S4]"
+   },
+   {
+    "label": "Food-service spend",
+    "big": "Not found",
+    "body": "We searched the KNBS Economic Survey 2026, the household budget survey (the 2025/26 round is still in the field) and the CPI weights. Nearest proxy: Simbisa’s Kenyan average spend was US$6.17 (about £4.63) a customer in Q3 of FY2026, on 3.5m customers.",
+    "src": "KNBS [S2] · Simbisa via Food Business Africa [S5]"
+   },
+   {
+    "label": "Franchise count",
+    "big": "Not found",
+    "body": "There is no official count, and we found no publications from a franchise association. The US trade desk calls the market “steadily growing”. The three largest food networks we found add up to about 400 units (Estimate: Simbisa 257, Java House 95 in Kenya, KFC 48).",
+    "src": "US ITA [S6] · Simbisa [S5] · Java [S7] · KFC [S8]"
+   },
+   {
+    "label": "Consumer spending",
+    "pre": "Food prices",
+    "big": "+9.5%",
+    "body": "In the year to Sep 2026, against 6.8% headline and 4.0% core inflation. Restaurant and accommodation prices were reported up 2.9% in August (basis unstated). We found no household confidence index. The CBK’s September survey of firms (96 of them hotels) reports resilient festive bookings.",
+    "src": "KNBS via Nairametrics [S9] · Standard [S10] · CBK [S11]"
+   },
+   {
+    "label": "Currency · KES",
+    "big": "£1 = KES 173.20",
+    "body": "€1 = KES 144.74 and $1 = KES 129.95 on 30 Oct 2026. The shilling has held near 130 to the dollar for about 18 months. The CBK held at 8.75% on 7 Oct after ten cuts from 13.0% since Jun 2024. The next date was not yet posted.",
+    "src": "CBK [S3] · Khusoko [S4]"
+   }
+  ],
+  "eatsTitle": "How Kenya eats out",
+  "eatsNote": "Three facts that shape every unit P&L",
+  "eats": [
+   {
+    "label": "How they pay · Mobile",
+    "big": "46.4bn",
+    "body": "M-Pesa transactions in the year to Mar 2026, worth KES 41.68tn, through 3.13m merchants. The average ticket is about KES 898 (£5.18, Estimate, all uses).",
+    "src": "Safaricom via TechTrendsKE [S12]"
+   },
+   {
+    "label": "How it arrives · Delivery",
+    "big": "27%",
+    "body": "of Simbisa’s Kenyan turnover came from delivery in FY2026, with orders up 59%. Glovo (12 towns), Uber Eats and Bolt Food operate. Jumia Food left in Dec 2023.",
+    "src": "Food Business Africa [S5] · Business Radar [S13]"
+   },
+   {
+    "label": "Where · Five cities",
+    "big": "30.5%",
+    "body": "of the middle class lived in Nairobi. The five cities below held about half (49.4% together, Estimate: sum of the bars). This is 2015 data, the latest split we found.",
+    "bars": [
+     {
+      "label": "Nairobi",
+      "value": 30.5,
+      "show": "30.5%"
+     },
+     {
+      "label": "Mombasa",
+      "value": 11.1,
+      "show": "11.1%"
+     },
+     {
+      "label": "Kisumu",
+      "value": 3.1,
+      "show": "3.1%"
+     },
+     {
+      "label": "Nakuru",
+      "value": 2.8,
+      "show": "2.8%"
+     },
+     {
+      "label": "Eldoret",
+      "value": 1.9,
+      "show": "1.9%"
+     }
+    ],
+    "src": "IEA via Business Daily, 2015 data [S14]"
+   }
+  ],
+  "sowhat": "Food prices rose 9.5% in a year and bank loans cost 14.4%, so the margin is squeezed from both sides. We found no published restaurant margin. The largest operator grew visits 14% by letting average spend fall 3%. Kenya rewards a lean, value-led unit in the five cities, paid for by phone and sold through delivery. [S9, S3, S5]"
+ },
+ "rising": {
+  "headline": "Chicken, coffee and forecourt food are growing. Burger, kebab, bubble tea and plant-based have no current count.",
+  "intro": "A rise or fall call needs two independent signals. Where we found only one, the row is marked Thin. We made no locator counts for this issue: every count is a company report or press, and the row says which.",
+  "rows": [
+   {
+    "cat": "Chicken",
+    "dir": "Rising",
+    "evidence": "KFC went from 22 restaurants (Jun 2019, press) to 48 (Oct 2026, company figure), under one franchisee with a 50:50 venture with Vivo Energy. Simbisa (Chicken Inn, Galito’s and others) went from 190 counters (Dec 2021) to 252 (Jun 2025) to 257 (Jun 2026), all brands. Chicken Cottage reached a ninth outlet on a Shell forecourt. We found no Kenyan coverage of Popeyes or Texas Chicken.",
+    "src": "S8, S15, S16, S17, S5, S18",
+    "window": "Jun 2019 → Oct 2026",
+    "conf": "Medium",
+    "sat": "Medium",
+    "entry": "Medium"
+   },
+   {
+    "cat": "Burger",
+    "dir": "Not found",
+    "evidence": "No current count. Burger King opened at The Hub, Karen, in Nov 2016 and had 5 Nairobi outlets by Jun 2019, slowing its plans on cost. Big Square had 13 branches in Aug 2019. Famous Brands took Steers back from its franchisee of 23 years (court ruling, Jan 2021). We searched Business Daily, Nation and Capital FM for 2026 counts. Nearest proxy: the 2019 footprint, which points to a small category based in Nairobi. No McDonald’s, Wendy’s or Five Guys coverage found.",
+    "src": "S19, S20, S21, S22",
+    "window": "Nov 2016 → Jan 2021",
+    "conf": "Thin",
+    "sat": "Low",
+    "entry": "Medium"
+   },
+   {
+    "cat": "Pizza",
+    "dir": "Mixed",
+    "evidence": "Facts only. Eat’N’Go bought the Domino’s and Cold Stone Creamery master franchises for Kenya in Apr 2021 and had 18 branches across both in Mar 2022. Papa John’s had 10 stores in Jan 2026 through Express Kitchen, with 8 more planned. Famous Brands reclaimed Debonairs from its franchisee in Jan 2021. Pizza Inn trades within Simbisa’s 257 counters; we found no brand split.",
+    "src": "S23, S24, S25, S21, S5",
+    "window": "Apr 2021 → Jan 2026",
+    "conf": "Thin",
+    "sat": "Medium",
+    "entry": "Medium"
+   },
+   {
+    "cat": "Kebab / grill",
+    "dir": "Not found",
+    "evidence": "We found no kebab chain. Galito’s, Simbisa’s flame-grilled chicken brand, trades in Kenya, but the annual report gives no brand split. We searched Simbisa’s reports, Business Daily and the web for grill and kebab chains. Nearest proxy: nyama choma (roast meat) grills are run by independents we could not count.",
+    "src": "S16, S5",
+    "window": "Jun 2025 → Jun 2026",
+    "conf": "Thin",
+    "sat": "Low",
+    "entry": "Medium"
+   },
+   {
+    "cat": "Coffee",
+    "dir": "Rising",
+    "evidence": "Java House went from 75 stores in the region (Jul 2019) to 102 (Dec 2025: 95 in Kenya, 4 in Uganda, 3 in Rwanda). Bases may differ. It took its fourth owner since 2012 in Jan 2025. The Coffee Club signed a USD 5m master deal with a 14-station fuel retailer in Nov 2024. Artcaffe opened 11 outlets in 16 months to Apr 2021; we found no current count. No Starbucks found.",
+    "src": "S20, S7, S26, S27, S28",
+    "window": "Jul 2019 → Dec 2025",
+    "conf": "Medium",
+    "sat": "Medium",
+    "entry": "Medium"
+   },
+   {
+    "cat": "Bakery / dessert",
+    "dir": "Mixed",
+    "evidence": "Artcaffe went from 4 to 11 cafés by buying 7 Dormans shops in 2014, a deal the Competition Authority approved. Cold Stone Creamery has no stand-alone count. Java’s Planet Yogurt is also uncounted. We found no international bakery or doughnut chain in the sources we read.",
+    "src": "S29, S24, S26",
+    "window": "Jan 2014 → Jan 2025",
+    "conf": "Thin",
+    "sat": "Medium",
+    "entry": "Medium"
+   },
+   {
+    "cat": "Bubble tea",
+    "dir": "Not found",
+    "evidence": "We found no chain, no count and no international entrant. We searched the web, delivery-app listings and Business Daily. Nearest proxy: Ketepa opened a Nairobi tea house in 2018 and said Kenyans drink 37m kg of tea, under 10% of what the country grows. The habit exists, but no branded chain has formed.",
+    "src": "S30",
+    "window": "Jun 2018",
+    "conf": "Thin",
+    "sat": "Low",
+    "entry": "Medium"
+   },
+   {
+    "cat": "Fast casual",
+    "dir": "Mixed",
+    "evidence": "Subway’s franchisee dropped the brand and runs the shops as Subz, with 10 branches listed in 2025 (blog, Thin). Famous Brands had 13 Kenyan franchise stores in 2014 and lost its master partner in 2021. Java’s grilled-chicken brand Kukito had 7 outlets in Aug 2022 and aimed for 30 through franchising.",
+    "src": "S31, S32, S21, S33",
+    "window": "Apr 2014 → May 2025",
+    "conf": "Medium",
+    "sat": "Medium",
+    "entry": "Medium"
+   },
+   {
+    "cat": "Plant-based",
+    "dir": "Not found",
+    "evidence": "We counted no plant-based chain. We searched HappyCow, lifestyle pages in Nation and The Star, and the web. The leads were independents we could not open. Nearest proxy: the three largest networks we found sell chicken, pizza and coffee, with no plant-based brand.",
+    "src": "S5, S8, S7",
+    "window": "Oct 2026",
+    "conf": "Thin",
+    "sat": "Low",
+    "entry": "Medium"
+   },
+   {
+    "cat": "Forecourt QSR",
+    "sub": "Local category",
+    "dir": "Rising",
+    "evidence": "Vivo Energy opened its 350th Shell station in Kenya in Jul 2026, built as a convenience hub with food brands to follow. KFC’s franchisee formed a 50:50 venture with Vivo in 2019 to open at its stations. Java opened two sites with Rubis in Feb 2024. The Coffee Club’s master is a fuel retailer, and Chicken Cottage’s ninth outlet is at a Shell station.",
+    "src": "S34, S15, S35, S27, S18",
+    "window": "Jun 2019 → Jul 2026",
+    "conf": "Medium",
+    "sat": "Medium",
+    "entry": "Medium"
+   }
+  ],
+  "chart": {
+   "title": "Change in unit count, selected chains",
+   "note": "Units added over the window shown. Windows and bases differ, so compare direction, not size. All counts are company reports or press. KFC's start is a 2019 press figure and its end a 2026 company figure.",
+   "items": [
+    {
+     "label": "KFC",
+     "sub": "22 → 48 · Jun 19–Oct 26",
+     "delta": 26
+    },
+    {
+     "label": "Simbisa (all brands)",
+     "sub": "190 → 257 · Dec 21–Jun 26",
+     "delta": 67
+    },
+    {
+     "label": "Java House (region)",
+     "sub": "75 → 102 · Jul 19–Dec 25",
+     "delta": 27
+    },
+    {
+     "label": "Burger King (Thin)",
+     "sub": "0 → 5 · Nov 16–Jun 19",
+     "delta": 5
+    }
+   ],
+   "source": "Sources: KFC [S15, S8]; Simbisa [S17, S5]; Java House [S20, S7]; Burger King [S19]."
+  },
+  "reading": {
+   "title": "What it means",
+   "paras": [
+    "Chicken holds the scale: KFC has **48** restaurants and Simbisa **257** counters across its brands. [S8, S5]",
+    "Visits are bought with value: Simbisa’s Kenyan customers rose **14%** while average spend fell **3%**. [S5]",
+    "Forecourts are a route three brands have used: KFC with Vivo, Java with Rubis, The Coffee Club with a fuel retailer. [S15, S35, S27]"
+   ]
+  }
+ },
+ "white": {
+  "headline": "Four gaps, and the way in matters more than the category",
+  "intro": "A gap is a need with growing demand and no clear owner. The size of each one is our judgement of the prize for a new entrant: S, M or L.",
+  "gaps": [
+   {
+    "title": "Forecourt-first QSR",
+    "gap": "Fuel retailers are turning stations into food stops, and we found few food brands on them. A fuel-retailer partner can bring the site, the lease and the traffic.",
+    "evidence": "Vivo’s 350th Shell station opened in Jul 2026 as a convenience hub. KFC, Java and The Coffee Club all entered or grew through fuel retailers. [S34, S15, S35, S27]",
+    "suits": "Compact chicken, coffee and grab-and-go formats with a short menu.",
+    "route": "Master franchise held by a fuel retailer, or a joint venture.",
+    "size": "L",
+    "sizeText": "Large prize"
+   },
+   {
+    "title": "The five-city build-out",
+    "gap": "The buyers sit in five cities, and the delivery apps already serve towns beyond Nairobi. Counts outside the capital are thin, but openings there are recent.",
+    "evidence": "Glovo runs in 12 towns, and Uber Eats in Nakuru and Eldoret. Java opened in Eldoret in Dec 2025. International arrivals reached 2.76m in 2025/26, up 9.8%. [S13, S7, S36, S37]",
+    "suits": "Brands with a proven Nairobi unit that can run on a regional supply chain.",
+    "route": "Area developer, or a master partner with a regional plan.",
+    "size": "M",
+    "sizeText": "Medium prize"
+   },
+   {
+    "title": "Value-led, delivery-ready menus",
+    "gap": "The largest operator is growing visits by cutting the bill, and delivery is over a quarter of its sales.",
+    "evidence": "Simbisa: customers +14%, average spend −3%, delivery orders +59% and 27% of turnover in FY2026. Glovo lists 6,000+ merchants. [S5, S13]",
+    "suits": "Brands with a low-price core menu that travels well.",
+    "route": "Master franchise with an operator that already runs delivery.",
+    "size": "M",
+    "sizeText": "Medium prize"
+   },
+   {
+    "title": "Branded tea and bubble tea",
+    "gap": "A tea-drinking country with no branded bubble-tea chain found.",
+    "evidence": "Ketepa’s 2018 Nairobi tea house, and 37m kg of local tea consumption. No chain or international entrant found. Demand data: Not found. [S30]",
+    "suits": "Low-capex kiosk and in-mall formats.",
+    "route": "Direct franchise with one strong Nairobi partner.",
+    "size": "S",
+    "sizeText": "Small prize",
+    "thin": true
+   }
+  ],
+  "matrix": {
+   "intro": "Our assessment from the page 3 evidence. Position is judgement, not measurement.",
+   "note": "Pizza and bakery are left off: mixed signals and no like-for-like counts. Source: WRW Hospitality analysis of the page 3 evidence.",
+   "points": [
+    {
+     "name": "Forecourt QSR",
+     "x": 30,
+     "y": 82,
+     "hot": true
+    },
+    {
+     "name": "Chicken",
+     "x": 72,
+     "y": 64
+    },
+    {
+     "name": "Coffee",
+     "x": 55,
+     "y": 58
+    },
+    {
+     "name": "Fast casual",
+     "x": 45,
+     "y": 48
+    },
+    {
+     "name": "Burger",
+     "x": 35,
+     "y": 42
+    },
+    {
+     "name": "Kebab / grill",
+     "x": 20,
+     "y": 40
+    },
+    {
+     "name": "Bubble tea",
+     "x": 10,
+     "y": 45
+    },
+    {
+     "name": "Plant-based",
+     "x": 15,
+     "y": 25
+    }
+   ]
+  },
+  "position": {
+   "quote": "If I had a brand going into Kenya, I’d pick the partner before I picked the site.",
+   "paras": [
+    "The brands that scaled came in on someone else’s footprint: KFC on Vivo’s forecourts, Java with Rubis, The Coffee Club with a 14-station fuel retailer. Labour is cheap. Money and food are not: 14.4% to borrow and 9.5% food inflation.",
+    "Two partnerships ended badly. Famous Brands took its stores back from its franchisee of 23 years, and Subway’s franchisee kept the shops as Subz. I’d write credit checks, step-in rights and site assignment into the deal first, then choose the category."
+   ]
+  }
+ },
+ "regulation": {
+  "headline": "No franchise law, cheap labour, and costs that sit in money, food and tax",
+  "intro": "We found no franchise statute, so the contract does the work. The legal wage floor is low. Borrowing, food and withholding tax are the lines to model first.",
+  "rows": [
+   {
+    "area": "Franchise law",
+    "text": "**No franchise-specific law or disclosure duty found.** Contract, competition, trade mark and county law apply. We searched Kenya Law, the US trade desk’s franchising guide and law-firm summaries, and found no current publications from a franchise association.",
+    "src": "S6"
+   },
+   {
+    "area": "Trade mark",
+    "text": "KIPI fees for a foreign applicant: US$200 to apply (US$150 for each extra class), US$60 to advertise, US$150 to register. Recording a franchisee as a registered user costs US$300. ARIPO and Madrid coverage: not confirmed. Budget a year.",
+    "src": "S38"
+   },
+   {
+    "area": "Company",
+    "text": "Companies Act 2015, s. 975(2): a foreign company registering a branch must meet a 30% Kenyan-shareholding criterion, which was debated in 2018. **Licensing a local master avoids the question.** Confirm with a Kenyan adviser.",
+    "src": "S39"
+   },
+   {
+    "area": "Licensing and halal",
+    "text": "County permit and food-hygiene fees: Not found from a primary source. We tried Nairobi County, KenInvest and a Capital FM guide (blocked), and the fees quoted in search results conflict. The Kenya Bureau of Halal Certification runs a meat and poultry standard. Muslims are about 11% of the population (2021).",
+    "src": "S40"
+   },
+   {
+    "area": "Tax",
+    "text": "Corporate tax is 30%. VAT is 16%, with registration above KES 5m of supplies. **No takeaway concession found.** A 2025 proposal to exempt restaurant services was not confirmed as enacted.",
+    "src": "S41, S42, S43"
+   },
+   {
+    "area": "Royalties",
+    "text": "Withholding to a UK franchisor under the treaty: royalties 15% (20% domestic) and management fees 12.5%. Get a ruling on whether an initial fee counts as a royalty. Remittance rules: not found from a primary source.",
+    "src": "S44"
+   },
+   {
+    "area": "Import duty",
+    "text": "EAC common external tariff. The FY2026/27 changes raised furniture from 35% to 45% and list no change for restaurant equipment or food inputs. Rates by tariff code for equipment, chicken, chips, oil and dairy: not found.",
+    "src": "S45"
+   }
+  ],
+  "tiles": [
+   {
+    "label": "Trade mark, one class",
+    "pre": "US$",
+    "big": "410",
+    "body": "KIPI foreign-applicant fees to apply, advertise and register, before agent fees (Estimate).",
+    "src": "S38"
+   },
+   {
+    "label": "VAT on restaurant meals",
+    "big": "16%",
+    "body": "Standard rate. No takeaway concession found, unlike Sweden.",
+    "src": "S42, S43"
+   },
+   {
+    "label": "Withholding on royalties",
+    "big": "15%",
+    "body": "To a UK franchisor under the treaty, against 20% domestic. Management fees 12.5%.",
+    "src": "S44"
+   }
+  ],
+  "wage": {
+   "title": "Model the unit on Kenyan money, not Kenyan wages",
+   "sub": "What every KES 100 of pay costs the employer",
+   "parts": [
+    {
+     "label": "Wage 100",
+     "value": 100
+    },
+    {
+     "label": "NSSF (employer) 6.00",
+     "value": 6,
+     "short": "NSSF 6.00"
+    },
+    {
+     "label": "Housing levy 1.50",
+     "value": 1.5,
+     "short": "Levy 1.50"
+    },
+    {
+     "label": "NITA levy 0.26",
+     "value": 0.26,
+     "short": "NITA"
+    }
+   ],
+   "total": "107.8",
+   "method": "NSSF employer 6% of pay up to KES 108,000 (Year 4 rates, Feb 2026), the Affordable Housing Levy employer share of 1.5%, and NITA at KES 50 a month at the floor wage (it may not apply to restaurants). We found no employer share for SHIF, the health levy deducted from staff. Overtime, leave and service pay are excluded. [S46, S47, S48]",
+   "floorPre": "KES",
+   "floor": "19,491",
+   "floorNote": "A month, for waiters and cooks in Nairobi, Mombasa, Kisumu, Nakuru and Eldoret, from 1 May 2026. This is the press report of the Gazette order; we did not open the order itself. [S49, S50]",
+   "allIn": "£0.58",
+   "allInNote": "**ESTIMATE** KES 20,953 a month ÷ 208 hours (48-hour week; statutory hours not found) ≈ KES 100.7 an hour, at £1 = KES 173.20 on 30 Oct 2026. [S3, S50]"
+  },
+  "advice": "Confirm the position with a Kenyan adviser before signing."
+ },
+ "route": {
+  "headline": "Pick the partner first. Then price the risk.",
+  "intro": "Each route trades control against capital and speed. The examples show how brands came into Kenya, and how two partnerships ended.",
+  "routes": [
+   {
+    "name": "Master franchise, local operator",
+    "control": "Low",
+    "capital": "Low",
+    "speed": 2,
+    "seen": "Eat’N’Go took two US master franchises in Apr 2021. Express Kitchen had 10 Papa John’s stores by Jan 2026. Famous Brands’ master partner from 1997 lost the licence in 2021. [S23, S25, S21, S32]"
+   },
+   {
+    "name": "Fuel retailer, master or joint venture",
+    "control": "Medium",
+    "capital": "Medium",
+    "speed": 3,
+    "seen": "KFC’s franchisee and Vivo Energy formed a 50:50 venture in 2019, and KFC went from 22 to 48 sites. The Coffee Club signed a USD 5m master deal with a fuel retailer in Nov 2024. [S15, S8, S27]"
+   },
+   {
+    "name": "Home-grown franchising",
+    "control": "Medium",
+    "capital": "Low",
+    "speed": 2,
+    "seen": "Java’s Kukito: 7 outlets in Aug 2022, aiming for 30 through franchising. Artcaffe grew by buying Dormans’ 7 shops instead. One planned example found. [S33, S29]"
+   },
+   {
+    "name": "Company-owned, local subsidiary",
+    "control": "High",
+    "capital": "High",
+    "speed": 1,
+    "seen": "Simbisa runs its Kenyan counters itself (252 to 257). Famous Brands has run its Kenyan stores itself since 2021. Java House has had four owners since 2012. [S16, S5, S21, S26]"
+   }
+  ],
+  "fits": [
+   {
+    "label": "Emerging brand",
+    "title": "A fuel-retailer partner",
+    "body": "Under c. 25 units. A fuel retailer can bring sites, leases and traffic that are hard to buy from abroad. KFC, Java and The Coffee Club all grew or entered through fuel retailers."
+   },
+   {
+    "label": "Mid-size brand",
+    "title": "A local master, credit-checked",
+    "body": "Proven in 2 countries. Check the partner’s balance sheet: Famous Brands’ master of 23 years owed banks over KES 67m when it lost the licence."
+   },
+   {
+    "label": "Global brand",
+    "title": "A joint venture with a retailer",
+    "body": "KFC’s franchisee and Vivo Energy set up a 50:50 venture across Kenya, Uganda and Rwanda in 2019. KFC now has 48 Kenyan restaurants."
+   }
+  ],
+  "riskTitle": "Price the risk before you price the franchise",
+  "risks": [
+   {
+    "label": "Currency and remittance",
+    "body": "The shilling has held near 130 to the dollar for about 18 months, but royalties are earned in KES. We found no primary source on remittance rules. The treaty withholds 15% on royalties.",
+    "src": "S3, S4, S44"
+   },
+   {
+    "label": "Cost of borrowing",
+    "body": "Bank loans averaged 14.4% in Sep 2026, against a policy rate of 8.75% after ten cuts. A franchisee’s fit-out is funded at the higher rate.",
+    "src": "S3, S4"
+   },
+   {
+    "label": "Food and supply",
+    "body": "Food prices rose 9.5% in the year to Sep 2026, against 6.8% overall, after drought and the Middle East conflict. Cold-chain and local supply data for chicken, potatoes, dairy and oil: not found.",
+    "src": "S9"
+   },
+   {
+    "label": "Partner credit",
+    "body": "Famous Brands’ master partner owed KES 6.1m in royalties and over KES 67m to banks before the licence was reclaimed. Subway’s franchisee kept the shops as Subz (blog, Thin).",
+    "src": "S21, S31"
+   },
+   {
+    "label": "Delivery economics",
+    "body": "Uber agreed to buy Delivery Hero, which would put Glovo and Uber Eats under one owner, subject to Competition Authority review, with completion expected in H2 2027. Jumia Food left in Dec 2023. Commission rates: not found.",
+    "src": "S51, S13"
+   },
+   {
+    "label": "Protest, security and rent",
+    "body": "Protests damaged some of Simbisa’s city-centre stores in FY2025, and new taxes cut its customer count 6%. A Nairobi venue faces a KES 16.5m rent claim, with KES 10.8m in arrears.",
+    "src": "S16, S52"
+   }
+  ]
+ },
+ "days": {
+  "headline": "Ten moves, in order, before you sign anything",
+  "moves": [
+   "**File the trade mark** with KIPI, and record each franchisee as a registered user.",
+   "**Shortlist 3 to 5 partners** among fuel retailers and multi-brand operators.",
+   "**Credit-check the partner** and write step-in rights, site assignment and a non-compete into the master agreement.",
+   "**Rebuild the unit P&L** on Kenyan costs: rent, 14.4% money and 9.5% food inflation, not only the wage floor.",
+   "**Model the royalty net of 15% withholding,** and get a ruling on how the initial fee is taxed.",
+   "**Confirm VAT on restaurant meals** with the Kenya Revenue Authority before you price the menu.",
+   "**Count the competition yourself:** dated locator counts for KFC, Simbisa’s brands and Java House, city by city.",
+   "**Price delivery at more than one commission rate,** and plan for one owner of Glovo and Uber Eats.",
+   "**Plan the licence path** for the first site: county permit, food hygiene and halal certification.",
+   "**Agree how royalties are paid** in KES and converted to sterling."
+  ],
+  "check": [
+   "Mall QSR tenant counts at Two Rivers, Garden City, Sarit, The Hub and Village Market",
+   "The Gazette wage order and statutory hours for restaurant staff",
+   "VAT on restaurant meals after the Finance Act 2025",
+   "Simbisa’s counts by brand, and current Burger King and Artcaffe counts",
+   "ARIPO and Madrid coverage, and delivery commission rates"
+  ],
+  "method": "Public sources only, read 30 Oct 2026. Every figure is dated and coded to the list below. Rise and fall calls need two independent signals; otherwise they are marked Thin. Estimates are labelled with their method. Not found is used only after a search, with the nearest proxy. All unit counts are company reports or press: we made no locator counts for this issue. Not legal, tax or investment advice.",
+  "sources": [
+   "S1 CEIC, Kenya population projection (KNBS series), read 30 Oct 2026",
+   "S2 HapaKenya, Kenya’s economy hits Ksh 17.6 trillion (KNBS Economic Survey 2026), 3 May 2026",
+   "S3 Central Bank of Kenya, MPC retains the CBR at 8.75 percent, 7 Oct 2026; daily rates and key rates posted 30 Oct 2026",
+   "S4 Khusoko, Kenya holds interest rate at 8.75%, 9 Apr 2026",
+   "S5 Food Business Africa, Simbisa Brands revenue rises 20% in FY 2026, 1 Oct 2026",
+   "S6 US International Trade Administration, Kenya Franchising, 2020",
+   "S7 Business Daily, Java outlets hit 102 with new branches in Eldoret, Ruaka, 23 Dec 2025",
+   "S8 Capital FM via allAfrica, KFC’s Kentucky Town lands in Kenya, 12 Oct 2026",
+   "S9 Nairametrics, Kenya’s inflation rises to 6.8% in September (KNBS), 30 Sep 2026",
+   "S10 The Standard, Inflation increases for second month in a row, KNBS says, Sep 2026",
+   "S11 Central Bank of Kenya, MPC Market Perceptions Survey, September 2026",
+   "S12 TechTrendsKE, M-PESA handled KSh41.68 trillion in FY2026, 28 Oct 2026",
+   "S13 Business Radar, Food delivery companies in Nairobi, updated 18 Oct 2026",
+   "S14 Business Daily, Nairobi hosts a third of the fast-growing middle class (IEA, 2015 data), 15 Dec 2016",
+   "S15 Sagaci Research, KFC franchisee Kuku Foods partners with Vivo Energy, 27 Jun 2019",
+   "S16 Simbisa Brands, 2025 Annual Report (year to 30 Jun 2025)",
+   "S17 Business Daily, Chicken Inn owner eyes 55 more Kenyan outlets, 24 Mar 2022",
+   "S18 The Standard, Chicken Cottage adds ninth outlet (standfirst read; date approximate), early 2026",
+   "S19 Business Daily, Burger King to invest Sh270m in expansion, 3 Jun 2019",
+   "S20 Khusoko, Java House expands with its 65th branch in Kenya, 5 Aug 2019",
+   "S21 Kenyans.co.ke, Nairobi tycoon loses Debonairs and Steers eateries, 28 Jan 2021",
+   "S22 Business Daily, Debonairs, Steers units record Sh5m loss in Kenya, 21 Jun 2020",
+   "S23 The Star, Eat’N’Go enters Kenya with Domino’s, Cold Stone acquisition, 10 Apr 2021",
+   "S24 Khusoko, Eat N’ Go makes aggressive expansion plans in East Africa, 28 Mar 2022",
+   "S25 Khusoko, Papa John’s Kenya expands Nairobi footprint, 30 Jan 2026",
+   "S26 Food Business Africa, Java House acquired by Alterra Capital, Phatisa Group, 29 Jan 2025",
+   "S27 World Coffee Portal, The Coffee Club partners with Luqman Petroleum for 2025 Kenya debut, 9 Nov 2024",
+   "S28 Business Daily, Artcaffe to open four outlets as competition heats up, 12 Apr 2021",
+   "S29 Business Daily, Artcaffe acquires Dormans to cement Nairobi presence, 26 Jan 2014",
+   "S30 Business Daily, Ketepa tea houses raise competition for local coffee chains, 24 Jun 2018",
+   "S31 ToasterDing (blog), Did Subway rebrand to Subz?, updated 17 May 2025 (Thin)",
+   "S32 How we made it in Africa, Famous Brands expands across East Africa, 15 Apr 2014",
+   "S33 Food Business Africa, Java House to expand Kukito through franchising, 12 Aug 2022",
+   "S34 Citizen Digital, Vivo Energy opens 350th Shell service station in Kenya, 13 Jul 2026",
+   "S35 HapaKenya, Java House opens two new outlets with Rubis Energy, 20 Feb 2024",
+   "S36 Khusoko, Kenya tourism arrivals hit 2.76 million, 24 Aug 2026",
+   "S37 The Standard, Tourism revenue climbs to Sh564 billion, 14 Aug 2026",
+   "S38 Kenya Industrial Property Institute, Trade Mark Rules, First Schedule: fees, local and foreign (undated schedule)",
+   "S39 Oraro & Company, The 30% local ownership rule for foreign companies, 13 Aug 2018",
+   "S40 Salaam Gateway, Kenya’s halal food industry expands, 15 Nov 2021",
+   "S41 PwC Worldwide Tax Summaries, Kenya: taxes on corporate income, reviewed 17 Jul 2026",
+   "S42 PwC Worldwide Tax Summaries, Kenya: other taxes (VAT), reviewed 17 Jul 2026",
+   "S43 Kenya Revenue Authority, Understanding VAT for businesses, Oct 2024",
+   "S44 PwC Worldwide Tax Summaries, Kenya: withholding taxes, reviewed 17 Jul 2026",
+   "S45 KPMG East Africa, EAC customs and duty changes for FY 2026/2027, Jul 2026",
+   "S46 NSSF, Notice to employers: Year 4 (2026) contribution rates, Feb 2026",
+   "S47 Kenya Revenue Authority, Collection of the Affordable Housing Levy, 21 Mar 2024",
+   "S48 PwC Kenya, National Industrial Training Authority levy alert, Sep 2012",
+   "S49 Grant Thornton Kenya, Revised statutory minimum wages effective 1 May 2026, 9 Jun 2026",
+   "S50 Daily Nation, The 12pc minimum wage bombshell, 6 Jul 2026",
+   "S51 Techweez, Uber buys out Glovo, its biggest rival in Kenya’s delivery market, 17 Jul 2026",
+   "S52 Streamline (citing Capital FM), Sinaloa Club faces closure threat over KES 16.5M rent dispute, 4 Aug 2026"
+  ]
+ }
+}

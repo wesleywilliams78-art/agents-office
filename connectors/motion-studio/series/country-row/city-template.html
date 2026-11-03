@@ -1,0 +1,121 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<title>Norway city compare reel</title>
+<style>
+@font-face { font-family: 'Archivo'; font-weight: 500; src: url(kit/fonts/archivo-latin-500-normal.woff2) format('woff2'); }
+@font-face { font-family: 'Pen'; src: url('file:///C:/Windows/Fonts/PRISTINA.TTF') format('truetype'); }
+html, body { margin: 0; background: #201E1D; overflow: hidden; }
+#stage { position: relative; width: 1080px; height: 1920px; overflow: hidden; background: #201E1D; }
+canvas { display: block; }
+</style>
+<script src="kit/motion-kit.js"></script>
+<script src="kit/sound-kit.js"></script>
+</head>
+<body>
+<div id="stage"><canvas id="c" width="1080" height="1920"></canvas></div>
+<script>
+// Norway city compare: "A or B?" written across the middle in fountain-pen script, two real shots of A, then two of B.
+// Every new shot opens out of a band at the caption's height; a nib-stroke underline sits under the place on screen
+// and sweeps across to the other place on the city cut. The white WRW Hospitality lockup sits at the foot.
+// The country-row side reel since 28 Oct 2026 (Wesley's rule); rendered by city-run.mjs. Worked example: Norway, output/library/video/norway-city-compare/.
+// The font is Pristina from this PC's Windows fonts (C:/Windows/Fonts/PRISTINA.TTF). REEL.pair holds both captions of the row
+// (city-run.mjs takes them from PAIR="A or B?|C or D?"), so the two side reels share one size and the longer one fits 940 px.
+const REEL = __REEL__;   // { root, a, b, shots: [{ dir, n }] x4 }
+const W = 1080, H = 1920, B = n => n * .5, END = 34, FPS = 30, CY = 960;
+const rgb = h => [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16));
+const [WH, K] = ['#F3F2F2', '#201E1D'].map(rgb);
+const css = (c, a = 1) => `rgba(${c.map(v => Math.round(v)).join(',')},${a})`;
+const SP = { m: { stiffness: 160, damping: 26 }, s: { stiffness: 210, damping: 27 } };
+const cv = document.getElementById('c'), ctx = cv.getContext('2d'), LOGO = new Image();
+
+// footage: one graded JPEG per frame, loaded when a frame is painted
+const cache = new Map();
+async function frame(s, i) {
+  i = Math.max(1, Math.min(s.n, i)); const key = s.dir + i; if (cache.has(key)) return cache.get(key);
+  const img = new Image(); img.src = `${REEL.root}/${s.dir}/f_${String(i).padStart(4, '0')}.jpg`; await img.decode();
+  cache.set(key, img); if (cache.size > 10) cache.delete(cache.keys().next().value); return img;
+}
+const START = [B(1), B(9), B(17), B(25)];                     // shot 1 plays from half a second (frame 0 held)
+const idx = (k, t) => Math.floor(Math.max(0, t - START[k]) * FPS + 1e-6) + 1;
+
+// the caption, laid out once: "A or B?" centred, with each place's span for the underline
+let SIZE = 170, CAP;
+function layout() {
+  const text = `${REEL.a} or ${REEL.b}?`;
+  ctx.letterSpacing = '0px'; ctx.font = '100px Pen';   // one size for both reels of the row: the longer caption fits 940 px
+  SIZE = Math.min(170, ...(REEL.pair || ['Oslo or Reine?', 'Tromsø or Bergen?']).map(s => 940 / (ctx.measureText(s).width / 100)));
+  ctx.font = `${SIZE}px Pen`;
+  const total = ctx.measureText(text).width, x0 = W / 2 - total / 2;
+  const wa = ctx.measureText(REEL.a).width, pre = ctx.measureText(`${REEL.a} or `).width, wb = ctx.measureText(REEL.b).width;
+  const sl = SIZE * .06;   // the script leans right, so its foot sits a little left of its measured box
+  CAP = { text, x0, a: [x0 + sl, x0 + wa + sl * .3], b: [x0 + pre + sl, x0 + pre + wb + sl * .3] };
+}
+function caption() {
+  ctx.font = `${SIZE}px Pen`; ctx.textAlign = 'left'; ctx.textBaseline = 'alphabetic';
+  ctx.save(); ctx.shadowColor = css(K, .55); ctx.shadowBlur = 26; ctx.shadowOffsetY = 4;
+  ctx.fillStyle = css(WH); ctx.fillText(CAP.text, CAP.x0, CY + SIZE * .28); ctx.restore();
+}
+// a fountain-pen stroke: thin at the entry, full in the belly, a fine flick out, riding a shallow curve
+function nib(x0, x1, y, k = 1) {
+  if (x1 - x0 < 2) return;
+  const N = 48, top = [], bot = [];
+  for (let i = 0; i <= N; i++) {
+    const u = i / N, x = x0 + (x1 - x0) * u, yy = y + Math.sin(u * Math.PI) * 7 - u * 6;
+    const w = (1.2 + 6.5 * Math.pow(Math.sin(Math.PI * Math.min(1, u * 1.15)), .7)) * k;
+    top.push([x, yy - w / 2]); bot.push([x, yy + w / 2]);
+  }
+  ctx.beginPath(); top.forEach(([x, y], i) => i ? ctx.lineTo(x, y) : ctx.moveTo(x, y)); bot.reverse().forEach(([x, y]) => ctx.lineTo(x, y)); ctx.closePath();
+  ctx.save(); ctx.shadowColor = css(K, .5); ctx.shadowBlur = 18; ctx.fillStyle = css(WH); ctx.fill(); ctx.restore();
+}
+function underline(t) {
+  // the head leads across to the second place on the city cut, the tail follows a breath later
+  const head = M.spring(t, B(16.5), 0, 1, SP.s), tail = M.spring(t, B(16.5) + .14, 0, 1, SP.s);
+  const x1 = CAP.a[1] + (CAP.b[1] - CAP.a[1]) * head, x0 = CAP.a[0] + (CAP.b[0] - CAP.a[0]) * tail;
+  nib(x0, x1, CY + SIZE * .28 + 34);
+}
+
+// the WRW Hospitality lockup: white mark over a spaced HOSPITALITY, at the foot
+const LW = 230, LH = LW * 218 / 804, FOOT_Y = 1450;
+function lockup() {
+  ctx.drawImage(LOGO, 64, 64, 804, 218, W / 2 - LW / 2, FOOT_Y, LW, LH);
+  ctx.font = '500 26px Archivo'; ctx.letterSpacing = '9px'; ctx.textAlign = 'center'; ctx.textBaseline = 'alphabetic'; ctx.fillStyle = css(WH);
+  ctx.fillText('HOSPITALITY', W / 2 + 4.5, FOOT_Y + LH + 48);
+}
+
+M.scene({
+  width: W, height: H, fps: FPS, duration: END * .5, bpm: 120, cuts: [1, 9, 17, 25],
+  async setup() {
+    LOGO.src = 'kit/logos/wrw-mark-white.png'; await LOGO.decode();
+    await Promise.all([document.fonts.load('500 40px Archivo'), document.fonts.load(`${SIZE}px Pen`)]);
+    layout();
+    await frame(REEL.shots[0], 1);
+  },
+  async render(t) {
+    ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.globalAlpha = 1; ctx.letterSpacing = '0px';
+    // the shot on screen, and the next one opening out of a band at the caption's height
+    let k = 0; while (k < 3 && t >= START[k + 1]) k++;
+    const open = k ? M.spring(t, START[k], 0, 1, SP.m) : 1;
+    if (open < 1) ctx.drawImage(await frame(REEL.shots[k - 1], idx(k - 1, t)), 0, 0, W, H);
+    const top = CY - CY * open, bot = CY + (H - CY) * open;
+    ctx.save(); ctx.beginPath(); ctx.rect(0, top, W, bot - top); ctx.clip(); ctx.drawImage(await frame(REEL.shots[k], idx(k, t)), 0, 0, W, H); ctx.restore();
+    if (open < .985) { ctx.fillStyle = css(WH); ctx.fillRect(0, top - 2, W, 4); ctx.fillRect(0, bot - 2, W, 4); }
+    // a soft ink band behind the writing so it reads on mist and sky, and an ink floor under the lockup
+    let g = ctx.createLinearGradient(0, CY - 260, 0, CY + 260);
+    g.addColorStop(0, css(K, 0)); g.addColorStop(.5, css(K, .34)); g.addColorStop(1, css(K, 0)); ctx.fillStyle = g; ctx.fillRect(0, CY - 260, W, 520);
+    g = ctx.createLinearGradient(0, 1240, 0, H); g.addColorStop(0, css(K, 0)); g.addColorStop(1, css(K, .45)); ctx.fillStyle = g; ctx.fillRect(0, 1240, W, H - 1240);
+    caption(); underline(t); lockup();
+  },
+  score(S) {
+    const b = S.beat, prog = [['D3', 'F#3', 'A3'], ['B2', 'D3', 'F#3'], ['G2', 'B2', 'D3'], ['A2', 'C#3', 'E3']], roots = ['D2', 'B1', 'G1', 'A1'];
+    for (let bar = 0; bar < 9; bar++) {
+      S.pad(S.bar(bar), prog[bar % 4], S.bar(1) * 1.02, { gain: .17 });
+      for (let e = 0; e < 8; e++) S.bass(S.bar(bar) + e * S.step(2), roots[bar % 4], .2, { gain: bar < 1 ? .25 : .42 });
+    }
+    for (let n = 1; n < END; n++) { S.kick(b(n), { gain: n % 4 === 0 ? .9 : .75 }); if (n % 2 === 1) S.clap(b(n), { gain: .35 }); S.hat(b(n + .5), { gain: .32 }); }
+    S.impact(b(1), { gain: .5 });
+    [9, 25].forEach(n => { S.whoosh(b(n), .4, { gain: .4 }); S.impact(b(n), { gain: .45 }); });   // the band opens
+    S.paper(b(16.5), { gain: .5 }); S.riser(b(15), 1, { gain: .35 }); S.whoosh(b(17), .5, { gain: .5 }); S.impact(b(17), { gain: .7 });   // the pen crosses to the other place
+  },
+});
+</script>
+</body></html>

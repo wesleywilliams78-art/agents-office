@@ -4,6 +4,8 @@ Applies to all 10 episodes. Each episode folder reads this file and does not cha
 
 All design decisions were settled on 24 Oct 2026.
 
+**Made in the Motion Studio from 25 Oct 2026.** New episodes are made in the office's Motion Studio tab (the Motion Director, `connectors/motion-studio`), which reads this series through `connectors/motion-studio/series/operators-ledger/BRIEF.md`. Three decisions changed that day, marked below: colour changes are crafted transitions, the music and effects are synthesised, and motion runs on critically damped springs. Episodes 01 to 04 stay as they were made. **Apple clarity (25 Oct 2026):** Wesley asked for the episodes to look sharper using Apple's design philosophy, with no change of colours, fonts or brand rules: one hero per frame, three type sizes, two-tone headlines (ink, then warm grey), eyebrows, a strict grid with generous space, progressive disclosure around a still hero, calm motion. The full wording is in the Motion Studio series brief.
+
 ---
 
 ## Format
@@ -67,7 +69,7 @@ All design decisions were settled on 24 Oct 2026.
 ## Motion
 **Calm and precise (decided 24 Oct 2026).** This series deliberately departs from the bouncy house rule in `motion.md`, which still applies to the Art of Operations reels. The numbers must be readable.
 
-- Entrances use `power3.out` / `power4.out`, lasting 0.4–0.8 s. There is no `back`, `elastic` or `bounce`.
+- Entrances use `power3.out` / `power4.out`, lasting 0.4–0.8 s. There is no `back`, `elastic` or `bounce`. **In the Motion Studio (25 Oct 2026)** the same feel comes from critically damped springs (`snap`, `calm`), which arrive with no overshoot.
 - Bars and stacks grow from the baseline with `power3.out`.
 - Numbers count up and land with no overshoot.
 - Each beat has one main movement. Secondary moves (a blink, a small bob) may run alongside it.
@@ -77,7 +79,7 @@ All design decisions were settled on 24 Oct 2026.
 
 These rules also apply:
 - Numbers count up. Bars grow from the baseline. Hold every key line for 1 s or more.
-- Cut on the voiceover beat. Change scenes with a hard colour wipe (bone, red or ink panel sliding up) or a simple cut. No crossfades.
+- Cut on the voiceover beat. **Changed 25 Oct 2026 (Wesley's rule for every series):** a change of ground colour is never a hard wipe or a bang; it is a crafted transition of half a second to a second that grows out of this world (the red draining into the chart's baseline, a column growing until its colour fills the frame, the ledger's page turning), on the word, with a soft sound. A cut within the same ground is still fine. No default crossfades.
 - Check `/hyperframes-registry` (for example `data-chart`, kinetic type and captions) before hand-building charts or captions, then restyle any block to these tokens.
 
 ## Captions
@@ -98,8 +100,8 @@ These rules also apply:
   - Consent is to be recorded on the profile by Wesley himself.
 - **Final loudness:** after the render, normalise the soundtrack to −15 LUFS with two-pass `loudnorm` (`linear=true`), then a true-peak limiter (`alimiter` at 192 kHz, limit 0.78). The video stream is copied. Target about −16 LUFS and −1.5 dBTP or lower, with no clipping. The cloned voice is quieter than the music, so the mix alone lands around −21 LUFS.
 - **Pace:** write to about 145 words a minute. No scene's voiceover may run more than 1 s past its slot.
-- **Music:** a subtle, low bed with no lyrics, ducked under the voice.
-- **Sound effects:** used sparingly. A soft tick when a number lands, a low thud when a loss appears.
+- **Music:** a subtle, low bed with no lyrics, ducked under the voice. **Changed 25 Oct 2026:** synthesised in the Motion Studio on the episode's beat grid (no ACE-Step), and the studio ducks it under the narration automatically.
+- **Sound effects:** used sparingly. A soft tick when a number lands, a low thud when a loss appears. Synthesised too (25 Oct 2026).
 
 ## End card (every episode, 3 s hold)
 - Ink background, with `mountains-bone-on-ink.svg` drawing in along the bottom.

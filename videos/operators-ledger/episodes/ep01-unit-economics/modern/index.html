@@ -1,0 +1,375 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<title>Same Menu, Different Maths</title>
+<link rel="stylesheet" href="kit/brand.css">
+<script src="narration/words.js"></script>
+<script src="kit/motion-kit.js"></script>
+<script src="kit/sound-kit.js"></script>
+<style>
+#stage{background:#F3F2F2;overflow:hidden}
+#g3d,#fx{position:absolute;left:0;top:0;width:1080px;height:1350px}
+#g3d{z-index:1}
+.L{position:absolute;left:0;top:0;width:1080px;height:1350px}
+.eb{position:absolute;left:88px;top:152px;font:500 26px/1 var(--sans);letter-spacing:.22em;text-transform:uppercase;color:#B6240E;white-space:nowrap}
+.hl{position:absolute;left:88px;font-family:var(--serif);font-weight:300;line-height:1.06;letter-spacing:-.015em;white-space:nowrap;font-variant-numeric:lining-nums}
+.st{position:absolute;width:480px;margin-left:-240px;text-align:center}
+.st.fl{width:904px;margin-left:0;text-align:left}
+.st.wd{width:880px;margin-left:-440px}
+.n{font-family:var(--serif);font-weight:300;font-size:120px;line-height:1;letter-spacing:-.02em;font-variant-numeric:tabular-nums lining-nums;white-space:nowrap}
+.lb{margin-top:16px;font:500 28px/1.3 var(--sans);letter-spacing:.2em;text-transform:uppercase;white-space:nowrap}
+.ul{height:3px;margin:14px auto 0;width:0}
+.st.fl .ul{margin-left:0}
+.tg{position:absolute;width:520px;margin-left:-260px;text-align:center;font:500 26px/1 var(--sans);letter-spacing:.2em;text-transform:uppercase;white-space:nowrap}
+.tl{position:absolute;width:520px;text-align:left;font:500 24px/1 var(--sans);letter-spacing:.2em;text-transform:uppercase;white-space:nowrap}
+.tl.r{text-align:right}
+.lg{position:absolute;width:440px;margin-left:-220px;text-align:center;font:500 24px/1 var(--sans);letter-spacing:.2em;text-transform:uppercase;color:#4A4644;white-space:nowrap}
+.lg i{display:inline-block;width:20px;height:20px;margin-right:12px;vertical-align:-2px}
+.lg b{font-weight:500;margin-left:10px}
+.tot{position:absolute;width:440px;margin-left:-220px;text-align:center;font-family:var(--sans);font-weight:500;font-size:26px;line-height:1.2;white-space:nowrap;font-variant-numeric:lining-nums}
+.chipa{position:absolute;left:88px}
+.chip{position:relative;display:inline-block;padding:16px 22px;border:2px solid #F3F2F2;color:#F3F2F2;font:500 28px/1 var(--sans);letter-spacing:.18em;text-transform:uppercase;white-space:nowrap}
+.chip .sk{position:absolute;left:-10px;top:50%;height:3px;margin-top:-1px;background:#EC3013;width:0}
+#cap{position:absolute;left:0;width:1080px;bottom:142px;display:flex;justify-content:center;z-index:100}
+#capP{max-width:900px;padding:0;background:none;font:500 48px/1.16 var(--sans);letter-spacing:-.012em;text-align:center}
+#capP span{display:inline-block;white-space:pre}
+.row{position:absolute;left:88px;width:904px}
+.rl{position:absolute;left:0;top:12px;font:500 22px/1 var(--sans);letter-spacing:.2em;text-transform:uppercase;color:#4A4644;white-space:nowrap}
+.rv{position:absolute;left:280px;width:624px;top:0;font-family:var(--serif);font-weight:300;font-size:40px;line-height:1.2;color:#201E1D;font-variant-numeric:lining-nums}
+.rr{position:absolute;left:0;top:-26px;height:2px;background:#D6D2CF;width:0}
+#tile{position:absolute;left:88px;top:270px;width:160px;height:160px}
+#tile img{width:100%;height:100%;display:block}
+</style></head>
+<body><div id="stage"><canvas id="g3d" width="1080" height="1350"></canvas><canvas id="fx" width="1080" height="1350"></canvas><div id="cap"><div id="capP"></div></div></div>
+<script>
+const W=1080,H=1350,B=0.6;
+const BONE='#F3F2F2',INK='#201E1D',RED='#EC3013',DRED='#B6240E',WG='#4A4644',GREY='#A7A4A3',GRB='#7D7A78';
+const TA=10.8,TB=20.4,TC=30.0,TD=37.8,TE=47.4,TF=52.2,TG=64.2,TH=74.4,TI=82.8,TJ=86.4,END=89.4;
+const WP1=[50.4,TF],WP2=[72.6,TH],WP3=[84.6,TJ];
+const SX=185,GX1=SX-212,GX10=SX+212,GZ=700;
+const E=16.8; // the entry: Athena's ten cafés and the promise of the episode, before the puzzle
+const XV=72.0,DV=12.0; // the verdict's second part: four bars from the existing piece's 72.0 s
+const mapV=x=>x<XV?x:(x<XV+DV?XV:x-DV),invV=x=>x<XV?x:x+DV;
+const VAT={s1:0.0,s2:11.1,s3:21.1,s4:30.4,s5:38.0,s6:47.0,sq:61.5,s7:65.85,s8:74.6,s9:83.0};
+const VOICE=[{line:'s0',at:0.6}].concat(Object.keys(VAT).map(k=>({line:k,at:VAT[k]+E+(VAT[k]>=XV?DV:0)})));
+let REALT=0;
+const clamp=(x,a,b)=>Math.max(a,Math.min(b,x));
+const half=x=>Math.round(x/(B/2))*(B/2);
+const $=id=>document.getElementById(id);
+function hx(h){const n=parseInt(h.slice(1),16);return[(n>>16)&255,(n>>8)&255,n&255];}
+function mix(a,b,k){k=clamp(k,0,1);const A=hx(a),C=hx(b);return'#'+A.map((v,i)=>Math.round(v+(C[i]-v)*k).toString(16).padStart(2,'0')).join('');}
+const comma=n=>String(n).replace(/\B(?=(\d{3})+(?!\d))/g,',');
+const gbp=v=>{const r=Math.round(v/10)*10;return(r<0?'−':'')+'£'+comma(Math.abs(r));};
+function raw(line,word,n,fb){try{const v=mapV(M.at(line,word,n||1)-E);if(isFinite(v))return v;}catch(e){}return VAT[line]+fb;}
+function raw0(word,n,fb){try{const v=M.at('s0',word,n||1);if(isFinite(v))return v;}catch(e){}return 0.6+fb;}
+const cue=(l,w,n,fb)=>half(raw(l,w,n,fb));
+let CQ=null;
+function cues(){if(CQ)return CQ;CQ={
+ keeps:cue('s1','keeps',1,2.9),loses:cue('s1','loses',1,7.1),why:cue('s1','why',1,8.5),
+ numbers:cue('s2','year',1,3.2),bleeds:cue('s2','fifteen',1,4.6),
+ thirteen:cue('s3','thirteen',1,3.5),twenty:cue('s3','twenty',1,5.2),food:cue('s3','food',1,6.0),
+ two2:cue('s4','two',2,1.5),more:cue('s4','more',1,3.5),
+ nearly:cue('s5','nearly',1,2.0),quiet:cue('s5','quiet',1,4.3),add:cue('s5','add',1,7.5),
+ nine:cue('s6','nine',1,1.8),seventy:cue('s6','seventy',1,6.7),brk:cue('s6','break',1,9.0),thirteen2:cue('s6','thirteen',2,13.0),
+ verdict:cue('s7','verdict',1,0.1),model:cue('s7','model',1,3.3),own:cue('s7','own',1,4.7),before:cue('s7','before',1,6.4),not:cue('s7','not',1,7.4),
+ predict:cue('s8','predict',1,1.3),monday:cue('s8','monday',1,3.4),weakest:cue('s8','weakest',1,5.3),
+ q1:[raw('s8','what',1,4.3),raw('s8','must',1,4.8),raw('s8','your',2,5.1)].map(x=>x-0.1),
+ q2:[raw('s8','weakest',1,5.3),raw('s8','site',3,5.6),raw('s8','sell',1,6.0)].map(x=>x-0.1),
+ q3:[raw('s8','to',1,6.2),raw('s8','break',1,6.5),raw('s8','even',1,6.8)].map(x=>x-0.1)
+};return CQ;}
+const CATS={1:[['food',28],['rent',10],['labour',28],['run',10],['profit',24]],10:[['food',30],['rent',20],['labour',40],['run',12]]};
+function cellInfo(site,i,c){const T={food:c.food,rent:TC,labour:TD,run:c.add,profit:TE-0.36};let k=0;for(const[cat,n]of CATS[site]){if(i<k+n){const j=i-k;return{cat,j,start:T[cat]+j*0.016+(site===10?0.3:0)};}k+=n;}return null;}
+const MAT={body:['#ECEAE8','#DEDAD7','#CFCAC6'],plinth:['#E2DFDC','#D3CFCB','#C6C1BD'],roof:['#D6D2CF','#CBC6C2','#C0BAB6'],ink:['#3A3735','#201E1D','#2A2826'],glass:['#5A5552','#4A4644','#423E3C'],
+ food:['#D6D2CF','#C4BFBB','#B3ADA9'],rent:['#8A8582','#7D7A78','#6F6B69'],run:['#B8B2AE','#A7A4A3','#99948F'],labour:['#2E2B2A','#201E1D','#262423'],profit:['#2E2B2A','#201E1D','#262423'],loss:['#EC3013','#C92A10','#B6240E']};
+const VMAT={plinth:['#D6D2CF','#B8B2AE','#A39E9B'],body:['#F3F2F2','#DCD8D5','#C4BFBB'],roof:['#F3F2F2','#E2DFDC','#CFCAC6']};
+const BANDM=['#5A5552','#4A4644','#423E3C'];
+const cam={tx:0,ty:0,tz:0,yaw:0,pitch:0,dist:1000,f:1250,cx:540,cy:720};
+let ctx,fctx,fxEl,capP,capW,LY,q1=null,q2=null,faces=[],outl=[];
+const items=[],lines=[],rows=[],A={},blank={};
+function cs(x,y,z){const dx=x-cam.tx,dy=y-cam.ty,dz=z-cam.tz;const c=Math.cos(cam.yaw),s=Math.sin(cam.yaw);const x1=dx*c-dz*s,z1=dx*s+dz*c;const cp=Math.cos(cam.pitch),sp=Math.sin(cam.pitch);return[x1,dy*cp+z1*sp,-dy*sp+z1*cp+cam.dist];}
+function P(x,y,z){const q=cs(x,y,z);const zc=Math.max(q[2],30);const s=cam.f/zc;return[cam.cx+q[0]*s,cam.cy-q[1]*s,zc];}
+function nr(x,y,z){const c=Math.cos(cam.yaw),s=Math.sin(cam.yaw);const x1=x*c-z*s,z1=x*s+z*c;const cp=Math.cos(cam.pitch),sp=Math.sin(cam.pitch);return[x1,y*cp+z1*sp,-y*sp+z1*cp];}
+function box(x0,x1,y0,y1,z0,z1,m,fog,bg){
+ const F=[[[x0,y1,z0],[x1,y1,z0],[x1,y1,z1],[x0,y1,z1],[0,1,0],0],[[x0,y0,z0],[x1,y0,z0],[x1,y1,z0],[x0,y1,z0],[0,0,-1],1],[[x1,y0,z1],[x0,y0,z1],[x0,y1,z1],[x1,y1,z1],[0,0,1],1],[[x0,y0,z1],[x0,y0,z0],[x0,y1,z0],[x0,y1,z1],[-1,0,0],2],[[x1,y0,z0],[x1,y0,z1],[x1,y1,z1],[x1,y1,z0],[1,0,0],2]];
+ for(const f of F){const cc=cs((f[0][0]+f[2][0])/2,(f[0][1]+f[2][1])/2,(f[0][2]+f[2][2])/2);if(cc[2]<40)continue;const n=nr(f[4][0],f[4][1],f[4][2]);if(n[0]*cc[0]+n[1]*cc[1]+n[2]*cc[2]>=0)continue;faces.push({p:[P(...f[0]),P(...f[1]),P(...f[2]),P(...f[3])],z:cc[2],c:fog?mix(m[f[5]],bg,fog):m[f[5]]});}
+}
+function flush(){faces.sort((a,b)=>b.z-a.z);for(const f of faces){ctx.fillStyle=f.c;ctx.strokeStyle=f.c;ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(f.p[0][0],f.p[0][1]);for(let i=1;i<4;i++)ctx.lineTo(f.p[i][0],f.p[i][1]);ctx.closePath();ctx.fill();ctx.stroke();}faces=[];}
+function drawOutl(){ctx.strokeStyle='#ABA59F';ctx.lineWidth=2;for(const o of outl){ctx.globalAlpha=o.al;ctx.beginPath();o.q.forEach((p,i)=>i?ctx.lineTo(p[0],p[1]):ctx.moveTo(p[0],p[1]));ctx.closePath();ctx.stroke();}ctx.globalAlpha=1;outl=[];}
+const EDG=[[0,1],[1,2],[2,3],[3,0],[0,4],[1,5],[2,6],[3,7],[4,5],[5,6],[6,7],[7,4]];
+function wire(x0,x1,y0,y1,z0,z1,col,prog,lw,al){if(prog<=0||al<=0)return;const V=[[x0,y0,z0],[x1,y0,z0],[x1,y0,z1],[x0,y0,z1],[x0,y1,z0],[x1,y1,z0],[x1,y1,z1],[x0,y1,z1]].map(v=>P(...v));ctx.globalAlpha=al;ctx.strokeStyle=col;ctx.lineWidth=lw;ctx.lineCap='square';EDG.forEach((e,i)=>{const k=clamp(prog*12-i,0,1);if(k<=0)return;const a=V[e[0]],b=V[e[1]];ctx.beginPath();ctx.moveTo(a[0],a[1]);ctx.lineTo(a[0]+(b[0]-a[0])*k,a[1]+(b[1]-a[1])*k);ctx.stroke();});ctx.globalAlpha=1;}
+function cafe(ox,oy,oz,s,fog,bg,hb,mt,fb){mt=mt||MAT;if(fb==null)fb=fog;const y=oy;
+ box(ox-140*s,ox+140*s,y-14*s,y,oz-110*s,oz+110*s,mt.plinth,fog,bg);
+ if(fb>=0.999)return;const hh=150*s*(hb==null?1:hb);if(hh<0.5)return;
+ box(ox-105*s,ox+105*s,y,y+hh,oz-80*s,oz+80*s,mt.body,fb,bg);
+ box(ox-109*s,ox+109*s,y+hh,y+hh+8*s,oz-84*s,oz+84*s,mt.roof,fb,bg);
+ if(hh>=109*s)box(ox-112*s,ox+112*s,y+104*s,y+109*s,oz-100*s,oz-80*s,MAT.ink,fb,bg);
+ if(hh>=90*s)box(ox-90*s,ox+12*s,y+18*s,y+90*s,oz-82*s,oz-80*s,MAT.glass,fb,bg);
+ if(hh>=83*s)box(ox+32*s,ox+78*s,y,y+83*s,oz-82*s,oz-80*s,MAT.ink,fb,bg);}
+function pl(e,p,dx,dy){e.style.left=(p[0]+dx)+'px';e.style.top=(p[1]+dy)+'px';}
+function grids(t,c){
+ for(const site of [1,10]){const gx=site===1?GX1:GX10;const sf=site===1?0.7*M.p(t,c.nine,0.8,'sine.inOut'):0;const n=site===1?100:102;
+  for(let i=0;i<n;i++){const r=Math.floor(i/10),col=i%10;const x0=gx-177.5+col*36,x1=x0+31;const z1=GZ+177.5-r*36,z0=z1-31;
+   const inf=cellInfo(site,i,c);
+   if(i>=100){if(t<inf.start)continue;const y0=M.spring(t,inf.start,90,0,'snap');const h=22+M.spring(t,c.nine+i*0.005,0,18,'calm');box(x0,x1,y0,y0+h,z0,z1,t>=TE-0.24+(i-100)*0.08?MAT.loss:MAT.run,0,BONE);continue;}
+   const ap=M.p(t,18.9+(r+col)*0.04+(site===10?0.1:0),0.35,'sine.inOut');if(ap<=0)continue;
+   if(inf&&t>=inf.start){const top=inf.cat==='profit'?34:22;const y0=M.spring(t,inf.start,90,0,'snap');let h=top;if(site===10&&inf.cat!=='food')h+=M.spring(t,c.nine+i*0.005,0,18,'calm');box(x0,x1,y0,y0+h,z0,z1,MAT[inf.cat],sf,BONE);if(site===10&&i===74)q1=[P(x0,y0+h,z0),P(x1,y0+h,z0),P(x1,y0+h,z1),P(x0,y0+h,z1)];}
+   else outl.push({q:[P(x0,0.5,z0),P(x1,0.5,z0),P(x1,0.5,z1),P(x0,0.5,z1)],al:ap*(1-sf)});
+  }}
+}
+function worldA(t,c){
+ const pw=M.spring(t,c.why,0,1,'calm'),pp=M.spring(t,9.6,0,1,'calm'),p2=M.spring(t,19.2,0,1,'calm');
+ const pC=M.spring(t,TC-0.6,0,1,'calm'),pD=M.spring(t,TD-0.6,0,1,'calm'),pE=M.spring(t,TE-0.6,0,1,'calm'),pn=M.spring(t,c.nine,0,1,'calm');
+ const kd=M.p(t,WP1[0],WP1[1]-WP1[0],'sine.inOut');
+ const yS=-0.30+0.008*Math.max(0,t-0.3),yG=-0.08+0.004*(t-19.2)+0.30*pD-0.30*pE;
+ let tx=60*pw+125*pp+60*pn,ty=70+5*pp-75*p2,tz=700*p2;
+ let dist=1100-40*M.p(t,0.3,9.0,'sine.inOut')-300*pp+500*p2-60*pn;
+ const pitch=0.26+0.29*p2+0.45*pC-0.58*pD+0.38*pE;
+ tx+=(GX10-18-tx)*kd;ty+=(40-ty)*kd;tz+=(610-tz)*kd;dist+=(260-dist)*kd;
+ cam.tx=tx;cam.ty=ty;cam.tz=tz;cam.dist=dist;cam.pitch=pitch;cam.yaw=yS+(yG-yS)*p2;cam.cx=540;cam.cy=690-50*pp-20*p2;cam.f=1250;
+ { const a1=P(-185-560*M.spring(t,9.6,0,1,'snap'),-14,-110),a2=P(SX,-14,-110);A.t1.style.left='355px';A.t1.style.top='1010px';A.t10.style.left='725px';A.t10.style.top='1010px'; }
+ const sink=M.spring(t,c.loses,0,16,'calm');const fb=M.p(t,9.85,0.4,'sine.inOut');const kb=M.p(t,c.bleeds,0.6,'sine.inOut');
+ if(t<10.9)cafe(-185-560*M.spring(t,9.6,0,1,'snap'),M.spring(t,c.keeps,0,8,'calm'),0,1,0,BONE);
+ const fogP=M.p(t,18.7,0.5,'sine.inOut');if(kb>0&&fogP<1&&t<21){const fp=[P(SX-158,-sink-14,-128),P(SX+158,-sink-14,-128),P(SX+158,-sink-14,128),P(SX-158,-sink-14,128)];ctx.globalAlpha=kb*(1-fogP);ctx.strokeStyle=RED;ctx.lineWidth=3;ctx.beginPath();fp.forEach((p,i)=>i?ctx.lineTo(p[0],p[1]):ctx.moveTo(p[0],p[1]));ctx.closePath();ctx.stroke();ctx.globalAlpha=1;}
+ if(t<21)cafe(SX,-sink,0,1,fogP,BONE,1,MAT,fogP); // site 10 stays solid: its own loss is the stake
+ if(t>18.8)grids(t,c);
+ drawOutl();flush();
+ 
+ const gl=P(GX1,0,GZ-232),gr=P(GX10,0,GZ-232);const gy=Math.max(gl[1],gr[1])+6;
+ const cx=v=>clamp(v,88+220,992-220);A.lgL.forEach(e=>{e.style.left=cx(gl[0])+'px';e.style.top=gy+'px';});A.lgR.forEach(e=>{e.style.left=cx(gr[0])+'px';e.style.top=gy+'px';});
+ A.totL.forEach(e=>{e.style.left=cx(gl[0])+'px';e.style.top=(gy+42)+'px';});A.totR.forEach(e=>{e.style.left=cx(gr[0])+'px';e.style.top=(gy+42)+'px';});
+}
+const XS=s=>-340+s*0.034,YS=v=>-200+v*0.0286;
+function seg3(a,b,k,col,lw,al){if(k<=0||al<=0)return;const p=P(a[0],a[1],0),q=P(a[0]+(b[0]-a[0])*k,a[1]+(b[1]-a[1])*k,0);ctx.globalAlpha=al;ctx.strokeStyle=col;ctx.lineWidth=lw;ctx.lineCap='butt';ctx.beginPath();ctx.moveTo(p[0],p[1]);ctx.lineTo(q[0],q[1]);ctx.stroke();ctx.globalAlpha=1;}
+function quad3(pts,col,al){if(al<=0)return;const q=pts.map(v=>P(v[0],v[1],0));ctx.globalAlpha=al;ctx.fillStyle=col;ctx.beginPath();q.forEach((p,i)=>i?ctx.lineTo(p[0],p[1]):ctx.moveTo(p[0],p[1]));ctx.closePath();ctx.fill();ctx.globalAlpha=1;}
+function chart(t,c){
+ const gk=M.p(t,TF-0.2,1.2,'sine.inOut');
+ seg3([XS(0),YS(0)],[XS(20000),YS(0)],M.p(t,TF-0.3,0.9,'power4.out'),BONE,3,.55);
+ seg3([XS(0),YS(0)],[XS(0),YS(14000)],M.p(t,TF-0.2,0.9,'power4.out'),BONE,3,.55);
+ [0,5000,10000,15000,20000].forEach((s,i)=>seg3([XS(s),YS(0)],[XS(s),YS(0)-10],1,BONE,3,.55*M.p(t,TF+i*0.06,0.3,'sine.inOut')));
+ seg3([XS(0),YS(9400)],[XS(20000),YS(9400)],gk,BONE,3,1);
+ seg3([XS(0),YS(0)],[XS(20000),YS(14000)],M.p(t,c.seventy,1.2,'power4.inOut'),BONE,3,1);
+ if(t>=c.brk){const be=M.spring(t,c.brk,0,1,'snap');const x=XS(13429),y=YS(9400),s=8*be;quad3([[x-s,y-s],[x+s,y-s],[x+s,y+s],[x-s,y+s]],BONE,1);}
+ seg3([XS(13429),YS(9400)],[XS(13429),YS(0)],M.p(t,c.brk+0.2,0.7,'power4.out'),BONE,3,.55);
+ seg3([XS(13000),YS(0)],[XS(13000),YS(9100)],M.p(t,c.thirteen2,0.8,'power4.out'),RED,3,1);
+ const g=M.p(t,c.thirteen2+0.5,0.45,'sine.inOut');if(g>0)quad3([[XS(13000)-9,YS(9100)],[XS(13000)+9,YS(9100)],[XS(13000)+9,YS(9400)],[XS(13000)-9,YS(9400)]],RED,g);
+ const tk=[0,5000,10000,15000,20000];A.ticks.forEach((e,i)=>pl(e,P(XS(tk[i]),YS(0),0),0,22));
+ pl(A.lf,P(XS(0),YS(9400),0),14,-42);pl(A.l70,P(XS(20000),YS(14000),0),-540,-10);
+ pl(A.lbe,P(XS(13429),YS(9400),0),-60,-62);pl(A.l10,P(XS(13000),YS(0),0),0,62);
+}
+function verdictBlock(t,c){
+ const bx=1300,y0=-120,s=1.25;const wp=M.p(t,63.9,1.0,'sine.inOut');const hB=clamp(M.spring(t,c.model,0,1,'calm'),0,1.02);
+ if(t>=c.model)cafe(bx,y0,0,s,0,INK,hB,VMAT);
+ flush();
+ const wa=clamp(1-hB*1.2,0,1);wire(bx-105*s,bx+105*s,y0,y0+158*s,-80*s,80*s,RED,clamp(wp*2,0,1),3,wa);wire(bx-140*s,bx+140*s,y0-14*s,y0,-110*s,110*s,RED,clamp(wp*2-1,0,1),3,wa);
+ const top=y0+150*s*hB+8*s;
+ q2=[P(bx-109*s,top,-84*s),P(bx+109*s,top,-84*s),P(bx+109*s,top,84*s),P(bx-109*s,top,84*s)];
+ A.lab11v.style.left='88px';A.lab11v.style.top=(P(bx,y0+158*s,0)[1]-58)+'px';
+ const pb=P(bx,y0-14*s,-110*s);A.c1w.style.top=(pb[1]+48)+'px';A.c2w.style.top=(pb[1]+120)+'px';A.c3w.style.top=(pb[1]+192)+'px';
+}
+function worldB(t,c){
+ const z=M.spring(t,c.thirteen2-0.3,0,1,'calm'),pv=M.spring(t,63.6,0,1,'calm'),kd=M.p(t,WP2[0],WP2[1]-WP2[0],'sine.inOut');
+ const yC=-0.17+0.015*(t-TF),yV=-0.30+0.008*(t-63.6);
+ let tx=100*z,ty=-65*z,dist=1100-320*z,pitch=0.18,cy=780,cx=540;
+ tx+=(1300-tx)*pv;ty+=(-30-ty)*pv;dist+=(1000-dist)*pv;pitch+=(0.25-0.18)*pv;cy+=(680-cy)*pv;cx+=(320-cx)*pv;
+ tx+=(1300-tx)*kd;ty+=(77.5-ty)*kd;dist+=(220-dist)*kd;
+ cam.tx=tx;cam.ty=ty;cam.tz=0;cam.dist=dist;cam.pitch=pitch;cam.yaw=yC+(yV-yC)*pv;cam.cx=cx;cam.cy=cy;cam.f=1250;
+ ctx.save();ctx.beginPath();ctx.rect(86,540,908,472);ctx.clip();chart(t,c);ctx.restore();
+ if(t>63.4)verdictBlock(t,c);
+}
+function worldC(t,c){
+ cam.tx=0;cam.ty=70;cam.tz=0;cam.pitch=0.26;cam.yaw=-0.22+0.008*(t-TH);cam.dist=1100;cam.cx=540;cam.cy=700;cam.f=1250;
+ const en=M.spring(t,TH-0.3,0,1,'calm'),ex=M.spring(t,c.monday-0.4,0,1,'calm');const dy=-520*(1-en)-1500*ex;const sp=9*Math.max(0,t-TH);
+ cafe(-185-sp,dy,0,1,0,BONE);cafe(185+sp,dy,0,1,0,BONE);flush();
+ A.b1.style.left=P(-185-sp,-14,-110)[0]+'px';A.b10.style.left=P(185+sp,-14,-110)[0]+'px';
+}
+function wipe(t,w,q,cA,cB,z){if(t<w[0]||t>=w[1]||!q)return;const k=M.p(t,w[0],w[1]-w[0],'sine.inOut');const T=[[-8,H+8],[W+8,H+8],[W+8,-8],[-8,-8]];fctx.fillStyle=mix(cA,cB,k);fctx.beginPath();for(let i=0;i<4;i++){const x=q[i][0]+(T[i][0]-q[i][0])*k,y=q[i][1]+(T[i][1]-q[i][1])*k;i?fctx.lineTo(x,y):fctx.moveTo(x,y);}fctx.closePath();fctx.fill();fxEl.style.zIndex=z;}
+function ridgeFill(g,topY,amp,seed,ph,col,al){g.globalAlpha=al==null?1:al;g.fillStyle=col;g.beginPath();g.moveTo(-10,H+20);for(let x=-10;x<=W+10;x+=12){const u=x/W;const y=topY+amp*(0.55*Math.sin(u*8.2+seed+ph)+0.45*Math.sin(u*17.0+seed*1.7-ph*0.6));g.lineTo(x,y);}g.lineTo(W+10,H+20);g.closePath();g.fill();g.globalAlpha=1;}
+function tide(t){if(t<WP3[0]||t>=WP3[1])return;const k=M.p(t,WP3[0],WP3[1]-WP3[0],'sine.inOut');fxEl.style.zIndex=25;
+ [[mix(INK,BONE,0.55),0,11],[INK,0.12,5]].forEach(([col,lag,seed])=>{const kk=clamp((k-lag)/(1-lag),0,1);const topY=(H+90)-kk*(H+210);ridgeFill(fctx,topY,90,seed,t*0.6,col,1);});}
+const EI=[],EL=[],RL=[];let ETAG=null; // RL: lines drawn on the real clock (the verdict holds while they play)
+function worldEntry(T){
+ const hs=E-3.4,k=M.p(T,hs,3.4,'power3.inOut'),dr=M.p(T,0.3,Math.max(0.5,E-0.3),'none'); // a constant drift that runs into the glide: never a still moment
+ cam.tx=0;cam.ty=70;cam.tz=0;cam.pitch=0.26+0.10*(1-k);cam.yaw=-0.30-0.10*(1-k)+0.05*dr*(1-k);cam.dist=1100+(1900-260*dr)*(1-k);cam.cx=540;cam.cy=690+120*(1-k);cam.ty=70-120*(1-k);cam.f=1250;
+ const tn=raw0('nine',1,2.0),tl=raw0('losing',1,4.4);
+ const POS=[[-555,0],[-185,0],[185,0],[555,0],[-925,-560],[-555,-560],[-185,-560],[185,-560],[555,-560],[925,-560]];
+ POS.forEach(([x,z],i)=>{const inner=z===0&&Math.abs(x)===185;const fog=inner?0:clamp(k*1.5,0,1);if(fog>=0.999)return;
+  const s10=x===185&&z===0;const lift=s10?0:M.spring(T,tn+i*0.06,0,12,'calm')*(1-k);cafe(x,lift,z,1,fog,BONE,1,s10&&k<1?{plinth:MAT.plinth,body:MAT.body,roof:MAT.loss}:MAT);});
+ flush();
+ const red=M.p(T,tl,0.45,'sine.inOut')*(1-k);
+ if(red>0){const fp=[P(185-140,0.5,-110),P(185+140,0.5,-110),P(185+140,0.5,110),P(185-140,0.5,110)];ctx.globalAlpha=red;ctx.strokeStyle=RED;ctx.lineWidth=3;ctx.beginPath();fp.forEach((p,i)=>i?ctx.lineTo(p[0],p[1]):ctx.moveTo(p[0],p[1]));ctx.closePath();ctx.stroke();ctx.globalAlpha=1;}
+ const lp=P(185,-14,-110),lx=clamp(lp[0],88+260,992-260);ETAG.style.left=lx+'px';ETAG.style.top='1010px';
+ ctx.globalAlpha=M.p(T,raw0('losing',1,4.4),0.4,'sine.inOut')*(1-k);ctx.strokeStyle=RED;ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(lp[0],lp[1]+6);ctx.lineTo(lx,1000);ctx.stroke();ctx.globalAlpha=1; // a 2 px leader from the café to its label
+}
+// captions as part of the design: the spoken word red, every word lifting in on its own beat; ink or bone by the ground beneath them
+function groundDark(){let px=fctx.getImageData(540,1170,1,1).data;if(px[3]<128)px=ctx.getImageData(540,1170,1,1).data;return px[0]*.3+px[1]*.59+px[2]*.11<110;}
+function caption(T,dark){
+ const cp=M.caption(T,6);if(!cp||!cp.words||!cp.words.length){capW.style.visibility='hidden';return;}
+ const base=dark?BONE:INK;let act=-1;cp.words.forEach((w,i)=>{if(w.spoken)act=i;});
+ capP.innerHTML=cp.words.map((w,i)=>{const sp=w.spoken,y=sp?M.spring(T,w.at,16,0,'snap'):6,op=sp?1:0.26,col=i===act?RED:base;
+  return '<span style="color:'+col+';opacity:'+op+';transform:translateY('+y.toFixed(1)+'px)">'+w.text+'</span>';}).join(' ');
+ capW.style.visibility='visible';
+}
+function mk(p,tag,cls,html,css){const e=document.createElement(tag);if(cls)e.className=cls;if(html!=null)e.innerHTML=html;if(css)Object.assign(e.style,css);p.appendChild(e);return e;}
+function item(e,a,b,o){items.push(Object.assign({el:e,a,b},o||{}));return e;}
+function line(p,txt,y,col,a,b,o){o=o||{};const e=mk(p,'div','hl',txt,{top:y+'px',color:col,fontSize:(o.size||100)+'px'});lines.push({el:e,a,b,size:o.size||100,drift:o.drift||0,wt:o.wt||null});return e;}
+function stat(p,num,lab,col,a,b,o){o=o||{};const e=mk(p,'div','st'+(o.fl?' fl':'')+(o.wd?' wd':''));const n=mk(e,'div','n',num,{color:col});const l=mk(e,'div','lb',lab,{color:o.lc||WG});const u=o.ul?mk(e,'div','ul','',{background:o.ul}):null;if(o.x!=null)e.style.left=o.x+'px';if(o.y!=null)e.style.top=o.y+'px';item(e,a,b);const rec=items[items.length-1];rec.n=n;rec.l=l;rec.u=u;rec.ua=o.ua;if(o.count!=null){rec.count=o.count;rec.fmt=o.fmt;}return rec;}
+function drawItem(it,t){const dy=it.dy==null?24:it.dy,a=it.a,b=it.b;const op=M.p(t,a,0.14,'sine.inOut')*(b==null?1:1-M.p(t,b-0.16,0.15,'sine.inOut'));let y=M.spring(t,a,dy,0,'snap');if(b!=null)y+=M.spring(t,b-0.16,0,it.down?dy*2.4:-dy*0.25,'snap');if(it.drift)y-=it.drift*Math.max(0,t-Math.max(a,0.3));M.set(it.el,{y,opacity:op,visible:op>0.003});if(it.count!=null&&it.n)it.n.textContent=it.fmt(M.tween(t,a+0.2,0.6,0,it.count,'power4.out'));if(it.u)it.u.style.width=(it.ua!=null?M.tween(t,it.ua,0.7,0,220,'power4.out'):0)+'px';}
+function drawLine(L,t){const a=L.a,b=L.b,s=L.size;const outK=b==null?0:M.p(t,b,0.3,'sine.inOut');const vis=t>=a-0.05&&outK<1;M.set(L.el,{visible:vis,opacity:1-outK,y:(b==null?0:M.spring(t,b,0,-s*0.06,'snap'))-L.drift*Math.max(0,t-Math.max(a,0.3))});L.words.forEach((w,i)=>M.set(w,{y:M.spring(t,L.wt&&L.wt[i]!=null?L.wt[i]:a+i*0.1,s*1.15,0,'snap')}));}
+M.scene({
+ width:W,height:H,fps:30,duration:END+E+DV,bpm:100,
+ cuts:[28].concat([18,34,50,63,79,87,107,124,138,144].map(x=>(x>=120?x+20:x)).map(x=>x+28)),
+ voice:VOICE,
+ setup(){
+  const c=cues();const st=$('stage');
+  ctx=$('g3d').getContext('2d');fxEl=$('fx');fctx=fxEl.getContext('2d');capP=$('capP');capW=$('cap');
+  LY={};[['l1',10],['l2',12],['l3',14],['l4',18],['l5',20],['l6',22],['l7',24],['l8',26]].forEach(([k,z])=>{LY[k]=mk(st,'div','L','',{zIndex:z});});
+  // hook: frame 0 is this card, finished
+  item(mk(LY.l1,'div','eb','Unit economics · Illustrative figures, weekly'),0.1,9.9);
+  line(LY.l1,'Same menu.',200,INK,0.15,9.9,{size:110});line(LY.l1,'Different fate.',316,GRB,0.5,9.98,{size:110});
+  A.st1=stat(LY.l1,'£4,800','Site 1<br>kept, weekly',INK,c.keeps-0.5,9.9,{x:300,y:880,ul:INK,ua:c.keeps});
+  A.st10=stat(LY.l1,'−£300','Site 10<br>lost, weekly',RED,c.loses-0.5,9.98,{x:780,y:880,ul:RED,ua:c.loses});
+  A.t1=item(mk(LY.l1,'div','tg','Site 1',{color:WG}),-1,c.keeps-0.55);A.t10=item(mk(LY.l1,'div','tg','Site 10',{color:RED}),-1,c.loses-0.55);
+  // stakes
+  item(mk(LY.l2,'div','eb','The stakes'),10.2,19.4);
+  line(LY.l2,'Small every week.',200,INK,10.25,19.4);line(LY.l2,'Big every year.',306,GRB,c.numbers-0.3,19.48);
+  A.s156=stat(LY.l2,'−£15,600','Gone at site 10 in a year',RED,c.bleeds,19.3,{x:540,y:950,wd:1,count:-15600,fmt:gbp});A.s156.n.style.fontSize='84px';
+  // clues
+  item(mk(LY.l3,'div','eb','Clue 01 · Sales'),TB-0.45,TC-0.3);item(mk(LY.l3,'div','eb','Clue 02 · Rent'),TC-0.3,TD-0.3);item(mk(LY.l3,'div','eb','Clue 03 · Labour'),TD-0.3,c.add-0.3);
+  item(mk(LY.l3,'div','tg','Same trading hours · same minimum rota',{color:DRED,width:'860px',marginLeft:'-430px',left:'540px',top:'420px'}),cue('s5','hours',1,3.2),c.add-0.3);item(mk(LY.l3,'div','eb','Add them up'),c.add-0.3,TE-0.3);
+  const SP=(num,lab,col,x,a,b,cnt,ua)=>stat(LY.l3,num,lab,col,a,b,{x,y:196,count:cnt,fmt:gbp,ul:col,ua});
+  SP('£20,000','Site 1 · sales',INK,300,TB-0.36,TC-0.3,20000,c.twenty);SP('£13,000','Site 10 · sales',INK,780,TB-0.3,TC-0.3,13000,c.thirteen);
+  SP('£2,000','Site 1 · rent',INK,300,TC-0.36,TD-0.3,2000,c.more);SP('£2,600','Site 10 · rent',INK,780,TC-0.3,TD-0.3,2600,c.two2);
+  SP('£5,600','Site 1 · labour',INK,300,TD-0.36,c.add-0.3,5600,c.nearly);SP('£5,200','Site 10 · labour',INK,780,TD-0.3,c.add-0.3,5200,c.quiet);
+  SP('£2,000','Site 1 · running',INK,300,c.add-0.3,TE-0.3,2000,null);SP('£1,600','Site 10 · running',INK,780,c.add-0.18,TE-0.3,1600,null);
+  SP('£4,800','Site 1 · profit',INK,300,TE-0.36,c.nine-0.3,4800,null);SP('−£300','Site 10 · loss',RED,780,TE-0.24,c.nine-0.3,-300,null);
+  const LG=(sw,lab,val,a,b,vc)=>item(mk(LY.l3,'div','lg','<i style="background:'+sw+'"></i>'+lab+'<b style="color:'+(vc||INK)+'">'+val+'</b>'),a,b);
+  const TT=(txt,col,a,b)=>item(mk(LY.l3,'div','tot',txt,{color:col}),a,b);
+  A.lgL=[LG(MAT.food[0],'Food','28p',c.food,TC-0.3),LG(MAT.rent[1],'Rent','10p',TC-0.3,TD-0.3),LG(INK,'Labour','28p',TD-0.3,c.add-0.3),LG(MAT.run[0],'Running','10p',c.add-0.3,TE-0.36),LG(INK,'Profit','24p',TE-0.36,c.nine-0.2)];
+  A.lgR=[LG(MAT.food[0],'Food','30p',c.food+0.3,TC-0.3),LG(MAT.rent[1],'Rent','20p',TC-0.06,TD-0.3),LG(INK,'Labour','40p',TD-0.06,c.add-0.3),LG(MAT.run[0],'Running','12p',c.add-0.06,TE-0.24),LG(RED,'Loss','−2p',TE-0.24,c.nine-0.2,RED)];
+  A.totL=[TT('Every £1 of sales',GRB,TB-0.3,c.food),TT('28p of every £1 gone',INK,c.food,TC-0.3),TT('38p of every £1 gone',INK,TC-0.3,TD-0.3),TT('66p of every £1 gone',INK,TD-0.3,c.add-0.3),TT('76p of every £1 gone',INK,c.add-0.3,TE-0.36),TT('24p of every £1 kept',INK,TE-0.36,c.nine-0.2)];
+  A.totR=[TT('Every £1 of sales',GRB,TB-0.2,c.food+0.3),TT('30p of every £1 gone',INK,c.food+0.3,TC-0.3),TT('50p of every £1 gone',INK,TC-0.06,TD-0.3),TT('90p of every £1 gone',INK,TD-0.06,c.add-0.3),TT('102p of every £1 gone',RED,c.add-0.06,TE-0.24),TT('2p short on every £1',RED,TE-0.24,c.nine-0.2)];
+  // the tool, on ink
+  A.e6=item(mk(LY.l4,'div','eb','The tool · Unit economics'),TE-0.3,63.6);
+  A.s94=stat(LY.l4,'£9,400','Rent £2,600<br>Labour £5,200<br>Running costs £1,600',INK,c.nine,c.seventy-0.3,{fl:1,x:88,y:196,count:9400,fmt:gbp});
+  stat(LY.l4,'70p','Left from every £1 at site 10, after food',BONE,c.seventy,c.brk-0.3,{fl:1,x:88,y:196,lc:GREY,count:70,fmt:v=>Math.round(v)+'p'});
+  stat(LY.l4,'£13,500','Break-even sales, roughly, a week',BONE,c.brk,c.thirteen2-0.3,{fl:1,x:88,y:196,lc:GREY,count:13500,fmt:v=>gbp(Math.round(v/100)*100)});
+  stat(LY.l4,'−£300','Site 10, taking £13,000 a week',RED,c.thirteen2,63.6,{fl:1,x:88,y:196,lc:GREY,count:-300,fmt:gbp});
+  A.ticks=['£0','£5,000','£10,000','£15,000','£20,000'].map((s,i)=>item(mk(LY.l4,'div','tg',s,{color:GREY,fontSize:'28px'}),TF+0.1+i*0.06,i<2?c.thirteen2-0.4:63.4));
+  A.lf=item(mk(LY.l4,'div','tl','Fixed costs · £9,400',{color:GREY}),TF+0.6,c.thirteen2-0.4);
+  A.l70=item(mk(LY.l4,'div','tl r','70p from every £1',{color:BONE}),c.seventy+1.0,c.thirteen2-0.4);
+  A.lbe=item(mk(LY.l4,'div','tl','Break-even',{color:BONE}),c.brk+0.4,63.4);
+  A.l10=item(mk(LY.l4,'div','tg','Site 10 · £13,000',{color:RED}),c.thirteen2+0.4,63.4);
+  // verdict
+  item(mk(LY.l5,'div','eb','The verdict',{color:RED}),63.9,72.4);
+  A.lab11v=item(mk(LY.l5,'div','tl','Site 11',{color:GREY}),64.3,72.4);
+  line(LY.l5,'Rent and labour',200,BONE,c.verdict-0.15,c.model-0.4);line(LY.l5,'barely move.',306,GREY,c.verdict+0.45,c.model-0.32);
+  { const nl=lines.length;let bR=XV-0.2;try{bR=M.at('s7','before',1)-E-0.1;}catch(e){}
+    line(LY.l5,'Its own numbers.',200,BONE,c.model,72.4+DV);line(LY.l5,'Before you sign.',306,GREY,bR,72.48+DV);RL.push(...lines.splice(nl)); }
+  A.c1w=mk(LY.l5,'div','chipa');const ch1=mk(A.c1w,'div','chip','Forecast · site 1’s numbers');A.sk=mk(ch1,'div','sk');item(A.c1w,64.9,c.not+0.5,{down:1});
+  A.c2w=mk(LY.l5,'div','chipa');mk(A.c2w,'div','chip','Its own sales · its own fixed costs');item(A.c2w,c.own,72.4);
+  A.c3w=mk(LY.l5,'div','chipa');mk(A.c3w,'div','chip','Local hours · local rota');A.c3=null;
+  // lesson and the Monday question
+  item(mk(LY.l6,'div','eb','The lesson'),TH-0.3,c.monday-0.4);item(mk(LY.l6,'div','eb','For Monday'),c.monday-0.1,82.4);
+  line(LY.l6,'Site 1 never',200,INK,TH-0.3,c.monday-0.4);line(LY.l6,'predicts site 10.',306,GRB,c.predict-0.15,c.monday-0.32);
+  A.b1=item(mk(LY.l6,'div','tg','Site 1',{color:WG,top:'880px'}),TH+0.3,c.monday-0.5);A.b10=item(mk(LY.l6,'div','tg','Site 10',{color:WG,top:'880px'}),TH+0.4,c.monday-0.5);
+  line(LY.l6,'What must your',200,INK,c.monday-0.05,82.4,{wt:[c.monday-0.05,c.monday+0.05,c.monday+0.15]});line(LY.l6,'weakest site sell',306,INK,c.q2[0],82.48,{wt:c.q2});line(LY.l6,'to break even?',412,GRB,c.q3[0],82.56,{wt:c.q3});
+  const bk=mk(LY.l6,'div','','',{position:'absolute',left:'88px',top:'620px',width:'904px',height:'200px'});
+  mk(bk,'div','n','£',{position:'absolute',left:'0',top:'0',color:INK});
+  blank.line=mk(bk,'div','','',{position:'absolute',left:'84px',top:'100px',height:'3px',width:'0',background:INK});
+  blank.caret=mk(bk,'div','','',{position:'absolute',left:'744px',top:'76px',width:'20px',height:'20px',background:RED,opacity:'0'});
+  mk(bk,'div','lb','Your weakest site · break-even sales',{position:'absolute',left:'0',top:'126px',color:WG});
+  blank.a=c.weakest;item(bk,blank.a,82.4);
+  // the ledger page
+  item(mk(LY.l7,'div','eb','The Operator’s Ledger · Case 01'),TI-0.05,null);
+  [['Case 01','Athena’s site 1 and site 10',250],['Framework','Unit economics',354],['Verdict','Model each site on its own sales and fixed costs before signing.',458],['Lesson','Site 1’s numbers don’t predict site 10’s.',610]].forEach(([l,v,y],i)=>{const row=mk(LY.l7,'div','row','',{top:y+'px'});const rule=mk(row,'div','rr');const lab=mk(row,'div','rl',l);const val=mk(row,'div','rv',v);rows.push({row,rule,lab,val,a:[82.9,83.2,83.5,83.9][i]});});
+  // end card, on ink
+  const tl=mk(LY.l8,'div','','<img src="kit/series/ledger-fresh/assets/brand/WRW-logo-white-on-red.svg" alt="">');tl.id='tile';item(tl,86.45,null);
+  item(mk(LY.l8,'div','','The Operator’s Ledger',{position:'absolute',left:'88px',top:'470px',font:'500 40px/1 var(--sans)',letterSpacing:'.22em',textTransform:'uppercase',color:BONE,whiteSpace:'nowrap'}),86.5,null,{drift:3});
+  item(mk(LY.l8,'div','','Episode 01 · Unit economics',{position:'absolute',left:'88px',top:'532px',font:'500 28px/1 var(--sans)',letterSpacing:'.2em',textTransform:'uppercase',color:GREY,whiteSpace:'nowrap'}),86.55,null,{drift:3});
+  line(LY.l8,'Same menu.',590,BONE,86.6,null,{drift:3});line(LY.l8,'Different maths.',696,GREY,86.75,null,{drift:3});
+  item(mk(LY.l8,'div','','Next case: does café eleven pay?',{position:'absolute',left:'88px',top:'826px',font:'300 44px/1.25 var(--serif)',color:BONE}),87.0,null,{drift:3});
+  item(mk(LY.l8,'div','','WRW Hospitality',{position:'absolute',left:'88px',top:'930px',font:'500 28px/1 var(--sans)',letterSpacing:'.2em',textTransform:'uppercase',color:GREY}),87.2,null,{drift:3});
+  item(mk(LY.l8,'div','','Wesley Williams',{position:'absolute',left:'88px',top:'972px',font:'400 34px/1.2 var(--sans)',color:BONE}),87.3,null,{drift:3});
+  // the entry layer: frame 0 is its finished card (the thumbnail)
+  LY.l0=mk(st,'div','L','',{zIndex:9});const ni=items.length,nl=lines.length;
+  const tThis=raw0('this',1,9.6),tPz=raw0('puzzle',1,11.4),tFw=raw0('framework',1,12.2),tCl=raw0('verdict',1,13.0);
+  item(mk(LY.l0,'div','eb','The Operator’s Ledger · Unit economics'),-10,E-0.35);
+  line(LY.l0,'Ten cafés.',200,INK,-10,tPz-0.5,{size:110});line(LY.l0,'One loses money.',316,GRB,-10,tPz-0.44,{size:110});
+  line(LY.l0,'One puzzle.',200,INK,tPz-0.12,E-0.4,{size:100,wt:[tPz-0.12,tPz]});line(LY.l0,'One framework.',306,GRB,tFw-0.12,E-0.36,{size:100,wt:[tFw-0.12,tFw]});line(LY.l0,'One verdict.',412,GRB,tCl-0.12,E-0.32,{size:100,wt:[tCl-0.12,tCl]});
+  ETAG=item(mk(LY.l0,'div','tg','Site 10 · losing money',{color:RED}),raw0('losing',1,4.4),E-1.0);
+  item(mk(LY.l0,'div','tg','Site 1',{color:WG,left:'355px',top:'1010px'}),E-0.7,null);item(mk(LY.l0,'div','tg','Site 10',{color:RED,left:'725px',top:'1010px'}),E-0.6,null);
+  EI.push(...items.splice(ni));EL.push(...lines.splice(nl));
+  lines.forEach(L=>{L.words=M.split(L.el,'words');});EL.forEach(L=>{L.words=M.split(L.el,'words');});RL.forEach(L=>{L.words=M.split(L.el,'words');});
+ },
+ render(T){
+  REALT=T;
+  if(T<E){
+   ctx.globalAlpha=1;ctx.fillStyle=BONE;ctx.fillRect(0,0,W,H);fctx.clearRect(0,0,W,H);faces=[];outl=[];
+   for(const k of ['l1','l2','l3','l4','l5','l6','l7','l8'])LY[k].style.display='none';LY.l0.style.display='';
+   $('g3d').style.transform='none';worldEntry(T);EI.forEach(it=>drawItem(it,T));EL.forEach(L=>drawLine(L,T));
+   caption(T,groundDark());return;
+  }
+  for(const k of ['l1','l2','l3','l4','l5','l6','l8'])LY[k].style.display='';LY.l0.style.display='none';
+  const tl=T-E,t=mapV(tl);
+  const c=cues();
+  ctx.globalAlpha=1;ctx.fillStyle=t<TF?BONE:t<TH?INK:t<TJ?BONE:INK;ctx.fillRect(0,0,W,H);fctx.clearRect(0,0,W,H);faces=[];outl=[];
+  if(t<TF)worldA(t,c);else if(t<TH)worldB(t,c);else if(t<c.monday+1.0)worldC(t,c);
+  if(t>=TJ){const fa=M.p(t,TJ,0.8,'sine.inOut');ridgeFill(ctx,H-230,46,21,(t-TJ)*0.35,BONE,0.07*fa);ridgeFill(ctx,H-140,34,23,-(t-TJ)*0.25,BONE,0.12*fa);}
+  items.forEach(it=>drawItem(it,t));lines.forEach(L=>drawLine(L,t));RL.forEach(L=>drawLine(L,tl));
+  const kw=M.p(t,WP1[0],WP1[1]-WP1[0],'sine.inOut');A.e6.style.color=mix(DRED,RED,kw);A.s94.n.style.color=mix(INK,BONE,kw);A.s94.l.style.color=mix(WG,GREY,kw);
+  let notR=XV;try{notR=M.at('s7','not',1)-E;}catch(e){}const sp=M.p(tl,notR,0.4,'power4.out');A.sk.style.width='calc('+(sp*100).toFixed(2)+'% + '+(20*sp).toFixed(2)+'px)';
+  blank.line.style.width=M.tween(t,blank.a+0.15,0.9,0,640,'power4.out')+'px';const ph=((t/B)%1+1)%1;blank.caret.style.opacity=t>blank.a+1.0?(0.3+0.7*Math.exp(-4*ph)).toFixed(3):'0';
+  rows.forEach(r=>{const a=r.a;r.rule.style.width=M.tween(t,a,0.8,0,904,'power4.out')+'px';r.lab.style.opacity=M.p(t,a,0.3,'sine.inOut');const k=M.p(t,a+0.12,0.75,'power4.inOut');r.val.style.clipPath='inset(-12px '+(100-100*k).toFixed(2)+'% -12px 0)';M.set(r.row,{visible:t>=a-0.01,y:M.spring(t,a,14,0,'snap')});});
+  M.set(LY.l7,{y:-3*Math.max(0,t-TI)});LY.l7.style.display=t<TJ?'':'none';M.set(LY.l6,{y:-5*Math.max(0,t-c.monday)});
+  { const hp=M.p(tl,XV,DV,'sine.inOut'),g3=$('g3d');g3.style.transformOrigin='50% 45%';g3.style.transform=tl>=XV&&tl<TH+DV?'scale('+(1+0.04*hp).toFixed(4)+')':'none';
+    if(!A.c3){let a=XV+DV-3;try{a=M.at('s7','local',1)-E-0.1;}catch(e){}A.c3={el:A.c3w,a,b:XV+DV};}
+    drawItem(A.c3,tl); }
+  wipe(t,WP1,q1,'#2E2B2A',INK,16);wipe(t,WP2,q2,BONE,BONE,21);tide(t);
+  if(t<TJ)caption(REALT,groundDark());else capW.style.visibility='hidden';
+ },
+ score(S0){
+  const SHIFT=['keys','upright','ride','brush','tick','whoosh','kick','hat','snare','clap','pluck','pad','sub','string','bell','impact','stamp','taiko'];
+  let MODE='grid';const S=new Proxy(S0,{get(o,k){const f=o[k];if(typeof f!=='function')return f;if(k==='groove')return(fb,...r)=>f(fb+E/(4*B),...r);if(SHIFT.includes(k)||k==='tally'||k==='drop')return(t,...r)=>f((MODE==='cue'?invV(t):t)+E,...r);return f;}});
+  const c=cues();const b=n=>n*B;
+  const NN=['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
+  const mi=n=>{const m=/^([A-G]#?)(-?\d)$/.exec(n);return NN.indexOf(m[1])+12*(+m[2]+1);};const nm=m=>NN[((m%12)+12)%12]+(Math.floor(m/12)-1);
+  const CH={Dm9:{v:['F3','A3','C4','E4'],w:['D2','F2','A2','C3']},G13:{v:['F3','B3','E4','A4'],w:['G1','B1','D2','F2']},Cmaj9:{v:['E3','G3','B3','D4'],w:['C2','E2','G2','B2']},A7:{v:['G3','C#4','F#4','B4'],w:['A1','C#2','E2','G2']},Em7:{v:['G3','B3','D4','F#4'],w:['E2','G2','B2','D3']},Fmaj9:{v:['A3','C4','E4','G4'],w:['F1','A1','C2','E2']},Am9:{v:['G3','B3','C4','E4'],w:['A1','C2','E2','G2']},D9:{v:['F#3','A3','C4','E4'],w:['D2','F#2','A2','C3']},E7:{v:['D3','G#3','C#4','F#4'],w:['E2','G#2','B2','D3']}};
+  const chart0=[[0,'Dm9',4],[4,'G13',4],[8,'Cmaj9',4],[12,'A7',6],[18,'Dm9',4],[22,'G13',4],[26,'Em7',4],[30,'A7',4],[34,'Dm9',4],[38,'G13',4],[42,'Cmaj9',4],[46,'A7',4],[50,'Fmaj9',4],[54,'Em7',4],[58,'A7',5],[63,'Dm9',4],[67,'G13',4],[71,'Em7',4],[75,'A7',4],[79,'Dm9',4],[83,'G13',4],[87,'Cmaj9',4],[91,'Am9',4],[95,'Dm9',4],[99,'G13',4],[103,'E7',4],[107,'Am9',4],[111,'D9',4],[115,'Dm9',4],[119,'G13',5],[124,'Cmaj9',4],[128,'A7',4],[132,'Dm9',4],[136,'G13',2],[138,'Cmaj9',6]];
+  const chart=chart0.filter(r=>r[0]<124).concat([[124,'Am9',4],[128,'D9',4],[132,'Dm9',4],[136,'Fmaj9',4],[140,'G13',4]],chart0.filter(r=>r[0]>=124).map(r=>[r[0]+20,r[1],r[2]]));
+  const chordAt=bt=>{let s=chart[0];for(const r of chart)if(r[0]<=bt+1e-6)s=r;return s[1];};
+  const up=v=>v.map(n=>nm(mi(n)+12));
+  chart.forEach((r,ix)=>{const sb=r[0],sym=r[1],n=r[2];const nx=chart[ix+1];const w=CH[sym].w;
+   const pat=n<=4?[0,1,2,3]:n===5?[0,1,2,3,2]:[0,1,2,3,2,1];
+   for(let k=0;k<n;k++){let note=w[pat[k]];if(k===n-1&&nx)note=nm(mi(CH[nx[1]].w[0])-1);S.upright(b(sb+k),note,B*0.92,{gain:.85});}
+   const quiet=sb>=107&&sb<144;
+   if(!quiet){S.keys(b(sb),CH[sym].v,B*Math.min(n,4)*0.55,{gain:.36,verb:.25});if(n>=4){S.keys(b(sb+1.6),CH[sym].v,B*0.45,{gain:.22,verb:.25});S.keys(b(sb+3.6),CH[sym].v,B*0.35,{gain:.16,verb:.25});}}
+  });
+  const GR={ride:'x.xxx.xx',chick:'..x...x.',brush:'..o...o.'};
+  S.groove(0,26,GR,{swing:.6,gain:.6});
+  [104,105,105.6,106].forEach(x=>S.ride(b(x),{gain:.4}));
+  for(let k=107;k<144;k++){S.brush(b(k),{gain:.5});S.brush(b(k+0.6),{gain:.28});}
+  S.groove(36,5,GR,{swing:.6,gain:.6});
+  MODE='cue';
+  const stab=x=>{const v=up(CH[chordAt(invV(x)/B)].v);S.keys(x,[v[1],v[2],v[3]],0.45,{gain:.24,verb:.3});S.ride(x,{gain:.4});};
+  [c.keeps,c.loses,c.why,c.bleeds,TB,c.thirteen,c.twenty,c.food,TC,c.two2,TD,c.nearly,c.add,TE,c.nine,c.seventy,c.brk,c.thirteen2,c.weakest].forEach(stab);
+  for(const site of [1,10]){const n=site===1?100:102;for(let i=0;i<n;i+=2){const inf=cellInfo(site,i,c);if(inf)S.tick(inf.start,{pitch:1600+(i%20)*40+(site===10?300:0),gain:.05});}}
+  S.whoosh(TA,0.9,{gain:.2});S.whoosh(TB,1.2,{gain:.22});S.whoosh(TF,1.8,{gain:.3});S.whoosh(TH,1.8,{gain:.3});S.whoosh(TJ,1.8,{gain:.3});
+  try{S0.brush(M.at('s7','not',1),{gain:.7});}catch(e){}
+  [82.9,83.2,83.5,83.9].forEach(x=>S.tick(x,{pitch:2400,gain:.1}));
+  [[TB-0.36,7],[TB-0.3,5],[TC-0.36,4],[TC-0.3,5],[TD-0.36,6],[TD-0.3,6],[c.add-0.3,4],[c.add-0.18,3],[TE-0.36,6]].forEach(([x,n])=>S.tally(x+0.2,0.6,n,{gain:.55}));
+  [TE-0.24,c.bleeds+0.2,c.thirteen2].forEach(x=>S.drop(x,{gain:.55}));
+  S.tally(c.nine+0.2,0.6,6,{gain:.4});S.tally(c.brk+0.2,0.5,4,{gain:.35});
+  MODE='grid';S.keys(b(164),['E3','G3','B3','D4','G4'],3.2,{gain:.45,verb:.4});S.upright(b(164),'C2',3.0,{gain:.9});
+  S.ride(b(164),{gain:.75});S.ride(b(165),{gain:.3});S.ride(b(166),{gain:.25});
+  // the entry: keys and bass first, brushes from bar 2, the ride from bar 4, turning round into the puzzle's Dm9
+  const EN=[[0,'Cmaj9',4],[4,'A7',4],[8,'Dm9',4],[12,'G13',4],[16,'Cmaj9',4],[20,'Em7',4],[24,'A7',4]].filter(r=>r[0]*B<E-0.01);
+  EN.forEach((r,ix)=>{const[sb,sym,n]=r,nx=EN[ix+1]||[0,'Dm9'];const w=CH[sym].w;for(let k=0;k<n;k++){let note=w[[0,1,2,3][k]];if(k===n-1)note=nm(mi(CH[nx[1]].w[0])-1);S0.upright(b(sb+k),note,B*0.92,{gain:.8});}
+   S0.keys(b(sb),CH[sym].v,B*2.2,{gain:.34,verb:.28});S0.keys(b(sb+2.6),CH[sym].v,B*0.5,{gain:.2,verb:.28});});
+  S0.groove(2,Math.max(0,Math.round(E/(4*B))-2),{chick:'..x...x.',brush:'..o...o.'},{swing:.6});S0.groove(4,Math.max(0,Math.round(E/(4*B))-4),{ride:'x.xxx.xx'},{swing:.6});
+  const st0=x=>{S0.keys(x,['A3','C#4','G4'],0.4,{gain:.22,verb:.3});S0.ride(x,{gain:.35});};
+  [raw0('nine',1,2.0),raw0('losing',1,4.4),raw0('puzzle',1,11.4),raw0('framework',1,12.2),raw0('verdict',1,13.0)].forEach(st0);
+  for(let i=0;i<10;i++)if(i!==2)S0.tick(raw0('nine',1,2.0)+i*0.06+0.05,{pitch:1500+i*60,gain:.07}); // the nine cafés settling
+  S0.drop(raw0('losing',1,4.4),{gain:.4});
+  S0.whoosh(E,1.4,{gain:.22});
+ }
+});
+</script></body></html>

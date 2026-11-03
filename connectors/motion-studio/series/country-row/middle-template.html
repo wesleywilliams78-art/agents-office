@@ -1,0 +1,338 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<title>Norway is open</title>
+<style>
+@font-face { font-family: 'Archivo'; font-weight: 400; src: url(kit/fonts/archivo-latin-400-normal.woff2) format('woff2'); }
+@font-face { font-family: 'Archivo'; font-weight: 500; src: url(kit/fonts/archivo-latin-500-normal.woff2) format('woff2'); }
+html, body { margin: 0; background: #201E1D; overflow: hidden; }
+#stage { position: relative; width: 1080px; height: 1920px; overflow: hidden; background: #201E1D; }
+canvas { display: block; }
+</style>
+<script src="kit/motion-kit.js"></script>
+<script src="kit/sound-kit.js"></script>
+</head>
+<body>
+<div id="stage"><canvas id="c" width="1080" height="1920"></canvas></div>
+<script>
+// Franchise Entry Report, Norway: a 20 s reel. The Norwegian cross in brand colours (red field, bone cross, Norway-blue cross) is the
+// title and the end card. It opens on a question to brand owners and answers it on the same flag. The cross folds into one site, the site grows into McDonald's 100, the last 21 build a £21 tower
+// in 3D, the tower stretches into the two walls of the chicken window, and the walls fold back into the cross.
+// Every shape's state is the opening layout plus every later change, each on its own spring, so any frame comes from t alone.
+const W = 1080, H = 1920, B = n => n * .5, D2R = Math.PI / 180, CAM_D = 2600, END = 40;
+const rgb = h => [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16));
+const [RED, DEEP, WH, K, RULE, WG] = ['#EC3013', '#B6240E', '#F3F2F2', '#201E1D', '#D6D2CF', '#4A4644'].map(rgb);
+const NB = rgb('#00205B');   // Norway's flag blue, for the inner cross only
+const mixc = (a, b, k) => a.map((v, j) => v + (b[j] - v) * k);
+const css = c => `rgb(${c.map(v => Math.round(Math.max(0, Math.min(255, v)))).join(',')})`;
+const clamp01 = v => Math.max(0, Math.min(1, v));
+const SP = { f: { stiffness: 620, damping: 50 }, land: { stiffness: 520, damping: 36 }, s: { stiffness: 300, damping: 35 }, m: { stiffness: 160, damping: 26 }, slow: { stiffness: 70, damping: 17 } };
+const IMP = { stiffness: 300, damping: 22, velocity: -35.8 };          // a kick that leaves rest and comes back, peak ≈ 1
+const imp = (t, s, amp = 1) => amp * M.spring(t, s, 0, 0, IMP);
+
+// shapes in screen pixels (centre); a hidden shape has no width and no height, so it never shows while it travels
+const scr = (x, y, w, h, o = {}) => ({ X: x - W / 2, Y: H / 2 - y, Z: 0, w, h, ...o });
+const hid = (x, y) => scr(x, y, 0, 0);
+const FIELD = 0, BH = 1, BV = 2, IH = 3, IV = 4, U0 = 5, NU = 100, N = U0 + NU, TW = 21, T0 = NU - TW;
+const ORDER = [FIELD, ...Array.from({ length: NU }, (_, k) => U0 + k), BH, BV, IH, IV];
+const VX = 190, HY = 540, BT = 160, IT = 80;                            // the cross: bar centres and thickness
+const GX = 540, GY = 1000, PITCH = 72, SQ = 60;                         // the grid of 100 sites
+const cellXY = k => [GX + (k % 10 - 4.5) * PITCH, GY + (Math.floor(k / 10) - 4.5) * PITCH];
+const cell = k => { const [x, y] = cellXY(k); return scr(x, y, SQ, SQ); };
+const GROUND = -470, BLK = 100, BG = 10;
+const slot = k => ({ X: (k % 3 - 1) * (BLK + BG), Y: GROUND + BLK / 2 + Math.floor(k / 3) * (BLK + BG), Z: 0, w: BLK, h: BLK });
+const GAPS = [440, 370, 300, 240], GAPB = [28, 29, 30], GC = 960;       // the window, narrowing a step a beat
+const strips = gap => { const top = GC - gap / 2, bot = GC + gap / 2, ht = (top + 70) / 11, hb = (H + 70 - bot) / 10;
+  return j => j < 11 ? scr(540, -70 + ht * (j + .5), 1240, ht + 1.5) : scr(540, bot + hb * (j - 11 + .5), 1240, hb + 1.5); };
+const piece = j => j < 11 ? scr(-80 + 1240 / 11 * (j + .5), HY, 1240 / 11 + 2, BT) : scr(VX, -110 + 2140 / 10 * (j - 11 + .5), BT, 2140 / 10 + 2);
+
+const FLAG = () => {
+  const p = new Array(N);
+  p[FIELD] = { ...scr(540, 960, 1240, 2140), col: RED, d: 0, grad: 1 };
+  p[BH] = { ...scr(540, HY, 1240, BT), col: WH, d: 0 };
+  p[BV] = { ...scr(VX, 960, BT, 2140), col: WH, d: 0 };
+  p[IH] = { ...scr(540, HY, 1240, IT), col: NB, d: 0 };
+  p[IV] = { ...scr(VX, 960, IT, 2140), col: NB, d: 0 };
+  for (let k = 0; k < NU; k++) { const [x, y] = cellXY(k); p[U0 + k] = { ...(k < 85 ? hid(GX, GY) : hid(x, y - 320)), col: k < 85 ? WH : RED, d: 0 }; }
+  return p;
+};
+const U = (a, b) => i => i >= U0 + a && i < U0 + b;
+const keep = (p, f) => p.map((r, i) => f(r, i) || r);
+const one = () => 0;
+const KEYS = [
+  // OPEN: the cross opens out, the blue cross thins inside it; NOT EASY: it closes in tighter than it began
+  { b: 7, cfg: 's', st: one, L: p => keep(p, (r, i) => i === BH ? { h: 205 } : i === BV ? { w: 205 } : i === IH ? { h: 52 } : i === IV ? { w: 52 } : null) },
+  { b: 8, cfg: 'f', st: one, L: p => keep(p, (r, i) => i === BH ? { h: 124 } : i === BV ? { w: 124 } : i === IH ? { h: 64 } : i === IV ? { w: 64 } : null) },
+  // the cross folds into one bone square at its heart; the red ground drains into a block where the grid will be
+  { b: 9, cfg: 's', st: i => i === IH || i === IV ? 0 : .04, L: p => keep(p, (r, i) => i === BH || i === BV ? scr(VX, HY, SQ, SQ) : i === IH || i === IV ? hid(VX, HY) : null) },
+  { b: 9.5, cfg: 'm', st: i => i === FIELD ? 0 : .06, L: p => keep(p, (r, i) => i === FIELD ? scr(GX, GY, 10 * PITCH - 12, 10 * PITCH - 12) : i === BH || i === BV ? scr(GX, GY, SQ, SQ) : null) },
+  // burgers: 85 sites burst out of the square as the red block gives way to them
+  { b: 10.5, cfg: 'f', st: i => i === FIELD ? .05 : i < U0 ? 0 : (k => Math.hypot(k % 10 - 4.5, Math.floor(k / 10) - 4.5) * .028)(i - U0), L: p => keep(p, (r, i) => i < 3 ? hid(GX, GY) : U(0, 85)(i) && cell(i - U0)) },
+  // fifteen more drop in, red: 85 to 100
+  { b: 13, cfg: 'land', st: i => (i - U0 - 85) * .03, L: p => keep(p, (r, i) => U(85, 100)(i) && cell(i - U0)) },
+  // the sites drain away, all but the last 21, which turn red
+  { b: 17, cfg: 'f', st: i => (k => (k % 10 + Math.floor(k / 10)) * .012)(i - U0), L: p => keep(p, (r, i) => U(0, T0)(i) ? (k => { const [x, y] = cellXY(k); return hid(x, y); })(i - U0) : U(T0, 85)(i) && { col: RED }) },
+  // £21: the 21 build a tower, a row of three on every half beat, in 3D
+  ...[0, 1, 2, 3, 4, 5, 6].map(r => ({ b: 18 + r * .5, cfg: 'f', st: i => (i - U0 - T0) % 3 * .03, L: p => keep(p, (q, i) => U(T0 + 3 * r, T0 + 3 * r + 3)(i) && { ...slot(i - U0 - T0), d: BLK }) })),
+  // the tower flattens as the camera comes round to the front; the red waits as a line where the window will open
+  { b: 24.5, cfg: 'f', st: one, L: p => keep(p, (r, i) => i === FIELD ? scr(540, GC, 1240, 0) : U(T0, NU)(i) && { d: 0 }) },
+  // the window: the 21 stretch into two bone walls and the red opens between them
+  { b: 25, cfg: 'm', st: i => i === FIELD ? .04 : Math.abs(i - U0 - T0 - 10) * .012, L: p => keep(p, (r, i) => i === FIELD ? scr(540, 960, 1240, 2140) : U(T0, NU)(i) && { ...strips(GAPS[0])(i - U0 - T0), col: WH }) },
+  // it narrows towards 2027–28
+  ...GAPB.map((b, n) => ({ b, cfg: 's', st: one, L: p => keep(p, (r, i) => U(T0, NU)(i) && strips(GAPS[n + 1])(i - U0 - T0)) })),
+  // the strongest moment: the walls fold into the bone cross, the blue cross grows out of its heart, the flag is back
+  { b: 31, cfg: 'm', st: i => (j => j < 11 ? j * .018 : (j - 11) * .018 + .05)(i - U0 - T0), L: p => keep(p, (r, i) => U(T0, NU)(i) && piece(i - U0 - T0)) },
+  { b: 31.5, cfg: 's', st: i => i === IV ? .05 : 0, L: p => keep(p, (r, i) => i === IH ? scr(540, HY, 1240, IT) : i === IV ? scr(VX, 960, IT, 2140) : null) },
+];
+const CAM_KEYS = [
+  { b: 17.5, cfg: 'slow', L: { pitch: 24, yaw: -30, ty: 120 } },
+  { b: 23.5, cfg: 's', L: { pitch: 0, yaw: 0, ty: 0 } },
+];
+const PROPS = ['X', 'Y', 'Z', 'w', 'h', 'd'];
+let LAYOUTS = [], CAMS = [];
+function build() {
+  let prev = FLAG(); LAYOUTS = [prev];
+  for (const k of KEYS) { const lay = k.L(prev); const next = lay.map((r, i) => ({ ...prev[i], ...r, d: r.d ?? prev[i].d, col: r.col || prev[i].col })); LAYOUTS.push(next); prev = next; }
+  let c = { pitch: 0, yaw: 0, ty: 0 }; CAMS = [c];
+  for (const k of CAM_KEYS) { c = { ...c, ...k.L }; CAMS.push(c); }
+}
+function shapes(t) {
+  const out = LAYOUTS[0].map(p => ({ ...p, cp: 0 }));
+  KEYS.forEach((k, n) => {
+    const A = LAYOUTS[n], Bk = LAYOUTS[n + 1];
+    for (let i = 0; i < N; i++) {
+      const a = A[i], b = Bk[i]; let moved = false;
+      for (const q of PROPS) if (b[q] !== a[q]) { moved = true; break; }
+      const recol = b.col.some((v, j) => v !== a.col[j]); if (!moved && !recol) continue;
+      const s = M.spring(t, B(k.b) + k.st(i), 0, 1, SP[k.cfg]); if (s === 0) continue;
+      if (moved) for (const q of PROPS) out[i][q] += (b[q] - a[q]) * s;
+      if (recol) { const p = clamp01(s); if (p >= .999) { out[i].col = b.col; out[i].cp = 0; } else { out[i].col = a.col; out[i].col2 = b.col; out[i].cp = p; } }   // a hard-edged wipe, never a blend
+    }
+  });
+  if (t >= B(14) && t < B(17)) { const f = 1 - .16 * M.pulse(t, { every: 1, decay: 9, from: 14 }); for (let i = U0; i < N; i++) { out[i].w *= f; out[i].h *= f; } }   // the grid pumps on the beat
+  return out;
+}
+function camera(t) {
+  const c = { ...CAMS[0] };
+  CAM_KEYS.forEach((k, n) => { const s = M.spring(t, B(k.b), 0, 1, SP[k.cfg]); if (s) for (const q in k.L) c[q] += (CAMS[n + 1][q] - CAMS[n][q]) * s; });
+  c.yaw += 360 * M.p(t, B(21.5), 1, 'expo.inOut');                    // one full turn round the tower
+  return c;
+}
+
+const cv = document.getElementById('c'), ctx = cv.getContext('2d'), LOGO = new Image();
+function project(cam) {
+  const cy = Math.cos(cam.yaw * D2R), sy = Math.sin(cam.yaw * D2R), cp = Math.cos(cam.pitch * D2R), sp = Math.sin(cam.pitch * D2R);
+  return ([x, y, z]) => { y -= cam.ty; const x1 = x * cy + z * sy, z1 = -x * sy + z * cy, y2 = y * cp - z1 * sp, z2 = y * sp + z1 * cp, s = CAM_D / Math.max(60, CAM_D - z2); return [W / 2 + x1 * s, H / 2 - y2 * s, z2]; };
+}
+const FACES = [[[4, 5, 6, 7], [0, 0, 1]], [[1, 0, 3, 2], [0, 0, -1]], [[5, 1, 2, 6], [1, 0, 0]], [[0, 4, 7, 3], [-1, 0, 0]], [[7, 6, 2, 3], [0, 1, 0]], [[0, 1, 5, 4], [0, -1, 0]]];
+function shade(c, n, cam) {   // the face turned to the lens is the pure colour; sides darken towards ink, tops lift towards bone
+  const cy = Math.cos(cam.yaw * D2R), sy = Math.sin(cam.yaw * D2R), cp = Math.cos(cam.pitch * D2R), sp = Math.sin(cam.pitch * D2R);
+  const x1 = n[0] * cy + n[2] * sy, z1 = -n[0] * sy + n[2] * cy, y2 = n[1] * cp - z1 * sp;
+  let k = c; if (n[1] > 0) k = mixc(k, WH, .2 * n[1] * Math.max(0, y2));
+  const dark = (x1 > 0 ? .24 * x1 : .4 * -x1) + .55 * Math.max(0, -y2);
+  return dark > 0 ? mixc(k, K, Math.min(.8, dark)) : k;
+}
+function fill(c, h, grad) {   // the red ground runs from red into deep red; every other shape is flat
+  if (!grad || h < 20) return css(c);
+  const g = ctx.createLinearGradient(0, -h / 2, 0, h / 2); g.addColorStop(0, css(c)); g.addColorStop(1, css(mixc(c, DEEP, .6))); return g;
+}
+function drawShapes(st, cam) {
+  const flat = Math.abs(cam.ty) < .5 && Math.abs(cam.pitch) < .02 && Math.abs(Math.sin(cam.yaw * D2R)) < 1e-4 && Math.cos(cam.yaw * D2R) > 0 && st.every(b => b.d < .5 && Math.abs(b.Z) < .5);
+  if (flat) {
+    for (const i of ORDER) {
+      const b = st[i]; if (b.w < .3 || b.h < .3) continue;
+      ctx.save(); ctx.translate(W / 2 + b.X, H / 2 - b.Y); ctx.fillStyle = fill(b.col, b.h, b.grad); ctx.fillRect(-b.w / 2, -b.h / 2, b.w, b.h);
+      if (b.cp > 0) { ctx.beginPath(); ctx.rect(-b.w / 2, -b.h / 2, b.w, b.h); ctx.clip(); ctx.fillStyle = fill(b.col2, b.h, b.grad); ctx.fillRect(-b.w / 2 - 1, b.h / 2 - b.cp * b.h, b.w + 2, b.cp * b.h + 1); }
+      ctx.restore();
+    }
+    return;
+  }
+  const P = project(cam), boxes = [];
+  for (const i of ORDER) {
+    const b = st[i]; if (b.w < .3 || b.h < .3) continue;
+    const dd = Math.max(b.d, .01), cs = [];
+    for (const z of [-1, 1]) for (const [x, y] of [[-1, -1], [1, -1], [1, 1], [-1, 1]]) cs.push([b.X + x * b.w / 2, b.Y + y * b.h / 2, b.Z + z * dd / 2]);
+    boxes.push({ b, pc: cs.map(P), depth: P([b.X, b.Y, b.Z])[2] });
+  }
+  boxes.sort((a, c) => a.depth - c.depth);
+  for (const { b, pc } of boxes) for (const [f, n] of FACES) {
+    if (b.d < .5 && n[2] === 0) continue;
+    const q = f.map(k => pc[k]); let area = 0;
+    for (let k = 0; k < 4; k++) { const a = q[k], c = q[(k + 1) % 4]; area += a[0] * c[1] - c[0] * a[1]; }
+    if (area >= 0) continue;
+    ctx.fillStyle = css(shade(b.cp >= .5 ? b.col2 : b.col, n, cam)); ctx.beginPath(); ctx.moveTo(q[0][0], q[0][1]); for (let k = 1; k < 4; k++) ctx.lineTo(q[k][0], q[k][1]); ctx.closePath(); ctx.fill();
+  }
+}
+
+// type: Archivo; a line rolls in word by word through its own window and out the same way; *word* takes the key colour
+const wOf = (text, size, weight = 500, spacing = -size / 40) => { ctx.font = `${weight} ${size}px Archivo`; ctx.letterSpacing = spacing + 'px'; return ctx.measureText(text.replace(/\*/g, '')).width; };
+const fitMin = (lines, maxW, cap) => Math.min(cap, ...lines.map(l => maxW / (wOf(l, 100) / 100)));
+function txt(t, o) {
+  const { inB, outB = null, weight = 500, col = WH, key = RED, align = 'left', alpha = 1, stagger = .06 } = o;
+  if (t < B(inB) - .001 || (outB !== null && t > B(outB) + .6)) return;
+  const size = typeof o.size === 'function' ? o.size(t) : o.size, spacing = o.spacing ?? -size / 40;
+  ctx.font = `${weight} ${size}px Archivo`; ctx.letterSpacing = spacing + 'px'; ctx.textAlign = 'left'; ctx.textBaseline = 'alphabetic';
+  const words = o.text.split(' ').map(w => ({ w: w.replace(/\*/g, ''), k: w.includes('*') })), space = ctx.measureText(' ').width, ws = words.map(w => ctx.measureText(w.w).width), total = ws.reduce((a, b) => a + b, 0) + space * (words.length - 1);
+  let [x, y] = typeof o.at === 'function' ? o.at(t) : o.at;
+  x = align === 'left' ? x : align === 'center' ? x - total / 2 : x - total;
+  const dy = o.dy ? o.dy(t) : 0;
+  ctx.save(); ctx.beginPath(); ctx.rect(x - 40, y - size * .98 + dy, total + 80, size * 1.3); ctx.clip(); ctx.globalAlpha = alpha;
+  let li = 0;
+  words.forEach((w, k) => {
+    const inn = 1 - M.spring(t, B(inB) + k * stagger, 0, 1, SP.f), out = outB === null ? 0 : M.p(t, B(outB) + k * stagger * .6, .26, 'expo.in');
+    if (out < 1 && inn < 1) {
+      ctx.fillStyle = css(w.k ? key : col);
+      const yy = y + dy + inn * size * 1.2 - out * size * 1.2;
+      if (o.roll == null) ctx.fillText(w.w, x, yy);
+      else for (let c = 0; c < w.w.length; c++) {   // a rigid roll: each letter leaves upward on the spring that brings its copy up from below
+        const r = M.spring(t, B(o.roll) + (li + c) * .028, 0, 1, SP.f) * size * 1.25, cx = x + ctx.measureText(w.w.slice(0, c)).width;
+        if (r < size * 1.249) ctx.fillText(w.w[c], cx, yy - r);
+        if (r > .5) ctx.fillText(w.w[c], cx, yy - r + size * 1.25);
+      }
+    }
+    li += w.w.length + 1; x += ws[k] + space;
+  });
+  ctx.restore();
+}
+function rule(t, x, y, w, col, inB, outB = null, th = 8) {   // a rule under a key word, wiped in from the left and out to the right
+  const k = M.p(t, B(inB), .35, 'expo.out'), off = outB === null ? 0 : M.p(t, B(outB), .26, 'expo.in');
+  if (k <= 0 || off >= 1) return;
+  ctx.fillStyle = css(col); ctx.fillRect(x + w * off, y, w * Math.max(0, k - off), th);
+}
+
+function drawLogo(t) {
+  const lo = t < B(24) ? -150 * M.p(t, B(9), .3, 'expo.in') : -150 * (1 - M.spring(t, B(32), 0, 1, SP.f)); if (lo <= -149) return;
+  const lw = 230, lh = lw * 218 / 804, x = 330, y = 290, pop = t > B(24) ? -14 * imp(t, B(36)) - 10 * imp(t, B(38)) : 0;
+  ctx.save(); ctx.beginPath(); ctx.rect(x - 20, y - 20, lw + 40, lh + 40); ctx.clip(); ctx.drawImage(LOGO, 64, 64, 804, 218, x, y + lo + pop, lw, lh); ctx.restore();
+}
+// McDonald's: 85 sites, then 15 more as each red one lands
+function drawCount(t) {
+  if (t < B(11.3) - .01 || t > B(16.4) + .6) return;
+  let n = 85; for (let j = 0; j < 15; j++) if (M.spring(t, B(13) + j * .03, 0, 1, SP.land) > .5) n++;
+  const y = 1562, size = 96, w85 = wOf('85', size), ax = 186 + w85 + 34, aw = 96;
+  txt(t, { text: '85', at: [186, y], size, inB: 11.3, outB: 16.4 });
+  const a = M.p(t, B(11.7), .35, 'expo.out') * (1 - M.p(t, B(16.4), .26, 'expo.in'));
+  if (a > 0) { ctx.save(); ctx.globalAlpha = a; ctx.fillStyle = css(RULE); ctx.fillRect(ax, y - 38, aw * a - 14, 6); ctx.beginPath(); ctx.moveTo(ax + aw * a, y - 35); ctx.lineTo(ax + aw * a - 24, y - 53); ctx.lineTo(ax + aw * a - 24, y - 17); ctx.closePath(); ctx.fill(); ctx.restore(); }
+  txt(t, { text: '*' + n + '*', at: [ax + aw + 34, y], size, inB: 11.9, outB: 16.45, key: n > 85 ? RED : WH, dy: t => -18 * (n > 85 ? imp(t, B(13) + (n - 86) * .03 + .06) : 0) });
+}
+// £21 an hour: one pound a block, counted as the rows land
+function drawPounds(t) {
+  if (t < B(18) || t > B(24) + .6) return;
+  let n = 0; for (let r = 0; r < 7; r++) if (M.spring(t, B(18 + r * .5), 0, 1, SP.f) > .5) n += 3;
+  const size = SN, x0 = 540 - wOf('£21/hr', size) / 2, y = 610;
+  txt(t, { text: '£' + n, at: [x0, y], size, inB: 18, outB: 24, dy: t => -22 * imp(t, B(18 + Math.max(0, n / 3 - 1) * .5) + .08) });
+  txt(t, { text: '/hr', at: [x0 + wOf('£21', size) + 4, y], size, col: RED, inB: 21.5, outB: 24.05 });
+}
+// the timeline under the window: now to 2027–28, a marker stepping along as the window narrows
+const gapAt = t => GAPS[0] + GAPB.reduce((a, b, n) => a + (GAPS[n + 1] - GAPS[n]) * M.spring(t, B(b), 0, 1, SP.s), 0);
+function drawTimeline(t) {
+  if (t < B(27.2) || t > B(31.6)) return;
+  const y = GC + gapAt(t) / 2 + 250, x0 = 190, x1 = 890, draw = M.p(t, B(27.2), .45, 'expo.out'), off = M.p(t, B(31), .3, 'expo.in');
+  ctx.save(); ctx.beginPath(); ctx.rect(x0 - 40 + (x1 - x0 + 120) * off, y - 60, (x1 - x0 + 120) * draw, 140); ctx.clip();
+  ctx.fillStyle = css(K); ctx.fillRect(x0, y - 2, x1 - x0, 4); ctx.fillRect(x0 - 2, y - 16, 4, 32); ctx.fillRect(x1 - 2, y - 16, 4, 32);
+  ctx.font = '500 34px Archivo'; ctx.letterSpacing = '2px'; ctx.textBaseline = 'alphabetic';
+  ctx.textAlign = 'left'; ctx.fillStyle = css(WG); ctx.fillText('NOW', x0, y + 58);
+  ctx.textAlign = 'right'; ctx.fillStyle = css(K); ctx.fillText('2027–28', x1, y + 58);
+  const prog = GAPB.reduce((a, b) => a + M.spring(t, B(b), 0, 1, SP.s) / 3, 0), mx = x0 + (x1 - x0) * prog;
+  ctx.fillStyle = css(RED); ctx.fillRect(mx - 17, y - 17, 34, 34);
+  ctx.restore();
+}
+
+// the ask: a bone button wiped open on the final hit
+function drawAsk(t) {
+  const k = M.spring(t, B(36), 0, 1, SP.f); if (k <= .002) return;
+  const label = 'DM US “NORWAY”', size = 42, padX = 32, h = 88, x = 330, y = TE + SE * 2.04 + 186, w = wOf(label, size, 500, 2) + padX * 2;
+  ctx.save(); ctx.beginPath(); ctx.rect(x, y, w * k, h); ctx.clip();
+  ctx.fillStyle = css(WH); ctx.fillRect(x, y, w, h);
+  ctx.font = `500 ${size}px Archivo`; ctx.letterSpacing = '2px'; ctx.textAlign = 'left'; ctx.textBaseline = 'alphabetic'; ctx.fillStyle = css(K);
+  ctx.fillText(label, x + padX, y + h / 2 + size * .36);
+  ctx.restore();
+}
+
+let ST, SQN, SB, SN, SD, SW, SU, SE;   // type sizes, fitted to the safe area once the font is in
+const TA = 950, TQ = 920, TE = 860;    // first baselines of the answer, the question and the end card
+function texts(t) {
+  // the question (frame 0 is this card, finished), then the answer on the same flag
+  txt(t, { text: 'FRANCHISING IN NORWAY', at: [330, 404], size: 28, spacing: 4, alpha: .9, inB: -4, outB: 9 });
+  ['WANT TO', 'GROW YOUR', 'BRAND IN', '*NORWAY?*'].forEach((l, n) => txt(t, { text: l, at: [330, TQ + SQN * 1.02 * n], size: SQN, key: NB, inB: -4, outB: 5 + n * .12, roll: 1 + n }));
+  rule(t, 330, TQ + SQN * 1.02 * 3 + 22, wOf('NORWAY?', SQN), NB, 4, 5.36);
+  txt(t, { text: 'NORWAY', at: [330, TA], size: ST, inB: 5.5, outB: 9 });
+  txt(t, { text: 'IS OPEN.', at: [330, TA + ST * 1.02], size: ST, inB: 5.9, outB: 9.05, roll: 7 });
+  txt(t, { text: 'NOT EASY.', at: [330, TA + ST * 2.04], size: ST, col: NB, inB: 6.3, outB: 9.1, roll: 8 });
+  rule(t, 330, TA + ST * 2.04 + 22, wOf('NOT EASY.', ST), NB, 8, 9.1);
+  // burgers
+  txt(t, { text: 'BURGERS', at: [186, 430], size: SB, inB: 10.5, outB: 16.4 });
+  txt(t, { text: 'ARE *TAKEN.*', at: [186, 430 + SB * 1.02], size: SB, inB: 10.9, outB: 16.5 });
+  rule(t, 186 + wOf('ARE ', SB), 430 + SB * 1.02 + 20, wOf('TAKEN.', SB), RED, 14, 16.5);
+  txt(t, { text: 'McDonald’s in Norway', at: [186, 1444], size: 40, weight: 400, spacing: 0, col: RULE, inB: 11.5, outB: 16.4 });
+  drawCount(t);
+  // staff cost
+  txt(t, { text: 'STAFF COST, ALL IN (ESTIMATE)', at: [540, 330], size: 40, spacing: 4, col: RED, align: 'center', inB: 18.5, outB: 24 });
+  drawPounds(t);
+  // chicken
+  txt(t, { text: 'CHICKEN IS THE', at: t => [540, GC - gapAt(t) / 2 - 64], size: SD, col: K, align: 'center', inB: 25.6, outB: 31 });
+  const sw = t => Math.min(SW, gapAt(t) * .52);
+  txt(t, { text: 'WINDOW.', at: t => [540, GC + sw(t) * .36], size: sw, align: 'center', inB: 26, outB: 31.05 });
+  txt(t, { text: 'UNTIL KFC SCALES', at: t => [540, GC + gapAt(t) / 2 + 118], size: SU, col: K, align: 'center', inB: 27, outB: 31 });
+  drawTimeline(t);
+  // end card: the flag again, and what WRW Hospitality does about it
+  txt(t, { text: 'WRW HOSPITALITY', at: [330, 404], size: 28, spacing: 4, alpha: .9, inB: 32.2 });
+  ['LET’S TAKE', 'YOUR BRAND', 'TO *NORWAY.*'].forEach((l, n) => txt(t, { text: l, at: [330, TE + SE * 1.02 * n], size: SE, key: NB, inB: 32.5 + n * .5, roll: n === 2 ? 36 : null }));
+  rule(t, 330 + wOf('TO ', SE), TE + SE * 2.04 + 22, wOf('NORWAY.', SE), NB, 36);
+  txt(t, { text: 'Entry plans, unit economics and', at: [330, TE + SE * 2.04 + 88], size: 38, weight: 400, spacing: 0, inB: 34.5 });
+  txt(t, { text: 'franchise-ready operations.', at: [330, TE + SE * 2.04 + 138], size: 38, weight: 400, spacing: 0, inB: 34.8 });
+  drawAsk(t);
+}
+
+M.scene({
+  width: W, height: H, fps: 60, subframes: 3, duration: END * .5, bpm: 120, cuts: [1, 5, 9, 10.5, 17.5, 25, 31, 36],
+  async setup() {
+    LOGO.src = 'kit/logos/wrw-mark-white.png'; await LOGO.decode();
+    await Promise.all([document.fonts.load('500 100px Archivo'), document.fonts.load('400 40px Archivo')]);
+    ST = fitMin(['NORWAY', 'IS OPEN.', 'NOT EASY.'], 640, 132); SQN = fitMin(['WANT TO', 'GROW YOUR', 'BRAND IN', 'NORWAY?'], 640, 124); SB = fitMin(['BURGERS', 'ARE TAKEN.'], 708, 140);
+    SN = fitMin(['£21/hr'], 880, 250); SD = fitMin(['CHICKEN IS THE'], 880, 118); SW = fitMin(['WINDOW.'], 880, 230);
+    SU = fitMin(['UNTIL KFC SCALES'], 880, 78); SE = fitMin(['LET’S TAKE', 'YOUR BRAND', 'TO NORWAY.'], 640, 124);
+    build();
+  },
+  render(t) {
+    if (!LAYOUTS.length) return;
+    // the camera is alive between the beats: a slow breathing zoom and a drift a quarter-cycle out of step, still at frame 0 and
+    // the end; it punches in on the cuts that matter
+    const env = M.p(t, B(1), B(2), 'sine.inOut') * (1 - M.p(t, B(37.5), B(1.4), 'sine.inOut')), w = 2 * Math.PI * t / 3.75;
+    const z = 1 + .014 * Math.sin(w) * env + .015 * imp(t, B(5)) + .02 * imp(t, B(10.5)) + .02 * imp(t, B(25)) + .045 * imp(t, B(31)) + .03 * imp(t, B(36));
+    const px = 10 * Math.cos(w) * env, py = 6 * Math.cos(w * .5) * env;
+    ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.globalAlpha = 1; ctx.fillStyle = css(K); ctx.fillRect(0, 0, W, H);
+    ctx.setTransform(z, 0, 0, z, W / 2 * (1 - z) + px, H / 2 * (1 - z) + py);
+    const st = shapes(t), cam = camera(t);
+    drawShapes(st, cam);
+    drawLogo(t);
+    texts(t);
+  },
+  score(S) {
+    const b = S.beat, prog = [['A3', 'C4', 'E4'], ['F3', 'A3', 'C4'], ['C3', 'E3', 'G3'], ['G3', 'B3', 'D4']], roots = ['A1', 'F1', 'C2', 'G1'];
+    for (let bar = 0; bar < 10; bar++) {
+      S.pad(S.bar(bar), prog[bar % 4], S.bar(1) * 1.02, { gain: .16 });
+      for (let e = 0; e < 8; e++) S.bass(S.bar(bar) + e * S.step(2), roots[bar % 4], .2, { gain: bar < 1 ? .3 : .5 });
+    }
+    for (let n = 0; n < END; n++) {
+      S.kick(b(n), { gain: n % 4 === 0 ? 1 : .86 }); if (n % 2 === 1) S.clap(b(n), { gain: .45 }); S.hat(b(n + .5), { gain: .4 });
+      if (n >= 27 && n < 31) { S.hat(b(n + .25), { gain: .22 }); S.hat(b(n + .75), { gain: .22 }); }
+    }
+    S.stamp(b(0), { gain: .5 });
+    for (const n of [1, 5, 9, 10.5, 17.5, 25, 32]) S.impact(b(n), { gain: .6 });
+    S.impact(b(31), { gain: 1 }); S.impact(b(36), { gain: .9 }); S.stamp(b(36), { gain: .6 });
+    S.riser(b(31), 2, { gain: .6 });                                                         // into the fold back to the flag
+    for (const n of [5, 9, 16.5, 25, 31]) S.whoosh(b(n), .4, { gain: .45 });
+    S.whoosh(b(23.5), 1, { gain: .4 });                                                      // the turn round the tower
+    [['E5', 1], ['G5', 2], ['A5', 3], ['C6', 4]].forEach(([nt, n]) => S.pluck(b(n), nt, .45, { gain: .45 }));   // the question
+    [['A4', 5.5], ['E5', 7], ['A5', 8]].forEach(([nt, n]) => S.pluck(b(n), nt, .45, { gain: .45 }));           // the answer
+    S.tally(b(13), .5, 15, { gain: .4 });                                                    // 85 to 100
+    for (let r = 0; r < 7; r++) S.tick(b(18 + r * .5), { pitch: 1700 + r * 220 });         // a row of pounds
+    S.coin(b(21.5), { pitch: 3200 }); S.pluck(b(21.5), 'A5', .6, { gain: .5 });
+    S.stamp(b(26), { gain: .5 }); S.pluck(b(27), 'E5', .5, { gain: .4 });
+    GAPB.forEach((n, k) => S.tick(b(n), { pitch: 2600 - k * 300 }));                         // the window narrowing
+    [['A4', 32.5], ['C5', 33], ['E5', 33.5], ['G5', 34.5], ['A5', 35]].forEach(([nt, n]) => S.pluck(b(n), nt, .4, { gain: .4 }));
+    S.pluck(b(38), 'E6', .6, { gain: .3 });
+  },
+});
+</script>
+</body></html>

@@ -1,48 +1,40 @@
 # Motion brand: WRW Consulting / The Art of Operations
 
-Read this before writing any animation, video or motion graphic. Source of truth is the brain skill `Agents Office/skills/brand-visual-system` (`SKILL.md` + `reference.md`); if they change, this file follows them. Navy `#13274d` and orange `#ff914d` are retired. Never use them.
+Read this before writing any animation, video or motion graphic. The brand is its **palette, its fonts and its logo**. Everything else is craft, led by the brief and the prompt. On 27 Oct 2026 Wesley lifted the look rules that were restricting motion quality: no gradients, no circles, no rounded corners, flush left only, headlines never bold. For motion, this file overrides the brain skill `Agents Office/skills/brand-visual-system` on those points. The brain skill still governs documents. Navy `#13274d` and orange `#ff914d` are retired and are not brand colours.
 
 ## Idea
-Modernist, minimal, with an implied nod to classical Chinese ink landscapes: flat colour grounds, soft curved mountain ridges, one small red seal, large light serif type set flush left. Calm, strategic, personal. Never loud or decorated. No brushstrokes, dragons, lanterns or calligraphy fonts.
+Modernist, confident, with a nod to classical Chinese ink landscapes when the theme calls for it: ridges, mist, ink. Calm, strategic, personal in tone; the motion can be as lively and rich as the piece needs.
 
 ## Colour
 | Role | Hex | Use |
 |---|---|---|
-| Bone | `#F3F2F2` | Default ground; type on red/ink |
-| Ink | `#201E1D` | Headlines on bone, dark ground, mountain fill |
-| Red | `#EC3013` | Seal, kickers, numerals, rules, the one red ground |
-| Deep red | `#B6240E` | Small red text on bone |
-| Warm grey | `#4A4644` | Body copy on bone |
-| Light rule grey | `#D6D2CF` | Dividers |
+| Bone | `#F3F2F2` | Light ground; type on red or ink |
+| Ink | `#201E1D` | Dark ground; headlines on bone |
+| Red | `#EC3013` | The accent: kickers, numerals, rules, a red ground |
+| Deep red | `#B6240E` | Darker red: shading, small red text on bone |
+| Warm grey | `#4A4644` | Body copy on bone, quiet shapes |
+| Light rule grey | `#D6D2CF` | Dividers, light shapes |
 
-Grounds by purpose: **bone** = default; **red** = a statement (cover, section divider, one number to land); **ink** = serious or reflective (closing, risk).
+**Variants are welcome** when a piece needs more colour than bone, ink and red: tints and shades between these six, such as red into bone (a light coral) or red into deep red, and **gradients built from them**, such as red to deep red along a bar. Stay inside these hues and nothing outside them.
 
 ## Type
-- Newsreader (serif): headlines, titles, numerals. Light 300 for headlines, Regular 400 for small titles.
-- Archivo (sans): kickers in ALL CAPS, letter-spacing about .22em, and body copy.
+- Newsreader (serif) and Archivo (sans) are the brand fonts. Use either, in any weight on hand (Newsreader 300; Archivo 400 and 500), in any case or alignment the piece needs.
+- When a brief asks for one typeface, use Archivo.
 - Curly quotes only.
 
-## Mountains
-Two or three layered smooth-bezier ridges rising from the bottom edge. Back ridges higher and paler, front ridge lowest and most solid. Flat fills, no outline, texture, gradient or trees. Ink on bone; white on red (back ~30%, front ~92% opacity); bone on ink at 7-16% (faint mist). No suns, moons, circles or arcs.
+## Mountains (when the theme uses them)
+Two or three layered smooth-bezier ridges rising from the bottom edge: back ridges higher and paler, the front ridge lowest and most solid. Ink on bone; white on red (back ~30%, front ~92% opacity); bone on ink at 7–16% (faint mist).
 
-## Seal
-Small square, sharp corners, top-left margin, with 略 centred (decided 9 Oct, confirmed 10 Oct 2026; 兵 is retired). Newsreader has no Chinese glyphs, so never set it in Newsreader: use `assets/brand/seal-red.svg` / `seal-bone.svg` (the glyph is a vector path), or Noto Serif SC Light where a font is needed. Red square with bone character on bone and ink grounds; bone square with red character on red. The only Eastern motif. Small, singular, never repeated on a screen.
+## Logo
+The WRW logo. Use the white mark (`kit/logos/wrw-mark-white.png`) on red and ink and the ink mark (`kit/logos/wrw-mark-ink.png`) on bone; the tiles `wrw-logo-red-square.png` / `wrw-logo-ink-square.png` where a tile is wanted. Top-left is the usual place on a working frame. On an end title it may lock up with the title. Keep it crisp at 120 px wide or more. **Never draw 略 or 兵**: `assets/brand/seal-*.svg` are retired and must not appear in any video. **One exception (Wesley, 30 Oct 2026):** the Art of Operations Instagram reels keep the 略 (strategy) seal on their end card, because it is in theme with the book; the reel studio draws it.
 
-## Layout rules
-- Flush left always. Never centre text.
-- Square corners. No shadows, gradients, glows, textures, rounded corners.
-- Red used sparingly. Headlines never bold.
-- No stock photos, icons, emoji.
-- Generous margins (about 8%).
+## Motion
+- Everything that pops, lands, drops or settles moves on real springs (`M.spring`), tuned to the piece: lively presets for energy, near-critical ones for a firm, expensive feel. The engine refuses CSS motion and fake bounce curves.
+- Several things moving at once is fine; stagger 80–150 ms so it reads as choreography. Hold a key line long enough to read.
+- Colour changes are crafted transitions, never a bang (owner's rule, 25 Oct 2026). When the ground changes colour, take half a second to two seconds and let it grow out of the piece (a tide of colour, ink bleeding, mist clearing, shapes widening to become the new ground), landing on the beat with the sound carrying it. Default crossfades read as cheap. The Motion Studio engine fails a ground change inside two frames.
+- The theme is the rule, not the content: tell the story with new imagery, type and structure.
+- Side graphics should look like a professional motion editor made them. Wesley rejected a hand-drawn dragon as amateur. Geometry, charts, grids, 3D, morphing shapes and kinetic type all work. For The Art of Operations, the 6×5 grid of square "sites" building in a diagonal wave (see `videos/art-of-operations-title`) is a proven side graphic.
 
-## Motion (owner confirmed: lively, bouncy, lots going on; the calm is in the look, not the movement)
-- Visuals stay strictly on-brand (palette, flat shapes, square corners, flush left). Motion can be energetic.
-- Bounce is wanted: `back.out(1.4-2.5)` for pops, `elastic.out(1,.5)` for bars and stamps, `bounce.out` for dropped numerals. Smooth moves use `power4.out` / `power4.inOut`.
-- Several things moving at once is fine, but stagger 80-150ms so it reads as choreography. Hold the key line 1s+ so it can be read.
-- Scenes change by hard colour wipes (bone, red, ink panels sliding up), not crossfades.
-- Graphics allowed (all flat, square, no outlines on mountains): layered ridges that rise with overshoot and drift, ruler ticks, squares that drop and land, hairline rules that draw on, bar charts, count-up numerals, bordered square cards, the seal stamping in (scale + slight rotation).
-- Mask-up text reveals line by line or word by word, with overshoot.
-- No dragons or illustrated characters: the owner rejected a hand-drawn dragon as amateur. Side graphics must look like a professional motion editor made them: geometric, on-grid, and tied to the book's meaning.
-- Preferred side graphic: a 6x5 grid of square "sites" that builds in a diagonal wave, fills in sequence, and ends on one accent cell (see `videos/art-of-operations-title`). Square cells echo the seal.
-- Decoration should always tie to the book or the brand; the earlier ruler-ticks-and-falling-square had no meaning and was removed.
-- Still never: circles, suns, gradients, shadows, glows, icons, emoji, rounded corners, brush textures.
+## Instagram reels (Art of Operations)
+- 15 s, 9:16, English then Chinese, text and a single figure centred. Grid plan: three rows, one colour each: black, white (bone), red. See memory `instagram-reel-format`.
+- LTX footage must be graded to the brand palette (neutral ink and grey, one red accent) before use; never ship the raw sepia cast.

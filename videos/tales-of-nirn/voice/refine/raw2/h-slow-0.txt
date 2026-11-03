@@ -1,0 +1,14 @@
+HTTP/1.1 100 Continue
+
+HTTP/1.1 200 OK
+date: Mon, 02 Nov 2026 14:55:28 GMT
+server: uvicorn
+x-audio-id: e396b12e
+x-gen-time: 13.05
+x-audio-path: e396b12e.wav
+x-seed: 53
+x-audio-duration: 11.04
+content-length: 1059884
+content-type: audio/wav
+x-omnivoice-backend: 0.5.6
+
