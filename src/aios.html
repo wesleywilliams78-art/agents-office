@@ -274,6 +274,12 @@
   .dTease { display: flex; align-items: center; justify-content: space-between; gap: 14px; flex-wrap: wrap; margin: 0 0 16px; padding: 12px 16px; border-radius: 14px; background: var(--soft); font-size: 12.5px; }
   .rvIns { list-style: none; margin: 0 0 16px; padding: 12px 16px; border-radius: 14px; background: var(--soft); display: grid; gap: 7px; font-size: 12.5px; line-height: 1.5; }
   .rvIns li { position: relative; padding-left: 16px; } .rvIns li::before { content: ''; position: absolute; left: 0; top: .55em; width: 7px; height: 7px; border-radius: 50%; background: var(--faint); }
+  .fbCard { margin: 0 0 18px; padding: 16px 18px; border-radius: 14px; background: var(--soft); }
+  .fbCard .sHead { margin-bottom: 10px; } .fbCols { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+  .fbCard h4 { margin: 14px 0 8px; font-size: 9.5px; letter-spacing: .1em; text-transform: uppercase; color: var(--faint); font-weight: 600; } .fbCols h4 { margin-top: 0; }
+  .fbCard .rvIns { margin: 0; padding: 0; background: none; font-size: 12px; } .fbCard .dMix { margin-bottom: 4px; }
+  .fbRecs { margin: 0; padding-left: 18px; display: grid; gap: 6px; font-size: 12.5px; line-height: 1.5; } .fbRecs a { color: var(--ink); }
+  @media (max-width: 860px) { .fbCols { grid-template-columns: 1fr; } }
   .rvIns li.up::before { background: var(--ok); } .rvIns li.down::before { background: var(--red, #C8553D); } .rvIns li.burst::before { background: var(--warn); }
   .rvThemes td { vertical-align: top; } .rvThemes td.rvQ { width: 42%; } .rvQ { font-size: 11px; color: var(--grey); line-height: 1.45; } .rvQ .z, .rvThemes .z { color: var(--faint); }
   .rvThemes .up { color: var(--ok); } .rvThemes .dn, .sBar .dn { color: var(--red, #C8553D); }
@@ -622,8 +628,7 @@
     .split, .depts, .skgrid, .clientGrid, .cols, .bgrid { grid-template-columns: minmax(0, 1fr) !important; }
     .news { position: static; max-height: none; }
     .quad { min-height: 0; }
-    .panel[style*="overflow-x"], .wa { font-size: 12px; }
-    #commsSec .panel { overflow-x: auto; }
+    .panel[style*="overflow-x"] { font-size: 12px; }
     .tokroi { grid-template-columns: minmax(0, 1fr); } .tokbars { gap: 2px; } #tokDays .trb { height: 84px; } .tokpanel { padding: 16px; } .tokph .seg { margin-left: 0; }
     .skkpis { gap: 6px; }
     button { padding: 9px 14px; }
@@ -723,8 +728,6 @@
     <button data-go="clients">Clients <span class="n" id="nClients"></span></button>
     <div class="subnav" id="navDash"></div>
     <button data-go="budget" id="navBudget" style="display:none">Budget <span class="n"></span></button>
-    <div class="gl">Communications</div>
-    <button data-go="comms">WhatsApp <span class="n" id="nComms"></span></button>
     <div class="gl">The office</div>
     <button data-go="roles">Roles <span class="n" id="nRoles"></span></button>
     <button data-go="skills">Skills <span class="n" id="nSkills"></span></button>
@@ -737,7 +740,7 @@
     <div class="eyebrow" id="hEye"></div>
     <h2 id="hHead"></h2>
     <div class="hs" id="hSub"></div>
-    <div class="hbtns"><a href="/">Open the office</a><a href="#matrix">The matrix</a><a href="#comms">WhatsApp</a></div>
+    <div class="hbtns"><a href="/">Open the office</a><a href="#matrix">The matrix</a></div>
     <div class="hstats" id="hStats"></div>
     <svg class="ridge" viewBox="0 0 1440 150" preserveAspectRatio="none" aria-hidden="true">
       <path style="opacity:.07" d="M0 150V70C130 28 230 18 350 54S540 112 660 70 820 0 960 44s190 62 290 24 140-36 190-12V150Z"/>
@@ -809,18 +812,6 @@
     </div>
     <div class="msg" id="soMsg"></div>
     <div class="sogrid" id="soGrid"></div>
-  </section>
-
-  <section id="commsSec" data-cat="comms">
-    <div class="sh">
-      <h2>WhatsApp</h2>
-      <span class="note">Read-only counts from your linked WhatsApp. Nothing is sent. Message text goes to Claude only when you press READ INTO MATRIX.</span>
-      <div class="tools seg" id="wCat"><button data-v="all" class="on">ALL</button><button data-v="groups">GROUPS</button><button data-v="clients">CLIENTS</button><button data-v="outposts">OUTPOSTS</button><button data-v="agents">AGENTS</button><button data-v="unsorted">UNSORTED</button></div>
-    </div>
-    <div class="msg" id="waMsg"></div>
-    <div class="skkpis" id="waKpis"></div>
-    <div class="skb"><button id="waRefresh">REFRESH</button> <button id="waFeed">READ WAITING CHATS INTO MATRIX</button> <span class="note" id="waAt"></span></div>
-    <div class="panel" style="overflow-x:auto"><table class="wa" id="waTable"></table></div>
   </section>
 
   <section id="skillSec" data-cat="skills">
@@ -999,7 +990,7 @@ const readiness = a => [!!a.does, !!a.brief, roleSkills(a).length > 0];
 function render() { renderNeeds(); renderWeek(); renderNav(); renderKpis(); renderClients(); renderMatrix(); renderRoles(); renderSkills(); renderNews(); renderActivity(); renderBudget(); }
 
 // categories: the left-hand list shows one category at a time; the choice is remembered and can be linked to (#budget)
-const CAT_IDS = ['overview', 'matrix', 'social', 'clients', 'budget', 'comms', 'roles', 'skills', 'tokens'];
+const CAT_IDS = ['overview', 'matrix', 'social', 'clients', 'budget', 'roles', 'skills', 'tokens'];
 const isDash = c => /^dash-[a-z0-9-]+$/.test(String(c));
 /* ---------- motion: springs for the rail and the page it drives ----------
    A damped spring sampled into a CSS linear() curve: zeta < 1 overshoots and settles, like motion.md's back.out pops.
@@ -1163,7 +1154,6 @@ async function setCat(c, push = true) {
     applyCat(false); window.scrollTo({ top: 0 }); arrive();
   }
   if (isDash(c)) renderSales();
-  if (c === 'comms' && !S.wa) loadWa(false);
   if (c === 'tokens') loadTokens();
   if (c === 'social') loadSocial();
 }
@@ -1231,40 +1221,6 @@ $('mUpGo').addEventListener('click', async () => {
   b.disabled = false; b.textContent = 'READ INTO MATRIX';
 });
 loadUploads();
-// WhatsApp: the server counts; this draws it. Tagging a chat (clients / outposts / agents / ignore) is remembered on the server.
-S.wCat = 'all';
-async function loadWa(refresh) {
-  $('waMsg').className = 'msg'; $('waMsg').textContent = refresh ? '' : 'Reading your chats… (about 20 seconds the first time)';
-  try { S.wa = await api('/whatsapp' + (refresh ? '?refresh=1' : '')); $('waMsg').textContent = ''; } catch (e) { S.wa = { ok: false, reason: e.message }; }
-  renderWa();
-}
-function renderWa() {
-  const w = S.wa; if (!w) return;
-  if (!w.ok) { $('waMsg').className = 'msg err'; $('waMsg').textContent = w.reason || 'WhatsApp is not available.'; $('waKpis').innerHTML = ''; $('waTable').innerHTML = ''; return; }
-  $('nComms').textContent = w.totals.waiting || ''; $('nComms').classList.toggle('alert', !!w.totals.waiting);
-  $('waKpis').innerHTML = [['messages in, 7 days', w.totals.in7], ['messages out, 7 days', w.totals.out7], ['chats waiting on you', w.totals.waiting], ['unsorted people', w.totals.unsorted]].map(([l, n]) => `<span class="skkpi"><b>${n}</b>${l}</span>`).join('');
-  $('waAt').textContent = `${w.analysed} active chats of ${w.totalChats} · read ${ago(w.at)}`;
-  const rows = w.chats.filter(c => S.wCat === 'all' || c.category === S.wCat);
-  const opt = (c, v, l) => `<option value="${v}"${c === v ? ' selected' : ''}>${l}</option>`;
-  $('waTable').innerHTML = '<tr><th>Chat</th><th>7 days in / out</th><th>30 days in / out</th><th>Reply time</th><th>Status</th><th>Sort as</th></tr>' + rows.map(c => {
-    const st = c.waiting ? `<span class="tag miss" title="They wrote ${new Date(c.waiting.since).toLocaleString([], { weekday: 'short', hour: '2-digit', minute: '2-digit' })} and you have not replied since. The hours count from their first unanswered message.">WAITING ON YOU ${c.waiting.hours} h${c.waiting.voice ? ' · ' + c.waiting.voice + ' voice' : ''}</span>` : c.kind === 'group' ? (c.topVoices?.length ? esc(c.topVoices.map(v => v.name + ' ' + v.n).join(', ')) : '') : '<span class="tag good">up to date</span>';
-    const sel = c.kind === 'group' && !c.tagged ? 'groups' : c.category;
-    return `<tr><td>${esc(c.name)}<div class="note">${c.kind}${c.lastAt ? ' · last ' + ago(c.lastAt) : ''}</div></td><td>${c.in7} / ${c.out7}</td><td>${c.in30} / ${c.out30}</td><td>${c.replyMedianMinutes == null ? '' : c.replyMedianMinutes < 90 ? c.replyMedianMinutes + ' min' : Math.round(c.replyMedianMinutes / 60) + ' h'}</td><td>${st}</td><td><select data-wtag="${esc(c.id)}">${opt(sel, c.kind === 'group' ? 'groups' : 'unsorted', c.kind === 'group' ? 'groups' : 'unsorted')}${opt(sel, 'clients', 'clients')}${opt(sel, 'outposts', 'outposts')}${opt(sel, 'agents', 'agents')}${opt(sel, 'ignore', 'ignore (hide)')}</select></td></tr>`;
-  }).join('') || '<tr><td colspan="6" class="empty">Nothing in this group yet. Sort chats with the last column.</td></tr>';
-  for (const b of document.querySelectorAll('#wCat button')) b.classList.toggle('on', b.dataset.v === S.wCat);
-}
-document.addEventListener('change', async e => {
-  const id = e.target.dataset?.wtag; if (!id) return;
-  const v = e.target.value; try { S.wa = await api('/whatsapp/tag', { method: 'POST', body: { chatId: id, tag: ['groups', 'unsorted'].includes(v) ? '' : v } }); renderWa(); } catch (er) { $('waMsg').className = 'msg err'; $('waMsg').textContent = er.message; }
-});
-$('wCat').addEventListener('click', e => { const v = e.target.dataset?.v; if (v) { S.wCat = v; renderWa(); } });
-$('waRefresh').addEventListener('click', () => loadWa(true));
-$('waFeed').addEventListener('click', async e => {
-  const b = e.target; b.disabled = true; b.textContent = 'READING… (about a minute)';
-  try { const r = await api('/whatsapp/matrix', { method: 'POST', body: { category: S.wCat === 'all' || S.wCat === 'unsorted' ? '' : S.wCat } }); $('waMsg').className = 'msg'; $('waMsg').textContent = `${r.items.length} action${r.items.length === 1 ? '' : 's'} from ${r.chats} chat${r.chats === 1 ? '' : 's'} added to the matrix.`; await poll(); }
-  catch (er) { $('waMsg').className = 'msg err'; $('waMsg').textContent = er.message; }
-  b.disabled = false; b.textContent = 'READ WAITING CHATS INTO MATRIX';
-});
 /* ---------- Tokens (3 Nov 2026): the server reads the chats' transcripts and the office's ledger (tokens.mjs); this draws them ---------- */
 S.tokBy = 'desk'; S.tokMetric = 'all'; S.tokAll = false; S.tokOld = false;
 const fmtTok = n => { n = n || 0; return n >= 1e9 ? (n / 1e9).toFixed(2) + 'B' : n >= 1e6 ? (n / 1e6).toFixed(n >= 1e8 ? 0 : 1) + 'M' : n >= 1e3 ? Math.round(n / 1e3) + 'k' : String(Math.round(n)); };
@@ -1730,10 +1686,13 @@ function reviewsPanel(rv) {
   // 2. the tiles
   parts.push(`<div class="sKpis" style="grid-template-columns:repeat(auto-fit,minmax(150px,1fr))">${[
     tile(rvS(rv.avg), `Google rating · all ${rv.n.toLocaleString('en-GB')}`, '', rv.bursts.length ? `${rvS(rv.clean.avg)} without the review pushes` : ''),
-    tile(rvS(w.d90.avg), 'Last 90 days', rvDelta(w.d90.avg, w.p90.avg, 'the 90 before'), `${w.d90.n} reviews · ${w.d90.low} at one or two stars`),
+    tile(rvS(w.d90.avg), 'Last 90 days', rvDelta(w.d90.avg, w.p90.avg, 'the 90 before'), `${w.d90.low} of ${w.d90.n} at one or two stars (${Math.round(w.d90.low / w.d90.n * 100)}%) · ${w.p90.low} of ${w.p90.n} before${w.d90.n < 40 ? ' · a small count' : ''}`),
     tile(rvS(w.m12.avg), 'Last 12 months', rvDelta(w.m12.avg, w.p12.avg, 'the year before'), `${w.m12.n} reviews${rv.bursts.length ? ', pushes left out' : ''}`),
-    tile(pc(cy) == null ? '—' : pc(cy) + '%', `Replied to · ${cy.y}`, '', py ? `${pc(py)}% in ${py.y}${cy.replyDays != null ? ` · median reply ${cy.replyDays} days` : ''}` : ''),
+    tile(pc(cy) == null ? '—' : pc(cy) + '%', `Replied to · ${cy.y}`, '', py ? `${pc(py)}% in ${py.y}${cy.replied ? ` · ${cy.replied7} of ${cy.replied} replies within a week` : ''}` : ''),
     tile(String(rv.replies.unanswered), 'One or two stars, no reply', '', `of ${rv.replies.recentLow} in the last six months`)].join('')}</div>`);
+  // 2b. the one thing to act on, straight under the tiles: low ratings still waiting for a reply
+  if (rv.unanswered.length) parts.push(`<div class="sBars" style="margin-top:4px"><div style="grid-column:1/-1"><h4>Reply to these first · one and two stars in the last six months with no reply, newest first</h4>
+    <ul class="dFail">${rv.unanswered.map(u => `<li><b>${u.stars}★ · ${rvD(u.at)}</b> · ${esc(u.text)}</li>`).join('')}</ul></div></div>`);
   // 3. month by month: reviews stacked by stars, the month's average as a line (a review push is drawn to the top and labelled)
   // two bands, so the line never crosses a bar: the average on top (1★ to 5★), the reviews underneath
   const ms = rv.months, W = 700, H = 260, pl = 30, pr = 34, aT = 10, aB = 78, pt = 108, pb = 26, bw = (W - pl - pr) / ms.length, base = H - pb;
@@ -1753,25 +1712,89 @@ function reviewsPanel(rv) {
   // 4. the stars, then year by year
   const m12 = ms.slice(-12).reduce((a, m) => a.map((v, k) => v + m.dist[k]), [0, 0, 0, 0, 0]), n12 = m12.reduce((a, b) => a + b, 0) || 1, nAll = rv.n || 1;
   const starRows = [4, 3, 2, 1, 0].map(k => `<div class="sBar"><div class="t"><span>${k + 1}★</span><span>${Math.round(rv.dist[k] / nAll * 100)}% all time · ${Math.round(m12[k] / n12 * 100)}% last 12 months</span></div><div class="b"><i style="width:${Math.round(m12[k] / n12 * 100)}%;background:${RV_COL[k]}"></i></div></div>`).join('');
-  const yearRows = ys.slice().reverse().map(y => `<tr><td>${y.y}</td><td>${y.n}</td><td><b>${rvS(y.avg)}</b></td><td class="z">${y.avgClean == null ? '—' : rvS(y.avgClean)}</td><td>${Math.round(y.replied / y.n * 100)}%</td><td class="z">${y.replyDays == null ? '—' : y.replyDays + ' d'}</td></tr>`).join('');
+  const yearRows = ys.slice().reverse().map(y => `<tr><td>${y.y}</td><td>${y.n}</td><td><b>${rvS(y.avg)}</b></td><td class="z">${y.avgClean == null ? '—' : rvS(y.avgClean)}</td><td>${Math.round(y.replied / y.n * 100)}%</td><td class="z">${y.replied ? Math.round(y.replied7 / y.n * 100) + '%' : '—'}</td></tr>`).join('');
   parts.push(`<div class="sBars dRow" style="margin-top:6px"><div><h4>The stars · bars are the last 12 months</h4>${starRows}</div>
-    <div><h4>Year by year</h4><table class="dMix"><thead><tr><th>Year</th><th>Reviews</th><th>Average</th><th>No pushes</th><th>Replied</th><th>Reply time</th></tr></thead><tbody>${yearRows}</tbody></table></div></div>`);
+    <div><h4>Year by year</h4><table class="dMix"><thead><tr><th>Year</th><th>Reviews</th><th>Average</th><th>No pushes</th><th>Replied</th><th>Within a week</th></tr></thead><tbody>${yearRows}</tbody></table></div></div>`);
   // 5. what they talk about, the last 12 months beside the years before
   const used = new Set(); // one review quoted once: each theme takes its latest complaint not already shown higher up
-  const thRows = rv.themes.slice().sort((a, b) => b.ofLow - a.ofLow || b.n - a.n).map(t => { const up = t.ofLow - t.before.ofLow, q = (t.bads || []).find(x => !used.has(x.text)); if (q) used.add(q.text);
-    return `<tr><td><b>${esc(t.label)}</b></td><td>${t.share}%</td><td>${rvS(t.avg)}</td><td${t.ofLow >= 30 ? ' class="dn" style="font-weight:600"' : ''}>${t.ofLow}%</td><td class="z">${t.before.ofLow}%${Math.abs(up) >= 5 ? ` <span class="${up > 0 ? 'dn' : 'up'}">${up > 0 ? '▲' : '▼'}</span>` : ''}</td><td class="rvQ">${q ? `“${esc(q.text)}” <span class="z">${q.stars}★, ${rvD(q.at)}</span>` : `<span class="z">${t.neg ? 'its complaints are quoted above' : 'no complaint in the last year'}</span>`}</td></tr>`; }).join('');
-  parts.push(`<div class="sHead" style="margin-top:18px"><b>What the reviews talk about</b><span class="note">the last 12 months, review pushes left out · a theme counts once per review</span></div>
-    <table class="dMix rvThemes"><thead><tr><th>Theme</th><th>Of reviews with text</th><th>Their average</th><th>Of the 1–2★</th><th>1–2★ before</th><th>The latest complaint</th></tr></thead><tbody>${thRows}</tbody></table>`);
+  // counts, not percentages (a theme sits in 5 to 8 of about 23 low reviews), praise split from complaint, and an arrow only when the move is a real one
+  const thRows = rv.themes.slice().sort((a, b) => b.neg - a.neg || b.n - a.n).map(t => { const up = t.lowN && t.before.low ? t.neg / t.lowN - t.before.neg / t.before.low : 0, big = Math.min(t.lowN, t.before.low) >= 15 && t.neg + t.before.neg >= 8 && Math.abs(up) >= .15, q = (t.bads || []).find(x => !used.has(x.text)); if (q) used.add(q.text);
+    return `<tr><td><b>${esc(t.label)}</b></td><td>${t.n} <span class="z">(${t.share}%)</span></td><td>${rvS(t.avg)}</td><td>${t.pos}</td><td${t.lowN && t.neg / t.lowN >= .3 ? ' class="dn" style="font-weight:600"' : ''}>${t.neg} <span class="z">of ${t.lowN}</span>${big ? ` <span class="${up > 0 ? 'dn' : 'up'}">${up > 0 ? '▲' : '▼'}</span>` : ''}</td><td class="z">${t.before.low ? `${t.before.neg} of ${t.before.low}` : '—'}</td><td class="rvQ">${q ? `“${esc(q.text)}” <span class="z">${q.stars}★, ${rvD(q.at)}</span>` : `<span class="z">${t.neg ? 'its complaints are quoted above' : 'no complaint in the last year'}</span>`}</td></tr>`; }).join('');
+  parts.push(`<div class="sHead" style="margin-top:18px"><b>What the reviews talk about</b><span class="note">the last 12 months, review pushes left out · a theme counts once per review · "fresh" and "quick" are praise words too, hence the split by stars</span></div>
+    <table class="dMix rvThemes"><thead><tr><th>Theme</th><th>Mentions</th><th>Their average</th><th>In 4–5★</th><th>In 1–2★</th><th>1–2★ year before</th><th>The latest complaint</th></tr></thead><tbody>${thRows}</tbody></table>`);
   // 6. dishes, names, and the low ratings still waiting for a reply
   const dmax = Math.max(1, ...rv.dishes.map(d => d.n));
   const dishRows = rv.dishes.slice(0, 10).map(d => `<div class="sBar"><div class="t"><span>${esc(d.label)}</span><span>${d.n} · ${rvS(d.avg)}${d.neg ? ` · <span class="dn">${d.neg} low</span>` : ''}</span></div><div class="b"><i style="width:${Math.round(d.n / dmax * 100)}%;background:${d.avg < 3.8 ? 'var(--red, #C8553D)' : d.avg < 4.2 ? 'var(--faint)' : 'var(--ok)'}"></i></div></div>`).join('');
-  const nameRows = rv.names.length ? `<div class="rvNames">${rv.names.map(n => `<span><b>${esc(n.name)}</b> ${n.n} reviews · ${rvS(n.avg)}</span>`).join('')}</div><div class="note" style="font-size:10px;color:var(--faint);margin-top:6px">Spellings are kept as customers wrote them, so one person can show twice.</div>` : '<div class="none">No names mentioned often enough yet.</div>';
+  const nameRows = rv.names.length ? `<div class="rvNames">${rv.names.map(n => `<span title="${n.also && n.also.length ? 'Also spelt ' + esc(n.also.join(', ')) : ''}"><b>${esc(n.name)}</b> ${n.n} reviews${n.low ? ` · <span class="dn">${n.low} at 1–2★</span>` : ' · none at 1–2★'}</span>`).join('')}</div><div class="note" style="font-size:10px;color:var(--faint);margin-top:6px">Similar spellings are counted as one person. A review that names someone is nearly always a good one, so how many of them are low is the figure to watch.</div>` : '<div class="none">No names mentioned often enough yet.</div>';
   parts.push(`<div class="sBars dRow" style="margin-top:18px"><div><h4>Dishes mentioned · all years, pushes left out · bar colour is their average</h4>${dishRows}</div><div><h4>Staff customers name</h4>${nameRows}
     ${rv.praise.length ? `<h4 style="margin-top:16px">Recent five-star words</h4>${rv.praise.map(p => `<div class="rvQ" style="margin-bottom:8px">“${esc(p.text)}” <span class="z">${rvD(p.at)}</span></div>`).join('')}` : ''}</div></div>`);
-  if (rv.unanswered.length) parts.push(`<div class="sBars" style="margin-top:18px"><div style="grid-column:1/-1"><h4>Reply to these first · one and two stars in the last six months with no reply, newest first</h4>
-    <ul class="dFail">${rv.unanswered.map(u => `<li><b>${u.stars}★ · ${rvD(u.at)}</b> · ${esc(u.text)}</li>`).join('')}</ul></div></div>`);
   parts.push(`<div class="note" style="font-size:10.5px;color:var(--faint);margin-top:12px">From Google's own export, filed ${rvD(rv.filedAt)}. Reviews Google filtered out are not in it, so Maps can show a slightly different average. Reviewer names are not kept. To refresh it: takeout.google.com, pick Google Business Profile, and leave the zip in Downloads; the office files it within ten minutes.</div>`);
   return parts.join('');
+}
+// Guest feedback (V3.13, 3 Nov): what Uber Eats' problem reports and the Google reviews say together, on the main dashboard. Every figure and
+// sentence is worked out here from the same data as the Delivery and Reviews pages (no model), so it moves when a new upload or Takeout lands.
+// Uber counts only Uber orders; Google counts whoever chose to review, so the two are read side by side, never added together.
+const FB_DISH = [['Fish', /\bfish\b/i], ['Pizza', /pizza/i], ['The Imran special', /imrans?\s*sp[ea]cial|special box/i], ['Burgers', /burger/i], ['Chips, fries and wedges', /\bfries\b|\bchips\b|wedges/i], ['Doner and kebab', /doner|kebab/i]];
+function feedbackOverview(cur, d) {
+  const acc = d.delivery && d.delivery.available && d.delivery.accuracy && d.delivery.accuracy.year ? d.delivery.accuracy : null, rv = d.reviews && d.reviews.available ? d.reviews : null;
+  if (!acc && !rv) return '';
+  const and = a => a.length < 2 ? a.join('') : a.slice(0, -1).join(', ') + ' and ' + a[a.length - 1], cap = s => s[0].toUpperCase() + s.slice(1), li = (k, t) => `<li class="${k}">${t}</li>`, sums = (l, k) => l.reduce((n, m) => n + (m[k] || 0), 0), per = (n, dd) => dd ? n / dd * 100 : null, lc = s => s.toLowerCase();
+  const dl = [], gl = [], both = [], recs = [];
+  let tp = [], lp = [], op = null, cross = [];
+  if (acc) {
+    const y = acc.year, sc = acc.scorecard && acc.scorecard.success, rate = (l, k) => per(sums(l, k), sums(l, 'orders'));
+    tp = y.months.slice(-12); lp = y.months.slice(-24, -12).filter(m => m.orders); const l3 = tp.slice(-3);
+    const rC = rate(tp, 'inaccurate'), rP = rate(lp, 'inaccurate'), r3 = rate(l3, 'inaccurate');
+    if (rC != null) dl.push(li(rP == null ? 'flat' : rC < rP * .9 ? 'up' : rC > rP * 1.1 ? 'down' : 'flat', `Problem reports ran at ${rC.toFixed(2)} per 100 Uber Eats orders over the last 12 months${rP == null ? '' : `, against ${rP.toFixed(2)} the year before`}${r3 == null ? '' : `, and ${r3.toFixed(2)} over the last three months`}. ${money(sums(tp, 'refunds'), '£')} was refunded by the restaurant.`));
+    const kinds = [['missing customisations', 'cust'], ['missing items', 'items'], ['wrong items', 'wrongItem'], ['wrong orders', 'wrongOrder']].map(([l, k]) => ({ l, k, n: sums(tp, k), c: rate(tp, k), p: rate(lp, k) })).sort((a, b) => b.n - a.n);
+    const worse = kinds.filter(k => k.n >= 40 && k.p != null && k.c > k.p * 1.25)[0];
+    dl.push(li('down', `${kinds[0].n} orders had ${kinds[0].l} and ${kinds[1].n} had ${kinds[1].l}: the two biggest problems.${worse ? ` ${cap(worse.l)} are the one type getting worse, ${worse.c.toFixed(2)} per 100 orders from ${worse.p.toFixed(2)}.` : ''}`));
+    const qC = rate(tp, 'quality'), qP = rate(lp, 'quality');
+    if (qC != null) dl.push(li(qP != null && qC < qP * .9 ? 'up' : qP != null && qC > qP * 1.1 ? 'down' : 'flat', `${sums(tp, 'quality')} food-quality complaints, ${qC.toFixed(2)} per 100 orders${qP == null ? '' : `, ${qC < qP * .9 ? 'down from' : qC > qP * 1.1 ? 'up from' : 'level with'} ${qP.toFixed(2)}`}.`));
+    const hot = (y.items || []).filter(i => /taste/i.test(i.top) && i.chg >= 5 && i.k >= 20);
+    if (y.items && y.items.length) dl.push(li('down', `Most problem reports by dish: ${y.items.slice(0, 3).map(i => `${esc(i.n)} (${i.k}, mostly ${esc(lc(i.top.replace(' issues', '')))})`).join(', ')}.${hot.length ? ` Taste complaints jumped on ${and(hot.map(i => `${esc(i.n)} (${i.k}, ×${(i.chg + 1).toFixed(0)} on last year)`))}, from a very small base a year ago.` : ''}`));
+    op = sc && sc.operational ? sc.operational : null;
+    const inacc = op && op.find(o => /inaccurate/i.test(o.name)), rating = sc && sc.metrics.find(m => /rating/i.test(m.name));
+    if (sc) dl.push(li(inacc && inacc.current >= inacc.goal ? 'down' : 'up', `Uber's scorecard has the shop at ${esc(sc.tier)}${rating ? `, customers rating it ${esc(rating.current)}` : ''}.${inacc && inacc.current >= inacc.goal ? ` Inaccurate orders at ${inacc.current}% against a goal under ${inacc.goal}% is what keeps it from ${esc(sc.next)}.` : ''}`));
+    if (acc.scorecard && acc.scorecard.benchmark) { const b = acc.scorecard.benchmark.rows.find(r => /^inaccurate/i.test(r.name)); if (b && b.w12[2] != null) dl.push(li(b.w12[2] > 0 ? 'down' : 'up', `Against the local market (${esc(acc.scorecard.benchmark.periods.w12)}), inaccurate orders are ${esc(b.w12[0])} against ${esc(b.w12[1])} (${b.w12[2] > 0 ? '+' : ''}${b.w12[2]}%).`)); }
+    op = op && op.find(o => /courier wait/i.test(o.name));
+    // the dishes that appear on both sides
+    const used = new Set();
+    cross = FB_DISH.map(([label, re]) => { const m = (y.items || []).filter(i => !used.has(i.n) && re.test(i.n)); m.forEach(i => used.add(i.n)); return { label, uber: m.reduce((n, i) => n + i.k, 0), top: m.slice().sort((p, q) => q.k - p.k)[0] }; }).filter(x => x.uber);
+  }
+  if (rv) {
+    const w = rv.windows, small = w.d90.n < 40 ? `, only ${w.d90.n} reviews, so a signal and not yet a verdict` : '';
+    gl.push(li(w.d90.avg != null && w.p90.avg != null && w.d90.avg < w.p90.avg - .2 ? 'down' : 'flat', `Google averages ${rvS(rv.avg)} from ${rv.n.toLocaleString('en-GB')} reviews${rv.bursts.length ? `, ${rvS(rv.clean.avg)} without the review pushes` : ''}. The last 90 days are ${rvS(w.d90.avg)}, ${w.d90.low} of ${w.d90.n} at one or two stars, against ${rvS(w.p90.avg)} in the 90 before${small}.`));
+    const neg = rv.themes.filter(t => t.neg >= 2).sort((a, b) => b.ofLow - a.ofLow).slice(0, 4);
+    if (neg.length) gl.push(li('down', `The one- and two-star reviews of the last 12 months talk about ${neg.map(t => `${lc(esc(t.label))} (${t.ofLow}%)`).join(', ')}. A review can name more than one, so the shares overlap.`));
+    gl.push(li(rv.replies.unanswered ? 'down' : 'up', `${rv.replies.last12} of ${rv.replies.of12} reviews in the last 12 months have a reply, and ${rv.replies.unanswered} of the ${rv.replies.recentLow} one- and two-star reviews of the last six months have none.`));
+    const good = rv.themes.filter(t => t.share >= 15).sort((a, b) => b.avg - a.avg)[0];
+    if (good) gl.push(li('up', `Customers praise ${lc(esc(good.label))} most (${good.share}% of reviews with text, ${rvS(good.avg)})${rv.names.length ? `; ${rv.names.slice(0, 3).map(n => esc(n.name)).join(', ')} are named most` : ''}.`));
+    // the dishes on both sides: weaker on Google than the shop's own average
+    cross = cross.map(x => ({ ...x, g: rv.dishes.find(g => g.label === x.label) }));
+  }
+  const flag = x => x.g && x.g.n >= 10 && rv && x.g.avg < rv.clean.avg - .2 && x.uber >= 30;
+  if (acc && rv) {
+    const T = k => rv.themes.find(t => t.key === k), ac = T('accuracy'), ta = T('taste'), fr = T('fresh'), wt = T('wait');
+    if (ac && ac.n) both.push(li('down', `<b>Orders that arrive wrong.</b> Uber logs ${sums(tp, 'cust') + sums(tp, 'items')} orders missing customisations or items. On Google, every review that mentions order accuracy is ${rvS(ac.avg)} (${ac.n} of them, ${ac.ofLow}% of the low ratings).`));
+    if (ta && fr) both.push(li('down', `<b>Taste and freshness.</b> They are in ${ta.ofLow}% and ${fr.ofLow}% of Google's low ratings, and Uber logs ${sums(tp, 'quality')} food-quality complaints in the year.`));
+    if (wt && wt.ofLow >= 15) both.push(li('down', `<b>Waiting.</b> ${wt.ofLow}% of Google's low ratings mention waits${op ? `; Uber shows avoidable courier wait on ${op.current}% of orders against a goal of ${op.goal}%` : ''}.`));
+    const f = cross.filter(flag); if (f.length) both.push(li('down', `<b>The same dishes on both sides.</b> ${f.map(x => esc(x.label)).join(', ')} carry Uber problem reports and sit below the shop's Google average.`));
+  }
+  // what to do, in order
+  if (cur.fix) recs.push(`<b>${esc(cur.fix.fix.title)}.</b> This month's fix, written from the delivery data. <a href="#dash-${esc(cur.id)}--delivery" data-go="dash-${esc(cur.id)}--delivery">Read it</a>`);
+  if (rv && rv.replies.unanswered) recs.push(`<b>Reply to the ${rv.replies.unanswered} unanswered one- and two-star reviews this week</b>, then answer anything under four stars within two days. They are listed on the <a href="#dash-${esc(cur.id)}--reviews" data-go="dash-${esc(cur.id)}--reviews">Reviews page</a>.`);
+  const worst = cross.filter(flag).sort((a, b) => a.g.avg - b.g.avg)[0];
+  if (worst) recs.push(`<b>Look at ${lc(esc(worst.label))} first.</b> ${worst.uber} Uber problem reports${worst.top ? `, most on ${esc(worst.top.n)}` : ''}, and ${rvS(worst.g.avg)} on Google with ${worst.g.neg} low ratings. Check one bag of it against the ticket at the pass, and taste it.`);
+  if (acc) { const hot = (acc.year.items || []).filter(i => /taste/i.test(i.top) && i.chg >= 5 && i.k >= 20); if (hot.length) recs.push(`<b>Check ${and(hot.map(i => esc(i.n)))} for a batch or supplier change.</b> Taste complaints rose sharply on Uber; the base a year ago was tiny, so confirm with a sample before acting.`); }
+  if (acc && acc.scorecard && acc.scorecard.success) { const s = acc.scorecard.success, i = (s.operational || []).find(o => /inaccurate/i.test(o.name)); if (i && i.current >= i.goal) recs.push(`<b>Get Uber's inaccurate-orders figure under ${i.goal}%</b> (it is ${i.current}%). That is the measure holding the shop at ${esc(s.tier)} instead of ${esc(s.next)}.`); }
+  const dishRows = cross.filter(x => x.g).sort((a, b) => (flag(b) - flag(a)) || (a.g.avg - b.g.avg)).map(x => `<tr${flag(x) ? ' class="hk"' : ''}><td>${esc(x.label)}</td><td>${x.uber}</td><td class="z">${x.top ? esc(lc(x.top.top.replace(' issues', ''))) : ''}</td><td>${x.g.n}</td><td>${rvS(x.g.avg)}</td><td>${x.g.neg}</td></tr>`).join('');
+  return `<div class="fbCard"><div class="sHead"><b>Guest feedback</b><span class="note">Uber Eats problem reports (last 12 months) beside Google reviews${rv ? ` to ${rvD(rv.to)}` : ''} · worked out from the Delivery and Reviews pages</span></div>
+    <div class="fbCols">${acc ? `<div><h4>Delivery · Uber Eats</h4><ul class="rvIns">${dl.join('')}</ul></div>` : ''}${rv ? `<div><h4>Reviews · Google</h4><ul class="rvIns">${gl.join('')}</ul></div>` : ''}</div>
+    ${both.length ? `<h4>Themes that come up on both sides</h4><ul class="rvIns">${both.join('')}</ul>` : ''}
+    ${dishRows ? `<h4>Dishes on both sides · red where Google rates it below the shop's average</h4><table class="dMix"><thead><tr><th>Dish</th><th>Uber problem reports</th><th>Mostly</th><th>Google mentions</th><th>Google average</th><th>1–2★</th></tr></thead><tbody>${dishRows}</tbody></table>` : ''}
+    ${recs.length ? `<h4>What to do</h4><ol class="fbRecs">${recs.map(r => `<li>${r}</li>`).join('')}</ol>` : ''}
+    <div class="note" style="font-size:10.5px;color:var(--faint);margin-top:10px">Uber counts only Uber Eats orders; Google counts whoever chose to review, so the two are read side by side and never added. Uber's problem reports are for the 12 months to ${acc ? fmtD(acc.year.to) + ' ' + acc.year.to.slice(0, 4) : ''}; Google dish figures cover every year, review pushes left out. Small counts are flagged in the sentence.</div></div>`;
 }
 // Items (V3.12, 30 Oct): the Deliverect agent's top-items lists, one per app and period. Item sales are base price times units (no fees,
 // tips or paid add-ons). Year on year only where an app has a list for the same dates a year apart; a dish renamed between the years
@@ -2038,6 +2061,7 @@ function renderPos(el, cur, d) {
     <div class="sK"><div class="v">${t.avg == null ? '—' : c + t.avg.toFixed(2)}</div><div class="l">Average order</div></div></div>`);
   if (d.delivery && d.delivery.available) parts.push(deliveryTease(cur, d, Y, c) + fixCard(cur, true));
   if (d.reviews && d.reviews.available) parts.push(reviewsTease(cur, d.reviews));
+  parts.push(feedbackOverview(cur, d));
   if (Y) parts.push(yoyCharts(Y, c));
   if (hr) {
     if (!Y) {

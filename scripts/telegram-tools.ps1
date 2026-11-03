@@ -1,7 +1,7 @@
 # Agents Office - the only commands the Telegram session may run. One script, a short list of verbs, each one narrow and logged.
 # The Telegram listener (scripts/telegram-channel.ps1) answers Wesley's allow-listed chat; CLAUDE.md says when to use which verb.
 #
-#   status                     the office, Docker/OpenWA and the PC in one line each
+#   status                     the office, the PC and the disk in one line each
 #   waiting | matrix | routines     what is waiting on Wesley, the open matrix actions, the timetable (read only)
 #   ask <text...>              talk to the Chief of Staff: questions, and requests ("make me a Reel on pricing", "what's going out this week"). It adds tasks and runs routines; it cannot approve, send or post.
 #   task <dept> <text...>      puts a task on the office board; it waits for Wesley's review like any other
@@ -23,7 +23,6 @@ Log "$Verb $(if ($text) { $text.Substring(0, [Math]::Min(80, $text.Length)) })$(
 switch ($Verb) {
     'status' {
         try { $h = Get-Office '/api/health'; "Office: up, v$($h.version)" } catch { 'Office: NOT reachable on port 4520' }
-        try { $d = docker ps --format '{{.Names}} {{.Status}}' 2>$null | Where-Object { $_ -match 'openwa-api' }; if ($d) { "OpenWA: $d" } else { 'OpenWA: not running' } } catch { 'OpenWA: Docker not reachable' }
         $up = (Get-Date) - (Get-CimInstance Win32_OperatingSystem).LastBootUpTime; "PC: up $([int]$up.TotalHours) h $($up.Minutes) min"
         try { $s = Get-Office '/api/storage'; "Disk: $($s.freeGB) GB free of $($s.totalGB) GB; the office's own files $([int]$s.officeMB) MB" + $(if ($s.warn -and $s.warn.Count) { ' - ' + ($s.warn -join ' ') } else { '' }) } catch { }
     }
