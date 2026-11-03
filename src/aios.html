@@ -272,6 +272,13 @@
   .dFail { margin: 10px 0 0; padding-left: 16px; font-size: 10.5px; color: var(--grey); display: grid; gap: 4px; } .dFail b { color: var(--ink); font-weight: 600; }
   .dMix td .z, .dMix .z { color: var(--faint); }
   .dTease { display: flex; align-items: center; justify-content: space-between; gap: 14px; flex-wrap: wrap; margin: 0 0 16px; padding: 12px 16px; border-radius: 14px; background: var(--soft); font-size: 12.5px; }
+  .rvIns { list-style: none; margin: 0 0 16px; padding: 12px 16px; border-radius: 14px; background: var(--soft); display: grid; gap: 7px; font-size: 12.5px; line-height: 1.5; }
+  .rvIns li { position: relative; padding-left: 16px; } .rvIns li::before { content: ''; position: absolute; left: 0; top: .55em; width: 7px; height: 7px; border-radius: 50%; background: var(--faint); }
+  .rvIns li.up::before { background: var(--ok); } .rvIns li.down::before { background: var(--red, #C8553D); } .rvIns li.burst::before { background: var(--warn); }
+  .rvThemes td { vertical-align: top; } .rvThemes td.rvQ { width: 42%; } .rvQ { font-size: 11px; color: var(--grey); line-height: 1.45; } .rvQ .z, .rvThemes .z { color: var(--faint); }
+  .rvThemes .up { color: var(--ok); } .rvThemes .dn, .sBar .dn { color: var(--red, #C8553D); }
+  .rvNames { display: flex; flex-wrap: wrap; gap: 6px; } .rvNames span { font-size: 11px; padding: 5px 10px; border-radius: 999px; background: var(--soft); color: var(--grey); } .rvNames b { color: var(--ink); font-weight: 600; }
+  @media (max-width: 860px) { .rvThemes td.rvQ { width: auto; } .rvThemes { display: block; overflow-x: auto; } }
   .dTease b { font-family: var(--serif); font-weight: 400; font-size: 18px; } .dTease .up { color: var(--ok); } .dTease .dn { color: var(--red, #C8553D); } .dTease .z { color: var(--faint); }
   .side .subnav button.sub2 { margin-left: 14px; font-size: 10.5px; padding: 6px 10px; opacity: .9; }
   .sKpis { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 14px; }
@@ -1475,7 +1482,7 @@ const mName = m => new Date(m + '-01T12:00:00').toLocaleDateString('en-GB', { mo
 const SCOL = ['var(--red, #C8553D)', 'var(--ink)', 'var(--faint)'];
 async function loadDash() {
   try { S.dash = (await api('/dashboards')).dashboards; } catch { S.dash = S.dash || []; }
-  $('navDash').innerHTML = S.dash.map(d => `<button data-go="dash-${esc(d.id)}">${esc(d.name)}</button>` + (d.data && d.data.delivery && d.data.delivery.available ? `<button class="sub2" data-go="dash-${esc(d.id)}--delivery">Delivery</button>` : '')).join('');
+  $('navDash').innerHTML = S.dash.map(d => `<button data-go="dash-${esc(d.id)}">${esc(d.name)}</button>` + (d.data && d.data.delivery && d.data.delivery.available ? `<button class="sub2" data-go="dash-${esc(d.id)}--delivery">Delivery</button>` : '') + (d.data && d.data.reviews && d.data.reviews.available ? `<button class="sub2" data-go="dash-${esc(d.id)}--reviews">Reviews</button>` : '')).join('');
   applyCat(); if (isDash(S.cat)) renderSales();
 }
 // a single restaurant site (till reports): headline, monthly turnover bars, a weekday-by-hour busyness map, menu / category / item bars
@@ -1702,6 +1709,68 @@ function deliveryPanel(d, Y, c) {
     <div class="sHeat" style="grid-template-columns:34px repeat(${order.length},1fr)"><span></span>${order.map(h => `<span class="hh">${hLab(h)}</span>`).join('')}${DAYS.map((dn, wd) => `<span class="hd">${dn}</span>` + order.map(h => { const v = dv.heat[wd][h]; return `<span class="hc" style="background:rgba(47,143,131,${(v / mx * .95 + (v ? .05 : 0)).toFixed(2)})" title="${dn} ${hLab(h)} · ${v} delivery orders on average"></span>`; }).join('')).join('')}</div></div></div>`);
   // 7. the gaps, said plainly
   parts.push(`<div class="note" style="font-size:10.5px;color:var(--faint);margin-top:10px">Not here yet: ${(dv.items || []).length ? '' : 'item sales by app (ask the Deliverect agent for item-level data), '}${dv.accuracy ? 'Deliveroo\'s refunds,' : 'refunds,'} prep and rider times and ratings (they sit in Uber Eats Manager and Deliveroo Partner Hub).${skip.size ? ' ' + [...skip].map(fmtD).join(', ') + ' is only partly in the exports, so it is left out of both years.' : ''}</div>`);
+  return parts.join('');
+}
+// Reviews (V3.13, 3 Nov): Google reviews from a Business Profile Takeout (reviews.mjs works out every figure and the opening lines; no model)
+const rvD = iso => new Date(iso).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+const rvS = v => v == null ? '—' : v.toFixed(1) + '★';
+const rvDelta = (a, b, what) => a == null || b == null ? '' : `<div class="d ${a - b >= 0 ? 'up' : 'dn'}">${a - b >= 0 ? '▲' : '▼'} ${Math.abs(a - b).toFixed(1)}★ vs ${what}</div>`;
+const RV_COL = ['var(--red, #C8553D)', 'var(--red, #C8553D)', 'var(--faint)', 'color-mix(in srgb, var(--ok) 55%, transparent)', 'var(--ok)'];
+function reviewsTease(cur, rv) {
+  const w = rv.windows, dd = w.d90.n && w.p90.n ? w.d90.avg - w.p90.avg : null;
+  return `<div class="dTease"><div><b>Google reviews</b> · ${rvS(rv.avg)} from ${rv.n.toLocaleString('en-GB')}${w.d90.n ? ` · last 90 days ${rvS(w.d90.avg)}${dd == null ? '' : ` <span class="${dd >= 0 ? 'up' : 'dn'}">${dd >= 0 ? '▲' : '▼'} ${Math.abs(dd).toFixed(1)}</span>`}` : ''}${rv.replies.unanswered ? ` · <span class="dn">${rv.replies.unanswered} low ratings with no reply</span>` : ''}</div>
+    <button type="button" data-go="dash-${esc(cur.id)}--reviews">Open Reviews →</button></div>`;
+}
+function reviewsPanel(rv) {
+  const parts = [], w = rv.windows, ys = rv.years, cy = ys[ys.length - 1], py = ys[ys.length - 2], pc = y => y && y.n ? Math.round(y.replied / y.n * 100) : null;
+  const tile = (v, l, dd, pr) => `<div class="sK"><div class="v">${v}</div><div class="l">${l}</div>${dd || ''}${pr ? `<div class="pvPrev">${pr}</div>` : ''}</div>`;
+  parts.push(`<div class="sHead"><b>${esc(rv.location)} · Google reviews</b><span class="note">Business Profile export · ${rvD(rv.from)} to ${rvD(rv.to)} · ${rv.n.toLocaleString('en-GB')} reviews, ${rv.text.toLocaleString('en-GB')} with text</span></div>`);
+  // 1. what the reviews say, in plain sentences
+  parts.push(`<ul class="rvIns">${rv.insights.map(i => `<li class="${i.k}">${esc(i.t)}</li>`).join('')}</ul>`);
+  // 2. the tiles
+  parts.push(`<div class="sKpis" style="grid-template-columns:repeat(auto-fit,minmax(150px,1fr))">${[
+    tile(rvS(rv.avg), `Google rating · all ${rv.n.toLocaleString('en-GB')}`, '', rv.bursts.length ? `${rvS(rv.clean.avg)} without the review pushes` : ''),
+    tile(rvS(w.d90.avg), 'Last 90 days', rvDelta(w.d90.avg, w.p90.avg, 'the 90 before'), `${w.d90.n} reviews · ${w.d90.low} at one or two stars`),
+    tile(rvS(w.m12.avg), 'Last 12 months', rvDelta(w.m12.avg, w.p12.avg, 'the year before'), `${w.m12.n} reviews${rv.bursts.length ? ', pushes left out' : ''}`),
+    tile(pc(cy) == null ? '—' : pc(cy) + '%', `Replied to · ${cy.y}`, '', py ? `${pc(py)}% in ${py.y}${cy.replyDays != null ? ` · median reply ${cy.replyDays} days` : ''}` : ''),
+    tile(String(rv.replies.unanswered), 'One or two stars, no reply', '', `of ${rv.replies.recentLow} in the last six months`)].join('')}</div>`);
+  // 3. month by month: reviews stacked by stars, the month's average as a line (a review push is drawn to the top and labelled)
+  // two bands, so the line never crosses a bar: the average on top (1★ to 5★), the reviews underneath
+  const ms = rv.months, W = 700, H = 260, pl = 30, pr = 34, aT = 10, aB = 78, pt = 108, pb = 26, bw = (W - pl - pr) / ms.length, base = H - pb;
+  const capN = Math.max(5, Math.ceil(Math.max(...ms.filter(m => !m.burst).map(m => m.n), 1) * 1.25)), yn = v => pt + (1 - Math.min(v, capN) / capN) * (base - pt), ya = v => aT + (1 - (v - 1) / 4) * (aB - aT);
+  const grid = [1, 3, 5].map(s => `<line x1="${pl}" x2="${W - pr}" y1="${ya(s)}" y2="${ya(s)}" stroke="var(--line)"/><text x="${W - pr + 5}" y="${ya(s) + 3}" font-size="9" fill="var(--faint)">${s}★</text>`).join('') +
+    [0, capN].map(v => `<line x1="${pl}" x2="${W - pr}" y1="${yn(v)}" y2="${yn(v)}" stroke="var(--line)"/><text x="${pl - 5}" y="${yn(v) + 3}" text-anchor="end" font-size="9" fill="var(--faint)">${v}</text>`).join('');
+  const bars = ms.map((m, i) => { const x = pl + i * bw + bw * .18, bwi = bw * .64; let acc = 0, s = '';
+    [4, 3, 2, 1, 0].forEach(k => { const v = m.dist[k]; if (!v) return; const y0 = yn(acc), y1 = yn(acc + v); if (y0 - y1 > 0) s += `<rect x="${x}" y="${y1}" width="${bwi}" height="${y0 - y1}" fill="${RV_COL[k]}"/>`; acc += v; });
+    const lab = new Date(m.m + '-01T12:00:00').toLocaleDateString('en-GB', { month: 'short' }) + (m.m.endsWith('-01') || i === 0 ? ' ' + m.m.slice(2, 4) : '');
+    return `<g><title>${mName(m.m)} · ${m.n} review${m.n === 1 ? '' : 's'}${m.avg != null ? ' at ' + rvS(m.avg) : ''}${m.burst ? ` · ${m.burst} of them in a review push` : ''} · ${m.dist.slice().reverse().map((v, j) => `${5 - j}★ ${v}`).join(', ')}</title>${s}${m.n > capN ? `<text x="${x + bwi / 2}" y="${pt - 6}" text-anchor="middle" font-size="9" font-weight="600" fill="var(--ink)">${m.n}↑</text>` : ''}</g>` +
+      (i % 2 === 0 ? `<text x="${pl + i * bw + bw / 2}" y="${H - 8}" text-anchor="middle" font-size="9" fill="var(--faint)">${lab}</text>` : ''); }).join('');
+  const pts = ms.map((m, i) => m.n >= 3 ? [pl + i * bw + bw / 2, ya(m.avg), m] : null).filter(Boolean);
+  const line = `<polyline fill="none" stroke="var(--ink)" stroke-width="2" stroke-linejoin="round" points="${pts.map(p => p[0].toFixed(1) + ',' + p[1].toFixed(1)).join(' ')}"/>` + pts.map(p => `<circle cx="${p[0].toFixed(1)}" cy="${p[1].toFixed(1)}" r="2.6" fill="var(--ink)"><title>${mName(p[2].m)} · average ${rvS(p[2].avg)}</title></circle>`).join('');
+  parts.push(`<div class="sHead" style="margin-top:18px"><b>Month by month</b><span class="note">the last 24 months · bars are reviews by stars, the line is the month's average (months with three or more)</span></div>
+    <svg class="sChart" viewBox="0 0 ${W} ${H}" role="img" aria-label="Google reviews by month and stars">${grid}${bars}${line}</svg>
+    <div class="sLegend"><span><i style="background:var(--ok)"></i>5★</span><span><i style="background:${RV_COL[3]}"></i>4★</span><span><i style="background:var(--faint)"></i>3★</span><span><i style="background:var(--red, #C8553D)"></i>1–2★</span><span><i style="background:var(--ink)"></i>average</span>${ms.some(m => m.n > capN) ? `<span>a bar marked ↑ runs off the top: the number is its reviews</span>` : ''}</div>`);
+  // 4. the stars, then year by year
+  const m12 = ms.slice(-12).reduce((a, m) => a.map((v, k) => v + m.dist[k]), [0, 0, 0, 0, 0]), n12 = m12.reduce((a, b) => a + b, 0) || 1, nAll = rv.n || 1;
+  const starRows = [4, 3, 2, 1, 0].map(k => `<div class="sBar"><div class="t"><span>${k + 1}★</span><span>${Math.round(rv.dist[k] / nAll * 100)}% all time · ${Math.round(m12[k] / n12 * 100)}% last 12 months</span></div><div class="b"><i style="width:${Math.round(m12[k] / n12 * 100)}%;background:${RV_COL[k]}"></i></div></div>`).join('');
+  const yearRows = ys.slice().reverse().map(y => `<tr><td>${y.y}</td><td>${y.n}</td><td><b>${rvS(y.avg)}</b></td><td class="z">${y.avgClean == null ? '—' : rvS(y.avgClean)}</td><td>${Math.round(y.replied / y.n * 100)}%</td><td class="z">${y.replyDays == null ? '—' : y.replyDays + ' d'}</td></tr>`).join('');
+  parts.push(`<div class="sBars dRow" style="margin-top:6px"><div><h4>The stars · bars are the last 12 months</h4>${starRows}</div>
+    <div><h4>Year by year</h4><table class="dMix"><thead><tr><th>Year</th><th>Reviews</th><th>Average</th><th>No pushes</th><th>Replied</th><th>Reply time</th></tr></thead><tbody>${yearRows}</tbody></table></div></div>`);
+  // 5. what they talk about, the last 12 months beside the years before
+  const used = new Set(); // one review quoted once: each theme takes its latest complaint not already shown higher up
+  const thRows = rv.themes.slice().sort((a, b) => b.ofLow - a.ofLow || b.n - a.n).map(t => { const up = t.ofLow - t.before.ofLow, q = (t.bads || []).find(x => !used.has(x.text)); if (q) used.add(q.text);
+    return `<tr><td><b>${esc(t.label)}</b></td><td>${t.share}%</td><td>${rvS(t.avg)}</td><td${t.ofLow >= 30 ? ' class="dn" style="font-weight:600"' : ''}>${t.ofLow}%</td><td class="z">${t.before.ofLow}%${Math.abs(up) >= 5 ? ` <span class="${up > 0 ? 'dn' : 'up'}">${up > 0 ? '▲' : '▼'}</span>` : ''}</td><td class="rvQ">${q ? `“${esc(q.text)}” <span class="z">${q.stars}★, ${rvD(q.at)}</span>` : `<span class="z">${t.neg ? 'its complaints are quoted above' : 'no complaint in the last year'}</span>`}</td></tr>`; }).join('');
+  parts.push(`<div class="sHead" style="margin-top:18px"><b>What the reviews talk about</b><span class="note">the last 12 months, review pushes left out · a theme counts once per review</span></div>
+    <table class="dMix rvThemes"><thead><tr><th>Theme</th><th>Of reviews with text</th><th>Their average</th><th>Of the 1–2★</th><th>1–2★ before</th><th>The latest complaint</th></tr></thead><tbody>${thRows}</tbody></table>`);
+  // 6. dishes, names, and the low ratings still waiting for a reply
+  const dmax = Math.max(1, ...rv.dishes.map(d => d.n));
+  const dishRows = rv.dishes.slice(0, 10).map(d => `<div class="sBar"><div class="t"><span>${esc(d.label)}</span><span>${d.n} · ${rvS(d.avg)}${d.neg ? ` · <span class="dn">${d.neg} low</span>` : ''}</span></div><div class="b"><i style="width:${Math.round(d.n / dmax * 100)}%;background:${d.avg < 3.8 ? 'var(--red, #C8553D)' : d.avg < 4.2 ? 'var(--faint)' : 'var(--ok)'}"></i></div></div>`).join('');
+  const nameRows = rv.names.length ? `<div class="rvNames">${rv.names.map(n => `<span><b>${esc(n.name)}</b> ${n.n} reviews · ${rvS(n.avg)}</span>`).join('')}</div><div class="note" style="font-size:10px;color:var(--faint);margin-top:6px">Spellings are kept as customers wrote them, so one person can show twice.</div>` : '<div class="none">No names mentioned often enough yet.</div>';
+  parts.push(`<div class="sBars dRow" style="margin-top:18px"><div><h4>Dishes mentioned · all years, pushes left out · bar colour is their average</h4>${dishRows}</div><div><h4>Staff customers name</h4>${nameRows}
+    ${rv.praise.length ? `<h4 style="margin-top:16px">Recent five-star words</h4>${rv.praise.map(p => `<div class="rvQ" style="margin-bottom:8px">“${esc(p.text)}” <span class="z">${rvD(p.at)}</span></div>`).join('')}` : ''}</div></div>`);
+  if (rv.unanswered.length) parts.push(`<div class="sBars" style="margin-top:18px"><div style="grid-column:1/-1"><h4>Reply to these first · one and two stars in the last six months with no reply, newest first</h4>
+    <ul class="dFail">${rv.unanswered.map(u => `<li><b>${u.stars}★ · ${rvD(u.at)}</b> · ${esc(u.text)}</li>`).join('')}</ul></div></div>`);
+  parts.push(`<div class="note" style="font-size:10.5px;color:var(--faint);margin-top:12px">From Google's own export, filed ${rvD(rv.filedAt)}. Reviews Google filtered out are not in it, so Maps can show a slightly different average. Reviewer names are not kept. To refresh it: takeout.google.com, pick Google Business Profile, and leave the zip in Downloads; the office files it within ten minutes.</div>`);
   return parts.join('');
 }
 // Items (V3.12, 30 Oct): the Deliverect agent's top-items lists, one per app and period. Item sales are base price times units (no fees,
@@ -1968,6 +2037,7 @@ function renderPos(el, cur, d) {
     <div class="sK"><div class="v">${(t.orders || 0).toLocaleString('en-GB')}</div><div class="l">Orders · ${mName(hr.latest)}</div>${t.ordersVsPrev == null ? '' : `<div class="d ${t.ordersVsPrev >= 0 ? 'up' : 'dn'}">${t.ordersVsPrev >= 0 ? '▲' : '▼'} ${Math.abs(t.ordersVsPrev).toFixed(1)}% ${esc(t.vsNote)}</div>`}</div>
     <div class="sK"><div class="v">${t.avg == null ? '—' : c + t.avg.toFixed(2)}</div><div class="l">Average order</div></div></div>`);
   if (d.delivery && d.delivery.available) parts.push(deliveryTease(cur, d, Y, c) + fixCard(cur, true));
+  if (d.reviews && d.reviews.available) parts.push(reviewsTease(cur, d.reviews));
   if (Y) parts.push(yoyCharts(Y, c));
   if (hr) {
     if (!Y) {
@@ -2103,8 +2173,9 @@ function renderSales() {
   const el = $('salesPanel'); if (!el || !isDash(S.cat)) return;
   const [, dashId, sub] = /^dash-(.+?)(?:--(\w+))?$/.exec(S.cat) || [];
   const cur = (S.dash || []).find(x => x.id === dashId), d = cur && cur.data;
-  $('dashTitle').textContent = cur ? cur.name + (sub === 'delivery' ? ' · Delivery' : '') : 'Dashboard';
+  $('dashTitle').textContent = cur ? cur.name + (sub === 'delivery' ? ' · Delivery' : sub === 'reviews' ? ' · Reviews' : '') : 'Dashboard';
   if (!cur) { el.innerHTML = '<div class="none" style="padding:14px">Loading…</div>'; return; }
+  if (sub === 'reviews') { el.innerHTML = d && d.reviews && d.reviews.available ? reviewsPanel(d.reviews) : '<div class="none" style="padding:14px">No Google reviews yet. Export the Business Profile from takeout.google.com and leave the zip in Downloads.</div>'; return; }
   if (!d || !d.available) { el.innerHTML = `<div class="sHead"><b>${esc(cur.name)}</b><span class="note">No sales data yet</span></div><div class="none">Drop the reports into the office upload box (a zip of the monthly reports works) and this page fills itself in.</div>`; return; }
   if (sub === 'delivery') { el.innerHTML = d.delivery && d.delivery.available ? fixCard(cur) + deliveryPanel(d, d.yoy && d.yoy.ytd ? d.yoy : null, d.currency || '£') : '<div class="none" style="padding:14px">No delivery orders yet. Upload a Deliverect order export into the office.</div>'; return; }
   if (d.kind === 'pos') return renderPos(el, cur, d);

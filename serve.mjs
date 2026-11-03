@@ -66,6 +66,7 @@ import * as attention from './attention.mjs'; // V3.12: which Claude Code sessio
 import * as fixes from './fix.mjs'; // V3.12: the month's fix for a client restaurant, from all of its dashboard data
 import * as ubereats from './ubereats.mjs'; // V3.12: Uber Eats Manager exports (order accuracy, downtime, pauses), kept raw in data/ubereats/
 import * as deliverect from './deliverect.mjs'; // V3.12: delivery orders from Deliverect exports, kept raw in data/deliverect/
+import * as reviews from './reviews.mjs'; // V3.13: Google reviews from a Business Profile Takeout, filed in data/reviews/
 import * as trackers from './trackers.mjs';
 import { kickWorkers } from './kickworkers.mjs';
 import * as storage from './storage.mjs';
@@ -855,8 +856,16 @@ function dashboardsData() {
     if (d.stardog && data && data.available) { try { data.stardog = JSON.parse(fs.readFileSync(path.join(DATA, path.basename(String(d.stardog))), 'utf8')); } catch {} }
     return data;
   };
-  return defs.map(d => ({ id: String(d.id), name: String(d.name || d.id), fix: fixes.latest(DATA, String(d.id)), data: withStarDog(d, d.kind === 'pos' ? withDelivery(d, posData.build(tillNotes, { match: d.match })) : salesData.build(notes, { match: d.match })) }));
+  const withReviews = (d, data) => { // V3.13: its Google reviews, whether or not the sales numbers are in yet
+    try { const rv = reviews.build(DATA, { match: d.match }); if (rv.available) { data = data || { available: false }; data.reviews = rv; } } catch (e) { console.warn('reviews:', e.message); }
+    return data;
+  };
+  return defs.map(d => ({ id: String(d.id), name: String(d.name || d.id), fix: fixes.latest(DATA, String(d.id)), data: withReviews(d, withStarDog(d, d.kind === 'pos' ? withDelivery(d, posData.build(tillNotes, { match: d.match })) : salesData.build(notes, { match: d.match }))) }));
 }
+// a Google Takeout of the Business Profile dropped in Downloads files itself (each zip read once), at start and every ten minutes
+const reviewMatches = () => (Array.isArray(cfg.aios?.dashboards) ? cfg.aios.dashboards : []).map(d => d.match).filter(Boolean);
+const scanReviews = () => reviews.importDownloads(DATA, reviewMatches()).then(done => done.forEach(d => console.log(`★ reviews: ${d.location}, ${d.total} reviews (${d.added} new) filed for the dashboard`))).catch(e => console.warn('reviews:', e.message));
+scanReviews(); setInterval(scanReviews, 10 * 60 * 1000).unref();
 // the month's fix for one dashboard (fix.mjs): the evidence is worked out here, the model picks and writes the action
 async function makeFix(id) {
   const d = dashboardsData().find(x => x.id === id);

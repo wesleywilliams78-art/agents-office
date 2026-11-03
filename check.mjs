@@ -248,6 +248,28 @@ await step('delivery: Uber Eats Manager reports merge across weeks, count inaccu
   fs.rmSync(tmp, { recursive: true, force: true });
   return 'Uber files picked up from Downloads once · an order in two weeks\' files counts once · inaccurate as Uber counts it · a side missing from a meal is a side · rated week by week · 12-month table, leaderboard and grids read · scorecard filed from the Monday block · the fix reads back';
 });
+await step('reviews: a Business Profile Takeout files only the matching location, keeps no reviewer names, merges by id, and finds a review push', async () => { // V3.13
+  const rv = await import('./reviews.mjs'); const os = await import('node:os');
+  const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'rv-')), G = 'Takeout/Google Business Profile/account-1/';
+  const listing = name => JSON.stringify({ attributes: [{ id: { attributeType: 'LISTING_NAME' }, values: [{ datum: { listingName: { text: name } } }] }] });
+  const r = (id, at, s, text, reply) => ({ name: 'accounts/1/locations/2/reviews/' + id, reviewer: { displayName: 'Private Person' }, starRating: s, createTime: at, comment: text, reviewReply: reply ? { comment: reply, updateTime: at } : undefined });
+  const spread = Array.from({ length: 36 }, (_, i) => r('s' + i, new Date(Date.UTC(2023, i, 10)).toISOString(), i % 9 ? 'FIVE' : 'ONE', i % 9 ? 'Lovely food, Mohsin was great' : 'Cold chips and a wrong order'));
+  const push = Array.from({ length: 40 }, (_, i) => r('p' + i, `2026-02-${String(8 + (i % 5)).padStart(2, '0')}T12:00:00Z`, 'FIVE', 'Great'));
+  const files = [{ path: G + 'location-2/additionalData.json', text: listing('Test Diner (High St)') }, { path: G + 'location-2/reviews.json', text: JSON.stringify({ reviews: [...spread, ...push] }) },
+    { path: G + 'location-2/reviews-2.json', text: JSON.stringify({ reviews: [r('s1', spread[1].createTime, 'FIVE', '(Translated by Google) Very good\n\n(Original)\nMuy bueno', 'Thanks')] }) },
+    { path: G + 'location-9/additionalData.json', text: listing('Someone Else Cafe') }, { path: G + 'location-9/reviews.json', text: JSON.stringify({ reviews: [r('x', '2026-01-01T00:00:00Z', 'ONE', 'no')] }) }];
+  const done = rv.fileTakeout(tmp, files, ['Test Diner']);
+  if (done.length !== 1 || done[0].total !== 76) throw new Error('only the matching location, each review once: ' + JSON.stringify(done));
+  const raw = fs.readFileSync(path.join(rv.dir(tmp), done[0].file), 'utf8');
+  if (/Private Person|displayName|Someone Else/.test(raw)) throw new Error('a reviewer name or another business was filed');
+  if (!raw.includes('"Very good"') || raw.includes('Muy bueno')) throw new Error('the Google translation is kept, the original dropped');
+  if (rv.fileTakeout(tmp, files, ['Test Diner'])[0].added !== 0) throw new Error('a second Takeout adds nothing it already has');
+  const b = rv.build(tmp, { match: 'test diner' });
+  if (!b.available || b.bursts.length !== 1 || b.bursts[0].n !== 40 || b.clean.n !== 36) throw new Error('the February push: ' + JSON.stringify(b.bursts));
+  if (!b.insights.length || !b.themes.find(t => t.key === 'accuracy' && t.neg >= 1) || !b.dishes.length) throw new Error('themes, dishes and opening lines');
+  fs.rmSync(tmp, { recursive: true, force: true });
+  return 'matching location only · no reviewer names · translation kept · merged by id · a review push found and left out of the trend · themes and opening lines';
+});
 await step('needs you: Claude Code hooks mark a session waiting, needing permission or working, read its sidebar title, and skip Telegram and office runs', async () => { // V3.12
   const at = await import('./attention.mjs'), os = await import('node:os'), cp = await import('node:child_process');
   const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'at-')), pdir = path.join(os.homedir(), '.claude', 'projects', 'zz-agents-office-check');
