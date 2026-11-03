@@ -13,17 +13,19 @@ Nothing below is committed. The last commit is f1900ae, which is not pushed. Oth
 
 **Telegram, office side**: done; needs an office restart to be certain.
 - The EMAILS lead could not send the Portugal Stories captions. The plugin's reply tool needs a chat ID, and desks are never given one.
-- New user-scope MCP server `telegram-send` (`connectors/telegram-send/mcp.mjs`): one tool, `telegram_send`, which can only reach the allow-listed chat.
-- `mcp.freshEnv` points `TELEGRAM_STATE_DIR` at the missing folder `data/no-telegram`, so office runs no longer start a plugin copy that competes for the bot. `OFFICE_TELEGRAM_DIR` keeps the real folder for `notify.mjs`.
+- New user-scope MCP server `telegram-send` (`connectors/telegram-send/mcp.mjs`). It has two tools, `telegram_send` and `telegram_send_file`. Both can reach only the allow-listed chat.
+- The Telegram plugin is switched off in `~/.claude/settings.json`, so office runs, `claude mcp list` and desktop sessions never start a copy that competes for the bot. The `TELEGRAM_STATE_DIR` trick in `mcp.freshEnv` was removed (see the listener section).
 - `office.config.local.json` hides and denies `plugin_telegram_telegram`.
 - `npm run check`: 82/82.
 - Still to do:
   - Re-run the matrix card "Send Wesley the three Portugal Stories captions on Telegram". That run is the end-to-end test of `telegram_send`.
   - Then mark the "Supply Wesley's Telegram chat ID" card done.
 
-**Telegram listener**: open, being worked in session `local_c3924384-2a97-4ce5-90da-ef3e2d50543f` ("Telegram listener: why --channels starts no connector").
-- The listener window (scheduled task AgentsOffice-TelegramChannel) starts every MCP server except the Telegram plugin's, so inbound Telegram goes unanswered.
-- Full findings are in memory note `telegram-listener-deaf`.
+**Telegram listener**: fixed by session `local_c3924384-2a97-4ce5-90da-ef3e2d50543f`. Waiting on Wesley's "status" test.
+- Cause: Claude Code's failure cache, `~/.claude/mcp-needs-auth-cache.json`, is shared by every session. Office runs failed the plugin on purpose, which kept the cache entry fresh. Every session, the listener included, then skipped Telegram for 15 minutes, over and over.
+- Fix: only the listener turns the plugin on, with `--settings scripts/telegram-listener.settings.json`. `scripts/telegram-channel.ps1` also clears the cached failure before every launch.
+- Verified: the listener's own bun process holds `bot.pid`, and the plugin log says "Channel notifications registered".
+- Never make the plugin fail on purpose again. Full notes are in memory note `telegram-listener-deaf`.
 - Don't run the desktop-bundled `claude.exe` directly: it installed a native CLI (undone).
 
 **Imran's Diner visit page**: done, by session `local_e8724361-5d1b-4c2c-bfeb-67bfb2310baa`.
@@ -36,7 +38,7 @@ Nothing below is committed. The last commit is f1900ae, which is not pushed. Oth
 ## Next
 
 1. Restart the office (`npm start`). Re-run the Portugal captions card to check that `telegram_send` reaches Wesley.
-2. Let the listener session finish. Then have Wesley send "status" on Telegram to confirm it answers.
+2. Have Wesley send "status" on Telegram to confirm the listener answers.
 3. Commit when Wesley asks:
    - `mcp.mjs`, `notify.mjs`, `connectors/telegram-send/`, `tokens.mjs`, `src/aios.html`
    - `sites/imrans-diner-visit/`
