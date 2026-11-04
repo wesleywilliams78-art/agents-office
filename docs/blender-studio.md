@@ -1,0 +1,5 @@
+# Blender Studio
+
+Moved out of `CLAUDE.md` on 4 Nov 2026; the text below is unchanged. `CLAUDE.md` keeps a one-line pointer to this file.
+
+Blender Studio is separate from the Motion Studio. It handles space, light and camera (first job: hospitality site visualisation), driven from Claude Code in Wesley's open Blender, which he also works in by hand. Blender 5.2 LTS comes from Steam. The add-on `Blender Studio Bridge` (installed by `node connectors/blender-studio/install.mjs`) listens on 127.0.0.1:9877 with a token in `~/.blender-studio/token`. The MCP server `blender-studio` (user scope) runs Python there, with `connectors/blender-studio/sitekit.py` preloaded (block-out). `detailkit.py` adds finishes, surroundings, light and walkthrough cameras for realistic renders, and animations render in a background Blender. **It runs arbitrary Python, so it is in `mcp.deny` and the office agents never get it.** How a site is built: the project skill `.claude/skills/site-visualisation`. Output goes to `output/blender/<project>/` (`layout.py`, renders, `.blend`). Renders can go to the Motion Studio as footage; nothing in Blender Studio writes motion.
