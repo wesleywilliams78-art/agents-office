@@ -32,6 +32,7 @@ The tools live in `videos/manual-magic-ai/university/`. Read its `README.md` bef
 - A native dropdown's list isn't captured on video. Show it inline (`select.size = n`), pick, then fold it back.
 - Voice: **max quality pinned on every call** (64 steps, post-processing), at the script's `pace` (0.9, for viewers whose first language isn't English). The cursor, typing and holds slow to match.
 - Music: `music: { file, gainDb: -24 }` in the script. It's ducked under the voice and faded at both ends. The house bed is `assets/music/warm-piano-pads-long.wav` (Wesley's pick, 2 Nov).
+- Loudness is two-pass (4 Nov 2026). `edit.mjs` measures the whole mix, then applies one fixed gain to −16 LUFS. One-pass `loudnorm` rides its gain, so a quiet opening got turned right up (the bed's chords came out louder than the whoosh). Never go back to one pass.
 - Opening sound: `sting: { file: 'assets/sound/whoosh.wav', peak: 1.9, gainDb: -4 }`, a synthesised whoosh (`assets/sound/whoosh.py`) that builds over the title card and peaks on the cut into the platform. Not a jingle (Wesley, 2 Nov).
 - In Git Bash, never pass `/` as an argument: it becomes a Windows path. Run `discover.mjs` with no path for the Dashboard.
 - Wesley reviews a test video before the real take.
@@ -41,7 +42,7 @@ The tools live in `videos/manual-magic-ai/university/`. Read its `README.md` bef
 - Cursor always visible. It glides with easing and pauses about 0.4 s before each click.
 - One short caption per step, in the bottom bar: navy #042549, orange #f5842c step badge, white Jost.
 - Words: **Category** for the six manual parts (the SOP Board names), **SOP** for a procedure, **never "chapter"**.
-- Length 60 to 120 s. Opening card (2 s): "Manual Magic University · [Section title]". End card (2 s): "Next: [next video title]", where the next video is the next guide section in order.
+- Length 60 to 120 s. **Opening (4.5 s, Penny's feedback 4 Nov 2026): the artwork held completely still for 1.5 s (Wesley's final call), then 3 s of movement.** Manual Magic AI's own artwork ("AI Helps. Humans Decide."), animated by `recorder/opener.mjs`. It is full bleed: `assets/opening-card.py` continues the banner's blue over the whole frame, with the bottom line on top of it (Wesley, 4 Nov). Penny's file as supplied is `assets/opening-card-source.png`. Frame 0 is the artwork untouched. A light rides the trail to the bright node beside the logo, the camera drifts and then rushes into the node, and the node flares to the dashboard's pale blue, which the platform rises out of. The rush follows the whoosh's loudness and the light follows its pitch sweep, so the opening needs no edit per video. `opener: false` in a script brings back the old 2 s title card. End card (2 s): "Next: [next video title]", where the next video is the next guide section in order.
 - Captions and narration may be tightened. Steps and labels must match the screen exactly. Don't claim a platform behaviour the guide doesn't state.
 
 ## Output
