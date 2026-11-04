@@ -503,6 +503,24 @@
   .hx-ghost b { font-weight: 500; letter-spacing: .14em; text-transform: uppercase; font-size: 10.5px; margin-bottom: 4px; color: var(--grey); }
   .hx-key { display: flex; flex-wrap: wrap; gap: 8px 22px; margin: 16px 4px 0; color: var(--grey); font-size: 11.5px; } .hx-key span { display: inline-flex; align-items: center; gap: 7px; }
   .hx-key .ln { width: 22px; border-top: 2px solid var(--ink); } .hx-key .ln.d { border-top: 2px dashed var(--faint); }
+  .hx-desk.sel { border-color: var(--ink); box-shadow: 0 0 0 1px var(--ink); }
+  .hxt { margin-bottom: 22px; } .hxt-f { font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--grey); align-self: center; margin-right: 4px; }
+  .hxt-row { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 14px; align-items: stretch; }
+  .hxt-col { position: relative; padding: 16px 16px 14px; border: 1px solid var(--line); border-radius: 22px; background: var(--card, var(--panel)); display: flex; flex-direction: column; min-width: 0; }
+  .hxt-col::after { content: ''; position: absolute; right: -11px; top: 26px; width: 0; height: 0; border-top: 6px solid transparent; border-bottom: 6px solid transparent; border-left: 7px solid var(--faint); z-index: 1; } .hxt-col:last-child::after { display: none; }
+  .hxt-col.has { border-color: color-mix(in srgb, var(--ok) 55%, var(--line)); } .hxt-col.need { border-color: var(--hx-need); box-shadow: 0 0 0 1px var(--hx-need), 0 10px 26px -14px var(--hx-need); }
+  .hxt-col.soon { border-style: dashed; background: transparent; }
+  .hxt-h { display: flex; align-items: baseline; gap: 8px; } .hxt-n { font-size: 10px; letter-spacing: .18em; color: var(--faint); } .hxt-name { font-size: 11px; letter-spacing: .16em; text-transform: uppercase; font-weight: 600; } .hxt-h b { margin-left: auto; font: 300 34px/1 var(--serif); font-variant-numeric: tabular-nums; }
+  .hxt-col.need .hxt-h b { color: var(--hx-need); }
+  .hxt-d { color: var(--faint); font-size: 11.5px; line-height: 1.4; margin: 6px 0 12px; min-height: 48px; }
+  .hxt-l { display: grid; gap: 8px; align-content: start; }
+  .hxt-c { border: 1px solid var(--line); border-radius: 14px; padding: 10px 12px; background: var(--soft); }
+  .hxt-t { font-size: 12.5px; font-weight: 600; line-height: 1.35; overflow-wrap: anywhere; } .hxt-m { display: flex; flex-wrap: wrap; gap: 2px 10px; margin-top: 4px; color: var(--grey); font-size: 11px; }
+  .hxt-b { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 7px; } .hxt-b .tag.rw { color: var(--warn); border-color: color-mix(in srgb, var(--warn) 55%, transparent); }
+  .hxt-c .btn { display: inline-block; margin-top: 8px; font-size: 10px; letter-spacing: .12em; }
+  .hxt-e { color: var(--faint); font-size: 12px; padding: 4px 2px; }
+  @media (max-width: 1380px) { .hxt-row { grid-template-columns: repeat(2, minmax(0, 1fr)); } .hxt-col::after { display: none; } }
+  @media (max-width: 860px) { .hxt-row { grid-template-columns: 1fr; } }
   @media (max-width: 760px) { .hx { padding: 18px 12px 16px; } .hx-node { padding: 16px; } .hx-node .hx-t { font-size: 26px; } .hx-link span { left: calc(50% + 28px); max-width: 24ch; } .hx-desks { grid-template-columns: 1fr; } }
   @media (prefers-reduced-motion: reduce) { .hx-node.on .hx-pulse, .hx-desk.on .hx-pulse, .hx-link.flow i.dn { animation: none; } }
   .needs { margin-bottom: 18px; } .needs .nHead, .week .nHead { display: flex; align-items: baseline; flex-wrap: wrap; gap: 6px 12px; margin: 0 4px 10px; } .week .z { color: var(--faint); font-size: 12px; } .needs .k, .week .k { font-size: 10.5px; letter-spacing: .14em; text-transform: uppercase; color: var(--ink); font-weight: 600; } .needs .z { color: var(--faint); font-size: 12px; }
@@ -904,6 +922,7 @@
     </svg>
   </div>
   <div class="hx" id="hx" data-cat="hierarchy"></div>
+  <section class="hxt" id="hxTrail" data-cat="hierarchy"></section>
 
   <section id="socialSec" data-cat="social">
     <div class="sh">
@@ -1139,7 +1158,7 @@ function foldSubnav(animate) {
   if (open) [...nav.children].forEach((b, i) => b.animate([{ opacity: 0, transform: 'translateY(-8px)' }, { opacity: 1, transform: 'none' }], { duration: 520, delay: 90 + i * 80, easing: SPRING, fill: 'backwards' }));
 }
 // 2. the chosen category arrives in sequence: the old view steps back fast, the title reveals upward, the cards rise one after another
-const CARD = '.hero, .kpi, .panel, .dept, .client, .quad, .sk, .col, .news, .bpanel, .skkpi, .hx-node, .hx-bay';
+const CARD = '.hero, .kpi, .panel, .dept, .client, .quad, .sk, .col, .news, .bpanel, .skkpi, .hx-node, .hx-bay, .hxt-col';
 function arrive() {
   if (!moving()) return;
   const shown = [...document.querySelectorAll('[data-cat]:not(.cat-off)')];
@@ -2784,17 +2803,17 @@ loadTrackers(); setInterval(() => { if (!document.hidden && !Object.values(S.tkB
    Own ids (hx*), own open-desk set, data-hseat; Roles is untouched. render() calls window.renderHierarchy(). Page helpers used: S, DEPTS, MODEL, esc, ago, seatState, readiness, roleSkills. */
 (() => {
   const PILOT = ['marketing'];
-  const open = new Set(), el = id => document.getElementById(id);
+  let sel = ''; const el = id => document.getElementById(id); // sel: the desk picked in the chart; it opens and filters the trail
   const COL = { doing: 'var(--ok)', waiting: 'var(--hx-need)', error: 'var(--bad)', idle: 'var(--faint)' };
   const TXT = { doing: 'Working', waiting: 'Waiting on you', error: 'Last run failed', idle: 'Idle' };
   let chiefBusy = false, chiefAt = 0;
   const node = (cls, sc, on, k, status, title, sub, extra = '', style = '') => `<div class="hx-node ${cls}${on ? ' on' : ''}" style="--sc:${sc};${style}"><div class="hx-k">${k}<span class="hx-st"><i class="hx-pulse"></i>${status}</span></div><div class="hx-t">${title}</div><div class="hx-s">${sub}</div>${extra}</div>`;
   const link = (live, hot, label, sub, colour) => `<div class="hx-link${live ? ' flow' : ''}${hot ? ' hot' : ''}" style="--lc:${colour || 'var(--faint)'}"><i class="dn"></i><i class="up"></i><span><b>${label}</b>${sub}</span></div>`;
   function desk(a) {
-    const st = seatState(a), k = st.key, isOpen = open.has(a.id), r = readiness(a), office = S.health?.model || 'sonnet';
+    const st = seatState(a), k = st.key, isOpen = sel === a.id, r = readiness(a), office = S.health?.model || 'sonnet';
     const last = st.doing ? 'Now: ' + esc(st.doing.title) : st.waiting ? 'Waiting on you: ' + esc(st.waiting.title) : st.last ? `Last: ${esc(st.last.title)} · ${ago(st.last.doneAt)}` : 'No work yet.';
     const model = a.model ? `${MODEL[a.model] || a.model} (own)` : `${MODEL[office] || office} (office)`;
-    return `<div class="hx-desk st-${k}${k === 'doing' || k === 'waiting' ? ' on' : ''}" data-hseat="${esc(a.id)}" style="--sc:${COL[k] || COL.idle}">
+    return `<div class="hx-desk st-${k}${k === 'doing' || k === 'waiting' ? ' on' : ''}${isOpen ? ' sel' : ''}" data-hseat="${esc(a.id)}" style="--sc:${COL[k] || COL.idle}">
       <div class="hx-dh"><i class="hx-pulse"></i>${esc(a.name)}<em>${TXT[k] || 'Idle'}</em></div>
       <div class="hx-dr">${esc(a.role)}</div>
       ${isOpen ? `<div class="hx-dd">${esc(a.does)}</div><div class="hx-tags"><span class="tag">${esc(model)}</span>${a.effort ? `<span class="tag">effort ${esc(a.effort)}</span>` : ''}<span class="tag ${a.brief ? 'good' : 'miss'}">${a.brief ? 'BRIEF' : 'NO BRIEF'}</span><span class="tag ${roleSkills(a).length ? 'good' : 'miss'}">${roleSkills(a).length ? 'SKILL: ' + esc(roleSkills(a).join(', ')) : 'NO ROLE SKILL'}</span>${a.lessons ? `<span class="tag">${a.lessons} lesson${a.lessons > 1 ? 's' : ''}</span>` : ''}${(a.tools || []).map(t => `<span class="tag">${esc(t)}</span>`).join('')}</div>` : ''}
@@ -2803,6 +2822,42 @@ loadTrackers(); setInterval(() => { if (!document.hidden && !Object.values(S.tkB
   function pollChief() { // is the Chief of Staff mid-turn? one light read, at most every 4 s, only while this tab is showing
     if (S.cat !== 'hierarchy' || Date.now() - chiefAt < 4000) return; chiefAt = Date.now();
     fetch('/api/assistant').then(r => r.json()).then(j => { const b = !!j.busy; if (b !== chiefBusy) { chiefBusy = b; renderHierarchy(); } }).catch(() => {});
+  }
+  // ---- the trail: where each open task of the pilot departments is, in five stages ----
+  const STAGES = [
+    ['Chief of Staff', 'Added by the chief, queued or booked for a date'],
+    ['Lead', 'The lead is planning the pieces or writing the final'],
+    ['Agents', 'A desk is working on it'],
+    ['Lead review', 'The lead checks the desk’s work and bounces it back, twice at most, then escalates to you'],
+    ['Awaiting you', 'Written and waiting for your OK. Nothing goes out without it'],
+  ];
+  const pieces = t => (t.team && Array.isArray(t.team.pieces)) ? t.team.pieces : [];
+  const stageOf = t => {
+    if (t.state === 'waiting') return 4;
+    if (t.state === 'next' || t.state === 'scheduled') return 0;
+    if (t.state !== 'doing') return -1;
+    if (!t.team) return 2;
+    const p = pieces(t); return (!p.length || p.every(x => x.state === 'done')) ? 1 : 2;
+  };
+  const mine = (t, id) => t.agent === id || pieces(t).some(p => p.agent === id);
+  function taskCard(t, stage) {
+    const a = agentBy(t.agent), p = pieces(t), done = p.filter(x => x.state === 'done').length;
+    const badges = [];
+    if (t.state === 'scheduled' && t.dueAt) badges.push(`<span class="tag">Books ${esc(when(t.dueAt))}</span>`);
+    if (t.team) badges.push(`<span class="tag">TEAM${p.length ? ` ${done}/${p.length}` : ''}</span>`);
+    if (t.revisions && stage !== 4) badges.push(`<span class="tag rw">Rework · round ${t.revisions + 1}</span>`);
+    if (t.revisions && stage === 4) badges.push(`<span class="tag">Revision ${t.revisions + 1}</span>`);
+    const since = stage === 4 ? t.waitingAt : t.startedAt || t.addedAt;
+    return `<div class="hxt-c"><div class="hxt-t">${esc(t.title)}</div><div class="hxt-m"><span>${esc(a ? a.name : t.agent)}</span>${since ? `<span>${ago(since)}</span>` : ''}</div>${badges.length ? `<div class="hxt-b">${badges.join('')}</div>` : ''}${stage === 4 ? `<a class="btn" href="/#review=${encodeURIComponent(t.id)}" target="agentsOffice">REVIEW IN THE OFFICE ↗</a>` : ''}</div>`;
+  }
+  function renderTrail(blocks) {
+    const box = el('hxTrail'); if (!box) return;
+    const depts = new Set(blocks.map(b => b.d)), seat = sel && agentBy(sel);
+    const open = S.tasks.filter(t => depts.has(t.dept) && stageOf(t) >= 0 && (!sel || mine(t, sel)));
+    const by = [0, 1, 2, 3, 4].map(i => open.filter(t => stageOf(t) === i).sort((a, b) => (a.startedAt || a.addedAt || 0) - (b.startedAt || b.addedAt || 0)));
+    const today = S.tasks.filter(t => depts.has(t.dept) && t.state === 'done' && !t.closed && t.doneAt && new Date(t.doneAt).toDateString() === new Date().toDateString() && (!sel || mine(t, sel))).length;
+    box.innerHTML = `<div class="sh"><h2>Task trail</h2><span class="note">Every open ${[...depts].map(d => esc(DEPTS[d].name.toLowerCase())).join(' and ')} task, in the stage it is in now. ${open.length} open · ${today} done today.</span>${seat ? `<div class="tools"><span class="hxt-f">Showing ${esc(seat.name)}</span><button type="button" data-hxclear>SHOW ALL DESKS</button></div>` : ''}</div>
+      <div class="hxt-row">${STAGES.map(([n, d], i) => `<div class="hxt-col${i === 3 ? ' soon' : ''}${by[i].length ? ' has' : ''}${i === 4 && by[i].length ? ' need' : ''}"><div class="hxt-h"><span class="hxt-n">0${i + 1}</span><span class="hxt-name">${n}</span><b>${by[i].length}</b></div><div class="hxt-d">${d}</div><div class="hxt-l">${by[i].map(t => taskCard(t, i)).join('') || `<div class="hxt-e">${i === 3 ? 'Not built yet. Today a desk’s work goes straight to you.' : 'Nothing here.'}</div>`}</div></div>`).join('')}</div>`;
   }
   window.renderHierarchy = function renderHierarchy() {
     if (!el('hx')) return; pollChief();
@@ -2834,8 +2889,9 @@ loadTrackers(); setInterval(() => { if (!document.hidden && !Object.values(S.tkB
     el('hx').innerHTML = tops + link(peBusy, false, 'The brief, once you say yes', 'Sent as written, with your decisions', peBusy ? 'var(--ok)' : 'var(--faint)') + chief
       + link(chiefBusy || anyLive, false, 'Adds the task to the right desk', 'The Chief of Staff picks the department', (chiefBusy || anyLive) ? 'var(--ok)' : 'var(--faint)') + chain
       + `<div class="hx-key"><span><i class="ln"></i>Assign and feedback, down</span><span><i class="ln d"></i>Sign-off, up</span><span><i class="hx-pulse" style="--sc:var(--ok)"></i>Being worked</span><span><i class="hx-pulse" style="--sc:var(--hx-need)"></i>Needs you</span><span><i class="hx-pulse" style="--sc:var(--bad)"></i>Last run failed</span><span><i class="hx-pulse" style="--sc:var(--faint)"></i>Idle</span><span>Lead sign-off is not approval to send. Only you approve.</span></div>`;
+    renderTrail(blocks);
   };
-  document.addEventListener('click', e => { const s = e.target.closest('[data-hseat]'); if (!s) return; const id = s.dataset.hseat; open.has(id) ? open.delete(id) : open.add(id); renderHierarchy(); });
+  document.addEventListener('click', e => { const s = e.target.closest('[data-hseat]'); if (s) { const id = s.dataset.hseat; sel = sel === id ? '' : id; renderHierarchy(); return; } if (e.target.closest('[data-hxclear]')) { sel = ''; renderHierarchy(); } });
   if (S.agents.length) renderHierarchy();
 })();
 </script>
