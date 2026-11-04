@@ -70,6 +70,7 @@ import * as reviews from './reviews.mjs'; // V3.13: Google reviews from a Busine
 import * as trackers from './trackers.mjs';
 import { kickWorkers } from './kickworkers.mjs';
 import * as storage from './storage.mjs';
+import * as peMod from './promptengineer.mjs'; // 4 Nov 2026: the Prompt Engineer, in front of the Chief of Staff in the panel
 import * as tokens from './tokens.mjs'; // 3 Nov 2026: what the tokens go on (the AIOS Tokens section); every Claude run here is written to data/tokens.jsonl
 import * as notify from './notify.mjs';
 import * as weekpack from './weekpack.mjs';
@@ -387,6 +388,7 @@ async function motionTurn(text, onEvent) {
 const LOCAL_HOST = /^(localhost|127\.0\.0\.1|\[::1\])(:\d+)?$/i;
 // the assistant can start work, so a web page you happen to have open must not be able to talk to it: same-machine pages only (or a host you list in office.config.json "assistant.allowHosts")
 const assistantAllowed = req => { const host = String(req.headers.host || ''), extra = Array.isArray(cfg.assistant?.allowHosts) ? cfg.assistant.allowHosts : []; if (!LOCAL_HOST.test(host) && !extra.includes(host)) return false; const o = req.headers.origin; if (!o) return true; try { const u = new URL(o); return LOCAL_HOST.test(u.host) || extra.includes(u.host); } catch { return false; } };
+let peBusy = false; // the Prompt Engineer: one at a time
 let assistantBusy = false, assistantEmit = null; // assistantEmit: the open panel conversation, so a task the Chief of Staff adds can show up as a chip at once
 const attachNote = list => (Array.isArray(list) ? list : []).slice(0, 6).map(a => ({ note: String(a?.note || '').replace(/[\r\n`]/g, ' ').trim().slice(0, 140), filename: String(a?.filename || '').replace(/[\r\n`]/g, ' ').trim().slice(0, 120) })).filter(a => /^Upload - /.test(a.note))
   .map(a => `\n[Attached by Wesley: "${a.filename || a.note}" is in the Brain as the note \`${a.note}\`. Name that note, in backticks, inside the text of any task you add about it, so the desk reads it.]`).join('');
@@ -1476,8 +1478,24 @@ const server = http.createServer(async (req, res) => {
       if (url.pathname === '/api/assistant' && req.method === 'GET') return json(res, 200, { messages: assistantMod.load(DATA).slice(-40), busy: assistantBusy });
       if (url.pathname === '/api/assistant/clear' && req.method === 'POST') { assistantMod.clear(DATA); return json(res, 200, { ok: true }); }
       if (req.method !== 'POST') return json(res, 405, { error: 'GET or POST' });
-      const b = await body(req), text = (String(b.text || '').trim().slice(0, 3400) + attachNote(b.attachments)).trim(), surface = b.surface === 'telegram' ? 'telegram' : 'panel';
+      const b = await body(req), text = (String(b.text || '').trim().slice(0, b.engineered ? 9000 : 3400) + attachNote(b.attachments)).trim(), surface = b.surface === 'telegram' ? 'telegram' : 'panel'; // a brief from the prompt engineer runs longer
       if (!text) return json(res, 400, { error: 'say something first' });
+    // 4 Nov 2026: the Prompt Engineer (promptengineer.mjs), the step in front of the Chief of Staff in the panel. It returns a brief and up to three
+    // yes/no proposals; the page applies Wesley's answers and sends the brief on to /api/assistant. Read-only Brain tools, nothing else; it adds no task.
+    if (url.pathname === '/api/prompt-engineer' && req.method === 'POST') {
+      if (!assistantAllowed(req)) return json(res, 403, { error: 'the prompt engineer answers only to the office page on this computer' });
+      const b = await body(req), request = (String(b.text || '').trim().slice(0, 9000) + attachNote(b.attachments)).trim();
+      if (!request) return json(res, 400, { error: 'say something first' });
+      if (peBusy) return json(res, 429, { error: 'the prompt engineer is still on your last message' });
+      peBusy = true;
+      try {
+        const roster = AGENTS.map(x => `${x.id} · ${x.name} · ${x.department}${x.lead ? ' (lead)' : ''} · ${String(x.does || '').slice(0, 110)}`).join('\n');
+        const r = await peMod.engineer({ request, roster, onResult: j => spent({ kind: 'prompt-engineer' }, tokens.fromResult(j, ranOn(j.modelUsage, peMod.MODEL))) });
+        console.log(`✍ prompt engineer: ${request.slice(0, 60)} · ${r.result.status}${r.result.proposals?.length ? ' · ' + r.result.proposals.length + ' proposal(s)' : ''}`);
+        return json(res, 200, r.result);
+      } catch (e) { console.warn('prompt engineer:', e.message); return json(res, 500, { error: e.message }); }
+      finally { peBusy = false; }
+    }
       if (assistantBusy) return json(res, 429, { error: 'still working on your last message: give it a moment' });
       assistantBusy = true;
       if (b.stream) res.writeHead(200, { 'content-type': 'application/x-ndjson; charset=utf-8', 'cache-control': 'no-cache' });

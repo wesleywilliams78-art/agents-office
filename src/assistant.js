@@ -8,6 +8,7 @@
 // The MOTION STUDIO tab is a second conversation in the same panel, with the Motion Director (motion.mjs, /api/motion): it shows the
 // contact sheets and drafts as they are made and plays the final video.
 import { linkify, wireLinks } from './links.js';
+import { applyAnswers, briefText, FIELDS } from './promptbrief.js';
 const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
 const CSS = `
@@ -67,6 +68,17 @@ body.cos #tpanel .tp-cos { display: block; } #tpanel .tp-cos small { display: bl
 #asst .a-m[hidden] { display: none; } #asst.mo .a-clip, #asst.mo .a-c, #asst.mo .a-at { display: none; }
 #asst .a-n { align-self: flex-start; font-size: 12px; opacity: .7; padding: 2px 4px; border-left: 2px solid #EC3013; padding-left: 8px; max-width: 92%; }
 #asst .a-v { align-self: stretch; } #asst .a-v video, #asst .a-v img { display: block; width: 100%; max-height: 62vh; object-fit: contain; background: #111; border-radius: 8px; } #asst .a-v small { display: block; font-size: 10.5px; opacity: .55; margin-top: 3px; word-break: break-all; }
+/* the Prompt Engineer card (4 Nov 2026): the problem, the fix, what yes and no do, and one YES / NO per line */
+#asst .a-h { grid-template-columns: minmax(0, 1fr) auto auto auto; grid-template-areas: "tabs tabs tabs tabs" "sub pe new x"; }
+#asst .a-h [data-pe] { grid-area: pe; } #asst .a-h [data-pe].off { opacity: .5; } #asst.mo .a-h [data-pe] { visibility: hidden; }
+#asst .pe .rb { margin: 0 0 8px; line-height: 1.45; }
+#asst .pe .p { border-top: 1px solid var(--hairline, rgba(21,20,20,.15)); padding: 9px 0 8px; } body.dark #asst .pe .p { border-color: rgba(236,234,227,.15); }
+#asst .pe .pq { font-weight: 600; margin-bottom: 3px; } #asst .pe .pf { margin-bottom: 4px; }
+#asst .pe .px { font-size: 11.5px; opacity: .75; margin: 0 0 7px; display: grid; gap: 2px; }
+#asst .pe .p button.y.on { background: #2E7D4F; border-color: #2E7D4F; color: #fff; } #asst .pe .p button.n.on { background: #B6240E; border-color: #B6240E; color: #fff; }
+#asst .pe details { margin: 4px 0 8px; } #asst .pe summary { cursor: pointer; font-size: 11.5px; opacity: .7; } #asst .pe .bf { white-space: pre-wrap; font-size: 12px; margin-top: 6px; }
+#asst .pe button.go { background: #EC3013; border-color: #EC3013; color: #fff; } #asst .pe button.go[disabled] { opacity: .4; }
+#asst .a-b.u details summary { cursor: pointer; } #asst .a-b.u details div { white-space: pre-wrap; font-size: 12px; margin-top: 6px; opacity: .85; }
 #asstBtn { position: fixed; left: 18px; bottom: 58px; z-index: 55; background: #201E1D; color: #F3F2F2; border: 0; border-radius: 99px; padding: 10px 16px; font: 700 11px/1 var(--ui, sans-serif); letter-spacing: .12em; cursor: pointer; box-shadow: 0 6px 24px rgba(0,0,0,.28); }
 body.dark #asstBtn { background: #ECEAE3; color: #151414; } #asstBtn kbd { opacity: .55; font: inherit; margin-left: 6px; }
 `;
@@ -91,7 +103,7 @@ const QUICK_HELP = '**Quick add, no model call:** `/task <department> <what to d
 export function initAssistant({ refresh = () => {} } = {}) {
   const st = document.createElement('style'); st.textContent = CSS; document.head.appendChild(st);
   const root = document.createElement('div'); root.id = 'asst';
-  root.innerHTML = `<div class="a-h"><div class="a-t"><div class="a-tabs"><span class="a-tab on" data-tab="cos">Chief of Staff</span><span class="a-tab" data-tab="motion">Chief of Content</span></div><small style="margin-top:8px">Same conversation on Telegram</small></div><button data-new title="Start a fresh conversation">NEW</button><button data-x title="Close (Esc)">CLOSE</button></div>
+  root.innerHTML = `<div class="a-h"><div class="a-t"><div class="a-tabs"><span class="a-tab on" data-tab="cos">Chief of Staff</span><span class="a-tab" data-tab="motion">Chief of Content</span></div><small style="margin-top:8px">Same conversation on Telegram</small></div><button data-pe title="The prompt engineer checks each request first and asks you yes or no on anything it would fix. Click to switch it off or on.">ENGINEER ON</button><button data-new title="Start a fresh conversation">NEW</button><button data-x title="Close (Esc)">CLOSE</button></div>
     <div class="a-m" data-m="cos"></div><div class="a-m" data-m="motion" hidden></div><div class="a-c"></div><div class="a-at"></div>
     <div class="a-f"><button class="a-clip" title="Attach a document or image (PDF, Word, PowerPoint, Excel, .zip of any of these, .txt, .md, .csv, .png, .jpg): it is read into the Brain and the desk is told which note to read">📎</button><input type="file" class="a-file" multiple hidden accept=".zip,.pdf,.docx,.doc,.docm,.pptx,.ppt,.xlsx,.xls,.xlsm,.odt,.ods,.odp,.rtf,.epub,.csv,.txt,.md,.png,.jpg,.jpeg,.webp,.gif"><textarea rows="1" placeholder="Tell the office what to do, or ask. /task sales … adds one directly."></textarea><button class="a-go">SEND</button></div>
     <div class="a-drop">Drop a file here<br>and I will read it and pass it to the right desk</div>`;
@@ -188,7 +200,10 @@ export function initAssistant({ refresh = () => {} } = {}) {
     if (loaded) return; loaded = true;
     try {
       const j = await (await fetch('/api/assistant')).json();
-      const showUser = t => esc(String(t).replace(/\n*\[Attached by Wesley: "([^"]*)"[^\]]*\]/g, '\n\u{1F4CE} $1')).replace(/\n/g, '<br>'); // the note line the office adds for the model shows as just the file name
+      const showUser = t => { // the note line the office adds for the model shows as just the file name; a prompt-engineer brief folds away behind its read-back
+        if (/^BRIEF \(approved by Wesley/.test(String(t))) { const rb = (/\nRead-back: (.*)/.exec(t) || [])[1] || 'brief sent'; return `<details><summary>✍ Brief sent: ${esc(rb)}</summary><div>${esc(t)}</div></details>`; }
+        return esc(String(t).replace(/\n*\[Attached by Wesley: "([^"]*)"[^\]]*\]/g, '\n\u{1F4CE} $1')).replace(/\n/g, '<br>');
+      };
       for (const m of j.messages || []) bubble(m.who === 'user' ? 'u' : 'a', m.who === 'user' ? showUser(m.text) : md(m.text));
       if (!(j.messages || []).length) bubble('a', md('Hello. Tell me what you want done, or ask me anything about the office: a Reel, the content week, a quick LinkedIn update, a document to digest (use the paperclip). I add it to the right desk and it waits for your review. For a direct add, type `/task sales …`.'));
     } catch { bubble('e', 'The chief of staff needs the office running. Start it with npm start, then open this page from http://localhost:4520.'); }
@@ -210,11 +225,68 @@ export function initAssistant({ refresh = () => {} } = {}) {
     if (/^\/task\b/i.test(text)) { bubble('u', esc(text).replace(/\n/g, '<br>')); await quickAdd(text); busy = false; G.disabled = false; T.focus(); return; }
     if (!text) text = 'Have a look at the attached file and tell me what you would do with it.';
     bubble('u', esc(text).replace(/\n/g, '<br>') + ok.map(a => `<br>📎 ${esc(a.filename)}`).join(''));
+    atts = atts.filter(a => a.state !== 'ok'); drawAtts();
+    if (peOn() && !CHIPS.includes(text)) { busy = false; G.disabled = false; return engineerFirst(text, ok); }
+    busy = false; return toChief(text, ok);
+  }
+
+  /* ---------- the Prompt Engineer (4 Nov 2026): every request is checked first. It comes back with a brief and up to three proposals,
+     each one problem, one fix, what yes and no do. Wesley answers YES or NO; the brief with his answers goes to the Chief of Staff. ---------- */
+  const PE_KEY = 'cc.promptEngineer';
+  const peOn = () => { try { return localStorage.getItem(PE_KEY) !== 'off'; } catch { return true; } };
+  const PEB = root.querySelector('[data-pe]');
+  const drawPe = () => { PEB.textContent = peOn() ? 'ENGINEER ON' : 'ENGINEER OFF'; PEB.classList.toggle('off', !peOn()); };
+  PEB.addEventListener('click', () => { try { localStorage.setItem(PE_KEY, peOn() ? 'off' : 'on'); } catch {} drawPe(); });
+  drawPe();
+  const DEPT_NAME = { emails: 'Emails', sales: 'Sales', marketing: 'Marketing', ops: 'Operations', fin: 'Accounting', delivery: 'Delivery' };
+  async function engineerFirst(text, ok) {
+    const s = document.createElement('div'); s.className = 'a-s'; s.innerHTML = '<i>●</i> prompt engineer: checking your request against your notes (up to a minute)'; BOX.cos.appendChild(s); BOX.cos.scrollTop = BOX.cos.scrollHeight;
+    let r;
+    try {
+      const res = await fetch('/api/prompt-engineer', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ text, attachments: ok.map(a => ({ note: a.note, filename: a.filename })) }) });
+      r = await res.json().catch(() => ({})); if (!res.ok) throw new Error(r.error || res.statusText);
+    } catch (e) {
+      s.remove();
+      const card = document.createElement('div'); card.className = 'a-card pe';
+      card.innerHTML = `<div class="k">PROMPT ENGINEER</div><div class="rb">It couldn't check this one (${esc(String(e.message || e).slice(0, 120))}). Send your words to the Chief of Staff as they are?</div><div class="r"><button class="go" data-raw>YES, SEND AS IS</button><button data-drop>NO</button></div>`;
+      card.querySelector('[data-raw]').addEventListener('click', () => { card.classList.add('off'); card.querySelectorAll('button').forEach(b => { b.disabled = true; }); toChief(text, ok); });
+      card.querySelector('[data-drop]').addEventListener('click', () => { card.classList.add('off'); card.querySelectorAll('button').forEach(b => { b.disabled = true; }); });
+      BOX.cos.appendChild(card); BOX.cos.scrollTop = BOX.cos.scrollHeight; return;
+    }
+    s.remove();
+    if (r.status === 'pass' || !r.brief) return toChief(text, ok); // a question or chat: straight to the Chief of Staff
+    peCard(text, ok, r);
+  }
+  function peCard(text, ok, r) {
+    const props = Array.isArray(r.proposals) ? r.proposals.slice(0, 3) : [], answers = props.map(() => undefined);
+    const card = document.createElement('div'); card.className = 'a-card pe';
+    const dept = DEPT_NAME[r.department_hint] ? ' · ' + DEPT_NAME[r.department_hint].toUpperCase() : '';
+    card.innerHTML = `<div class="k">PROMPT ENGINEER${dept}</div><div class="rb"></div>
+      ${props.map((p, i) => `<div class="p" data-i="${i}"><div class="pq">${esc(p.problem || '')}</div><div class="pf"><b>I'd like to:</b> ${esc(p.fix || '')}</div><div class="px"><span><b>If yes:</b> ${esc(p.if_yes || '')}</span><span><b>If no:</b> ${esc(p.if_no || 'I leave it as it is.')}</span></div><div class="r"><button class="y" data-a="1">YES</button><button class="n" data-a="0">NO</button></div></div>`).join('')}
+      <details><summary>The brief the desk will work to</summary><div class="bf"></div></details>
+      <div class="r"><button class="go" data-send>SEND TO CHIEF OF STAFF</button><button data-raw title="Skip the brief and send what you typed">SEND MY WORDS AS THEY ARE</button><div class="st"></div></div>`;
+    const q = sel => card.querySelector(sel), go = q('[data-send]'), raw = q('[data-raw]');
+    const draw = () => {
+      const { brief, readback } = applyAnswers(r, answers);
+      q('.rb').innerHTML = `<b>Read-back:</b> ${esc(readback)}`;
+      q('.bf').textContent = FIELDS.map(([k, label]) => { const v = brief[k]; const t = Array.isArray(v) ? v.map(x => '• ' + x).join('\n') : String(v || ''); return t && t.toLowerCase() !== 'none' ? `${label}\n${t}` : ''; }).filter(Boolean).join('\n\n');
+      card.querySelectorAll('.p').forEach(el => { const a = answers[+el.dataset.i]; el.querySelector('.y').classList.toggle('on', a === true); el.querySelector('.n').classList.toggle('on', a === false); });
+      const left = answers.filter(a => a === undefined).length;
+      if (!card.classList.contains('off')) { go.disabled = left > 0; q('.st').textContent = left ? `Answer yes or no ${left === 1 ? 'to the one above' : `to each (${left} left)`}, then send.` : 'Ready. It goes to the Chief of Staff, who adds it to the right desk.'; }
+    };
+    card.querySelectorAll('.p').forEach(el => el.addEventListener('click', e => { const b = e.target.closest('button[data-a]'); if (!b || card.classList.contains('off')) return; answers[+el.dataset.i] = b.dataset.a === '1'; draw(); }));
+    const finish = msg => { card.classList.add('off'); card.querySelectorAll('button').forEach(b => { b.disabled = true; }); q('.st').textContent = msg; };
+    go.addEventListener('click', () => { if (busy) { q('.st').textContent = 'The Chief of Staff is still on your last message. Try again in a moment.'; return; } finish('Sent to the Chief of Staff.'); toChief(briefText(text, r, answers), ok, true); });
+    raw.addEventListener('click', () => { if (busy) { q('.st').textContent = 'The Chief of Staff is still on your last message. Try again in a moment.'; return; } finish('Sent as you typed it.'); toChief(text, ok); });
+    draw(); BOX.cos.appendChild(card); BOX.cos.scrollTop = BOX.cos.scrollHeight;
+  }
+
+  async function toChief(text, ok, engineered = false) {
+    if (busy) return; busy = true; G.disabled = true;
     const s = document.createElement('div'); s.className = 'a-s'; s.innerHTML = '<i>●</i> thinking'; BOX.cos.appendChild(s); BOX.cos.scrollTop = BOX.cos.scrollHeight;
     let changed = false;
     try {
-      const r = await fetch('/api/assistant', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ text, surface: 'panel', stream: true, attachments: ok.map(a => ({ note: a.note, filename: a.filename })) }) });
-      atts = atts.filter(a => a.state !== 'ok'); drawAtts();
+      const r = await fetch('/api/assistant', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ text, surface: 'panel', stream: true, engineered: engineered || undefined, attachments: ok.map(a => ({ note: a.note, filename: a.filename })) }) });
       if (!r.ok || !r.body) { const j = await r.json().catch(() => ({})); throw new Error(j.error || r.statusText); }
       const rd = r.body.getReader(), dec = new TextDecoder(); let buf = '';
       for (;;) {

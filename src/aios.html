@@ -436,6 +436,24 @@
 :root[data-theme="dark"] .seal .lg-l { display: none; } :root[data-theme="dark"] .seal .lg-d { display: block; }
 
   /* the hero: one statement card with two bezier ridges */
+  /* Prompt engineer composer (4 Nov 2026): the box on Overview. Self-contained: its own block of CSS here, its own script at the end. */
+  .pe { padding: 18px 22px; margin-bottom: 18px; }
+  .pe .peh { display: flex; align-items: baseline; flex-wrap: wrap; gap: 6px 12px; margin-bottom: 10px; }
+  .pe .peh .k { font-size: 10.5px; letter-spacing: .14em; text-transform: uppercase; font-weight: 600; } .pe .peh .z { color: var(--faint); font-size: 12px; } .pe .peh button { margin-left: auto; }
+  .pe textarea { width: 100%; min-height: 56px; max-height: 240px; resize: vertical; background: var(--soft); border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; color: var(--ink); line-height: 1.45; }
+  .pe textarea:focus { outline: none; border-color: var(--grey); }
+  .pe .per { display: flex; align-items: center; flex-wrap: wrap; gap: 8px 10px; margin-top: 10px; } .pe .st { color: var(--grey); font-size: 12px; }
+  .pe .pec { border-top: 1px solid var(--line); margin-top: 14px; padding-top: 12px; } .pe .pec.off { opacity: .6; }
+  .pe .pec .rb { margin: 0 0 8px; line-height: 1.45; } .pe .pec .pk { font-size: 10.5px; letter-spacing: .14em; text-transform: uppercase; font-weight: 600; margin-bottom: 6px; }
+  .pe .pp { border-top: 1px solid var(--line); padding: 10px 0 8px; } .pe .pp .pq { font-weight: 600; margin-bottom: 3px; } .pe .pp .pf { margin-bottom: 4px; }
+  .pe .pp .px { font-size: 12px; color: var(--grey); margin: 0 0 8px; display: grid; gap: 2px; }
+  .pe .pp .r, .pe .pec > .r { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+  .pe .pp button.y.on { background: var(--ok); border-color: var(--ok); color: var(--bg); } .pe .pp button.n.on { background: var(--bad); border-color: var(--bad); color: var(--bg); }
+  .pe .pec details { margin: 4px 0 10px; } .pe .pec summary { cursor: pointer; font-size: 12px; color: var(--grey); } .pe .bf { white-space: pre-wrap; font-size: 12px; margin-top: 6px; }
+  .pe button.go { background: var(--ink); color: var(--bg); border-color: var(--ink); } .pe button.go[disabled] { opacity: .4; }
+  .pe .peu { background: var(--soft); border-radius: 10px; padding: 8px 12px; margin: 10px 0 0; white-space: pre-wrap; color: var(--grey); }
+  .pe .pet { border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; margin-top: 10px; } .pe .pet .tk { font-size: 10.5px; letter-spacing: .14em; text-transform: uppercase; color: var(--grey); } .pe .pet .tt { font-weight: 600; margin: 2px 0 6px; }
+  .pe .pea { margin-top: 10px; line-height: 1.5; white-space: pre-wrap; } .pe .pea.err { color: var(--bad); }
   .needs { margin-bottom: 18px; } .needs .nHead, .week .nHead { display: flex; align-items: baseline; flex-wrap: wrap; gap: 6px 12px; margin: 0 4px 10px; } .week .z { color: var(--faint); font-size: 12px; } .needs .k, .week .k { font-size: 10.5px; letter-spacing: .14em; text-transform: uppercase; color: var(--ink); font-weight: 600; } .needs .z { color: var(--faint); font-size: 12px; }
   .week { margin-bottom: 22px; } .wkCal { display: inline-flex; align-items: center; gap: 5px; font-size: 11px; color: var(--ink); } .wkCal i { width: 8px; height: 8px; border-radius: 2px; } .wkCal.bad { color: var(--red, #C8553D); }
   .wkGrid { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 8px; }
@@ -759,6 +777,12 @@
       <path style="opacity:.07" d="M0 150V70C130 28 230 18 350 54S540 112 660 70 820 0 960 44s190 62 290 24 140-36 190-12V150Z"/>
       <path style="opacity:.13" d="M0 150V108C110 80 210 74 320 100S520 138 640 112 800 70 930 96s210 40 320 6 130-22 190-8V150Z"/>
     </svg>
+  </div>
+  <div class="panel pe" id="pe" data-cat="overview">
+    <div class="peh"><span class="k">Ask the office</span><span class="z">The prompt engineer checks it against your notes first. You answer yes or no; the Chief of Staff then adds it to the right desk. Nothing is approved, sent or posted from here.</span><button type="button" id="peTog" title="Engineer off sends your words straight to the Chief of Staff">ENGINEER ON</button></div>
+    <textarea id="peT" rows="2" placeholder="Say what you want done, e.g. plan next week's Instagram and tell me what is waiting on me" aria-label="Ask the office"></textarea>
+    <div class="per"><button type="button" class="go" id="peGo">CHECK AND SEND</button><span class="st" id="peSt">Ctrl+Enter sends.</span></div>
+    <div id="peOut"></div>
   </div>
   <div class="needs" id="needs" data-cat="overview"></div>
   <div class="week" id="week" data-cat="overview"></div>
@@ -2567,6 +2591,126 @@ loadDash(); setInterval(() => { if (!document.hidden) loadDash(); }, 120000);
 loadGcal(); setInterval(() => { if (!document.hidden) loadGcal(); }, 60000);
 setInterval(() => { if (!document.hidden && S.cat === 'tokens') loadTokens(); }, 60000); // Tokens: only while it is open (the server re-reads only what the transcripts added)
 loadTrackers(); setInterval(() => { if (!document.hidden && !Object.values(S.tkBusy || {}).some(Boolean)) loadTrackers(); }, 60000);
+</script>
+<script>
+/* ---------- Ask the office: the prompt engineer in front of the Chief of Staff (4 Nov 2026) ----------
+   Self-contained on purpose (own helpers, nothing from the block above except poll() to refresh the board), so it can move out with the AIOS.
+   Flow: POST /api/prompt-engineer -> brief + up to three yes/no proposals -> Wesley answers -> POST /api/assistant { engineered: true }.
+   applyAnswers and briefText are copies of src/promptbrief.js (the server does not serve /src/*.js); keep the two in step. */
+(() => {
+  const FIELDS = [['outcome', 'Outcome'], ['inputs', 'Inputs'], ['deliverable', 'Deliverable'], ['acceptance', 'Acceptance checks'], ['constraints', 'Constraints'], ['authority', 'Authority'], ['deadline', 'Deadline'], ['assumptions', 'Assumptions']];
+  const DEPT_NAME = { emails: 'Emails', sales: 'Sales', marketing: 'Marketing', ops: 'Operations', fin: 'Accounting', delivery: 'Delivery' };
+  const g = id => document.getElementById(id), x = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const asText = v => Array.isArray(v) ? v.filter(Boolean).map(t => `- ${t}`).join('\n') : String(v || '').trim();
+  function applyAnswers(result, answers = []) {
+    const brief = { ...(result.brief || {}) }; let readback = result.readback || '';
+    (result.proposals || []).forEach((p, i) => { if (answers[i] !== true) return; for (const [k, v] of Object.entries(p.apply || {})) if (FIELDS.some(([f]) => f === k)) brief[k] = v; if (p.readback) readback = p.readback; });
+    return { brief, readback };
+  }
+  function briefText(request, result, answers) {
+    const { brief, readback } = applyAnswers(result, answers);
+    const decided = (result.proposals || []).map((p, i) => `- ${answers[i] ? 'YES' : 'NO'}: ${p.fix}`).join('\n');
+    const body = FIELDS.map(([k, label]) => { const t = asText(brief[k]); return t && t.toLowerCase() !== 'none' ? `${label}:\n${t}` : ''; }).filter(Boolean).join('\n\n');
+    return `BRIEF (approved by Wesley through the prompt engineer${result.department_hint && result.department_hint !== 'unclear' ? `; suggested department: ${result.department_hint}` : ''})\n\n${body}\n\nRead-back: ${readback}${decided ? `\n\nHis decisions:\n${decided}` : ''}\n\nHis own words: ${String(request).trim().slice(0, 2500)}`;
+  }
+  const KEY = 'aios.promptEngineer', on = () => { try { return localStorage.getItem(KEY) !== 'off'; } catch { return true; } };
+  const T = g('peT'), GO = g('peGo'), ST = g('peSt'), OUT = g('peOut'), TOG = g('peTog');
+  let busy = false;
+  const drawTog = () => { TOG.textContent = on() ? 'ENGINEER ON' : 'ENGINEER OFF'; TOG.style.opacity = on() ? '' : '.55'; };
+  TOG.addEventListener('click', () => { try { localStorage.setItem(KEY, on() ? 'off' : 'on'); } catch {} drawTog(); });
+  drawTog();
+  const lock = (v, msg) => { busy = v; GO.disabled = v; T.disabled = v; if (msg !== undefined) ST.textContent = msg; };
+  const post = async (url, body) => { const r = await fetch(url, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) }); return r; };
+
+  async function start() {
+    const text = T.value.trim(); if (!text || busy) return;
+    if (!on()) return toChief(text, false);
+    lock(true, 'Prompt engineer: checking your request against your notes (up to two minutes)…');
+    let r;
+    try { const res = await post('/api/prompt-engineer', { text }); r = await res.json().catch(() => ({})); if (!res.ok) throw new Error(r.error || res.statusText); }
+    catch (e) { lock(false, ''); return failCard(text, e); }
+    if (r.status === 'pass' || !r.brief) return toChief(text, false); // a question or chat: straight to the Chief of Staff
+    lock(false, ''); card(text, r);
+  }
+
+  function failCard(text, e) {
+    const c = document.createElement('div'); c.className = 'pec';
+    c.innerHTML = `<div class="pk">Prompt engineer</div><div class="rb">It couldn't check this one (${x(String(e.message || e).slice(0, 140))}). Send your words to the Chief of Staff as they are?</div><div class="r"><button type="button" class="go" data-y>YES, SEND AS IS</button><button type="button" data-n>NO</button></div>`;
+    const done = () => { c.classList.add('off'); c.querySelectorAll('button').forEach(b => { b.disabled = true; }); };
+    c.querySelector('[data-y]').addEventListener('click', () => { done(); toChief(text, false); });
+    c.querySelector('[data-n]').addEventListener('click', done);
+    OUT.prepend(c);
+  }
+
+  function card(text, r) {
+    const props = Array.isArray(r.proposals) ? r.proposals.slice(0, 3) : [], answers = props.map(() => undefined);
+    const c = document.createElement('div'); c.className = 'pec';
+    const dept = DEPT_NAME[r.department_hint] ? ' · ' + DEPT_NAME[r.department_hint] : '';
+    c.innerHTML = `<div class="pk">Prompt engineer${x(dept)}</div><div class="rb"></div>
+      ${props.map((p, i) => `<div class="pp" data-i="${i}"><div class="pq">${x(p.problem || '')}</div><div class="pf"><b>I'd like to:</b> ${x(p.fix || '')}</div><div class="px"><span><b>If yes:</b> ${x(p.if_yes || '')}</span><span><b>If no:</b> ${x(p.if_no || 'I leave it as it is.')}</span></div><div class="r"><button type="button" class="y" data-a="1">YES</button><button type="button" class="n" data-a="0">NO</button></div></div>`).join('')}
+      <details><summary>The brief the desk will work to</summary><div class="bf"></div></details>
+      <div class="r"><button type="button" class="go" data-send>SEND TO CHIEF OF STAFF</button><button type="button" data-raw title="Skip the brief and send what you typed">SEND MY WORDS AS THEY ARE</button><span class="st"></span></div>`;
+    const q = s => c.querySelector(s), go = q('[data-send]'), raw = q('[data-raw]'), stx = q('.r .st') || c.querySelector('.st');
+    const draw = () => {
+      const { brief, readback } = applyAnswers(r, answers);
+      q('.rb').innerHTML = `<b>Read-back:</b> ${x(readback)}`;
+      q('.bf').textContent = FIELDS.map(([k, label]) => { const v = brief[k]; const t = Array.isArray(v) ? v.map(t2 => '• ' + t2).join('\n') : String(v || ''); return t && t.toLowerCase() !== 'none' ? `${label}\n${t}` : ''; }).filter(Boolean).join('\n\n');
+      c.querySelectorAll('.pp').forEach(el => { const a = answers[+el.dataset.i]; el.querySelector('.y').classList.toggle('on', a === true); el.querySelector('.n').classList.toggle('on', a === false); });
+      const left = answers.filter(a => a === undefined).length;
+      if (!c.classList.contains('off')) { go.disabled = left > 0; stx.textContent = left ? `Answer yes or no ${left === 1 ? 'to the one above' : `to each (${left} left)`}, then send.` : 'Ready. It goes to the Chief of Staff, who adds it to the right desk.'; }
+    };
+    c.querySelectorAll('.pp').forEach(el => el.addEventListener('click', e => { const b = e.target.closest('button[data-a]'); if (!b || c.classList.contains('off')) return; answers[+el.dataset.i] = b.dataset.a === '1'; draw(); }));
+    const finish = msg => { c.classList.add('off'); c.querySelectorAll('button').forEach(b => { b.disabled = true; }); stx.textContent = msg; };
+    go.addEventListener('click', () => { if (busy) return; finish('Sent to the Chief of Staff.'); toChief(briefText(text, r, answers), true, text); });
+    raw.addEventListener('click', () => { if (busy) return; finish('Sent as you typed it.'); toChief(text, false); });
+    draw(); OUT.prepend(c);
+  }
+
+  async function toChief(text, engineered, typed) {
+    lock(true, 'The Chief of Staff is on it…');
+    const u = document.createElement('div'); u.className = 'peu'; u.textContent = (typed || text).slice(0, 600);
+    const a = document.createElement('div'); a.className = 'pea'; a.textContent = '';
+    const grp = document.createElement('div'); grp.append(u, a); OUT.prepend(grp);
+    let changed = false, reply = false;
+    try {
+      const res = await post('/api/assistant', { text, surface: 'panel', stream: true, engineered: engineered || undefined });
+      if (!res.ok || !res.body) { const j = await res.json().catch(() => ({})); throw new Error(j.error || res.statusText); }
+      const rd = res.body.getReader(), dec = new TextDecoder(); let buf = '';
+      for (;;) {
+        const { value, done } = await rd.read(); if (done) break; buf += dec.decode(value, { stream: true });
+        let i; while ((i = buf.indexOf('\n')) >= 0) {
+          const line = buf.slice(0, i).trim(); buf = buf.slice(i + 1); if (!line) continue; let ev; try { ev = JSON.parse(line); } catch { continue; }
+          if (ev.t === 'tool') { ST.textContent = (ev.words || 'working') + '…'; if (/add_task|add_routine|run_routine/.test(ev.name || '')) changed = true; }
+          else if (ev.t === 'task') { grp.insertBefore(taskChip(ev.task), a); changed = true; }
+          else if (ev.t === 'reply') { a.textContent = ev.text || ''; reply = true; }
+          else if (ev.t === 'error') { a.className = 'pea err'; a.textContent = "I couldn't finish that: " + (ev.error || 'unknown error'); reply = true; }
+        }
+      }
+      if (!reply && !a.textContent) a.remove();
+      T.value = '';
+    } catch (e) { a.className = 'pea err'; a.textContent = "I couldn't reach the Chief of Staff: " + e.message; }
+    lock(false, 'Ctrl+Enter sends.'); T.disabled = false;
+    if (changed && typeof poll === 'function') setTimeout(poll, 800);
+  }
+
+  function taskChip(t) {
+    const c = document.createElement('div'); c.className = 'pet';
+    c.innerHTML = `<div class="tk"></div><div class="tt"></div><div class="r" style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><button type="button" data-u>UNDO</button><a class="btn" href="/#review=${encodeURIComponent(t.id)}" target="agentsOffice">OPEN IN THE OFFICE ↗</a><span class="st"></span></div>`;
+    let left = Math.round((t.startsInMs ?? 20000) / 1000), started = false, gone = false, timer;
+    const u = c.querySelector('[data-u]'), s = c.querySelector('.st');
+    const draw = () => { c.querySelector('.tk').textContent = `Added to ${t.deptName || t.dept || 'the office'} · ${t.agentName || t.agent || ''}`; c.querySelector('.tt').textContent = t.title || ''; u.textContent = started ? 'CANCEL' : 'UNDO'; u.hidden = gone; s.textContent = gone ? 'Undone.' : started ? 'Running. It will wait for your review.' : `Starts in ${left} s. Undo to take it back.`; };
+    timer = setInterval(() => { if (left > 0) left--; if (left <= 0) { started = true; clearInterval(timer); } draw(); }, 1000);
+    u.addEventListener('click', async () => {
+      if (started && !confirm('It is already running. Cancel it?')) return;
+      try { await fetch(`/api/tasks/${t.id}`, { method: 'DELETE' }); } catch {}
+      clearInterval(timer); gone = true; draw(); if (typeof poll === 'function') setTimeout(poll, 400);
+    });
+    draw(); return c;
+  }
+
+  GO.addEventListener('click', start);
+  T.addEventListener('keydown', e => { if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) { e.preventDefault(); start(); } });
+})();
 </script>
 </body>
 </html>
