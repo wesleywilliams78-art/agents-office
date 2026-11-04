@@ -761,6 +761,7 @@
     <button data-go="budget" id="navBudget" style="display:none">Budget <span class="n"></span></button>
     <div class="gl">The office</div>
     <button data-go="roles">Roles <span class="n" id="nRoles"></span></button>
+    <button data-go="hierarchy">Hierarchy</button>
     <button data-go="skills">Skills <span class="n" id="nSkills"></span></button>
     <button data-go="tokens">Tokens</button>
     <button data-go="social">Social <span class="n" id="nSocial"></span></button>
@@ -838,6 +839,22 @@
       <div class="nh"><h2>News feed</h2><span class="note">What the office has done, newest first</span></div>
       <div class="seg nf" id="nShow"><button data-v="all" class="on">ALL</button><button data-v="work">WORK</button><button data-v="review">REVIEWS</button><button data-v="matrix">MATRIX</button></div>
       <div class="nl" id="news"></div>
+    </aside>
+  </section>
+
+  <section class="split" id="hierSec" data-cat="hierarchy">
+    <div class="split-main">
+      <div class="sh">
+        <h2>Hierarchy</h2>
+        <span class="note">Starts as a copy of Roles and is the one we build the chain on: you, the prompt engineer, the Chief of Staff, the department lead, the desks, lead review. Roles stays as it is.</span>
+        <div class="tools seg" id="hShow"><button data-v="all" class="on">ALL SEATS</button><button data-v="gaps">NEEDS A BRIEF OR SKILL</button><button data-v="busy">WORKING</button></div>
+      </div>
+      <div class="depts" id="hDepts"></div>
+    </div>
+    <aside class="panel news">
+      <div class="nh"><h2>News feed</h2><span class="note">What the office has done, newest first</span></div>
+      <div class="seg nf" id="hnShow"><button data-v="all" class="on">ALL</button><button data-v="work">WORK</button><button data-v="review">REVIEWS</button><button data-v="matrix">MATRIX</button></div>
+      <div class="nl" id="hNews"></div>
     </aside>
   </section>
 
@@ -1024,10 +1041,10 @@ const roleSkills = a => { const h = houseSkills(); return (a.skills || []).filte
 // readiness: a role written, a standing brief, a skill that says how this seat's work is done
 const readiness = a => [!!a.does, !!a.brief, roleSkills(a).length > 0];
 
-function render() { renderNeeds(); renderWeek(); renderNav(); renderKpis(); renderClients(); renderMatrix(); renderRoles(); renderSkills(); renderNews(); renderActivity(); renderBudget(); }
+function render() { renderNeeds(); renderWeek(); renderNav(); renderKpis(); renderClients(); renderMatrix(); renderRoles(); window.renderHierarchy?.(); renderSkills(); renderNews(); renderActivity(); renderBudget(); }
 
 // categories: the left-hand list shows one category at a time; the choice is remembered and can be linked to (#budget)
-const CAT_IDS = ['overview', 'matrix', 'social', 'clients', 'budget', 'roles', 'skills', 'tokens'];
+const CAT_IDS = ['overview', 'matrix', 'social', 'clients', 'budget', 'roles', 'hierarchy', 'skills', 'tokens'];
 const isDash = c => /^dash-[a-z0-9-]+$/.test(String(c));
 /* ---------- motion: springs for the rail and the page it drives ----------
    A damped spring sampled into a CSS linear() curve: zeta < 1 overshoots and settles, like motion.md's back.out pops.
@@ -2710,6 +2727,59 @@ loadTrackers(); setInterval(() => { if (!document.hidden && !Object.values(S.tkB
 
   GO.addEventListener('click', start);
   T.addEventListener('keydown', e => { if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) { e.preventDefault(); start(); } });
+})();
+</script>
+<script>
+/* ---------- Hierarchy (4 Nov 2026): a copy of the Roles tab that we build the chain on, so Roles stays as it is ----------
+   Same seat list and news feed as renderRoles / renderNews, with its own ids (hShow, hnShow, hDepts, hNews), its own open-seat set and
+   data-hseat, so nothing here touches the Roles tab. The segmented buttons are handled by the page's own .seg handler (S.hShow, S.hnShow), which calls render(),
+   and render() calls window.renderHierarchy(). Uses the page's helpers: S, DEPTS, ORDER, MODEL, esc, ago, agentBy, seatState, readiness, roleSkills, newsEvents. */
+(() => {
+  const open = new Set();
+  window.renderHierarchy = function renderHierarchy() {
+    const show = S.hShow || 'all', office = S.health?.model || 'sonnet';
+    $('hDepts').innerHTML = ORDER.map(k => {
+      let seats = S.agents.filter(a => a.department === k).sort((a, b) => (b.lead ? 1 : 0) - (a.lead ? 1 : 0));
+      const setUp = S.health?.setup?.[k], all = seats.length, ready = seats.filter(a => readiness(a).every(Boolean)).length;
+      if (show === 'gaps') seats = seats.filter(a => !readiness(a).every(Boolean));
+      if (show === 'busy') seats = seats.filter(a => seatState(a).key === 'doing' || seatState(a).key === 'waiting');
+      if (!seats.length && show !== 'all') return '';
+      return `<div class="panel dept"><div class="dh"><span class="chip" style="background:${DEPTS[k].chip}"></span><span class="dn">${DEPTS[k].name}</span>
+        <span class="dm">${all} seats · ${ready} fully set · ${setUp ? 'set up' : 'not set up yet'}</span></div>` +
+        seats.map(a => {
+          const st = seatState(a), r = readiness(a), isOpen = open.has(a.id);
+          const stTxt = st.key === 'doing' ? 'WORKING' : st.key === 'waiting' ? 'WAITING' : st.key === 'error' ? 'LAST RUN FAILED' : 'IDLE';
+          const model = a.model ? `${MODEL[a.model] || a.model} (own)` : `${MODEL[office] || office} (office)`;
+          return `<div class="seat${isOpen ? ' open' : ''}" data-hseat="${esc(a.id)}">
+            <div class="r1"><span class="nm">${esc(a.name)}</span>${a.lead ? '<span class="tag lead">LEAD</span>' : ''}<span class="role">${esc(a.role)}</span>
+              <span class="st"><span class="ready" title="role · brief · skill">${r.map(x => `<i class="${x ? 'f' : ''}"></i>`).join('')}</span><span class="dot ${st.key}"></span>${stTxt}</span></div>
+            <div class="does">${esc(a.does)}</div>
+            <div class="meta">
+              <span class="tag">${esc(model)}</span>${a.effort ? `<span class="tag">effort ${esc(a.effort)}</span>` : ''}
+              <span class="tag ${a.brief ? 'good' : 'miss'}">${a.brief ? 'BRIEF' : 'NO BRIEF'}</span>
+              <span class="tag ${roleSkills(a).length ? 'good' : 'miss'}">${roleSkills(a).length ? 'SKILL: ' + esc(roleSkills(a).join(', ')) : 'NO ROLE SKILL'}</span>
+              ${a.lessons ? `<span class="tag">${a.lessons} lesson${a.lessons > 1 ? 's' : ''}</span>` : ''}
+              ${isOpen ? (a.tools || []).map(t => `<span class="tag">${esc(t)}</span>`).join('') : (a.tools || []).length ? `<span class="tag">${a.tools.length} tools</span>` : ''}
+            </div>
+            <div class="last">${st.doing ? 'Now: ' + esc(st.doing.title) : st.waiting ? 'Waiting on your OK: ' + esc(st.waiting.title) : st.last ? `Last: ${esc(st.last.title)} · ${ago(st.last.doneAt)}` : 'No work yet.'} · ${st.done} done in total</div>
+          </div>`;
+        }).join('') + '</div>';
+    }).join('') || '<div class="none">Nothing to show for this filter.</div>';
+    const nshow = S.hnShow || 'all', list = newsEvents().filter(e => nshow === 'all' || e.kind === nshow).slice(0, 60);
+    let day = '';
+    $('hNews').innerHTML = list.map(e => {
+      const d = new Date(e.at).toDateString(), head = d !== day ? `<div class="nd">${d === new Date().toDateString() ? 'Today' : new Date(e.at).toLocaleDateString([], { weekday: 'long', day: 'numeric', month: 'short' })}</div>` : '';
+      day = d;
+      const a = e.agent && agentBy(e.agent), dp = DEPTS[e.dept] || DEPTS.owner;
+      return head + `<div class="ni${e.hot ? ' hot' : ''}${e.good ? ' good' : ''}${e.bad ? ' bad' : ''}">
+        <span class="nic">${e.icon}</span>
+        <div class="nb"><div class="nv">${esc(e.verb)}</div><div class="nt">${esc(e.title)}</div>
+          ${e.detail ? `<div class="nx">${esc(e.detail)}</div>` : ''}
+          <div class="nm">${a ? `<span class="chip" style="background:${dp.chip}"></span>${esc(a.name)} · ` : ''}${new Date(e.at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} · ${ago(e.at)}</div></div></div>`;
+    }).join('') || '<div class="none">Nothing yet. Work shows up here as it happens.</div>';
+  };
+  document.addEventListener('click', e => { const s = e.target.closest('[data-hseat]'); if (!s) return; const id = s.dataset.hseat; open.has(id) ? open.delete(id) : open.add(id); renderHierarchy(); });
+  if (S.agents.length) renderHierarchy();
 })();
 </script>
 </body>
