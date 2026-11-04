@@ -162,11 +162,20 @@ Moved out of this file on 4 Nov 2026 to cut what every session loads; the text i
 - `docs/blender-studio.md`: the Blender bridge and its site-visualisation kits. Open before Blender work or a change under `connectors/blender-studio`. It runs arbitrary Python, so it stays in `mcp.deny` and the office agents never get it.
 - `docs/site-updates.md`: reviewed website edits (`SITE UPDATE` blocks), the `/site/` preview and its guard rails. Open before changing `siteupdates.mjs`, the website skills or a site proposal. Agents only propose; the office applies a change only when the owner approves.
 
+## Code changes (src/, serve.mjs, scripts, connectors)
+
+- Every changed line traces to the request. Do not tidy neighbouring code; mention unrelated dead code, do not delete it. Remove only what your own change made unused.
+- Minimum code that does the job: no extra features, options or abstractions for a single use.
+- Before changing a function, field, route or file name, grep every caller and list what the change must reach (callers, checks, config, docs); finish all of them.
+- Name the check that proves it (`npm run check`, or a small script) before editing, and show its output at the end.
+- If the request has two readings, put one yes/no with your recommendation; do not pick silently.
+
 ## Everything else
 
 - `npm run check` is the loop. Run it after any change to code; fix what is red.
 - `README.md` says what the product does. Keep it true to the code.
 - Release: `node scripts/release.mjs --push` (owner only).
+- **Git remotes:** `origin` is AJ Sahni's repo and `main` tracks it; `fork` is Wesley's own. Push only with `git push fork main`, never a bare `git push`.
 - **Videos folder:** one master folder per series, nothing loose at the top of `videos/`: `art-of-operations/{masters,clips,delivered}` and `operators-ledger/{brand,characters,voice,episodes,plan,tools,wednesday}` and `franchise-entry-report/`. A new clip or episode goes inside its series; read `videos/README.md` before adding one. Reels and cards the office makes go to `output/library/` (see its INDEX.md), not into `videos/`. `npm run storage` reports sizes and clears rebuildable files.
 - **Engines live in `C:\Users\Wesley\tools` (4 Nov 2026).** Installed third-party tools (ACE-Step, Earshot) get their own folder there with their own venv, never inside the repo and never moved after install. The map is in `docs/INDEX.md` ("Where things live").
 - **Media lives on D: (Wesley, 3 Nov 2026).** Heavy media sits on the external SanDisk drive at `D:\Agents Office Media`, never on C:. `output/{motion,library,blender,video,ltx,music,sops,teleprompter}` and every `renders`, `out*`, `proxies*`, `stills`, `footage`, `frames`, `work` or `music-samples` folder under `videos/` are junctions to the same path there. Write to the usual paths, run `npm run media` after any build to move new heavy folders across (`-- --dry` to preview), and never copy media back to C:. If D: is missing, stop and tell Wesley; never recreate the folders on C:. Source (compositions, scripts, issue.json, READMEs) stays on C: in git. Rule note: Brain `00-Meta/media-storage.md`.

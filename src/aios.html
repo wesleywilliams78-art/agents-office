@@ -812,6 +812,35 @@
 </style>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500&family=Newsreader:opsz,wght@6..72,300;6..72,400&family=Noto+Serif+SC:wght@300&display=swap">
 </head>
+  /* Brain map (4 Nov 2026): the vault as an Obsidian-style graph, with what its links say */
+  .bm-q { background: var(--soft); border: 1px solid var(--line); border-radius: 7px; padding: 5px 10px; font-size: 12px; min-width: 170px; }
+  .bm-grid { display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: 12px; align-items: start; }
+  .bm-stage { position: relative; height: calc(100vh - 210px); min-height: 520px; overflow: hidden; }
+  .bm-stage canvas { display: block; width: 100%; height: 100%; cursor: grab; }
+  .bm-legend { position: absolute; left: 12px; top: 10px; display: flex; flex-wrap: wrap; gap: 4px 12px; max-width: 70%; font-size: 10.5px; letter-spacing: .06em; color: var(--grey); pointer-events: none; }
+  .bm-legend span { display: inline-flex; align-items: center; gap: 5px; }
+  .bm-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; flex: none; }
+  .bm-hint { position: absolute; left: 12px; bottom: 8px; font-size: 10.5px; color: var(--faint); pointer-events: none; }
+  .bm-side { display: flex; flex-direction: column; gap: 12px; max-height: calc(100vh - 210px); min-height: 520px; }
+  .bm-card { padding: 12px 14px; }
+  .bm-ins { overflow-y: auto; flex: 1; min-height: 0; }
+  .bm-h { font-size: 10.5px; letter-spacing: .12em; font-weight: 600; color: var(--grey); margin-bottom: 2px; }
+  .bm-note, .bm-none, .bm-empty { font-size: 11.5px; color: var(--faint); margin: 0 0 6px; }
+  .bm-sec { padding: 10px 0; border-top: 1px solid var(--line); } .bm-sec:first-child { border-top: 0; padding-top: 0; }
+  .bm-it, .bm-it:hover { display: flex; width: 100%; justify-content: space-between; align-items: baseline; gap: 10px; text-align: left; background: none; border: 0; border-radius: 6px; padding: 4px 6px; margin: 0; font-size: 12px; font-weight: 500; letter-spacing: 0; text-transform: none; color: var(--ink); box-shadow: none; }
+  .bm-it:hover, .bm-it.on { background: var(--soft); color: var(--ink); }
+  .bm-it.on { box-shadow: inset 2px 0 0 var(--ink); }
+  .bm-it span { display: inline-flex; align-items: center; gap: 6px; min-width: 0; overflow-wrap: anywhere; }
+  .bm-it small { color: var(--faint); font-size: 11px; white-space: nowrap; flex: none; }
+  .bm-more { font-size: 10.5px; margin-top: 4px; }
+  .bm-t { font: 400 20px/1.15 var(--serif); margin: 2px 0 4px; overflow-wrap: anywhere; }
+  .bm-meta { font-size: 11px; color: var(--grey); margin-bottom: 6px; }
+  .bm-pills { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 6px; }
+  .bm-pill { font-size: 10px; letter-spacing: .06em; border: 1px solid var(--line); border-radius: 99px; padding: 1px 8px; display: inline-flex; align-items: center; gap: 5px; }
+  .bm-ex { font-size: 12px; color: var(--grey); margin: 0 0 8px; max-height: 7.5em; overflow: hidden; }
+  .bm-stats { font-size: 12px; color: var(--grey); margin: 4px 0 6px; }
+  .bm-conn { max-height: 180px; overflow-y: auto; overflow-x: hidden; }
+  @media (max-width: 1100px) { .bm-grid { grid-template-columns: 1fr; } .bm-side { max-height: none; min-height: 0; } .bm-stage { height: 62vh; } }
 <body>
 <div class="wrap">
   <header>
@@ -836,6 +865,7 @@
     <button data-go="skills">Skills <span class="n" id="nSkills"></span></button>
     <button data-go="tokens">Tokens</button>
     <button data-go="social">Social <span class="n" id="nSocial"></span></button>
+    <button data-go="brain">Brain</button>
     <span class="ind" id="sideInd" aria-hidden="true"></span>
   </nav>
   <div class="main">
@@ -950,6 +980,27 @@
   <section id="tokSec" data-cat="tokens">
     <div class="sh">
       <h2>Tokens</h2>
+  <section id="brainSec" data-cat="brain">
+    <div class="sh">
+      <h2>Brain map</h2>
+      <span class="note">Every note in the Brain and the links between them, laid out like Obsidian, with what the links say: hubs, bottlenecks, clusters and crossings. Read from the vault on this computer; no note is changed and no model is used.</span>
+      <div class="tools">
+        <input id="bmQ" class="bm-q" type="search" placeholder="Find a note…" aria-label="Find a note">
+        <div class="seg" id="bmColour"><button data-v="strand" class="on">BY STRAND</button><button data-v="cluster">BY CLUSTER</button></div>
+        <div class="seg" id="bmShow"><button data-v="orphan" class="on">UNLINKED</button><button data-v="strand">STRANDS</button><button data-v="agent">DESKS</button><button data-v="task">TASK NOTES</button><button data-v="local">LOCAL GRAPH</button></div>
+        <button id="bmFit" type="button">FIT</button>
+      </div>
+    </div>
+    <div class="msg" id="bmMsg"></div>
+    <div class="bm-grid">
+      <div class="panel bm-stage"><canvas id="bmCanvas" aria-label="Map of the notes in the Brain"></canvas><div class="bm-legend" id="bmLegend"></div><div class="bm-hint">Drag a note · drag the background to pan · scroll to zoom · click a note to read it</div></div>
+      <div class="bm-side">
+        <div class="panel bm-card" id="bmSel"></div>
+        <div class="panel bm-card bm-ins" id="bmIns"></div>
+      </div>
+    </div>
+  </section>
+
       <span class="note">Where the tokens go: your Claude Code chats, read from their transcripts on this PC, and the office's own runs, from its ledger. Nothing leaves this computer.</span>
       <div class="tools"><button id="tokRefresh" type="button">↻ REFRESH</button></div>
     </div>
@@ -1112,7 +1163,7 @@ const readiness = a => [!!a.does, !!a.brief, roleSkills(a).length > 0];
 function render() { renderNeeds(); renderWeek(); renderNav(); renderKpis(); renderClients(); renderMatrix(); renderRoles(); window.renderHierarchy?.(); renderSkills(); renderNews(); renderActivity(); renderBudget(); }
 
 // categories: the left-hand list shows one category at a time; the choice is remembered and can be linked to (#budget)
-const CAT_IDS = ['overview', 'matrix', 'social', 'clients', 'budget', 'roles', 'hierarchy', 'skills', 'tokens'];
+const CAT_IDS = ['overview', 'matrix', 'social', 'clients', 'budget', 'roles', 'hierarchy', 'brain', 'skills', 'tokens'];
 const isDash = c => /^dash-[a-z0-9-]+$/.test(String(c));
 /* ---------- motion: springs for the rail and the page it drives ----------
    A damped spring sampled into a CSS linear() curve: zeta < 1 overshoots and settles, like motion.md's back.out pops.
@@ -1281,6 +1332,7 @@ async function setCat(c, push = true) {
 }
 
 // Social (V3.12, 3 Nov): the next post in each workstream. The server works out the state; this draws it and sends the buttons.
+  if (c === 'brain') window.brainTab?.open(); else window.brainTab?.close(); // the Brain map runs its physics only while it is on screen
 async function loadSocial() { try { S.social = (await api('/social')).streams; } catch (e) { $('soMsg').className = 'msg err'; $('soMsg').textContent = 'Could not read the content calendar: ' + e.message; return; } renderSocial(); renderNav(); }
 const SO_STATE = { handoff: ['TO HAND OFF', ''], needs: ['NEEDS YOU', 'need'], working: ['THE OFFICE IS ON IT', 'busy'], review: ['READY FOR YOUR REVIEW', 'need'], check: ['BACK: CHECK IT', 'need'], ready: ['BUILT: CHECK IT', 'need'], signed: ['SIGNED OFF: POST IT', 'go'] };
 function renderSocial() {
@@ -2910,3 +2962,213 @@ loadTrackers(); setInterval(() => { if (!document.hidden && !Object.values(S.tkB
 </script>
 </body>
 </html>
+<script>
+/* ---------- Brain map (4 Nov 2026): the vault as an Obsidian-style graph ----------
+   Data: /api/brainmap (brainmap.mjs buildMap + analyse), the same map the office draws on G, read from the vault on this PC.
+   Unlike the office's map, nothing is pinned to the five strands: notes settle by their own links, as in Obsidian, and the
+   side panel says what the links show (hubs, bottlenecks, clusters, strand crossings, unlinked notes, where the work is landing). */
+(() => {
+  const cv = $('bmCanvas'), ctx = cv.getContext('2d');
+  const PAL = ['#E27A63', '#6FB7DA', '#D9C35A', '#7FB28F', '#C9A2F0', '#F0B849', '#5ADEB7', '#E69393', '#98A5EF', '#BFA2E3', '#8FD3F4', '#EADC8F', '#B0ADA3'];
+  const REST = { wiki: 70, task: 55, belongs: 150, serves: 170 }, PULL = { wiki: 0.05, task: 0.03, belongs: 0.012, serves: 0.02 };
+  const B = { d: null, an: null, nodes: [], links: [], adj: [], open: false, running: false, alpha: 1, k: 0.9, tx: 0, ty: 0, frame: 0, fitted: false,
+    hover: null, sel: null, drag: null, pan: null, match: null, colour: 'strand', show: { orphan: true, strand: false, agent: false, task: false, local: false },
+    local: null, hlLink: null, hlCluster: null, more: {}, timer: null, theme: {} };
+  const css = v => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+  const readTheme = () => { B.theme = { ink: css('--ink') || '#ECEAE3', faint: css('--faint') || '#74736e', bg: css('--card') || css('--panel') || '#1B1C21', bad: css('--bad') || '#E27A63' }; };
+  const strandName = id => (B.d.strands.find(s => s.id === id) || {}).label || id;
+  const groupName = g => String(g || '').replace(/^\d\d-/, '');
+
+  function build(d, keep) {
+    const prev = keep ? new Map(B.nodes.map(n => [n.id, n])) : null, an = d.analysis || { cluster: {}, hubs: [], bridges: [], clusters: [], crossings: [], orphans: [], unplaced: [], hot: [], days: 14 };
+    const nc = Math.max(1, an.clusters.length);
+    B.d = d; B.an = an; B.sc = Object.fromEntries(d.strands.map(s => [s.id, s.colour]));
+    B.nodes = d.nodes.map((n, i) => {
+      const o = prev && prev.get(n.id), cl = an.cluster[i] ?? -1;
+      let x, y; if (o) { x = o.x; y = o.y; } else { const a = cl >= 0 ? cl / nc * 6.283 : Math.random() * 6.283, r = cl >= 0 ? 160 : 260 + Math.random() * 120; x = Math.cos(a) * r + (Math.random() - .5) * 90; y = Math.sin(a) * r + (Math.random() - .5) * 90; }
+      return { ...n, i, cl, x, y, vx: 0, vy: 0, deg: 0, pin: false };
+    });
+    B.links = d.links.map(([a, b, kind, w]) => ({ a, b, kind, w }));
+    B.adj = B.nodes.map(() => new Set());
+    for (const l of B.links) { B.adj[l.a].add(l.b); B.adj[l.b].add(l.a); if (l.kind === 'wiki' && B.nodes[l.a].kind === 'note' && B.nodes[l.b].kind === 'note') { B.nodes[l.a].deg++; B.nodes[l.b].deg++; } }
+    for (const n of B.nodes) { n.r = n.kind === 'strand' ? 16 : n.kind === 'agent' ? 5 : n.kind === 'note' ? 3.2 + Math.min(9, Math.sqrt(n.deg) * 2) : 2.2; n.mass = 1 + n.deg * 0.15 + (n.kind === 'strand' ? 6 : 0); }
+    if (B.sel) B.sel = B.nodes.find(n => n.id === B.sel.id) || null;
+    if (B.hover) B.hover = null;
+    setLocal(); B.alpha = keep ? Math.max(B.alpha, 0.2) : 1; paneSel(); paneIns(); legend();
+  }
+
+  /* ---------- what is on the map ---------- */
+  const kindOn = n => n.kind === 'note' ? (B.show.orphan || n.deg > 0) : n.kind === 'strand' ? B.show.strand : n.kind === 'agent' ? B.show.agent : B.show.task;
+  const vis = n => kindOn(n) && (!B.local || B.local.has(n.i));
+  function setLocal() { // LOCAL GRAPH: the selected note and what sits within two links of it, through what is shown
+    if (!B.show.local || !B.sel) { B.local = null; return; }
+    const out = new Set([B.sel.i]); let edge = [B.sel.i];
+    for (let hop = 0; hop < 2; hop++) { const nx = []; for (const i of edge) for (const j of B.adj[i]) if (!out.has(j) && kindOn(B.nodes[j])) { out.add(j); nx.push(j); } edge = nx; }
+    B.local = out;
+  }
+
+  /* ---------- physics: repulsion, springs, a gentle pull to the middle; nothing pinned to the strands ---------- */
+  function step() {
+    const V = B.nodes.filter(vis), a = B.alpha;
+    for (let x = 0; x < V.length; x++) {
+      const p = V[x];
+      for (let y = x + 1; y < V.length; y++) {
+        const q = V[y]; let dx = q.x - p.x, dy = q.y - p.y, d2 = dx * dx + dy * dy; if (d2 > 250000) continue; if (d2 < 1) { dx = Math.random() - .5; dy = Math.random() - .5; d2 = 1; }
+        const d = Math.sqrt(d2), f = 900 / (d2 + 40) * a, fx = dx / d * f, fy = dy / d * f;
+        if (!p.pin) { p.vx -= fx / p.mass; p.vy -= fy / p.mass; } if (!q.pin) { q.vx += fx / q.mass; q.vy += fy / q.mass; }
+      }
+    }
+    for (const l of B.links) {
+      const p = B.nodes[l.a], q = B.nodes[l.b]; if (!vis(p) || !vis(q)) continue;
+      const dx = q.x - p.x, dy = q.y - p.y, d = Math.hypot(dx, dy) || 1, f = (d - REST[l.kind]) * PULL[l.kind] * Math.min(1.5, l.w || 1) * a, fx = dx / d * f, fy = dy / d * f;
+      if (!p.pin) { p.vx += fx / p.mass; p.vy += fy / p.mass; } if (!q.pin) { q.vx -= fx / q.mass; q.vy -= fy / q.mass; }
+    }
+    for (const n of V) {
+      if (n.pin) continue;
+      n.vx -= n.x * 0.0022 * a; n.vy -= n.y * 0.0022 * a; n.vx *= 0.82; n.vy *= 0.82;
+      const sp = Math.hypot(n.vx, n.vy); if (sp > 20) { n.vx *= 20 / sp; n.vy *= 20 / sp; }
+      if (!(Number.isFinite(n.vx) && Number.isFinite(n.x))) { n.vx = n.vy = 0; n.x = n.y = 0; }
+      n.x += n.vx; n.y += n.vy;
+    }
+    B.alpha = Math.max(0.03, B.alpha * 0.99); // never quite still, like Obsidian
+  }
+
+  /* ---------- drawing ---------- */
+  const W = () => cv.clientWidth, H = () => cv.clientHeight;
+  const sx = n => W() / 2 + B.tx + n.x * B.k, sy = n => H() / 2 + B.ty + n.y * B.k;
+  const wx = px => (px - W() / 2 - B.tx) / B.k, wy = py => (py - H() / 2 - B.ty) / B.k;
+  function fill(n) {
+    if (n.kind === 'strand') return B.sc[n.strands[0]];
+    if (n.kind === 'task' || n.kind === 'upload') return B.theme.faint;
+    if (B.colour === 'cluster') return n.cl >= 0 ? PAL[n.cl % PAL.length] : B.theme.faint;
+    return n.strands && n.strands.length ? B.sc[n.strands[0]] : B.theme.faint;
+  }
+  function draw() {
+    const dpr = devicePixelRatio || 1, w = W(), h = H(), T = B.theme;
+    if (cv.width !== Math.round(w * dpr) || cv.height !== Math.round(h * dpr)) { cv.width = Math.round(w * dpr); cv.height = Math.round(h * dpr); }
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.clearRect(0, 0, w, h);
+    const focus = B.hover || B.sel, near = focus ? new Set([focus.i, ...B.adj[focus.i]]) : null, sk = Math.sqrt(B.k);
+    const dimmed = n => (near && !near.has(n.i)) || (B.match && !B.match.has(n.i)) || (B.hlCluster != null && n.cl !== B.hlCluster && n.kind === 'note');
+    for (const l of B.links) {
+      const p = B.nodes[l.a], q = B.nodes[l.b]; if (!vis(p) || !vis(q)) continue;
+      const hl = B.hlLink && ((B.hlLink[0] === l.a && B.hlLink[1] === l.b) || (B.hlLink[0] === l.b && B.hlLink[1] === l.a));
+      const lit = focus && (focus.i === l.a || focus.i === l.b);
+      let al = l.kind === 'wiki' ? 0.32 : l.kind === 'task' ? 0.12 : 0.08;
+      if (near) al = lit ? 0.85 : al * 0.3; if (B.match || B.hlCluster != null) al *= 0.4; if (hl) al = 1;
+      ctx.globalAlpha = al; ctx.strokeStyle = hl ? T.bad : lit ? T.ink : T.faint; ctx.lineWidth = (hl ? 2.6 : lit ? 1.4 : 0.8) * sk;
+      ctx.beginPath(); ctx.moveTo(sx(p), sy(p)); ctx.lineTo(sx(q), sy(q)); ctx.stroke();
+    }
+    const rank = { upload: 0, task: 0, note: 1, agent: 2, strand: 3 }, V = B.nodes.filter(vis).sort((p, q) => rank[p.kind] - rank[q.kind] || p.deg - q.deg);
+    ctx.textBaseline = 'middle';
+    for (const n of V) {
+      const x = sx(n), y = sy(n); if (x < -60 || y < -60 || x > w + 60 || y > h + 60) continue;
+      const dim = dimmed(n), r = n.r * sk; ctx.globalAlpha = dim ? 0.13 : (n.kind === 'task' || n.kind === 'upload') ? 0.5 : 1; ctx.fillStyle = fill(n);
+      ctx.beginPath();
+      if (n.kind === 'agent') { ctx.moveTo(x, y - r - 1); ctx.lineTo(x + r + 1, y); ctx.lineTo(x, y + r + 1); ctx.lineTo(x - r - 1, y); ctx.closePath(); } else ctx.arc(x, y, r, 0, 6.2832);
+      ctx.fill();
+      if (B.sel === n) { ctx.globalAlpha = 1; ctx.strokeStyle = T.ink; ctx.lineWidth = 1.6; ctx.beginPath(); ctx.arc(x, y, r + 4, 0, 6.2832); ctx.stroke(); }
+      const label = n.kind === 'strand' || focus === n || (near && near.has(n.i) && n.kind !== 'task' && n.kind !== 'upload') || (B.match && B.match.has(n.i)) || (n.kind === 'note' && !dim && (n.deg >= 6 || B.k > 1.6)) || (B.hlCluster != null && n.cl === B.hlCluster && n.deg >= 2);
+      if (label) {
+        const t = n.label.length > 36 ? n.label.slice(0, 35) + '…' : n.label, big = n.kind === 'strand';
+        ctx.font = `${big ? 600 : 500} ${big ? 13 : Math.max(10, 10.5 * sk)}px Inter, -apple-system, "Segoe UI", sans-serif`; ctx.globalAlpha = dim ? 0.35 : 1;
+        ctx.lineWidth = 3; ctx.strokeStyle = T.bg; ctx.strokeText(t, x + r + 4, y); ctx.fillStyle = T.ink; ctx.fillText(t, x + r + 4, y);
+      }
+    }
+    ctx.globalAlpha = 1;
+  }
+  function fit() {
+    const V = B.nodes.filter(vis); if (!V.length) return; let x0 = 1e9, x1 = -1e9, y0 = 1e9, y1 = -1e9;
+    for (const n of V) { x0 = Math.min(x0, n.x); x1 = Math.max(x1, n.x); y0 = Math.min(y0, n.y); y1 = Math.max(y1, n.y); }
+    B.k = Math.max(0.2, Math.min(2.4, Math.min(W() / (x1 - x0 + 120), H() / (y1 - y0 + 120)))); B.tx = -(x0 + x1) / 2 * B.k; B.ty = -(y0 + y1) / 2 * B.k;
+  }
+  function loop() {
+    if (B.running || !B.open) return; B.running = true;
+    const f = () => { if (!B.open) { B.running = false; return; } if (++B.frame % 60 === 0) readTheme(); step(); if (!B.fitted && B.frame > 140) { fit(); B.fitted = true; } draw(); requestAnimationFrame(f); };
+    requestAnimationFrame(f);
+  }
+  function centre(n) { B.tx = -n.x * B.k; B.ty = -n.y * B.k; }
+
+  /* ---------- pointer: drag a note and the map follows; drag the background to pan; scroll to zoom ---------- */
+  function pick(e) { const r = cv.getBoundingClientRect(), px = wx(e.clientX - r.left), py = wy(e.clientY - r.top); let best = null, bd = 1e9; for (const n of B.nodes) { if (!vis(n)) continue; const d = Math.hypot(n.x - px, n.y - py); if (d < Math.max(n.r + 4, 8 / B.k) && d < bd) { bd = d; best = n; } } return best; }
+  cv.addEventListener('mousemove', e => {
+    if (B.drag) { const r = cv.getBoundingClientRect(); B.drag.n.x = wx(e.clientX - r.left); B.drag.n.y = wy(e.clientY - r.top); B.drag.n.vx = B.drag.n.vy = 0; B.drag.moved = true; B.alpha = Math.max(B.alpha, 0.35); return; }
+    if (B.pan) { B.tx += e.clientX - B.pan.x; B.ty += e.clientY - B.pan.y; B.pan = { x: e.clientX, y: e.clientY, moved: true }; return; }
+    B.hover = pick(e); cv.style.cursor = B.hover ? 'pointer' : 'grab';
+  });
+  cv.addEventListener('mouseleave', () => { B.hover = null; });
+  cv.addEventListener('mousedown', e => { const n = pick(e); if (n) { B.drag = { n, moved: false }; n.pin = true; } else B.pan = { x: e.clientX, y: e.clientY, moved: false }; });
+  addEventListener('mouseup', () => {
+    if (B.drag) { B.drag.n.pin = false; if (!B.drag.moved) select(B.drag.n); B.drag = null; }
+    if (B.pan) { if (!B.pan.moved) { B.sel = null; B.hlLink = null; B.hlCluster = null; setLocal(); paneSel(); markIns(); } B.pan = null; }
+  });
+  cv.addEventListener('wheel', e => {
+    e.preventDefault(); const r = cv.getBoundingClientRect(), mx = e.clientX - r.left, my = e.clientY - r.top, px = wx(mx), py = wy(my);
+    B.k = Math.max(0.2, Math.min(6, B.k * Math.exp(-e.deltaY * 0.0022))); B.tx = mx - W() / 2 - px * B.k; B.ty = my - H() / 2 - py * B.k;
+  }, { passive: false });
+
+  /* ---------- the panels ---------- */
+  function select(n, keepHl) { B.sel = n; if (!keepHl) { B.hlLink = null; B.hlCluster = null; } setLocal(); B.alpha = Math.max(B.alpha, 0.2); paneSel(); markIns(); }
+  function paneSel() {
+    const el = $('bmSel'), d = B.d, an = B.an; if (!d) return;
+    const n = B.sel;
+    if (!n) {
+      const between = B.links.filter(l => l.kind === 'wiki' && B.nodes[l.a].kind === 'note' && B.nodes[l.b].kind === 'note').length;
+      el.innerHTML = `<div class="bm-h">THE BRAIN</div><div class="bm-stats">${d.stats.notes} notes · ${between} links between them · ${an.orphans.length} unlinked · ${an.clusters.length} clusters · ${d.stats.tasks + d.stats.uploads} task notes</div><p class="bm-empty">Click a note to read it and light up its neighbours. LOCAL GRAPH keeps only what sits within two links of it.</p>`;
+      return;
+    }
+    const kind = { strand: 'Strand', agent: 'Desk', note: 'Note', task: 'Task note', upload: 'Upload' }[n.kind];
+    const pills = (n.strands || []).map(s => `<span class="bm-pill"><i class="bm-dot" style="background:${B.sc[s]}"></i>${esc(strandName(s))}</span>`).join('') + (n.cl >= 0 && an.clusters[n.cl] ? `<span class="bm-pill"><i class="bm-dot" style="background:${PAL[n.cl % PAL.length]}"></i>cluster: ${esc(an.clusters[n.cl].label)}</span>` : '');
+    const nb = [...B.adj[n.i]].map(i => B.nodes[i]).filter(o => o.kind !== 'strand').sort((p, q) => ({ note: 0, agent: 1, task: 2, upload: 3 })[p.kind] - ({ note: 0, agent: 1, task: 2, upload: 3 })[q.kind] || q.deg - p.deg);
+    const meta = [kind, n.kind === 'note' ? groupName(n.group) : '', n.date || '', n.kind === 'note' ? `${n.deg} link${n.deg === 1 ? '' : 's'} to notes` : ''].filter(Boolean).map(esc).join(' · ');
+    el.innerHTML = `<div class="bm-t">${esc(n.label)}</div><div class="bm-meta">${meta}</div>${pills ? `<div class="bm-pills">${pills}</div>` : ''}` +
+      (n.excerpt ? `<p class="bm-ex">${esc(n.excerpt)}</p>` : '') +
+      `<div class="bm-h">CONNECTED TO · ${nb.length}</div><div class="bm-conn">` + (nb.length ? nb.slice(0, 40).map(o => `<button class="bm-it" data-i="${o.i}"><span>${esc(o.label)}</span><small>${({ note: 'note', agent: 'desk', task: 'task', upload: 'upload' })[o.kind]}</small></button>`).join('') + (nb.length > 40 ? `<div class="bm-note">+${nb.length - 40} more</div>` : '') : '<div class="bm-none">No links. In Obsidian this note would sit on the rim.</div>') + '</div>';
+  }
+  const it = (i, main, sub, extra = '') => `<button class="bm-it" data-i="${i}"${extra}><span>${esc(main)}</span><small>${esc(sub)}</small></button>`;
+  function list(key, rows, cap, fn) { const all = B.more[key], body = (all ? rows : rows.slice(0, cap)).map(fn).join(''); return body + (rows.length > cap ? `<button class="bm-more" data-more="${key}">${all ? 'SHOW FEWER' : 'SHOW ALL ' + rows.length}</button>` : ''); }
+  function sec(title, note, body) { return `<div class="bm-sec"><div class="bm-h">${title}</div><div class="bm-note">${note}</div>${body || '<div class="bm-none">None.</div>'}</div>`; }
+  function paneIns() {
+    const an = B.an; if (!an) return;
+    $('bmIns').innerHTML =
+      sec('HUBS', 'The notes the most other notes link to.', an.hubs.map(h => it(h.i, h.label, `${h.links} links`)).join('')) +
+      sec('BOTTLENECKS', 'Notes the most paths between other notes run through. If one is wrong or out of date, it misleads everything behind it.', an.bridges.slice(0, 8).map(b => it(b.i, b.label, `${b.share}% of paths${b.joins ? ` · joins ${b.joins} cluster${b.joins === 1 ? '' : 's'}` : ''}`)).join('')) +
+      sec(`WHERE THE WORK IS LANDING · LAST ${an.days} DAYS`, 'The notes the office’s task notes pointed at most. A note near the top is under load.', an.hot.map(h => it(h.i, h.label, `${h.tasks} task note${h.tasks === 1 ? '' : 's'}`)).join('')) +
+      sec(`CROSSING STRANDS · ${an.crossings.length}`, 'Links between notes filed under different strands. Strands are guessed from the words in each note, so treat these as leads to check.', list('cross', an.crossings, 8, c => it(c.a, `${c.from} → ${c.to}`, `${c.fromStrands.map(strandName).join(' + ')} × ${c.toStrands.map(strandName).join(' + ')}`, ` data-j="${c.b}"`))) +
+      sec(`CLUSTERS · ${an.clusters.length}`, 'Groups of notes that link mostly to each other. Click one to light it up.', list('clu', an.clusters, 8, c => `<button class="bm-it" data-c="${c.id}"><span><i class="bm-dot" style="background:${PAL[c.id % PAL.length]}"></i>${esc(c.label)}</span><small>${c.size} notes</small></button>`)) +
+      sec(`UNLINKED NOTES · ${an.orphans.length}`, 'Notes with no link to another note.', list('orph', an.orphans, 10, o => it(o.i, o.label, groupName(o.group)))) +
+      sec(`NO STRAND · ${an.unplaced.length}`, 'Notes the map could not place under any of the five strands.', list('unpl', an.unplaced, 8, o => it(o.i, o.label, groupName(o.group))));
+    markIns();
+  }
+  function markIns() { for (const b of document.querySelectorAll('#bmIns .bm-it')) b.classList.toggle('on', b.dataset.c != null ? +b.dataset.c === B.hlCluster : !!B.sel && +b.dataset.i === B.sel.i && (b.dataset.j == null || (B.hlLink && +b.dataset.j === B.hlLink[1]))); }
+  function legend() {
+    const L = B.colour === 'cluster' ? B.an.clusters.slice(0, 8).map(c => [PAL[c.id % PAL.length], c.label]) : B.d.strands.map(s => [s.colour, s.label]);
+    $('bmLegend').innerHTML = L.map(([c, t]) => `<span><i class="bm-dot" style="background:${c}"></i>${esc(t)}</span>`).join('') + `<span><i class="bm-dot" style="background:${B.theme.faint || '#888'}"></i>${B.colour === 'cluster' ? 'no cluster' : 'no strand'}</span>`;
+  }
+  function onPick(e) {
+    const m = e.target.closest('[data-more]'); if (m) { B.more[m.dataset.more] = !B.more[m.dataset.more]; paneIns(); return; }
+    const b = e.target.closest('.bm-it'); if (!b) return;
+    if (b.dataset.c != null) { const c = +b.dataset.c; B.hlCluster = B.hlCluster === c ? null : c; if (B.hlCluster != null && B.colour !== 'cluster') setColour('cluster'); B.sel = null; B.hlLink = null; setLocal(); paneSel(); markIns(); return; }
+    const n = B.nodes[+b.dataset.i]; if (!n) return;
+    if (!kindOn(n)) { B.show[n.kind === 'note' ? 'orphan' : n.kind === 'agent' ? 'agent' : 'task'] = true; syncShow(); }
+    select(n, true); B.hlLink = b.dataset.j != null ? [n.i, +b.dataset.j] : null; B.hlCluster = null; markIns(); centre(n);
+  }
+  $('bmIns').addEventListener('click', onPick); $('bmSel').addEventListener('click', onPick);
+  function setColour(v) { B.colour = v; for (const b of document.querySelectorAll('#bmColour button')) b.classList.toggle('on', b.dataset.v === v); legend(); }
+  function syncShow() { for (const b of document.querySelectorAll('#bmShow button')) b.classList.toggle('on', !!B.show[b.dataset.v]); setLocal(); B.alpha = Math.max(B.alpha, 0.5); }
+  $('bmColour').addEventListener('click', e => { const b = e.target.closest('button[data-v]'); if (b) setColour(b.dataset.v); });
+  $('bmShow').addEventListener('click', e => { const b = e.target.closest('button[data-v]'); if (!b) return; B.show[b.dataset.v] = !B.show[b.dataset.v]; if (b.dataset.v === 'local' && B.show.local && !B.sel) $('bmMsg').textContent = 'Click a note first: LOCAL GRAPH shows what sits within two links of it.'; else $('bmMsg').textContent = ''; syncShow(); if (b.dataset.v !== 'local') B.fitted = false, B.frame = 60; });
+  $('bmFit').addEventListener('click', fit);
+  $('bmQ').addEventListener('input', () => { const q = $('bmQ').value.trim().toLowerCase(); B.match = q && B.d ? new Set(B.nodes.filter(n => vis(n) && (n.label.toLowerCase().includes(q) || (n.excerpt || '').toLowerCase().includes(q))).map(n => n.i)) : null; });
+  $('bmQ').addEventListener('keydown', e => { if (e.key !== 'Enter' || !B.match || !B.match.size) return; const n = [...B.match].map(i => B.nodes[i]).sort((p, q) => q.deg - p.deg)[0]; select(n); centre(n); });
+
+  async function load(keep) {
+    try { const d = await api('/brainmap'); build(d, keep); if (!keep) $('bmMsg').textContent = ''; return true; }
+    catch (e) { $('bmMsg').className = 'msg err'; $('bmMsg').textContent = 'Could not read the Brain: ' + e.message; return false; }
+  }
+  window.brainTab = {
+    async open() { if (B.open) return; B.open = true; readTheme(); if (!B.d && !(await load(false))) { B.open = false; return; } if (!B.open) return; loop(); clearInterval(B.timer); B.timer = setInterval(() => { if (!document.hidden) load(true); }, 60000); },
+    close() { B.open = false; clearInterval(B.timer); B.timer = null; },
+  };
+  if (S.cat === 'brain') window.brainTab.open();
+})();
+</script>

@@ -86,3 +86,64 @@ export function buildMap({ vault, agents }) {
   const count = k => nodes.filter(n => n.kind === k).length;
   return { strands: STRANDS.map(({ id, label, colour }) => ({ id, label, colour })), nodes, links, stats: { notes: count('note'), tasks: count('task'), uploads: count('upload'), agents: count('agent'), links: links.length, unplaced: nodes.filter(n => (n.kind === 'note' || n.kind === 'task' || n.kind === 'upload') && !n.strands.length && !n.agent).length } };
 }
+
+/** What the map says about the hand-written notes (4 Nov 2026, after the Graphify review; local, no model). Read on the wiki links between notes only:
+ *  hubs (most links), bridges (notes most shortest paths run through: the bottlenecks), clusters (label propagation), links that cross strands,
+ *  notes with no link, notes with no strand, and the notes the office's task notes have pointed at in the last `days` days.
+ *  analyse(map) → { hubs, bridges, clusters, cluster: { nodeIndex: clusterId }, crossings, orphans, unplaced, hot, days } */
+export function analyse(m, { days = 14, now = Date.now() } = {}) {
+  const N = m.nodes, notes = N.filter(n => n.kind === 'note'), isNote = new Set(notes.map(n => n.i));
+  const adj = new Map(notes.map(n => [n.i, new Set()]));
+  for (const [a, b, kind] of m.links) if (kind === 'wiki' && isNote.has(a) && isNote.has(b)) { adj.get(a).add(b); adj.get(b).add(a); }
+  const deg = i => adj.get(i).size, item = (n, extra) => ({ i: n.i, label: n.label, group: n.group, strands: n.strands, ...extra });
+
+  // clusters: modularity moves (the local phase of Louvain) in a fixed order, busiest first, so the same vault gives the same clusters.
+  // (Label propagation was tried first and folded 56 notes into one cluster around the hubs.)
+  const order = notes.map(n => n.i).filter(i => deg(i)).sort((a, b) => deg(b) - deg(a) || a - b), lab = new Map(order.map(i => [i, i]));
+  const m2 = order.reduce((s, i) => s + deg(i), 0), tot = new Map(order.map(i => [i, deg(i)]));
+  for (let pass = 0; pass < 30; pass++) {
+    let moved = 0;
+    for (const i of order) {
+      const own = lab.get(i), ki = deg(i), w = new Map(); for (const j of adj.get(i)) w.set(lab.get(j), (w.get(lab.get(j)) || 0) + 1);
+      tot.set(own, tot.get(own) - ki);
+      let best = own, gain = (w.get(own) || 0) - tot.get(own) * ki / m2;
+      for (const [c, kin] of w) { const g = kin - tot.get(c) * ki / m2; if (g > gain + 1e-9 || (Math.abs(g - gain) <= 1e-9 && c < best)) { gain = g; best = c; } }
+      tot.set(best, tot.get(best) + ki); if (best !== own) { lab.set(i, best); moved++; }
+    }
+    if (!moved) break;
+  }
+  const groups = new Map(); for (const [i, l] of lab) { if (!groups.has(l)) groups.set(l, []); groups.get(l).push(i); }
+  const clusters = [...groups.values()].filter(g => g.length > 1).sort((a, b) => b.length - a.length)
+    .map((g, id) => { const top = g.slice().sort((a, b) => deg(b) - deg(a)); return { id, label: N[top[0]].label, size: g.length, members: top.slice(0, 6).map(i => N[i].label), nodes: g }; });
+  const cluster = {}; for (const c of clusters) for (const i of c.nodes) cluster[i] = c.id;
+
+  // bridges: betweenness centrality (Brandes, unweighted); a bridge whose neighbours sit in two or more clusters joins them
+  const bc = new Map(notes.map(n => [n.i, 0])), V = [...adj.keys()];
+  for (const s of V) {
+    const stack = [], pred = new Map(V.map(v => [v, []])), sig = new Map(V.map(v => [v, 0])), dist = new Map(V.map(v => [v, -1])), dl = new Map(V.map(v => [v, 0]));
+    sig.set(s, 1); dist.set(s, 0); const q = [s];
+    for (let qi = 0; qi < q.length; qi++) { const v = q[qi]; stack.push(v); for (const w of adj.get(v)) { if (dist.get(w) < 0) { dist.set(w, dist.get(v) + 1); q.push(w); } if (dist.get(w) === dist.get(v) + 1) { sig.set(w, sig.get(w) + sig.get(v)); pred.get(w).push(v); } } }
+    while (stack.length) { const w = stack.pop(); for (const v of pred.get(w)) dl.set(v, dl.get(v) + sig.get(v) / sig.get(w) * (1 + dl.get(w))); if (w !== s) bc.set(w, bc.get(w) + dl.get(w)); }
+  }
+  const pairs = Math.max(1, (V.length - 1) * (V.length - 2)); // ordered pairs, as the loop counts each path twice
+  const bridges = notes.filter(n => bc.get(n.i) > 0).sort((a, b) => bc.get(b.i) - bc.get(a.i)).slice(0, 10)
+    .map(n => item(n, { share: Math.round(bc.get(n.i) / pairs * 1000) / 10, links: deg(n.i), joins: new Set([...adj.get(n.i)].map(j => cluster[j]).filter(c => c != null && c !== cluster[n.i])).size }));
+
+  const hubs = notes.filter(n => deg(n.i)).sort((a, b) => deg(b.i) - deg(a.i) || a.label.localeCompare(b.label)).slice(0, 10).map(n => item(n, { links: deg(n.i) }));
+  const crossings = [], seen = new Set();
+  for (const [a, set] of adj) for (const b of set) {
+    const k = a < b ? a + ':' + b : b + ':' + a; if (seen.has(k)) continue; seen.add(k);
+    const A = N[a].strands, B = N[b].strands; if (A.length && B.length && !A.some(s => B.includes(s))) crossings.push({ a, b, from: N[a].label, to: N[b].label, fromStrands: A, toStrands: B });
+  }
+  const orphans = notes.filter(n => !deg(n.i)).sort((a, b) => String(a.group).localeCompare(String(b.group)) || a.label.localeCompare(b.label)).map(n => item(n));
+  const unplaced = notes.filter(n => !n.strands.length).map(n => item(n));
+
+  // where the work is landing: real notes that recent task notes link to
+  const since = new Date(now - days * 86400000).toISOString().slice(0, 10), hits = new Map();
+  for (const [a, b, kind] of m.links) {
+    if (kind !== 'wiki') continue;
+    for (const [t, n] of [[a, b], [b, a]]) if ((N[t].kind === 'task' || N[t].kind === 'upload') && N[t].date && N[t].date >= since && isNote.has(n)) hits.set(n, (hits.get(n) || 0) + 1);
+  }
+  const hot = [...hits].sort((x, y) => y[1] - x[1]).slice(0, 10).map(([i, tasks]) => item(N[i], { tasks }));
+  return { hubs, bridges, clusters: clusters.map(({ nodes, ...c }) => c), cluster, crossings, orphans, unplaced, hot, days };
+}

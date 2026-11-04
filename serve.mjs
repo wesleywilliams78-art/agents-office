@@ -41,7 +41,7 @@ import path from 'node:path';
 import { spawn } from 'node:child_process';
 import { loadConfig, ROOT } from './config.mjs';
 import { layoutGraph, readVault, readOfficeNotes } from './graph-build.mjs';
-import { buildMap as buildBrainMap } from './brainmap.mjs';
+import { buildMap as buildBrainMap, analyse as analyseBrainMap } from './brainmap.mjs';
 let brainMapCache = { at: 0, map: null };
 import { DEPTS, DEPT_KEYS } from './src/data.js';
 import * as mcp from './mcp.mjs';
@@ -1247,8 +1247,8 @@ const server = http.createServer(async (req, res) => {
     if (url.pathname === '/api/lessons') return json(res, 200, { dir: learn.dir(BRAIN), agents: AGENTS.map(a => ({ id: a.id, name: a.name, ...learn.read(BRAIN, a.id) })).filter(x => x.rules.length || x.oneOffs.length) });
     if (url.pathname === '/api/mcp') { if (url.searchParams.get('refresh') === '1') await mcp.discover(); else await discovering; return json(res, 200, { ...mcp.summary(), tools: backend === 'claude-cli' }); }
     if (url.pathname === '/api/brain') return json(res, 200, graph);
-    if (url.pathname === '/api/brainmap') { // the Brain as a map of the five strands of work, the desks that serve them, and every note under them (brainmap.mjs)
-      try { if (!brainMapCache.at || Date.now() - brainMapCache.at > 20000) brainMapCache = { at: Date.now(), map: buildBrainMap({ vault: BRAIN, agents: AGENTS }) }; return json(res, 200, brainMapCache.map); } catch (e) { return json(res, 500, { error: e.message }); }
+    if (url.pathname === '/api/brainmap') { // the Brain as a map of the five strands of work, the desks that serve them, and every note under them (brainmap.mjs); analysis: hubs, bridges, clusters, crossings (the AIOS Brain tab)
+      try { if (!brainMapCache.at || Date.now() - brainMapCache.at > 20000) brainMapCache = { at: Date.now(), map: (m => ({ ...m, analysis: analyseBrainMap(m) }))(buildBrainMap({ vault: BRAIN, agents: AGENTS })) }; return json(res, 200, brainMapCache.map); } catch (e) { return json(res, 500, { error: e.message }); }
     }
     if (url.pathname === '/api/usage') return json(res, 200, await getUsage(url.searchParams.get('refresh') === '1')); // V3.6: the plan's gauge (never a 500: unavailable is an answer)
     if (url.pathname === '/api/tokens' && req.method === 'GET') { // 3 Nov 2026: what the tokens go on (tokens.mjs) — the chats' transcripts and the office's own ledger. Pages on this computer only, like the Chief of Staff

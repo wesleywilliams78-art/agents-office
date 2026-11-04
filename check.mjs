@@ -84,6 +84,25 @@ await step('skills: a broken skill is refused, not applied', async () => {
   if (!sk.skills.find(x => x.name === 'oneliner' && x.departments.includes('fin'))) throw new Error('one-file skill not loaded');
   return `${sk.problems.length} problems reported · brain proposal wins`;
 });
+await step('brain map analysis: hubs, bottlenecks, clusters, strand crossings, unlinked notes and recent work, the same every run', async () => {
+  const { buildMap, analyse } = await import('./brainmap.mjs'); const { loadRoster } = await import('./roster.mjs');
+  const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'ao-brainmap-')), w = (rel, txt) => { fs.mkdirSync(path.dirname(path.join(tmp, rel)), { recursive: true }); fs.writeFileSync(path.join(tmp, rel), txt); };
+  w('10-Business/hub.md', '# Hub\nWRW art of operations. [[a]] [[b]] [[c]] [[x]]'); w('10-Business/a.md', 'Art of operations reel notes. [[b]]'); w('10-Business/b.md', 'Art of operations brand kit. [[hub]]');
+  w('30-Customers/c.md', 'YSF Imran call notes. [[d]]'); w('30-Customers/d.md', 'Imran YSF Creamy figures. [[c]]'); w('80-Finance/x.md', 'Personal budget and the water bill.'); w('00-Meta/lonely.md', 'Nothing links here.');
+  w('Agents Office/2026-11-04 Draft reel.md', '---\nagent: x\n---\nUsed [[a]] for the hook.');
+  try {
+    const m = buildMap({ vault: tmp, agents: loadRoster().agents }), now = Date.parse('2026-11-05T12:00:00Z'), an = analyse(m, { now });
+    if (an.hubs[0]?.label !== 'hub' || an.hubs[0].links !== 4) throw new Error('hub wrong: ' + JSON.stringify(an.hubs[0]));
+    if (an.bridges[0]?.label !== 'hub') throw new Error('the hub should be the main bottleneck: ' + JSON.stringify(an.bridges.map(b => b.label)));
+    if (an.orphans.map(o => o.label).join() !== 'lonely') throw new Error('unlinked notes wrong: ' + an.orphans.map(o => o.label));
+    const cross = an.crossings.map(c => [c.from, c.to].sort().join('→')).sort().join(' ');
+    if (!/c→hub/.test(cross) || !/hub→x/.test(cross)) throw new Error('crossings wrong: ' + cross);
+    if (an.clusters.length < 2) throw new Error('expected at least two clusters, got ' + an.clusters.length);
+    if (an.hot[0]?.label !== 'a' || an.hot[0].tasks !== 1) throw new Error('recent work wrong: ' + JSON.stringify(an.hot));
+    if (JSON.stringify(analyse(m, { now }).cluster) !== JSON.stringify(an.cluster)) throw new Error('clusters changed between two runs on the same vault');
+    return `hub ${an.hubs[0].links} links · ${an.clusters.length} clusters · ${an.crossings.length} crossings · ${an.orphans.length} unlinked · recent work found`;
+  } finally { fs.rmSync(tmp, { recursive: true, force: true }); }
+});
 await step('lessons: a correction is recorded and standing rules come back', async () => {
   const learn = await import('./learn.mjs'); const os = await import('node:os');
   const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'ao-learn-')); const a = { id: 'piper', name: 'PROPOSALS', role: 'x', does: 'y' };
