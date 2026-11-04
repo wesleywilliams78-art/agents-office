@@ -20,5 +20,6 @@
     "plugin_productivity_gmail"
   ], "departments": {} },
   "tools": { "web": true, "browser": true },
-  "teams": { "enabled": true, "max": 4 }
+  "teams": { "enabled": true, "max": 4 },
+  "leadReview": { "enabled": false, "departments": ["marketing"], "maxRounds": 2, "model": "sonnet", "effort": "medium" }
 }

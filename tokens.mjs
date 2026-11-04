@@ -234,7 +234,7 @@ export function report({ sessions = [], ledger = [], tasks = [], agents = [], de
         perApproved: approved.length ? cents(g.cost / approved.length) : null, hoursToOk: median(waits) };
     }).sort((a, b) => b.cost - a.cost || b.total - a.total);
   };
-  const KIND = { task: 'Desk work', piece: 'Team piece', lead: 'Team lead final', plan: 'Team plan', route: 'Routing a task', chat: 'Desk chat', chief: 'Chief of Staff', motion: 'Motion Director', critic: 'Motion critic',upload: 'Reading an upload', lesson: 'Learning from a correction', interview: 'Set-up interview', budget: 'Budget sync', tracker: 'Tracker sync', matrix: 'Matrix extraction', calendar: 'Calendar reminder', skill: 'Skill revision', fix: 'Dashboard fix', handover: 'Hand-over brief', other: 'Other' };
+  const KIND = { task: 'Desk work', piece: 'Team piece', lead: 'Team lead final', plan: 'Team plan', 'lead-review': 'Lead review', route: 'Routing a task', chat: 'Desk chat', chief: 'Chief of Staff', motion: 'Motion Director', critic: 'Motion critic',upload: 'Reading an upload', lesson: 'Learning from a correction', interview: 'Set-up interview', budget: 'Budget sync', tracker: 'Tracker sync', matrix: 'Matrix extraction', calendar: 'Calendar reminder', skill: 'Skill revision', fix: 'Dashboard fix', handover: 'Hand-over brief', other: 'Other' };
   const jobs = {
     desk: group(r => r.agent ? name(r.agent) : null),
     dept: group(r => r.dept ? (depts[r.dept]?.name || r.dept) : null),

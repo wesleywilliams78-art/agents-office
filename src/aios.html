@@ -455,7 +455,7 @@
   .pe .pet { border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; margin-top: 10px; } .pe .pet .tk { font-size: 10.5px; letter-spacing: .14em; text-transform: uppercase; color: var(--grey); } .pe .pet .tt { font-weight: 600; margin: 2px 0 6px; }
   .pe .pea { margin-top: 10px; line-height: 1.5; white-space: pre-wrap; } .pe .pea.err { color: var(--bad); }
   /* Hierarchy needs-you blue: the agreed design colour, kept off the theme palette (which has no blue in the red and bone look) */
-  :root { --hx-need: #4C8DF0; }
+  :root { --hx-need: #4C8DF0; --hx-rev: #D9951A; } /* blue needs you · amber is in lead review or in rework after a lead bounce */
   /* Hierarchy (4 Nov 2026): the chain as a picture, in the Overview hero's own look. Prompt engineer > Chief of Staff > department lead > desks (as many as the roster holds). */
   .hx-hero .hs b { font-weight: 600; }
   .hx { --sc-none: var(--faint); position: relative; padding: 28px 24px 22px; margin: 0 0 22px; border: 1px solid var(--line); border-radius: var(--r, 22px); background:
@@ -492,7 +492,7 @@
   .hx-desk { position: relative; border: 1px solid var(--line); border-radius: 18px; padding: 13px 16px 13px; background: var(--card, var(--panel)); cursor: pointer; --sc: var(--faint); transition: border-color .2s, transform .2s, box-shadow .25s; }
   .hx-desk:hover { border-color: var(--grey); transform: translateY(-2px); }
   .hx-desk.on { border-color: var(--sc); box-shadow: 0 0 0 1px var(--sc); }
-  .hx-desk.st-waiting { border-color: var(--sc); box-shadow: 0 0 0 1px var(--sc), 0 8px 22px -12px var(--sc); }
+  .hx-desk.st-waiting, .hx-desk.st-rework { border-color: var(--sc); box-shadow: 0 0 0 1px var(--sc), 0 8px 22px -12px var(--sc); }
   .hx-desk .hx-dh { display: flex; align-items: center; gap: 8px; font-size: 12px; letter-spacing: .1em; text-transform: uppercase; font-weight: 600; }
   .hx-desk .hx-dh em { margin-left: auto; font-style: normal; font-size: 9.5px; letter-spacing: .14em; color: var(--sc); font-weight: 500; }
   .hx-desk .hx-dr { color: var(--grey); font-size: 12px; margin: 4px 0 8px; }
@@ -509,7 +509,9 @@
   .hxt-col { position: relative; padding: 16px 16px 14px; border: 1px solid var(--line); border-radius: 22px; background: var(--card, var(--panel)); display: flex; flex-direction: column; min-width: 0; }
   .hxt-col::after { content: ''; position: absolute; right: -11px; top: 26px; width: 0; height: 0; border-top: 6px solid transparent; border-bottom: 6px solid transparent; border-left: 7px solid var(--faint); z-index: 1; } .hxt-col:last-child::after { display: none; }
   .hxt-col.has { border-color: color-mix(in srgb, var(--ok) 55%, var(--line)); } .hxt-col.need { border-color: var(--hx-need); box-shadow: 0 0 0 1px var(--hx-need), 0 10px 26px -14px var(--hx-need); }
-  .hxt-col.soon { border-style: dashed; background: transparent; }
+  .hxt-col.rev { border-color: var(--hx-rev); box-shadow: 0 0 0 1px var(--hx-rev), 0 10px 26px -14px var(--hx-rev); } .hxt-col.rev .hxt-h b { color: var(--hx-rev); }
+  .hxt-o { margin-top: 7px; color: var(--grey); font-size: 11.5px; line-height: 1.4; overflow-wrap: anywhere; }
+  .hxt-b .tag.ok { color: var(--ok); border-color: color-mix(in srgb, var(--ok) 55%, transparent); } .hxt-b .tag.rv { color: var(--hx-rev); border-color: color-mix(in srgb, var(--hx-rev) 60%, transparent); }
   .hxt-h { display: flex; align-items: baseline; gap: 8px; } .hxt-n { font-size: 10px; letter-spacing: .18em; color: var(--faint); } .hxt-name { font-size: 11px; letter-spacing: .16em; text-transform: uppercase; font-weight: 600; } .hxt-h b { margin-left: auto; font: 300 34px/1 var(--serif); font-variant-numeric: tabular-nums; }
   .hxt-col.need .hxt-h b { color: var(--hx-need); }
   .hxt-d { color: var(--faint); font-size: 11.5px; line-height: 1.4; margin: 6px 0 12px; min-height: 48px; }
@@ -2799,21 +2801,24 @@ loadTrackers(); setInterval(() => { if (!document.hidden && !Object.values(S.tkB
 /* ---------- Hierarchy (4 Nov 2026): the chain as a picture ----------
    Prompt engineer (ingestion) > Chief of Staff > department lead > desks. Only the pilot departments are drawn (PILOT, one line to widen it).
    The desks are whatever the roster holds for that department, so a seat added later simply appears: the grid wraps and has no cap.
-   Colour is live state: blue needs you, teal being worked, grey idle, red last run failed. (Amber, in lead review, comes with the review loop.)
+   Colour is live state: blue needs you, teal being worked, amber in lead review (the lead node) or in rework after a lead bounce (a desk), grey idle, red last run failed.
+   Lead review (leadreview.mjs) writes task.leadReview = { phase: review | rework | signed | escalated, round, open }; stageOf() and the badges read it.
    Own ids (hx*), own open-desk set, data-hseat; Roles is untouched. render() calls window.renderHierarchy(). Page helpers used: S, DEPTS, MODEL, esc, ago, seatState, readiness, roleSkills. */
 (() => {
   const PILOT = ['marketing'];
   let sel = ''; const el = id => document.getElementById(id); // sel: the desk picked in the chart; it opens and filters the trail
-  const COL = { doing: 'var(--ok)', waiting: 'var(--hx-need)', error: 'var(--bad)', idle: 'var(--faint)' };
-  const TXT = { doing: 'Working', waiting: 'Waiting on you', error: 'Last run failed', idle: 'Idle' };
+  const COL = { doing: 'var(--ok)', waiting: 'var(--hx-need)', review: 'var(--hx-rev)', rework: 'var(--hx-rev)', error: 'var(--bad)', idle: 'var(--faint)' };
+  const TXT = { doing: 'Working', waiting: 'Waiting on you', review: 'Reviewing', rework: 'In rework', error: 'Last run failed', idle: 'Idle' };
+  const lrOf = t => (t && t.leadReview && t.leadReview.phase) || ''; // the lead review phase of a task, if it has one
   let chiefBusy = false, chiefAt = 0;
   const node = (cls, sc, on, k, status, title, sub, extra = '', style = '') => `<div class="hx-node ${cls}${on ? ' on' : ''}" style="--sc:${sc};${style}"><div class="hx-k">${k}<span class="hx-st"><i class="hx-pulse"></i>${status}</span></div><div class="hx-t">${title}</div><div class="hx-s">${sub}</div>${extra}</div>`;
   const link = (live, hot, label, sub, colour) => `<div class="hx-link${live ? ' flow' : ''}${hot ? ' hot' : ''}" style="--lc:${colour || 'var(--faint)'}"><i class="dn"></i><i class="up"></i><span><b>${label}</b>${sub}</span></div>`;
   function desk(a) {
-    const st = seatState(a), k = st.key, isOpen = sel === a.id, r = readiness(a), office = S.health?.model || 'sonnet';
-    const last = st.doing ? 'Now: ' + esc(st.doing.title) : st.waiting ? 'Waiting on you: ' + esc(st.waiting.title) : st.last ? `Last: ${esc(st.last.title)} · ${ago(st.last.doneAt)}` : 'No work yet.';
+    const st = seatState(a), isOpen = sel === a.id, r = readiness(a), office = S.health?.model || 'sonnet';
+    const k = (st.key === 'doing' && lrOf(st.doing) === 'rework') ? 'rework' : st.key; // the lead sent this desk's draft back
+    const last = st.doing ? (k === 'rework' ? `Reworking after the lead, round ${st.doing.leadReview.round}: ` : 'Now: ') + esc(st.doing.title) : st.waiting ? 'Waiting on you: ' + esc(st.waiting.title) : st.last ? `Last: ${esc(st.last.title)} · ${ago(st.last.doneAt)}` : 'No work yet.';
     const model = a.model ? `${MODEL[a.model] || a.model} (own)` : `${MODEL[office] || office} (office)`;
-    return `<div class="hx-desk st-${k}${k === 'doing' || k === 'waiting' ? ' on' : ''}${isOpen ? ' sel' : ''}" data-hseat="${esc(a.id)}" style="--sc:${COL[k] || COL.idle}">
+    return `<div class="hx-desk st-${k}${k === 'doing' || k === 'waiting' || k === 'rework' ? ' on' : ''}${isOpen ? ' sel' : ''}" data-hseat="${esc(a.id)}" style="--sc:${COL[k] || COL.idle}">
       <div class="hx-dh"><i class="hx-pulse"></i>${esc(a.name)}<em>${TXT[k] || 'Idle'}</em></div>
       <div class="hx-dr">${esc(a.role)}</div>
       ${isOpen ? `<div class="hx-dd">${esc(a.does)}</div><div class="hx-tags"><span class="tag">${esc(model)}</span>${a.effort ? `<span class="tag">effort ${esc(a.effort)}</span>` : ''}<span class="tag ${a.brief ? 'good' : 'miss'}">${a.brief ? 'BRIEF' : 'NO BRIEF'}</span><span class="tag ${roleSkills(a).length ? 'good' : 'miss'}">${roleSkills(a).length ? 'SKILL: ' + esc(roleSkills(a).join(', ')) : 'NO ROLE SKILL'}</span>${a.lessons ? `<span class="tag">${a.lessons} lesson${a.lessons > 1 ? 's' : ''}</span>` : ''}${(a.tools || []).map(t => `<span class="tag">${esc(t)}</span>`).join('')}</div>` : ''}
@@ -2836,6 +2841,7 @@ loadTrackers(); setInterval(() => { if (!document.hidden && !Object.values(S.tkB
     if (t.state === 'waiting') return 4;
     if (t.state === 'next' || t.state === 'scheduled') return 0;
     if (t.state !== 'doing') return -1;
+    if (lrOf(t) === 'review') return 3; // the lead is reading the draft; a bounce ('rework') is back with the desk, so stage 3 (Agents)
     if (!t.team) return 2;
     const p = pieces(t); return (!p.length || p.every(x => x.state === 'done')) ? 1 : 2;
   };
@@ -2845,10 +2851,16 @@ loadTrackers(); setInterval(() => { if (!document.hidden && !Object.values(S.tkB
     const badges = [];
     if (t.state === 'scheduled' && t.dueAt) badges.push(`<span class="tag">Books ${esc(when(t.dueAt))}</span>`);
     if (t.team) badges.push(`<span class="tag">TEAM${p.length ? ` ${done}/${p.length}` : ''}</span>`);
+    const lr = t.leadReview || {}, lp = lrOf(t), lead = agentBy(lr.by);
     if (t.revisions && stage !== 4) badges.push(`<span class="tag rw">Rework · round ${t.revisions + 1}</span>`);
     if (t.revisions && stage === 4) badges.push(`<span class="tag">Revision ${t.revisions + 1}</span>`);
+    if (lp === 'review') badges.push(`<span class="tag rv">${lr.round ? `Lead rereading · after rework ${lr.round}` : 'Lead reading the first draft'}</span>`);
+    if (lp === 'rework') badges.push(`<span class="tag rv">Lead rework · round ${lr.round}</span>`);
+    if (stage === 4 && lp === 'signed') badges.push(`<span class="tag ok">Signed off by ${esc(lead ? lead.name : 'the lead')}${lr.round ? ` · ${lr.round} round${lr.round > 1 ? 's' : ''}` : ''}${lr.unreadable ? ' · unread' : ''}</span>`);
+    if (stage === 4 && lp === 'escalated') badges.push(`<span class="tag rv">Escalated by ${esc(lead ? lead.name : 'the lead')} · ${lr.round} round${lr.round > 1 ? 's' : ''}</span>`);
+    const open = (stage === 4 && lp === 'escalated' && lr.open) ? `<div class="hxt-o">Still open: ${esc(String(lr.open).slice(0, 220))}</div>` : (lp === 'rework' && lr.open ? `<div class="hxt-o">Lead asked: ${esc(String(lr.open).slice(0, 160))}</div>` : '');
     const since = stage === 4 ? t.waitingAt : t.startedAt || t.addedAt;
-    return `<div class="hxt-c"><div class="hxt-t">${esc(t.title)}</div><div class="hxt-m"><span>${esc(a ? a.name : t.agent)}</span>${since ? `<span>${ago(since)}</span>` : ''}</div>${badges.length ? `<div class="hxt-b">${badges.join('')}</div>` : ''}${stage === 4 ? `<a class="btn" href="/#review=${encodeURIComponent(t.id)}" target="agentsOffice">REVIEW IN THE OFFICE ↗</a>` : ''}</div>`;
+    return `<div class="hxt-c"><div class="hxt-t">${esc(t.title)}</div><div class="hxt-m"><span>${esc(a ? a.name : t.agent)}</span>${since ? `<span>${ago(since)}</span>` : ''}</div>${badges.length ? `<div class="hxt-b">${badges.join('')}</div>` : ''}${open}${stage === 4 ? `<a class="btn" href="/#review=${encodeURIComponent(t.id)}" target="agentsOffice">REVIEW IN THE OFFICE ↗</a>` : ''}</div>`;
   }
   function renderTrail(blocks) {
     const box = el('hxTrail'); if (!box) return;
@@ -2857,7 +2869,7 @@ loadTrackers(); setInterval(() => { if (!document.hidden && !Object.values(S.tkB
     const by = [0, 1, 2, 3, 4].map(i => open.filter(t => stageOf(t) === i).sort((a, b) => (a.startedAt || a.addedAt || 0) - (b.startedAt || b.addedAt || 0)));
     const today = S.tasks.filter(t => depts.has(t.dept) && t.state === 'done' && !t.closed && t.doneAt && new Date(t.doneAt).toDateString() === new Date().toDateString() && (!sel || mine(t, sel))).length;
     box.innerHTML = `<div class="sh"><h2>Task trail</h2><span class="note">Every open ${[...depts].map(d => esc(DEPTS[d].name.toLowerCase())).join(' and ')} task, in the stage it is in now. ${open.length} open · ${today} done today.</span>${seat ? `<div class="tools"><span class="hxt-f">Showing ${esc(seat.name)}</span><button type="button" data-hxclear>SHOW ALL DESKS</button></div>` : ''}</div>
-      <div class="hxt-row">${STAGES.map(([n, d], i) => `<div class="hxt-col${i === 3 ? ' soon' : ''}${by[i].length ? ' has' : ''}${i === 4 && by[i].length ? ' need' : ''}"><div class="hxt-h"><span class="hxt-n">0${i + 1}</span><span class="hxt-name">${n}</span><b>${by[i].length}</b></div><div class="hxt-d">${d}</div><div class="hxt-l">${by[i].map(t => taskCard(t, i)).join('') || `<div class="hxt-e">${i === 3 ? 'Not built yet. Today a desk’s work goes straight to you.' : 'Nothing here.'}</div>`}</div></div>`).join('')}</div>`;
+      <div class="hxt-row">${STAGES.map(([n, d], i) => `<div class="hxt-col${by[i].length ? (i === 3 ? ' rev' : ' has') : ''}${i === 4 && by[i].length ? ' need' : ''}"><div class="hxt-h"><span class="hxt-n">0${i + 1}</span><span class="hxt-name">${n}</span><b>${by[i].length}</b></div><div class="hxt-d">${d}</div><div class="hxt-l">${by[i].map(t => taskCard(t, i)).join('') || `<div class="hxt-e">Nothing here.</div>`}</div></div>`).join('')}</div>`;
   }
   window.renderHierarchy = function renderHierarchy() {
     if (!el('hx')) return; pollChief();
@@ -2865,8 +2877,9 @@ loadTrackers(); setInterval(() => { if (!document.hidden && !Object.values(S.tkB
     const blocks = PILOT.map(d => {
       const seats = S.agents.filter(a => a.department === d), lead = seats.find(a => a.lead), desks = seats.filter(a => !a.lead);
       const keys = desks.map(a => seatState(a).key), waiting = keys.filter(k => k === 'waiting').length, doing = keys.filter(k => k === 'doing').length, failed = keys.filter(k => k === 'error').length;
-      const lk = lead ? seatState(lead).key : 'idle', leadKey = (waiting || lk === 'waiting') ? 'waiting' : (doing || lk === 'doing') ? 'doing' : 'idle';
-      return { d, lead, desks, waiting, doing, failed, leadKey, dept: DEPTS[d] };
+      const lk = lead ? seatState(lead).key : 'idle', reviewing = S.tasks.filter(t => t.dept === d && t.state === 'doing' && lrOf(t) === 'review').length;
+      const leadKey = (waiting || lk === 'waiting') ? 'waiting' : reviewing ? 'review' : (doing || lk === 'doing') ? 'doing' : 'idle'; // amber while the lead is reading a draft
+      return { d, lead, desks, waiting, doing, failed, reviewing, leadKey, dept: DEPTS[d] };
     });
     const all = blocks.flatMap(b => b.desks), W = blocks.reduce((n, b) => n + b.waiting, 0), D = blocks.reduce((n, b) => n + b.doing, 0);
     const doneToday = S.tasks.filter(t => blocks.some(b => b.d === t.dept) && t.state === 'done' && !t.closed && t.doneAt && new Date(t.doneAt).toDateString() === new Date().toDateString()).length;
@@ -2888,7 +2901,7 @@ loadTrackers(); setInterval(() => { if (!document.hidden && !Object.values(S.tkB
     const anyLive = D > 0;
     el('hx').innerHTML = tops + link(peBusy, false, 'The brief, once you say yes', 'Sent as written, with your decisions', peBusy ? 'var(--ok)' : 'var(--faint)') + chief
       + link(chiefBusy || anyLive, false, 'Adds the task to the right desk', 'The Chief of Staff picks the department', (chiefBusy || anyLive) ? 'var(--ok)' : 'var(--faint)') + chain
-      + `<div class="hx-key"><span><i class="ln"></i>Assign and feedback, down</span><span><i class="ln d"></i>Sign-off, up</span><span><i class="hx-pulse" style="--sc:var(--ok)"></i>Being worked</span><span><i class="hx-pulse" style="--sc:var(--hx-need)"></i>Needs you</span><span><i class="hx-pulse" style="--sc:var(--bad)"></i>Last run failed</span><span><i class="hx-pulse" style="--sc:var(--faint)"></i>Idle</span><span>Lead sign-off is not approval to send. Only you approve.</span></div>`;
+      + `<div class="hx-key"><span><i class="ln"></i>Assign and feedback, down</span><span><i class="ln d"></i>Sign-off, up</span><span><i class="hx-pulse" style="--sc:var(--ok)"></i>Being worked</span><span><i class="hx-pulse" style="--sc:var(--hx-need)"></i>Needs you</span><span><i class="hx-pulse" style="--sc:var(--hx-rev)"></i>In lead review or rework</span><span><i class="hx-pulse" style="--sc:var(--bad)"></i>Last run failed</span><span><i class="hx-pulse" style="--sc:var(--faint)"></i>Idle</span><span>Lead sign-off is not approval to send. Only you approve.</span></div>`;
     renderTrail(blocks);
   };
   document.addEventListener('click', e => { const s = e.target.closest('[data-hseat]'); if (s) { const id = s.dataset.hseat; sel = sel === id ? '' : id; renderHierarchy(); return; } if (e.target.closest('[data-hxclear]')) { sel = ''; renderHierarchy(); } });

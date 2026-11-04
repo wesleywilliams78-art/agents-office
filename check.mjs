@@ -968,6 +968,45 @@ await step('teams: the sentence says team, the plan is checked against the seats
   if (!/## Team/.test(extra) || !/ADA → lead: x/.test(extra) || !/### ADA — A\nr/.test(extra)) throw new Error('note extra: ' + extra);
   return 'intent · askedSize · plan (dedupe, unknown seats, cap, one desk → solo, none → the lead) · notes · section · settings · note';
 });
+/* ---------- 1e-ii. lead review and bounce loop (4 Nov 2026, docs/lead-review-plan.md) ---------- */
+await step('lead review: scope, verdicts, pass · bounce then pass · escalate at the limit · unreadable passes · off changes nothing', async () => {
+  const L = await import('./leadreview.mjs');
+  const on = L.settings({ leadReview: { enabled: true } }), desk = { id: 'newt', department: 'marketing', lead: false, name: 'NEWT', role: 'Newsletter' }, task = { id: 't1', dept: 'marketing', agent: 'newt', title: 'T', text: 'Write five bullets' };
+  // the scope
+  if (L.settings({}).enabled || L.settings({ leadReview: {} }).enabled) throw new Error('must ship switched off');
+  if (on.maxRounds !== 2 || on.departments.join() !== 'marketing' || L.settings({ leadReview: { maxRounds: 99 } }).maxRounds !== 3) throw new Error('settings: ' + JSON.stringify(on));
+  const a = (o = {}) => L.applies({ cfg: on, task, desk, result: 'draft', ...o });
+  if (!a()) throw new Error('a marketing desk draft that waits should be reviewed');
+  for (const [why, o] of [['off', { cfg: L.settings({}) }], ['approve turn', { approve: true }], ['answer turn', { answer: true }], ['does not wait', { waits: false }], ['the lead\'s own', { desk: { ...desk, lead: true } }], ['team task', { task: { ...task, team: {} } }], ['other department', { task: { ...task, dept: 'sales' } }], ['empty draft', { result: '  ' }]]) if (a(o)) throw new Error('wrongly reviewed: ' + why);
+  // the verdict
+  const pv = L.parseVerdict;
+  if (pv('```json\n{"verdict":"pass","checks":[{"check":"five bullets","met":true}]}\n```').verdict !== 'pass') throw new Error('pass');
+  const b = pv('{"verdict":"bounce","feedback":"1. Only four bullets."}'); if (b.verdict !== 'bounce' || !/four bullets/.test(b.feedback)) throw new Error('bounce: ' + JSON.stringify(b));
+  if (pv('{"verdict":"bounce","checks":[{"check":"five bullets","met":false}]}').feedback !== '1. five bullets') throw new Error('a bounce with only unmet checks should name them');
+  for (const junk of ['', 'looks fine to me', '{"verdict":"maybe"}', '{"verdict":"bounce"}']) { const r = pv(junk); if (r.verdict !== 'pass' || !r.unreadable) throw new Error('unreadable must pass: ' + junk); }
+  // the loop, with a fake lead and a fake desk
+  const mk = replies => { let i = 0, reruns = []; const t = { ...task }, saves = []; return { t, reruns, saves, go: (max = 2) => L.runLoop({ task: t, out: { result: 'v0' }, review: async () => { const r = replies[Math.min(i++, replies.length - 1)]; if (r instanceof Error) throw r; return r; }, rerun: async (fb, prev) => { reruns.push(fb); return { result: 'v' + reruns.length }; }, max, by: 'mlead', onChange: x => saves.push(x.leadReview.phase) }) }; };
+  const P = '{"verdict":"pass"}', B = n => `{"verdict":"bounce","feedback":"fix ${n}"}`;
+  let m = mk([P]); let r = await m.go();
+  if (r.leadReview.phase !== 'signed' || r.leadReview.round !== 0 || m.reruns.length || r.out.result !== 'v0' || m.t.leadReview.log.length !== 1) throw new Error('pass first time: ' + JSON.stringify(r.leadReview));
+  m = mk([B(1), P]); r = await m.go();
+  if (r.leadReview.phase !== 'signed' || r.leadReview.round !== 1 || r.out.result !== 'v1' || m.reruns[0] !== 'From the lead, round 1: fix 1' || m.saves.join() !== 'review,rework,review,signed') throw new Error('bounce then pass: ' + JSON.stringify(r.leadReview) + m.saves.join());
+  m = mk([B(1), B(2), B(3)]); r = await m.go();
+  if (r.leadReview.phase !== 'escalated' || r.leadReview.round !== 2 || m.reruns.length !== 2 || r.leadReview.open !== 'fix 3' || r.out.result !== 'v2' || r.leadReview.log.length !== 3) throw new Error('escalate at round 2: ' + JSON.stringify(r.leadReview));
+  m = mk([new Error('model down')]); r = await m.go();
+  if (r.leadReview.phase !== 'signed' || !r.leadReview.unreadable || m.reruns.length) throw new Error('a failed review must pass: ' + JSON.stringify(r.leadReview));
+  m = mk(['not json']); r = await m.go(); if (r.leadReview.phase !== 'signed' || !r.leadReview.unreadable) throw new Error('an unreadable review must pass');
+  const bad = { ...task }; r = await L.runLoop({ task: bad, out: { result: 'v0' }, review: async () => B(1), rerun: async () => { throw new Error('desk down'); }, max: 2, by: 'mlead' });
+  if (r.leadReview.phase !== 'escalated' || r.out.result !== 'v0' || !/desk down/.test(r.leadReview.open)) throw new Error('a desk that fails the rework should escalate with the last draft: ' + JSON.stringify(r.leadReview));
+  // the words
+  const p = L.reviewPrompt({ task, draft: 'D', desk, lead: { name: 'MARKETING LEAD' }, round: 2, max: 2, log: [{ round: 0, verdict: 'bounce', feedback: 'fix 1' }], ownerFeedback: 'shorter' });
+  if (!/READ 1, THE RULES/.test(p.extra) || !/READ 2, THE BAR/.test(p.extra) || !/move the dial/.test(p.extra) || !/RULES THE DESK WORKED UNDER/.test(p.extra) || !/"dial"/.test(p.extra)) throw new Error('the prompt must check the rules and the bar: ' + p.extra.slice(0, 300));
+  if (pv('{"verdict":"pass","dial":"Yes: a sharp hook for owners adding sites."}').dial !== 'Yes: a sharp hook for owners adding sites.') throw new Error('dial not read');
+  if (!/The lead's read: Yes\./.test(L.askLine({ phase: 'signed', round: 0, dial: 'Yes.' }, 'LEAD'))) throw new Error('askLine should show the lead\'s read');
+  if (!/last round/.test(p.extra) || !/fix 1/.test(p.user) || !/shorter/.test(p.user) || !/DRAFT BY NEWT\nD/.test(p.user)) throw new Error('prompt: ' + p.extra.slice(0, 200));
+  if (!/signed off by LEAD after 1 round of rework/.test(L.askLine({ phase: 'signed', round: 1 }, 'LEAD')) || !/Still open: x/.test(L.askLine({ phase: 'escalated', round: 2, open: 'x' }, 'LEAD')) || L.askLine({ phase: 'review' }) !== '') throw new Error('askLine');
+  return 'off by default · scope (8 cases) · verdict parsing · pass · bounce→pass · escalate at round 2 · failed or unreadable review passes · failed rework escalates';
+});
 await step('teams: a team routine is kept and moved to the department lead', async () => {
   const { validate } = await import('./routines.mjs'); const { loadRoster } = await import('./roster.mjs');
   const agents = loadRoster().agents;

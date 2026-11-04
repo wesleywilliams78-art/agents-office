@@ -1,6 +1,8 @@
 # Lead review and bounce loop: plan (4 Nov 2026)
 
-Step 4 of `docs/HANDOVER-4-nov-aios-office-v2.md`. Plan only; nothing is built. Build it on **Opus 5.5 · high** (multi-file change in `serve.mjs`).
+Step 4 of `docs/HANDOVER-4-nov-aios-office-v2.md`. **Status 4 Nov (late): build order steps 1 to 3 done, defaults confirmed by Wesley, ships off; step 4 (the watched live trial) is next.** The reviewer's own `agentSystem` carries the lead's brief and skills; a bounced desk sees "Your department lead read your previous version…" (a small branch in `run()`). Build it on **Opus 5.5 · high** (multi-file change in `serve.mjs`).
+
+**Update 4 Nov (night):** the loop is live for marketing. The review now has two reads (the desk's rules, then a world-class bar) and a one-line "dial" read for Wesley; its prompt is slim (about $0.25 a round, not $0.75); the persona is a Brain skill `lead-review` bound to `mlead`. Decision 4 is being reversed in the next build: the lead may propose one lesson per task, and only Wesley's yes writes it into a skill. See `docs/HANDOVER-4-nov-lead-lessons-build.md`.
 
 ## What it does
 A desk finishes a draft. Before it reaches you, the department lead reads it against the brief. Pass: it goes to you marked "signed off by the lead". Bounce: the desk reworks it with the lead's feedback, up to **2 bounces**, then the lead escalates and you get it with the open concerns shown. The lead's sign-off is never approval to send; you still tick everything.

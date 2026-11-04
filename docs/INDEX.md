@@ -10,6 +10,7 @@ Start here. Open only what the task needs; read big files by slice.
 - `docs/token-baseline.md`: measured token numbers (5 Oct 2026). Compare against it after changes.
 - `docs/token-habits.md`: session habits to save tokens.
 - `docs/chief-of-staff.md`: Chief of Staff + Prompt Engineer. Open before changing how tasks are added.
+- `docs/lead-review-plan.md`: lead review and bounce loop (`leadreview.mjs`, `runWithLeadReview` in `serve.mjs`, AIOS Hierarchy trail). Built 4 Nov, ships off (`leadReview.enabled`). Open before changing how a desk's draft reaches Wesley. Next build: `docs/HANDOVER-4-nov-lead-lessons-build.md` (lead-proposed lessons).
 - `docs/motion-studio.md`: Motion Director, engine rules, style library. Open before any motion work.
 - `docs/blender-studio.md`: Blender bridge and site kits. Open before Blender work.
 - `docs/site-updates.md`: reviewed website edits and guard rails. Open before changing the site flow.

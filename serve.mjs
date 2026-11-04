@@ -53,6 +53,7 @@ import * as onboard from './onboard.mjs';
 import * as routines from './routines.mjs';
 import * as usage from './usage.mjs';
 import * as teams from './teams.mjs';
+import * as leadreview from './leadreview.mjs';
 import * as aios from './aios.mjs';
 import * as budget from './budget.mjs';
 import * as brainnotes from './brainnotes.mjs';
@@ -100,6 +101,7 @@ const RUN_TIMEOUT = Math.max(60, +cfg.timeout || 300) * 1000; // agents with too
 mcp.configure(cfg);
 routines.allow(process.env.OFFICE_ROUTINE_DEPTS ? process.env.OFFICE_ROUTINE_DEPTS.split(',') : cfg.routines?.departments); // office.config.json: "routines": { "departments": ["emails", "fin", "sales", "ops", "delivery", "marketing"] }
 const TEAMS = teams.settings(cfg); // V3.2 (16 Sep): { enabled, max }
+const LEAD_REVIEW = leadreview.settings(cfg); // 4 Nov 2026: { enabled (default off), departments, maxRounds, model, effort } — docs/lead-review-plan.md
 const roster = loadRoster(BRAIN);
 const AGENTS = roster.agents; // id · department · lead · name · role · does · tools · brief
 for (const w of roster.problems) console.warn('agents:', w);
@@ -535,7 +537,9 @@ async function run(task, feedback, mode, asAnswer) { // asAnswer: the owner is a
     : task.dueAt ? `\nThis task was scheduled in advance for ${new Date(task.dueAt).toLocaleString([], { weekday: 'long', day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' })} and is running now; the owner is not at the keyboard${task.late ? ' and this run is late' : ''}. Do the work for now.` : '';
   const modeLine = modeLineFor(mode, task);
   const user = `Task: ${task.title}\nOwner's request: ${task.text}` + (task.plan?.length ? `\nAgreed plan: ${task.plan.join(' → ')}` : '') + routineLine + modeLine +
-    (feedback && mode !== 'approve' ? (asAnswer
+    (feedback && mode !== 'approve' ? (/^From the lead, round \d/.test(feedback)
+      ? `\n\nYour department lead read your previous version before it reaches the owner and sent it back: "${feedback}"\nFix exactly those points, keep everything that was already right, and do not mention the review.\nPrevious version:\n${task.result}`
+      : asAnswer
       ? `\n\nThe owner is NOT rejecting your previous version. He is giving you information you did not have: "${feedback}"\nTreat it as fact. Update the work using it, keep everything that was already right, and do not apologise or mention a rejection.\nPrevious version:\n${task.result}`
       : `\n\nThe owner reviewed your previous version and asked for changes: "${feedback}"\nPrevious version:\n${task.result}`) : '');
   const { pick, eff } = pickFor(task, a);
@@ -722,6 +726,39 @@ function fire(r, { due = Date.now(), late = false, by = 'routine' } = {}) { // t
 // (tasks that send, post or pay still wait for the OK either way).
 const REVIEW_ALL = cfg.review?.all !== false;
 const reviewLine = task => `"${task.title}" is ready for your review — approve to mark it done, or reject and tell me why.`;
+// Lead review (leadreview.mjs): wraps the one run() call. A desk's draft that waits for the owner is read by its department lead first;
+// a bounce reruns the desk with the lead's feedback, up to maxRounds, then it goes to the owner with the open concerns.
+// task.state stays 'doing' throughout; task.leadReview carries the phase for the AIOS trail. Off unless leadReview.enabled.
+// The reviewer's system prompt is not the desk's: the lead's own standards (its brief), the rules the DESK worked under (its brief, skills and
+// lessons), the company notes, and the notes the desk read at a short cap. Not the lead's own skills or the uploads, which were 160k tokens
+// of the first trial's cost. The persona and quality bar belong in the lead's brief (roster), the rules come from the desk.
+function reviewSystem(lead, desk, index, read, extra) {
+  const notes = read.filter(n => !isUpload(n)), uploads = read.filter(isUpload);
+  return `You are ${lead.name}, ${lead.role || 'the department lead'}, in the ${DEPTS[lead.department].name} department of ${cfg.name}. ${lead.does}\n` +
+    (lead.brief ? `\nYOUR STANDARDS AS LEAD (from the owner)\n${lead.brief}\n` : '') +
+    skills.forAgent(lead).filter(s => s.name === 'lead-review').map(s => `\nYOUR REVIEW STANDARD AND PERSONA\n${s.text}\n`).join('') + // a skill named lead-review, bound to the lead, carries the persona and the bar (the brief is capped at 2,000 characters)
+    `\nRULES THE DESK WORKED UNDER (${desk.name})\n${agentBrief(desk) || '(none)'}\n\n${extra}\n\nCOMPANY NOTES\n${businessContext(index)}` +
+    (notes.length ? `\n\nNOTES THE DESK READ (the first 4,000 characters of each)\n${notes.map(n => `--- ${n}.md ---\n${(index.get(n) || '').slice(0, 4000)}`).join('\n\n')}` : '') +
+    (uploads.length ? `\n\nUploaded documents the desk also read (not shown to you): ${uploads.join('; ')}` : '');
+}
+async function runWithLeadReview(task, feedback, mode, answer, approve) {
+  if (!approve) delete task.leadReview; // a new draft is a new review; an approve turn keeps the record of the one before
+  const out = await run(task, feedback, mode, answer);
+  const desk = AGENTS.find(a => a.id === task.agent);
+  if (!leadreview.applies({ cfg: LEAD_REVIEW, task, desk, approve, answer, waits: !!(task.needsOk || REVIEW_ALL), result: out.result })) return out;
+  const lead = AGENTS.find(a => a.lead && a.department === desk.department);
+  if (!lead) return out;
+  const model = normModel(LEAD_REVIEW.model) || 'sonnet', effort = normEffort(LEAD_REVIEW.effort) || 'medium';
+  const review = async ({ out: cur, round, log }) => {
+    refreshSkills();
+    const p = leadreview.reviewPrompt({ task, draft: cur.result, desk, lead, round, max: LEAD_REVIEW.maxRounds, log, ownerFeedback: feedback && !/^From the lead/.test(feedback) ? feedback : '' });
+    return ask(reviewSystem(lead, desk, vaultIndex(), cur.read || [], p.extra), p.user, { maxTokens: 1100, timeout: 150000, model, effort, job: { task, kind: 'lead-review', agent: lead.id, mode: 'draft' } });
+  };
+  const rerun = async (fb, prev) => { task.result = prev.result; return run(task, fb, mode, false); }; // run() quotes task.result as "previous version"
+  const r = await leadreview.runLoop({ task, out, review, rerun, max: LEAD_REVIEW.maxRounds, by: lead.id, onChange: persist });
+  console.log(`  ⚖ ${task.id} lead review by ${lead.name}: ${r.leadReview.phase}${r.leadReview.round ? ' after ' + r.leadReview.round + ' round(s)' : ''}`);
+  return { ...r.out, leadReview: r.leadReview, leadName: lead.name };
+}
 const RUNNING = new Set(); // a task is never run twice at once: the page and the server may both ask to start the same new task
 async function runServerTask(id, opts = {}) {
   if (RUNNING.has(id)) return null;
@@ -732,7 +769,7 @@ async function runServerTaskNow(id, { feedback, approve, answer } = {}) {
   let list = load(); const task = list.find(t => t.id === id); if (!task) return null;
   task.state = 'doing'; task.startedAt = Date.now(); delete task.ask; save(list);
   try {
-    const out = await run(task, feedback, approve ? 'approve' : task.needsOk ? 'draft' : 'routine', answer);
+    const out = await runWithLeadReview(task, feedback, approve ? 'approve' : task.needsOk ? 'draft' : 'routine', answer, approve);
     const hoText = out.result; if (handoff.parse(hoText).length) out.result = handoff.strip(hoText);
     if (!approve && /\[content-build\]/i.test(task.text || '')) { // the week's finished content is filed into the Content Calendar folder Wesley posts from
       try { const f = weekpack.fromResult(ROOT, BRAIN, out.result); out.result = weekpack.strip(out.result) + '\n\n---\nFILED IN THE CONTENT CALENDAR FOLDER\n' + (f.filed ? `${f.filed} item(s) in ${f.dir}` : 'not filed: ' + f.reason); console.log(`🗓 content calendar: ${f.filed ? f.filed + ' item(s) filed in ' + f.dir : 'not filed, ' + f.reason}`); } catch (e) { console.warn('content calendar:', e.message); }
@@ -752,7 +789,7 @@ async function runServerTaskNow(id, { feedback, approve, answer } = {}) {
     Object.assign(task, { read: out.read, tools: [...new Set([...(task.tools || []), ...out.tools])], used: [...new Set([...(task.used || []), ...out.used])], skills: out.skills, error: false, modelUsed: out.modelUsed, modelFrom: out.modelFrom, modelId: out.modelId, effortUsed: out.effortUsed, effortFrom: out.effortFrom, ...(out.team ? { team: out.team } : {}) });
     if (task.needsOk && !task.channel && isEmail(task)) task.channel = 'email';
     if ((task.needsOk || REVIEW_ALL) && !approve && aoofile.isAooReel(task)) aoofile.sendForApproval(ROOT, task, out.result).then(s => console.log(`🎞 Art of Operations reel ${s.sent ? 'sent to Telegram for approval' : 'not sent: ' + s.reason}`)).catch(() => {}); // Wesley reads on his phone
-    if ((task.needsOk || REVIEW_ALL) && !approve) { task.state = 'waiting'; task.draft = out.result; task.waitingAt = Date.now(); task.ask = (task.needsOk ? (task.channel === 'email' ? `"${task.title}" is written — approve to put it in your Gmail drafts, then send it from your inbox. Reject to tell me what to change.` : routines.askLine(task)) : reviewLine(task)) + brainReview(task, out.result) + siteReview(task, out.result) + (approve ? '' : handoffReview(task, hoText)); }
+    if ((task.needsOk || REVIEW_ALL) && !approve) { task.state = 'waiting'; task.draft = out.result; task.waitingAt = Date.now(); task.ask = (task.needsOk ? (task.channel === 'email' ? `"${task.title}" is written — approve to put it in your Gmail drafts, then send it from your inbox. Reject to tell me what to change.` : routines.askLine(task)) : reviewLine(task)) + brainReview(task, out.result) + siteReview(task, out.result) + (approve ? '' : handoffReview(task, hoText)) + (out.leadReview ? leadreview.askLine(out.leadReview, out.leadName) : ''); }
     else {
       task.state = 'done'; task.doneAt = Date.now();
       try { const sc = ubereats.fileScorecard(DATA, out.result); if (sc) { task.result += sc.ok ? `\n\n---\nUBER EATS SCORECARD FILED: ${sc.tier}, read ${sc.readOn}, on the Delivery dashboard.` : `\n\n---\nUBER EATS SCORECARD NOT FILED: ${sc.error}.`; console.log('  ubereats scorecard:', sc.ok ? 'filed' : sc.error); } } catch (e) { console.warn('scorecard:', e.message); } // V3.12: read-only figures for the dashboard, filed without review
