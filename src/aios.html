@@ -454,6 +454,57 @@
   .pe .peu { background: var(--soft); border-radius: 10px; padding: 8px 12px; margin: 10px 0 0; white-space: pre-wrap; color: var(--grey); }
   .pe .pet { border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; margin-top: 10px; } .pe .pet .tk { font-size: 10.5px; letter-spacing: .14em; text-transform: uppercase; color: var(--grey); } .pe .pet .tt { font-weight: 600; margin: 2px 0 6px; }
   .pe .pea { margin-top: 10px; line-height: 1.5; white-space: pre-wrap; } .pe .pea.err { color: var(--bad); }
+  /* Hierarchy needs-you blue: the agreed design colour, kept off the theme palette (which has no blue in the red and bone look) */
+  :root { --hx-need: #4C8DF0; }
+  /* Hierarchy (4 Nov 2026): the chain as a picture, in the Overview hero's own look. Prompt engineer > Chief of Staff > department lead > desks (as many as the roster holds). */
+  .hx-hero .hs b { font-weight: 600; }
+  .hx { --sc-none: var(--faint); position: relative; padding: 28px 24px 22px; margin: 0 0 22px; border: 1px solid var(--line); border-radius: var(--r, 22px); background:
+      radial-gradient(circle at 1px 1px, color-mix(in srgb, var(--ink) 10%, transparent) 1px, transparent 0) 0 0 / 22px 22px, var(--card, var(--panel)); }
+  .hx-node { position: relative; width: min(560px, 100%); margin: 0 auto; padding: 18px 22px 18px; border-radius: 22px; border: 1px solid var(--line); background: var(--card, var(--panel)); --sc: var(--faint); transition: border-color .25s, box-shadow .25s; }
+  .hx-node.on { border-color: var(--sc); box-shadow: 0 0 0 1px var(--sc), 0 10px 30px -14px var(--sc); }
+  .hx-node .hx-k { font-size: 10.5px; letter-spacing: .2em; text-transform: uppercase; color: var(--grey); display: flex; align-items: center; gap: 8px; }
+  .hx-node .hx-k .hx-st { margin-left: auto; letter-spacing: .14em; color: var(--sc); display: inline-flex; align-items: center; gap: 6px; }
+  .hx-node .hx-t { font: 300 30px/1.05 var(--serif); margin: 8px 0 6px; letter-spacing: -.005em; }
+  .hx-node .hx-s { color: var(--grey); font-size: 13px; max-width: 52ch; }
+  .hx-node .hx-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
+  .hx-chip { font-size: 10px; letter-spacing: .14em; text-transform: uppercase; padding: 5px 10px; border-radius: 999px; border: 1px solid color-mix(in srgb, var(--ink) 45%, transparent); }
+  .hx-chip.plan { border-style: dashed; border-color: var(--faint); color: var(--faint); }
+  .hx-chip.part { border-color: var(--faint); color: var(--grey); }
+  .hx-pulse { width: 8px; height: 8px; border-radius: 50%; background: var(--sc, var(--faint)); display: inline-block; flex: none; }
+  .hx-node.on .hx-pulse, .hx-desk.on .hx-pulse { animation: hxp 1.8s ease-out infinite; }
+  @keyframes hxp { 0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--sc) 55%, transparent); } 100% { box-shadow: 0 0 0 9px transparent; } }
+  .hx-lead .hx-chip { border-color: var(--dc); }
+  .hx-link { position: relative; height: 64px; display: flex; justify-content: center; align-items: stretch; gap: 16px; --lc: var(--faint); }
+  .hx-link i { position: relative; width: 0; border-left: 2px solid var(--lc); }
+  .hx-link i.up { border-left-style: dashed; border-color: var(--faint); }
+  .hx-link i::after { content: ''; position: absolute; left: -6px; width: 0; height: 0; border-left: 5px solid transparent; border-right: 5px solid transparent; }
+  .hx-link i.dn::after { bottom: -1px; border-top: 8px solid var(--lc); }
+  .hx-link i.up::after { top: -1px; border-bottom: 8px solid var(--faint); }
+  .hx-link.flow i.dn { border-left-color: transparent; background: repeating-linear-gradient(to bottom, var(--lc) 0 8px, transparent 8px 14px) left top / 2px 100% no-repeat; animation: hxf .9s linear infinite; }
+  @keyframes hxf { to { background-position: left 14px; } }
+  .hx-link.hot i.up { border-color: var(--hx-need); } .hx-link.hot i.up::after { border-bottom-color: var(--hx-need); }
+  .hx-link span { position: absolute; left: calc(50% + 34px); top: 50%; transform: translateY(-50%); font-size: 11px; color: var(--grey); letter-spacing: .04em; max-width: 36ch; }
+  .hx-link span b { display: block; font-size: 9.5px; letter-spacing: .18em; text-transform: uppercase; font-weight: 500; color: var(--faint); }
+  .hx-bay { position: relative; margin-top: 0; padding: 16px 18px 18px; border: 1px solid var(--line); border-radius: 26px; background: color-mix(in srgb, var(--ink) 3.5%, transparent); }
+  .hx-bay > .hx-bl { display: flex; flex-wrap: wrap; gap: 4px 10px; align-items: baseline; margin: 0 2px 14px; font-size: 10.5px; letter-spacing: .2em; text-transform: uppercase; color: var(--grey); }
+  .hx-bay > .hx-bl em { margin-left: auto; font-style: normal; letter-spacing: .12em; color: var(--faint); }
+  .hx-desks { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 12px; align-items: start; }
+  .hx-desk { position: relative; border: 1px solid var(--line); border-radius: 18px; padding: 13px 16px 13px; background: var(--card, var(--panel)); cursor: pointer; --sc: var(--faint); transition: border-color .2s, transform .2s, box-shadow .25s; }
+  .hx-desk:hover { border-color: var(--grey); transform: translateY(-2px); }
+  .hx-desk.on { border-color: var(--sc); box-shadow: 0 0 0 1px var(--sc); }
+  .hx-desk.st-waiting { border-color: var(--sc); box-shadow: 0 0 0 1px var(--sc), 0 8px 22px -12px var(--sc); }
+  .hx-desk .hx-dh { display: flex; align-items: center; gap: 8px; font-size: 12px; letter-spacing: .1em; text-transform: uppercase; font-weight: 600; }
+  .hx-desk .hx-dh em { margin-left: auto; font-style: normal; font-size: 9.5px; letter-spacing: .14em; color: var(--sc); font-weight: 500; }
+  .hx-desk .hx-dr { color: var(--grey); font-size: 12px; margin: 4px 0 8px; }
+  .hx-desk .hx-dl { color: var(--faint); font-size: 11.5px; line-height: 1.4; }
+  .hx-desk .hx-dd { color: var(--grey); font-size: 12px; margin: 8px 0 8px; line-height: 1.45; }
+  .hx-desk .hx-tags { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 8px; } .hx-desk .hx-tags .tag { white-space: normal; max-width: 100%; overflow-wrap: anywhere; line-height: 1.35; }
+  .hx-ghost { border: 1px dashed var(--faint); border-radius: 18px; padding: 16px; color: var(--faint); font-size: 12px; display: flex; flex-direction: column; justify-content: center; min-height: 92px; }
+  .hx-ghost b { font-weight: 500; letter-spacing: .14em; text-transform: uppercase; font-size: 10.5px; margin-bottom: 4px; color: var(--grey); }
+  .hx-key { display: flex; flex-wrap: wrap; gap: 8px 22px; margin: 16px 4px 0; color: var(--grey); font-size: 11.5px; } .hx-key span { display: inline-flex; align-items: center; gap: 7px; }
+  .hx-key .ln { width: 22px; border-top: 2px solid var(--ink); } .hx-key .ln.d { border-top: 2px dashed var(--faint); }
+  @media (max-width: 760px) { .hx { padding: 18px 12px 16px; } .hx-node { padding: 16px; } .hx-node .hx-t { font-size: 26px; } .hx-link span { left: calc(50% + 28px); max-width: 24ch; } .hx-desks { grid-template-columns: 1fr; } }
+  @media (prefers-reduced-motion: reduce) { .hx-node.on .hx-pulse, .hx-desk.on .hx-pulse, .hx-link.flow i.dn { animation: none; } }
   .needs { margin-bottom: 18px; } .needs .nHead, .week .nHead { display: flex; align-items: baseline; flex-wrap: wrap; gap: 6px 12px; margin: 0 4px 10px; } .week .z { color: var(--faint); font-size: 12px; } .needs .k, .week .k { font-size: 10.5px; letter-spacing: .14em; text-transform: uppercase; color: var(--ink); font-weight: 600; } .needs .z { color: var(--faint); font-size: 12px; }
   .week { margin-bottom: 22px; } .wkCal { display: inline-flex; align-items: center; gap: 5px; font-size: 11px; color: var(--ink); } .wkCal i { width: 8px; height: 8px; border-radius: 2px; } .wkCal.bad { color: var(--red, #C8553D); }
   .wkGrid { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 8px; }
@@ -842,21 +893,17 @@
     </aside>
   </section>
 
-  <section class="split" id="hierSec" data-cat="hierarchy">
-    <div class="split-main">
-      <div class="sh">
-        <h2>Hierarchy</h2>
-        <span class="note">Starts as a copy of Roles and is the one we build the chain on: you, the prompt engineer, the Chief of Staff, the department lead, the desks, lead review. Roles stays as it is.</span>
-        <div class="tools seg" id="hShow"><button data-v="all" class="on">ALL SEATS</button><button data-v="gaps">NEEDS A BRIEF OR SKILL</button><button data-v="busy">WORKING</button></div>
-      </div>
-      <div class="depts" id="hDepts"></div>
-    </div>
-    <aside class="panel news">
-      <div class="nh"><h2>News feed</h2><span class="note">What the office has done, newest first</span></div>
-      <div class="seg nf" id="hnShow"><button data-v="all" class="on">ALL</button><button data-v="work">WORK</button><button data-v="review">REVIEWS</button><button data-v="matrix">MATRIX</button></div>
-      <div class="nl" id="hNews"></div>
-    </aside>
-  </section>
+  <div class="hero hx-hero" id="hxHero" data-cat="hierarchy">
+    <div class="eyebrow" id="hxEye"></div>
+    <h2 id="hxHead"></h2>
+    <div class="hs" id="hxSub"></div>
+    <div class="hstats" id="hxStats"></div>
+    <svg class="ridge" viewBox="0 0 1440 150" preserveAspectRatio="none" aria-hidden="true">
+      <path style="opacity:.07" d="M0 150V70C130 28 230 18 350 54S540 112 660 70 820 0 960 44s190 62 290 24 140-36 190-12V150Z"/>
+      <path style="opacity:.13" d="M0 150V108C110 80 210 74 320 100S520 138 640 112 800 70 930 96s210 40 320 6 130-22 190-8V150Z"/>
+    </svg>
+  </div>
+  <div class="hx" id="hx" data-cat="hierarchy"></div>
 
   <section id="socialSec" data-cat="social">
     <div class="sh">
@@ -1092,7 +1139,7 @@ function foldSubnav(animate) {
   if (open) [...nav.children].forEach((b, i) => b.animate([{ opacity: 0, transform: 'translateY(-8px)' }, { opacity: 1, transform: 'none' }], { duration: 520, delay: 90 + i * 80, easing: SPRING, fill: 'backwards' }));
 }
 // 2. the chosen category arrives in sequence: the old view steps back fast, the title reveals upward, the cards rise one after another
-const CARD = '.hero, .kpi, .panel, .dept, .client, .quad, .sk, .col, .news, .bpanel, .skkpi';
+const CARD = '.hero, .kpi, .panel, .dept, .client, .quad, .sk, .col, .news, .bpanel, .skkpi, .hx-node, .hx-bay';
 function arrive() {
   if (!moving()) return;
   const shown = [...document.querySelectorAll('[data-cat]:not(.cat-off)')];
@@ -2636,7 +2683,7 @@ loadTrackers(); setInterval(() => { if (!document.hidden && !Object.values(S.tkB
   const drawTog = () => { TOG.textContent = on() ? 'ENGINEER ON' : 'ENGINEER OFF'; TOG.style.opacity = on() ? '' : '.55'; };
   TOG.addEventListener('click', () => { try { localStorage.setItem(KEY, on() ? 'off' : 'on'); } catch {} drawTog(); });
   drawTog();
-  const lock = (v, msg) => { busy = v; GO.disabled = v; T.disabled = v; if (msg !== undefined) ST.textContent = msg; };
+  const lock = (v, msg) => { busy = v; (window.AIOS_PE = window.AIOS_PE || {}).busy = v; window.renderHierarchy?.(); GO.disabled = v; T.disabled = v; if (msg !== undefined) ST.textContent = msg; };
   const post = async (url, body) => { const r = await fetch(url, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) }); return r; };
 
   async function start() {
@@ -2730,53 +2777,63 @@ loadTrackers(); setInterval(() => { if (!document.hidden && !Object.values(S.tkB
 })();
 </script>
 <script>
-/* ---------- Hierarchy (4 Nov 2026): a copy of the Roles tab that we build the chain on, so Roles stays as it is ----------
-   Same seat list and news feed as renderRoles / renderNews, with its own ids (hShow, hnShow, hDepts, hNews), its own open-seat set and
-   data-hseat, so nothing here touches the Roles tab. The segmented buttons are handled by the page's own .seg handler (S.hShow, S.hnShow), which calls render(),
-   and render() calls window.renderHierarchy(). Uses the page's helpers: S, DEPTS, ORDER, MODEL, esc, ago, agentBy, seatState, readiness, roleSkills, newsEvents. */
+/* ---------- Hierarchy (4 Nov 2026): the chain as a picture ----------
+   Prompt engineer (ingestion) > Chief of Staff > department lead > desks. Only the pilot departments are drawn (PILOT, one line to widen it).
+   The desks are whatever the roster holds for that department, so a seat added later simply appears: the grid wraps and has no cap.
+   Colour is live state: blue needs you, teal being worked, grey idle, red last run failed. (Amber, in lead review, comes with the review loop.)
+   Own ids (hx*), own open-desk set, data-hseat; Roles is untouched. render() calls window.renderHierarchy(). Page helpers used: S, DEPTS, MODEL, esc, ago, seatState, readiness, roleSkills. */
 (() => {
-  const open = new Set();
+  const PILOT = ['marketing'];
+  const open = new Set(), el = id => document.getElementById(id);
+  const COL = { doing: 'var(--ok)', waiting: 'var(--hx-need)', error: 'var(--bad)', idle: 'var(--faint)' };
+  const TXT = { doing: 'Working', waiting: 'Waiting on you', error: 'Last run failed', idle: 'Idle' };
+  let chiefBusy = false, chiefAt = 0;
+  const node = (cls, sc, on, k, status, title, sub, extra = '', style = '') => `<div class="hx-node ${cls}${on ? ' on' : ''}" style="--sc:${sc};${style}"><div class="hx-k">${k}<span class="hx-st"><i class="hx-pulse"></i>${status}</span></div><div class="hx-t">${title}</div><div class="hx-s">${sub}</div>${extra}</div>`;
+  const link = (live, hot, label, sub, colour) => `<div class="hx-link${live ? ' flow' : ''}${hot ? ' hot' : ''}" style="--lc:${colour || 'var(--faint)'}"><i class="dn"></i><i class="up"></i><span><b>${label}</b>${sub}</span></div>`;
+  function desk(a) {
+    const st = seatState(a), k = st.key, isOpen = open.has(a.id), r = readiness(a), office = S.health?.model || 'sonnet';
+    const last = st.doing ? 'Now: ' + esc(st.doing.title) : st.waiting ? 'Waiting on you: ' + esc(st.waiting.title) : st.last ? `Last: ${esc(st.last.title)} · ${ago(st.last.doneAt)}` : 'No work yet.';
+    const model = a.model ? `${MODEL[a.model] || a.model} (own)` : `${MODEL[office] || office} (office)`;
+    return `<div class="hx-desk st-${k}${k === 'doing' || k === 'waiting' ? ' on' : ''}" data-hseat="${esc(a.id)}" style="--sc:${COL[k] || COL.idle}">
+      <div class="hx-dh"><i class="hx-pulse"></i>${esc(a.name)}<em>${TXT[k] || 'Idle'}</em></div>
+      <div class="hx-dr">${esc(a.role)}</div>
+      ${isOpen ? `<div class="hx-dd">${esc(a.does)}</div><div class="hx-tags"><span class="tag">${esc(model)}</span>${a.effort ? `<span class="tag">effort ${esc(a.effort)}</span>` : ''}<span class="tag ${a.brief ? 'good' : 'miss'}">${a.brief ? 'BRIEF' : 'NO BRIEF'}</span><span class="tag ${roleSkills(a).length ? 'good' : 'miss'}">${roleSkills(a).length ? 'SKILL: ' + esc(roleSkills(a).join(', ')) : 'NO ROLE SKILL'}</span>${a.lessons ? `<span class="tag">${a.lessons} lesson${a.lessons > 1 ? 's' : ''}</span>` : ''}${(a.tools || []).map(t => `<span class="tag">${esc(t)}</span>`).join('')}</div>` : ''}
+      <div class="hx-dl">${last} · ${st.done} done in total</div></div>`;
+  }
+  function pollChief() { // is the Chief of Staff mid-turn? one light read, at most every 4 s, only while this tab is showing
+    if (S.cat !== 'hierarchy' || Date.now() - chiefAt < 4000) return; chiefAt = Date.now();
+    fetch('/api/assistant').then(r => r.json()).then(j => { const b = !!j.busy; if (b !== chiefBusy) { chiefBusy = b; renderHierarchy(); } }).catch(() => {});
+  }
   window.renderHierarchy = function renderHierarchy() {
-    const show = S.hShow || 'all', office = S.health?.model || 'sonnet';
-    $('hDepts').innerHTML = ORDER.map(k => {
-      let seats = S.agents.filter(a => a.department === k).sort((a, b) => (b.lead ? 1 : 0) - (a.lead ? 1 : 0));
-      const setUp = S.health?.setup?.[k], all = seats.length, ready = seats.filter(a => readiness(a).every(Boolean)).length;
-      if (show === 'gaps') seats = seats.filter(a => !readiness(a).every(Boolean));
-      if (show === 'busy') seats = seats.filter(a => seatState(a).key === 'doing' || seatState(a).key === 'waiting');
-      if (!seats.length && show !== 'all') return '';
-      return `<div class="panel dept"><div class="dh"><span class="chip" style="background:${DEPTS[k].chip}"></span><span class="dn">${DEPTS[k].name}</span>
-        <span class="dm">${all} seats · ${ready} fully set · ${setUp ? 'set up' : 'not set up yet'}</span></div>` +
-        seats.map(a => {
-          const st = seatState(a), r = readiness(a), isOpen = open.has(a.id);
-          const stTxt = st.key === 'doing' ? 'WORKING' : st.key === 'waiting' ? 'WAITING' : st.key === 'error' ? 'LAST RUN FAILED' : 'IDLE';
-          const model = a.model ? `${MODEL[a.model] || a.model} (own)` : `${MODEL[office] || office} (office)`;
-          return `<div class="seat${isOpen ? ' open' : ''}" data-hseat="${esc(a.id)}">
-            <div class="r1"><span class="nm">${esc(a.name)}</span>${a.lead ? '<span class="tag lead">LEAD</span>' : ''}<span class="role">${esc(a.role)}</span>
-              <span class="st"><span class="ready" title="role · brief · skill">${r.map(x => `<i class="${x ? 'f' : ''}"></i>`).join('')}</span><span class="dot ${st.key}"></span>${stTxt}</span></div>
-            <div class="does">${esc(a.does)}</div>
-            <div class="meta">
-              <span class="tag">${esc(model)}</span>${a.effort ? `<span class="tag">effort ${esc(a.effort)}</span>` : ''}
-              <span class="tag ${a.brief ? 'good' : 'miss'}">${a.brief ? 'BRIEF' : 'NO BRIEF'}</span>
-              <span class="tag ${roleSkills(a).length ? 'good' : 'miss'}">${roleSkills(a).length ? 'SKILL: ' + esc(roleSkills(a).join(', ')) : 'NO ROLE SKILL'}</span>
-              ${a.lessons ? `<span class="tag">${a.lessons} lesson${a.lessons > 1 ? 's' : ''}</span>` : ''}
-              ${isOpen ? (a.tools || []).map(t => `<span class="tag">${esc(t)}</span>`).join('') : (a.tools || []).length ? `<span class="tag">${a.tools.length} tools</span>` : ''}
-            </div>
-            <div class="last">${st.doing ? 'Now: ' + esc(st.doing.title) : st.waiting ? 'Waiting on your OK: ' + esc(st.waiting.title) : st.last ? `Last: ${esc(st.last.title)} · ${ago(st.last.doneAt)}` : 'No work yet.'} · ${st.done} done in total</div>
-          </div>`;
-        }).join('') + '</div>';
-    }).join('') || '<div class="none">Nothing to show for this filter.</div>';
-    const nshow = S.hnShow || 'all', list = newsEvents().filter(e => nshow === 'all' || e.kind === nshow).slice(0, 60);
-    let day = '';
-    $('hNews').innerHTML = list.map(e => {
-      const d = new Date(e.at).toDateString(), head = d !== day ? `<div class="nd">${d === new Date().toDateString() ? 'Today' : new Date(e.at).toLocaleDateString([], { weekday: 'long', day: 'numeric', month: 'short' })}</div>` : '';
-      day = d;
-      const a = e.agent && agentBy(e.agent), dp = DEPTS[e.dept] || DEPTS.owner;
-      return head + `<div class="ni${e.hot ? ' hot' : ''}${e.good ? ' good' : ''}${e.bad ? ' bad' : ''}">
-        <span class="nic">${e.icon}</span>
-        <div class="nb"><div class="nv">${esc(e.verb)}</div><div class="nt">${esc(e.title)}</div>
-          ${e.detail ? `<div class="nx">${esc(e.detail)}</div>` : ''}
-          <div class="nm">${a ? `<span class="chip" style="background:${dp.chip}"></span>${esc(a.name)} · ` : ''}${new Date(e.at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} · ${ago(e.at)}</div></div></div>`;
-    }).join('') || '<div class="none">Nothing yet. Work shows up here as it happens.</div>';
+    if (!el('hx')) return; pollChief();
+    const peBusy = !!(window.AIOS_PE && window.AIOS_PE.busy);
+    const blocks = PILOT.map(d => {
+      const seats = S.agents.filter(a => a.department === d), lead = seats.find(a => a.lead), desks = seats.filter(a => !a.lead);
+      const keys = desks.map(a => seatState(a).key), waiting = keys.filter(k => k === 'waiting').length, doing = keys.filter(k => k === 'doing').length, failed = keys.filter(k => k === 'error').length;
+      const lk = lead ? seatState(lead).key : 'idle', leadKey = (waiting || lk === 'waiting') ? 'waiting' : (doing || lk === 'doing') ? 'doing' : 'idle';
+      return { d, lead, desks, waiting, doing, failed, leadKey, dept: DEPTS[d] };
+    });
+    const all = blocks.flatMap(b => b.desks), W = blocks.reduce((n, b) => n + b.waiting, 0), D = blocks.reduce((n, b) => n + b.doing, 0);
+    const doneToday = S.tasks.filter(t => blocks.some(b => b.d === t.dept) && t.state === 'done' && !t.closed && t.doneAt && new Date(t.doneAt).toDateString() === new Date().toDateString()).length;
+    const h = new Date().getHours(), hi = h < 12 ? 'Good morning' : h < 18 ? 'Good afternoon' : 'Good evening';
+    el('hxEye').innerHTML = `${hi}, Wesley · Hierarchy · ${blocks.map(b => esc(b.dept.name)).join(' · ')} pilot`;
+    el('hxHead').textContent = W ? `${W} desk${W > 1 ? 's' : ''} waiting on you.` : D ? `${D} desk${D > 1 ? 's' : ''} working.` : 'Quiet. Every desk is free.';
+    el('hxSub').innerHTML = `Your request goes in at the top, the prompt engineer turns it into a brief, the Chief of Staff hands it to the lead, the lead hands it to a desk. <b>${all.length} desk${all.length === 1 ? '' : 's'}</b> on the roster today, and there is no cap.`;
+    el('hxStats').innerHTML = [[all.length, 'Desks'], [D, 'Working now'], [W, 'Waiting on you']].map(([n, l], i) => `<div class="hstat"><div class="hn${i === 2 && n ? ' alert' : ''}">${n}</div><div class="hl">${l}</div></div>`).join('');
+    const chain = blocks.map(b => {
+      const lead = b.lead, lc = COL[b.leadKey], dc = b.dept.chip;
+      const leadNode = lead ? node('hx-lead', lc, b.leadKey !== 'idle', `03 · Head of ${esc(b.dept.name.toLowerCase())}`, TXT[b.leadKey], esc(lead.name), esc(lead.does || lead.role), `<div class="hx-chips"><span class="hx-chip" style="border-color:${dc}">${esc(b.dept.name)}</span><span class="hx-chip part">${b.desks.length} desk${b.desks.length === 1 ? '' : 's'} report in</span></div>`, `--dc:${dc}`) : node('hx-lead', COL.idle, false, '03 · Head of department', 'No lead', esc(b.dept.name), 'This department has no lead on the roster.');
+      return leadNode + link(b.doing > 0, b.waiting > 0, 'Assigns the work', 'The lead splits it across desks and reviews what comes back', lc)
+        + `<div class="hx-bay"><div class="hx-bl"><span class="chip" style="display:inline-block;width:9px;height:9px;border-radius:50%;background:${dc}"></span>Desks reporting to ${esc(lead ? lead.name : b.dept.name)}<em>${b.desks.length} seat${b.desks.length === 1 ? '' : 's'}${b.failed ? ` · ${b.failed} failed last run` : ''}</em></div>
+          <div class="hx-desks">${b.desks.map(desk).join('')}<div class="hx-ghost"><b>Room for more</b>A new kind of desk joins here when the roster gets one. Duet and Plaud One can tap in at this level later.</div></div></div>`;
+    }).join('');
+    const tops = node('hx-pe', peBusy ? 'var(--ok)' : 'var(--faint)', peBusy, '01 · Ingestion', peBusy ? 'Working' : 'Ready', 'Prompt engineer', 'Takes a request, checks it against your notes and returns a brief with yes/no proposals. You answer; nothing moves without it.',
+      '<div class="hx-chips"><span class="hx-chip">Ask box</span><span class="hx-chip part" title="Telegram goes straight to the Chief of Staff today">Telegram · straight to chief</span><span class="hx-chip plan">Duet · planned</span><span class="hx-chip plan">Plaud One · planned</span></div>');
+    const chief = node('hx-chief', chiefBusy ? 'var(--ok)' : 'var(--faint)', chiefBusy, '02 · Chief of Staff', chiefBusy ? 'Working' : 'Ready', 'Chief of Staff', 'Reads the approved brief, picks the department and adds the task. It can add tasks and run routines. It never approves, sends, posts or pays.');
+    const anyLive = D > 0;
+    el('hx').innerHTML = tops + link(peBusy, false, 'The brief, once you say yes', 'Sent as written, with your decisions', peBusy ? 'var(--ok)' : 'var(--faint)') + chief
+      + link(chiefBusy || anyLive, false, 'Adds the task to the right desk', 'The Chief of Staff picks the department', (chiefBusy || anyLive) ? 'var(--ok)' : 'var(--faint)') + chain
+      + `<div class="hx-key"><span><i class="ln"></i>Assign and feedback, down</span><span><i class="ln d"></i>Sign-off, up</span><span><i class="hx-pulse" style="--sc:var(--ok)"></i>Being worked</span><span><i class="hx-pulse" style="--sc:var(--hx-need)"></i>Needs you</span><span><i class="hx-pulse" style="--sc:var(--bad)"></i>Last run failed</span><span><i class="hx-pulse" style="--sc:var(--faint)"></i>Idle</span><span>Lead sign-off is not approval to send. Only you approve.</span></div>`;
   };
   document.addEventListener('click', e => { const s = e.target.closest('[data-hseat]'); if (!s) return; const id = s.dataset.hseat; open.has(id) ? open.delete(id) : open.add(id); renderHierarchy(); });
   if (S.agents.length) renderHierarchy();
