@@ -677,6 +677,23 @@ await step('notes named in a task or a skill are put in front of the agent (it h
   if (pinnedNotes(['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'], () => false, 'a.md b.md c.md d.md e.md f.md g.md h.md').length !== 6) throw new Error('more than 6 notes were pinned');
   return 'a note named by path or by name is pinned (case-insensitive) · CLAUDE, SKILL, uploads and unknown names are ignored · at most 6';
 });
+await step('the note picker does not pull a long upload in on common words, but still picks one the task names', async () => {
+  const { pickNotes } = await import('./pins.mjs');
+  const up = k => k.startsWith('Upload - '), common = 'site opening checks written down remembered handover consistency ';
+  const index = new Map([
+    ['site-opening-checks', 'The written opening checks for a site: lights, fridges, till float.'],
+    ['Upload - Planning Session - Imran transcript - abc12345', 'Planning session notes. ' + 'x '.repeat(1000) + common.repeat(2000)], // 100k+ characters, the common words deep inside
+    ['Upload - Quick Brief - def67890', 'A short brief that mentions checks once.'],
+    ['MOC-Marketing', 'Marketing map.'],
+  ]);
+  const task = 'Write five LinkedIn hooks on why site opening checks should be written down, remembered or not';
+  const got = pickNotes(index, 'marketing', task, 4, up);
+  if (got[0] !== 'site-opening-checks') throw new Error('the short relevant note did not come first: ' + got.join(' | '));
+  if (got.some(up)) throw new Error('an unrelated upload was picked on common words: ' + got.join(' | '));
+  const named = pickNotes(index, 'marketing', 'Read Planning Session - Imran transcript (just uploaded) and write five hooks on opening checks', 4, up);
+  if (named[0] !== 'Upload - Planning Session - Imran transcript - abc12345') throw new Error('a named upload was not picked first: ' + named.join(' | '));
+  return 'an upload is matched on its name and first page and needs two distinct words · a long transcript full of common words no longer outranks a short relevant note · a task that names the upload still gets it first';
+});
 await step('storage: finished work is filed and findable, only rebuildable leftovers are cleared, and finished files survive a clean-up', async () => {
   const sg = await import('./storage.mjs');
   const root = fs.mkdtempSync(path.join(os.tmpdir(), 'ao-storage-')), w = (rel, body = 'x') => { const f = path.join(root, rel); fs.mkdirSync(path.dirname(f), { recursive: true }); fs.writeFileSync(f, body); return f; };

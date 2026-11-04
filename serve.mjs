@@ -79,7 +79,7 @@ import * as aoofile from './aoofile.mjs';
 import * as ferfile from './ferfile.mjs';
 import * as assistantMod from './assistant.mjs';
 import * as motionMod from './motion.mjs';
-import { pinnedNotes } from './pins.mjs';
+import { pinnedNotes, pickNotes } from './pins.mjs';
 import * as skillaudit from './skillaudit.mjs';
 import { recover } from './recover.mjs';
 import { normModel, modelFor, modelArgs, modelId, modelName, MODEL_KEYS, DEFAULT_MODEL, normEffort, effortFor, effortName, EFFORT_KEYS } from './src/models.js';
@@ -440,26 +440,7 @@ function relevantNotes(index, dept, text, n = 4, agent = null) {
   const all = [...pinned, ...picks.filter(p => !pinned.includes(p))]; all.pinned = new Set(pinned);
   return all;
 }
-function relevantNotesBase(index, dept, text, n = 4) {
-  const words = new Set(String(text).toLowerCase().split(/[^a-z0-9]+/).filter(w => w.length > 3));
-  const mocName = { emails: 'MOC-Emails', sales: 'MOC-Sales', marketing: 'MOC-Marketing', ops: 'MOC-Operations', fin: 'MOC-Finance', delivery: 'MOC-Delivery' }[dept];
-  const scored = [];
-  for (const [name, txt] of index) {
-    if (['CLAUDE', 'index', 'log'].includes(name)) continue;
-    const hay = (name + ' ' + txt.slice(0, isUpload(name) ? UPLOAD_CAP : 1500)).toLowerCase(); // an upload is matched on its whole text, not just the first page
-    let s = 0; for (const w of words) if (hay.includes(w)) s += name.toLowerCase().includes(w) ? 3 : 1;
-    if (name === mocName) s += 2;
-    if (s) scored.push([s, name]);
-  }
-  // a task that names an uploaded file ("Read X.jpeg (just uploaded)") gets that upload first: word overlap alone lets long transcripts outrank a short image note
-  const lower = String(text).toLowerCase();
-  const named = [...index.keys()].filter(isUpload).filter(nm => { const base = nm.slice(9).replace(/ - [a-z0-9]+$/, '').toLowerCase(); return base.length > 4 && lower.includes(base); });
-  for (const nm of named) { const e = scored.find(x => x[1] === nm); if (e) e[0] += 1e6; else scored.push([1e6, nm]); }
-  scored.sort((a, b) => b[0] - a[0]);
-  const picks = scored.slice(0, Math.max(n, named.length)).map(x => x[1]);
-  if (mocName && index.has(mocName) && !picks.includes(mocName)) picks.push(mocName);
-  return picks;
-}
+function relevantNotesBase(index, dept, text, n = 4) { return pickNotes(index, dept, text, n, isUpload); } // scoring lives in pins.mjs so check.mjs can test it
 function contextText(index, names) {
   return names.map(n => {
     let txt = index.get(n) || '';
