@@ -50,8 +50,31 @@ export function build(notes, { match } = {}) {
   const t = total(cur), p = prev ? total(at(prev).filter(r => cur.some(c => c.shop === r.shop))) : null; // compare like with like: only shops reporting in both months
   const change = (a, b) => (b ? Math.round((a / b - 1) * 1000) / 10 : null);
   const perShop = cur.map(r => { const before = prev && by.get(r.shop + '|' + prev); return { shop: r.shop, turnover: r.turnover, orders: r.orders, avg: r.avg, vsPrevMonth: before ? change(r.turnover, before.turnover) : null }; }).sort((a, b) => b.turnover - a.turnover);
+  // this year against last: the latest month beside the same month a year earlier, per shop and like for like (shops trading in both)
+  const ly = `${Number(latest.slice(0, 4)) - 1}${latest.slice(4)}`;
+  const aovOf = r => (r && r.orders ? Math.round(r.turnover / r.orders * 100) / 100 : null);
+  const yoyShops = shops.map(s => {
+    const a = by.get(s + '|' + latest), b = by.get(s + '|' + ly); if (!a) return null;
+    if (!b) return { shop: s, turnover: a.turnover, orders: a.orders, since: series[s].find(Boolean)?.month || null };
+    return { shop: s, turnover: a.turnover, orders: a.orders, avg: aovOf(a), lastYear: { turnover: b.turnover, orders: b.orders, avg: aovOf(b) },
+      change: change(a.turnover, b.turnover), ordersChange: change(a.orders, b.orders), avgChange: change(aovOf(a), aovOf(b)) };
+  }).filter(Boolean).sort((x, y) => y.turnover - x.turnover);
+  const both = yoyShops.filter(s => s.lastYear);
+  const yoy = both.length ? { month: latest, lastYear: ly, shops: yoyShops,
+    likeForLike: { shops: both.length, turnover: Math.round(sum(both, s => s.turnover)), lastYear: Math.round(sum(both, s => s.lastYear.turnover)), change: change(sum(both, s => s.turnover), sum(both, s => s.lastYear.turnover)) } } : null;
+  // where orders came from, month by month, per shop (the last 12 months): turnover, orders and the average order by channel
+  const span = months.slice(-12), chTot = new Map();
+  for (const r of reports) if (span.includes(r.month)) for (const p of r.platforms) if ((p.turnover || 0) > 0) chTot.set(p.name, (chTot.get(p.name) || 0) + p.turnover);
+  const chNames = [...chTot.entries()].sort((a, b) => b[1] - a[1]).map(e => e[0]);
+  const channels = chNames.length ? { months: span, names: chNames, shops: Object.fromEntries(shops.map(s => [s, span.map(m => {
+    const r = by.get(s + '|' + m); if (!r || !r.platforms.length) return null;
+    const parts = Object.fromEntries(chNames.map(n => { const p = r.platforms.find(x => x.name === n); const t = p && p.turnover > 0 ? p.turnover : 0;
+      return [n, { turnover: t, orders: p?.orders ?? null, avg: p && p.orders && t ? Math.round(t / p.orders * 100) / 100 : null }]; }));
+    const total = sum(Object.values(parts), x => x.turnover);
+    return total ? { month: m, total, parts } : null;
+  })])) } : null;
   return {
-    available: true, currency: 'kr', sources, months, shops, series, latest, prev,
+    available: true, currency: 'kr', sources, months, shops, series, latest, prev, yoy, channels,
     totals: { turnover: Math.round(t.turnover), orders: t.orders, avg: t.orders ? Math.round(t.turnover / t.orders * 100) / 100 : null, turnoverVsPrev: p ? change(t.turnover, p.turnover) : null, ordersVsPrev: p ? change(t.orders, p.orders) : null },
     perShop,
     payments: top(cur.flatMap(r => r.payments), 'turnover', 6),

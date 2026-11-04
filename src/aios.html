@@ -317,6 +317,19 @@
   .sShop { border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; }
   .sShop .n { font-size: 12px; font-weight: 600; } .sShop .v { font-family: var(--serif); font-size: 22px; margin: 2px 0; }
   .sShop .m { font-size: 11px; color: var(--grey); }
+  /* this year against last, and the channel mix by month (4 Nov 2026); channel colours checked for colour-blind separation in light and dark */
+  .sales { --ch1: #2a78d6; --ch2: #EC3013; --ch3: #1baf7a; }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .sales { --ch1: #3987e5; --ch3: #199e70; } }
+  :root[data-theme="dark"] .sales { --ch1: #3987e5; --ch3: #199e70; }
+  .sYoy { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-bottom: 14px; }
+  .sYoy .lfl { background: var(--soft); border-color: transparent; }
+  .sYoy .ly { font-size: 11px; color: var(--faint); font-variant-numeric: tabular-nums; }
+  .sCh { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 16px; margin-bottom: 16px; }
+  .sCh h4 { margin: 0 0 4px; font-size: 12px; font-weight: 600; }
+  .sCh svg { width: 100%; height: auto; display: block; } .sCh svg rect.seg:hover { opacity: .8; }
+  .sCh table { width: 100%; border-collapse: collapse; font-size: 11px; font-variant-numeric: tabular-nums; margin-top: 4px; }
+  .sCh th { font-weight: 400; color: var(--faint); text-align: right; padding: 2px 0 3px; font-size: 10px; } .sCh th:first-child, .sCh td:first-child { text-align: left; }
+  .sCh td { padding: 2px 0; text-align: right; border-top: 1px solid var(--line); } .sCh td i { display: inline-block; width: 9px; height: 9px; border-radius: 2px; margin-right: 6px; vertical-align: -1px; }
   .sBars { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; }
   .sBars h4 { margin: 0 0 8px; font-size: 10px; letter-spacing: .12em; text-transform: uppercase; color: var(--faint); font-weight: 600; }
   .sBar { margin-bottom: 7px; font-size: 11px; } .sBar .t { display: flex; justify-content: space-between; gap: 8px; } .sBar .t span:first-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -2060,8 +2073,6 @@ function renderPos(el, cur, d) {
     <div class="sK"><div class="v">${(t.orders || 0).toLocaleString('en-GB')}</div><div class="l">Orders · ${mName(hr.latest)}</div>${t.ordersVsPrev == null ? '' : `<div class="d ${t.ordersVsPrev >= 0 ? 'up' : 'dn'}">${t.ordersVsPrev >= 0 ? '▲' : '▼'} ${Math.abs(t.ordersVsPrev).toFixed(1)}% ${esc(t.vsNote)}</div>`}</div>
     <div class="sK"><div class="v">${t.avg == null ? '—' : c + t.avg.toFixed(2)}</div><div class="l">Average order</div></div></div>`);
   if (d.delivery && d.delivery.available) parts.push(deliveryTease(cur, d, Y, c) + fixCard(cur, true));
-  if (d.reviews && d.reviews.available) parts.push(reviewsTease(cur, d.reviews));
-  parts.push(feedbackOverview(cur, d));
   if (Y) parts.push(yoyCharts(Y, c));
   if (hr) {
     if (!Y) {
@@ -2082,6 +2093,9 @@ function renderPos(el, cur, d) {
     parts.push(`<div class="sItems"><div class="sItemsL">${bars('Menus and channels · ' + money(it.total, c) + ' in the year', it.menus, 'sales')}${bars('Top categories', it.categories, 'sales')}</div>${itemsPie(it, c)}</div>`);
   }
   parts.push(`<div class="note" style="font-size:10.5px;color:var(--faint);margin-top:12px">${esc(d.currencyNote)}.${d.yoy && d.yoy.ytd ? ' Compared with the same days last year, to ' + fmtD(d.yoy.to) + '.' : ''}${!Y && t && t.partial ? ' The latest month is part of a month, so its change is measured against the same days of the month before.' : ''}</div>`);
+  // the reviews end the page, under the sales figures (Wesley, 3 Nov)
+  if (d.reviews && d.reviews.available) parts.push(`<div style="margin-top:22px">${reviewsTease(cur, d.reviews)}</div>`);
+  parts.push(feedbackOverview(cur, d));
   el.innerHTML = parts.join('');
 }
 // Star / Dog analysis (menu engineering). Every dish is judged against its OWN category: popular = at or above 70% of an even share of the category's sales,
@@ -2193,6 +2207,49 @@ if (!window.__sdBound) {
   document.addEventListener('mouseover', e => { const dot = e.target.closest && e.target.closest('[data-sdi]'); if (dot) { dot.setAttribute('stroke', 'var(--ink)'); dot.setAttribute('stroke-width', '2'); } });
   document.addEventListener('mouseout', e => { const dot = e.target.closest && e.target.closest('[data-sdi]'); if (dot) { dot.setAttribute('stroke', 'var(--panel)'); dot.setAttribute('stroke-width', '1.3'); } });
 }
+// This year against last (4 Nov 2026): the latest month beside the same month a year earlier, like for like and shop by shop
+const yTag = (v, vs) => v == null ? '' : `<div class="d ${v >= 0 ? 'up' : 'dn'}">${v >= 0 ? '▲' : '▼'} ${Math.abs(v).toFixed(1)}% vs ${esc(vs)}</div>`;
+const pctS = v => v == null ? '—' : (v >= 0 ? '+' : '−') + Math.abs(v).toFixed(1) + '%';
+function salesYoyHtml(d) {
+  const Y = d.yoy; if (!Y) return '';
+  const cur = mName(Y.month), was = mName(Y.lastYear), L = Y.likeForLike, short = s => esc(s.replace(/^Creamy /, ''));
+  const names = Y.shops.filter(s => s.lastYear).map(s => short(s.shop));
+  const tiles = Y.shops.map(s => s.lastYear
+    ? `<div class="sShop"><div class="n">${short(s.shop)}</div><div class="v">${kr(s.turnover)}</div><div class="ly">${was}: ${kr(s.lastYear.turnover)}</div>${yTag(s.change, was)}<div class="m">orders ${pctS(s.ordersChange)} · average order ${pctS(s.avgChange)}</div></div>`
+    : `<div class="sShop"><div class="n">${short(s.shop)}</div><div class="v">${kr(s.turnover)}</div><div class="ly">opened ${s.since ? mName(s.since) : 'this year'}</div><div class="m">no ${was} to compare with yet</div></div>`).join('');
+  return `<div class="sHead" style="margin-top:6px"><b>This year against last</b><span class="note">${cur} against ${was} · average order is turnover ÷ orders</span></div>
+    <div class="sYoy"><div class="sShop lfl"><div class="n">Like for like</div><div class="v">${kr(L.turnover)}</div><div class="ly">${was}: ${kr(L.lastYear)}</div>${yTag(L.change, was)}<div class="m">${names.join(' and ')}, the ${L.shops === 1 ? 'shop' : L.shops + ' shops'} open both years</div></div>${tiles}</div>`;
+}
+// Where orders came from, month by month (4 Nov 2026): each shop's turnover split by channel, 100% columns, last 12 months
+const SALES_CH_IX = { kiosk: 1, webshop: 2, pos: 3 };
+const salesChCol = n => SALES_CH_IX[String(n).toLowerCase()] ? `var(--ch${SALES_CH_IX[String(n).toLowerCase()]})` : 'var(--faint)';
+function salesChannelsHtml(d) {
+  const C = d.channels; if (!C || !C.names.length) return '';
+  const W = 300, H = 150, pl = 30, pr = 4, pt = 6, pb = 18, n = C.months.length, slot = (W - pl - pr) / n, bw = Math.max(4, slot - 4);
+  const y = f => pt + (1 - f) * (H - pt - pb);
+  const grid = [0, .5, 1].map(f => `<line x1="${pl}" x2="${W - pr}" y1="${y(f)}" y2="${y(f)}" stroke="var(--line)"/><text x="${pl - 5}" y="${y(f) + 3}" text-anchor="end" font-size="9" fill="var(--faint)">${f * 100}%</text>`).join('');
+  const labels = C.months.map((m, i) => i === 0 || i === n - 1 || i % 3 === 0 ? `<text x="${pl + i * slot + slot / 2}" y="${H - 5}" text-anchor="middle" font-size="9" fill="var(--faint)">${mName(m)}</text>` : '').join('');
+  const order = C.names; // fixed: biggest channel at the base, the same order in every shop
+  const chart = (shop, rows) => {
+    const cols = rows.map((r, i) => {
+      if (!r) return '';
+      let acc = 0; const x = pl + i * slot + (slot - bw) / 2;
+      return order.map(nm => {
+        const p = r.parts[nm]; if (!p || !p.turnover) return '';
+        const f = p.turnover / r.total, y0 = y(acc + f), y1 = y(acc); acc += f;
+        const h = Math.max(0, y1 - y0 - 2); // 2px surface gap between segments
+        return `<rect class="seg" x="${x}" y="${y0 + 1}" width="${bw}" height="${h}" rx="1.5" fill="${salesChCol(nm)}"><title>${esc(shop.replace(/^Creamy /, ''))} · ${mName(r.month)} · ${esc(nm)} ${Math.round(f * 100)}% · ${kr(p.turnover)}${p.orders ? ' · ' + p.orders.toLocaleString('en-GB') + ' orders · ' + Math.round(p.avg) + ' kr average' : ''}</title></rect>`;
+      }).join('');
+    }).join('');
+    const have = rows.filter(Boolean), last = have[have.length - 1], first = have[0];
+    const share = (r, nm) => r && r.parts[nm] ? r.parts[nm].turnover / r.total * 100 : null;
+    const table = last ? `<table><tr><th></th><th>${mName(last.month)}</th><th>${first !== last ? mName(first.month) : ''}</th><th>avg order</th></tr>${order.filter(nm => last.parts[nm] && last.parts[nm].turnover).map(nm => `<tr><td><i style="background:${salesChCol(nm)}"></i>${esc(nm)}</td><td>${Math.round(share(last, nm))}%</td><td>${first !== last && share(first, nm) != null ? Math.round(share(first, nm)) + '%' : ''}</td><td>${last.parts[nm].avg == null ? '—' : Math.round(last.parts[nm].avg) + ' kr'}</td></tr>`).join('')}</table>` : '';
+    return `<div><h4>${esc(shop.replace(/^Creamy /, ''))}</h4><svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(shop)}: share of turnover by channel, by month">${grid}${labels}${cols}</svg>${table}</div>`;
+  };
+  return `<div class="sHead" style="margin-top:6px"><b>Where orders came from, month by month</b><span class="note">share of each shop's turnover by channel · the table gives the latest month, the first month shown and the average order by channel</span></div>
+    <div class="sLegend">${order.map(nm => `<span><i style="background:${salesChCol(nm)}"></i>${esc(nm)}</span>`).join('')}</div>
+    <div class="sCh">${d.shops.map(s => C.shops[s] && C.shops[s].some(Boolean) ? chart(s, C.shops[s]) : '').join('')}</div>`;
+}
 function renderSales() {
   const el = $('salesPanel'); if (!el || !isDash(S.cat)) return;
   const [, dashId, sub] = /^dash-(.+?)(?:--(\w+))?$/.exec(S.cat) || [];
@@ -2221,6 +2278,7 @@ function renderSales() {
     <svg class="sChart" viewBox="0 0 ${W} ${H}" role="img" aria-label="Monthly turnover by location">${grid}${labels}${lines}</svg>
     <div class="sLegend">${d.shops.map((s, k) => `<span><i style="background:${SCOL[k % 3]}"></i>${esc(s.replace(/^Creamy /, ''))}</span>`).join('')}<span style="color:var(--faint)">monthly turnover, kr</span></div>
     <div class="sShops">${d.perShop.map(s => `<div class="sShop"><div class="n">${esc(s.shop.replace(/^Creamy /, ''))}</div><div class="v">${kr(s.turnover)}</div><div class="m">${(s.orders || 0).toLocaleString('en-GB')} orders · ${s.avg == null ? '' : Math.round(s.avg) + ' kr avg'}</div>${dTag(s.vsPrevMonth)}</div>`).join('')}</div>
+    ${salesYoyHtml(d)}${salesChannelsHtml(d)}
     <div class="sBars">${bars('Top products · ' + mName(d.latest), d.products, 'turnover')}${bars('How they paid', d.payments, 'turnover')}${bars('Where orders came from', d.platforms, 'turnover')}</div>${starDogHtml(d)}`;
 }
 // Project tracker cards (overdue / due / up next) per client, from the client's tracker sheet; see trackers.mjs. Sorting is done on the server for today's date.

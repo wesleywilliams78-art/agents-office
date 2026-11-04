@@ -106,16 +106,21 @@ function bursts(R) {
 // staff shout-outs: a word in at least four reviews that, in the middle of a sentence, is written with a capital at least 30% of the time
 // (customers often type names in lower case, so "never lower case" misses most of them; ordinary words are capitalised far less)
 function names(R) {
-  const all = new Map(), cap = new Map(), rv = new Map(), stars = new Map();
+  const all = new Map(), cap = new Map(), rv = new Map(), stars = new Map(), low = new Map();
   for (const r of R) {
     if (!r.text) continue; const seen = new Set();
     for (const m of r.text.matchAll(/(^|[.!?]\s+|\s)([A-Za-z][a-z]{2,})(?=[\s,.!?)]|$)/g)) {
       const w = m[2], k = w.toLowerCase(); if (!m[1] || /[.!?]/.test(m[1]) || NOT_NAMES.has(k)) continue;
       all.set(k, (all.get(k) || 0) + 1); if (/^[A-Z]/.test(w)) cap.set(k, (cap.get(k) || 0) + 1);
-      if (!seen.has(k)) { seen.add(k); rv.set(k, (rv.get(k) || 0) + 1); stars.set(k, (stars.get(k) || 0) + r.stars); }
+      if (!seen.has(k)) { seen.add(k); rv.set(k, (rv.get(k) || 0) + 1); stars.set(k, (stars.get(k) || 0) + r.stars); if (r.stars <= 2) low.set(k, (low.get(k) || 0) + 1); }
     }
   }
-  return [...rv].filter(([k, n]) => n >= 4 && (cap.get(k) || 0) / all.get(k) >= 0.3).map(([k, n]) => ({ name: k[0].toUpperCase() + k.slice(1), n, avg: r2(stars.get(k) / n) })).sort((a, b) => b.n - a.n).slice(0, 10);
+  // customers spell one name several ways (Arish and Aarish, Ismail and Ismael): spellings with the same consonants are one person. Two sightings are enough to join a
+  // group; the group needs four. The average rating of reviews that name someone is high by nature, so what is kept is how many name them and how many of those are low.
+  const key = k => k[0] + k.slice(1).replace(/[aeiouyh]/g, '').replace(/(.)\1+/g, '$1'), groups = new Map();
+  for (const [k, n] of rv) if (n >= 2 && (cap.get(k) || 0) / all.get(k) >= 0.3) { const g = key(k), G = groups.get(g) || { spells: [], n: 0, st: 0, low: 0 }; groups.set(g, G); G.spells.push([k, n]); G.n += n; G.st += stars.get(k); G.low += low.get(k) || 0; }
+  return [...groups.values()].filter(G => G.n >= 4).map(G => { const sp = G.spells.sort((a, b) => b[1] - a[1]), cap1 = s => s[0].toUpperCase() + s.slice(1);
+    return { name: cap1(sp[0][0]), also: sp.slice(1).map(s => cap1(s[0])), n: G.n, low: G.low, avg: r2(G.st / G.n) }; }).sort((a, b) => b.n - a.n).slice(0, 10);
 }
 
 export function build(dataDir, { match } = {}) {
@@ -127,10 +132,11 @@ export function build(dataDir, { match } = {}) {
   // the years, and the last 24 months
   const years = [...new Set(R.map(r => r.at.slice(0, 4)))].map(y => { const a = R.filter(r => r.at.startsWith(y)), c = a.filter(r => !inBurst(r)), rep = a.filter(r => r.reply);
     const lag = rep.map(r => (Date.parse(r.reply.at) - Date.parse(r.at)) / 864e5).sort((p, q) => p - q);
-    return { y, n: a.length, avg: r2(mean(a)), avgClean: c.length !== a.length ? r2(mean(c)) : null, dist: dist(a), replied: rep.length, replyDays: lag.length ? Math.round(lag[lag.length >> 1] * 10) / 10 : null }; });
+    // replied7: answered within a week. The median reply time is not shown: a 2023 median of 560 days only means old reviews were answered in one sitting later
+    return { y, n: a.length, avg: r2(mean(a)), avgClean: c.length !== a.length ? r2(mean(c)) : null, dist: dist(a), replied: rep.length, replied7: lag.filter(d => d <= 7).length, replyDays: lag.length ? Math.round(lag[lag.length >> 1] * 10) / 10 : null }; });
   const lm = new Date(Date.parse(last)), months = [];
   for (let i = 23; i >= 0; i--) { const k = new Date(Date.UTC(lm.getUTCFullYear(), lm.getUTCMonth() - i, 1)).toISOString().slice(0, 7), a = R.filter(r => mon(r.at) === k);
-    months.push({ m: k, n: a.length, avg: r2(mean(a)), dist: dist(a), burst: a.filter(inBurst).length }); }
+    months.push({ m: k, n: a.length, avg: r2(mean(a)), dist: dist(a), burst: a.filter(inBurst).length, rep: a.filter(r => r.reply).length }); }
   // windows, burst left out so one push does not hide the trend
   const w = { d90: since(C, 90), p90: between(C, 90, 180), m12: since(C, 365), p12: between(C, 365, 730) };
   // replies
@@ -141,11 +147,13 @@ export function build(dataDir, { match } = {}) {
   const lens = (list, a12, aOld) => list.map(([key, label, re]) => {
     const hit = a => T(a).filter(r => re.test(r.text)), h = hit(a12), o = hit(aOld), neg = h.filter(r => r.stars <= 2), lowAll = T(a12).filter(r => r.stars <= 2);
     const qs = (a, f) => a.filter(f).sort((p, q) => q.at.localeCompare(p.at)).slice(0, 6).map(x => ({ at: x.at, stars: x.stars, text: snip(x.text, 200) })), q = (a, f) => qs(a, f)[0] || null;
-    return { key, label, n: h.length, share: T(a12).length ? Math.round(h.length / T(a12).length * 100) : 0, avg: r2(mean(h)), neg: neg.length, ofLow: lowAll.length ? Math.round(neg.length / lowAll.length * 100) : 0,
-      before: { n: o.length, share: T(aOld).length ? Math.round(o.length / T(aOld).length * 100) : 0, avg: r2(mean(o)), ofLow: T(aOld).filter(r => r.stars <= 2).length ? Math.round(o.filter(r => r.stars <= 2).length / T(aOld).filter(r => r.stars <= 2).length * 100) : 0 },
+    // pos and neg split a theme into praise (4-5 stars) and complaint (1-2 stars): "fresh" and "quick" are praise words too. before is the 12 months before those.
+    const lowOld = T(aOld).filter(r => r.stars <= 2), negOld = o.filter(r => r.stars <= 2);
+    return { key, label, n: h.length, share: T(a12).length ? Math.round(h.length / T(a12).length * 100) : 0, avg: r2(mean(h)), pos: h.filter(r => r.stars >= 4).length, neg: neg.length, lowN: lowAll.length, ofLow: lowAll.length ? Math.round(neg.length / lowAll.length * 100) : 0,
+      before: { n: o.length, share: T(aOld).length ? Math.round(o.length / T(aOld).length * 100) : 0, avg: r2(mean(o)), neg: negOld.length, low: lowOld.length, ofLow: lowOld.length ? Math.round(negOld.length / lowOld.length * 100) : 0 },
       bad: q(h, r => r.stars <= 2), bads: qs(h, r => r.stars <= 2), good: q(h, r => r.stars >= 4) };
   });
-  const a12 = C.filter(r => r.at > cut), aOld = C.filter(r => r.at <= cut);
+  const a12 = C.filter(r => r.at > cut), aOld = C.filter(r => r.at <= cut && r.at > addDays(last, -730));
   const themes = lens(THEMES, a12, aOld), dishes = lens(DISHES.map(([l, re]) => [slug(l), l, re]), C, []).filter(d => d.n >= 3).sort((a, b) => b.n - a.n);
   const out = { available: true, location: file.location, source: file.source, filedAt: file.filedAt, from: R[0].at, to: last,
     n: R.length, text: T(R).length, avg: r2(mean(R)), dist: dist(R), usualMonth: B.usual, bursts: B.list, clean: { n: C.length, avg: r2(mean(C)) },
@@ -166,10 +174,15 @@ function insights(o) {
   const big = o.bursts.slice().sort((a, b) => b.n - a.n)[0];
   if (big) { const by = y.find(x => x.y === big.from.slice(0, 4)), days = Math.round((Date.parse(big.to) - Date.parse(big.from)) / 864e5) + 1;
     L.push({ k: 'burst', t: `${big.n} reviews arrived in ${days} days (${fmtD(big.from)} to ${fmtD(big.to)}), about ${Math.round(big.months)} months' worth at the usual pace, at ${st(big.avg)}.${by && by.avgClean != null ? ` Those days lift ${by.y} from ${st(by.avgClean)} to ${st(by.avg)}.` : ''}${o.bursts.length > 1 ? ` There ${o.bursts.length === 2 ? 'was one more push' : `were ${o.bursts.length - 1} more pushes`}, ${o.bursts.filter(b => b !== big).map(b => `${b.n} in ${fmtD(b.from).replace(/^\d+ /, '')}`).join(', ')}.` : ''} Without them the shop averages ${st(o.clean.avg)}, against ${st(o.avg)} with them. Google can filter reviews that arrive in a rush, and asking for reviews in return for anything breaks its rules.` }); }
-  if (W.d90.n && W.p90.n) { const d = W.d90.avg - W.p90.avg; L.push({ k: d < -0.2 ? 'down' : d > 0.2 ? 'up' : 'flat', t: `The last 90 days: ${W.d90.n} reviews at ${st(W.d90.avg)}, ${d < -0.2 ? 'down from' : d > 0.2 ? 'up from' : 'level with'} ${st(W.p90.avg)} in the 90 days before${W.d90.low ? `; ${W.d90.low} of the ${W.d90.n} are one or two stars` : ''}.` }); }
+  // the share at one or two stars says more than the average when the count is small
+  if (W.d90.n && W.p90.n) { const d = W.d90.avg - W.p90.avg, pc = (a, b) => Math.round(a / b * 100); L.push({ k: d < -0.2 ? 'down' : d > 0.2 ? 'up' : 'flat', t: `The last 90 days: ${W.d90.n} reviews at ${st(W.d90.avg)}, ${d < -0.2 ? 'down from' : d > 0.2 ? 'up from' : 'level with'} ${st(W.p90.avg)} in the 90 days before. ${W.d90.low} of the ${W.d90.n} (${pc(W.d90.low, W.d90.n)}%) are one or two stars, against ${W.p90.low} of ${W.p90.n} (${pc(W.p90.low, W.p90.n)}%) before.${W.d90.n < 40 ? ' That is a small count, so read it as a signal and not yet a verdict.' : ''}` }); }
   const neg = o.themes.filter(t => t.neg >= 2).sort((a, b) => b.ofLow - a.ofLow).slice(0, 2);
-  if (neg.length) L.push({ k: 'down', t: `What the low ratings are about, last 12 months: ${neg.map(t => `${t.label.toLowerCase()} (in ${t.ofLow}% of the one- and two-star reviews${t.before.ofLow ? `, ${t.before.ofLow}% before` : ''})`).join(' and ')}.` });
-  if (cy && py && py.n) { const a = Math.round(cy.replied / cy.n * 100), b = Math.round(py.replied / py.n * 100); if (Math.abs(a - b) >= 15) L.push({ k: a < b ? 'down' : 'up', t: `Replies ${a < b ? 'fell' : 'rose'} from ${b}% of reviews in ${py.y} to ${a}% in ${cy.y}.${o.replies.unanswered ? ` ${o.replies.unanswered} of the ${o.replies.recentLow} one- and two-star reviews in the last six months have no reply.` : ''}${o.replies.short ? ` ${o.replies.short} of the ${o.replies.last12} replies in the last year are one-liners under 40 characters.` : ''}` }); }
+  if (neg.length) L.push({ k: 'down', t: `What the low ratings are about, last 12 months: ${neg.map(t => `${t.label.toLowerCase()} (${t.neg} of the ${t.lowN} one- and two-star reviews${t.before.low ? `, ${t.before.neg} of ${t.before.low} the year before` : ''})`).join(' and ')}. A review can name more than one.` });
+  // when replies stopped: the last month with at least five reviews and half answered, then what happened to every review after it
+  let stop = -1; o.months.forEach((m, i) => { if (m.n >= 5 && m.rep / m.n >= .5) stop = i; });
+  const aft = stop >= 0 && stop < o.months.length - 3 ? o.months.slice(stop + 1) : [], aN = aft.reduce((n, m) => n + m.n, 0), aR = aft.reduce((n, m) => n + m.rep, 0);
+  const cliff = aN >= 20 && aR / aN < .25 ? ` Replies largely stopped after ${new Date(o.months[stop].m + '-15T12:00:00Z').toLocaleDateString('en-GB', { month: 'long', year: 'numeric', timeZone: 'UTC' })}: ${aR} of the ${aN} reviews since have one (${Math.round(aR / aN * 100)}%).` : '';
+  if (cy && py && py.n) { const a = Math.round(cy.replied / cy.n * 100), b = Math.round(py.replied / py.n * 100); if (Math.abs(a - b) >= 15) L.push({ k: a < b ? 'down' : 'up', t: `Replies ${a < b ? 'fell' : 'rose'} from ${b}% of reviews in ${py.y} to ${a}% in ${cy.y}.${cliff}${o.replies.unanswered ? ` ${o.replies.unanswered} of the ${o.replies.recentLow} one- and two-star reviews in the last six months have no reply.` : ''}${o.replies.short ? ` ${o.replies.short} of the ${o.replies.last12} replies in the last year are one-liners under 40 characters.` : ''}` }); }
   else if (o.replies.unanswered) L.push({ k: 'down', t: `${o.replies.unanswered} of the ${o.replies.recentLow} one- and two-star reviews in the last six months have no reply.` });
   const good = o.themes.filter(t => t.share >= 15).sort((a, b) => b.avg - a.avg)[0]; if (good) L.push({ k: 'up', t: `What customers praise most: ${good.label.toLowerCase()}, in ${good.share}% of the reviews with text, averaging ${st(good.avg)}.` });
   if (o.names.length) L.push({ k: 'up', t: `Staff named by customers: ${o.names.slice(0, 4).map(n => `${n.name} (${n.n})`).join(', ')}. Worth telling them.` });

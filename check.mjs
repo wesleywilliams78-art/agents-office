@@ -154,6 +154,20 @@ await step('sales dashboard: report text becomes per-shop monthly numbers, and a
   if (build([{ name: 'x', text: 'nothing here' }]).available) throw new Error('a note with no reports made a dashboard');
   return 'two shops, two months · Norwegian number format read · totals and change vs last month · products and payments summed · empty notes ignored';
 });
+await step('sales dashboard: this year against last, like for like, and the channel mix by month', async () => { // 4 Nov 2026
+  const { build } = await import('./sales.mjs'); const NL = String.fromCharCode(10), T = String.fromCharCode(9);
+  const rep = (shop, ym, orders, turn, plat) => ['SALES REPORT', 'Shops: ' + shop, 'Period: ' + ym + '-01 - ' + ym + '-28', 'Summary', 'Orders ' + T + orders + ' ' + T + '1 ' + T + '0,0%', 'Turnover ' + T + turn + ' ' + T + '1 ' + T + '0,0%',
+    'Platforms', 'NAME ' + T + 'TURNOVER ' + T + 'ORDERS ' + T + 'AVERAGE ORDER AMOUNT', ...plat.map(p => p.join(' ' + T)), 'Products', 'NAME ' + T + 'TURNOVER ' + T + 'QUANTITY', 'Waffle ' + T + '1 000,00 ' + T + '4'].join(NL);
+  const d = build([{ name: 'Upload - a', text: [rep('Creamy A', '2025-10', '1 000', '200 000,00', [['kiosk', '150 000,00', '700', '1'], ['webshop', '50 000,00', '300', '1'], ['other', '-50,00', '1', '0']]),
+    rep('Creamy A', '2026-10', '800', '150 000,00', [['kiosk', '90 000,00', '500', '1'], ['webshop', '60 000,00', '300', '1']]), rep('Creamy B', '2026-10', '500', '100 000,00', [['webshop', '100 000,00', '500', '1']])].join(NL) }]);
+  const Y = d.yoy, a = Y && Y.shops.find(s => s.shop === 'Creamy A'), b = Y && Y.shops.find(s => s.shop === 'Creamy B');
+  if (!Y || Y.month !== '2026-10' || Y.lastYear !== '2025-10') throw new Error('yoy months wrong: ' + JSON.stringify(Y).slice(0, 160));
+  if (a.change !== -25 || a.ordersChange !== -20 || a.avg !== 187.5 || a.lastYear.avg !== 200 || b.lastYear || b.since !== '2026-10') throw new Error('per shop wrong: ' + JSON.stringify([a, b]));
+  if (Y.likeForLike.shops !== 1 || Y.likeForLike.turnover !== 150000 || Y.likeForLike.change !== -25) throw new Error('like for like wrong: ' + JSON.stringify(Y.likeForLike));
+  const C = d.channels; if (!C || C.names.join() !== 'kiosk,webshop' || C.months.length !== 2) throw new Error('channels wrong: ' + JSON.stringify(C && C.names));
+  const last = C.shops['Creamy A'][1]; if (last.total !== 150000 || last.parts.webshop.avg !== 200 || C.shops['Creamy B'][0] !== null) throw new Error('channel month wrong: ' + JSON.stringify(last));
+  return 'same month a year earlier per shop · a new shop has none · like for like counts only shops open both years · channels by month with the average order, negatives left out';
+});
 await step('till dashboard: monthly and daily reports give this year against last, like with like, to the last full day', async () => { // V3.12
   const pos = await import('./pos.mjs');
   const row = (...c) => '| ' + c.join(' | ') + ' |';
