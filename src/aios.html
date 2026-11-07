@@ -441,7 +441,7 @@
      Bone ground, ink and one red. Newsreader Light for headings and numerals, Archivo for everything else.
      Soft curves (cards 22px, items 14px, pills), tonal layers instead of lines, a statement hero with bezier ridges. */
   :root {
-    --bg: #F3F2F2; --card: #FBFAF9; --panel: #FBFAF9; --ink: #201E1D; --grey: #5a5552; --faint: #9a948f;
+    --bg: #F3F2F2; --card: #FBFAF9; --panel: #FBFAF9; --ink: #201E1D; --grey: #4f4a47; --faint: #736d68;
     --line: #E3DFDC; --soft: rgba(32,30,29,.05); --red: #EC3013; --deep: #B6240E;
     --serif: Newsreader, "Instrument Serif", Georgia, serif; --ui: Archivo, Inter, -apple-system, "Segoe UI", sans-serif;
     --q-do: #EC3013; --q-plan: #201E1D; --q-delegate: #9c8f86; --q-drop: #c4bdb7;
@@ -1029,15 +1029,15 @@
   /* ===== Reskin tokens for the top bar, the office map and For You (7 Nov 2026): a reskin changes only these three blocks ===== */
   :root {
     --on-accent: #FFFFFF; --line-strong: rgba(32,30,29,.18); --top-bg: rgba(243,242,242,.84);
-    --ox-card: rgba(251,250,249,.90); --ox-off: rgba(251,250,249,.45); --ox-off-edge: rgba(32,30,29,.20); --ox-face: #E6E1DD; --ox-face-ring: #FBFAF9;
-    --ox-edge: rgba(32,30,29,.10); --ox-edge2: rgba(32,30,29,.18); --ox-edge-hover: rgba(32,30,29,.34); --ox-inset: rgba(243,242,242,.92);
+    --ox-card: #FFFFFF; --ox-off: rgba(255,255,255,.78); --ox-off-edge: rgba(32,30,29,.24); --ox-face: #E9E5E1; --ox-face-ring: #FBFAF9;
+    --ox-edge: rgba(32,30,29,.13); --ox-edge2: rgba(32,30,29,.20); --ox-edge-hover: rgba(32,30,29,.34); --ox-inset: rgba(243,242,242,.92);
     --ox-need-edge: rgba(236,48,19,.60); --ox-need-glow: rgba(236,48,19,.22); --ox-need-shadow: rgba(236,48,19,.45);
     --ox-nora-a: #FFFFFF; --ox-nora-b: #F7F3F1; --ox-nora-edge: rgba(236,48,19,.60); --ox-ring1: rgba(236,48,19,.07); --ox-ring2: rgba(236,48,19,.035); --ox-nora-shadow: rgba(236,48,19,.35);
-    --ox-flow: #201E1D; --ox-flow-off: #a39b95; --ox-back: #EC3013; --ox-dots: rgba(32,30,29,.08); --ox-glow: rgba(236,48,19,.10);
-    --ox-label-bg: rgba(251,250,249,.94); --ox-label-fg: #6b6561; --ox-label-red: #B6240E; --ox-label-red-edge: rgba(236,48,19,.45);
+    --ox-flow: #201E1D; --ox-flow-off: #8c8580; --ox-back: #EC3013; --ox-dots: rgba(32,30,29,.08); --ox-glow: rgba(236,48,19,.10);
+    --ox-label-bg: rgba(251,250,249,.94); --ox-label-fg: #4f4a47; --ox-label-red: #B6240E; --ox-label-red-edge: rgba(236,48,19,.45);
     --ox-you-shadow: rgba(236,48,19,.55); --ox-tab-shadow: rgba(236,48,19,.45); --fy-bg: rgba(251,250,249,.97); --fy-shadow: rgba(32,30,29,.30);
-    --ox-r1-top: rgba(236,48,19,.16); --ox-r1-bot: rgba(236,48,19,.03); --ox-r2-top: rgba(32,30,29,.06); --ox-r2-bot: rgba(32,30,29,0);
-    --ox-r3-top: rgba(236,48,19,.20); --ox-r3-bot: rgba(182,36,14,.07); --ox-r4-top: rgba(236,48,19,.06); --ox-r4-bot: #F3F2F2;
+    --ox-r1-top: rgba(236,48,19,.08); --ox-r1-bot: rgba(236,48,19,.015); --ox-r2-top: rgba(32,30,29,.035); --ox-r2-bot: rgba(32,30,29,0);
+    --ox-r3-top: rgba(236,48,19,.10); --ox-r3-bot: rgba(182,36,14,.035); --ox-r4-top: rgba(236,48,19,.035); --ox-r4-bot: #F3F2F2;
   }
   @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
     --line-strong: rgba(243,242,242,.20); --top-bg: rgba(24,22,21,.78);
@@ -1136,6 +1136,9 @@
   body[data-cat="hierarchy"] .hxt { padding: 0 64px; }
   body[data-cat="hierarchy"]:has(#oxStage.map) .wrap { padding-bottom: 0; }
   body[data-cat="hierarchy"]:has(#oxStage.map)::before, body[data-cat="hierarchy"]:has(#oxStage.map)::after { display: none; } /* the stage draws its own ridges */
+  /* light: the page's red ridges washed the department page pink behind its cards; half strength keeps the brand and lets the cards read (7 Nov 2026) */
+  @media (prefers-color-scheme: light) { :root:not([data-theme="dark"]) body[data-cat="hierarchy"]::before, :root:not([data-theme="dark"]) body[data-cat="hierarchy"]::after { opacity: .45; } }
+  :root[data-theme="light"] body[data-cat="hierarchy"]::before, :root[data-theme="light"] body[data-cat="hierarchy"]::after { opacity: .45; }
   @media (max-width: 1300px) { .ox.map { padding: 24px 32px 26px; } .ox-map { gap: 0 32px; } }
   @media (max-width: 1180px) { /* too narrow for the arrows: Nora and You on top, the departments two by two under her */
     .ox-map { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; padding-top: 24px; align-content: start; }
