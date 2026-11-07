@@ -1562,7 +1562,7 @@ function foldSubnav(animate) {
 const CARD = '.hero, .kpi, .panel, .client, .quad, .sk, .col, .news, .bpanel, .skkpi, .hx-bay, .hxt-col';
 function arrive() {
   if (!moving()) return;
-  const shown = [...document.querySelectorAll('[data-cat]:not(.cat-off)')];
+  const shown = [...document.querySelectorAll('[data-cat]:not(body):not(.cat-off)')];
   const heads = [], cards = [];
   for (const b of shown) {
     if (b.matches('.hero')) { cards.push(b); const h = b.querySelector('h2'); if (h) heads.push(h); continue; }
@@ -1578,7 +1578,7 @@ function arrive() {
 let leaving = null;
 function leave() { // the view you are leaving steps back in a tenth of a second, so the new one never lands on top of it
   if (!moving()) return Promise.resolve();
-  const shown = [...document.querySelectorAll('[data-cat]:not(.cat-off)')];
+  const shown = [...document.querySelectorAll('[data-cat]:not(body):not(.cat-off)')];
   const outs = Promise.all(shown.map(b => b.animate([{ opacity: 1, transform: 'none' }, { opacity: 0, transform: 'translateY(8px)' }], { duration: 110, easing: 'cubic-bezier(.4,0,1,1)', fill: 'forwards' }).finished.then(a => a, () => {})));
   // never wait on frames: a window that is not painting (minimised, behind another) still switches on a plain timer
   return Promise.race([outs, new Promise(r => setTimeout(r, 160))]).then(() => shown);
@@ -1663,9 +1663,9 @@ function placeAsk() { // the Ask box is one element (one set of ids, one convers
 }
 function applyCat(animate = false) {
   placeAsk();
-  for (const el of document.querySelectorAll('[data-cat]')) el.classList.toggle('cat-off', isDash(S.cat) ? el.dataset.cat !== 'dash' : el.dataset.cat !== S.cat);
+  for (const el of document.querySelectorAll('[data-cat]:not(body)')) el.classList.toggle('cat-off', isDash(S.cat) ? el.dataset.cat !== 'dash' : el.dataset.cat !== S.cat);
   markTabs(S.cat);
-  document.body.dataset.cat = isDash(S.cat) ? 'dash' : S.cat; // the Office tab goes full width; the other tabs keep a readable width
+  document.body.dataset.cat = isDash(S.cat) ? 'dash' : S.cat; // the Office tab goes full width; the other tabs keep a readable width (the [data-cat] queries skip body, or a tab switch hides the whole page)
   foldSubnav(animate); placeInd(animate);
 }
 function markTabs(c) { // the top bar: Clients stays lit on a client's dashboard, whose own button lights in the row under the bar
