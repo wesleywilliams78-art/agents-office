@@ -1096,7 +1096,7 @@
     <button data-go="budget" id="navBudget" style="display:none">Budget <span class="n"></span></button>
     <div class="gl">The office</div>
     <button data-go="roles">Roles <span class="n" id="nRoles"></span></button>
-    <button data-go="hierarchy">Hierarchy</button>
+    <button data-go="hierarchy">Office</button>
     <button data-go="brain">Brain</button>
     <button data-go="skills">Skills <span class="n" id="nSkills"></span></button>
     <button data-go="tokens">Tokens</button>
@@ -1556,7 +1556,7 @@ async function setCat(c, push = true) {
   if (!CAT_IDS.includes(c) && !isDash(c)) c = 'overview';
   const first = !catReady, changed = c !== S.cat, seq = ++catSeq; catReady = true;
   S.cat = c; try { localStorage.setItem('aiosCat', c); } catch {}
-  if (push) history.replaceState(null, '', '#' + (c === 'hierarchy' && window.hxPath ? window.hxPath() : c)); // Hierarchy keeps the department and desk you left it on
+  if (push) history.replaceState(null, '', '#' + (c === 'hierarchy' ? (window.hxPath ? window.hxPath() : 'office') : c)); // Office keeps the department and desk you left it on
   if (first || !changed) { applyCat(false); window.scrollTo({ top: 0 }); }
   else {
     for (const b of document.querySelectorAll('#side button[data-go]')) b.classList.toggle('on', b.dataset.go === c);
@@ -1754,8 +1754,9 @@ function renderNav() { // small counts beside a category: what is waiting on you
   set('nSkills', S.skillAudit ? S.skillAudit.summary.attention : '', true);
   set('nSocial', S.social ? S.social.filter(s => ['review', 'check', 'ready', 'needs'].includes(s.state)).length : '', true);
 }
-function route(h) { // a hash is the tab, then (Hierarchy only) where you are inside it: #hierarchy/marketing/gfx is Marketing with Greta's drawer open
-  const [c, ...rest] = String(h || '').split('/');
+function route(h) { // a hash is the tab, then (Office only) where you are inside it: #office/marketing/gfx is Marketing with Greta's drawer open
+  let [c, ...rest] = String(h || '').split('/');
+  if (c === 'office') c = 'hierarchy'; // the Office tab keeps its old id inside the page; #hierarchy links from before 7 Nov still land
   if (c === 'hierarchy') { if (window.hxRoute) window.hxRoute(rest); else window.AIOS_HX_WANT = rest; } // the Hierarchy script loads later and picks up AIOS_HX_WANT
   if (!(c === 'hierarchy' && S.cat === 'hierarchy' && catReady)) setCat(c, false); // moving inside Hierarchy (Back, a link) keeps the page where it is
 }
@@ -3539,9 +3540,9 @@ loadTrackers(); setInterval(() => { if (!document.hidden && !Object.values(S.tkB
       <div class="hxo-key">${['doing', 'waiting', 'review', 'error', 'idle'].map(stp).join('')}<span>Solid line: in the AIOS · dashed: still runs in the office · click a solid one to go in</span></div></div>${fyRail}</div>`;
     requestAnimationFrame(wires); document.fonts?.ready.then(wires);
   }
-  // ---- where you are: #hierarchy, #hierarchy/<dept>, #hierarchy/<dept>/<desk>. Each step in is one browser history entry, so Back goes out one level ----
+  // ---- where you are: #office, #office/<dept>, #office/<dept>/<desk> (#hierarchy/… still lands). Each step in is one browser history entry, so Back goes out one level ----
   const okView = v => PILOT.includes(v) && S.agents.some(a => a.department === v) ? v : 'office';
-  const hxPath = (v = view, s = sel) => 'hierarchy' + (v !== 'office' ? '/' + v + (s ? '/' + s : '') : '');
+  const hxPath = (v = view, s = sel) => 'office' + (v !== 'office' ? '/' + v + (s ? '/' + s : '') : '');
   window.hxPath = () => hxPath();
   function apply(v, s) { // show a level: the office, a department, or a department with a desk's drawer open
     const was = sel, moved = v !== view;
