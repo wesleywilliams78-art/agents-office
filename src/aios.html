@@ -979,6 +979,39 @@
   .bm-stats { font-size: 12px; color: var(--grey); margin: 4px 0 6px; }
   .bm-conn { max-height: 180px; overflow-y: auto; overflow-x: hidden; }
   @media (max-width: 1100px) { .bm-grid { grid-template-columns: 1fr; } .bm-side { max-height: none; min-height: 0; } .bm-stage { height: 62vh; } }
+  /* Brain sheet (7 Nov 2026): the map above, pulled up to 85% of the window over the Office from a tab on its bottom-left edge.
+     Bottom-left because Wispr Flow's pill covers the bottom centre of every window; clear of the You pill (centre) and the live pill (right). */
+  .bmtab { display: none; }
+  body[data-cat="hierarchy"] .bmtab { display: flex; position: fixed; left: 28px; bottom: 0; z-index: 800; align-items: center; gap: 10px; padding: 11px 18px 10px; border: 1px solid var(--ox-edge2); border-bottom: 0; border-radius: 14px 14px 0 0; background: var(--ox-card); color: var(--grey); box-shadow: 0 -10px 30px -14px var(--bm-tab-shadow); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); transition: color .18s, border-color .18s, padding .2s cubic-bezier(.2,.8,.2,1); }
+  body[data-cat="hierarchy"] .bmtab:hover { color: var(--ink); border-color: var(--ox-edge-hover); background: var(--ox-card); padding-bottom: 14px; }
+  .bmtab em { font-style: normal; }
+  .bmtab span { font-size: 11px; letter-spacing: .2em; font-weight: 700; text-transform: uppercase; }
+  .bmtab i { font-style: normal; width: 22px; height: 22px; border-radius: 50%; background: var(--soft); display: flex; align-items: center; justify-content: center; font-size: 12px; letter-spacing: 0; }
+  .bmdim { position: fixed; inset: 0; z-index: 900; background: var(--bm-dim); opacity: 0; visibility: hidden; cursor: pointer; transition: opacity .3s, visibility 0s .3s; }
+  .bmsheet { position: fixed; left: 0; right: 0; bottom: 0; z-index: 901; height: 85vh; height: 85dvh; margin: 0; display: flex; flex-direction: column; padding: 26px 32px 18px; background: var(--bm-sheet-bg); border-top: 1px solid var(--ox-edge2); border-radius: 24px 24px 0 0; box-shadow: 0 -40px 90px -30px var(--bm-sheet-shadow); transform: translateY(100%); visibility: hidden; transition: transform .36s cubic-bezier(.2,.8,.2,1), visibility 0s .36s; }
+  .bmsheet::before { content: ''; position: absolute; top: 9px; left: 50%; width: 44px; height: 4px; margin-left: -22px; border-radius: 99px; background: var(--ox-edge2); }
+  body.bm-open .bmdim { opacity: 1; visibility: visible; transition-delay: 0s; }
+  body.bm-open .bmsheet { transform: none; visibility: visible; transition-delay: 0s; }
+  body.bm-open { overflow: hidden; }
+  .bmsheet .bmsheet-x, .bmsheet .bmsheet-x:hover { position: absolute; top: 20px; right: 22px; width: 36px; height: 36px; padding: 0; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px; letter-spacing: 0; color: var(--grey); }
+  .bmsheet .bmsheet-x:hover { color: var(--ink); }
+  .bmsheet .sh { padding-right: 52px; margin-bottom: 14px; }
+  .bmsheet .bm-grid { flex: 1; min-height: 0; grid-template-rows: minmax(0, 1fr); align-items: stretch; }
+  .bmsheet .bm-stage, .bmsheet .bm-side { height: auto; min-height: 0; max-height: none; }
+  @media (max-width: 1100px) { .bmsheet { overflow-y: auto; overscroll-behavior: contain; } .bmsheet .bm-grid { flex: none; grid-template-rows: none; } .bmsheet .bm-stage { height: 58vh; height: 58dvh; } }
+  @media (max-width: 600px) {
+    .bmsheet { height: 100vh; height: 100dvh; border-radius: 0; padding: 18px 14px 14px; }
+    .bmsheet .bmsheet-x, .bmsheet .bmsheet-x:hover { top: 12px; right: 10px; }
+    .bmsheet .sh .note { display: none; } .bmsheet .sh .tools { width: 100%; } .bmsheet .bm-q { flex: 1 1 100%; }
+    .bmsheet .seg button, .bmsheet #bmFit { padding: 7px 10px; font-size: 9.5px; letter-spacing: .1em; }
+    body[data-cat="hierarchy"] .bmtab { left: 10px; padding: 9px 13px 8px; }
+  }
+  @media (max-width: 480px) { /* the live pill moves to the left on a phone: the tab says just BRAIN and the pill sits beside it, short of the For You tab */
+    .bmtab em { display: none; }
+    body[data-cat="hierarchy"] .livebar { left: 104px; max-width: calc(100vw - 160px); overflow: hidden; white-space: nowrap; }
+    body[data-cat="hierarchy"] .livebar #liveTxt { overflow: hidden; text-overflow: ellipsis; }
+  }
+  @media (prefers-reduced-motion: reduce) { .bmsheet, .bmdim, .bmtab { transition: none; } }
   /* Review card (7 Nov 2026): the office's own card (src/review.js), skinned to the AIOS look (body # wins over the card's own later stylesheet) */
   body #rv { z-index: 1000; --cream: var(--panel); --hairline: var(--line); }
   body #rv .rv-box { background: var(--panel); color: var(--ink); border-color: var(--line); border-radius: 12px; }
@@ -1007,6 +1040,7 @@
     --ox-flow: #201E1D; --ox-flow-off: #8c8580; --ox-back: #EC3013; --ox-dots: rgba(32,30,29,.08); --ox-glow: rgba(236,48,19,.10);
     --ox-label-bg: rgba(251,250,249,.94); --ox-label-fg: #4f4a47; --ox-label-red: #B6240E; --ox-label-red-edge: rgba(236,48,19,.45);
     --ox-you-shadow: rgba(236,48,19,.55); --ox-tab-shadow: rgba(236,48,19,.45); --fy-bg: rgba(251,250,249,.97); --fy-shadow: rgba(32,30,29,.30);
+    --bm-sheet-bg: #EDEAE7; --bm-sheet-shadow: rgba(32,30,29,.28); --bm-dim: rgba(32,30,29,.34); --bm-tab-shadow: rgba(32,30,29,.14);
     --ox-r1-top: rgba(236,48,19,.08); --ox-r1-bot: rgba(236,48,19,.015); --ox-r2-top: rgba(32,30,29,.035); --ox-r2-bot: rgba(32,30,29,0);
     --ox-r3-top: rgba(236,48,19,.10); --ox-r3-bot: rgba(182,36,14,.035); --ox-r4-top: rgba(236,48,19,.035); --ox-r4-bot: #F3F2F2;
   }
@@ -1019,6 +1053,7 @@
     --ox-flow: #F3F2F2; --ox-flow-off: #6f6a66; --ox-dots: rgba(243,242,242,.07); --ox-glow: rgba(236,48,19,.16);
     --ox-label-bg: rgba(22,20,19,.85); --ox-label-fg: #B79C8F; --ox-label-red: #ff9a85;
     --ox-you-shadow: rgba(236,48,19,.85); --ox-tab-shadow: rgba(236,48,19,.70); --fy-bg: rgba(30,27,26,.97); --fy-shadow: rgba(0,0,0,.80);
+    --bm-sheet-bg: #1E1B1A; --bm-sheet-shadow: rgba(0,0,0,.85); --bm-dim: rgba(8,7,7,.62); --bm-tab-shadow: rgba(0,0,0,.55);
     --ox-r1-top: rgba(122,34,22,.55); --ox-r1-bot: rgba(42,18,16,.20); --ox-r2-top: rgba(74,42,36,.55); --ox-r2-bot: rgba(22,20,19,0);
     --ox-r3-top: rgba(184,48,26,.42); --ox-r3-bot: rgba(58,21,16,.25); --ox-r4-top: rgba(43,34,32,.95); --ox-r4-bot: #181615;
   } }
@@ -1031,6 +1066,7 @@
     --ox-flow: #F3F2F2; --ox-flow-off: #6f6a66; --ox-dots: rgba(243,242,242,.07); --ox-glow: rgba(236,48,19,.16);
     --ox-label-bg: rgba(22,20,19,.85); --ox-label-fg: #B79C8F; --ox-label-red: #ff9a85;
     --ox-you-shadow: rgba(236,48,19,.85); --ox-tab-shadow: rgba(236,48,19,.70); --fy-bg: rgba(30,27,26,.97); --fy-shadow: rgba(0,0,0,.80);
+    --bm-sheet-bg: #1E1B1A; --bm-sheet-shadow: rgba(0,0,0,.85); --bm-dim: rgba(8,7,7,.62); --bm-tab-shadow: rgba(0,0,0,.55);
     --ox-r1-top: rgba(122,34,22,.55); --ox-r1-bot: rgba(42,18,16,.20); --ox-r2-top: rgba(74,42,36,.55); --ox-r2-bot: rgba(22,20,19,0);
     --ox-r3-top: rgba(184,48,26,.42); --ox-r3-bot: rgba(58,21,16,.25); --ox-r4-top: rgba(43,34,32,.95); --ox-r4-bot: #181615;
   }
@@ -1152,7 +1188,6 @@
     <button data-go="budget" id="navBudget" style="display:none">Budget <span class="n"></span></button>
     <span class="sep" aria-hidden="true"></span>
     <button data-go="hierarchy">Office</button>
-    <button data-go="brain">Brain</button>
     <button data-go="skills">Skills <span class="n" id="nSkills"></span></button>
     <button data-go="tokens">Tokens</button>
     <button data-go="social">Social <span class="n" id="nSocial"></span></button>
@@ -1273,27 +1308,6 @@
     <div class="skgrid" id="skGrid"></div>
   </section>
 
-  <section id="brainSec" data-cat="brain">
-    <div class="sh">
-      <h2>Brain map</h2>
-      <span class="note">Every note in the Brain and the links between them, laid out like Obsidian, with what the links say: hubs, bottlenecks, clusters and crossings. Read from the vault on this computer; no note is changed and no model is used.</span>
-      <div class="tools">
-        <input id="bmQ" class="bm-q" type="search" placeholder="Find a note…" aria-label="Find a note">
-        <div class="seg" id="bmColour"><button data-v="strand" class="on">BY STRAND</button><button data-v="cluster">BY CLUSTER</button></div>
-        <div class="seg" id="bmShow"><button data-v="orphan" class="on">UNLINKED</button><button data-v="strand">STRANDS</button><button data-v="agent">DESKS</button><button data-v="task">TASK NOTES</button><button data-v="local">LOCAL GRAPH</button></div>
-        <button id="bmFit" type="button">FIT</button>
-      </div>
-    </div>
-    <div class="msg" id="bmMsg"></div>
-    <div class="bm-grid">
-      <div class="panel bm-stage"><canvas id="bmCanvas" aria-label="Map of the notes in the Brain"></canvas><div class="bm-legend" id="bmLegend"></div><div class="bm-hint">Drag a note · drag the background to pan · scroll to zoom · click a note to read it</div></div>
-      <div class="bm-side">
-        <div class="panel bm-card" id="bmSel"></div>
-        <div class="panel bm-card bm-ins" id="bmIns"></div>
-      </div>
-    </div>
-  </section>
-
   <section id="tokSec" data-cat="tokens">
     <div class="sh">
       <h2>Tokens</h2>
@@ -1356,6 +1370,30 @@
 <!-- For You (7 Nov 2026): a red tab on the right edge of the Office tab; it pulls out the list of what waits on you (the whole office, or the department you are in) -->
 <button type="button" class="oxfy-tab" id="oxFyTab" aria-controls="oxFy" aria-expanded="false"><b id="oxFyN">0</b><span>For you</span></button>
 <aside class="oxfy" id="oxFy" aria-label="For you" aria-hidden="true"><button type="button" class="oxfy-x" data-oxfyclose aria-label="Close (Esc)" title="Close (Esc)">✕</button><div class="oxfy-b" id="oxFyBody"></div></aside>
+<!-- Brain sheet (7 Nov 2026): the Brain map pulls up over the Office from a tab on its bottom-left edge (bottom-centre is under Wispr Flow's pill); Esc, ✕ or the dimmed Office closes it -->
+<button type="button" class="bmtab" id="bmTab" aria-controls="brainSec" aria-expanded="false"><span><em>Open the </em>Brain</span><i aria-hidden="true">↑</i></button>
+<div class="bmdim" data-bmclose aria-hidden="true"></div>
+<section class="bmsheet" id="brainSec" role="dialog" aria-modal="true" aria-label="The Brain" aria-hidden="true">
+    <button type="button" class="bmsheet-x" data-bmclose aria-label="Close (Esc)" title="Close (Esc)">✕</button>
+    <div class="sh">
+      <h2>Brain map</h2>
+      <span class="note">Every note in the Brain and the links between them, laid out like Obsidian, with what the links say: hubs, bottlenecks, clusters and crossings. Read from the vault on this computer; no note is changed and no model is used.</span>
+      <div class="tools">
+        <input id="bmQ" class="bm-q" type="search" placeholder="Find a note…" aria-label="Find a note">
+        <div class="seg" id="bmColour"><button data-v="strand" class="on">BY STRAND</button><button data-v="cluster">BY CLUSTER</button></div>
+        <div class="seg" id="bmShow"><button data-v="orphan" class="on">UNLINKED</button><button data-v="strand">STRANDS</button><button data-v="agent">DESKS</button><button data-v="task">TASK NOTES</button><button data-v="local">LOCAL GRAPH</button></div>
+        <button id="bmFit" type="button">FIT</button>
+      </div>
+    </div>
+    <div class="msg" id="bmMsg"></div>
+    <div class="bm-grid">
+      <div class="panel bm-stage"><canvas id="bmCanvas" aria-label="Map of the notes in the Brain"></canvas><div class="bm-legend" id="bmLegend"></div><div class="bm-hint">Drag a note · drag the background to pan · scroll to zoom · click a note to read it</div></div>
+      <div class="bm-side">
+        <div class="panel bm-card" id="bmSel"></div>
+        <div class="panel bm-card bm-ins" id="bmIns"></div>
+      </div>
+    </div>
+</section>
 
 <script>
 const DEPTS = {
@@ -1473,7 +1511,7 @@ const readiness = a => [!!a.does, !!a.brief, roleSkills(a).length > 0];
 function render() { renderNeeds(); renderWeek(); renderNav(); renderKpis(); renderClients(); renderMatrix(); window.renderHierarchy?.(); renderSkills(); renderNews(); renderActivity(); renderBudget(); }
 
 // categories: the left-hand list shows one category at a time; the choice is remembered and can be linked to (#budget)
-const CAT_IDS = ['overview', 'matrix', 'social', 'clients', 'budget', 'hierarchy', 'brain', 'skills', 'tokens'];
+const CAT_IDS = ['overview', 'matrix', 'social', 'clients', 'budget', 'hierarchy', 'skills', 'tokens'];
 const isDash = c => /^dash-[a-z0-9-]+$/.test(String(c));
 /* ---------- motion: springs for the rail and the page it drives ----------
    A damped spring sampled into a CSS linear() curve: zeta < 1 overshoots and settles, like motion.md's back.out pops.
@@ -1652,7 +1690,7 @@ async function setCat(c, push = true) {
   if (isDash(c)) renderSales();
   if (c === 'tokens') loadTokens();
   if (c === 'social') loadSocial();
-  if (c === 'brain') window.brainTab?.open(); else window.brainTab?.close(); // the Brain map runs its physics only while it is on screen
+  if (c !== 'hierarchy') window.brainSheet?.(false); // the Brain sheet belongs to the Office; another tab closes it (and its physics stop)
 }
 
 // Social (V3.12, 3 Nov): the next post in each workstream. The server works out the state; this draws it and sends the buttons.
@@ -1911,9 +1949,11 @@ function renderNav() { // small counts beside a category: what is waiting on you
 function route(h) { // a hash is the tab, then (Office only) where you are inside it: #office/marketing/gfx is Marketing with Greta's drawer open
   let [c, ...rest] = String(h || '').split('/');
   if (c === 'office') c = 'hierarchy'; // the Office tab keeps its old id inside the page; #hierarchy links from before 7 Nov still land
+  const bm = c === 'brain'; if (bm) { c = 'hierarchy'; rest = []; } // the Brain tab became a sheet over the Office on 7 Nov 2026: #brain lands on the Office with it pulled up
   if (c === 'roles') { c = 'hierarchy'; rest = []; } // Roles was retired on 7 Nov 2026: its seats are on the Office's department pages, its News feed on Overview
   if (c === 'hierarchy') { if (window.hxRoute) window.hxRoute(rest); else window.AIOS_HX_WANT = rest; } // the Hierarchy script loads later and picks up AIOS_HX_WANT
   if (!(c === 'hierarchy' && S.cat === 'hierarchy' && catReady)) setCat(c, false); // moving inside Hierarchy (Back, a link) keeps the page where it is
+  if (bm) { if (window.brainSheet) window.brainSheet(true); else window.AIOS_BM_WANT = true; } // the Brain script loads later and picks up AIOS_BM_WANT
 }
 (() => { let c = location.hash.slice(1); if (!c) { try { c = localStorage.getItem('aiosCat'); } catch {} } route(c || 'overview'); })();
 window.addEventListener('hashchange', () => route(location.hash.slice(1)));
@@ -4001,7 +4041,7 @@ loadTrackers(); setInterval(() => { if (!document.hidden && !Object.values(S.tkB
   function fit() {
     const V = B.nodes.filter(vis); if (!V.length) return; let x0 = 1e9, x1 = -1e9, y0 = 1e9, y1 = -1e9;
     for (const n of V) { x0 = Math.min(x0, n.x); x1 = Math.max(x1, n.x); y0 = Math.min(y0, n.y); y1 = Math.max(y1, n.y); }
-    B.k = Math.max(0.2, Math.min(2.4, Math.min(W() / (x1 - x0 + 120), H() / (y1 - y0 + 120)))); B.tx = -(x0 + x1) / 2 * B.k; B.ty = -(y0 + y1) / 2 * B.k;
+    B.fw = W(); B.fh = H(); B.k = Math.max(0.2, Math.min(2.4, Math.min(W() / (x1 - x0 + 120), H() / (y1 - y0 + 120)))); B.tx = -(x0 + x1) / 2 * B.k; B.ty = -(y0 + y1) / 2 * B.k;
   }
   function loop() {
     if (B.running || !B.open) return; B.running = true;
@@ -4088,10 +4128,26 @@ loadTrackers(); setInterval(() => { if (!document.hidden && !Object.values(S.tkB
     catch (e) { $('bmMsg').className = 'msg err'; $('bmMsg').textContent = 'Could not read the Brain: ' + e.message; return false; }
   }
   window.brainTab = {
-    async open() { if (B.open) return; B.open = true; readTheme(); if (!B.d && !(await load(false))) { B.open = false; return; } if (!B.open) return; loop(); clearInterval(B.timer); B.timer = setInterval(() => { if (!document.hidden) load(true); }, 60000); },
+    async open() { if (B.open) return; B.open = true; readTheme(); if (B.fitted && (B.fw !== W() || B.fh !== H())) fit(); /* the window changed size while the sheet was down */ if (!B.d && !(await load(false))) { B.open = false; return; } if (!B.open) return; loop(); clearInterval(B.timer); B.timer = setInterval(() => { if (!document.hidden) load(true); }, 60000); },
     close() { B.open = false; clearInterval(B.timer); B.timer = null; },
   };
-  if (S.cat === 'brain') window.brainTab.open();
+  // the sheet (7 Nov 2026): a tab on the Office's bottom-left edge pulls it up; Esc closes it before anything else Esc does on the Office
+  const bmIsOpen = () => document.body.classList.contains('bm-open');
+  window.brainSheet = open => {
+    if (open && S.cat !== 'hierarchy') return; if (open === bmIsOpen()) return;
+    const sh = $('brainSec'); document.body.classList.toggle('bm-open', open);
+    $('bmTab').setAttribute('aria-expanded', open); sh.setAttribute('aria-hidden', !open); sh.inert = !open;
+    if (open && location.hash === '#brain') history.replaceState(history.state, '', '#' + (window.hxPath ? window.hxPath() : 'office')); // so the next #brain link fires again
+    if (open) { window.brainTab.open(); sh.querySelector('.bmsheet-x').focus({ preventScroll: true }); }
+    else { window.brainTab.close(); if (sh.contains(document.activeElement)) $('bmTab').focus({ preventScroll: true }); }
+  };
+  $('brainSec').inert = true;
+  document.addEventListener('click', e => { if (e.target.closest('#bmTab')) window.brainSheet(!bmIsOpen()); else if (e.target.closest('[data-bmclose]')) window.brainSheet(false); });
+  document.addEventListener('keydown', e => { // capture: runs before the For You panel's, the drawer's and the Office's own Esc
+    if (e.key !== 'Escape' || !bmIsOpen() || document.getElementById('rv')?.classList.contains('on')) return;
+    e.preventDefault(); e.stopImmediatePropagation(); window.brainSheet(false);
+  }, true);
+  if (window.AIOS_BM_WANT) { delete window.AIOS_BM_WANT; window.brainSheet(true); }
 })();
 </script>
 <script type="module">
