@@ -1066,10 +1066,10 @@
   /* ===== the top bar (7 Nov 2026): logo and name, the tabs with thin separators between groups, live / 3D office / theme on the right; a client row under it on Clients ===== */
   header.top { position: sticky; top: 0; z-index: 60; display: flex; align-items: center; flex-wrap: wrap; gap: 0 22px; min-height: 64px; margin: 0; padding: 0 28px; border: 0; border-bottom: 1px solid var(--line); background: var(--top-bg); -webkit-backdrop-filter: blur(12px) saturate(140%); backdrop-filter: blur(12px) saturate(140%); }
   header.top .brand { display: flex; align-items: center; gap: 12px; flex: none; }
-  header.top .seal { width: 32px; height: 32px; } header.top h1 { font-size: 25px; white-space: nowrap; }
+  header.top .seal { width: 32px; height: 32px; } header.top h1 { font-size: 25px; white-space: nowrap; position: relative; top: .08em; } /* the serif's capitals sat 3px above the logo's middle; this levels them (7 Nov 2026) */
   .tabs { position: relative; display: flex; align-items: center; gap: 2px; flex: 1 1 auto; min-width: 0; overflow-x: auto; scrollbar-width: none; padding: 12px 0; }
   .tabs::-webkit-scrollbar { display: none; }
-  .tabs button, .tabs button:hover { flex: none; position: relative; z-index: 1; display: inline-flex; align-items: baseline; gap: 5px; padding: 9px 14px; border: 0; border-radius: 99px; background: transparent; box-shadow: none; font-size: 11px; letter-spacing: .12em; font-weight: 600; text-transform: uppercase; color: var(--grey); white-space: nowrap; }
+  .tabs button, .tabs button:hover { flex: none; position: relative; z-index: 1; display: inline-flex; align-items: baseline; gap: 5px; padding: 10px 14px 8px; border: 0; border-radius: 99px; background: transparent; box-shadow: none; font-size: 11px; letter-spacing: .12em; font-weight: 600; text-transform: uppercase; color: var(--grey); white-space: nowrap; }
   .tabs button:hover { color: var(--ink); background: var(--soft); }
   .tabs button.on { background: var(--ink); color: var(--bg); }
   .tabs.has-ind button.on, .tabs.has-ind button.on:hover { background: transparent; color: var(--bg); }
@@ -1080,19 +1080,48 @@
   header.top .right { margin-left: auto; flex: none; display: flex; align-items: center; gap: 10px; padding: 0; border: 0; border-radius: 0; background: none; box-shadow: none; -webkit-backdrop-filter: none; backdrop-filter: none; color: var(--grey); font-size: 11.5px; }
   .tpill, .tpill:hover { display: inline-flex; align-items: center; gap: 8px; padding: 7px 13px; border: 1px solid var(--line-strong); border-radius: 99px; background: transparent; box-shadow: none; color: var(--ink); white-space: nowrap; text-decoration: none; font-size: 11.5px; font-weight: 400; letter-spacing: 0; text-transform: none; }
   .tpill:hover { border-color: var(--ink); } #themeBtn.tpill { font-size: 10.5px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; }
-  .tpill .live { width: 7px; height: 7px; } .tpill .sm { display: none; }
+  .tpill .live { width: 7px; height: 7px; }
   header.top .subnav { flex-basis: 100%; display: flex; align-items: center; gap: 6px; overflow-x: auto; scrollbar-width: none; padding: 0 0 12px; }
   header.top .subnav::-webkit-scrollbar { display: none; } header.top .subnav:not(.open) { display: none; }
   header.top .subnav button, header.top .subnav button:hover { flex: none; padding: 6px 13px; border: 1px solid var(--line); border-radius: 99px; background: transparent; box-shadow: none; color: var(--grey); font-size: 10.5px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; white-space: nowrap; }
   header.top .subnav button:hover { color: var(--ink); border-color: var(--line-strong); }
   header.top .subnav button.sub2 { text-transform: none; letter-spacing: .02em; font-weight: 500; border-style: dashed; } header.top .subnav button.sub2::before { content: '› '; color: var(--faint); }
   header.top .subnav button.on { background: var(--ink); border-color: var(--ink); color: var(--bg); }
-  @media (max-width: 1100px) { .tpill .lg { display: none; } .tpill .sm { display: inline; } }
   /* the live version, tucked into the bottom-right corner (7 Nov 2026) */
   .livebar { position: fixed; right: 14px; bottom: 12px; z-index: 50; display: inline-flex; align-items: center; gap: 7px; padding: 5px 11px; border-radius: 99px; border: 1px solid var(--line); background: var(--top-bg); color: var(--faint); font-size: 10.5px; opacity: .75; -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); transition: opacity .2s; }
   .livebar:hover { opacity: 1; } .livebar .live { width: 6px; height: 6px; }
   /* Consultants’ Corner: the pill plays the YouTube playlist in a small player under the bar; closing the player keeps the music going, STOP ends it */
-  .tpill.cc i { font-style: normal; font-size: 9px; color: var(--red); } .tpill.cc.on { border-color: var(--red); }
+  /* the pill is a now-playing bar, like a phone's: spinning cover, title and time, a live equaliser, its own play button and a progress line; the cover's
+     colours bleed softly into the pill while it plays, and it widens to show the title (7 Nov 2026) */
+  .ccpill { position: relative; display: inline-flex; align-items: center; gap: 2px; height: 44px; padding: 4px; border: 1px solid var(--line-strong); border-radius: 99px; overflow: hidden; isolation: isolate; background: transparent; transition: border-color .4s, box-shadow .5s; }
+  .ccpill::before { content: ''; position: absolute; inset: -24px; z-index: -1; background: var(--art, none) center / cover; filter: blur(20px) saturate(1.7); opacity: 0; transition: opacity .8s; }
+  .ccpill.loaded::before { opacity: .22; } .ccpill.on::before { opacity: .5; } :root[data-theme="light"] .ccpill.on::before { opacity: .3; }
+  .ccpill.on { border-color: rgba(236,48,19,.55); box-shadow: 0 8px 26px -12px var(--red); }
+  .ccpill button, .ccpill button:hover { padding: 0; border: 0; border-radius: 99px; background: none; box-shadow: none; color: var(--ink); letter-spacing: normal; text-transform: none; font-weight: 400; }
+  .ccpill .ccopen { display: flex; align-items: center; gap: 10px; min-width: 0; height: 100%; padding-right: 8px; text-align: left; }
+  .ccart { flex: none; position: relative; width: 34px; height: 34px; border-radius: 50%; background: var(--red) center / cover; box-shadow: 0 0 0 1px rgba(255,255,255,.12) inset; animation: ccspin 14s linear infinite paused; }
+  .ccart::after { content: ''; position: absolute; inset: 13px; border-radius: 50%; background: var(--bg); box-shadow: 0 0 0 1px rgba(0,0,0,.25); }
+  .ccpill.on .ccart { animation-play-state: running; }
+  .cctx { display: grid; gap: 1px; min-width: 0; max-width: 150px; transition: max-width .6s cubic-bezier(.2,.8,.2,1); }
+  .ccpill.loaded .cctx { max-width: 210px; }
+  .cctx b { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 12px; font-weight: 600; line-height: 1.2; }
+  .cctx small { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--grey); font-size: 10.5px; font-variant-numeric: tabular-nums; line-height: 1.2; }
+  .cceq { display: flex; align-items: flex-end; gap: 2px; width: 0; height: 14px; overflow: hidden; opacity: 0; transition: width .4s, opacity .4s; }
+  .ccpill.loaded .cceq { width: 15px; opacity: 1; }
+  .cceq i { flex: none; width: 2.5px; height: 100%; border-radius: 2px; background: var(--red); transform: scaleY(.25); transform-origin: bottom; animation: cceq 1s ease-in-out infinite paused; }
+  .cceq i:nth-child(2) { animation-duration: .8s; animation-delay: -.3s; } .cceq i:nth-child(3) { animation-duration: 1.15s; animation-delay: -.6s; } .cceq i:nth-child(4) { animation-duration: .9s; animation-delay: -.15s; }
+  .ccpill.on .cceq i { animation-play-state: running; }
+  .ccpill .ccplay, .ccpill .ccplay:hover { flex: none; width: 34px; height: 34px; display: grid; place-items: center; background: var(--ink); color: var(--bg); transition: transform .15s; }
+  .ccpill .ccplay:active { transform: scale(.9); }
+  .ccplay svg { width: 15px; height: 15px; fill: currentColor; } .ccplay .pa, .ccplay.pause .pl { display: none; } .ccplay.pause .pa { display: inline; }
+  .ccprog { position: absolute; left: 26px; right: 26px; bottom: 2px; height: 2px; border-radius: 2px; background: rgba(127,127,127,.18); opacity: 0; transition: opacity .4s; }
+  .ccpill.loaded .ccprog { opacity: 1; } .ccprog i { display: block; height: 100%; width: 0; border-radius: 2px; background: var(--red); transition: width .9s linear; }
+  @keyframes ccspin { to { transform: rotate(360deg); } }
+  @keyframes cceq { 0%, 100% { transform: scaleY(.25); } 50% { transform: scaleY(1); } }
+  @media (max-width: 1560px) { .ccpill.loaded .cctx { max-width: 150px; } }
+  @media (max-width: 1480px) { .ccpill .cctx, .ccpill.loaded .cctx { max-width: 110px; } }
+  @media (max-width: 1420px) { .ccpill .cctx { display: none; } .ccpill .ccopen { gap: 8px; } } /* the bar keeps one row: cover, equaliser and play only */
+  @media (prefers-reduced-motion: reduce) { .ccart, .cceq i { animation: none; } }
   .ccbox { position: fixed; top: calc(var(--top-h, 64px) + 8px); right: 20px; z-index: 850; width: min(420px, calc(100vw - 24px)); padding: 14px 14px 12px; border-radius: 20px; border: 1px solid var(--ox-edge2); background: var(--fy-bg); box-shadow: 0 30px 70px -30px var(--fy-shadow); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); opacity: 0; visibility: hidden; transform: translateY(-6px); transition: opacity .2s, transform .2s, visibility 0s .2s; }
   .ccbox.open { opacity: 1; visibility: visible; transform: none; transition-delay: 0s; }
   .cchd { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; } .cchd b { font: 300 22px/1 var(--serif); } .cchd span { color: var(--faint); font-size: 11px; }
@@ -1156,7 +1185,7 @@
     <button data-go="social">Social <span class="n" id="nSocial"></span></button>
     <span class="ind" id="sideInd" aria-hidden="true"></span>
   </nav>
-    <div class="right"><button type="button" class="tpill cc" id="ccBtn" aria-expanded="false" aria-controls="ccBox" title="Consultants’ Corner, from YouTube"><i aria-hidden="true">▶</i><span class="lg">Consultants’ Corner</span><span class="sm">Music</span></button><button id="themeBtn" class="tpill" type="button" title="Switch between automatic, light and dark">Auto</button></div>
+    <div class="right"><div class="ccpill" id="ccPill"><button type="button" class="ccopen" id="ccBtn" aria-expanded="false" aria-controls="ccBox" title="Consultants’ Corner: open the player"><span class="ccart" id="ccArt" aria-hidden="true"></span><span class="cctx"><b id="ccTitle">Consultants’ Corner</b><small id="ccSub">Press play</small></span><span class="cceq" aria-hidden="true"><i></i><i></i><i></i><i></i></span></button><button type="button" class="ccplay" id="ccPlay" aria-label="Play Consultants’ Corner"><svg viewBox="0 0 24 24" aria-hidden="true"><path class="pl" d="M8 5.5v13l11-6.5z"/><path class="pa" d="M6.5 5h3.8v14H6.5zM13.7 5h3.8v14h-3.8z"/></svg></button><span class="ccprog" aria-hidden="true"><i id="ccProg"></i></span></div><button id="themeBtn" class="tpill" type="button" title="Switch between automatic, light and dark">Auto</button></div>
     <div class="subnav" id="navDash" aria-label="Client dashboards"></div>
 </header>
 <span class="livebar" id="livePill"><span class="live" id="live"></span><span id="liveTxt">connecting…</span></span>
@@ -1706,32 +1735,75 @@ document.addEventListener('click', async e => {
 });
 setInterval(() => { if (!document.hidden && S.cat === 'social') loadSocial(); }, 15000);
 
-// Consultants' Corner (7 Nov 2026): the pill in the bar plays the YouTube playlist in a small player under it. The link is pasted once and kept in this
-// browser. Closing the player hides it and the music keeps going while you change tabs; STOP removes the player.
+// Consultants' Corner (7 Nov 2026): the pill in the bar is a now-playing bar for the YouTube video or playlist; its own button plays and pauses, the rest
+// opens a small player under it. A pasted link is kept in this browser. Closing the player keeps the music going while you change tabs; STOP removes it.
 (() => {
-  const KEY = 'aios.ccPlaylist', box = $('ccBox'), btn = $('ccBtn'), frame = $('ccFrame'), form = $('ccForm'), inp = $('ccUrl'), row = $('ccRow');
+  const KEY = 'aios.ccPlaylist', pill = $('ccPill'), box = $('ccBox'), btn = $('ccBtn'), pbtn = $('ccPlay'), frame = $('ccFrame'), form = $('ccForm'), inp = $('ccUrl'), row = $('ccRow');
   const START = 'https://www.youtube.com/watch?v=INMPrT880yQ'; // the first three hours (Wesley, 7 Nov 2026); a link pasted in the player replaces it in this browser
   const saved = () => { try { return localStorage.getItem(KEY) || START; } catch { return START; } };
-  const embed = u => { // a playlist link (list=…) or one video (watch?v=…, youtu.be/…) → the privacy-enhanced embed, autoplaying
-    let x; try { x = new URL(String(u).trim()); } catch { return ''; }
-    if (!/(^|\.)(youtube\.com|youtube-nocookie\.com|youtu\.be)$/.test(x.hostname)) return '';
-    const list = x.searchParams.get('list'), v = x.hostname === 'youtu.be' ? x.pathname.slice(1) : x.searchParams.get('v');
-    const ok = s => /^[\w-]{6,64}$/.test(s || '');
-    return ok(list) ? `https://www.youtube-nocookie.com/embed/videoseries?list=${list}&autoplay=1` : ok(v) ? `https://www.youtube-nocookie.com/embed/${v}?autoplay=1` : '';
+  const parse = u => { // a playlist link (list=…) or one video (watch?v=…, youtu.be/…)
+    let x; try { x = new URL(String(u).trim()); } catch { return null; }
+    if (!/(^|\.)(youtube\.com|youtube-nocookie\.com|youtu\.be)$/.test(x.hostname)) return null;
+    const ok = s => /^[\w-]{6,64}$/.test(s || '') ? s : '';
+    const list = ok(x.searchParams.get('list')), v = ok(x.hostname === 'youtu.be' ? x.pathname.slice(1) : x.searchParams.get('v'));
+    return list || v ? { list, v } : null;
   };
-  let editing = false;
-  const playing = () => !!frame.querySelector('iframe');
-  const draw = () => { const has = !!embed(saved()); form.hidden = has && !editing; row.hidden = !has || editing; btn.classList.toggle('on', playing()); };
+  const embed = u => { // → the privacy-enhanced embed, autoplaying, with the API on so the pill can read and steer it
+    const p = parse(u); if (!p) return ''; const q = 'autoplay=1&enablejsapi=1&origin=' + encodeURIComponent(location.origin);
+    return p.list ? `https://www.youtube-nocookie.com/embed/videoseries?list=${p.list}&${q}` : `https://www.youtube-nocookie.com/embed/${p.v}?${q}`;
+  };
+  let editing = false, ifr = null, st = {}, ducked = false, hello = null;
+  const fresh = () => ({ state: -1, t: 0, d: 0, title: '', id: '' });
+  const playing = () => !!ifr && (st.state === 1 || st.state === 3);
+  const send = func => { try { ifr?.contentWindow?.postMessage(JSON.stringify({ event: 'command', func, args: [] }), '*'); } catch {} };
+  const clock = s => { s = Math.max(0, Math.floor(s)); const h = Math.floor(s / 3600), m = Math.floor(s % 3600 / 60), x = String(s % 60).padStart(2, '0'); return h ? `${h}:${String(m).padStart(2, '0')}:${x}` : `${m}:${x}`; };
+  const draw = () => {
+    const has = !!embed(saved()), on = playing();
+    form.hidden = has && !editing; row.hidden = !has || editing;
+    pill.classList.toggle('loaded', !!ifr); pill.classList.toggle('on', on);
+    pbtn.classList.toggle('pause', on); pbtn.setAttribute('aria-label', (on ? 'Pause' : 'Play') + ' Consultants’ Corner');
+    const id = st.id || parse(saved())?.v || '';
+    if (id !== pill.dataset.id) { pill.dataset.id = id; const u = id ? `url("https://i.ytimg.com/vi/${id}/mqdefault.jpg")` : 'none'; pill.style.setProperty('--art', u); $('ccArt').style.backgroundImage = u; }
+    $('ccTitle').textContent = ifr && st.title ? st.title : 'Consultants’ Corner';
+    $('ccSub').textContent = ducked ? 'Paused for Original Nuttah' : !ifr ? 'Press play' : st.d ? `${clock(st.t)} / ${clock(st.d)}` : 'Starting…';
+    $('ccProg').style.width = st.d ? Math.min(100, st.t / st.d * 100).toFixed(2) + '%' : '0';
+    pill.title = ifr && st.title ? `${st.title} · Consultants’ Corner` : 'Consultants’ Corner, from YouTube';
+  };
+  const mount = () => {
+    const src = embed(saved()); if (!src) return false; st = fresh(); ducked = false;
+    frame.innerHTML = `<iframe src="${esc(src)}" title="Consultants’ Corner" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>`;
+    ifr = frame.querySelector('iframe'); clearInterval(hello); let tries = 0;
+    const hi = () => { try { ifr?.contentWindow?.postMessage(JSON.stringify({ event: 'listening', id: 'cc', channel: 'widget' }), '*'); } catch {} if (++tries > 20 || st.d) clearInterval(hello); };
+    ifr.addEventListener('load', () => { hi(); hello = setInterval(hi, 500); });
+    draw(); return true;
+  };
+  const unmount = () => { clearInterval(hello); frame.innerHTML = ''; ifr = null; st = fresh(); ducked = false; draw(); };
+  addEventListener('message', e => { // YouTube reports its state, time and title through the embed's API
+    if (!ifr || e.source !== ifr.contentWindow) return;
+    let m; try { m = typeof e.data === 'string' ? JSON.parse(e.data) : e.data; } catch { return; }
+    const i = m && m.info; if (!i || typeof i !== 'object') return;
+    if (typeof i.playerState === 'number') { st.state = i.playerState; if (st.state === 1 && ducked && Date.now() - ducked > 1500) ducked = false; } // played again by hand
+    if (typeof i.currentTime === 'number') st.t = i.currentTime;
+    if (typeof i.duration === 'number' && i.duration > 0) st.d = i.duration;
+    if (i.videoData) { st.title = i.videoData.title || st.title; st.id = i.videoData.video_id || st.id; }
+    draw();
+  });
   const open = v => { box.classList.toggle('open', v); box.setAttribute('aria-hidden', !v); btn.setAttribute('aria-expanded', v); };
-  const play = () => { const src = embed(saved()); if (!src || playing()) return; frame.innerHTML = `<iframe src="${esc(src)}" title="Consultants’ Corner" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>`; };
-  btn.addEventListener('click', () => { const was = box.classList.contains('open'); if (!was) play(); open(!was); draw(); if (!embed(saved())) inp.focus(); });
+  btn.addEventListener('click', () => { const was = box.classList.contains('open'); if (!was && !ifr) mount(); open(!was); draw(); if (!embed(saved())) inp.focus(); });
+  pbtn.addEventListener('click', () => { if (!ifr) { if (!mount()) open(true); return; } ducked = false; send(playing() ? 'pauseVideo' : 'playVideo'); draw(); });
   $('ccClose').addEventListener('click', () => open(false));
-  $('ccStop').addEventListener('click', () => { frame.innerHTML = ''; draw(); });
+  $('ccStop').addEventListener('click', unmount);
   $('ccEdit').addEventListener('click', () => { editing = true; inp.value = saved(); draw(); inp.focus(); });
   form.addEventListener('submit', e => { e.preventDefault(); const ok = !!embed(inp.value); $('ccWhy').hidden = ok; if (!ok) return;
-    try { localStorage.setItem(KEY, inp.value.trim()); } catch {} editing = false; frame.innerHTML = ''; play(); draw(); });
+    try { localStorage.setItem(KEY, inp.value.trim()); } catch {} editing = false; unmount(); mount(); });
   document.addEventListener('keydown', e => { if (e.key === 'Escape' && box.classList.contains('open')) open(false); });
-  draw();
+  // Original Nuttah (every 20th finished task) plays on this PC's speakers: the server says when it starts and stops; the player pauses for it and picks up after
+  if (/^https?:$/.test(location.protocol) && 'EventSource' in window) {
+    const es = new EventSource('/api/nuttah/events');
+    es.addEventListener('play', () => { if (playing()) { ducked = Date.now(); send('pauseVideo'); draw(); } });
+    es.addEventListener('end', () => { if (ducked) { ducked = false; send('playVideo'); draw(); } });
+  }
+  st = fresh(); draw();
 })();
 // theme: Auto follows the computer, Light and Dark are forced; the choice is remembered in this browser
 (() => {

@@ -1273,6 +1273,14 @@ const server = http.createServer(async (req, res) => {
     if (url.pathname.startsWith('/api/matrix')) return matrixApi(req, res, url);
     if (url.pathname === '/api/budget' || url.pathname === '/api/budget/sync') return budgetApi(req, res, url);
     if (url.pathname === '/api/storage' && req.method === 'GET') { try { return json(res, 200, { ...storage.report(ROOT, cfg.storage), cleaned: undefined }); } catch (e) { return json(res, 500, { error: e.message }); } }
+    if (url.pathname === '/api/nuttah/events') { // 7 Nov 2026: tells open dashboards when Original Nuttah starts and stops, so the Consultants' Corner player pauses for it
+      const say = s => res.write(s + '\n\n');
+      res.writeHead(200, { 'content-type': 'text/event-stream', 'cache-control': 'no-cache', connection: 'keep-alive' }); say('retry: 5000');
+      const on = { play: () => say('event: play\ndata: {}'), end: () => say('event: end\ndata: {}') }, ka = setInterval(() => say(': ka'), 25000);
+      nuttah.events.on('play', on.play); nuttah.events.on('end', on.end);
+      req.on('close', () => { nuttah.events.off('play', on.play); nuttah.events.off('end', on.end); clearInterval(ka); }); return;
+    }
+    if (url.pathname === '/api/nuttah/test' && req.method === 'POST') { nuttah.events.emit('play'); setTimeout(() => nuttah.events.emit('end'), 6000); return json(res, 200, { ok: true, note: 'no sound: open dashboards pause Consultants’ Corner for 6 seconds' }); }
     if (url.pathname === '/api/health') return json(res, 200, { ok: true, version, backend, model: cfg.model, modelName: modelName(cfg.model), models: MODEL_KEYS, effort: cfg.effort || '', efforts: EFFORT_KEYS, name: cfg.name, brain: BRAIN, notes: graph.notes, depts: DEPT_KEYS,
       agents: agentsOut(), setup: setupMap(), routines: (l => ({ count: l.length, paused: l.filter(r => r.paused).length, depts: routines.ALLOWED }))(loadRoutines()), roster: { customised: roster.customised, briefed: roster.briefed, files: roster.files, problems: roster.problems }, skills: (({ count, shipped, brain, problems }) => ({ count, shipped, brain, problems }))(skills.summary()), tools: backend === 'claude-cli', mcp: mcp.summary(), teams: TEAMS, browser: mcp.summary().browser });
     if (url.pathname === '/api/agents') return json(res, 200, { agents: agentsOut(), problems: roster.problems, files: roster.files });

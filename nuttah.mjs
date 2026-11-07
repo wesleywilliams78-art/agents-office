@@ -5,8 +5,11 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { spawn } from 'node:child_process';
+import { EventEmitter } from 'node:events';
 
 export const EVERY = 20, FROM_SECONDS = 34;
+// 'play' when the track starts and 'end' when it stops: open dashboards pause the Consultants' Corner player for it and pick up again after (serve.mjs, /api/nuttah/events)
+export const events = new EventEmitter(); events.setMaxListeners(0);
 
 export function finished(dataDir, rootDir, task, allTasks = []) {
   if (!task || !task.id || task.state !== 'done' || task.error || task.closed) return null;
@@ -36,6 +39,8 @@ $end = (Get-Date).AddMinutes(5)
 while ((Get-Date) -lt $end -and (-not $p.NaturalDuration.HasTimeSpan -or $p.Position -lt $p.NaturalDuration.TimeSpan)) { Start-Sleep -Milliseconds 500 }
 $p.Close()`;
   const enc = Buffer.from(ps, 'utf16le').toString('base64');
-  spawn('powershell.exe', ['-NoProfile', '-NonInteractive', '-WindowStyle', 'Hidden', '-EncodedCommand', enc], { detached: true, stdio: 'ignore', windowsHide: true }).unref();
+  const child = spawn('powershell.exe', ['-NoProfile', '-NonInteractive', '-WindowStyle', 'Hidden', '-EncodedCommand', enc], { detached: true, stdio: 'ignore', windowsHide: true });
+  child.on('exit', () => events.emit('end')); child.on('error', () => events.emit('end')); child.unref();
+  events.emit('play');
   return true;
 }
