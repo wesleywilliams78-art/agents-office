@@ -81,6 +81,7 @@ import * as notify from './notify.mjs';
 import * as weekpack from './weekpack.mjs';
 import * as aoofile from './aoofile.mjs';
 import * as ferfile from './ferfile.mjs';
+import * as nuttah from './nuttah.mjs'; // 7 Nov 2026: every 20th finished task plays Original Nuttah from 0:34 on this PC
 import * as assistantMod from './assistant.mjs';
 import * as motionMod from './motion.mjs';
 import { pinnedNotes, pickNotes } from './pins.mjs';
@@ -847,6 +848,7 @@ async function runServerTaskNow(id, { feedback, approve, answer } = {}) {
     if ((task.needsOk || REVIEW_ALL || hasDecisions) && !approve) { task.state = 'waiting'; task.draft = out.result; task.waitingAt = Date.now(); task.ask = (task.needsOk ? (task.channel === 'email' ? `"${task.title}" is written — approve to put it in your Gmail drafts, then send it from your inbox. Reject to tell me what to change.` : routines.askLine(task)) : reviewLine(task)) + brainReview(task, out.result) + siteReview(task, out.result) + (approve ? '' : handoffReview(task, hoText) + decisionReview(task, decText)) + (task.designAudit ? designaudit.askLine(task.designAudit, agentName(DESIGN_AUDIT.desk)) : '') + (out.leadReview ? leadreview.askLine(out.leadReview, out.leadName) : '') + (out.leadReview?.lesson ? '\n\n' + leadlessons.card(out.leadReview.lesson, out.leadName, out.deskName) + ' Answer on the card in AIOS Hierarchy.' : ''); }
     else {
       task.state = 'done'; task.doneAt = Date.now();
+      try { nuttah.finished(DATA, ROOT, task, load()); } catch (e) { console.warn('nuttah: ' + e.message); }
       try { const sc = ubereats.fileScorecard(DATA, out.result); if (sc) { task.result += sc.ok ? `\n\n---\nUBER EATS SCORECARD FILED: ${sc.tier}, read ${sc.readOn}, on the Delivery dashboard.` : `\n\n---\nUBER EATS SCORECARD NOT FILED: ${sc.error}.`; console.log('  ubereats scorecard:', sc.ok ? 'filed' : sc.error); } } catch (e) { console.warn('scorecard:', e.message); } // V3.12: read-only figures for the dashboard, filed without review
       const cc = handoff.claudeCode(task.result); // a step only Claude Code can do: the Hierarchy bubble shows it, and Telegram gets it ready to copy
       if (cc && !task.forYou) { task.forYou = { ...cc, at: Date.now() }; (async () => { await notify.telegram(`For you, from ${agentName(task.agent)} ("${task.title}"): a step only Claude Code can do.${cc.what ? ' ' + cc.what : ''}\nCopy the next message${cc.prompts.length > 1 ? 's' : ''} into Claude Code, one at a time.${cc.prompts.some(p => p.length > 3400) ? ' A long one comes in parts: paste all its parts as one message.' : ''}`); for (const p of cc.prompts) { const n = Math.ceil(p.length / 3400); for (let i = 0; i < n; i++) await notify.telegram((n > 1 ? `(part ${i + 1} of ${n})\n` : '') + p.slice(i * 3400, (i + 1) * 3400)); } })().catch(e => console.warn('for-you telegram:', e.message)); }
@@ -1564,6 +1566,7 @@ const server = http.createServer(async (req, res) => {
       }
       if (m[2] === 'approve' && !task.needsOk) { // V3.9: a reviewed task with nothing to send — the tick is the finish line, no second run
         Object.assign(task, { state: 'done', result: task.draft || task.result, approved: true, approvedAt: Date.now(), doneAt: Date.now() }); delete task.ask;
+        try { nuttah.finished(DATA, ROOT, task, load()); } catch (e) { console.warn('nuttah: ' + e.message); }
         fileBrainUpdates(task); fileSiteUpdates(task); fireHandoffs(task); fireDecisions(task); fileMatrixItems(task);
         task.note = writeNote(task); save(load().map(t => t.id === task.id ? task : t)); await rebuildGraph();
         console.log(`✅ ${task.id} approved — done (note: ${task.note})`);
