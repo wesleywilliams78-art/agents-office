@@ -1,30 +1,41 @@
-# Handover, 7 Nov 2026: AIOS office levels, step 4 next
+# Handover, 7 Nov 2026: AIOS office levels, built, Delivery in, live step log
 
-**Where it stands.** The design is in `docs/aios-office-overview-design.md`: four levels, the build plan, and what's built. Wesley approved the mockups in `output/aios-mockups/` (open `03-desk-task.html` for step 4). Built and live in `src/aios.html`, not committed:
-- Level 1, the office map: Theo's band with the ask box, Nora in the centre, any number of department tiles, For You on the right.
-- Step 3, the department page: Mara's band, desk cards, For You filtered to the department, then the "Work in <dept>" trail.
+**Where it stands.** All four levels of the design in `docs/aios-office-overview-design.md` are built in `src/aios.html` (the Office tab, called Hierarchy until 7 Nov) and committed: `dd6ea58` (pushed to the fork), then `a8a635c`, `db5a4b1`, `9aa176a`, `1320754` (not pushed; push is `git push fork main`). The doc's "Built" sections say what each step does. The mockups Wesley approved and the screenshots of what was built are in `output/aios-mockups/` (`shots/built-*.png`).
+- **Level 1, the office map:** Theo's band with the ask box, Nora in the centre, a tile per department, For You on the right.
+- **Department page:** the lead's band, desk cards, For You for the department, the "Work in <dept>" trail.
+- **Desk and task drawer:** opens from the right when you click a desk card.
+  - The desk itself.
+  - The task it's on, with a seven-face trail. Dashed faces are steps the task skipped; the current step has a halo (amber while the lead reads it, red when it waits on Wesley).
+  - A timeline, the live steps of this run (`task.steps`, kept by `serve.mjs`) and the task's plan.
+  - What's waiting for Wesley from that desk (REVIEW opens the existing pop-up).
+  - What it finished lately.
+- **Links and Back:** `#office`, `#office/<dept>`, `#office/<dept>/<desk>` (old `#hierarchy/…` links still land; inside the page the tab's id is still `hierarchy`). Each level in is one history step. Back, Esc, the ✕ and the breadcrumbs go out one level.
 
-**Next: step 4, the desk and task drawer.** Clicking a desk card opens a drawer from the right over the department page; it does not leave the page.
-- The drawer shows the desk: face, name, title, model, skills, standing rules, tools.
-- **Now:** the task it's on, with a trail of one face per hand-over: you, Theo, Nora, lead, desk, lead review, you. The current step is ringed green and later steps are dimmed.
-- **Waiting for you from this desk:** each item's REVIEW calls the existing review pop-up (`data-review`).
-- **Done lately:** three items.
-- It replaces today's stand-in, where clicking a desk expands its card (`deskCard`'s `more` block). Esc closes the drawer before leaving the department; the review pop-up (`#rv.on`) keeps its own Esc.
-- The live step log in the mockup needs a source. Check whether tasks record their steps (`data/tasks.json` fields, `serve.mjs`). If they don't, show the stage trail only and say so; don't add `serve.mjs` changes without a yes/no to Wesley.
+**Decided.**
+- Red always means Wesley.
+- Status is always a dot plus a word.
+- Departments not in `PILOT` show dashed, and links to them land on the office.
+- The drawer shows the task the desk is on now; there are no task-level links.
 
-**After that: step 2.** Hash links (`#hierarchy/marketing/gfx`) and the browser Back button; `setCat` in `src/aios.html` uses `history.replaceState('#'+c)`.
+**Done 7 Nov (evening), each on Wesley's yes.**
+1. `dd6ea58` pushed to the fork.
+2. **Delivery** joined `PILOT` (`a8a635c`): the busiest department after Marketing (42 tasks in 14 days).
+3. **The tab is "Office"** (`db5a4b1`). `route()` maps `office` to the internal `hierarchy` id; `hxPath` writes `#office/…`.
+4. **Live step log** (`9aa176a`). `askX` in `serve.mjs` records each run's start, every tool call (with its query, URL or note) and each line the desk writes, on `task.steps` (last 40, reset at each run). It saves at most every 3 s, only the steps and only while the task is `doing`. `liveSteps` in the drawer shows them above the plan, marked LIVE while running. A team piece shows only that desk's steps. Tested on a real read-only task (`mw6vbbifyz5t`, Delivery, waiting for Wesley).
+5. **Dead CSS removed** (`1320754`).
 
-**Where the code is.** In the Hierarchy script of `src/aios.html` (search for "the office map (level 1)"):
-- Shared pieces: `blockOf`, `fc`, `stp`, `keyOf`, `rail`, `deskCard`, `renderOffice`, `go`.
-- The `view` state is `'office'` or a department key.
-- `sel` is the open desk.
-- The ask box is placed by `placeAsk()`.
-- The styles are the `.hxo-*` rules beside the `--hx-need` variable (red since 7 Nov).
+**Open.**
+- Delivery's six desks have no first names or portraits yet (Marketing's do), so they show initials.
+- Desks read Wesley's global `~/.claude/CLAUDE.md`: 20 results contain its "Sonnet 5.5 · high is right for this." line. A desk run should not load his personal instructions.
 
-**Rules Wesley gave.** Red always means him. Status is always a dot plus a word. Text never crosses a colour edge or touches anything. No wavy curves. Check at 1905×920, plus 1440, 375 and light theme.
+**Where the code is.** All of it is in the Hierarchy script of `src/aios.html`:
+- `blockOf`, `fc`, `stp`, `keyOf`, `rail`, `deskCard`, `renderOffice`.
+- The drawer: `deskDrawer`, `trailSteps`, `taskLog`, `liveSteps`, `drawer` (container `#hxDr`, styles `.hxd-*`).
+- Navigation: `nav`, `apply`, `hxPath`, `window.hxRoute`.
+- `route()` sits beside `setCat` and splits the hash into the tab and the place inside it.
 
 **How to check.**
-- Run `npm run check` (95 checks).
-- Render with playwright-core and the installed Chrome (`C:/Program Files/Google/Chrome/Application/chrome.exe`) at 1905×920, `colorScheme: 'dark'`, on `http://localhost:4520/aios#hierarchy`. Click `[data-hxdept="marketing"]`, then `[data-hseat="gfx"]`.
-- Look at the picture, fix, at most two rounds, then send Wesley the screenshots.
-- Other sessions share this folder: edit `src/aios.html` with targeted edits only, and don't commit unless he asks.
+- Run `npm run check` (96 checks).
+- Render with playwright-core and the installed Chrome at 1905×920 dark, plus light, 1440 and 375.
+- At most two fix rounds, then send Wesley the screenshots.
+- Other sessions edit `src/aios.html` too. When committing, stage only your own hunks: the Tokens-tab `deskLabel` lines were another session's and are still uncommitted.

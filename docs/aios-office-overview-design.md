@@ -79,3 +79,10 @@ Level 1 first: it's the picture you asked for, and it works on its own. Today's 
 - Leaving the tab and coming back keeps your place (`#hierarchy/marketing`). A link to a department not in the AIOS yet lands on the office, and one to a desk that isn't there lands on its department. Either way the address bar is corrected to match.
 - Checked with a script: links, Back, Forward, Esc twice, the drawer's Office pill, switching tabs, and the two wrong links. All pass, with no page errors.
 - Code: `route` (beside `setCat`) splits the hash into the tab and the place inside it; `nav`, `apply`, `hxPath` and `window.hxRoute` in the Hierarchy script. A task-level link (`/<task>`) isn't there yet: the drawer always shows the task the desk is on.
+
+## Built (7 Nov 2026, evening): the tab is Office, Delivery joins, live steps
+
+- The tab is named **Office** and its links are `#office/<dept>/<desk>`; `#hierarchy/…` links still land.
+- **Delivery** is in `PILOT`, next to Marketing; its tile is solid and its page and drawers work. Its desks show initials until they get first names and portraits.
+- **Live steps.** While a desk works, `serve.mjs` keeps each step on the task (`task.steps`: the run starting, each tool with what it looked up, each line the desk writes; last 40). The drawer shows "Steps this run" above the plan, marked LIVE while it runs. Pictures: Wesley's chat, 7 Nov.
+- The old chain's styles (`.hx-node`, `.hx-link`, `.hx-desk`, `.hx-say`) are gone.
