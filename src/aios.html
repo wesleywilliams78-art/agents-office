@@ -3386,7 +3386,7 @@ loadTrackers(); setInterval(() => { if (!document.hidden && !Object.values(S.tkB
    Lead review (leadreview.mjs) writes task.leadReview = { phase: review | rework | signed | escalated, round, open }; stageOf() and the badges read it.
    Own ids (hx*), own open-desk set, data-hseat; Roles is untouched. render() calls window.renderHierarchy(). Page helpers used: S, DEPTS, MODEL, esc, ago, seatState, readiness, roleSkills. */
 (() => {
-  const PILOT = ['marketing'];
+  const PILOT = ['marketing', 'delivery'];
   const tc = s => String(s || '').toLowerCase().replace(/(^|[\s-])(\p{L})/gu, (m, a, b) => a + b.toUpperCase()).replace(/Linkedin/g, 'LinkedIn'); // desk names are stored in capitals; the chart shows them as Chief of Staff is written
   let sel = ''; const el = id => document.getElementById(id); // sel: the desk picked in the chart; it opens and filters the trail
   const lrOf = t => (t && t.leadReview && t.leadReview.phase) || ''; // the lead review phase of a task, if it has one
