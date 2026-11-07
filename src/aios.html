@@ -3630,8 +3630,7 @@ loadTrackers(); setInterval(() => { if (!document.hidden && !Object.values(S.tkB
     const dot = (p, cls, dur, begin = 0) => { if (REDUCED.matches) return; const c = mk('circle', { r: cls === 'r' ? 4 : 3.5, class: 'ox-dot ' + cls }); c.innerHTML = `<animateMotion dur="${dur}s" begin="${begin}s" repeatCount="indefinite" path="${p.getAttribute('d')}"/>`; };
     mk('defs', {}).innerHTML = ['on', 'r', 'off'].map(k => `<marker id="oxA${k}" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="${k === 'off' ? 6 : 7}" markerHeight="${k === 'off' ? 6 : 7}" orient="auto-start-reverse"><path class="ox-ah ${k}" d="M0 0 L10 5 L0 10 z"/></marker>`).join('');
     const T = box(theo), N = box(nora), Y = box(you), cx = N.x + N.w / 2;
-    if (N.y - (T.y + T.h) > 40) { mk('path', { d: `M${cx} ${T.y + T.h + 4} L${cx} ${N.y - 10}`, class: 'ox-f ask', 'marker-end': 'url(#oxAon)' }); label(cx + 64, (T.y + T.h + N.y) / 2, 'Your ask'); }
-    let firstOut = null;
+    if (N.y - (T.y + T.h) > 40) { mk('path', { d: `M${cx} ${T.y + T.h + 4} L${cx} ${N.y - 10}`, class: 'ox-f ask', 'marker-end': 'url(#oxAon)' }); } // no 'Your ask' / 'Work goes out' labels: the arrows say it (Wesley, 7 Nov 2026)
     for (const k of ['L', 'R']) {
       const tiles = [...stage.querySelectorAll(`.hxo-d[data-side="${k}"]`)], left = k === 'L', n = tiles.length;
       const edge = tiles.reduce((m, t) => { const D = box(t); return left ? Math.max(m, D.x + D.w) : Math.min(m, D.x); }, left ? -1e9 : 1e9);
@@ -3642,7 +3641,6 @@ loadTrackers(); setInterval(() => { if (!document.hidden && !Object.values(S.tkB
         const sx = left ? N.x : N.x + N.w, sy = N.y + N.h * (n > 1 ? 0.28 + 0.44 * i / (n - 1) : 0.5), ex = left ? D.x + D.w + 4 : D.x - 4, ey = D.y + Math.min(D.h * 0.38, 70), mx = (sx + ex) / 2;
         const p = mk('path', { d: `M${sx} ${sy} C ${mx} ${sy}, ${mx} ${ey}, ${ex} ${ey}`, class: 'ox-f ' + (on ? 'on' : 'off'), 'marker-end': `url(#oxA${on ? 'on' : 'off'})` });
         if (on) dot(p, 'on', 2.6, i * 0.4);
-        if (left && i === 0) firstOut = { gap, x: (sx + ex) / 2, y: Math.min(sy, ey) - 16 };
         if (!t.classList.contains('need')) return;
         // back to you: out of the tile's inner bottom corner, down the gutter beside the column, then across into the You pill
         const rx = left ? D.x + D.w : D.x, ry = D.y + D.h - 26, gx = left ? edge + Math.min(26, gap / 3) + lane * 9 : edge - Math.min(26, gap / 3) - lane * 9, yy = Y.y + Y.h / 2, yx = left ? Y.x - 6 : Y.x + Y.w + 6;
@@ -3652,7 +3650,6 @@ loadTrackers(); setInterval(() => { if (!document.hidden && !Object.values(S.tkB
         label((gx + yx) / 2, yy - 20, `${t.dataset.n} back to you`, true);
       });
     }
-    if (firstOut && firstOut.gap > 150) label(firstOut.x, firstOut.y, 'Work goes out');
   }
   let flowQ = 0; const flowSoon = () => { cancelAnimationFrame(flowQ); flowQ = requestAnimationFrame(flows); };
   if (window.ResizeObserver) { const ro = new ResizeObserver(flowSoon); ['oxStage', 'hxTheo'].forEach(id => el(id) && ro.observe(el(id))); } else addEventListener('resize', flowSoon);
