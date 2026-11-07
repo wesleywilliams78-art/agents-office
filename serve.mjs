@@ -268,6 +268,7 @@ async function askX(system, user, { maxTokens = 4000, tools = true, timeout = RU
   args.push(...(tools ? mcp.cliArgs() : ['--no-chrome'])); // V3.2 (16 Sep): the owner's Chrome, when tools.browser is on
   args.push(...modelArgs(model, effort));
   const env = mcp.freshEnv(); delete env.CLAUDECODE; // the CLI refuses to nest inside another Claude Code session
+  if (job?.task) logStep(job, { t: 'start', kind: job.kind, round: job.mode === 'revise' || job.mode === 'answer' ? job.mode : undefined });
   return new Promise((resolve, reject) => {
     const p = spawn(mcp.resolveBin(), args, { cwd: CLI_CWD, env, stdio: [bigUser ? 'pipe' : 'ignore', 'pipe', 'pipe'] });
     if (bigUser) { p.stdin.on('error', () => {}); p.stdin.end(String(user)); }
@@ -279,6 +280,10 @@ async function askX(system, user, { maxTokens = 4000, tools = true, timeout = RU
       let j; try { j = JSON.parse(line); } catch { return; }
       if (j.type === 'system' && j.subtype === 'init') mcp.fromInit(j);
       if (j.type === 'assistant' && j.message?.content) for (const b of j.message.content) { if (b.type === 'tool_use' && b.name && !used.includes(b.name)) used.push(b.name); if (b.type === 'text' && String(b.text || '').trim()) partial.push(String(b.text).trim()); }
+      if (job?.task && j.type === 'assistant' && j.message?.content) for (const b of j.message.content) { // the live step log
+        if (b.type === 'tool_use' && b.name) logStep(job, { t: 'tool', name: stepTool(b.name), what: stepWhat(b.input) });
+        else if (b.type === 'text' && STEP_NOTES.has(job.kind) && String(b.text || '').trim()) logStep(job, { t: 'note', text: String(b.text).trim().split('\n')[0].slice(0, 160) });
+      }
       if (j.type === 'result') { gotResult = true; text = String(j.result || '').trim(); if (j.is_error && !text) text = ''; usageOut = j.usage || null; modelUsed = ranOn(j.modelUsage, model); ran = tokens.fromResult(j, modelUsed); }
     };
     p.stdout.on('data', d => { out += d; let i; while ((i = out.indexOf('\n')) >= 0) { feed(out.slice(0, i)); out = out.slice(i + 1); } });
@@ -508,6 +513,19 @@ const pickFor = (task, a) => { // model + effort: four places, one precedence (t
 const passOf = (mode, feedback, asAnswer) => mode === 'approve' ? 'approve' : feedback ? (asAnswer ? 'answer' : 'revise') : 'draft';
 // persist a task mid-run (a team's pieces move while the run is still going; the page polls /api/tasks)
 function persist(task) { const l = load(); const i = l.findIndex(t => t.id === task.id); if (i >= 0) { l[i] = task; save(l); } }
+// the live step log (7 Nov 2026): each tool a desk calls and each line it writes while it works, kept on the task (last 40) for the AIOS drawer.
+// Saved at most every 3 s, and only the steps, and only while the task is still running, so a late save never overwrites anything else.
+const STEP_MAX = 40, STEP_SAVE = new Map(), STEP_NOTES = new Set(['task', 'piece', 'lead', 'design-audit']);
+const stepTool = n => String(n).replace(/^mcp__/, '').replace(/__/, ' · ');
+const stepWhat = i => { if (!i || typeof i !== 'object') return ''; for (const k of ['query', 'url', 'note', 'name', 'title', 'path', 'brand', 'prompt', 'text']) if (typeof i[k] === 'string' && i[k].trim()) return i[k].trim().replace(/\s+/g, ' ').slice(0, 90); return ''; };
+function logStep(job, step) {
+  const task = job && job.task; if (!task) return;
+  const steps = task.steps = Array.isArray(task.steps) ? task.steps : [];
+  steps.push({ at: Date.now(), by: job.agent || task.agent, ...step }); if (steps.length > STEP_MAX) steps.splice(0, steps.length - STEP_MAX);
+  if (STEP_SAVE.has(task.id)) return;
+  STEP_SAVE.set(task.id, setTimeout(() => { STEP_SAVE.delete(task.id); const l = load(), cur = l.find(t => t.id === task.id); if (cur && cur.state === 'doing') { cur.steps = task.steps; save(l); } }, 3000));
+}
+const stepsDone = task => { clearTimeout(STEP_SAVE.get(task.id)); STEP_SAVE.delete(task.id); }; // the run's own final save carries the steps
 async function run(task, feedback, mode, asAnswer) { // asAnswer: the owner is adding context, not rejecting. mode: undefined (a task from the bar) · 'routine' (read-only routine) · 'draft' (routine that waits for the OK) · 'approve' (the owner ticked it)
   if (task.team && TEAMS.enabled) { // V3.2 (16 Sep): a team task — the lead plans, the desks work at once, the lead writes the final
     if (mode === 'approve') return runTeamLead(task, feedback, mode); // the outbound step after the OK is the lead's alone
@@ -802,7 +820,7 @@ async function runServerTask(id, opts = {}) {
 }
 async function runServerTaskNow(id, { feedback, approve, answer } = {}) {
   let list = load(); const task = list.find(t => t.id === id); if (!task) return null;
-  task.state = 'doing'; task.startedAt = Date.now(); delete task.ask; save(list);
+  task.state = 'doing'; task.startedAt = Date.now(); delete task.ask; task.steps = []; save(list); // each run keeps its own step log
   try {
     const out = await runWithLeadReview(task, feedback, approve ? 'approve' : task.needsOk ? 'draft' : 'routine', answer, approve);
     const hoText = out.result; if (handoff.parse(hoText).length) out.result = handoff.strip(hoText);
@@ -842,7 +860,7 @@ async function runServerTaskNow(id, { feedback, approve, answer } = {}) {
     const kept = e.partial ? `${String.fromCharCode(10, 10)}---${String.fromCharCode(10)}WHAT IT HAD WRITTEN WHEN IT STOPPED (unfinished, kept so the work is not lost)${String.fromCharCode(10, 10)}${e.partial}` : '';
     Object.assign(task, { state: 'done', doneAt: Date.now(), result: 'Could not complete this task: ' + e.message + kept, error: true, ...(e.partial ? { partial: true } : {}), ...(e.used?.length ? { used: [...new Set([...(task.used || []), ...e.used])] } : {}) });
   }
-  list = load(); const i = list.findIndex(t => t.id === task.id); if (i >= 0) list[i] = task; save(list);
+  stepsDone(task); list = load(); const i = list.findIndex(t => t.id === task.id); if (i >= 0) list[i] = task; save(list);
   console.log(`${task.error ? '✗' : task.state === 'waiting' ? '⏸' : '✓'} ${task.id} ${task.error ? 'failed' : task.state === 'waiting' ? 'waiting for your OK' : 'done'} (${task.result.length} chars${task.tools?.length ? ', tools: ' + task.tools.join(' ') : ''}${task.note ? ', note: ' + task.note : ''})`);
   autoFeed(task);
   return task;

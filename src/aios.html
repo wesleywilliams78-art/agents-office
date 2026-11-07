@@ -620,6 +620,11 @@
   .hxd-log div { display: grid; grid-template-columns: 70px minmax(0, 1fr); gap: 10px; line-height: 1.4; } .hxd-log time { color: var(--faint); font-variant-numeric: tabular-nums; white-space: nowrap; } .hxd-log b { color: var(--ink); font-weight: 500; }
   .hxd-plan { background: var(--soft); border-radius: 12px; padding: 12px 14px; font-size: 11.5px; color: var(--grey); line-height: 1.45; min-width: 0; }
   .hxd-plan ol { margin: 4px 0 0; padding-left: 18px; display: flex; flex-direction: column; gap: 6px; overflow-wrap: anywhere; }
+  .hxd-split.steps { grid-template-columns: minmax(0, 1fr) 290px; } .hxd-side { display: flex; flex-direction: column; gap: 10px; min-width: 0; } /* the live step log (7 Nov 2026) sits above the plan */
+  .hxd-steps { max-height: 236px; overflow-y: auto; display: flex; flex-direction: column; gap: 7px; margin-top: 6px; overscroll-behavior: contain; }
+  .hxd-steps div { display: grid; grid-template-columns: 38px minmax(0, 1fr); gap: 8px; } .hxd-steps time { color: var(--faint); font-variant-numeric: tabular-nums; }
+  .hxd-steps span { overflow-wrap: anywhere; } .hxd-steps b { color: var(--ink); font-weight: 500; } .hxd-steps q { font-style: italic; quotes: '“' '”'; }
+  .hxd-steps div:first-child time { color: var(--ok); } .hxd-plan .hxd-k .lv { color: var(--ok); margin-left: 6px; letter-spacing: .1em; }
   .hxd-note { margin-top: 14px; color: var(--faint); font-size: 11px; }
   .hxd-acts { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 14px; }
   .hxd-sh { display: flex; align-items: baseline; gap: 10px; margin-bottom: 4px; } .hxd-sh h4 { margin: 0; font-size: 10px; letter-spacing: .14em; text-transform: uppercase; color: var(--grey); font-weight: 600; }
@@ -637,7 +642,7 @@
     .hxd-trail { grid-template-columns: 1fr; gap: 14px; margin: 18px 0; }
     .hxd-trail::before { left: 15px; right: auto; top: 15px; bottom: 15px; width: 1px; height: auto; } .hxd-trail > i { display: none; }
     .hxd-s { flex-direction: row; text-align: left; gap: 12px; padding: 0; } .hxd-s b { width: 64px; flex: none; }
-    .hxd-split { grid-template-columns: minmax(0, 1fr); } .hxd-log div { grid-template-columns: 62px minmax(0, 1fr); }
+    .hxd-split, .hxd-split.steps { grid-template-columns: minmax(0, 1fr); } .hxd-log div { grid-template-columns: 62px minmax(0, 1fr); }
   }
   .hxo-map .w { fill: none; stroke: color-mix(in srgb, var(--ink) 18%, transparent); stroke-width: 1.5; stroke-dasharray: 4 5; }
   .hxo-map .w.on { stroke: color-mix(in srgb, var(--red, #EC3013) 75%, transparent); stroke-dasharray: none; }
@@ -3610,6 +3615,16 @@ loadTrackers(); setInterval(() => { if (!document.hidden && !Object.values(S.tkB
     if (t.approvedAt) ev.push([t.approvedAt, 'You approved it.']);
     return ev.sort((x, y) => y[0] - x[0]).slice(0, 6).map(([at, s]) => `<div><time>${esc(hm(at))}</time><span>${s}</span></div>`).join('');
   }
+  const STEP_WORDS = { WebSearch: 'Searching the web', WebFetch: 'Reading a page', 'brain-reader · brain_search': 'Searching your notes', 'brain-reader · brain_read': 'Reading a note', 'web-reader · web_read': 'Reading a page', 'web-reader · web_links': 'Listing a page’s links' };
+  function liveSteps(t, a) { // the live step log serve.mjs keeps on the task while it runs, newest first; a team piece shows only this desk's steps
+    const mine = pieces(t).some(x => x.agent === a.id) && !a.lead, list = (Array.isArray(t.steps) ? t.steps : []).filter(s => (!mine || s.by === a.id) && s.name !== 'ToolSearch' && !(s.t === 'note' && /^[^a-z]+$/.test(s.text || ''))); // no tool-loading, no shouted headings
+    if (!list.length) return '';
+    const line = s => { const p = agentBy(s.by), n = esc(p ? who(p) : 'The desk');
+      if (s.t === 'start') return `<b>${n} ${{ 'lead-review': 'is reading it', 'design-audit': 'is checking the visuals', lead: 'is writing the final', piece: 'started a piece', plan: 'is splitting the work' }[s.kind] || (s.round === 'revise' ? 'started again' : s.round === 'answer' ? 'picked up your facts' : 'started')}.</b>`;
+      if (s.t === 'tool') { const w = STEP_WORDS[s.name], nm = s.name.split(' · ').pop(); const wt = s.what && !/:\/\//.test(s.what) ? s.what.split('/').pop() : s.what; return `${p && p.id !== a.id ? n + ': ' : ''}<b>${esc(w || nm)}</b>${wt ? ' · ' + esc(cut(wt, 80)) : ''}`; } // a note path shows its name
+      return `${p && p.id !== a.id ? n + ': ' : ''}<q>${esc(cut(s.text, 150))}</q>`; };
+    return `<div class="hxd-plan"><div class="hxd-k">Steps this run${t.state === 'doing' ? '<span class="lv">● LIVE</span>' : ''}</div><div class="hxd-steps">${list.slice().reverse().map(s => `<div><time>${esc(new Date(s.at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }))}</time><span>${line(s)}</span></div>`).join('')}</div></div>`;
+  }
   function deskDrawer(a) {
     const k = keyOf(a), st = seatState(a), ld = S.agents.find(x => x.department === a.department && x.lead), n = esc(who(a)), office = S.health?.model || 'sonnet', rs = roleSkills(a);
     const model = (a.model ? MODEL[a.model] || a.model : `${MODEL[office] || office} (office)`) + (a.effort ? ' · ' + a.effort : '');
@@ -3623,10 +3638,11 @@ loadTrackers(); setInterval(() => { if (!document.hidden && !Object.values(S.tkB
     else {
       const lead = agentBy((t.leadReview || {}).by) || ld, lp = lrOf(t), mp = pieces(t).find(x => x.agent === a.id);
       const sk = t.state === 'waiting' ? 'waiting' : lp === 'review' ? 'review' : lp === 'rework' ? 'rework' : 'doing';
+      const ls = liveSteps(t, a);
       const plan = mp ? `<div class="hxd-plan"><div class="hxd-k">${n}’s piece</div>${esc(cut(mp.title, 200))}</div>` : (t.plan || []).length ? `<div class="hxd-plan"><div class="hxd-k">The plan</div><ol>${t.plan.slice(0, 5).map(p => `<li>${esc(cut(p, 160))}</li>`).join('')}</ol></div>` : '';
       now = `<section class="hxd-card ${t.state === 'waiting' ? 'need' : 'now'}"><div class="hxd-k">The task it’s on</div><div class="hxd-tt"><h3>${esc(t.title)}</h3>${sk === 'review' ? '<span class="hxo-st rev"><i></i>Lead review</span>' : stt(sk, sk === 'waiting' ? dur(t.waitingAt) : dur((mp && mp.startedAt) || t.startedAt))}</div>
-        ${trailHtml(trailSteps(t, a, lead))}<div class="hxd-split${plan ? '' : ' one'}"><div class="hxd-log">${taskLog(t, a, lead)}</div>${plan}</div>
-        ${t.state === 'waiting' ? `<div class="hxd-acts"><button type="button" class="hxd-rv" data-review="${esc(t.id)}">REVIEW</button></div>` : ''}<div class="hxd-note">Live steps aren’t recorded yet, so this shows each hand-over and the plan.</div></section>`;
+        ${trailHtml(trailSteps(t, a, lead))}<div class="hxd-split${ls ? ' steps' : plan ? '' : ' one'}"><div class="hxd-log">${taskLog(t, a, lead)}</div>${ls ? `<div class="hxd-side">${ls}${plan}</div>` : plan}</div>
+        ${t.state === 'waiting' ? `<div class="hxd-acts"><button type="button" class="hxd-rv" data-review="${esc(t.id)}">REVIEW</button></div>` : ''}${ls ? '' : '<div class="hxd-note">No live steps on this task (they are kept from 7 Nov), so this shows each hand-over and the plan.</div>'}</section>`;
     }
     const fy = S.tasks.filter(x => x.agent === a.id && x !== t && forYou(x)).sort((x, y) => (x.waitingAt || x.doneAt || 0) - (y.waitingAt || y.doneAt || 0));
     const fyRow = x => { const kk = forYou(x), lr = x.leadReview || {}, l = agentBy(lr.by);
