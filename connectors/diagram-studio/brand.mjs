@@ -13,13 +13,16 @@ const face = (family, file, weight, style = 'normal') => {
   return `@font-face{font-family:'${family}';font-style:${style};font-weight:${weight};font-display:block;src:url(data:font/woff2;base64,${fs.readFileSync(f).toString('base64')}) format('woff2')}`;
 };
 
+export const brandFonts = () => face('Newsreader', 'newsreader-latin-opsz-normal.woff2', '200 800') + face('Archivo', 'archivo-latin-wdth-normal.woff2', '100 900');
+
+// The drawing sits on bone, the same as the page (Wesley, 7 Nov: not white). --mask is the colour label chips paint over lines, so it must match the panel.
 const L = 'html[data-preset][data-theme="light"]';
 export function brandStyle() {
   return `<style id="wrw-brand">
-${face('Newsreader', 'newsreader-latin-opsz-normal.woff2', '200 800')}${face('Archivo', 'archivo-latin-wdth-normal.woff2', '100 900')}
+${brandFonts()}
 ${L}{
-  --bg:#F3F2F2;--grid:#D6D2CF;--panel:#FBFAFA;--panel-border:#D6D2CF;--lane-fill:rgba(214,210,207,.30);--lane-stroke:#D6D2CF;
-  --text:#201E1D;--text-muted:#4A4644;--text-dim:#8A8480;--text-faint:#6B6561;--mask:#FBFAFA;
+  --bg:#F3F2F2;--grid:#D6D2CF;--panel:#F3F2F2;--panel-border:#D6D2CF;--lane-fill:rgba(214,210,207,.30);--lane-stroke:#D6D2CF;
+  --text:#201E1D;--text-muted:#4A4644;--text-dim:#8A8480;--text-faint:#6B6561;--mask:#F3F2F2;
   --frontend-fill:rgba(32,30,29,.05);--frontend-stroke:#201E1D;
   --backend-fill:rgba(74,70,68,.06);--backend-stroke:#4A4644;
   --database-fill:rgba(74,70,68,.04);--database-stroke:#6B6561;
@@ -33,7 +36,7 @@ ${L} body{background:#F3F2F2!important;background-image:none!important;font-fami
 ${L} h1,${L} .card h3{font-family:Newsreader,Georgia,serif;font-weight:300;letter-spacing:-.01em}
 ${L} h1{font-size:2rem}
 ${L} .diagram-container,${L} .card{border-radius:0!important;box-shadow:none!important;border:1px solid #D6D2CF}
-${L} .diagram-container{background:#FBFAFA!important}
+${L} .diagram-container{background:#F3F2F2!important}
 ${L} .diagram-container svg rect{rx:0;ry:0}
 ${L} .diagram-container svg text,${L} .diagram-container svg tspan{font-family:Archivo,'Segoe UI',Arial,sans-serif!important}
 </style>`;

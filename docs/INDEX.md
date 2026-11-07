@@ -30,7 +30,7 @@ Start here. Open only what the task needs; read big files by slice.
 - `promptengineer.mjs` + `src/promptbrief.js`: the Prompt Engineer in front of the Chief of Staff (4 Nov 2026): a brief plus yes/no proposals, route `/api/prompt-engineer`. Design and worked examples: `docs/prompt-engineer-draft.md`. Try it outside the office: `node scripts/pe-test.mjs <out.md> [count] [skip] [prompts.json]` (write the report outside the repo).
 - `connectors/ltx-local/`: the local video connector (free LTX 2.5 on this machine). Start at its `README.md`; `mcp.mjs` is the agents' tools, `worker.mjs` owns the GPU.
 - `connectors/motion-studio/`: the motion graphics render engine (Playwright paints every frame in Chrome, ffmpeg stitches, the score is synthesised, with recorded sounds from the Openverse library (`sfx.mjs`), a critic scores the stills only on request). Start at its `README.md`. `motion.mjs` is the Motion Director (the MOTION STUDIO tab in the side panel).
-- `connectors/diagram-studio/` (7 Nov 2026): workflow, lifecycle, timeline and org-chart diagrams as pictures for every desk and for Claude Code, drawn by the Archify engine. Start at its `README.md`. Pictures go to `output/library/diagrams/`.
+- `connectors/diagram-studio/` (7 Nov 2026): workflow, lifecycle, timeline, org-chart and service-blueprint diagrams as pictures for every desk and for Claude Code, drawn by the Archify engine. Start at its `README.md`. Pictures go to `output/library/diagrams/`.
 
 ## Where things live (4 Nov 2026)
 - **The office** (code, agents, skills, `connectors/`, `data/`): `C:\Users\Wesley\agents-office`. Our own tool servers are small scripts in `connectors/<name>/mcp.mjs`.

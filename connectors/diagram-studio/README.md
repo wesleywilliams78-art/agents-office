@@ -3,11 +3,13 @@
 Lets the office agents and Claude Code draw workflows, lifecycles, timelines, org charts and other concept diagrams as pictures. Built 7 Nov 2026.
 
 - **Tools** (`mcp.mjs`):
-  - `diagram_guide`: the ten diagram types, or one type's schema and a worked example.
+  - `diagram_guide`: the eleven diagram types, or one type's schema and a worked example.
   - `diagram_draw`: checks the spec, lays it out, checks it in a real browser, and returns the PNG (as an image the agent can look at) and an interactive HTML page.
 - **Output:** `output/library/diagrams/<date> <title> (<id>)/` holds `diagram.png`, `diagram.html` and `diagram.json`, the spec it was drawn from.
 - **Default look:** Archify's `editorial` style in the light theme: bone ground, serif title, rust-red lines. The software-kind legend is hidden unless the spec gives plain-English legend entries.
 - **The picture:** the installed Chrome takes it in two passes. The first measures where the drawing ends; the second shoots at that height with the viewer's buttons and the Archify stamp hidden.
+- **Bone, not white (7 Nov):** the drawing panel is the same bone (#F3F2F2) as the page, with a thin border. `brand.mjs` holds it; `npm run check` fails if the panel goes white again.
+- **Service blueprint (7 Nov, the eleventh type):** `type: "blueprint"`, drawn by `blueprint.mjs`, not by Archify. Stages (3 to 6) across, customer, what they see, behind the scenes and support down, one heavy line of visibility between the customer layers and the hidden work, at most one red focal cell. No arrows. Always the WRW look (style, theme and brand are ignored). A spec is refused with the field to fix if a layer has the wrong number of entries, a row is empty, or two cells are focal. The grammar follows the service blueprint in cathrynlavery/diagram-design (MIT, https://github.com/cathrynlavery/diagram-design); the code is ours and none of that repo is installed.
 - **Registered** at user scope with `claude mcp add -s user diagram-studio`. It is wired to every department and its tile is hidden in the bar (`office.config.local.json`).
 - **Check:** `npm run check`, step "diagram studio".
 

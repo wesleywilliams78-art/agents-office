@@ -685,7 +685,18 @@ await step('diagram studio: diagram_guide and diagram_draw are listed, a bad spe
       const img = r.content.find(c => c.type === 'image'); if (!img || Buffer.from(img.data, 'base64').toString('ascii', 1, 4) !== 'PNG') throw new Error('no PNG image block came back');
       folder = JSON.parse(r.content[0].text).folder;
       const html = fs.readFileSync(path.join(folder, 'diagram.html'), 'utf8'); if (!/data-preset="editorial"/.test(html)) throw new Error('the page is not in the editorial style');
-      drew = 'a three-step workflow drawn as PNG in the editorial look';
+      if (/--panel:#FBFAFA|\.diagram-container\{background:#FBFAFA/i.test(html) || !/--panel:#F3F2F2/.test(html)) throw new Error('the drawing panel is not bone (#F3F2F2); Wesley wants bone, not white');
+      const bp = await call('diagram_draw', { type: 'blueprint', title: 'check blueprint', diagram: { stages: ['One', 'Two', 'Three'], customer: ['Asks', null, 'Receives'], frontstage: ['Hears back', null, 'Sees it'], backstage: [{ label: 'Logs it', note: 'Desk' }, { label: 'Does it', focal: true }, null] } }, 150000);
+      if (bp.isError) throw new Error('diagram_draw blueprint failed: ' + bp.content[0].text.slice(0, 300));
+      const bpf = JSON.parse(bp.content[0].text).folder;
+      try {
+        const bh = fs.readFileSync(path.join(bpf, 'diagram.html'), 'utf8');
+        if (!/data-role="visibility"/.test(bh) || !/data-focal="true"/.test(bh)) throw new Error('the blueprint has no line of visibility or no focal cell');
+        if (!bp.content.some(c => c.type === 'image')) throw new Error('the blueprint came back without a picture');
+      } finally { fs.rmSync(bpf, { recursive: true, force: true }); }
+      const badBp = await call('diagram_draw', { type: 'blueprint', diagram: { stages: ['a', 'b', 'c'], customer: [null, null, null], frontstage: ['x', null, null], backstage: ['y', null, null] } });
+      if (!badBp.isError || !/customer/.test(badBp.content[0].text)) throw new Error('a blueprint with an empty customer row was not refused');
+      drew = 'a three-step workflow drawn as PNG in the editorial look on a bone panel · a service blueprint drawn with its line of visibility and refused when a row is empty';
     }
   } finally { p.kill(); if (folder) fs.rmSync(folder, { recursive: true, force: true }); }
   return 'two tools · unknown type and missing nodes refused with the fix · ' + drew;
