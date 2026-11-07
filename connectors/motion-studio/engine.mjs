@@ -5,7 +5,8 @@
 // joined without re-encoding. The score is synthesised in the same page (OfflineAudioContext) on the same beat grid.
 //
 // The house rules are enforced here, not suggested: motion on real springs (M.spring), no CSS transitions, keyframes
-// or fake bounce curves, every sound synthesised (no audio files), cuts on the beat, no dead stretches, frame 0 held.
+// or fake bounce curves, the score synthesised on the beat grid (recorded sounds only from the licensed library, sfx.mjs,
+// placed with S.sample), cuts on the beat, no dead stretches, frame 0 held.
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
@@ -14,6 +15,7 @@ import { pathToFileURL } from 'node:url';
 import { chromium } from 'playwright-core';
 import { FFMPEG, FORMATS, MAX_SECONDS, SERIES, findChrome, formatFor } from './shared.mjs';
 import { readNarration, srt } from './voice.mjs';
+import { LICENCES, creditsText, idsIn, readSound, soundsFor } from './sfx.mjs';
 
 export const SHEET = 12; // stills per contact sheet
 
@@ -33,9 +35,11 @@ const INIT = `(() => {
     for (const a of document.getAnimations()) { try { a.pause(); a.currentTime = t * 1000; } catch {} }
     await painted();
   };
-  window.__score = async rate => {
+  window.__score = async (rate, sounds = {}) => {
     const m = window.motion; s = 7; T = 0;
     const ac = new OfflineAudioContext(2, Math.ceil(m.duration * rate), rate), S = new SoundKit(ac, m.bpm);
+    S.samples = {}; S.sampleInfo = {}; // the library sounds the page names, decoded here so S.sample can place them on the grid
+    for (const [id, x] of Object.entries(sounds)) { const bin = atob(x.b64), u8 = new Uint8Array(bin.length); for (let i = 0; i < bin.length; i++) u8[i] = bin.charCodeAt(i); S.samples[id] = await ac.decodeAudioData(u8.buffer); S.sampleInfo[id] = { onset: x.onset, peakAt: x.peakAt }; }
     await m.score(S);
     const buf = await ac.startRendering(), L = buf.getChannelData(0), R = buf.getChannelData(1), n = L.length;
     const wav = new DataView(new ArrayBuffer(44 + n * 4)), str = (o, x) => { for (let i = 0; i < x.length; i++) wav.setUint8(o + i, x.charCodeAt(i)); };
@@ -143,8 +147,9 @@ export function lint(html) {
   if (/@keyframes|(^|[\s;{])animation(-[a-z]+)?\s*:/im.test(css) || /\.animate\s*\(\s*[\[{]/.test(html)) rules.push('CSS keyframes or the Web Animations API: basic CSS motion is banned, paint every move in render(t)');
   if (/\b(back|elastic|bounce)\.(in|out|inOut)\b|ease\s*:\s*["'`]\s*(back|elastic|bounce)\b|CustomBounce|CustomWiggle|cubic-bezier\([^)]*-|cubic-bezier\([^)]*1\.[1-9]/i.test(html)) rules.push('a fake bounce curve (back/elastic/bounce/overshooting cubic-bezier): overshoot comes from real springs, M.spring');
   if (!/M\.spring\s*\(/.test(html)) rules.push('no M.spring: everything that pops, lands, drops or stamps must move on real spring physics');
-  if (/<audio|<video|\.(mp3|wav|m4a|ogg|aac|flac)\b|new\s+Audio\s*\(|decodeAudioData/i.test(html)) rules.push('an audio or video file: every sound is synthesised with the sound kit, nothing imported');
-  if (!/kit\/sound-kit\.js/.test(html)) rules.push('the sound kit is not loaded (<script src="kit/sound-kit.js">): every video has a synthesised score');
+  if (/<audio|<video|\.(mp3|wav|m4a|ogg|aac|flac)\b|new\s+Audio\s*\(|decodeAudioData/i.test(html)) rules.push('an audio or video file in the page: synthesise with the sound kit, and take recorded sounds only from the library with S.sample(t, \'ov-…\') (sfx_search, sfx_fetch)');
+  if (!/kit\/sound-kit\.js/.test(html)) rules.push('the sound kit is not loaded (<script src="kit/sound-kit.js">): every video has a score on the beat grid');
+  for (const id of idsIn(html)) { const s = readSound(id); if (!s) rules.push(`the sound ${id} is not in the library: fetch it first with sfx_fetch`); else if (!LICENCES.includes(s.licence)) rules.push(`the sound ${id} is ${s.licence}: only CC0, PDM and CC BY sounds may be used`); }
   if (/https?:\/\/|cdn\.|unpkg\.|cdnjs/i.test(html.replace(/xmlns(:\w+)?="http[^"]*"/g, ''))) rules.push('a library or file from the internet: compositions are self-contained (kit/ only: three.js and GSAP are in kit/three and kit/gsap)');
   if (/\bgsap\b/.test(html)) {
     if (/\bgsap\.(to|from|fromTo|delayedCall|ticker|quickTo)\b/.test(html)) rules.push('GSAP moving on its own (gsap.to/from/fromTo/delayedCall/ticker): GSAP may only move through one paused timeline seeked in render(t)');
@@ -273,12 +278,20 @@ export async function render({ dir, out, mode = 'final', at = [], series = null,
       }
     }
 
-    // the score, synthesised in the page on the composition's beat grid
-    let audio = null;
-    if (meta.score && meta.soundKit) {
+    // the score, synthesised in the page on the composition's beat grid, with any library sounds it names decoded beside it
+    let audio = null, credits = null;
+    const lib = soundsFor(html);
+    for (const id of lib.missing) errors.push(`rule: the sound ${id} is not in the library (or its file is gone): fetch it with sfx_fetch`);
+    if (lib.records.length) {
+      const by = lib.records.filter(r => r.needsCredit).length;
+      credits = path.join(out, 'credits.txt'); fs.writeFileSync(credits, creditsText(lib.records));
+      checks.push(`${lib.records.length} recorded sound${lib.records.length > 1 ? 's' : ''} from the library (${lib.records.length - by} CC0/public domain, ${by} CC BY${by ? ': the credit lines are in credits.txt and must go with the post' : ''})`);
+      for (const r of lib.records) for (const f of r.flags || []) warnings.push(`sound ${r.id} ("${r.title}"): ${f}`);
+    }
+    if (meta.score && meta.soundKit && !lib.missing.length) {
       onStep('synthesising the score');
       try {
-        const a = await probe.page.evaluate(r => window.__score(r), 48000);
+        const a = await probe.page.evaluate(([r, sounds]) => window.__score(r, sounds), [48000, lib.sounds]);
         audio = path.join(out, 'score.wav'); fs.writeFileSync(audio, Buffer.from(a.b64, 'base64'));
         const v = await run(['-hide_banner', '-i', audio, '-af', 'volumedetect', '-f', 'null', '-']), mean = +(/mean_volume: (-?[\d.]+)/.exec(v.out)?.[1] ?? -99);
         if (a.peak < .02) errors.push('the score is silent: score(S) placed no sounds');
@@ -328,7 +341,7 @@ export async function render({ dir, out, mode = 'final', at = [], series = null,
     }
     await an.context().close();
 
-    const result = { meta: { ...meta, frames, format: fmt }, stills, sheets, audio, captions: fs.existsSync(path.join(out, 'captions.srt')) ? path.join(out, 'captions.srt') : null, standIn: !!N?.meta.standIn, errors, warnings, checks, dead: [], offBeatCuts: [], hardColourCuts: [] };
+    const result = { meta: { ...meta, frames, format: fmt }, stills, sheets, audio, captions: fs.existsSync(path.join(out, 'captions.srt')) ? path.join(out, 'captions.srt') : null, credits, sounds: lib.records.map(r => ({ id: r.id, licence: r.licence, credit: r.credit })), standIn: !!N?.meta.standIn, errors, warnings, checks, dead: [], offBeatCuts: [], hardColourCuts: [] };
     if (mode === 'stills' || errors.length) return { ...result, seconds: Math.round((Date.now() - started) / 1000) };
 
     // the video: parallel lanes of frames, each piped straight into its own encoder, then joined

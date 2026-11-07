@@ -1,5 +1,7 @@
 # Handover: lead-proposed lessons (4 Nov 2026, night)
 
+**Status 4 Nov (late night): built as written, Wesley said yes to the six defaults.** `leadlessons.mjs` (parse, vet, card, applyToSkill), the `lesson` field in `leadreview.mjs`, vetting in `runWithLeadReview` and `POST /api/lead-lesson` in `serve.mjs`, the card in `src/aios.html` (`.hxt-ls`), check "lead lessons: …" in `check.mjs`. Two small choices made in the build: only a Brain skill is ever written (a shipped skill falls back to the desk's standing rules), and a refused yes (cap) keeps the lesson proposed with the reason on the card. Uncommitted; new file to add: `leadlessons.mjs`.
+
 Read this, then `docs/lead-review-plan.md`. Earlier context: `docs/HANDOVER-4-nov-aios-office-v2.md`, `docs/HANDOVER-4-nov-lead-review-build.md`.
 
 ## Start here

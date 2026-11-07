@@ -10,7 +10,9 @@ Start here. Open only what the task needs; read big files by slice.
 - `docs/token-baseline.md`: measured token numbers (5 Oct 2026). Compare against it after changes.
 - `docs/token-habits.md`: session habits to save tokens.
 - `docs/chief-of-staff.md`: Chief of Staff + Prompt Engineer. Open before changing how tasks are added.
-- `docs/lead-review-plan.md`: lead review and bounce loop (`leadreview.mjs`, `runWithLeadReview` in `serve.mjs`, AIOS Hierarchy trail). Built 4 Nov, ships off (`leadReview.enabled`). Open before changing how a desk's draft reaches Wesley. Next build: `docs/HANDOVER-4-nov-lead-lessons-build.md` (lead-proposed lessons).
+- `docs/lead-review-plan.md`: lead review and bounce loop (`leadreview.mjs`, `runWithLeadReview` in `serve.mjs`, AIOS Hierarchy trail). Built 4 Nov, ships off (`leadReview.enabled`). Open before changing how a desk's draft reaches Wesley. Lead-proposed lessons (`leadlessons.mjs`, `POST /api/lead-lesson`, the card in AIOS Hierarchy's Awaiting you column) built 4 Nov: `docs/HANDOVER-4-nov-lead-lessons-build.md`.
+- `docs/HANDOVER-6-nov-kitchen-map.md`: Imran's Diner Kitchen page in the AIOS (map from the sketch, dish replay, walks, improve marks; model in `data/kitchen-imrans.json`). Next: day-two timed orders, then the whole product list grouped by route.
+- `docs/plan-agent-visibility.md`: plan (7 Nov, not built) to let the GRAPHICS DESIGNER look at its own slides through a `video_look` tool in `connectors/video-studio`. Evidence: two blind tests (1 loss, 1 win) and a spike proving MCP images reach headless agents. Open before building it. Opus 5.5 · high.
 - `docs/motion-studio.md`: Motion Director, engine rules, style library. Open before any motion work.
 - `docs/blender-studio.md`: Blender bridge and site kits. Open before Blender work.
 - `docs/site-updates.md`: reviewed website edits and guard rails. Open before changing the site flow.
@@ -33,7 +35,7 @@ Start here. Open only what the task needs; read big files by slice.
 - **Third-party engines** (own Python venv, models, 2 GB and up): `C:\Users\Wesley\tools\<name>`: ACE-Step-1.5 (music, 37 GB), earshot (audio checker, 2.3 GB; the Motion Studio calls it through `connectors/motion-studio/earshot.mjs`, path overridable with `EARSHOT_DIR`). Never inside the repo, never moved (a venv breaks when moved). Engine logs go in `tools\logs`; `ace-api.log` stays put (the music worker writes it).
 - **The Brain**: `C:\Users\Wesley\Agents Office Brain` (`brain` in `office.config.local.json`).
 - **Heavy media**: `D:\Agents Office Media`, reached through junctions at the usual `output/` and `videos/` paths.
-- **Elsewhere**: Blender (Steam) with its bridge token in `~\.blender-studio`; LTX in `AppData\Local\LTXDesktop`; VoiceStudio on 127.0.0.1:3900; plugins and caches in `~\.claude`, `~\.buildpartner`, `~\.hyperframes`. Every MCP server is registered in `~\.claude.json` (`claude mcp list`).
+- **Elsewhere**: Blender (Steam) with its bridge token in `~\.blender-studio`; LTX in `AppData\Local\LTXDesktop`; VoiceStudio on 127.0.0.1:3900; plugins and caches in `~\.claude`, `~\.hyperframes`. Every MCP server is registered in `~\.claude.json` (`claude mcp list`).
 
 ## Data (large; never read whole)
 - `data/tasks.json` (630 KB, over 100k tokens): read by task id or the last 20 entries.

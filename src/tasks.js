@@ -622,7 +622,7 @@ export function initTasks(ctx) {
     }
     apply(t, st);
   }
-  function copyResult(t, st) { if (st.needsOk !== undefined) t.needsOk = !!st.needsOk; if (st.channel) t.channel = st.channel; t.result = st.result; t.error = !!st.error; t.read = st.read || []; t.note = st.note; t.tools = st.tools || []; t.used = st.used || []; t.draft = st.draft; t.nextStep = st.nextStep; t.handedTo = st.handedTo; t.handoffFrom = st.handoffFrom; t.approved = !!st.approved; t.revisions = st.revisions || 0; if (st.modelUsed) { t.modelUsed = st.modelUsed; t.modelFrom = st.modelFrom; t.effortUsed = st.effortUsed || ''; t.effortFrom = st.effortFrom; } }
+  function copyResult(t, st) { if (st.needsOk !== undefined) t.needsOk = !!st.needsOk; if (st.channel) t.channel = st.channel; t.result = st.result; t.error = !!st.error; t.read = st.read || []; t.note = st.note; t.tools = st.tools || []; t.used = st.used || []; t.draft = st.draft; t.nextStep = st.nextStep; t.handedTo = st.handedTo; t.handoffFrom = st.handoffFrom; t.approved = !!st.approved; t.closed = !!st.closed; t.revisions = st.revisions || 0; if (st.modelUsed) { t.modelUsed = st.modelUsed; t.modelFrom = st.modelFrom; t.effortUsed = st.effortUsed || ''; t.effortFrom = st.effortFrom; } }
   // V3.2 (16 Sep): the server's team state → piece cards on the teammates' desks, notes as 💬, the lead's members list
   const seenNotes = new Set();
   function syncTeam(t, st, quiet) {
@@ -663,6 +663,7 @@ export function initTasks(ctx) {
     } else if (st.state === 'waiting' && t.draftAt !== st.waitingAt) { // a new draft is waiting for the OK (the first, or a rework after REJECT)
       copyResult(t, st); t.state = 'waiting'; t.draftAt = st.waitingAt; t.ask = st.ask; t.changedAt = st.waitingAt || Date.now(); t.running = true; touch(t, 'waiting');
       askApproval(t);
+    } else if (st.state === 'done' && st.closed && t.state !== 'done') { closeQuiet(t, st); // closed in another tab, or already closed when the office loaded
     } else if (st.state === 'done' && t.state !== 'done') {
       copyResult(t, st); t.ready = true; t.running = true; usageDue = true;
       complete(t); t.doneAt = st.doneAt || t.doneAt; t.changedAt = t.doneAt; // straight to done here (the tick skips a stuck agent): the chat card, the note, the graph
@@ -685,7 +686,22 @@ export function initTasks(ctx) {
     else { toDoing(t); chatPush(t.agent, { who: 'agent', text: t.channel === 'email' ? '✓ Approved — putting it in your Gmail drafts now. I never send email: you send it from your inbox.' : '✓ Approved — sending it now. It lands here when it is done.' }); }
     if (onDecided) onDecided(t.agent, true);
   }
-  async function rejectTask(t, reason) {
+  function closeQuiet(t, st) { // a permanent reject: done, marked closed, no delivery card, no done count, no celebration
+    if (st) copyResult(t, st);
+    Object.assign(t, { state: 'done', closed: true, doneAt: (st && st.doneAt) || Date.now(), progress: 1, ready: true, running: false, draftAt: null });
+    touch(t, 'closed');
+  }
+  async function rejectTask(t, reason, close) {
+    if (close) { // 4 Nov 2026: "Permanently reject": closed for good on the server, nothing reworked, nothing learned
+      const r = await post(`/tasks/${t.sid}/reject`, { feedback: reason || '', close: true });
+      if (!r || !r.ok) { chatPush(t.agent, { who: 'agent', text: 'Could not close it: ' + ((r && r.error) || 'try again') }); return; }
+      closeQuiet(t, r.task);
+      chatPush(t.agent, { who: 'user', text: 'Rejected permanently' + (reason ? ': ' + reason : '') });
+      chatPush(t.agent, { who: 'agent', text: 'Closed. No further action on this one, and it is not counted against me.' });
+      feedPush(R[t.agent], '⛔', `Closed: ${t.title}`);
+      if (onDecided) onDecided(t.agent, false);
+      return;
+    }
     t.revisions = (t.revisions || 0) + 1;
     await post(`/tasks/${t.sid}/reject`, { feedback: reason });
     toDoing(t); t.draftAt = null;
@@ -706,7 +722,7 @@ export function initTasks(ctx) {
   function openReview(id) { const t = liveTask(id); return !!(t && t.live && review && review.open(t)); }
   function readTask(id) { // a finished task, read in the pop-up
     const t = liveTask(id); if (!t || !t.live || !t.result || !review) return false;
-    review.read({ sid: t.sid, state: t.state, nextStep: t.nextStep, handedTo: t.handedTo, handoffFrom: t.handoffFrom, agent: t.agent, dept: t.dept, title: t.title, content: t.result, used: t.used, read: t.read, kindLabel: t.error ? 'COULD NOT COMPLETE' : t.approved ? 'APPROVED' : 'DONE', meta: t.doneAt ? 'done ' + timeStr(t.doneAt) : '' });
+    review.read({ sid: t.sid, state: t.state, nextStep: t.nextStep, handedTo: t.handedTo, handoffFrom: t.handoffFrom, agent: t.agent, dept: t.dept, title: t.title, content: t.result, used: t.used, read: t.read, kindLabel: t.closed ? 'REJECTED · CLOSED' : t.error ? 'COULD NOT COMPLETE' : t.approved ? 'APPROVED' : 'DONE', meta: t.doneAt ? (t.closed ? 'closed ' : 'done ') + timeStr(t.doneAt) : '' });
     return true;
   }
   const waitingFor = agentId => tasks.filter(x => x.live && x.agent === agentId && x.state === 'waiting');
@@ -806,7 +822,8 @@ export function initTasks(ctx) {
       case 'doing': return `${who}${t.live ? (t.approved === undefined && t.draftAt ? ' · sending with Claude' : t.team?.members?.length ? ' · leading the team with Claude' : ' · working with Claude') : t.agent === 'vid' ? ' · rendering' : t.teamHold ? ' · waiting on the pieces' : ''}${t.routine ? ' · routine' : ''}${teamBit(t)}${modelBit(t)}`;
       case 'waiting': return `<span class="tp-amber">waiting ${span(now - t.changedAt)} for your tick</span> · ${who}${t.routine ? ' · routine draft' : ''}${teamBit(t)}${modelBit(t)}`;
       case 'scheduled': return `${who} · runs ${esc(untilText(t.dueAt))} · ${new Date(t.dueAt).toLocaleDateString([], { weekday: 'short', day: 'numeric', month: 'short' })} ${timeStr(t.dueAt)}${t.needsOk ? ' · waits for your OK' : ''}${teamBit(t)}${modelBit(t)}`;
-      case 'done': return `${who} · done ${timeStr(t.doneAt)}${t.approved ? (t.live ? ' · sent after your OK' : ' · approved') : ''}${t.late ? ' · <span class="tp-late">ran late</span>' : ''}${teamBit(t)}${modelBit(t)}${t.live ? (t.error ? ' · <span class="tp-amber">failed</span>' : ' · <span class="tp-res">result ready →</span>') : ''}`;
+      case 'done': if (t.closed) return `${who} · closed ${timeStr(t.doneAt)} · <span class="tp-amber">rejected, no further action</span>${teamBit(t)}`;
+        return `${who} · done ${timeStr(t.doneAt)}${t.approved ? (t.live ? ' · sent after your OK' : ' · approved') : ''}${t.late ? ' · <span class="tp-late">ran late</span>' : ''}${teamBit(t)}${modelBit(t)}${t.live ? (t.error ? ' · <span class="tp-amber">failed</span>' : ' · <span class="tp-res">result ready →</span>') : ''}`;
     }
     return who;
   }
@@ -900,7 +917,8 @@ export function initTasks(ctx) {
     const pct = Math.round(t.progress * 100);
     const av = `<span class="tk-av" style="border-color:${chip};background:${chip}55">${a.name[0]}</span>`;
     let meta;
-    if (t.state === 'done') meta = `<span class="tk-tick">✓</span><span>${a.name}</span><span class="tk-pct">${t.approved ? 'APPROVED · ' : ''}${t.modelUsed ? modelName(t.modelUsed).toUpperCase() + ' · ' : ''}${timeStr(t.doneAt)}</span>`;
+    if (t.state === 'done' && t.closed) meta = `<span class="tk-tick">⛔</span><span>${a.name}</span><span class="tk-pct">CLOSED · ${timeStr(t.doneAt)}</span>`;
+    else if (t.state === 'done') meta = `<span class="tk-tick">✓</span><span>${a.name}</span><span class="tk-pct">${t.approved ? 'APPROVED · ' : ''}${t.modelUsed ? modelName(t.modelUsed).toUpperCase() + ' · ' : ''}${timeStr(t.doneAt)}</span>`;
     else if (t.state === 'waiting') meta = `${av}<span>${a.name}</span><span class="tk-chip">WAITING ${span(Date.now() - t.changedAt).toUpperCase()}</span>`;
     else if (t.state === 'doing') meta = `${av}<span>${a.name}</span><span class="tk-pct" data-pct="${t.id}">${t.agent === 'vid' ? 'RENDER · ' : ''}${pct}%</span>`;
     else if (t.state === 'scheduled') meta = `${av}<span>${a.name}</span><span class="tk-pct">${esc(untilText(t.dueAt).toUpperCase())}</span>`;

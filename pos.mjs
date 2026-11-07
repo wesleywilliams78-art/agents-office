@@ -133,9 +133,11 @@ export function build(notes, { match } = {}) {
     const menus = new Map(), cats = new Map(), items = new Map();
     for (const c of item.cats) { const m = menus.get(c.menu) || { name: c.menu, qty: 0, sales: 0 }; m.qty += c.qty; m.sales += c.sales; menus.set(c.menu, m);
       const k = c.category || '—', e = cats.get(k) || { name: k, qty: 0, sales: 0 }; e.qty += c.qty; e.sales += c.sales; cats.set(k, e); }
-    for (const i of item.items) { const e = items.get(i.name) || { name: i.name, qty: 0, sales: 0 }; e.qty += i.qty; e.sales += i.sales; items.set(i.name, e); }
+    for (const i of item.items) { const e = items.get(i.name) || { name: i.name, qty: 0, sales: 0, cats: new Set() }; e.qty += i.qty; e.sales += i.sales; e.cats.add(i.category); items.set(i.name, e); }
     const top = (m, n) => [...m.values()].sort((a, b) => b.sales - a.sales).slice(0, n).map(x => ({ name: x.name, qty: x.qty, sales: round(x.sales) }));
-    out.items = { from: item.from, to: item.to, total: round([...menus.values()].reduce((n, m) => n + m.sales, 0)), qty: [...menus.values()].reduce((n, m) => n + m.qty, 0), menus: top(menus, 8), categories: top(cats, 7), top: top(items, 8), note: 'items are ranked by the name on the till; the same dish sold under a different name is counted separately' };
+    // 6 Nov: every till name once (all menus added together), for the kitchen map's product list; `top` stays the eight best sellers
+    const all = [...items.values()].sort((a, b) => b.qty - a.qty).map(x => ({ name: x.name, qty: x.qty, sales: round(x.sales), cats: [...x.cats].filter(Boolean) }));
+    out.items = { from: item.from, to: item.to, total: round([...menus.values()].reduce((n, m) => n + m.sales, 0)), qty: [...menus.values()].reduce((n, m) => n + m.qty, 0), menus: top(menus, 8), categories: top(cats, 7), top: top(items, 8), all, note: 'items are ranked by the name on the till; the same dish sold under a different name is counted separately' };
   }
   if (discounts.size) {
     const sum = (a, k) => round(a.reduce((n, b) => n + b[k], 0));

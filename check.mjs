@@ -642,6 +642,7 @@ await step('motion studio: house rules refused, a composition paints, scores and
   const g = eng.lint(ex.replace('</body>', '<script src="kit/gsap/gsap.min.js"></script><script>gsap.to("#h0", { y: 10, ease: "elastic" }); const tl = gsap.timeline(); tl.play();</script></body>'));
   if (g.rules.filter(r => /GSAP|bounce/.test(r)).length < 4) throw new Error('GSAP moving on its own (gsap.to, an unpaused timeline, play, an elastic ease) was not refused: ' + g.rules.join('; '));
   if (eng.lint(ex.replace('</body>', '<script src="kit/gsap/gsap.min.js"></script><script type="module">import * as THREE from "./kit/three/three.module.min.js"; const tl = gsap.timeline({ paused: true }); tl.seek(0);</script></body>')).rules.length) throw new Error('GSAP seeked in render(t) or three.js from the kit was refused');
+  if (!eng.lint(ex.replace('score(S) {', "score(S) { S.sample(0, 'ov-00000000');")).rules.some(r => /not in the library/.test(r))) throw new Error('a recorded sound that is not in the library was not refused');
   const srv = fs.readFileSync(path.join(ROOT, 'serve.mjs'), 'utf8');
   if (!/'--allowedTools', 'mcp__motion-studio'/.test(srv) || !/'--model', motionMod\.MODEL, '--effort', motionMod\.EFFORT/.test(srv)) throw new Error('the Motion Director is not locked to its one tool server and its model');
   const mm = await import('./motion.mjs'), cr = await import('./connectors/motion-studio/critic.mjs');
@@ -652,7 +653,7 @@ await step('motion studio: house rules refused, a composition paints, scores and
   try {
     await rpc('initialize', { protocolVersion: '2025-06-18', capabilities: {}, clientInfo: { name: 'check', version: '0' } });
     const names = (await rpc('tools/list', {})).result.tools.map(t => t.name);
-    if (names.length !== 11 || names.some(t => /send|post|publish|delete|shell|exec|write_file|approve/.test(t))) throw new Error('the motion studio has an unexpected tool: ' + names.join(', '));  // 11 = the studio's 9 plus brain_search and brain_read (read-only, 27 Oct 2026)
+    if (names.length !== 14 || names.some(t => /send|post|publish|delete|shell|exec|write_file|approve/.test(t))) throw new Error('the motion studio has an unexpected tool: ' + names.join(', '));  // 14 = the studio's 9, brain_search and brain_read (read-only, 27 Oct 2026), sfx_library, sfx_search and sfx_fetch (the recorded sound library, 4 Nov 2026)
     const nar = await rpc('tools/call', { name: 'motion_narrate', arguments: { series: 'art-of-operations', lines: [{ id: 's1', text: 'A line that must be refused.' }] } });
     if (!nar.result.isError) throw new Error('narration was accepted for a series that is not narrated');
     const fin = await rpc('tools/call', { name: 'motion_final', arguments: { draft_id: 'nosuchjob' } });
@@ -1043,6 +1044,52 @@ await step('lead review: scope, verdicts, pass · bounce then pass · escalate a
   if (!/signed off by LEAD after 1 round of rework/.test(L.askLine({ phase: 'signed', round: 1 }, 'LEAD')) || !/Still open: x/.test(L.askLine({ phase: 'escalated', round: 2, open: 'x' }, 'LEAD')) || L.askLine({ phase: 'review' }) !== '') throw new Error('askLine');
   return 'off by default · scope (8 cases) · verdict parsing · pass · bounce→pass · escalate at round 2 · failed or unreadable review passes · failed rework escalates';
 });
+await step('lead lessons: verdict carries one · names and figures refused · targets the followed skill · yes appends once with a backup · cap · fallback to standing rules', async () => {
+  const L = await import('./leadreview.mjs'), K = await import('./leadlessons.mjs'), learn = await import('./learn.mjs');
+  const fs = await import('node:fs'), path = await import('node:path'), os = await import('node:os');
+  // the verdict
+  const v = L.parseVerdict('{"verdict":"bounce","feedback":"1. flat","lesson":{"skill":"linkedin-posts","rule":"Open every hook on the reader\'s cost, not the company."}}');
+  if (v.lesson?.skill !== 'linkedin-posts' || !/reader's cost/.test(v.lesson.rule)) throw new Error('lesson not read: ' + JSON.stringify(v));
+  for (const bad of ['"x"', '{"rule":"short"}', '{"skill":"a"}', '[1]', 'null']) if (L.parseVerdict(`{"verdict":"pass","lesson":${bad}}`).lesson) throw new Error('malformed lesson kept: ' + bad);
+  if (!/LESSON \(optional\)/.test(L.reviewPrompt({ task: { title: 'T', text: 'x' }, draft: 'D', desk: { name: 'ADA' }, lead: {}, skills: ['linkedin-posts'] }).extra)) throw new Error('prompt must offer the lesson');
+  // the loop keeps the latest lesson as proposed
+  const t = { id: 't', dept: 'marketing' }; let i = 0;
+  const replies = ['{"verdict":"bounce","feedback":"fix","lesson":{"skill":"s","rule":"Cut the first sentence of every post."}}', '{"verdict":"pass"}'];
+  const r = await L.runLoop({ task: t, out: { result: 'v0' }, review: async () => replies[i++], rerun: async () => ({ result: 'v1' }), max: 2, by: 'mlead' });
+  if (r.leadReview.proposed?.rule !== 'Cut the first sentence of every post.') throw new Error('loop dropped the lesson');
+  // vetting and the target
+  const sk = [{ name: 'linkedin-posts', source: 'brain', everyone: false }, { name: 'house-style', source: 'brain', everyone: true }, { name: 'shipped-one', source: 'shipped', everyone: false }];
+  const rule = 'Open every hook on the reader\'s cost.';
+  if (!/figure/.test(K.vet({ lesson: { skill: 'linkedin-posts', rule: 'Keep hooks under 12 words.' }, skills: sk, deskSkills: ['linkedin-posts'] }).refused || '')) throw new Error('a number must be refused');
+  if (!/Imran/.test(K.vet({ lesson: { skill: '', rule: 'Always mention Imran\'s Diner by name.' }, skills: sk, deskSkills: [], clients: ["Imran's Diner"] }).refused || '')) throw new Error('a client name must be refused');
+  if (!K.vet({ lesson: { skill: '', rule }, skills: sk, deskSkills: [], seen: [rule] }).refused) throw new Error('an answered rule must not come back');
+  let g = K.vet({ lesson: { skill: 'nope', rule }, skills: sk, deskSkills: ['house-style', 'linkedin-posts'] }).lesson;
+  if (g.target !== 'skill' || g.skill !== 'linkedin-posts' || g.shared || g.status !== 'proposed') throw new Error('should target the non-shared skill followed: ' + JSON.stringify(g));
+  g = K.vet({ lesson: { skill: 'house-style', rule }, skills: sk, deskSkills: ['house-style', 'linkedin-posts'] }).lesson;
+  if (g.skill !== 'house-style' || !g.shared || !/affects every desk/.test(K.card(g, 'MARKETING LEAD', 'ADA'))) throw new Error('a shared skill must be tagged: ' + JSON.stringify(g));
+  g = K.vet({ lesson: { skill: 'shipped-one', rule }, skills: sk, deskSkills: ['shipped-one'] }).lesson;
+  if (g.target !== 'rules' || !/ADA's standing rules/.test(K.card(g, 'L', 'ADA'))) throw new Error('no brain skill → standing rules: ' + JSON.stringify(g));
+  // apply: appends once, backs up, respects the cap, skips a duplicate; a no writes nothing
+  const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'lessons-')), dir = path.join(tmp, 'skills', 'linkedin-posts'), bak = path.join(tmp, 'bak'); fs.mkdirSync(dir, { recursive: true });
+  const f = path.join(dir, 'SKILL.md'), orig = '---\nname: linkedin-posts\nagents: [ada]\n---\n# Posts\nUse for posts.\n\n## Rules\n- One idea per post.\n\n## Shape\nx\n';
+  fs.writeFileSync(f, orig);
+  const a1 = K.applyToSkill({ file: f, skillsDir: path.join(tmp, 'skills'), rule, backupDir: bak, date: '2026-11-04' });
+  const after = fs.readFileSync(f, 'utf8');
+  if (!a1.ok || !after.includes(`- One idea per post.\n- ${rule} (lead, 2026-11-04)\n\n## Shape`) || fs.readdirSync(bak).length !== 1 || fs.readFileSync(path.join(bak, fs.readdirSync(bak)[0]), 'utf8') !== orig) throw new Error('apply: ' + JSON.stringify(a1) + '\n' + after);
+  const a2 = K.applyToSkill({ file: f, skillsDir: path.join(tmp, 'skills'), rule, backupDir: bak });
+  if (!a2.ok || !a2.skipped || fs.readFileSync(f, 'utf8') !== after || fs.readdirSync(bak).length !== 1) throw new Error('a duplicate must be skipped: ' + JSON.stringify(a2));
+  fs.writeFileSync(f, orig.replace('Use for posts.', 'x'.repeat(5990)));
+  const a3 = K.applyToSkill({ file: f, skillsDir: path.join(tmp, 'skills'), rule: 'Another rule that is long enough.', backupDir: bak });
+  if (a3.ok || !/6,000/.test(a3.reason) || /Another rule/.test(fs.readFileSync(f, 'utf8'))) throw new Error('the cap must refuse: ' + JSON.stringify(a3));
+  if (K.applyToSkill({ file: path.join(tmp, 'elsewhere', 'SKILL.md'), skillsDir: path.join(tmp, 'skills'), rule, backupDir: bak }).ok) throw new Error('a file outside the skills folder must be refused');
+  fs.writeFileSync(f, '# Bare\nNo rules heading.\n');
+  if (!K.applyToSkill({ file: f, skillsDir: path.join(tmp, 'skills'), rule, backupDir: bak }).ok || !/## Rules\n- Open every hook/.test(fs.readFileSync(f, 'utf8'))) throw new Error('a skill with no Rules heading should get one');
+  // the fallback: the desk's standing rules through learn.record
+  const lr = learn.record(tmp, { id: 'ada', name: 'ADA' }, { title: 'Hooks' }, "From MARKETING LEAD's review", { standing: true, rule });
+  if (!lr.standing || !learn.read(tmp, 'ada').rules.some(x => x.includes(rule))) throw new Error('fallback to standing rules');
+  fs.rmSync(tmp, { recursive: true, force: true });
+  return 'verdict lesson · malformed dropped · loop keeps it · figure, client name, answered rule refused · non-shared target · shared tagged · shipped → standing rules · append once + backup · duplicate skipped · 6,000 cap · outside refused · Rules heading added · learn.record fallback';
+});
 await step('teams: a team routine is kept and moved to the department lead', async () => {
   const { validate } = await import('./routines.mjs'); const { loadRoster } = await import('./roster.mjs');
   const agents = loadRoster().agents;
@@ -1346,6 +1393,16 @@ else {
       const r = await post('no-such-task', { feedback: 'Mary is at mary@example.com' });
       if (r.status !== 404) throw new Error('unknown task: status ' + r.status);
       return 'unknown task refused (the waiting-state and empty-text rules are in the same handler)';
+    });
+    await step('server: "permanently reject" closes the task and never reworks it', async () => {
+      const r = await fetch(base + '/api/tasks/no-such-task/reject', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ close: true }) });
+      if (r.status !== 404) throw new Error('unknown task: status ' + r.status);
+      const src = fs.readFileSync(path.join(ROOT, 'serve.mjs'), 'utf8');
+      const closeAt = src.indexOf("m[2] === 'reject' && close === true"), reworkAt = src.indexOf("enqueue(() => runServerTask(task.id, m[2] === 'approve'");
+      if (closeAt < 0 || reworkAt < 0 || closeAt > reworkAt) throw new Error('the close branch must return before the rework run is queued');
+      const ui = fs.readFileSync(path.join(ROOT, 'src/review.js'), 'utf8');
+      if (!ui.includes('Permanently reject, no further action') || !ui.includes('onReject(t, reason, closeIt)')) throw new Error('the review screen has lost the toggle');
+      return 'closed with no rework run, no send-back and no lesson · toggle on the reason screen';
     });
     await step('server: rejects an empty task', async () => { const r = await fetch(base + '/api/tasks', { method: 'POST', headers: { 'content-type': 'application/json' }, body: '{"dept":"sales","text":""}' }); if (r.status !== 400) throw new Error('status ' + r.status); });
     if (LIVE) {

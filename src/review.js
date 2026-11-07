@@ -70,6 +70,18 @@ body.dark #rv .rv-reason p { color: #A3A29C; }
 #rv .rv-ex { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
 #rv .rv-ex button { font: 11.5px/1 var(--ui); padding: 7px 10px; border-radius: 99px; border: 1px solid var(--hairline); background: none; color: inherit; cursor: pointer; }
 #rv .rv-ex button:hover { border-color: currentColor; }
+#rv .rv-perm { position: relative; display: flex; align-items: flex-start; gap: 10px; margin: 14px 0 4px; padding: 10px 12px; border: 1px solid var(--hairline); border-radius: 8px; cursor: pointer; -webkit-user-select: none; user-select: none; }
+#rv.ans .rv-perm { display: none; }
+#rv .rv-perm input { position: absolute; opacity: 0; pointer-events: none; }
+#rv .rv-perm-sw { flex: none; width: 30px; height: 17px; margin-top: 1px; border-radius: 99px; background: rgba(127,127,127,.35); position: relative; transition: background .15s; }
+#rv .rv-perm-sw::after { content: ''; position: absolute; top: 2px; left: 2px; width: 13px; height: 13px; border-radius: 50%; background: #fff; transition: transform .15s; }
+#rv .rv-perm input:checked + .rv-perm-sw { background: #C8553D; }
+#rv .rv-perm input:checked + .rv-perm-sw::after { transform: translateX(13px); }
+#rv .rv-perm input:focus-visible + .rv-perm-sw { outline: 2px solid #C8553D; outline-offset: 2px; }
+#rv .rv-perm-t { display: flex; flex-direction: column; gap: 3px; font: 12.5px/1.45 var(--ui); }
+#rv .rv-perm-t span { color: var(--grey); }
+body.dark #rv .rv-perm-t span { color: #A3A29C; }
+#rv.perm .rv-perm { border-color: #C8553D; }
 @media (max-width: 600px) { #rv { padding: 0; } #rv .rv-box { max-height: 100vh; height: 100%; border-radius: 0; } #rv .rv-title { font-size: 22px; } }
 `;
 
@@ -103,12 +115,15 @@ export function initReview({ esc, agentOf, onApprove, onReject, onAnswer, onHand
     <div class="rv-reason"><h3>Reason for rejection</h3>
       <p>Say what is wrong and what you want instead. The agent reworks it with this and it comes back here. It also learns from it: a reason that applies every time becomes one of its standing rules.</p>
       <textarea placeholder="e.g. Too long, and the tone is too formal for this client. Lead with the price, three bullets max."></textarea>
-      <div class="rv-ex"><button>Too long</button><button>Wrong tone</button><button>Missing the numbers</button><button>Not what I asked for</button></div></div>
+      <div class="rv-ex"><button>Too long</button><button>Wrong tone</button><button>Missing the numbers</button><button>Not what I asked for</button></div>
+      <label class="rv-perm"><input type="checkbox"><span class="rv-perm-sw" aria-hidden="true"></span><span class="rv-perm-t"><b>Permanently reject, no further action</b><span>Closes the task for good. The agent does not rework it, it is not counted against the agent, and no lesson is kept. A reason is optional.</span></span></label></div>
     <div class="rv-foot"><span class="rv-hint"></span><button class="rv-btn rv-copy" title="Copy the whole answer as text">COPY</button><span class="rv-btns"></span></div></div>`;
   document.body.appendChild(el);
   wireLinks(el);
   const $ = s => el.querySelector(s);
   const ta = $('.rv-reason textarea');
+  const perm = $('.rv-perm input'); // "Permanently reject, no further action"
+  const permOn = () => perm.checked && !el.classList.contains('ans');
   const REJ = { h: $('.rv-reason h3').textContent, p: $('.rv-reason p').textContent, ph: ta.placeholder, chips: $('.rv-ex').innerHTML }; // the rejection wording, so ANSWER can swap it and put it back
   const ANS = { h: 'Your answer', p: 'This is not a rejection and it is not marked against the agent. Give it what it was missing: a fact, a decision, who to check with. It reworks the task with your answer and it comes back here for your review.',
     ph: 'e.g. Mary’s address is mary@example.com. Penny said she’d take this one, so cc her and say it is a follow-up.', chips: '<button>Here is the missing detail</button><button>Check with someone first</button><button>Use this instead</button><button>It is already done</button>' };
@@ -142,8 +157,9 @@ export function initReview({ esc, agentOf, onApprove, onReject, onAnswer, onHand
     else if (el.classList.contains('rej')) {
       const ans = el.classList.contains('ans'), w = ans ? ANS : REJ;
       $('.rv-reason h3').textContent = w.h; $('.rv-reason p').textContent = w.p; ta.placeholder = w.ph; $('.rv-ex').innerHTML = w.chips;
-      $('.rv-hint').textContent = ans ? 'Ctrl+Enter to send your answer.' : 'Ctrl+Enter to send it back.';
-      btns.innerHTML = '<button class="rv-btn rv-back">BACK</button> <button class="rv-btn rv-send" disabled>' + (ans ? 'SEND ANSWER TO ' : 'SEND BACK TO ') + esc(a.name) + '</button>';
+      const pm = permOn(); el.classList.toggle('perm', pm);
+      $('.rv-hint').textContent = ans ? 'Ctrl+Enter to send your answer.' : pm ? 'Ctrl+Enter to close it. Nothing goes back to the agent.' : 'Ctrl+Enter to send it back.';
+      btns.innerHTML = '<button class="rv-btn rv-back">BACK</button> <button class="rv-btn rv-send" disabled>' + (ans ? 'SEND ANSWER TO ' + esc(a.name) : pm ? 'REJECT & CLOSE' : 'SEND BACK TO ' + esc(a.name)) + '</button>';
       syncSend();
     } else {
       $('.rv-hint').textContent = email ? 'Approving puts this email in your Gmail drafts, exactly as written. You send it from your inbox; the office never sends email.' : t.needsOk ? 'Approving sends it exactly as written. Reject to say what to change.' : 'Approve to mark it done and save it to your brain. Reject to say what is wrong.';
@@ -170,9 +186,9 @@ export function initReview({ esc, agentOf, onApprove, onReject, onAnswer, onHand
     if (r && r.ok) { t.handedTo = [...(t.handedTo || []), r.id]; }
   }
   const box_disable = d => el.querySelectorAll('.rv-next button, .rv-next select').forEach(b => { b.disabled = d; });
-  const syncSend = () => { const b = $('.rv-send'); if (b) b.disabled = busy || !ta.value.trim(); };
+  const syncSend = () => { const b = $('.rv-send'); if (b) b.disabled = busy || (!ta.value.trim() && !permOn()); };
   function show() { el.classList.add('on'); paint(); }
-  function close() { el.classList.remove('on', 'rej', 'ans'); readOnly = null; ta.value = ''; }
+  function close() { el.classList.remove('on', 'rej', 'ans', 'perm'); readOnly = null; ta.value = ''; perm.checked = false; }
   const typing = () => { const a = document.activeElement; return a && (a.tagName === 'TEXTAREA' || a.tagName === 'INPUT') && !el.contains(a); };
 
   // a task is ready for review: queue it, and pop up unless the owner is mid-sentence or already reading one
@@ -185,23 +201,23 @@ export function initReview({ esc, agentOf, onApprove, onReject, onAnswer, onHand
   function drop(sid) {
     const i = queue.findIndex(x => x.sid === sid); if (i < 0) return;
     queue.splice(i, 1);
-    if (cur && cur.sid === sid) { cur = queue[Math.min(i, queue.length - 1)] || null; el.classList.remove('rej', 'ans'); ta.value = ''; if (!readOnly) cur ? paint() : close(); }
+    if (cur && cur.sid === sid) { cur = queue[Math.min(i, queue.length - 1)] || null; el.classList.remove('rej', 'ans', 'perm'); ta.value = ''; perm.checked = false; if (!readOnly) cur ? paint() : close(); }
     else if (!readOnly && el.classList.contains('on')) paint();
   }
   function open(pick) { // the top-bar ⚠, an agent's waiting card, the chat's APPROVE / REJECT
     const t = typeof pick === 'function' ? queue.find(pick) : pick ? queue.find(x => x.sid === pick.sid) : queue[0];
     if (!t) return false;
-    cur = t; readOnly = null; el.classList.remove('rej', 'ans'); show(); return true;
+    cur = t; readOnly = null; el.classList.remove('rej', 'ans', 'perm'); perm.checked = false; show(); return true;
   }
   function openReject(pick) { if (!open(pick)) return false; el.classList.add('rej'); paint(); setTimeout(() => ta.focus(), 30); return true; }
   function read(doc) { readOnly = doc; el.classList.remove('rej', 'ans'); show(); } // { agent, title, content, meta, kindLabel }
 
   async function decide(approved) {
     if (!cur || busy) return;
-    const t = cur, reason = ta.value.trim(), ans = el.classList.contains('ans');
-    if (!approved && !reason) return;
+    const t = cur, reason = ta.value.trim(), ans = el.classList.contains('ans'), closeIt = !approved && permOn();
+    if (!approved && !reason && !closeIt) return;
     busy = true; syncSend();
-    try { approved ? await onApprove(t) : ans ? await onAnswer(t, reason) : await onReject(t, reason); }
+    try { approved ? await onApprove(t) : ans ? await onAnswer(t, reason) : await onReject(t, reason, closeIt); }
     finally { busy = false; }
     drop(t.sid);
   }
@@ -240,6 +256,7 @@ export function initReview({ esc, agentOf, onApprove, onReject, onAnswer, onHand
     if (b.closest('.rv-ex')) { ta.value = (ta.value.trim() ? ta.value.trim() + ' ' : '') + b.textContent + '. '; ta.focus(); syncSend(); }
   });
   ta.addEventListener('input', syncSend);
+  perm.addEventListener('change', () => { paint(); });
   document.addEventListener('keydown', e => {
     if (!el.classList.contains('on')) return;
     if (e.key === 'Escape') { e.stopPropagation(); if (el.classList.contains('rej') && !readOnly) { el.classList.remove('rej', 'ans'); paint(); } else close(); return; }

@@ -9,6 +9,7 @@ import { execFileSync, spawn } from 'node:child_process';
 import { MAX_ACTIVE, ROOT, SERIES, WORKER, active, ensureDirs, listJobs, newId, readJob, seriesInfo, seriesList, sourceOf, workerAlive, writeJob, writeProject } from './shared.mjs';
 import { readNarration } from './voice.mjs';
 import { lint } from './engine.mjs';
+import * as sfx from './sfx.mjs';
 import { loadConfig } from '../../config.mjs';
 
 /* ---------- the Brain, read only: the Director can open any note, including an uploaded master prompt ---------- */
@@ -34,6 +35,9 @@ const TOOLS = [
   { name: 'motion_source', description: 'The HTML source of a job, to revise it.', inputSchema: { type: 'object', required: ['job_id'], properties: { job_id: { type: 'string' } } } },
   { name: 'motion_list', description: 'The ten most recent motion jobs and their state.', inputSchema: { type: 'object', properties: {} } },
   { name: 'motion_cancel', description: 'Cancel a queued or running job.', inputSchema: { type: 'object', required: ['job_id'], properties: { job_id: { type: 'string' } } } },
+  { name: 'sfx_library', description: 'The recorded sounds already in the library (fetched before, ready for S.sample), optionally filtered by words in their title or tags. Look here before sfx_search: reuse is instant and needs no internet.', inputSchema: { type: 'object', properties: { query: { type: 'string', description: 'Words to filter by, e.g. "glass" or "page turn". Empty lists everything.' } } } },
+  { name: 'sfx_search', description: 'Search Openverse (Freesound and Wikimedia Commons, about 590,000 sound effects and field recordings) for a recorded sound the synth cannot fake: glass, pours, paper, doors, crowds, kitchens, cutlery, footsteps, weather, machines. Only CC0, public-domain and CC BY sounds are returned. Openverse matches every word, so use two or three: the thing and the action ("glass clink", "page turn", "espresso steam", "door slam"); add a word only to narrow a long list. 20 results a page; pass page for more. Then sfx_fetch the best one or two.', inputSchema: { type: 'object', required: ['query'], properties: { query: { type: 'string' }, max_seconds: { type: 'number', description: 'Longest sound to list (default 30; up to 90 for ambiences).' }, source: { type: 'string', enum: ['freesound', 'wikimedia_audio', 'any'], description: 'Default freesound (the sound-effects archive). Wikimedia is mostly music and speech.' }, licences: { type: 'array', items: { type: 'string', enum: ['cc0', 'pdm', 'by'] }, description: 'Default all three. Pass ["cc0", "pdm"] for sounds that need no credit.' }, page: { type: 'integer' } } } },
+  { name: 'sfx_fetch', description: 'Fetch a sound from sfx_search into the library: downloaded, converted to 48 kHz stereo WAV, trailing silence trimmed, peak set to -3 dBFS, measured (onset, peak, noise floor, clipping) and drawn as a waveform you can see. Returns its library id (ov-xxxxxxxx) for S.sample(t, id, { align, gain, … }) and any quality flags. You cannot hear it: judge it by the waveform (one clean event, no long tail of noise) and the flags, and fetch an alternative when in doubt.', inputSchema: { type: 'object', required: ['fetch'], properties: { fetch: { type: 'string', description: 'The "fetch" field of a search result (the 36-character Openverse id).' } } } },
 ];
 
 const text = o => ({ content: [{ type: 'text', text: typeof o === 'string' ? o : JSON.stringify(o, null, 2) }] });
@@ -77,11 +81,14 @@ function queue(mode, a, extra = {}) {
 function brief(j) {
   const r = j.result, c = j.critique, o = { id: j.id, mode: j.mode, title: j.title, state: j.state, step: j.step || undefined, error: j.error || undefined };
   if (j.narration && j.mode === 'narrate') Object.assign(o, { narration: j.narration, next: j.state === 'done' ? `Pass narration: "${j.id}" and series: "${j.series}" on motion_preview and motion_draft; place the lines with voice: [{ line, at }].` : undefined });
-  if (r?.captions) o.captions = r.captions; if (r?.standIn) o.voice = 'STAND-IN narration: a final is refused until it is Wesley\'s voice';
+  if (r?.captions) o.captions = r.captions;
+  if (r?.credits) o.credits = r.credits + (r.sounds?.some(s => s.licence === 'by') ? ' (CC BY sounds: the credit lines must go with the post; tell Wesley)' : ' (no credit needed)'); if (r?.standIn) o.voice = 'STAND-IN narration: a final is refused until it is Wesley\'s voice';
   if (r) Object.assign(o, { file: r.file || undefined, sheets: r.sheets, score: r.audio || undefined, seconds: r.seconds, errors: r.errors.length ? r.errors : undefined, warnings: r.warnings.length ? r.warnings : undefined, checks: r.checks, dead: r.dead?.length ? r.dead : undefined });
   if (j.telegram) o.telegram = j.telegram.sent ? (j.telegram.videoAttached === false ? 'sent to Wesley on Telegram as a message (video not attached: ' + j.telegram.reason + ')' : 'sent to Wesley on Telegram for review') : 'not sent to Telegram: ' + j.telegram.reason;
   if (c?.error) o.critic = { error: c.error };
   else if (c) o.critic = { lowest: c.min, overall: c.overall, fixes: c.fixes, verdict: c.verdict }; // advice only: it never blocks the final
+  if (j.ears?.ok) o.ears = { verdict: j.ears.verdict, loudness: j.ears.loudness, fixes: j.ears.fixes.length ? j.ears.fixes : undefined, sync: j.ears.sync ?? undefined, style: j.ears.style.length ? 'Earshot scores against fast product-launch films; these are style differences, not faults: ' + j.ears.style.join(' | ') : undefined }; // advice only: it never blocks the final
+  else if (j.ears) o.ears = { skipped: j.ears.reason };
   if (j.state === 'done' && j.mode === 'draft') o.next = j.passed ? `Clean. Look at the contact sheets yourself; if it is good, call motion_final with draft_id ${j.id}.`
     : 'Fix the errors (rules, dead frames, off-beat cuts), then motion_draft again with from: ' + j.id + ' and edits.';
   return o;
@@ -148,6 +155,21 @@ const tools = {
     if (!f) return fail('No such note: ' + a.note + '. Try brain_search.');
     const t = fs.readFileSync(f, 'utf8').replace(/^\uFEFF/, ''), off = Math.max(0, a.offset | 0), part = t.slice(off, off + 30000);
     return text({ note: noteName(f), chars: t.length, offset: off, next_offset: off + part.length < t.length ? off + part.length : null, text: part });
+  },
+  sfx_library(a) {
+    try { const all = sfx.library(a.query || ''); return text({ count: all.length, sounds: all.slice(0, 60), next: all.length ? "Place one with S.sample(t, 'ov-…', { align, gain }) in score(S)." : 'Nothing matches: try sfx_search.' }); }
+    catch (e) { return fail(e.message); }
+  },
+  async sfx_search(a) {
+    try { const r = await sfx.search({ query: a.query, maxSeconds: a.max_seconds ?? 30, source: a.source || 'freesound', licences: a.licences, page: a.page }); return text({ ...r, next: r.results.length ? 'sfx_fetch the best match by its "fetch" field (look at the waveform it returns), then S.sample(t, its id).' : 'Nothing found: describe the sound differently (the thing, the action, close or distant).' }); }
+    catch (e) { return fail(e.message); }
+  },
+  async sfx_fetch(a) {
+    try {
+      const s = await sfx.fetchSound(a.fetch), { waveform, attribution, file, ...rest } = s;
+      const use = `S.sample(t, '${s.id}', { align: '${/whoosh|swoosh|swell|riser|rise|sweep/i.test(s.title + ' ' + (s.tags || []).join(' ')) ? 'peak' : 'onset'}', gain: 1 })`;
+      return { content: [{ type: 'text', text: JSON.stringify({ ...rest, use, credit: s.needsCredit ? 'CC BY: the engine writes the credit line into credits.txt beside the video; tell Wesley it needs crediting where it is posted.' : 'No credit needed.' }, null, 2) }, ...images(waveform ? [waveform] : [])] };
+    } catch (e) { return fail(e.message); }
   },
   motion_source(a) { const h = sourceOf(String(a.job_id || '')); return h == null ? fail('No source for job ' + a.job_id) : text(h); },
   motion_list() { kick(); return text(listJobs().slice(-10).reverse().map(j => ({ id: j.id, mode: j.mode, title: j.title, state: j.state, step: j.step || undefined, passed: j.passed ?? undefined, lowest: j.critique?.min }))); },

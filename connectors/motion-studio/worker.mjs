@@ -8,6 +8,7 @@ import * as notify from '../../notify.mjs';
 import { render } from './engine.mjs';
 import { critique } from './critic.mjs';
 import { narrate, readNarration } from './voice.mjs';
+import { listen as listenEars } from './earshot.mjs';
 
 ensureDirs();
 const log = (...a) => { try { fs.appendFileSync(WORKER_LOG, new Date().toISOString() + ' ' + a.join(' ') + '\n'); } catch {} };
@@ -22,7 +23,8 @@ const slug = s => String(s || 'motion').toLowerCase().replace(/[^a-z0-9]+/g, '-'
 async function sendForReview(job, res, out, step) {
   step('sending the final to Telegram for your review');
   const secs = Math.round(res.meta?.duration || 0);
-  const srtNote = res.captions ? `\nCaptions file for the post: ${res.captions}` : '';
+  const by = (res.sounds || []).filter(s => s.licence === 'by');
+  const srtNote = (res.captions ? `\nCaptions file for the post: ${res.captions}` : '') + (by.length ? `\nCredit these sounds where it is posted (CC BY):\n${by.map(s => '- ' + s.credit).join('\n')}` : '');
   const caption = `Motion Studio: ${job.title || 'new piece'}${job.series ? ` (${job.series.replace(/-/g, ' ')})` : ''}\n${secs} s.\nReview it, then approve or ask for changes in the office's Motion Studio tab. Nothing is posted or filed until you say so.${srtNote}`;
   try {
     let f = res.file;
@@ -57,16 +59,21 @@ async function runJob(job) {
     try { crit = await critique(r, { title: job.title, brief: job.brief, series: job.series, narration: job.narration ? readNarration(job.narration)?.words : null }); }
     catch (e) { crit = { error: e.message, passed: false }; }
   }
+  let ears = null;
+  if (job.mode === 'draft' && !r.errors.length && r.file && r.audio) { // Earshot listens to the clean draft's mix: advice only, never blocks, skipped if it is not installed
+    step('Earshot is listening to the mix');
+    ears = await listenEars(r.file, out).catch(e => ({ ok: false, reason: e.message }));
+  }
   if (job.mode === 'final' && r.file) { const named = path.join(out, slug(job.title) + '.mp4'); fs.renameSync(r.file, named); res.file = named; }
   const cur = readJob(id); if (cur?.state === 'cancelled') return;
   const telegram = job.mode === 'final' && res.file && !r.errors.length ? await sendForReview(job, res, out, step) : undefined;
-  writeJob({ ...cur, state: 'done', step: null, result: res, critique: crit, telegram, passed: job.mode === 'draft' || job.mode === 'final' ? !r.errors.length : null, finishedAt: Date.now() });
+  writeJob({ ...cur, state: 'done', step: null, result: res, critique: crit, ears, telegram, passed: job.mode === 'draft' || job.mode === 'final' ? !r.errors.length : null, finishedAt: Date.now() });
   log('done', id, job.mode, r.errors.length ? 'errors:' + r.errors.length : 'clean', crit ? `min ${crit.min} passed ${crit.passed}` : '');
 }
 
 // a worker started before its code was changed must not keep running the old code: it leaves, and the next start picks up the new
 const HERE = path.dirname(new URL(import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1'));
-const stamp = () => ['worker.mjs', 'engine.mjs', 'critic.mjs', 'shared.mjs', '../../mcp.mjs', '../../notify.mjs', 'voice.mjs', '../video-studio/voicestudio.mjs'].map(f => { try { return fs.statSync(path.join(HERE, f)).mtimeMs; } catch { return 0; } }).join();
+const stamp = () => ['worker.mjs', 'engine.mjs', 'critic.mjs', 'shared.mjs', '../../mcp.mjs', '../../notify.mjs', 'voice.mjs', 'earshot.mjs', '../video-studio/voicestudio.mjs'].map(f => { try { return fs.statSync(path.join(HERE, f)).mtimeMs; } catch { return 0; } }).join();
 const born = stamp();
 
 let idleSince = Date.now();

@@ -9,6 +9,8 @@
 //   S.riser(t, dur) and S.whoosh(t, dur) END exactly at t: put t on the cut.   Options: { gain, verb } on every voice.
 //   Bar (recipe-build): S.felt S.pour(t, dur, { from, to }) S.droplet S.paper S.ice S.swirl(t, dur) S.clink S.page
 //   Chinese: S.string S.roll S.bell S.taiko S.drone S.wind S.scale · Jazz: S.chord('Dm9') S.keys S.upright S.walk S.ride S.brush S.groove · Money: S.coin S.tally S.drop
+//   Recorded (4 Nov 2026): S.sample(t, 'ov-1a2b3c4d', { align: 'onset'|'peak'|'start', gain, rate, from, to, dur, pan, lowpass, highpass, verb })
+//     plays a sound from the library (sfx_search → sfx_fetch); the engine loads every 'ov-…' id named in the page. Same bus, room and limiter as the synth.
 (function () {
   const NOTE = { C: 0, 'C#': 1, Db: 1, D: 2, 'D#': 3, Eb: 3, E: 4, F: 5, 'F#': 6, Gb: 6, G: 7, 'G#': 8, Ab: 8, A: 9, 'A#': 10, Bb: 10, B: 11 };
   const hz = n => { if (typeof n === 'number') return n; const m = /^([A-G][#b]?)(-?\d)$/.exec(n); if (!m) throw new Error('unknown note ' + n); return 440 * 2 ** ((NOTE[m[1]] + (+m[2] + 1) * 12 - 69) / 12); };
@@ -224,6 +226,26 @@
     /** a low drop for a loss landing */
     drop(t, o = {}) { const s = this._osc('sine', 140, t, .5); s.frequency.exponentialRampToValueAtTime(48, t + .32); const g = this._gain(t, .5 * (o.gain ?? 1), .004, .42); s.connect(g); this._bus(g, { verb: .2 }); }
     /** pentatonic notes from a root: S.scale('D', 'minor', 3) → ['D3','F3','G3','A3','C4','D4', …] over two octaves */
+    // recorded sounds from the library (sfx_fetch): S.sample(t, 'ov-1a2b3c4d', { align, gain, rate, from, to, dur, fadeIn, fadeOut, pan, lowpass, highpass, verb })
+    //   align 'onset' (default) lands the sound's first transient on t · 'peak' lands its loudest moment on t (whooshes, swells) · 'start' plays the file from t
+    sample(t, id, o = {}) {
+      const b = this.samples?.[id], info = this.sampleInfo?.[id] || {};
+      if (!b) throw new Error(`sound ${id} is not in the library: fetch it with sfx_fetch and name it as a string, S.sample(t, '${id}')`);
+      const rate = o.rate || 1, from = Math.max(0, o.from || 0), to = Math.min(o.to ?? b.duration, b.duration);
+      const anchor = o.align === 'start' ? from : Math.max(from, o.align === 'peak' ? (info.peakAt ?? 0) : (info.onset ?? 0));
+      let start = t - (anchor - from) / rate, offset = from;
+      if (start < 0) { offset += -start * rate; start = 0; }
+      let len = (to - offset) / rate; if (o.dur) len = Math.min(len, o.dur); if (len <= .005) return null;
+      const src = this.ac.createBufferSource(); src.buffer = b; src.playbackRate.value = rate; src.start(start, offset, len * rate + .01);
+      const fi = Math.min(o.fadeIn ?? .002, len / 2), fo = Math.min(o.fadeOut ?? (o.dur || o.to != null ? .04 : .01), len / 2);
+      const env = this.ac.createGain(), p = env.gain; p.setValueAtTime(0, start); p.linearRampToValueAtTime(1, start + fi); p.setValueAtTime(1, start + len - fo); p.linearRampToValueAtTime(0, start + len);
+      src.connect(env); let node = env;
+      if (o.highpass) { const f = this._filter('highpass', o.highpass, .7); node.connect(f); node = f; }
+      if (o.lowpass) { const f = this._filter('lowpass', o.lowpass, .7); node.connect(f); node = f; }
+      if (o.pan) { const pn = this.ac.createStereoPanner(); pn.pan.value = Math.max(-1, Math.min(1, o.pan)); node.connect(pn); node = pn; }
+      this._bus(node, o); return { start, end: start + len };
+    }
+
     scale(root = 'D', mode = 'minor', octave = 3) {
       const names = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'], steps = mode === 'major' ? [0, 2, 4, 7, 9] : [0, 3, 5, 7, 10], r = NOTE[root], out = [];
       for (let o = 0; o < 2; o++) for (const s of steps) { const m = r + s + (octave + o) * 12; out.push(names[m % 12] + Math.floor(m / 12)); }

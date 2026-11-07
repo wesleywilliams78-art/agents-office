@@ -12,7 +12,7 @@ Wesley is reviewing Claude Code GitHub repos to see if pulling them in improves 
 - Finding withdrawn: the handover nudge was installed 3 Nov 14:46, so the 970k-token sessions predate it.
 
 ## Not done / open
-- Nothing from this chat is committed. Files: `.claude/agents/verifier.md`, `.claude/skills/*` (new), `CLAUDE.md`, `docs/INDEX.md`, the four new `docs/*.md`. (`docs/HANDOVER-4-nov-aios-office-v2.md` and `docs/prompt-engineer-draft.md` belong to another session.) `CLAUDE.md` already had uncommitted edits from others.
+- Committed (`463e0c8`, `d501d13`) and pushed to the `fork` remote (Wesley's own GitHub) on 4 Nov. `origin` is AJ Sahni's repo and `main` tracks it, so always `git push fork main`, never a bare `git push`. Still uncommitted and not mine: 27 paths (Prompt Engineer, Motion Studio SFX/Earshot, `output/`, `videos/`, `docs/HANDOVER-4-nov-aios-office-v2.md`, `docs/prompt-engineer-draft.md`); `docs/INDEX.md` in git points to that draft before it is committed.
 - The new skills have not been run on a real task. `grilling` may need "grill me" to fire; `writing-for-agents` adds a description to every session (make it typed-only if it fires too often).
 - Retro leftovers, each a yes/no: check past transcripts for skills never invoked and disable them; add a size guard on `CLAUDE.md` to `check.mjs`; 32 of 56 memory-index lines are still over 150 characters.
 - The Chief of Staff / Telegram `ask` do not yet propose skills in yes/no form (the Prompt Engineer already does yes/no for tasks).

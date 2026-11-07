@@ -287,6 +287,49 @@
   @media (max-width: 860px) { .rvThemes td.rvQ { width: auto; } .rvThemes { display: block; overflow-x: auto; } }
   .dTease b { font-family: var(--serif); font-weight: 400; font-size: 18px; } .dTease .up { color: var(--ok); } .dTease .dn { color: var(--red, #C8553D); } .dTease .z { color: var(--faint); }
   .side .subnav button.sub2 { margin-left: 14px; font-size: 10.5px; padding: 6px 10px; opacity: .9; }
+  /* Kitchen (6 Nov): the map, the dish picker and the run beside it, then the labour table */
+  .kitTop { display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; align-items: start; }
+  .kitSide { grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr) !important; align-items: start; } .kitCol { display: grid; gap: 12px; align-content: start; min-width: 0; }
+  @media (max-width: 760px) { .kitSide { grid-template-columns: minmax(0, 1fr) !important; } }
+  /* full screen (or a pop-out where the browser has no full screen): the map fills the window, the controls beside it */
+  #salesPanel.kitFull { position: fixed; inset: 0; z-index: 900; margin: 0; max-width: none; border-radius: 0; overflow: auto; padding: 16px 20px; background: var(--bg); }
+  #salesPanel.kitFull .kitTop { grid-template-columns: minmax(0, 1fr) minmax(0, 340px); }
+  #salesPanel.kitFull .kitSide { grid-template-columns: minmax(0, 1fr) !important; }
+  #salesPanel.kitFull .kitMap svg { max-height: calc(100vh - 92px); }
+  #salesPanel.kitFull .kitSteps { max-height: calc(100vh - 470px); min-height: 160px; }
+  .kitMap { position: relative; border: 1px solid var(--line); border-radius: 14px; background: var(--panel); overflow: hidden; }
+  .kitMap svg { display: block; width: 100%; height: auto; max-height: calc(100vh - 150px); touch-action: none; user-select: none; }
+  .kitMap .zone rect { fill: var(--soft); stroke: none; } .kitMap .zone text { fill: var(--faint); font-size: 2.1px; letter-spacing: .25px; text-transform: uppercase; font-weight: 600; }
+  .kitMap .st rect { fill: var(--panel); stroke: var(--line); stroke-width: .35; } .kitMap .st text { fill: var(--ink); font-size: 1.5px; font-weight: 600; pointer-events: none; }
+  .kitMap .st text.k { fill: var(--faint); font-size: 1.35px; font-weight: 400; }
+  .kitMap .st.on rect { stroke: var(--ink); stroke-width: .6; } .kitMap .st.now rect { stroke: var(--bad); stroke-width: .9; }
+  .kitMap.edit .st { cursor: grab; } .kitMap.edit .st rect { stroke-dasharray: 1 .6; } .kitMap .st.drag { cursor: grabbing; }
+  .kitMap .wall { fill: var(--faint); opacity: .55; }
+  .kitMap .route { fill: none; stroke: var(--ink); stroke-width: .45; stroke-dasharray: 1.2 .9; opacity: .55; }
+  .kitMap .trail { fill: none; stroke-width: .55; stroke-linecap: round; opacity: .7; }
+  .kitMap .who circle.b { stroke: var(--panel); stroke-width: .45; } .kitMap .who text { fill: #fff; font-size: 1.8px; font-weight: 700; text-anchor: middle; dominant-baseline: central; pointer-events: none; }
+  .kitMap .who circle.r { fill: none; stroke-width: .5; opacity: 0; } .kitMap .who.busy circle.r { opacity: .9; }
+  .kitMap .dish circle { fill: var(--bad); stroke: var(--panel); stroke-width: .5; } .kitMap .dish text { fill: var(--ink); font-size: 1.7px; font-weight: 700; paint-order: stroke; stroke: var(--panel); stroke-width: .7px; stroke-linejoin: round; }
+  .kitBar { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; padding: 8px 10px; border-top: 1px solid var(--line); font-size: 11px; color: var(--faint); }
+  .kitBar button, .kitSide button, .kitTbl button { font: inherit; font-size: 11px; padding: 5px 11px; border-radius: 999px; border: 1px solid var(--line); background: var(--panel); color: var(--ink); cursor: pointer; }
+  .kitBar button.on, .kitSide button.on { background: var(--ink); color: var(--panel); border-color: var(--ink); } .kitBar .sp { margin-left: auto; }
+  .kitSide { display: grid; grid-template-columns: minmax(0, 1fr); gap: 12px; font-size: 12px; }
+  .kitSide h4 { margin: 0 0 6px; font-size: 10px; letter-spacing: .12em; text-transform: uppercase; color: var(--faint); font-weight: 600; }
+  .kitSide select { width: 100%; font: inherit; font-size: 13px; padding: 7px 9px; border-radius: 10px; border: 1px solid var(--line); background: var(--panel); color: var(--ink); }
+  .kitPlay { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; } .kitPlay .pri { background: var(--ink); color: var(--panel); border-color: var(--ink); padding: 6px 16px; font-size: 12px; }
+  .kitClock { font-variant-numeric: tabular-nums; color: var(--faint); margin-left: auto; font-size: 11px; }
+  .kitSteps { margin: 0; padding: 0; list-style: none; display: grid; gap: 3px; max-height: 330px; overflow: auto; }
+  .kitSteps li { padding: 6px 8px; border-radius: 8px; line-height: 1.4; color: var(--grey); } .kitSteps li b { color: var(--ink); font-weight: 600; }
+  .kitSteps li.now { background: var(--soft); color: var(--ink); } .kitSteps li.done { opacity: .55; } .kitSteps .z { color: var(--faint); font-size: 10.5px; }
+  .kitSteps li.walk { padding-top: 1px; padding-bottom: 1px; font-size: 10.5px; color: var(--faint); }
+  .kitDm { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 6px; } .kitDm div { background: var(--soft); border-radius: 9px; padding: 7px 9px; }
+  .kitDm b { display: block; font-family: var(--serif); font-weight: 400; font-size: 20px; line-height: 1.1; } .kitDm span { font-size: 9.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--faint); }
+  .kitWho { display: flex; flex-wrap: wrap; gap: 4px 10px; font-size: 11px; color: var(--grey); } .kitWho i { display: inline-block; width: 9px; height: 9px; border-radius: 50%; margin-right: 4px; vertical-align: -1px; }
+  .kitTbl td.c, .kitTbl th.c { text-align: center; } .kitTbl tr.sel td { background: var(--soft); } .kitTbl tr { cursor: pointer; }
+  .kitTbl input[type=text] { width: 100%; min-width: 120px; font: inherit; font-size: 11px; padding: 4px 7px; border-radius: 7px; border: 1px solid var(--line); background: var(--panel); color: var(--ink); }
+  .kitTbl .hot { color: var(--bad); font-weight: 600; } .kitTbl th { cursor: pointer; } .kitTbl th.on { color: var(--ink); }
+  .kitProd { border: 1px solid var(--line); border-radius: 10px; padding: 7px 12px; margin-bottom: 6px; background: var(--panel); } .kitProd summary { cursor: pointer; font-size: 12.5px; } .kitProd[open] summary { margin-bottom: 8px; } .kitProd .kitTbl tr { cursor: default; } .kitProd .kitTbl th { cursor: default; }
+  .kitSrc { font-size: 10.5px; color: var(--faint); margin-top: 12px; line-height: 1.5; }
   .sKpis { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 14px; }
   .sBasis { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; margin: -4px 0 16px; padding: 8px 14px; border-radius: 12px; background: var(--soft); font-size: 12px; }
   .sBasis em { font-style: normal; color: var(--faint); font-size: 10.5px; margin-right: 6px; } .sBasis span.on { font-weight: 600; } .sBasis i { color: var(--faint); font-style: normal; }
@@ -510,12 +553,15 @@
   .hxt-col::after { content: ''; position: absolute; right: -11px; top: 26px; width: 0; height: 0; border-top: 6px solid transparent; border-bottom: 6px solid transparent; border-left: 7px solid var(--faint); z-index: 1; } .hxt-col:last-child::after { display: none; }
   .hxt-col.has { border-color: color-mix(in srgb, var(--ok) 55%, var(--line)); } .hxt-col.need { border-color: var(--hx-need); box-shadow: 0 0 0 1px var(--hx-need), 0 10px 26px -14px var(--hx-need); }
   .hxt-col.rev { border-color: var(--hx-rev); box-shadow: 0 0 0 1px var(--hx-rev), 0 10px 26px -14px var(--hx-rev); } .hxt-col.rev .hxt-h b { color: var(--hx-rev); }
+  .hxt-ls { margin-top: 9px; padding: 9px 10px; border: 1px solid color-mix(in srgb, var(--hx-rev) 60%, transparent); border-radius: 10px; font-size: 11.5px; line-height: 1.45; overflow-wrap: anywhere; } .hxt-ls .k { display: block; font-size: 9.5px; letter-spacing: .16em; text-transform: uppercase; color: var(--hx-rev); font-weight: 600; margin-bottom: 4px; }
+  .hxt-ls .why { display: block; margin-top: 5px; color: var(--bad); } .hxt-ls .sh { display: block; margin-top: 5px; color: var(--grey); } .hxt-ls .yn { display: flex; gap: 6px; margin-top: 8px; } .hxt-ls.done { border-color: var(--line); color: var(--grey); }
   .hxt-o { margin-top: 7px; color: var(--grey); font-size: 11.5px; line-height: 1.4; overflow-wrap: anywhere; }
   .hxt-b .tag.ok { color: var(--ok); border-color: color-mix(in srgb, var(--ok) 55%, transparent); } .hxt-b .tag.rv { color: var(--hx-rev); border-color: color-mix(in srgb, var(--hx-rev) 60%, transparent); }
   .hxt-h { display: flex; align-items: baseline; gap: 8px; } .hxt-n { font-size: 10px; letter-spacing: .18em; color: var(--faint); } .hxt-name { font-size: 11px; letter-spacing: .16em; text-transform: uppercase; font-weight: 600; } .hxt-h b { margin-left: auto; font: 300 34px/1 var(--serif); font-variant-numeric: tabular-nums; }
   .hxt-col.need .hxt-h b { color: var(--hx-need); }
   .hxt-d { color: var(--faint); font-size: 11.5px; line-height: 1.4; margin: 6px 0 12px; min-height: 48px; }
-  .hxt-l { display: grid; gap: 8px; align-content: start; }
+  .hxt-l { display: grid; grid-template-columns: minmax(0, 1fr); gap: 8px; align-content: start; } /* cards never grow past the column */
+  .hxt-b .tag { white-space: normal; max-width: 100%; overflow-wrap: anywhere; line-height: 1.35; } .hxt-ls .yn { flex-wrap: wrap; }
   .hxt-c { border: 1px solid var(--line); border-radius: 14px; padding: 10px 12px; background: var(--soft); }
   .hxt-t { font-size: 12.5px; font-weight: 600; line-height: 1.35; overflow-wrap: anywhere; } .hxt-m { display: flex; flex-wrap: wrap; gap: 2px 10px; margin-top: 4px; color: var(--grey); font-size: 11px; }
   .hxt-b { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 7px; } .hxt-b .tag.rw { color: var(--warn); border-color: color-mix(in srgb, var(--warn) 55%, transparent); }
@@ -809,9 +855,6 @@
   .quad.drag { outline: 2px solid color-mix(in srgb, var(--qc) 55%, transparent); outline-offset: -2px; }
   .side .subnav:not(.open) { height: 0; margin-bottom: 0; opacity: 0; pointer-events: none; }
   @media (max-width: 860px) { .side .subnav:not(.open) { height: auto; opacity: 1; pointer-events: auto; } }
-</style>
-<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500&family=Newsreader:opsz,wght@6..72,300;6..72,400&family=Noto+Serif+SC:wght@300&display=swap">
-</head>
   /* Brain map (4 Nov 2026): the vault as an Obsidian-style graph, with what its links say */
   .bm-q { background: var(--soft); border: 1px solid var(--line); border-radius: 7px; padding: 5px 10px; font-size: 12px; min-width: 170px; }
   .bm-grid { display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: 12px; align-items: start; }
@@ -841,6 +884,9 @@
   .bm-stats { font-size: 12px; color: var(--grey); margin: 4px 0 6px; }
   .bm-conn { max-height: 180px; overflow-y: auto; overflow-x: hidden; }
   @media (max-width: 1100px) { .bm-grid { grid-template-columns: 1fr; } .bm-side { max-height: none; min-height: 0; } .bm-stage { height: 62vh; } }
+</style>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500&family=Newsreader:opsz,wght@6..72,300;6..72,400&family=Noto+Serif+SC:wght@300&display=swap">
+</head>
 <body>
 <div class="wrap">
   <header>
@@ -862,10 +908,10 @@
     <div class="gl">The office</div>
     <button data-go="roles">Roles <span class="n" id="nRoles"></span></button>
     <button data-go="hierarchy">Hierarchy</button>
+    <button data-go="brain">Brain</button>
     <button data-go="skills">Skills <span class="n" id="nSkills"></span></button>
     <button data-go="tokens">Tokens</button>
     <button data-go="social">Social <span class="n" id="nSocial"></span></button>
-    <button data-go="brain">Brain</button>
     <span class="ind" id="sideInd" aria-hidden="true"></span>
   </nav>
   <div class="main">
@@ -977,9 +1023,6 @@
     <div class="skgrid" id="skGrid"></div>
   </section>
 
-  <section id="tokSec" data-cat="tokens">
-    <div class="sh">
-      <h2>Tokens</h2>
   <section id="brainSec" data-cat="brain">
     <div class="sh">
       <h2>Brain map</h2>
@@ -1001,6 +1044,9 @@
     </div>
   </section>
 
+  <section id="tokSec" data-cat="tokens">
+    <div class="sh">
+      <h2>Tokens</h2>
       <span class="note">Where the tokens go: your Claude Code chats, read from their transcripts on this PC, and the office's own runs, from its ledger. Nothing leaves this computer.</span>
       <div class="tools"><button id="tokRefresh" type="button">↻ REFRESH</button></div>
     </div>
@@ -1308,6 +1354,11 @@ function tiles(el, html, numSel, labelSel) {
 }
 
 function applyCat(animate = false) {
+  { // the Ask box is one element (one set of ids, one conversation): on Hierarchy it sits above the Prompt engineer node, anywhere else it sits under the Overview hero
+    const pe = document.getElementById('pe'), host = document.getElementById(S.cat === 'hierarchy' ? 'hxHero' : 'hero');
+    if (pe && host && host.nextElementSibling !== pe) host.after(pe);
+    if (pe) pe.dataset.cat = S.cat === 'hierarchy' ? 'hierarchy' : 'overview';
+  }
   for (const el of document.querySelectorAll('[data-cat]')) el.classList.toggle('cat-off', isDash(S.cat) ? el.dataset.cat !== 'dash' : el.dataset.cat !== S.cat);
   for (const b of document.querySelectorAll('#side button[data-go]')) b.classList.toggle('on', b.dataset.go === S.cat);
   foldSubnav(animate); placeInd(animate);
@@ -1329,10 +1380,10 @@ async function setCat(c, push = true) {
   if (isDash(c)) renderSales();
   if (c === 'tokens') loadTokens();
   if (c === 'social') loadSocial();
+  if (c === 'brain') window.brainTab?.open(); else window.brainTab?.close(); // the Brain map runs its physics only while it is on screen
 }
 
 // Social (V3.12, 3 Nov): the next post in each workstream. The server works out the state; this draws it and sends the buttons.
-  if (c === 'brain') window.brainTab?.open(); else window.brainTab?.close(); // the Brain map runs its physics only while it is on screen
 async function loadSocial() { try { S.social = (await api('/social')).streams; } catch (e) { $('soMsg').className = 'msg err'; $('soMsg').textContent = 'Could not read the content calendar: ' + e.message; return; } renderSocial(); renderNav(); }
 const SO_STATE = { handoff: ['TO HAND OFF', ''], needs: ['NEEDS YOU', 'need'], working: ['THE OFFICE IS ON IT', 'busy'], review: ['READY FOR YOUR REVIEW', 'need'], check: ['BACK: CHECK IT', 'need'], ready: ['BUILT: CHECK IT', 'need'], signed: ['SIGNED OFF: POST IT', 'go'] };
 function renderSocial() {
@@ -1612,7 +1663,7 @@ const mName = m => new Date(m + '-01T12:00:00').toLocaleDateString('en-GB', { mo
 const SCOL = ['var(--red, #C8553D)', 'var(--ink)', 'var(--faint)'];
 async function loadDash() {
   try { S.dash = (await api('/dashboards')).dashboards; } catch { S.dash = S.dash || []; }
-  $('navDash').innerHTML = S.dash.map(d => `<button data-go="dash-${esc(d.id)}">${esc(d.name)}</button>` + (d.data && d.data.delivery && d.data.delivery.available ? `<button class="sub2" data-go="dash-${esc(d.id)}--delivery">Delivery</button>` : '') + (d.data && d.data.reviews && d.data.reviews.available ? `<button class="sub2" data-go="dash-${esc(d.id)}--reviews">Reviews</button>` : '')).join('');
+  $('navDash').innerHTML = S.dash.map(d => `<button data-go="dash-${esc(d.id)}">${esc(d.name)}</button>` + (d.data && d.data.delivery && d.data.delivery.available ? `<button class="sub2" data-go="dash-${esc(d.id)}--delivery">Delivery</button>` : '') + (d.data && d.data.reviews && d.data.reviews.available ? `<button class="sub2" data-go="dash-${esc(d.id)}--reviews">Reviews</button>` : '') + (d.data && d.data.kitchen ? `<button class="sub2" data-go="dash-${esc(d.id)}--kitchen">Kitchen</button>` : '')).join('');
   applyCat(); if (isDash(S.cat)) renderSales();
 }
 // a single restaurant site (till reports): headline, monthly turnover bars, a weekday-by-hour busyness map, menu / category / item bars
@@ -1905,6 +1956,259 @@ function reviewsPanel(rv) {
   parts.push(`<div class="note" style="font-size:10.5px;color:var(--faint);margin-top:12px">From Google's own export, filed ${rvD(rv.filedAt)}. Reviews Google filtered out are not in it, so Maps can show a slightly different average. Reviewer names are not kept. To refresh it: takeout.google.com, pick Google Business Profile, and leave the zip in Downloads; the office files it within ten minutes.</div>`);
   return parts.join('');
 }
+// Kitchen (6 Nov): the kitchen as a map. A dish goes in at the order point and moves station by station; each step's person walks to the
+// station when it is not where they stand, so the walks, hand-offs and stations touched per dish all come out of one list of steps. Weekly
+// volumes come from the till's 12-month item mix, so a dish's labour is shown per plate and per week. The model is the data file named by
+// aios.dashboards[].kitchen; station positions and the improvement marks are saved back to it from this page (POST .../kitchen).
+const KIT_PAL = ['#C8553D', '#2F7FA8', '#1E9070', '#C98A12', '#7A5AA6', '#6B6B6B', '#B6407A', '#3E8E8E'];
+const kitSec = s => s < 60 ? Math.round(s) + 's' : Math.floor(s / 60) + 'm ' + String(Math.round(s % 60)).padStart(2, '0') + 's';
+const kitM = (k, u) => (u * (k.metresPerUnit || 0.1)).toFixed(u * (k.metresPerUnit || 0.1) < 10 ? 1 : 0) + ' m';
+const kitC = s => s ? { x: s.x + s.w / 2, y: s.y + s.h * 0.68 } : { x: 0, y: 0 }; // where people stand and the dish sits: below the station's name
+const kitOff = (k, id) => { const i = Math.max(0, k.staff.findIndex(p => p.id === id)); return { x: (i % 3 - 1) * 2.4, y: (Math.floor(i / 3) % 3 - 1) * 1.1 }; }; // two people at one station stand side by side
+const kitCol = (k, id) => { const i = k.staff.findIndex(p => p.id === id), p = k.staff[i]; return (p && p.colour) || KIT_PAL[i % KIT_PAL.length]; };
+// walking goes round the walls drawn on the sketch (k.walls): a grid search a unit at a time, then the corners only; straight when nothing is in the way
+const KIT_PATHS = new Map();
+const kitLen = pts => pts.reduce((n, p, i) => i ? n + Math.hypot(p.x - pts[i - 1].x, p.y - pts[i - 1].y) : 0, 0);
+const kitAt = (pts, f) => { // the point a fraction f of the way along a path
+  const L = kitLen(pts) * f; let run = 0;
+  for (let i = 1; i < pts.length; i++) { const s = Math.hypot(pts[i].x - pts[i - 1].x, pts[i].y - pts[i - 1].y); if (run + s >= L) { const g = s ? (L - run) / s : 0; return { x: pts[i - 1].x + (pts[i].x - pts[i - 1].x) * g, y: pts[i - 1].y + (pts[i].y - pts[i - 1].y) * g, i }; } run += s; }
+  const e = pts[pts.length - 1]; return { x: e.x, y: e.y, i: pts.length };
+};
+function kitPath(k, a, b) {
+  const walls = k.walls || [], blocked = (x, y) => walls.some(w => x > w.x - .7 && x < w.x + w.w + .7 && y > w.y - .7 && y < w.y + w.h + .7);
+  const clear = (p, q) => { const n = Math.ceil(Math.hypot(q.x - p.x, q.y - p.y) * 3); for (let i = 1; i < n; i++) { const f = i / n; if (blocked(p.x + (q.x - p.x) * f, p.y + (q.y - p.y) * f)) return false; } return true; };
+  if (!walls.length || clear(a, b)) return [a, b];
+  const key = JSON.stringify([walls, a, b]); if (KIT_PATHS.has(key)) return KIT_PATHS.get(key);
+  const W = Math.ceil(k.w) + 1, H = Math.ceil(k.h) + 1, id = (x, y) => y * W + x, sx = Math.round(a.x), sy = Math.round(a.y), gx = Math.round(b.x), gy = Math.round(b.y);
+  const g = new Float64Array(W * H).fill(Infinity), from = new Int32Array(W * H).fill(-1), heap = [], hcost = (x, y) => { const dx = Math.abs(x - gx), dy = Math.abs(y - gy); return Math.max(dx, dy) + (Math.SQRT2 - 1) * Math.min(dx, dy); };
+  const push = (f, n) => { heap.push([f, n]); let i = heap.length - 1; while (i) { const p = (i - 1) >> 1; if (heap[p][0] <= heap[i][0]) break; [heap[p], heap[i]] = [heap[i], heap[p]]; i = p; } };
+  const pop = () => { const top = heap[0], last = heap.pop(); if (heap.length) { heap[0] = last; let i = 0; for (;;) { const l = 2 * i + 1, r = l + 1; let m = i; if (l < heap.length && heap[l][0] < heap[m][0]) m = l; if (r < heap.length && heap[r][0] < heap[m][0]) m = r; if (m === i) break; [heap[m], heap[i]] = [heap[i], heap[m]]; i = m; } } return top; };
+  g[id(sx, sy)] = 0; push(hcost(sx, sy), id(sx, sy)); let found = false;
+  while (heap.length) {
+    const [, n] = pop(), x = n % W, y = (n - x) / W; if (x === gx && y === gy) { found = true; break; }
+    for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1], [1, 1], [1, -1], [-1, 1], [-1, -1]]) {
+      const nx = x + dx, ny = y + dy; if (nx < 0 || ny < 0 || nx >= W || ny >= H || blocked(nx, ny) || (dx && dy && (blocked(x + dx, y) || blocked(x, y + dy)))) continue;
+      const ng = g[n] + (dx && dy ? Math.SQRT2 : 1), m = id(nx, ny); if (ng < g[m]) { g[m] = ng; from[m] = n; push(ng + hcost(nx, ny), m); }
+    }
+  }
+  let out = [a, b];
+  if (found) { // keep only the corners: from each kept point, the furthest point still in plain sight
+    const cells = []; for (let n = id(gx, gy); n !== -1; n = from[n]) cells.unshift({ x: n % W, y: Math.floor(n / W) });
+    const raw = [a, ...cells.slice(1, -1), b]; out = [a]; let i = 0;
+    while (i < raw.length - 1) { let j = raw.length - 1; while (j > i + 1 && !clear(raw[i], raw[j])) j--; out.push(raw[j]); i = j; }
+  }
+  KIT_PATHS.set(key, out); return out;
+}
+function kitPlan(k, dish) {
+  const st = Object.fromEntries(k.stations.map(s => [s.id, s])), ctr = id => kitC(st[id]);
+  const home = Object.fromEntries(k.staff.map(p => [p.id, p.home])), at = { ...home }, free = {}, role = id => (k.staff.find(p => p.id === id) || {}).role || id;
+  const v = 1.2 / (k.metresPerUnit || 0.1), reach = k.passReach || 14, walks = [], moves = [], works = [], rows = [];
+  const m = { stations: new Set(), people: new Set(), handoffs: 0, walks: 0, dist: 0, hands: 0, wait: 0, walkSec: 0, lineSec: 0 };
+  let t = 0, dishAt = null, holder = null;
+  const dist = (a, b) => kitLen(kitPath(k, ctr(a), ctr(b)));
+  // one person walks between station centres; the dish goes with them when they carry it. A walk back to their own station runs alongside the next steps.
+  const go = (who, to, o = {}) => {
+    if (!who || !st[to] || at[who] === to) return;
+    const a = ctr(at[who]), b = ctr(to), pts = kitPath(k, a, b), d = kitLen(pts), dur = Math.max(1, d / v), t0 = Math.max(t, free[who] || 0), t1 = t0 + dur;
+    walks.push({ who, a, b, pts, t0, t1 }); if (o.carry) moves.push({ a, b, pts, t0, t1 });
+    m.walks++; m.dist += d; m.walkSec += dur; if (!o.back) m.lineSec += dur; free[who] = t1;
+    if (o.row) o.row.walks.push(`${role(who)} ${o.back ? 'walks back to' : o.carry ? 'carries it to' : 'walks to'} ${st[to].name} · ${kitM(k, d)}`);
+    at[who] = to; if (!o.back) t = t1;
+  };
+  dish.steps.forEach((s, i) => {
+    const row = { i, s, walks: [], t0: t }; rows.push(row);
+    if (i === 0) dishAt = s.at;
+    else if (dishAt !== s.at) {
+      const mode = s.move || (!s.who || (st[dishAt] && st[dishAt].kind === 'order') ? 'screen' : at[s.who] === dishAt || holder === s.who ? 'fetch' : dist(dishAt, s.at) <= reach ? 'pass' : 'fetch');
+      if (mode === 'screen' || mode === 'pass') { go(s.who, s.at, { row }); const a = ctr(dishAt), b = ctr(s.at); moves.push({ a, b, t0: t, t1: t + 1, screen: mode === 'screen' }); t += 1; }
+      else if (mode === 'carry' && holder && holder !== s.who) { go(holder, dishAt, { row }); go(holder, s.at, { carry: true, row }); go(s.who, s.at, { row }); go(holder, home[holder], { back: true, row }); }
+      else { go(s.who, dishAt, { row }); go(s.who, s.at, { carry: true, row }); }
+    } else go(s.who, s.at, { row });
+    const hands = +s.sec || 0, wait = +s.wait || 0, waitT = Math.min(wait, k.waitShown || 40); // a cooking wait plays at most 40 s on the replay; the figures keep the real time
+    if (s.who) { works.push({ who: s.who, at: s.at, t0: t, t1: t + hands + waitT }); m.people.add(s.who); if (holder && holder !== s.who) m.handoffs++; holder = s.who; }
+    t += hands + waitT; m.hands += hands; m.wait += wait; m.stations.add(s.at); dishAt = s.at; row.t1 = t;
+    const next = dish.steps[i + 1];
+    if (s.who && at[s.who] !== home[s.who] && (!next || next.who !== s.who)) go(s.who, home[s.who], { back: true, row });
+  });
+  const end = Math.max(t, ...walks.map(w => w.t1), 0);
+  return { walks, moves, works, rows, end, start: ctr(dish.steps[0] && dish.steps[0].at), m: { ...m, stations: m.stations.size, people: m.people.size, list: [...m.stations], who: [...m.people] } };
+}
+// a dish's weekly count from the till's 12-month item mix: an item name when the till sells it under one name, else its category
+function kitVol(d, dish) {
+  const it = d && d.items, tl = dish.till; if (!it || !tl) return null;
+  const weeks = Math.max(1, (new Date(it.to) - new Date(it.from)) / 864e5 / 7);
+  if (tl.items) { // a route: every till name cooked this way, added together (each name's rows from all the menus are already one line in `all`)
+    const have = new Map((it.all || []).map(x => [x.name, x])), rows = tl.items.map(n => have.get(n)).filter(Boolean);
+    return rows.length ? { week: rows.reduce((n, x) => n + x.qty, 0) / weeks, label: `the ${rows.length} till product${rows.length === 1 ? '' : 's'} on this route`, share: tl.share || 1, rows, weeks, missing: tl.items.filter(n => !have.has(n)) } : null;
+  }
+  const row = tl.item ? (it.top || []).find(x => x.name === tl.item) : tl.category ? (it.categories || []).find(x => x.name === tl.category) : null;
+  return row ? { week: row.qty / weeks, label: tl.item ? `“${tl.item}” on the till` : `the ${tl.category.toLowerCase()} category on the till`, share: tl.share || 1 } : null;
+}
+// the whole product list: every till name under the route it is cooked on, and the names that sit on no route (so none is left out unseen)
+function kitProducts(k, d, stats, S2) {
+  const it = d && d.items; if (!it || !it.all || !stats.some(x => x.dish.till && x.dish.till.items)) return '';
+  const weeks = Math.max(1, (new Date(it.to) - new Date(it.from)) / 864e5 / 7), seen = new Set(), notProd = new Set(k.notProducts || []), open = S2.open = S2.open || {}, wkf = q => Math.round(q / weeks).toLocaleString('en-GB');
+  const routes = stats.filter(x => x.dish.till && x.dish.till.items && x.v).map(x => { const rows = x.v.rows.slice().sort((a, b) => b.qty - a.qty); rows.forEach(r => seen.add(r.name)); return { x, rows, tot: rows.reduce((n, r) => n + r.qty, 0) }; }).sort((a, b) => b.tot - a.tot);
+  const un = it.all.filter(r => !seen.has(r.name) && !notProd.has(r.name)), skipped = it.all.filter(r => notProd.has(r.name));
+  const missing = stats.flatMap(x => (x.v && x.v.missing || []).map(n => `${x.dish.name}: ${n}`));
+  const grand = routes.reduce((n, r) => n + r.tot, 0) || 1;
+  const body = routes.map(r => `<details class="kitProd" data-kopen="${esc(r.x.dish.id)}"${open[r.x.dish.id] ? ' open' : ''}><summary><b>${esc(r.x.dish.name)}</b> <span class="z">${r.rows.length} product${r.rows.length === 1 ? '' : 's'} · ${wkf(r.tot)} a week · ${Math.round(r.tot / grand * 100)}% of everything on a route</span></summary>
+    <table class="dMix kitTbl"><thead><tr><th>Product on the till</th><th class="c">A week</th><th class="c">Of the route</th></tr></thead><tbody>${r.rows.map(p => `<tr><td>${esc(p.name)}${p.cats && p.cats.length ? `<div class="z">${esc(p.cats.join(' · '))}</div>` : ''}</td><td class="c">${wkf(p.qty)}</td><td class="c">${Math.round(p.qty / (r.tot || 1) * 100)}%</td></tr>`).join('')}</tbody></table></details>`).join('');
+  return `<div class="sHead" style="margin-top:18px"><b>Every product, by route</b><span class="note">${it.all.length - un.length - skipped.length} of ${it.all.length} till names sit on a route${skipped.length ? `, ${skipped.length} is not a product` : ''}${un.length ? ` · <b>${un.length} not placed yet</b>` : ' · none left out'}</span></div>
+    <div class="z" style="font-size:11px;color:var(--grey);margin-bottom:6px">The same product sold under a different name on each menu (the shop, the apps, the website) is listed under each name; a route adds them together. Drinks, dips and sauces are counted at packaging, not on a cooking route.</div>
+    ${body}
+    ${un.length ? `<details class="kitProd" data-kopen="__un"${open.__un ? ' open' : ''}><summary><b style="color:var(--bad)">Unmapped items</b> <span class="z">${un.length} till names on no route · ${wkf(un.reduce((n, r) => n + r.qty, 0))} a week</span></summary><table class="dMix kitTbl"><tbody>${un.map(p => `<tr><td>${esc(p.name)}<div class="z">${esc((p.cats || []).join(' · '))}</div></td><td class="c">${wkf(p.qty)}</td></tr>`).join('')}</tbody></table></details>` : ''}
+    ${skipped.length ? `<div class="z" style="font-size:11px;margin-top:6px">Not products, left out: ${skipped.map(r => esc(r.name)).join(', ')}.</div>` : ''}
+    ${missing.length ? `<div class="z" style="font-size:11px;margin-top:6px;color:var(--bad)">Named on a route but not on the till report: ${missing.map(esc).join('; ')}.</div>` : ''}`;
+}
+function kitStats(k, d) {
+  return k.dishes.map(dish => { const p = kitPlan(k, dish), v = kitVol(d, dish), wk = v ? v.week * v.share : null; return { dish, p, v, wk }; });
+}
+function kitchenPanel(cur, k, d) {
+  const S2 = S.kit = S.kit && S.kit.dash === cur.id ? S.kit : { dash: cur.id, dish: (k.dishes[0] || {}).id, t: 0, speed: 8, playing: false, edit: false, heat: false, trail: true, sort: 'stations' };
+  const stats = kitStats(k, d), sel = stats.find(x => x.dish.id === S2.dish) || stats[0];
+  if (!sel) return `<div class="sHead"><b>${esc(k.location || cur.name)} · Kitchen</b></div><div class="none">No dishes in the kitchen model yet.</div>`;
+  S2.dish = sel.dish.id;
+  const touch = {}; stats.forEach(x => x.p.m.list.forEach(id => { const e = touch[id] = touch[id] || { n: 0, wk: 0, dishes: [] }; e.n++; e.wk += x.wk || 0; e.dishes.push(x.dish.name); }));
+  const maxWk = Math.max(1, ...Object.values(touch).map(e => e.wk)), onRoute = new Set(sel.p.m.list);
+  // the map
+  const zones = (k.zones || []).map(z => `<g class="zone"><rect x="${z.x}" y="${z.y}" width="${z.w}" height="${z.h}" rx="1.4"/><text x="${z.x + 1.2}" y="${z.y + 2.8}">${esc(z.name)}</text></g>`).join('');
+  const stations = k.stations.map(s => { const e = touch[s.id], f = S2.heat && e ? `style="fill:color-mix(in srgb, var(--bad) ${Math.round(8 + 62 * e.wk / maxWk)}%, var(--panel))"` : '';
+    return `<g class="st${onRoute.has(s.id) ? ' on' : ''}" data-kst="${esc(s.id)}" transform="translate(${s.x} ${s.y})"><title>${esc(s.name)}${s.does ? ' · ' + esc(s.does) : ''}${e ? ` · ${e.n} of ${stats.length} mapped dishes pass here${e.wk ? `, about ${Math.round(e.wk).toLocaleString('en-GB')} plates a week` : ''}` : ''}${s.src ? ' · ' + esc(s.src) : ''}</title>
+      <rect width="${s.w}" height="${s.h}" rx="1" ${f}/><text x="0.9" y="2.4">${esc(s.name)}</text><text class="k" x="0.9" y="4.2">${s.w >= 14 && s.kind ? esc(s.kind) + (e ? ' · ' : '') : ''}${e ? e.n + ' dishes' : ''}</text></g>`; }).join('');
+  const stops = sel.p.rows.map(r => r.s.at).reduce((a, id) => (a[a.length - 1] !== id ? a.concat(id) : a), []).map(id => k.stations.find(x => x.id === id)).filter(Boolean).map(kitC);
+  const route = stops.flatMap((p, i) => i ? kitPath(k, stops[i - 1], p).slice(1) : [p]).map(p => `${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(' ');
+  const walls = (k.walls || []).map(w => `<rect class="wall" x="${w.x}" y="${w.y}" width="${w.w}" height="${w.h}"><title>${esc(w.name || 'Wall')}</title></rect>`).join('');
+  const who = k.staff.map(p => { const s = k.stations.find(x => x.id === p.home) || { x: 0, y: 0, w: 0, h: 0 }, c = kitCol(k, p.id), o = kitOff(k, p.id);
+    return `<path class="trail" id="kitTr-${esc(p.id)}" stroke="${c}" d=""/><g class="who" id="kitW-${esc(p.id)}" transform="translate(${kitC(s).x + o.x} ${kitC(s).y + o.y})"><title>${esc(p.role)}${p.src ? ' · ' + esc(p.src) : ''}</title><circle class="r" r="3.1" stroke="${c}"/><circle class="b" r="2.2" fill="${c}"/><text>${esc(p.short || p.role.slice(0, 2).toUpperCase())}</text></g>`; }).join('');
+  const svg = `<svg viewBox="0 0 ${k.w} ${k.h}" id="kitSvg" role="img" aria-label="Kitchen layout">${zones}${walls}<polyline class="route" points="${route}"/>${stations}${who}<g class="dish" id="kitDish" transform="translate(${sel.p.start.x} ${sel.p.start.y})"><circle r="1.4"/><text x="2" y="3.4">${esc(sel.dish.short || sel.dish.name)}</text></g></svg>`;
+  // the side: pick a dish, play it, read the steps
+  const groups = [...new Set(k.dishes.map(x => x.group || 'Dishes'))];
+  const pick = `<select data-kit="dish">${groups.map(g => `<optgroup label="${esc(g)}">${k.dishes.filter(x => (x.group || 'Dishes') === g).map(x => `<option value="${esc(x.id)}"${x.id === sel.dish.id ? ' selected' : ''}>${esc(x.name)}${x.improve ? ' ✓' : ''}</option>`).join('')}</optgroup>`).join('')}</select>`;
+  const role = id => (k.staff.find(p => p.id === id) || {}).role || '—', stn = id => (k.stations.find(s => s.id === id) || {}).name || id;
+  const steps = sel.p.rows.map(r => `<li data-ki="${r.i}"><b>${r.i + 1} · ${esc(stn(r.s.at))}</b> · ${esc(r.s.do || '')}<br><span class="z">${r.s.who ? esc(role(r.s.who)) : 'on the screen'}${r.s.sec ? ' · ' + kitSec(r.s.sec) + ' hands-on' : ''}${r.s.wait ? ' · ' + kitSec(r.s.wait) + ' cooking' : ''}${r.s.src ? ' · ' + esc(r.s.src) : ''}</span></li>${r.walks.map(w => `<li class="walk">↳ ${esc(w)}</li>`).join('')}`).join('');
+  const mm = sel.p.m, vol = sel.v;
+  const dm = `<div class="kitDm"><div><b>${mm.stations}</b><span>stations touched</span></div><div><b>${mm.handoffs}</b><span>hand-offs</span></div><div><b>${mm.walks}</b><span>walks · ${kitM(k, mm.dist)}</span></div><div><b>${kitSec(mm.hands + mm.walkSec)}</b><span>hands-on + walking</span></div></div>
+    <div class="z" style="font-size:11px;color:var(--grey)">One at a time, order to hand-over takes about <b>${kitSec(mm.hands + mm.wait + mm.lineSec)}</b>${mm.wait ? `, ${kitSec(mm.wait)} of it cooking (the replay shortens cooking)` : ''}.</div>
+    ${(sel.dish.timed || []).length ? `<div class="z" style="font-size:11px;color:var(--grey)">Timed on the floor, order in to hand-over: ${sel.dish.timed.map(x => `<b>${kitSec(x.secs)}</b> (${esc(x.channel)}, ${esc(x.in)}${x.mixed ? ', ' + esc(x.mixed) : ''})`).join(' · ')}. The model's one-at-a-time figure leaves out queues and other orders.</div>` : ''}
+    ${vol ? `<div class="z" style="font-size:11px;color:var(--grey)">About <b>${Math.round(sel.wk).toLocaleString('en-GB')} a week</b> from ${esc(vol.label)}${vol.share !== 1 ? ` (${Math.round(vol.share * 100)}% of it)` : ''}: ${Math.round(mm.walks * sel.wk).toLocaleString('en-GB')} walks, ${kitM(k, mm.dist * sel.wk)} and ${Math.round((mm.hands + mm.walkSec) * sel.wk / 3600)} staff hours a week.</div>` : '<div class="z" style="font-size:11px">No till volume linked to this dish.</div>'}`;
+  const side = `<div class="kitSide"><div class="kitCol"><div><h4>Feed a dish in</h4>${pick}</div>
+    <div class="kitPlay"><button type="button" class="pri" data-kit="play">${S2.playing ? 'Pause' : S2.t > 0 && S2.t < sel.p.end ? 'Resume' : 'Play'}</button><button type="button" data-kit="reset">Restart</button>${[4, 8, 20].map(x => `<button type="button" data-kit="speed" data-v="${x}" class="${S2.speed === x ? 'on' : ''}">${x}×</button>`).join('')}<span class="kitClock" id="kitClock">0s / ${kitSec(sel.p.end)}</span></div>
+    ${dm}
+    <div><label style="font-size:12px"><input type="checkbox" data-kit="improve"${sel.dish.improve ? ' checked' : ''}> Mark this dish for improvement</label>${sel.dish.idea ? `<div class="z" style="font-size:11px;margin-top:4px;color:var(--grey)">${esc(sel.dish.idea)}</div>` : ''}</div></div>
+    <div class="kitCol"><div><h4>The route, step by step</h4><ol class="kitSteps" id="kitSteps">${steps}</ol></div></div></div>`;
+  const legend = `<div class="kitWho">${k.staff.map(p => `<span><i style="background:${kitCol(k, p.id)}"></i>${esc(p.role)}</span>`).join('')}</div>`;
+  // the table: every dish, sorted by what it costs in labour
+  const sorters = { stations: x => x.p.m.stations, handoffs: x => x.p.m.handoffs, walks: x => x.p.m.walks, week: x => (x.wk || 0) * (x.p.m.hands + x.p.m.walkSec) };
+  const rows = stats.slice().sort((a, b) => (sorters[S2.sort] || sorters.stations)(b) - (sorters[S2.sort] || sorters.stations)(a) || a.dish.name.localeCompare(b.dish.name));
+  const th = (key, label) => `<th class="c${S2.sort === key ? ' on' : ''}" data-ksort="${key}">${label}${S2.sort === key ? ' ↓' : ''}</th>`;
+  const top = f => { const v = stats.map(f); return Math.max(...v) > Math.min(...v) ? Math.max(...v) : Infinity; }; // red is the worst on the menu in that column (most dishes tie, so a cut-off reddens the lot)
+  const lim = { stations: top(x => x.p.m.stations), handoffs: top(x => x.p.m.handoffs), walks: top(x => x.p.m.walks) };
+  const hot = (v, key) => v >= lim[key] ? ' class="c hot"' : ' class="c"';
+  const table = `<table class="dMix kitTbl"><thead><tr><th>Dish</th>${th('stations', 'Stations')}${th('handoffs', 'Hand-offs')}${th('walks', 'Walks')}<th class="c">Per plate</th><th class="c" title="Order in to hand-over on 6 Nov, orders that were only this route">Timed</th><th class="c">A week</th>${th('week', 'Staff hours a week')}<th class="c">Improve</th><th>Note</th></tr></thead><tbody>${rows.map(x => { const mm2 = x.p.m, per = mm2.hands + mm2.walkSec;
+    return `<tr data-kdish="${esc(x.dish.id)}" class="${x.dish.id === sel.dish.id ? 'sel' : ''}"><td><b>${esc(x.dish.name)}</b><div class="z">${esc(x.dish.group || '')}</div></td><td${hot(mm2.stations, 'stations')}>${mm2.stations}</td><td${hot(mm2.handoffs, 'handoffs')}>${mm2.handoffs}</td><td${hot(mm2.walks, 'walks')}>${mm2.walks}<div class="z">${kitM(k, mm2.dist)}</div></td><td class="c">${kitSec(per)}</td><td class="c">${(() => { const t = (x.dish.timed || []).filter(q => !q.mixed); return t.length ? kitSec(t.reduce((a, q) => a + q.secs, 0) / t.length) : '—'; })()}</td><td class="c">${x.wk ? Math.round(x.wk).toLocaleString('en-GB') : '—'}</td><td class="c"><b>${x.wk ? (per * x.wk / 3600).toFixed(1) : '—'}</b></td>
+      <td class="c"><input type="checkbox" data-kimp="${esc(x.dish.id)}"${x.dish.improve ? ' checked' : ''}></td><td><input type="text" data-knote="${esc(x.dish.id)}" value="${esc(x.dish.note || '')}" placeholder="what to change"></td></tr>`; }).join('')}</tbody></table>`;
+  // who carries the load, and which stations everything runs through
+  const load = k.staff.map(p => { let walks = 0, hrs = 0, n = 0; stats.forEach(x => { const w = x.p.walks.filter(q => q.who === p.id).length, h = x.p.works.filter(q => q.who === p.id).reduce((a, q) => a + q.t1 - q.t0, 0); if (w || h) n++; walks += w * (x.wk || 0); hrs += h * (x.wk || 0) / 3600; }); return { p, walks, hrs, n }; });
+  const mx = Math.max(1, ...load.map(l => l.walks));
+  const peopleBars = load.map(l => `<div class="sBar"><div class="t"><span><i style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${kitCol(k, l.p.id)};margin-right:5px"></i>${esc(l.p.role)}</span><span>${l.n} dishes · ${Math.round(l.walks).toLocaleString('en-GB')} walks a week</span></div><div class="b"><i style="width:${Math.round(l.walks / mx * 100)}%;background:${kitCol(k, l.p.id)}"></i></div></div>`).join('');
+  const stBars = Object.entries(touch).sort((a, b) => b[1].wk - a[1].wk || b[1].n - a[1].n).slice(0, 8).map(([id, e]) => `<div class="sBar"><div class="t"><span>${esc(stn(id))}</span><span>${e.n} dishes${e.wk ? ' · ' + Math.round(e.wk).toLocaleString('en-GB') + ' plates a week' : ''}</span></div><div class="b"><i style="width:${Math.round(e.wk / maxWk * 100)}%"></i></div></div>`).join('');
+  const nImp = k.dishes.filter(x => x.improve).length, avg = (f) => (stats.reduce((a, x) => a + f(x), 0) / stats.length).toFixed(1);
+  const wkHrs = stats.reduce((a, x) => a + (x.wk || 0) * (x.p.m.hands + x.p.m.walkSec) / 3600, 0), wkWalk = stats.reduce((a, x) => a + (x.wk || 0) * x.p.m.dist, 0);
+  return `<div class="sHead"><b>${esc(k.location || cur.name)} · Kitchen</b><span class="note">${esc(k.basis || '')}</span></div>
+    <div class="sKpis" style="grid-template-columns:repeat(auto-fit,minmax(150px,1fr))">
+      <div class="sK"><div class="v">${stats.length}</div><div class="l">Routes mapped</div><div class="pvPrev">${k.stations.length} stations · ${k.staff.length} roles</div></div>
+      <div class="sK"><div class="v">${avg(x => x.p.m.stations)}</div><div class="l">Stations a dish touches</div><div class="pvPrev">${avg(x => x.p.m.handoffs)} hand-offs on average</div></div>
+      <div class="sK"><div class="v">${Math.round(wkHrs).toLocaleString('en-GB')}</div><div class="l">Staff hours a week</div><div class="pvPrev">mapped dishes × till volumes, hands-on and walking</div></div>
+      <div class="sK"><div class="v">${(wkWalk * (k.metresPerUnit || 0.1) / 1000).toFixed(1)} km</div><div class="l">Walked a week</div><div class="pvPrev">${esc(k.scaleNote || 'scale assumed')}</div></div>
+      <div class="sK"><div class="v">${nImp}</div><div class="l">Marked to improve</div><div class="pvPrev">tick a dish in the table or beside the map</div></div></div>
+    <div class="kitTop"><div><div class="kitMap${S2.edit ? ' edit' : ''}" id="kitMap">${svg}
+      <div class="kitBar">${legend}<span class="sp"></span><button type="button" data-kit="trail" class="${S2.trail ? 'on' : ''}">Walk lines</button><button type="button" data-kit="heat" class="${S2.heat ? 'on' : ''}">Busiest stations</button><button type="button" data-kit="edit" class="${S2.edit ? 'on' : ''}">${S2.edit ? 'Done moving' : 'Move stations'}</button><button type="button" data-kit="full" class="${S.kitFull ? 'on' : ''}">${S.kitFull ? 'Exit full screen' : 'Full screen ⤢'}</button></div></div>
+      ${S2.edit ? '<div class="kitSrc">Drag a station to where it really stands. Each move is saved to the kitchen file as you let go, and the walks are worked out again.</div>' : ''}</div>${side}</div>
+    <div class="sBars" style="margin-top:18px"><div><h4>Who walks the most · a week, across the mapped dishes</h4>${peopleBars}</div><div><h4>Where every dish goes through · plates a week</h4>${stBars}</div></div>
+    <div class="sHead" style="margin-top:18px"><b>Dish by dish</b><span class="note">click a row to play it · red marks the worst on the menu in that column · sort by a column heading</span></div>
+    ${table}
+    ${kitProducts(k, d, stats, S2)}
+    ${k.gaps && k.gaps.length ? `<div class="sHead" style="margin-top:18px"><b>To confirm on site</b><span class="note">what the map is still guessing</span></div><ul class="rvIns">${k.gaps.map(g => `<li>${esc(g)}</li>`).join('')}</ul>` : ''}
+    <div class="kitSrc">${esc(k.source || '')} Times are per plate and assumed until timed on site; a step's source is shown under it. Walking is worked out at 1.2 m a second between station centres. Weekly counts come from the till's item mix (${d && d.items ? fmtD(d.items.from) + ' ' + d.items.from.slice(0, 4) + ' to ' + fmtD(d.items.to) + ' ' + d.items.to.slice(0, 4) : 'not loaded'}).</div>`;
+}
+// the run: staff markers, the dish and the walk lines at time t (seconds on the kitchen's own clock)
+function kitDraw(k, plan, t) {
+  const lerp = (a, b, f) => ({ x: a.x + (b.x - a.x) * f, y: a.y + (b.y - a.y) * f });
+  const ctr = id => kitC(k.stations.find(x => x.id === id));
+  k.staff.forEach(p => {
+    const g = document.getElementById('kitW-' + p.id), tr = document.getElementById('kitTr-' + p.id); if (!g) return;
+    let pos = ctr(p.home), d = ''; const ws = plan.walks.filter(w => w.who === p.id);
+    for (const w of ws) { if (t < w.t0) break; const f = Math.min(1, (t - w.t0) / (w.t1 - w.t0)), q = kitAt(w.pts, f); pos = q; d += 'M' + w.pts.slice(0, q.i).concat(q).map(p => `${p.x.toFixed(1)} ${p.y.toFixed(1)}`).join('L'); }
+    const o = kitOff(k, p.id); g.setAttribute('transform', `translate(${(pos.x + o.x).toFixed(2)} ${(pos.y + o.y).toFixed(2)})`);
+    g.classList.toggle('busy', plan.works.some(w => w.who === p.id && t >= w.t0 && t < w.t1));
+    if (tr) tr.setAttribute('d', S.kit.trail ? d : '');
+  });
+  let dp = plan.start; for (const mv of plan.moves) { if (t < mv.t0) break; const f = Math.min(1, (t - mv.t0) / (mv.t1 - mv.t0)); dp = mv.pts ? kitAt(mv.pts, f) : lerp(mv.a, mv.b, f); }
+  const dg = document.getElementById('kitDish'); if (dg) dg.setAttribute('transform', `translate(${dp.x.toFixed(2)} ${dp.y.toFixed(2)})`);
+  const cur = plan.rows.findIndex(r => t >= r.t0 && t < r.t1), now = cur < 0 && t >= plan.end ? plan.rows.length : cur;
+  document.querySelectorAll('#kitSteps li[data-ki]').forEach(li => { const i = +li.dataset.ki; li.classList.toggle('now', i === now); li.classList.toggle('done', i < now); });
+  const atNow = cur >= 0 ? plan.rows[cur].s.at : null; document.querySelectorAll('#kitSvg .st').forEach(g => g.classList.toggle('now', g.dataset.kst === atNow));
+  const c = document.getElementById('kitClock'); if (c) c.textContent = `${kitSec(Math.min(t, plan.end))} / ${kitSec(plan.end)}`;
+}
+function kitCtx() { // the kitchen being shown, or null
+  const [, dashId, sub] = /^dash-(.+?)(?:--(\w+))?$/.exec(S.cat || '') || []; if (sub !== 'kitchen') return null;
+  const cur = (S.dash || []).find(x => x.id === dashId), k = cur && cur.data && cur.data.kitchen; if (!k || !S.kit) return null;
+  const dish = k.dishes.find(x => x.id === S.kit.dish); return dish ? { cur, k, dish, plan: kitPlan(k, dish) } : null;
+}
+function kitLoop() {
+  const c = kitCtx(); if (!c || !S.kit.playing) { if (S.kit) S.kit.raf = 0; return; }
+  const now = performance.now(), dt = S.kit.last ? (now - S.kit.last) / 1000 : 0; S.kit.last = now;
+  S.kit.t = Math.min(c.plan.end, S.kit.t + dt * S.kit.speed); kitDraw(c.k, c.plan, S.kit.t);
+  if (S.kit.t >= c.plan.end) { S.kit.playing = false; S.kit.raf = 0; const b = document.querySelector('[data-kit="play"]'); if (b) b.textContent = 'Play'; return; }
+  S.kit.raf = requestAnimationFrame(kitLoop);
+}
+function kitFullSet(on) { // the page fills the window; the browser's own full screen too where it has one (an iPhone has none, so the pop-out alone)
+  const el = $('salesPanel'); if (!el) return; S.kitFull = on; el.classList.toggle('kitFull', on);
+  if (on && el.requestFullscreen && !document.fullscreenElement) el.requestFullscreen().catch(() => {});
+  if (!on && document.fullscreenElement) document.exitFullscreen().catch(() => {});
+  if (on) setTimeout(() => { const t = el.querySelector('.kitTop'); if (t) el.scrollTop = t.offsetTop - 12; }, 60);
+}
+document.addEventListener('toggle', e => { const el = e.target; if (el.dataset && el.dataset.kopen && S.kit) (S.kit.open = S.kit.open || {})[el.dataset.kopen] = el.open; }, true); // the product list keeps its open routes across a redraw
+document.addEventListener('fullscreenchange', () => { if (!document.fullscreenElement && S.kitFull) { kitFullSet(false); if (kitCtx()) kitRender(); } });
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && S.kitFull && !document.fullscreenElement) { kitFullSet(false); if (kitCtx()) kitRender(); } });
+function kitRender() { S.kitDrawn = ''; renderSales(); const c = kitCtx(); if (c) kitDraw(c.k, c.plan, S.kit.t); }
+let kitSaveT = 0;
+function kitSave(patch) { // positions and marks go back to the kitchen file; the page keeps what it has meanwhile
+  const c = kitCtx(); if (!c) return;
+  clearTimeout(kitSaveT); kitSaveT = setTimeout(() => api('/dashboards/' + c.cur.id + '/kitchen', { method: 'POST', body: patch }).catch(e => alert('Could not save the kitchen: ' + e.message)), patch.marks ? 400 : 0);
+}
+document.addEventListener('click', e => {
+  if (!e.target.closest('#salesPanel')) return; const c = kitCtx(); if (!c) return;
+  const b = e.target.closest('[data-kit]'), so = e.target.closest('[data-ksort]'), row = e.target.closest('tr[data-kdish]');
+  if (so) { S.kit.sort = so.dataset.ksort; kitRender(); return; }
+  if (row && !e.target.closest('input')) { S.kit.dish = row.dataset.kdish; S.kit.t = 0; S.kit.playing = true; S.kit.last = 0; kitRender(); if (!S.kit.raf) S.kit.raf = requestAnimationFrame(kitLoop); document.getElementById('kitMap').scrollIntoView({ behavior: 'smooth', block: 'nearest' }); return; }
+  if (!b || b.tagName === 'SELECT' || b.type === 'checkbox') return;
+  const a = b.dataset.kit;
+  if (a === 'play') { if (S.kit.t >= c.plan.end) S.kit.t = 0; S.kit.playing = !S.kit.playing; S.kit.last = 0; b.textContent = S.kit.playing ? 'Pause' : 'Resume'; if (S.kit.playing && !S.kit.raf) S.kit.raf = requestAnimationFrame(kitLoop); return; }
+  if (a === 'reset') { S.kit.t = 0; S.kit.playing = true; S.kit.last = 0; kitRender(); if (!S.kit.raf) S.kit.raf = requestAnimationFrame(kitLoop); return; }
+  if (a === 'speed') { S.kit.speed = +b.dataset.v; document.querySelectorAll('[data-kit="speed"]').forEach(x => x.classList.toggle('on', x === b)); return; }
+  if (a === 'trail' || a === 'heat' || a === 'edit') { S.kit[a] = !S.kit[a]; if (a === 'edit') S.kit.playing = false; kitRender(); }
+  if (a === 'full') { kitFullSet(!S.kitFull); kitRender(); }
+});
+document.addEventListener('change', e => {
+  const c = kitCtx(); if (!c || !e.target.closest('#salesPanel')) return; const el = e.target;
+  if (el.dataset.kit === 'dish') { S.kit.dish = el.value; S.kit.t = 0; S.kit.playing = false; kitRender(); return; }
+  const id = el.dataset.kit === 'improve' ? c.dish.id : el.dataset.kimp || el.dataset.knote; if (!id) return;
+  const dish = c.k.dishes.find(x => x.id === id); if (!dish) return;
+  if (el.type === 'checkbox') dish.improve = el.checked; else dish.note = el.value.slice(0, 300);
+  kitSave({ marks: { [id]: { improve: !!dish.improve, note: dish.note || '' } } }); if (el.type === 'checkbox') kitRender();
+});
+// Move stations: drag a station; its new place is saved when it is let go
+document.addEventListener('pointerdown', e => {
+  const g = e.target.closest('#kitMap.edit .st'); if (!g) return; const c = kitCtx(); if (!c) return;
+  const svg = document.getElementById('kitSvg'), s = c.k.stations.find(x => x.id === g.dataset.kst); if (!s) return;
+  const pt = ev => { const p = svg.createSVGPoint(); p.x = ev.clientX; p.y = ev.clientY; return p.matrixTransform(svg.getScreenCTM().inverse()); };
+  const p0 = pt(e), x0 = s.x, y0 = s.y; g.classList.add('drag'); g.setPointerCapture(e.pointerId); e.preventDefault();
+  const mv = ev => { const p = pt(ev); s.x = Math.max(0, Math.min(c.k.w - s.w, Math.round(x0 + p.x - p0.x))); s.y = Math.max(0, Math.min(c.k.h - s.h, Math.round(y0 + p.y - p0.y))); g.setAttribute('transform', `translate(${s.x} ${s.y})`); };
+  const up = () => { g.removeEventListener('pointermove', mv); g.removeEventListener('pointerup', up); g.classList.remove('drag'); if (s.x !== x0 || s.y !== y0) { kitSave({ positions: { [s.id]: { x: s.x, y: s.y } } }); kitRender(); } };
+  g.addEventListener('pointermove', mv); g.addEventListener('pointerup', up);
+});
 // Guest feedback (V3.13, 3 Nov): what Uber Eats' problem reports and the Google reviews say together, on the main dashboard. Every figure and
 // sentence is worked out here from the same data as the Delivery and Reviews pages (no model), so it moves when a new upload or Takeout lands.
 // Uber counts only Uber orders; Google counts whoever chose to review, so the two are read side by side, never added together.
@@ -2415,8 +2719,15 @@ function renderSales() {
   const el = $('salesPanel'); if (!el || !isDash(S.cat)) return;
   const [, dashId, sub] = /^dash-(.+?)(?:--(\w+))?$/.exec(S.cat) || [];
   const cur = (S.dash || []).find(x => x.id === dashId), d = cur && cur.data;
-  $('dashTitle').textContent = cur ? cur.name + (sub === 'delivery' ? ' · Delivery' : sub === 'reviews' ? ' · Reviews' : '') : 'Dashboard';
+  $('dashTitle').textContent = cur ? cur.name + (sub === 'delivery' ? ' · Delivery' : sub === 'reviews' ? ' · Reviews' : sub === 'kitchen' ? ' · Kitchen' : '') : 'Dashboard';
+  if (sub !== 'kitchen' && S.kitFull) kitFullSet(false); // full screen belongs to the Kitchen page only
   if (!cur) { el.innerHTML = '<div class="none" style="padding:14px">Loading…</div>'; return; }
+  if (sub === 'kitchen') { // drawn once per visit, so the two-minute refresh does not stop a dish halfway; the page's own buttons redraw it
+    if (!d || !d.kitchen) { el.innerHTML = '<div class="none" style="padding:14px">No kitchen model yet. Name a data file under "kitchen" in this dashboard\'s entry in office.config.</div>'; return; }
+    if (S.kitDrawn === cur.id && el.querySelector('#kitMap')) return;
+    el.innerHTML = kitchenPanel(cur, d.kitchen, d); S.kitDrawn = cur.id; return;
+  }
+  S.kitDrawn = '';
   if (sub === 'reviews') { el.innerHTML = d && d.reviews && d.reviews.available ? reviewsPanel(d.reviews) : '<div class="none" style="padding:14px">No Google reviews yet. Export the Business Profile from takeout.google.com and leave the zip in Downloads.</div>'; return; }
   if (!d || !d.available) { el.innerHTML = `<div class="sHead"><b>${esc(cur.name)}</b><span class="note">No sales data yet</span></div><div class="none">Drop the reports into the office upload box (a zip of the monthly reports works) and this page fills itself in.</div>`; return; }
   if (sub === 'delivery') { el.innerHTML = d.delivery && d.delivery.available ? fixCard(cur) + deliveryPanel(d, d.yoy && d.yoy.ytd ? d.yoy : null, d.currency || '£') : '<div class="none" style="padding:14px">No delivery orders yet. Upload a Deliverect order export into the office.</div>'; return; }
@@ -2759,6 +3070,8 @@ loadTrackers(); setInterval(() => { if (!document.hidden && !Object.values(S.tkB
   const lock = (v, msg) => { busy = v; (window.AIOS_PE = window.AIOS_PE || {}).busy = v; window.renderHierarchy?.(); GO.disabled = v; T.disabled = v; if (msg !== undefined) ST.textContent = msg; };
   const post = async (url, body) => { const r = await fetch(url, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) }); return r; };
 
+  const fade = c => setTimeout(() => { c.style.transition = 'opacity .4s'; c.style.opacity = '0'; setTimeout(() => c.remove(), 450); }, 1200); // an answered card has done its job: show its "Sent" line for a moment, then drop it off the list
+
   async function start() {
     const text = T.value.trim(); if (!text || busy) return;
     if (!on()) return toChief(text, false);
@@ -2773,7 +3086,7 @@ loadTrackers(); setInterval(() => { if (!document.hidden && !Object.values(S.tkB
   function failCard(text, e) {
     const c = document.createElement('div'); c.className = 'pec';
     c.innerHTML = `<div class="pk">Prompt engineer</div><div class="rb">It couldn't check this one (${x(String(e.message || e).slice(0, 140))}). Send your words to the Chief of Staff as they are?</div><div class="r"><button type="button" class="go" data-y>YES, SEND AS IS</button><button type="button" data-n>NO</button></div>`;
-    const done = () => { c.classList.add('off'); c.querySelectorAll('button').forEach(b => { b.disabled = true; }); };
+    const done = () => { c.classList.add('off'); c.querySelectorAll('button').forEach(b => { b.disabled = true; }); fade(c); };
     c.querySelector('[data-y]').addEventListener('click', () => { done(); toChief(text, false); });
     c.querySelector('[data-n]').addEventListener('click', done);
     OUT.prepend(c);
@@ -2797,7 +3110,7 @@ loadTrackers(); setInterval(() => { if (!document.hidden && !Object.values(S.tkB
       if (!c.classList.contains('off')) { go.disabled = left > 0; stx.textContent = left ? `Answer yes or no ${left === 1 ? 'to the one above' : `to each (${left} left)`}, then send.` : 'Ready. It goes to the Chief of Staff, who adds it to the right desk.'; }
     };
     c.querySelectorAll('.pp').forEach(el => el.addEventListener('click', e => { const b = e.target.closest('button[data-a]'); if (!b || c.classList.contains('off')) return; answers[+el.dataset.i] = b.dataset.a === '1'; draw(); }));
-    const finish = msg => { c.classList.add('off'); c.querySelectorAll('button').forEach(b => { b.disabled = true; }); stx.textContent = msg; };
+    const finish = msg => { c.classList.add('off'); c.querySelectorAll('button').forEach(b => { b.disabled = true; }); stx.textContent = msg; fade(c); };
     go.addEventListener('click', () => { if (busy) return; finish('Sent to the Chief of Staff.'); toChief(briefText(text, r, answers), true, text); });
     raw.addEventListener('click', () => { if (busy) return; finish('Sent as you typed it.'); toChief(text, false); });
     draw(); OUT.prepend(c);
@@ -2908,11 +3221,15 @@ loadTrackers(); setInterval(() => { if (!document.hidden && !Object.values(S.tkB
     if (t.revisions && stage === 4) badges.push(`<span class="tag">Revision ${t.revisions + 1}</span>`);
     if (lp === 'review') badges.push(`<span class="tag rv">${lr.round ? `Lead rereading · after rework ${lr.round}` : 'Lead reading the first draft'}</span>`);
     if (lp === 'rework') badges.push(`<span class="tag rv">Lead rework · round ${lr.round}</span>`);
-    if (stage === 4 && lp === 'signed') badges.push(`<span class="tag ok">Signed off by ${esc(lead ? lead.name : 'the lead')}${lr.round ? ` · ${lr.round} round${lr.round > 1 ? 's' : ''}` : ''}${lr.unreadable ? ' · unread' : ''}</span>`);
-    if (stage === 4 && lp === 'escalated') badges.push(`<span class="tag rv">Escalated by ${esc(lead ? lead.name : 'the lead')} · ${lr.round} round${lr.round > 1 ? 's' : ''}</span>`);
+    if (stage === 4 && lp === 'signed') badges.push(`<span class="tag ok" title="Signed off by ${esc(lead ? lead.name : 'the lead')}">Lead signed off${lr.round ? ` · ${lr.round} round${lr.round > 1 ? 's' : ''}` : ''}${lr.unreadable ? ' · unread' : ''}</span>`);
+    if (stage === 4 && lp === 'escalated') badges.push(`<span class="tag rv" title="Escalated by ${esc(lead ? lead.name : 'the lead')}">Lead escalated · ${lr.round} round${lr.round > 1 ? 's' : ''}</span>`);
     const open = (stage === 4 && lp === 'escalated' && lr.open) ? `<div class="hxt-o">Still open: ${esc(String(lr.open).slice(0, 220))}</div>` : (lp === 'rework' && lr.open ? `<div class="hxt-o">Lead asked: ${esc(String(lr.open).slice(0, 160))}</div>` : '');
     const since = stage === 4 ? t.waitingAt : t.startedAt || t.addedAt;
-    return `<div class="hxt-c"><div class="hxt-t">${esc(t.title)}</div><div class="hxt-m"><span>${esc(a ? a.name : t.agent)}</span>${since ? `<span>${ago(since)}</span>` : ''}</div>${badges.length ? `<div class="hxt-b">${badges.join('')}</div>` : ''}${open}${stage === 4 ? `<a class="btn" href="/#review=${encodeURIComponent(t.id)}" target="agentsOffice">REVIEW IN THE OFFICE ↗</a>` : ''}</div>`;
+    const ls = lr.lesson, dn = esc(a ? a.name : t.agent), ln = esc(lead ? lead.name : 'The lead'); // the lead's proposed lesson (leadlessons.mjs): only the owner's yes writes it
+    const lesson = !(stage === 4 && ls) ? '' : ls.status === 'proposed'
+      ? `<div class="hxt-ls"><span class="k">Lesson from the lead</span>${ln} suggests adding this rule to ${ls.target === 'skill' ? esc(ls.skill) : `${dn}'s standing rules`}: “${esc(ls.rule)}”${/[.!?]$/.test(ls.rule) ? '' : '.'} Tell ${dn} to adopt it from now on?${ls.shared ? `<span class="sh">${esc(ls.skill)} is shared: this affects every desk.</span>` : ''}${ls.refused ? `<span class="why">Not written: ${esc(ls.refused)}</span>` : ''}<div class="yn"><button type="button" class="primary" data-hxlesson="yes" data-task="${esc(t.id)}">YES</button><button type="button" data-hxlesson="no" data-task="${esc(t.id)}">NO</button></div></div>`
+      : `<div class="hxt-ls done">${ls.status === 'applied' ? `Lesson adopted into ${ls.target === 'skill' ? esc(ls.skill) : `${dn}'s standing rules`}${ls.skipped ? ' (it was already there)' : ''}.` : 'Lesson declined. Nothing was written.'}</div>`;
+    return `<div class="hxt-c"><div class="hxt-t">${esc(t.title)}</div><div class="hxt-m"><span>${esc(a ? a.name : t.agent)}</span>${since ? `<span>${ago(since)}</span>` : ''}</div>${badges.length ? `<div class="hxt-b">${badges.join('')}</div>` : ''}${open}${lesson}${stage === 4 ? `<a class="btn" href="/#review=${encodeURIComponent(t.id)}" target="agentsOffice">REVIEW IN THE OFFICE ↗</a>` : ''}</div>`;
   }
   function renderTrail(blocks) {
     const box = el('hxTrail'); if (!box) return;
@@ -2956,12 +3273,19 @@ loadTrackers(); setInterval(() => { if (!document.hidden && !Object.values(S.tkB
       + `<div class="hx-key"><span><i class="ln"></i>Assign and feedback, down</span><span><i class="ln d"></i>Sign-off, up</span><span><i class="hx-pulse" style="--sc:var(--ok)"></i>Being worked</span><span><i class="hx-pulse" style="--sc:var(--hx-need)"></i>Needs you</span><span><i class="hx-pulse" style="--sc:var(--hx-rev)"></i>In lead review or rework</span><span><i class="hx-pulse" style="--sc:var(--bad)"></i>Last run failed</span><span><i class="hx-pulse" style="--sc:var(--faint)"></i>Idle</span><span>Lead sign-off is not approval to send. Only you approve.</span></div>`;
     renderTrail(blocks);
   };
+  document.addEventListener('click', async e => { // yes or no on a lead's lesson: the server writes it only on yes
+    const b = e.target.closest('[data-hxlesson]'); if (!b) return;
+    const box = b.closest('.hxt-ls'); box.querySelectorAll('button').forEach(x => { x.disabled = true; });
+    let j = {}; try { const r = await fetch('/api/lead-lesson', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ task: b.dataset.task, decision: b.dataset.hxlesson }) }); j = await r.json(); } catch (err) { j = { error: err.message }; }
+    const t = S.tasks.find(x => x.id === b.dataset.task);
+    if (t && t.leadReview && j.lesson) t.leadReview.lesson = j.lesson;
+    if (j.error && !j.lesson) { box.querySelectorAll('button').forEach(x => { x.disabled = false; }); box.insertAdjacentHTML('beforeend', `<span class="why">${esc(j.error)}</span>`); return; }
+    renderHierarchy();
+  });
   document.addEventListener('click', e => { const s = e.target.closest('[data-hseat]'); if (s) { const id = s.dataset.hseat; sel = sel === id ? '' : id; renderHierarchy(); return; } if (e.target.closest('[data-hxclear]')) { sel = ''; renderHierarchy(); } });
   if (S.agents.length) renderHierarchy();
 })();
 </script>
-</body>
-</html>
 <script>
 /* ---------- Brain map (4 Nov 2026): the vault as an Obsidian-style graph ----------
    Data: /api/brainmap (brainmap.mjs buildMap + analyse), the same map the office draws on G, read from the vault on this PC.
@@ -3172,3 +3496,5 @@ loadTrackers(); setInterval(() => { if (!document.hidden && !Object.values(S.tkB
   if (S.cat === 'brain') window.brainTab.open();
 })();
 </script>
+</body>
+</html>

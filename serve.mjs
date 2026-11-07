@@ -46,7 +46,7 @@ let brainMapCache = { at: 0, map: null };
 import { DEPTS, DEPT_KEYS } from './src/data.js';
 import * as mcp from './mcp.mjs';
 import { loadRoster } from './roster.mjs';
-import { loadSkills } from './skills.mjs';
+import { loadSkills, brainDir as skillsBrainDir } from './skills.mjs';
 import * as learn from './learn.mjs';
 import JSZip from 'jszip';
 import * as onboard from './onboard.mjs';
@@ -54,6 +54,7 @@ import * as routines from './routines.mjs';
 import * as usage from './usage.mjs';
 import * as teams from './teams.mjs';
 import * as leadreview from './leadreview.mjs';
+import * as leadlessons from './leadlessons.mjs';
 import * as aios from './aios.mjs';
 import * as budget from './budget.mjs';
 import * as brainnotes from './brainnotes.mjs';
@@ -322,7 +323,7 @@ async function askAssistant(system, user, { onEvent = () => {}, timeout = 240000
   });
 }
 /* ---------- Motion Studio (motion.mjs): the Motion Director, the second conversation in the side panel ---------- */
-const MOTION_WORDS = { brain_search: 'searching the Brain', brain_read: 'reading a Brain note', ToolSearch: 'opening the studio', motion_series: 'reading the series brief and the reels', motion_preview: 'painting stills', motion_draft: 'drafting every frame', motion_job: 'watching the render', motion_final: 'rendering the final', motion_narrate: 'voicing the narration', motion_source: 'reading the source', motion_list: 'checking the studio', motion_cancel: 'cancelling a render' };
+const MOTION_WORDS = { brain_search: 'searching the Brain', brain_read: 'reading a Brain note', ToolSearch: 'opening the studio', motion_series: 'reading the series brief and the reels', motion_preview: 'painting stills', motion_draft: 'drafting every frame', motion_job: 'watching the render', motion_final: 'rendering the final', motion_narrate: 'voicing the narration', motion_source: 'reading the source', motion_list: 'checking the studio', motion_cancel: 'cancelling a render', sfx_library: 'looking through the sound library', sfx_search: 'searching for a recorded sound', sfx_fetch: 'fetching a recorded sound' };
 // Claude Code with ONE tool server (connectors/motion-studio): no shell, no files, no web. Always Opus 5.5 at extra-high effort.
 async function askMotion(system, user, { onEvent = () => {}, timeout = 100 * 60000 } = {}) {
   fs.mkdirSync(CLI_CWD, { recursive: true });
@@ -723,6 +724,7 @@ function reviewSystem(lead, desk, index, read, extra) {
     (uploads.length ? `\n\nUploaded documents the desk also read (not shown to you): ${uploads.join('; ')}` : '');
 }
 async function runWithLeadReview(task, feedback, mode, answer, approve) {
+  const prev = task.leadReview, seen = [...(prev?.seen || []), ...(prev?.lesson && prev.lesson.status !== 'proposed' ? [prev.lesson.rule] : [])]; // a lesson the owner answered is not proposed again on this task
   if (!approve) delete task.leadReview; // a new draft is a new review; an approve turn keeps the record of the one before
   const out = await run(task, feedback, mode, answer);
   const desk = AGENTS.find(a => a.id === task.agent);
@@ -732,13 +734,18 @@ async function runWithLeadReview(task, feedback, mode, answer, approve) {
   const model = normModel(LEAD_REVIEW.model) || 'sonnet', effort = normEffort(LEAD_REVIEW.effort) || 'medium';
   const review = async ({ out: cur, round, log }) => {
     refreshSkills();
-    const p = leadreview.reviewPrompt({ task, draft: cur.result, desk, lead, round, max: LEAD_REVIEW.maxRounds, log, ownerFeedback: feedback && !/^From the lead/.test(feedback) ? feedback : '' });
+    const p = leadreview.reviewPrompt({ task, draft: cur.result, desk, lead, round, max: LEAD_REVIEW.maxRounds, log, ownerFeedback: feedback && !/^From the lead/.test(feedback) ? feedback : '', skills: cur.skills || [] });
     return ask(reviewSystem(lead, desk, vaultIndex(), cur.read || [], p.extra), p.user, { maxTokens: 1100, timeout: 150000, model, effort, job: { task, kind: 'lead-review', agent: lead.id, mode: 'draft' } });
   };
   const rerun = async (fb, prev) => { task.result = prev.result; return run(task, fb, mode, false); }; // run() quotes task.result as "previous version"
   const r = await leadreview.runLoop({ task, out, review, rerun, max: LEAD_REVIEW.maxRounds, by: lead.id, onChange: persist });
-  console.log(`  ⚖ ${task.id} lead review by ${lead.name}: ${r.leadReview.phase}${r.leadReview.round ? ' after ' + r.leadReview.round + ' round(s)' : ''}`);
-  return { ...r.out, leadReview: r.leadReview, leadName: lead.name };
+  if (seen.length) r.leadReview.seen = seen;
+  if (r.leadReview.proposed) { // the lead's lesson waits for the owner's yes; nothing is written here (leadlessons.mjs)
+    const v = leadlessons.vet({ lesson: r.leadReview.proposed, skills: refreshSkills().skills, deskSkills: r.out.skills || [], clients: (cfg.aios?.clients || []).map(c => c && c.name), seen });
+    if (v.lesson) r.leadReview.lesson = v.lesson; else r.leadReview.lessonRefused = v.refused;
+  }
+  console.log(`  ⚖ ${task.id} lead review by ${lead.name}: ${r.leadReview.phase}${r.leadReview.round ? ' after ' + r.leadReview.round + ' round(s)' : ''}${r.leadReview.lesson ? ', proposes a lesson' : r.leadReview.lessonRefused ? ', lesson dropped (' + r.leadReview.lessonRefused + ')' : ''}`);
+  return { ...r.out, leadReview: r.leadReview, leadName: lead.name, deskName: desk.name };
 }
 const RUNNING = new Set(); // a task is never run twice at once: the page and the server may both ask to start the same new task
 async function runServerTask(id, opts = {}) {
@@ -770,7 +777,7 @@ async function runServerTaskNow(id, { feedback, approve, answer } = {}) {
     Object.assign(task, { read: out.read, tools: [...new Set([...(task.tools || []), ...out.tools])], used: [...new Set([...(task.used || []), ...out.used])], skills: out.skills, error: false, modelUsed: out.modelUsed, modelFrom: out.modelFrom, modelId: out.modelId, effortUsed: out.effortUsed, effortFrom: out.effortFrom, ...(out.team ? { team: out.team } : {}) });
     if (task.needsOk && !task.channel && isEmail(task)) task.channel = 'email';
     if ((task.needsOk || REVIEW_ALL) && !approve && aoofile.isAooReel(task)) aoofile.sendForApproval(ROOT, task, out.result).then(s => console.log(`🎞 Art of Operations reel ${s.sent ? 'sent to Telegram for approval' : 'not sent: ' + s.reason}`)).catch(() => {}); // Wesley reads on his phone
-    if ((task.needsOk || REVIEW_ALL) && !approve) { task.state = 'waiting'; task.draft = out.result; task.waitingAt = Date.now(); task.ask = (task.needsOk ? (task.channel === 'email' ? `"${task.title}" is written — approve to put it in your Gmail drafts, then send it from your inbox. Reject to tell me what to change.` : routines.askLine(task)) : reviewLine(task)) + brainReview(task, out.result) + siteReview(task, out.result) + (approve ? '' : handoffReview(task, hoText)) + (out.leadReview ? leadreview.askLine(out.leadReview, out.leadName) : ''); }
+    if ((task.needsOk || REVIEW_ALL) && !approve) { task.state = 'waiting'; task.draft = out.result; task.waitingAt = Date.now(); task.ask = (task.needsOk ? (task.channel === 'email' ? `"${task.title}" is written — approve to put it in your Gmail drafts, then send it from your inbox. Reject to tell me what to change.` : routines.askLine(task)) : reviewLine(task)) + brainReview(task, out.result) + siteReview(task, out.result) + (approve ? '' : handoffReview(task, hoText)) + (out.leadReview ? leadreview.askLine(out.leadReview, out.leadName) : '') + (out.leadReview?.lesson ? '\n\n' + leadlessons.card(out.leadReview.lesson, out.leadName, out.deskName) + ' Answer on the card in AIOS Hierarchy.' : ''); }
     else {
       task.state = 'done'; task.doneAt = Date.now();
       try { const sc = ubereats.fileScorecard(DATA, out.result); if (sc) { task.result += sc.ok ? `\n\n---\nUBER EATS SCORECARD FILED: ${sc.tier}, read ${sc.readOn}, on the Delivery dashboard.` : `\n\n---\nUBER EATS SCORECARD NOT FILED: ${sc.error}.`; console.log('  ubereats scorecard:', sc.ok ? 'filed' : sc.error); } } catch (e) { console.warn('scorecard:', e.message); } // V3.12: read-only figures for the dashboard, filed without review
@@ -878,7 +885,11 @@ function dashboardsData() {
     try { const rv = reviews.build(DATA, { match: d.match }); if (rv.available) { data = data || { available: false }; data.reviews = rv; } } catch (e) { console.warn('reviews:', e.message); }
     return data;
   };
-  return defs.map(d => ({ id: String(d.id), name: String(d.name || d.id), fix: fixes.latest(DATA, String(d.id)), data: withReviews(d, withStarDog(d, d.kind === 'pos' ? withDelivery(d, posData.build(tillNotes, { match: d.match })) : salesData.build(notes, { match: d.match }))) }));
+  const withKitchen = (d, data) => { // 6 Nov: the kitchen map (stations, staff, dish routes) kept as a data file, like the product mix
+    if (d.kitchen) { try { const k = JSON.parse(fs.readFileSync(path.join(DATA, path.basename(String(d.kitchen))), 'utf8')); data = data || { available: false }; data.kitchen = k; } catch (e) { console.warn('kitchen:', e.message); } }
+    return data;
+  };
+  return defs.map(d => ({ id: String(d.id), name: String(d.name || d.id), fix: fixes.latest(DATA, String(d.id)), data: withKitchen(d, withReviews(d, withStarDog(d, d.kind === 'pos' ? withDelivery(d, posData.build(tillNotes, { match: d.match })) : salesData.build(notes, { match: d.match })))) }));
 }
 // a Google Takeout of the Business Profile dropped in Downloads files itself (each zip read once), at start and every ten minutes
 const reviewMatches = () => (Array.isArray(cfg.aios?.dashboards) ? cfg.aios.dashboards : []).map(d => d.match).filter(Boolean);
@@ -1196,6 +1207,29 @@ const server = http.createServer(async (req, res) => {
       const r = skillaudit.markProposalDone(DATA, String(skill || ''));
       return r ? json(res, 200, { ok: true }) : json(res, 404, { error: 'no open suggestion for that skill' });
     }
+    if (url.pathname === '/api/lead-lesson' && req.method === 'POST') { // the owner's yes or no on a lesson the lead proposed (leadlessons.mjs); only a yes writes
+      const { task: id, decision } = await body(req);
+      if (decision !== 'yes' && decision !== 'no') return json(res, 400, { error: "decision is 'yes' or 'no'" });
+      const list = load(), t = list.find(x => x.id === id), l = t?.leadReview?.lesson;
+      if (!l) return json(res, 404, { error: 'no lesson on that task' });
+      if (l.status !== 'proposed') return json(res, 409, { error: 'already ' + l.status });
+      if (t.state === 'doing' || RUNNING.has(t.id)) return json(res, 409, { error: 'the task is running; answer when it is back' });
+      if (decision === 'no') l.status = 'declined';
+      else if (l.target === 'skill') {
+        const s = refreshSkills().skills.find(x => x.name === l.skill && x.source === 'brain');
+        const r = s ? leadlessons.applyToSkill({ file: path.resolve(ROOT, s.path), skillsDir: skillsBrainDir(BRAIN), rule: l.rule, backupDir: path.join(DATA, 'brain-backups') }) : { ok: false, reason: 'the skill is no longer in the brain' };
+        if (!r.ok) { l.refused = r.reason; save(list); return json(res, 422, { error: r.reason, lesson: l }); } // stays proposed; the card shows why
+        l.status = 'applied'; delete l.refused; if (r.skipped) l.skipped = r.skipped; if (r.backup) l.backup = path.basename(r.backup);
+      } else {
+        const a = AGENTS.find(x => x.id === t.agent), lead = AGENTS.find(x => x.id === t.leadReview.by);
+        if (!a) return json(res, 404, { error: 'the desk is gone' });
+        learn.record(BRAIN, a, t, `From ${lead?.name || 'the lead'}'s review`, { standing: true, rule: l.rule });
+        l.status = 'applied';
+      }
+      l.answeredAt = Date.now(); save(list);
+      console.log(`  ⚖ ${t.id} lead lesson ${l.status}${l.status === 'applied' ? ' → ' + (l.target === 'skill' ? l.skill : t.agent + ' standing rules') : ''}: ${l.rule.slice(0, 90)}`);
+      return json(res, 200, { ok: true, lesson: l });
+    }
     if (url.pathname === '/api/skill-audit/propose' && req.method === 'POST') { // ask Claude for a concrete revision of one skill; it proposes, the owner decides
       const { skill } = await body(req);
       if (!refreshSkills().skills.find(x => x.name === skill)) return json(res, 404, { error: 'no such skill' });
@@ -1225,6 +1259,18 @@ const server = http.createServer(async (req, res) => {
       const dm = /^\/api\/attention\/([\w-]+)\/dismiss$/.exec(url.pathname);
       if (dm && req.method === 'POST') return json(res, 200, { ok: attention.dismiss(DATA, dm[1]) });
       return json(res, 404, { error: 'not found' });
+    }
+    const kitM = /^\/api\/dashboards\/([\w-]+)\/kitchen$/.exec(url.pathname);
+    if (kitM && req.method === 'POST') { // 6 Nov: the Kitchen page saves where a station stands and which dishes are marked to improve; nothing else in the file changes
+      const def = (Array.isArray(cfg.aios?.dashboards) ? cfg.aios.dashboards : []).find(x => String(x.id) === kitM[1]);
+      if (!def || !def.kitchen) return json(res, 404, { error: 'no kitchen file for this dashboard' });
+      const file = path.join(DATA, path.basename(String(def.kitchen))), b = await body(req);
+      let k; try { k = JSON.parse(fs.readFileSync(file, 'utf8')); } catch (e) { return json(res, 500, { error: 'kitchen file unreadable: ' + e.message }); }
+      const num = (v, max) => Number.isFinite(+v) ? Math.max(0, Math.min(max, Math.round(+v))) : null;
+      for (const [id, p] of Object.entries(b.positions || {})) { const s = k.stations.find(x => x.id === id); if (!s) continue; const x = num(p.x, k.w - s.w), y = num(p.y, k.h - s.h); if (x != null) s.x = x; if (y != null) s.y = y; }
+      for (const [id, m] of Object.entries(b.marks || {})) { const dsh = k.dishes.find(x => x.id === id); if (!dsh) continue; if ('improve' in m) dsh.improve = !!m.improve; if ('note' in m) dsh.note = String(m.note || '').slice(0, 300); }
+      k.saved = new Date().toISOString(); fs.writeFileSync(file, JSON.stringify(k, null, 2));
+      return json(res, 200, { ok: true });
     }
     const fixM = /^\/api\/dashboards\/([\w-]+)\/fix(\/matrix)?$/.exec(url.pathname);
     if (fixM) { // V3.12: the month's fix for a client restaurant (fix.mjs)
@@ -1416,8 +1462,15 @@ const server = http.createServer(async (req, res) => {
       const task = load().find(t => t.id === m[1]);
       if (!task) return json(res, 404, { error: 'no such task' });
       if (task.state !== 'waiting') return json(res, 400, { error: 'this task is not waiting for your OK' });
-      const { feedback } = m[2] === 'reject' ? await body(req) : {};
+      const { feedback, close } = m[2] === 'reject' ? await body(req) : {};
       const note = String(feedback || '').trim();
+      if (m[2] === 'reject' && close === true) { // 4 Nov 2026: REJECT with "permanently reject" ticked: closed for good. No rework run, no send-back count, no lesson, nothing filed.
+        Object.assign(task, { state: 'done', closed: true, closedAt: Date.now(), doneAt: Date.now(), result: task.draft || task.result, approved: false }); delete task.ask;
+        if (note) task.closeNote = note.slice(0, 2000);
+        save(load().map(t => t.id === task.id ? task : t));
+        console.log(`⛔ ${task.id} rejected permanently, closed with no further action${note ? ': ' + note.slice(0, 80) : ''}`);
+        return json(res, 200, { ok: true, id: task.id, state: 'done', closed: true, task });
+      }
       if (m[2] === 'approve' && !task.needsOk) { // V3.9: a reviewed task with nothing to send — the tick is the finish line, no second run
         Object.assign(task, { state: 'done', result: task.draft || task.result, approved: true, approvedAt: Date.now(), doneAt: Date.now() }); delete task.ask;
         fileBrainUpdates(task); fileSiteUpdates(task); fireHandoffs(task); fileMatrixItems(task);
@@ -1491,13 +1544,6 @@ const server = http.createServer(async (req, res) => {
       finally { clearInterval(alive); motionBusy = false; res.end(); }
       return;
     }
-    if (url.pathname === '/api/assistant' || url.pathname === '/api/assistant/clear') {
-      if (!assistantAllowed(req)) return json(res, 403, { error: 'the assistant answers only to the office page on this computer' });
-      if (url.pathname === '/api/assistant' && req.method === 'GET') return json(res, 200, { messages: assistantMod.load(DATA).slice(-40), busy: assistantBusy });
-      if (url.pathname === '/api/assistant/clear' && req.method === 'POST') { assistantMod.clear(DATA); return json(res, 200, { ok: true }); }
-      if (req.method !== 'POST') return json(res, 405, { error: 'GET or POST' });
-      const b = await body(req), text = (String(b.text || '').trim().slice(0, b.engineered ? 9000 : 3400) + attachNote(b.attachments)).trim(), surface = b.surface === 'telegram' ? 'telegram' : 'panel'; // a brief from the prompt engineer runs longer
-      if (!text) return json(res, 400, { error: 'say something first' });
     // 4 Nov 2026: the Prompt Engineer (promptengineer.mjs), the step in front of the Chief of Staff in the panel. It returns a brief and up to three
     // yes/no proposals; the page applies Wesley's answers and sends the brief on to /api/assistant. Read-only Brain tools, nothing else; it adds no task.
     if (url.pathname === '/api/prompt-engineer' && req.method === 'POST') {
@@ -1514,6 +1560,13 @@ const server = http.createServer(async (req, res) => {
       } catch (e) { console.warn('prompt engineer:', e.message); return json(res, 500, { error: e.message }); }
       finally { peBusy = false; }
     }
+    if (url.pathname === '/api/assistant' || url.pathname === '/api/assistant/clear') {
+      if (!assistantAllowed(req)) return json(res, 403, { error: 'the assistant answers only to the office page on this computer' });
+      if (url.pathname === '/api/assistant' && req.method === 'GET') return json(res, 200, { messages: assistantMod.load(DATA).slice(-40), busy: assistantBusy });
+      if (url.pathname === '/api/assistant/clear' && req.method === 'POST') { assistantMod.clear(DATA); return json(res, 200, { ok: true }); }
+      if (req.method !== 'POST') return json(res, 405, { error: 'GET or POST' });
+      const b = await body(req), text = (String(b.text || '').trim().slice(0, b.engineered ? 9000 : 3400) + attachNote(b.attachments)).trim(), surface = b.surface === 'telegram' ? 'telegram' : 'panel'; // a brief from the prompt engineer runs longer
+      if (!text) return json(res, 400, { error: 'say something first' });
       if (assistantBusy) return json(res, 429, { error: 'still working on your last message: give it a moment' });
       assistantBusy = true;
       if (b.stream) res.writeHead(200, { 'content-type': 'application/x-ndjson; charset=utf-8', 'cache-control': 'no-cache' });

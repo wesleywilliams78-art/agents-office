@@ -2,7 +2,7 @@
 // with a junction left at its old path so the office, the Motion Studio and every script keep working unchanged.
 //   npm run media            move anything new (and report), then rebuild the library's hard links on D:
 //   npm run media -- --dry   say what would move, move nothing
-// What moves: the output/ folders (motion, library, blender, video, ltx, music, sops, teleprompter) and, under videos/, every
+// What moves: the output/ folders (motion, library, blender, video, ltx, music, sops, teleprompter, sfx) and, under videos/, every
 // renders, out*, proxies*, stills, footage, frames, work, snapshots or music-samples folder of 20 MB or more that git does not
 // track. Source (compositions, scripts, issue.json, READMEs) stays on C:. The root is media.root in office.config(.local).json.
 import fs from 'node:fs';
@@ -14,7 +14,7 @@ const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const DRY = process.argv.includes('--dry');
 const cfg = f => { try { return JSON.parse(fs.readFileSync(path.join(ROOT, f), 'utf8')); } catch { return {}; } };
 const MEDIA = (cfg('office.config.local.json').media || cfg('office.config.json').media || {}).root || 'D:\\Agents Office Media';
-const OUTPUT_DIRS = ['motion', 'library', 'blender', 'video', 'ltx', 'music', 'sops', 'teleprompter'];
+const OUTPUT_DIRS = ['motion', 'library', 'blender', 'video', 'ltx', 'music', 'sops', 'teleprompter', 'sfx'];
 const HEAVY = /^(renders|out|out\d+|proxies|proxies\d+|stills|footage|frames|work|snapshots|music-samples)$/;
 const MIN = 20 * 1024 * 1024;
 

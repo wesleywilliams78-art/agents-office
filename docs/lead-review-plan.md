@@ -68,5 +68,5 @@ One extra short call per round, no tools; the worst case is 3 reviews and 2 extr
 1. **Marketing only, desk work that waits for you; not the lead's own tasks, not team tasks.** Yes: as written. No: you name the scope.
 2. **Review on Sonnet 5.5 at medium, no tools.** Yes: cheap and quick. No: it uses the lead's own model and effort, which costs more.
 3. **Two bounces, then escalate to you with the concerns shown, never auto-reject.** Yes: as written. No: you pick another limit.
-4. **The lead's bounces teach nothing.** Only your rejections write lessons to a desk. Yes: as written. No: lead feedback also feeds the lessons file.
+4. **The lead's bounces teach nothing.** Only your rejections write lessons to a desk. Yes: as written. No: lead feedback also feeds the lessons file. *Reversed 4 Nov (night), with Wesley's yes: the lead may propose one lesson per task, and only his yes on the AIOS card writes it (`leadlessons.mjs`).*
 5. **Ships switched off, turned on for marketing after one watched trial.** Yes: as written. No: on from the first commit.
