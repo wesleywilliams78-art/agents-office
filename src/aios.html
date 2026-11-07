@@ -36,7 +36,6 @@
   .wrap { max-width: 1720px; margin: 0 auto; padding: 18px 16px 60px; }
   header { display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; margin-bottom: 16px; }
   header h1 { font: 400 30px/1 var(--serif); margin: 0; letter-spacing: .01em; }
-  header .sub { color: var(--grey); font-size: 11px; letter-spacing: .14em; text-transform: uppercase; }
   header .right { margin-left: auto; display: flex; gap: 8px; align-items: center; font-size: 11px; color: var(--grey); }
   .live { width: 8px; height: 8px; border-radius: 50%; background: var(--faint); display: inline-block; }
   .live.on { background: var(--ok); box-shadow: 0 0 0 3px color-mix(in srgb, var(--ok) 25%, transparent); }
@@ -124,21 +123,8 @@
   .msg:empty { display: none; }
   .msg.err { color: var(--bad); }
   /* left-hand categories: the page shows one category at a time instead of one long scroll */
-  .shell { display: grid; grid-template-columns: 184px minmax(0, 1fr); gap: 20px; align-items: start; }
-  .side { position: sticky; top: 14px; display: flex; flex-direction: column; gap: 3px; }
-  .side .gl { font-size: 9.5px; letter-spacing: .14em; color: var(--faint); text-transform: uppercase; margin: 12px 11px 4px; }
-  .side .gl:first-child { margin-top: 0; }
-  .side button { text-align: left; display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 9px 11px; font-size: 12px; letter-spacing: .04em; border-radius: 9px; background: transparent; border-color: transparent; }
-  .side button:hover { background: var(--soft); border-color: transparent; }
-  .side button.on { background: var(--ink); color: var(--bg); }
-  .side .subnav { display: flex; flex-direction: column; gap: 3px; margin: 0 0 4px 14px; padding-left: 8px; border-left: 1px solid var(--line); }
-  .side .subnav button { font-size: 11.5px; padding: 7px 10px; }
-  .side .n { font-size: 10.5px; font-weight: 700; opacity: .75; font-variant-numeric: tabular-nums; }
-  .side .n.alert { color: var(--warn); opacity: 1; }
-  .side button.on .n.alert { color: var(--bg); }
   .main { min-width: 0; }
   .cat-off { display: none !important; }
-  @media (max-width: 860px) { .shell { grid-template-columns: 1fr; } .side { position: static; flex-direction: row; overflow-x: auto; } .side .gl { display: none; } .side .subnav { flex-direction: row; margin: 0; padding: 0; border: 0; } .side button { white-space: nowrap; } }
   /* skill audit */
   .skkpis { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 10px; }
   .skkpi { padding: 6px 10px; border: 1px solid var(--line); border-radius: 8px; font-size: 12px; background: var(--panel); }
@@ -291,7 +277,6 @@
   .rvNames { display: flex; flex-wrap: wrap; gap: 6px; } .rvNames span { font-size: 11px; padding: 5px 10px; border-radius: 999px; background: var(--soft); color: var(--grey); } .rvNames b { color: var(--ink); font-weight: 600; }
   @media (max-width: 860px) { .rvThemes td.rvQ { width: auto; } .rvThemes { display: block; overflow-x: auto; } }
   .dTease b { font-family: var(--serif); font-weight: 400; font-size: 18px; } .dTease .up { color: var(--ok); } .dTease .dn { color: var(--red, #C8553D); } .dTease .z { color: var(--faint); }
-  .side .subnav button.sub2 { margin-left: 14px; font-size: 10.5px; padding: 6px 10px; opacity: .9; }
   /* Kitchen (6 Nov): the map, the dish picker and the run beside it, then the labour table */
   .kitTop { display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; align-items: start; }
   .kitSide { grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr) !important; align-items: start; } .kitCol { display: grid; gap: 12px; align-content: start; min-width: 0; }
@@ -477,7 +462,6 @@
   /* header: a quiet bar, the seal, a live pill */
   header { align-items: center; gap: 14px; padding: 0 0 22px; margin: 0; border: 0; }
   header h1 { font-size: 26px; letter-spacing: 0; }
-  header .sub { letter-spacing: .2em; font-size: 10.5px; font-weight: 500; color: var(--faint); }
   header .right { background: var(--card); border: 1px solid var(--line); border-radius: 999px; padding: 7px 16px; color: var(--grey); }
   .seal { width: 34px; height: 34px; flex: none; } .seal img { width: 100%; height: 100%; display: block; } .seal .lg-d { display: none; } /* the WRW logo: red on white in the light theme, white on red in the dark one */
 @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .seal .lg-l { display: none; } :root:not([data-theme="light"]) .seal .lg-d { display: block; } }
@@ -507,12 +491,19 @@
   /* Office map (7 Nov 2026, level 1 of docs/aios-office-overview-design.md): Theo on top with the ask box, Nora in the centre, every department a tile around her.
      Any number of departments: half each side, an odd one centred under Nora. Red means you; status is always a dot plus a word. */
   .hx-off { display: none !important; }
-  .hxo-theo { display: grid; grid-template-columns: 230px 1fr; gap: 18px; align-items: start; padding: 16px 20px; margin: 0 0 18px; border: 1px solid var(--line); border-radius: var(--r, 22px); background: var(--card, var(--panel)); }
-  .hxo-theo .pe { margin: 0; padding: 0; border: 0; background: transparent; box-shadow: none; }
-  .hxo-theo .pe .peh { flex-wrap: nowrap; align-items: center; margin-bottom: 8px; } .hxo-theo .pe .peh .k { display: none; } .hxo-theo .pe .peh .z { font-size: 11.5px; flex: 1; min-width: 0; }
-  .hxo-theo .pe textarea { min-height: 44px; }
-  .hxo-tw { display: flex; align-items: center; gap: 12px; padding-top: 4px; }
-  .hxo-tw .hxo-k { margin-bottom: 2px; } .hxo-tn { font-weight: 600; font-size: 14px; } .hxo-tr { color: var(--faint); font-size: 11.5px; }
+  /* Theo's band (7 Nov 2026, full-width office): a slim pill at the top centre; the ask box (#pe, moved in by placeAsk) takes the space, the label wraps under the name */
+  .hxo-theo { position: relative; width: min(900px, 100%); margin: 0 auto 18px; display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 0 12px; align-items: start; padding: 8px 8px 8px 10px; border: 1px solid var(--ox-edge2); border-radius: 32px; background: var(--ox-card); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); }
+  .hxo-tw { display: flex; align-items: center; gap: 10px; align-self: stretch; max-width: 176px; padding-right: 12px; border-right: 1px solid var(--ox-edge); }
+  .hxo-tn { font-weight: 600; font-size: 13px; line-height: 1.1; } .hxo-tr { color: var(--meta, var(--faint)); font-size: 9.5px; letter-spacing: .12em; text-transform: uppercase; line-height: 1.3; margin-top: 3px; }
+  .hxo-theo .hxo-fw.l img { width: 40px; height: 40px; }
+  .hxo-theo .pe { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; grid-template-areas: "ta tog go" "out out out"; align-items: center; gap: 0 8px; margin: 0; padding: 0; border: 0; background: transparent; box-shadow: none; -webkit-backdrop-filter: none; backdrop-filter: none; }
+  .hxo-theo .pe .peh, .hxo-theo .pe .per { display: contents; } .hxo-theo .pe .peh .k, .hxo-theo .pe .peh .z { display: none; }
+  .hxo-theo .pe textarea { grid-area: ta; height: 42px; min-height: 42px; resize: none; padding: 11px 4px; border: 0; background: transparent; box-shadow: none; font-size: 13px; }
+  .hxo-theo .pe textarea:focus { height: 84px; resize: vertical; }
+  .hxo-theo .pe textarea:not(:focus)::placeholder { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .hxo-theo #peTog { grid-area: tog; margin: 0; } .hxo-theo #peGo { grid-area: go; padding: 13px 18px; font-weight: 600; letter-spacing: .14em; }
+  .hxo-theo #peSt { position: absolute; top: 100%; left: 160px; right: 20px; margin-top: 7px; font-size: 11px; color: var(--faint); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .hxo-theo #peOut { grid-area: out; } .hxo-theo #peOut:not(:empty) { padding: 4px 10px 8px 0; }
   .hxo-k { color: var(--faint); font-size: 9.5px; letter-spacing: .16em; text-transform: uppercase; }
   .hxo-fw { position: relative; flex: none; display: inline-block; line-height: 0; }
   .hxo-fw img, .hxo-ini { width: 24px; height: 24px; border-radius: 50%; object-fit: cover; background: var(--soft); }
@@ -526,43 +517,79 @@
   .hxo-st i { width: 7px; height: 7px; border-radius: 50%; background: var(--faint); flex: none; }
   .hxo-st.work { color: var(--ok); } .hxo-st.you { color: var(--red, #EC3013); } .hxo-st.rev { color: var(--hx-rev); } .hxo-st.fail { color: var(--bad); } .hxo-st.fail i { border: 1.5px solid var(--bad); background: transparent; }
   .hxo-badge { display: inline-flex; align-items: center; justify-content: center; min-width: 22px; height: 22px; padding: 0 7px; border-radius: 99px; background: var(--red, #EC3013); color: #fff; font-size: 11px; font-weight: 600; }
-  .hxo { display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 22px; align-items: start; }
-  .hxo-map { position: relative; display: grid; grid-template-columns: minmax(0, 1fr) minmax(280px, 1.1fr) minmax(0, 1fr); column-gap: 34px; row-gap: 26px; }
-  .hxo-map > svg { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; overflow: visible; }
-  .hxo-col { display: flex; flex-direction: column; justify-content: center; gap: 14px; position: relative; min-width: 0; }
-  .hxo-mid { display: flex; align-items: center; position: relative; padding-top: 18px; }
-  .hxo-bot { grid-column: 2; position: relative; }
-  .hxo-d { background: var(--card, var(--panel)); border: 1px solid var(--line); border-radius: 18px; padding: 14px 16px; display: flex; flex-direction: column; gap: 10px; min-width: 0; text-align: left; transition: border-color .2s; }
-  .hxo-d.on { cursor: pointer; } .hxo-d.on:hover, .hxo-d.on:focus-visible { border-color: var(--grey); outline: none; }
-  .hxo-d.off { background: transparent; border-style: dashed; }
-  .hxo-dh { display: flex; align-items: center; gap: 10px; } .hxo-dh h4 { margin: 0; font: 300 21px/1.05 var(--serif); }
+  /* the office map (full width, 7 Nov 2026): departments in two columns, Nora in the centre, You at the bottom, the flows drawn behind them (#oxFlows) */
+  .ox { position: relative; padding: 26px 64px 0; } /* 64 px each side keeps the For You tab clear of the cards */
+  .ox-land, .ox-dots, .ox-flows { display: none; }
+  .ox.map { min-height: calc(100vh - var(--top-h, 64px)); display: flex; flex-direction: column; padding: 24px 60px 26px; overflow: hidden; }
+  .ox.map .ox-land { display: block; position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+  .ox.map .ox-dots { display: block; position: absolute; inset: 0; pointer-events: none; background: radial-gradient(circle at 1px 1px, var(--ox-dots) 1px, transparent 0) 0 0 / 26px 26px; -webkit-mask: linear-gradient(#000 0 55%, transparent 85%); mask: linear-gradient(#000 0 55%, transparent 85%); }
+  .ox.map .ox-flows { display: block; position: absolute; inset: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; overflow: visible; }
+  .ox > .hxo-theo, .ox > .hx { position: relative; z-index: 2; }
+  .ox > .hx { border: 0; background: none; padding: 0; margin: 0 0 22px; }
+  .ox.map > .hx { flex: 1; display: flex; margin: 0; }
+  .ox-map { flex: 1; width: 100%; display: grid; grid-template-columns: minmax(300px, 440px) minmax(480px, 1fr) minmax(300px, 440px); gap: 0 48px; padding-top: 34px; }
+  .ox-col { display: flex; flex-direction: column; justify-content: center; gap: 18px; min-width: 0; }
+  .ox-mid { display: grid; grid-template-rows: 1fr auto 1fr; justify-items: center; min-width: 0; }
+  .ox-mid .hxo-hub { grid-row: 2; width: min(470px, 100%); }
+  .ox-mid .ox-you { grid-row: 3; align-self: end; margin-top: 30px; }
+  .ox-f { fill: none; stroke-width: 1.6; } .ox-f.ask { stroke: var(--ox-flow); stroke-dasharray: 2 7; stroke-linecap: round; }
+  .ox-f.on { stroke: var(--ox-flow); stroke-opacity: .85; } .ox-f.off { stroke: var(--ox-flow-off); stroke-width: 1.2; stroke-dasharray: 4 6; } .ox-f.back { stroke: var(--ox-back); stroke-width: 1.8; }
+  .ox-ah.on, .ox-dot.on { fill: var(--ox-flow); } .ox-ah.off { fill: var(--ox-flow-off); } .ox-ah.r, .ox-dot.r { fill: var(--ox-back); }
+  .ox-fl { position: absolute; z-index: 3; transform: translate(-50%, -50%); font-size: 9.5px; letter-spacing: .16em; text-transform: uppercase; color: var(--ox-label-fg); background: var(--ox-label-bg); border: 1px solid var(--ox-edge); border-radius: 99px; padding: 4px 10px; white-space: nowrap; pointer-events: none; }
+  .ox-fl.r { color: var(--ox-label-red); border-color: var(--ox-label-red-edge); }
+  .ox-you { display: inline-flex; align-items: center; gap: 14px; padding: 8px; border-radius: 99px; background: var(--red); color: var(--on-accent); box-shadow: 0 18px 40px -16px var(--ox-you-shadow); position: relative; z-index: 2; }
+  .ox-you .me { width: 38px; height: 38px; flex: none; border-radius: 50%; background: var(--on-accent); color: var(--red); font: 700 10px/38px var(--ui); text-align: center; letter-spacing: .06em; }
+  .ox-you .t { font-size: 13px; font-weight: 600; line-height: 1.3; } .ox-you .t span { display: block; font-weight: 400; font-size: 11.5px; opacity: .85; }
+  .ox-you .ox-yb, .ox-you .ox-yb:hover { border: 0; background: var(--on-accent); color: var(--red); padding: 13px 18px; font-weight: 600; letter-spacing: .14em; box-shadow: none; } .ox-you .ox-yb:hover { opacity: .9; }
+  .ox-you.clear { background: var(--ox-card); color: var(--ink); border: 1px solid var(--ox-edge2); box-shadow: none; padding-right: 22px; } .ox-you.clear .me { background: var(--soft); color: var(--grey); }
+  .hxo-d { background: var(--ox-card); border: 1px solid var(--ox-edge); border-radius: 20px; padding: 16px 18px 14px; display: flex; flex-direction: column; min-width: 0; text-align: left; -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); transition: border-color .2s, transform .2s; }
+  .hxo-d.on { cursor: pointer; border-color: var(--ox-edge2); } .hxo-d.on:hover, .hxo-d.on:focus-visible { border-color: var(--ox-edge-hover); transform: translateY(-2px); outline: none; }
+  .hxo-d.need { border-color: var(--ox-need-edge); box-shadow: 0 0 0 1px var(--ox-need-glow), 0 18px 40px -22px var(--ox-need-shadow); }
+  .hxo-d.off { background: var(--ox-off); border-style: dashed; border-color: var(--ox-off-edge); }
+  .hxo-dh { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; } .hxo-dh h4 { margin: 0; font: 300 27px/1 var(--serif); }
   .hxo-d.off .hxo-dh h4 { color: var(--grey); } .hxo-dh .hxo-badge { margin-left: auto; }
-  .hxo-tag { font-size: 9.5px; letter-spacing: .12em; text-transform: uppercase; color: var(--faint); }
-  .hxo-lead { display: flex; align-items: center; gap: 9px; font-size: 12px; min-width: 0; }
-  .hxo-lead > span:not(.hxo-st):not(.hxo-fw):not(.hxo-ini) { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; } .hxo-lead em { font-style: normal; color: var(--faint); }
+  .hxo-tag { font-size: 9.5px; letter-spacing: .16em; text-transform: uppercase; color: var(--faint); border: 1px dashed var(--ox-edge2); border-radius: 99px; padding: 3px 9px; white-space: nowrap; }
+  .hxo-lead { display: flex; align-items: center; gap: 11px; min-width: 0; }
+  .hxo-ln { min-width: 0; } .hxo-ln b { display: block; font-weight: 600; font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; } .hxo-ln span { display: block; color: var(--meta, var(--faint)); font-size: 11.5px; }
+  .hxo-d.off .hxo-ln b { color: var(--grey); font-weight: 500; }
   .hxo-lead .hxo-st { margin-left: auto; }
-  .hxo-faces { display: flex; gap: 5px; align-items: center; flex-wrap: wrap; } .hxo-faces .more { color: var(--faint); font-size: 11px; }
+  .hxo-faces { display: flex; gap: 7px; align-items: center; flex-wrap: wrap; margin: 12px 0 10px; } .hxo-faces .more { color: var(--faint); font-size: 11px; } .hxo-d.off .hxo-faces { margin-bottom: 0; }
+  .hxo-d .hxo-fw img, .hxo-d .hxo-ini { width: 30px; height: 30px; font-size: 9.5px; background: var(--ox-face); } .hxo-d .hxo-fw.l img, .hxo-d .hxo-fw.l .hxo-ini { width: 40px; height: 40px; }
+  .hxo-d .hxo-fw > b { border-color: var(--ox-face-ring); }
+  .hxo-last { margin-left: auto; font-size: 11.5px; color: var(--grey); white-space: nowrap; }
   .hxo-now { display: flex; flex-direction: column; gap: 4px; font-size: 11.5px; color: var(--grey); min-width: 0; }
   .hxo-now div { display: flex; gap: 7px; align-items: baseline; min-width: 0; } .hxo-now div i { width: 6px; height: 6px; border-radius: 50%; background: var(--faint); flex: none; transform: translateY(-1px); }
   .hxo-now div.w i { background: var(--ok); } .hxo-now div.y i { background: var(--red, #EC3013); }
   .hxo-now span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; } .hxo-now b { color: var(--ink); font-weight: 500; }
-  .hxo-ct { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: auto; }
-  .hxo-ct div { font-size: 9.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--faint); white-space: nowrap; }
-  .hxo-ct b { display: block; font: 300 22px/1.05 var(--serif); letter-spacing: 0; color: var(--ink); } .hxo-ct .you.n b { color: var(--red, #EC3013); }
-  .hxo-hub { width: 100%; background: var(--card, var(--panel)); border: 1px solid color-mix(in srgb, var(--red, #EC3013) 55%, transparent); border-radius: 22px; padding: 22px; position: relative; z-index: 1;
-    box-shadow: 0 0 0 6px color-mix(in srgb, var(--red, #EC3013) 7%, transparent), 0 24px 60px -24px rgba(0,0,0,.45); }
-  .hxo-who { display: flex; align-items: center; gap: 14px; margin: 10px 0 16px; } .hxo-hn { font: 300 30px/1 var(--serif); } .hxo-hr { color: var(--grey); font-size: 12px; margin-top: 4px; }
-  .hxo-nb { background: var(--bg); border: 1px solid var(--line); border-radius: 12px; padding: 11px 13px; } .hxo-nt { font-size: 12.5px; margin-top: 6px; line-height: 1.4; } .hxo-nt em { font-style: normal; color: var(--grey); }
-  .hxo-hs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 14px; }
-  .hxo-hs div { background: var(--soft); border-radius: 12px; padding: 10px 10px; font-size: 9px; letter-spacing: .06em; white-space: nowrap; text-transform: uppercase; color: var(--faint); }
-  .hxo-hs b { display: block; font: 300 28px/1 var(--serif); color: var(--ink); letter-spacing: 0; margin-bottom: 4px; } .hxo-hs .you.n b { color: var(--red, #EC3013); }
-  .hxo-rail { background: var(--card, var(--panel)); border: 1px solid var(--line); border-radius: 18px; padding: 18px; max-height: 820px; overflow: auto; }
-  .hxo-rail h3 { margin: 0; display: flex; align-items: center; gap: 10px; font: 300 24px/1 var(--serif); }
-  .hxo-sc { color: var(--grey); font-size: 11.5px; margin: 8px 0 12px; }
-  .hxo-ri { display: grid; grid-template-columns: 26px 1fr; gap: 10px; padding: 12px 0; border-top: 1px solid var(--line); }
-  .hxo-ri .hx-fy-i { padding: 0; border: 0; margin: 0; background: transparent; } .hxo-rd { color: var(--faint); font-size: 10px; letter-spacing: .1em; text-transform: uppercase; margin-bottom: 2px; }
-  .hxo-key { display: flex; gap: 16px; flex-wrap: wrap; align-items: center; margin-top: 20px; color: var(--faint); font-size: 11px; }
-  .hxo-key .hxo-st { text-transform: none; letter-spacing: 0; font-size: 11px; }
+  .hxo-ct { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 12px; padding-top: 10px; border-top: 1px solid var(--ox-edge); }
+  .hxo-ct div { font-size: 9.5px; letter-spacing: .12em; text-transform: uppercase; color: var(--faint); white-space: nowrap; }
+  .hxo-ct b { display: block; font: 300 24px/1.05 var(--serif); letter-spacing: 0; color: var(--ink); } .hxo-ct .you.n b { color: var(--red, #EC3013); }
+  .hxo-hub { position: relative; z-index: 2; background: linear-gradient(180deg, var(--ox-nora-a), var(--ox-nora-b)); border: 1px solid var(--ox-nora-edge); border-radius: 28px; padding: 24px 26px 22px; -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+    box-shadow: 0 0 0 8px var(--ox-ring1), 0 0 0 18px var(--ox-ring2), 0 40px 90px -30px var(--ox-nora-shadow); }
+  .hxo-hub .hxo-k { color: var(--meta, var(--faint)); font-size: 10px; letter-spacing: .2em; }
+  .hxo-who { display: flex; align-items: center; gap: 18px; margin: 12px 0 18px; } .hxo-hn { font: 300 50px/.95 var(--serif); } .hxo-hr { color: var(--grey); font-size: 13px; margin-top: 6px; }
+  .hxo-fw.xxl img { width: 92px; height: 92px; } .hxo-fw.xxl > b { width: 16px; height: 16px; border-width: 3px; right: 3px; bottom: 3px; }
+  .hxo-nb { background: var(--ox-inset); border: 1px solid var(--ox-edge); border-radius: 14px; padding: 12px 14px; } .hxo-nt { font-size: 13.5px; margin-top: 6px; line-height: 1.4; } .hxo-nt em { font-style: normal; color: var(--grey); }
+  .hxo-hs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 16px; }
+  .hxo-hs div { background: var(--soft); border-radius: 14px; padding: 11px 13px; font-size: 9.5px; letter-spacing: .12em; white-space: nowrap; text-transform: uppercase; color: var(--faint); }
+  .hxo-hs b { display: block; font: 300 34px/1 var(--serif); color: var(--ink); letter-spacing: 0; margin-bottom: 4px; } .hxo-hs .you.n b { color: var(--red, #EC3013); }
+  /* For You (7 Nov 2026): a red tab fixed to the right edge on the Office tab; it slides out a 440 px panel. ✕ or Esc closes it */
+  .oxfy-tab { display: none; }
+  body[data-cat="hierarchy"] .oxfy-tab { display: flex; position: fixed; right: 0; top: 50%; transform: translateY(-50%); z-index: 800; flex-direction: column; align-items: center; gap: 12px; padding: 18px 11px; border: 0; border-radius: 16px 0 0 16px; background: var(--red); color: var(--on-accent); box-shadow: -10px 0 30px -12px var(--ox-tab-shadow); transition: right .3s cubic-bezier(.2,.8,.2,1), background .18s; }
+  body[data-cat="hierarchy"] .oxfy-tab:hover { background: var(--deep); color: var(--on-accent); }
+  .oxfy-tab span { writing-mode: vertical-rl; transform: rotate(180deg); font-size: 11px; letter-spacing: .2em; font-weight: 700; text-transform: uppercase; }
+  .oxfy-tab b { width: 24px; height: 24px; border-radius: 50%; background: var(--on-accent); color: var(--red); font-size: 11.5px; display: flex; align-items: center; justify-content: center; letter-spacing: 0; }
+  body[data-cat="hierarchy"] .oxfy-tab.none, body[data-cat="hierarchy"] .oxfy-tab.none:hover { background: var(--ox-card); color: var(--grey); border: 1px solid var(--ox-edge2); border-right: 0; box-shadow: none; } .oxfy-tab.none b { background: var(--soft); color: var(--grey); }
+  .oxfy { position: fixed; top: var(--top-h, 64px); right: 0; bottom: 0; width: min(440px, 100vw); z-index: 801; overflow-y: auto; overscroll-behavior: contain; padding: 24px 26px 32px; background: var(--fy-bg); border-left: 1px solid var(--ox-edge2); box-shadow: -40px 0 80px -30px var(--fy-shadow); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); transform: translateX(100%); visibility: hidden; transition: transform .3s cubic-bezier(.2,.8,.2,1), visibility 0s .3s; }
+  body[data-cat="hierarchy"].fy-open .oxfy { transform: none; visibility: visible; transition-delay: 0s; }
+  body[data-cat="hierarchy"].fy-open .oxfy-tab { right: min(440px, 100vw); }
+  .oxfy h3 { margin: 0; display: flex; align-items: center; gap: 12px; font: 300 34px/1 var(--serif); }
+  .oxfy .oxfy-x, .oxfy .oxfy-x:hover { position: absolute; top: 22px; right: 22px; width: 36px; height: 36px; padding: 0; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px; letter-spacing: 0; color: var(--grey); background: transparent; border: 1px solid var(--ox-edge2); box-shadow: none; } .oxfy .oxfy-x:hover { color: var(--ink); }
+  .oxfy .btn.primary, .oxfy .yn .primary { background: var(--red); border-color: var(--red); color: var(--on-accent); font-weight: 600; padding: 11px 18px; } .oxfy .btn.primary:hover, .oxfy .yn .primary:hover { background: var(--deep); border-color: var(--deep); }
+  .hxo-sc { color: var(--grey); font-size: 12px; margin: 8px 0 18px; }
+  .hxo-ri { display: grid; grid-template-columns: 38px minmax(0, 1fr); gap: 12px; padding: 16px 0; border-top: 1px solid var(--ox-edge); } .hxo-ri.none { display: block; color: var(--faint); } .hxo-ri > .hxo-fw { align-self: start; }
+  .hxo-ri .hx-fy-i { padding: 0; border: 0; margin: 0; background: transparent; } .hxo-ri .hx-fy-t { font-size: 14px; margin: 4px 0; } .hxo-ri .hx-fy-m { margin-bottom: 10px; }
+  .hxo-rd { color: var(--meta, var(--faint)); font-size: 10px; letter-spacing: .2em; text-transform: uppercase; }
   /* a department (level 2): lead band, desk cards (roster order; past 12 the idle ones fold), the five-stage trail below */
   .hxo-fw.m img, .hxo-fw.m .hxo-ini { width: 38px; height: 38px; } .hxo-fw.xl .hxo-ini { width: 70px; height: 70px; font-size: 15px; }
   .hxo-lb { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 18px; align-items: center; padding: 16px 20px; margin-bottom: 14px; border: 1px solid color-mix(in srgb, var(--red, #EC3013) 45%, transparent); border-radius: 18px; background: var(--card, var(--panel)); }
@@ -644,19 +671,10 @@
     .hxd-s { flex-direction: row; text-align: left; gap: 12px; padding: 0; } .hxd-s b { width: 64px; flex: none; }
     .hxd-split, .hxd-split.steps { grid-template-columns: minmax(0, 1fr); } .hxd-log div { grid-template-columns: 62px minmax(0, 1fr); }
   }
-  .hxo-map .w { fill: none; stroke: color-mix(in srgb, var(--ink) 18%, transparent); stroke-width: 1.5; stroke-dasharray: 4 5; }
-  .hxo-map .w.on { stroke: color-mix(in srgb, var(--red, #EC3013) 75%, transparent); stroke-dasharray: none; }
-  .hxo-map .w.up { stroke: color-mix(in srgb, var(--ink) 35%, transparent); stroke-dasharray: none; } .hxo-map .wd { fill: var(--ok); }
   .hxo-crumb { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin: -6px 0 22px; }
   .hxo-crumb button, .hxo-crumb .here { display: inline-flex; align-items: center; gap: 8px; padding: 4px 14px 4px 4px; border: 1px solid var(--line); border-radius: 99px; font-size: 11.5px; letter-spacing: 0; font-weight: 500; text-transform: none; color: var(--grey); background: transparent; }
   .hxo-crumb .here { color: var(--ink); background: var(--soft); } .hxo-crumb img { width: 26px; height: 26px; border-radius: 50%; object-fit: cover; }
   .hxo-crumb .sep { color: var(--faint); } .hxo-crumb .esc { margin-left: auto; color: var(--faint); font-size: 11px; }
-  @media (max-width: 1500px) { .hxo { grid-template-columns: 1fr; } .hxo-rail { max-height: none; } }
-  @media (max-width: 900px) {
-    .hxo-theo { grid-template-columns: 1fr; }
-    .hxo-map { grid-template-columns: 1fr; row-gap: 14px; } .hxo-map > svg { display: none; }
-    .hxo-rail { order: -1; } .hxo-mid { order: -1; padding-top: 0; } .hxo-bot { grid-column: 1; } .hxo-ct div { white-space: normal; }
-  }
   /* Hierarchy (4 Nov 2026): the chain as a picture, in the Overview hero's own look. Prompt engineer > Chief of Staff > department lead > desks (as many as the roster holds). */
   .hx { --sc-none: var(--faint); position: relative; padding: 28px 24px 22px; margin: 0 0 22px; border: 1px solid var(--line); border-radius: var(--r, 22px); background:
       radial-gradient(circle at 1px 1px, color-mix(in srgb, var(--ink) 10%, transparent) 1px, transparent 0) 0 0 / 22px 22px, var(--card, var(--panel)); }
@@ -759,21 +777,13 @@
   .kpi { padding: 20px 20px 16px; }
   .kpi:hover, .sk:hover, .client:hover { border-color: color-mix(in srgb, var(--ink) 30%, transparent); }
   .kpi .v { font-size: 40px; line-height: 1; }
-  .kpi .l, .side .gl, .ni .nv, .news .nd, .axis, .quad .qn, .bm.hd, .bl.hd, .wa th { letter-spacing: .17em; font-weight: 500; color: var(--faint); font-size: 10.5px; text-transform: uppercase; }
+  .kpi .l, .ni .nv, .news .nd, .axis, .quad .qn, .bm.hd, .bl.hd, .wa th { letter-spacing: .17em; font-weight: 500; color: var(--faint); font-size: 10.5px; text-transform: uppercase; }
   .kpi.alert .v { color: var(--red); }
   section { margin-bottom: 48px; }
   .sh { margin-bottom: 20px; }
   .sh h2 { font-size: 34px; }
   .sh .note { color: var(--grey); }
 
-  /* the rail: pills, one red marker */
-  .shell { grid-template-columns: 200px minmax(0, 1fr); gap: 30px; }
-  .side { gap: 4px; }
-  .side button { padding: 11px 16px; border-radius: 999px; font-weight: 500; letter-spacing: .1em; text-transform: uppercase; font-size: 11px; border: 0; background: transparent; transition: background .18s; }
-  .side button:hover { background: var(--soft); }
-  .side button.on { background: var(--ink); color: var(--bg); }
-  .side .n { opacity: 1; color: var(--faint); font-weight: 600; } .side .n.alert { color: var(--red); }
-  .side button.on .n { color: color-mix(in srgb, var(--bg) 70%, transparent); } .side button.on .n.alert { color: #fff; background: var(--red); border-radius: 999px; padding: 1px 7px; }
 
   /* controls */
   button { border: 1px solid color-mix(in srgb, var(--ink) 55%, transparent); background: transparent; border-radius: 999px; padding: 8px 15px; letter-spacing: .12em; text-transform: uppercase; font-weight: 500; font-size: 10.5px; transition: background .18s, color .18s, border-color .18s; }
@@ -878,18 +888,9 @@
   /* ===== phones and narrow windows (desktop is untouched: every rule below is inside a max-width query) ===== */
   @media (max-width: 860px) {
     .wrap { padding: 14px 14px 110px; }
-    .shell { grid-template-columns: minmax(0, 1fr); gap: 14px; }
     .main { min-width: 0; }
     header { gap: 10px; padding-bottom: 14px; }
     header h1 { font-size: 24px; }
-    header .sub { order: 3; width: 100%; font-size: 9.5px; }
-    header .right { margin-left: 0; width: 100%; justify-content: space-between; flex-wrap: wrap; border-radius: 18px; padding: 8px 14px; font-size: 10.5px; gap: 6px; }
-    /* the rail becomes a swipeable strip of pills that stays in view */
-    .side { position: sticky; top: 0; z-index: 5; flex-direction: row; gap: 6px; overflow-x: auto; padding: 8px 0; margin: 0 -14px; padding-left: 14px; padding-right: 14px; background: var(--bg); scrollbar-width: none; -webkit-overflow-scrolling: touch; }
-    .side::-webkit-scrollbar { display: none; }
-    .side .gl { display: none; }
-    .side button { flex: none; padding: 9px 14px; white-space: nowrap; }
-    .side button .n { margin-left: 4px; }
     .hero { padding: 26px 22px 90px; border-radius: 24px; }
     .hero h2 { font-size: 40px; max-width: none; margin: 12px 0 10px; }
     .hero .eyebrow { font-size: 10px; letter-spacing: .16em; }
@@ -950,45 +951,34 @@
   :root[data-theme="dark"] body::before { filter: brightness(1.4); }
 
   /* the big surfaces: frosted */
-  .panel, .kpi, .dept, .news, .sk, .client, .bpanel, .col, .skkpi, .quad, header .right, .side {
+  .panel, .kpi, .dept, .news, .sk, .client, .bpanel, .col, .skkpi, .quad, header .right {
     background: var(--glass); border: 1px solid var(--glass-edge);
     -webkit-backdrop-filter: var(--glass-blur); backdrop-filter: var(--glass-blur);
     box-shadow: inset 0 1px 0 var(--glass-lip);
   }
   .news { background: var(--glass-strong); } /* long lists of small text read on the more solid glass */
   .dept .dh { background: var(--glass-pill); }
-  .side { border-radius: 26px; padding: 10px; position: sticky; }
   /* the pills: tinted glass, hairline edge, no second blur */
-  .tag, .side button, button, .item, .ni .nic, .sk .skp, input, textarea, select {
+  .tag, button, .item, .ni .nic, .sk .skp, input, textarea, select {
     background: var(--glass-pill); border-color: var(--glass-line); box-shadow: inset 0 1px 0 var(--glass-lip);
   }
   .item { background: var(--glass-strong); }
-  .side button { background: transparent; box-shadow: none; }
-  .side button:hover { background: var(--glass-pill); box-shadow: inset 0 1px 0 var(--glass-lip); }
   /* the solid ones stay solid: the active rail pill, primary and selected buttons, the lead tag, filled states */
-  .side button.on, button.primary, .seg button.on, button:hover, .tag.lead { background: var(--ink); color: var(--bg); box-shadow: none; }
+  button.primary, .seg button.on, button:hover, .tag.lead { background: var(--ink); color: var(--bg); box-shadow: none; }
   @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
-    .panel, .kpi, .dept, .news, .sk, .client, .bpanel, .col, .skkpi, .quad, header .right, .side { background: var(--card); }
+    .panel, .kpi, .dept, .news, .sk, .client, .bpanel, .col, .skkpi, .quad, header .right { background: var(--card); }
   }
   /* people who ask the system for less transparency get solid cards */
   @media (prefers-reduced-transparency: reduce) {
-    .panel, .kpi, .dept, .news, .sk, .client, .bpanel, .col, .skkpi, .quad, header .right, .side, .item { background: var(--card); -webkit-backdrop-filter: none; backdrop-filter: none; }
+    .panel, .kpi, .dept, .news, .sk, .client, .bpanel, .col, .skkpi, .quad, header .right, .item { background: var(--card); -webkit-backdrop-filter: none; backdrop-filter: none; }
     body::before { display: none; }
   }
-  @media (max-width: 860px) { .side { border-radius: 18px; } }
 
   /* ---------- motion (25 Oct 2026): the rail drives the page ----------
      1. one ink pill that springs to the chosen item  2. the chosen category arrives in sequence  3. the client sub-menu unfolds.
      Springs only (linear() curves sampled from a damped spring in JS), nothing on a timer, all of it off under reduced motion. */
-  .side .ind { position: absolute; left: 0; top: 0; width: 0; height: 0; border-radius: 999px; background: var(--ink); pointer-events: none; z-index: 0; opacity: 0; will-change: transform, width, height; }
-  .side.has-ind .ind { opacity: 1; }
-  .side button, .side .gl, .side .subnav { position: relative; z-index: 1; }
-  .side.has-ind button.on, .side.has-ind button.on:hover { background: transparent; box-shadow: none; }
-  .side .subnav { overflow: hidden; }
   .item.dragging { opacity: .4; outline: 1px dashed color-mix(in srgb, var(--ink) 35%, transparent); outline-offset: -1px; }
   .quad.drag { outline: 2px solid color-mix(in srgb, var(--qc) 55%, transparent); outline-offset: -2px; }
-  .side .subnav:not(.open) { height: 0; margin-bottom: 0; opacity: 0; pointer-events: none; }
-  @media (max-width: 860px) { .side .subnav:not(.open) { height: auto; opacity: 1; pointer-events: auto; } }
   /* Brain map (4 Nov 2026): the vault as an Obsidian-style graph, with what its links say */
   .bm-q { background: var(--soft); border: 1px solid var(--line); border-radius: 7px; padding: 5px 10px; font-size: 12px; min-width: 170px; }
   .bm-grid { display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: 12px; align-items: start; }
@@ -1036,36 +1026,126 @@
   body #rv .rv-send { background: var(--bad); border-color: var(--bad); color: var(--bg); } body #rv.ans .rv-send { background: var(--q-plan); border-color: var(--q-plan); }
   body #rv .rv-sw { border-color: var(--line); border-radius: 7px; } body #rv .rv-sw .rv-dy.on { background: var(--ok); color: var(--bg); } body #rv .rv-sw .rv-dn.on { background: var(--bad); color: var(--bg); }
   body #rv .rv-dec, body #rv .rv-d, body #rv .rv-foot, body #rv .rv-meta, body #rv .rv-next { border-color: var(--line); }
+  /* ===== Reskin tokens for the top bar, the office map and For You (7 Nov 2026): a reskin changes only these three blocks ===== */
+  :root {
+    --on-accent: #FFFFFF; --line-strong: rgba(32,30,29,.18); --top-bg: rgba(243,242,242,.84);
+    --ox-card: rgba(251,250,249,.90); --ox-off: rgba(251,250,249,.45); --ox-off-edge: rgba(32,30,29,.20); --ox-face: #E6E1DD; --ox-face-ring: #FBFAF9;
+    --ox-edge: rgba(32,30,29,.10); --ox-edge2: rgba(32,30,29,.18); --ox-edge-hover: rgba(32,30,29,.34); --ox-inset: rgba(243,242,242,.92);
+    --ox-need-edge: rgba(236,48,19,.60); --ox-need-glow: rgba(236,48,19,.22); --ox-need-shadow: rgba(236,48,19,.45);
+    --ox-nora-a: #FFFFFF; --ox-nora-b: #F7F3F1; --ox-nora-edge: rgba(236,48,19,.60); --ox-ring1: rgba(236,48,19,.07); --ox-ring2: rgba(236,48,19,.035); --ox-nora-shadow: rgba(236,48,19,.35);
+    --ox-flow: #201E1D; --ox-flow-off: #a39b95; --ox-back: #EC3013; --ox-dots: rgba(32,30,29,.08); --ox-glow: rgba(236,48,19,.10);
+    --ox-label-bg: rgba(251,250,249,.94); --ox-label-fg: #6b6561; --ox-label-red: #B6240E; --ox-label-red-edge: rgba(236,48,19,.45);
+    --ox-you-shadow: rgba(236,48,19,.55); --ox-tab-shadow: rgba(236,48,19,.45); --fy-bg: rgba(251,250,249,.97); --fy-shadow: rgba(32,30,29,.30);
+    --ox-r1-top: rgba(236,48,19,.16); --ox-r1-bot: rgba(236,48,19,.03); --ox-r2-top: rgba(32,30,29,.06); --ox-r2-bot: rgba(32,30,29,0);
+    --ox-r3-top: rgba(236,48,19,.20); --ox-r3-bot: rgba(182,36,14,.07); --ox-r4-top: rgba(236,48,19,.06); --ox-r4-bot: #F3F2F2;
+  }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+    --line-strong: rgba(243,242,242,.20); --top-bg: rgba(24,22,21,.78);
+    --ox-card: rgba(36,33,32,.86); --ox-off: rgba(28,25,24,.55); --ox-off-edge: rgba(243,242,242,.16); --ox-face: #34302e; --ox-face-ring: #242120;
+    --ox-edge: rgba(243,242,242,.10); --ox-edge2: rgba(243,242,242,.20); --ox-edge-hover: rgba(243,242,242,.34); --ox-inset: rgba(22,20,19,.70);
+    --ox-need-edge: rgba(236,48,19,.65); --ox-need-glow: rgba(236,48,19,.35); --ox-need-shadow: rgba(236,48,19,.70);
+    --ox-nora-a: rgba(48,41,38,.94); --ox-nora-b: rgba(34,30,29,.94); --ox-nora-edge: rgba(236,48,19,.70); --ox-nora-shadow: rgba(236,48,19,.55);
+    --ox-flow: #F3F2F2; --ox-flow-off: #6f6a66; --ox-dots: rgba(243,242,242,.07); --ox-glow: rgba(236,48,19,.16);
+    --ox-label-bg: rgba(22,20,19,.85); --ox-label-fg: #B79C8F; --ox-label-red: #ff9a85;
+    --ox-you-shadow: rgba(236,48,19,.85); --ox-tab-shadow: rgba(236,48,19,.70); --fy-bg: rgba(30,27,26,.97); --fy-shadow: rgba(0,0,0,.80);
+    --ox-r1-top: rgba(122,34,22,.55); --ox-r1-bot: rgba(42,18,16,.20); --ox-r2-top: rgba(74,42,36,.55); --ox-r2-bot: rgba(22,20,19,0);
+    --ox-r3-top: rgba(184,48,26,.42); --ox-r3-bot: rgba(58,21,16,.25); --ox-r4-top: rgba(43,34,32,.95); --ox-r4-bot: #181615;
+  } }
+  :root[data-theme="dark"] {
+    --line-strong: rgba(243,242,242,.20); --top-bg: rgba(24,22,21,.78);
+    --ox-card: rgba(36,33,32,.86); --ox-off: rgba(28,25,24,.55); --ox-off-edge: rgba(243,242,242,.16); --ox-face: #34302e; --ox-face-ring: #242120;
+    --ox-edge: rgba(243,242,242,.10); --ox-edge2: rgba(243,242,242,.20); --ox-edge-hover: rgba(243,242,242,.34); --ox-inset: rgba(22,20,19,.70);
+    --ox-need-edge: rgba(236,48,19,.65); --ox-need-glow: rgba(236,48,19,.35); --ox-need-shadow: rgba(236,48,19,.70);
+    --ox-nora-a: rgba(48,41,38,.94); --ox-nora-b: rgba(34,30,29,.94); --ox-nora-edge: rgba(236,48,19,.70); --ox-nora-shadow: rgba(236,48,19,.55);
+    --ox-flow: #F3F2F2; --ox-flow-off: #6f6a66; --ox-dots: rgba(243,242,242,.07); --ox-glow: rgba(236,48,19,.16);
+    --ox-label-bg: rgba(22,20,19,.85); --ox-label-fg: #B79C8F; --ox-label-red: #ff9a85;
+    --ox-you-shadow: rgba(236,48,19,.85); --ox-tab-shadow: rgba(236,48,19,.70); --fy-bg: rgba(30,27,26,.97); --fy-shadow: rgba(0,0,0,.80);
+    --ox-r1-top: rgba(122,34,22,.55); --ox-r1-bot: rgba(42,18,16,.20); --ox-r2-top: rgba(74,42,36,.55); --ox-r2-bot: rgba(22,20,19,0);
+    --ox-r3-top: rgba(184,48,26,.42); --ox-r3-bot: rgba(58,21,16,.25); --ox-r4-top: rgba(43,34,32,.95); --ox-r4-bot: #181615;
+  }
+  /* ===== the top bar (7 Nov 2026): logo and name, the tabs with thin separators between groups, live / 3D office / theme on the right; a client row under it on Clients ===== */
+  header.top { position: sticky; top: 0; z-index: 60; display: flex; align-items: center; flex-wrap: wrap; gap: 0 22px; min-height: 64px; margin: 0; padding: 0 28px; border: 0; border-bottom: 1px solid var(--line); background: var(--top-bg); -webkit-backdrop-filter: blur(12px) saturate(140%); backdrop-filter: blur(12px) saturate(140%); }
+  header.top .brand { display: flex; align-items: center; gap: 12px; flex: none; }
+  header.top .seal { width: 32px; height: 32px; } header.top h1 { font-size: 25px; white-space: nowrap; }
+  .tabs { position: relative; display: flex; align-items: center; gap: 2px; flex: 1 1 auto; min-width: 0; overflow-x: auto; scrollbar-width: none; padding: 12px 0; }
+  .tabs::-webkit-scrollbar { display: none; }
+  .tabs button, .tabs button:hover { flex: none; position: relative; z-index: 1; display: inline-flex; align-items: baseline; gap: 5px; padding: 9px 14px; border: 0; border-radius: 99px; background: transparent; box-shadow: none; font-size: 11px; letter-spacing: .12em; font-weight: 600; text-transform: uppercase; color: var(--grey); white-space: nowrap; }
+  .tabs button:hover { color: var(--ink); background: var(--soft); }
+  .tabs button.on { background: var(--ink); color: var(--bg); }
+  .tabs.has-ind button.on, .tabs.has-ind button.on:hover { background: transparent; color: var(--bg); }
+  .tabs .n { font-size: 9.5px; letter-spacing: 0; font-weight: 600; color: var(--faint); transform: translateY(-.45em); font-variant-numeric: tabular-nums; } .tabs .n:empty { display: none; } .tabs .n.alert { color: var(--red); }
+  .tabs button.on .n { color: color-mix(in srgb, var(--bg) 65%, transparent); } .tabs button.on .n.alert { color: var(--red); }
+  .tabs .sep { flex: none; width: 1px; height: 18px; margin: 0 10px; background: var(--line-strong); }
+  .tabs .ind { position: absolute; left: 0; top: 0; width: 0; height: 0; border-radius: 99px; background: var(--ink); pointer-events: none; z-index: 0; opacity: 0; will-change: transform, width, height; } .tabs.has-ind .ind { opacity: 1; }
+  header.top .right { margin-left: auto; flex: none; display: flex; align-items: center; gap: 10px; padding: 0; border: 0; border-radius: 0; background: none; box-shadow: none; -webkit-backdrop-filter: none; backdrop-filter: none; color: var(--grey); font-size: 11.5px; }
+  .tpill, .tpill:hover { display: inline-flex; align-items: center; gap: 8px; padding: 7px 13px; border: 1px solid var(--line-strong); border-radius: 99px; background: transparent; box-shadow: none; color: var(--ink); white-space: nowrap; text-decoration: none; font-size: 11.5px; font-weight: 400; letter-spacing: 0; text-transform: none; }
+  .tpill:hover { border-color: var(--ink); } #themeBtn.tpill { font-size: 10.5px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; }
+  .tpill .live { width: 7px; height: 7px; } .tpill .sm { display: none; }
+  header.top .subnav { flex-basis: 100%; display: flex; align-items: center; gap: 6px; overflow-x: auto; scrollbar-width: none; padding: 0 0 12px; }
+  header.top .subnav::-webkit-scrollbar { display: none; } header.top .subnav:not(.open) { display: none; }
+  header.top .subnav button, header.top .subnav button:hover { flex: none; padding: 6px 13px; border: 1px solid var(--line); border-radius: 99px; background: transparent; box-shadow: none; color: var(--grey); font-size: 10.5px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; white-space: nowrap; }
+  header.top .subnav button:hover { color: var(--ink); border-color: var(--line-strong); }
+  header.top .subnav button.sub2 { text-transform: none; letter-spacing: .02em; font-weight: 500; border-style: dashed; } header.top .subnav button.sub2::before { content: '› '; color: var(--faint); }
+  header.top .subnav button.on { background: var(--ink); border-color: var(--ink); color: var(--bg); }
+  @media (max-width: 1600px) { #liveTxt { display: none; } #livePill { padding: 10px; } .tpill .lg { display: none; } .tpill .sm { display: inline; } }
+  /* the Office tab uses the whole width; the other tabs keep the readable 1560 px */
+  body[data-cat="hierarchy"] .wrap { max-width: none; padding: 0 0 48px; }
+  body[data-cat="hierarchy"] .hxt { padding: 0 64px; }
+  body[data-cat="hierarchy"]:has(#oxStage.map) .wrap { padding-bottom: 0; }
+  body[data-cat="hierarchy"]:has(#oxStage.map)::before, body[data-cat="hierarchy"]:has(#oxStage.map)::after { display: none; } /* the stage draws its own ridges */
+  @media (max-width: 1300px) { .ox.map { padding: 24px 32px 26px; } .ox-map { gap: 0 32px; } }
+  @media (max-width: 1180px) { /* too narrow for the arrows: Nora and You on top, the departments two by two under her */
+    .ox-map { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; padding-top: 24px; align-content: start; }
+    .ox-col { display: contents; } .ox-map .hxo-d { order: var(--o); }
+    .ox-mid { grid-column: 1 / -1; order: -1; display: flex; flex-direction: column; align-items: center; gap: 26px; margin-bottom: 18px; }
+    .ox-mid .ox-you { margin-top: 0; }
+    .ox.map .ox-flows { display: none; }
+  }
+  @media (max-width: 860px) {
+    header.top { padding: 10px 14px 0; gap: 0 10px; min-height: 0; }
+    header.top h1 { font-size: 21px; } header.top .seal { width: 28px; height: 28px; }
+    .tabs { order: 3; flex-basis: 100%; margin: 0 -14px; padding: 8px 14px 10px; }
+    header.top .subnav { order: 4; }
+    header.top .right { gap: 6px; } .tpill { padding: 6px 11px; }
+    .ox, .ox.map { padding: 18px 14px 24px; } .ox.map { min-height: 0; }
+    body[data-cat="hierarchy"] .hxt { padding: 0 14px; }
+    .ox-map { grid-template-columns: minmax(0, 1fr); gap: 14px; }
+    .ox-mid { align-items: stretch; gap: 16px; } .ox-mid .ox-you { align-self: center; }
+    .hxo-hub { padding: 18px; border-radius: 22px; } .hxo-hn { font-size: 40px; } .hxo-fw.xxl img { width: 70px; height: 70px; } .hxo-hs b { font-size: 28px; }
+    .hxo-hs div { padding: 10px; letter-spacing: .06em; } .hxo-ct div { white-space: normal; }
+    .hxo-theo { grid-template-columns: minmax(0, 1fr); border-radius: 22px; padding: 10px 12px 12px; }
+    .hxo-tw { max-width: none; border-right: 0; padding: 0 0 8px; border-bottom: 1px solid var(--ox-edge); margin-bottom: 4px; }
+    .hxo-theo .pe { grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: "ta ta" "tog go" "st st" "out out"; gap: 6px 8px; }
+    .hxo-theo #peSt { grid-area: st; position: static; margin: 0; white-space: normal; }
+    .ox-you .t span { display: none; }
+  }
+  @media (max-width: 480px) { body[data-cat="hierarchy"] .oxfy-tab { top: auto; bottom: 18px; transform: none; padding: 12px 8px; gap: 8px; } body.fy-open .oxfy-tab { display: none !important; } }
 </style>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500&family=Newsreader:opsz,wght@6..72,300;6..72,400&family=Noto+Serif+SC:wght@300&display=swap">
 </head>
 <body>
-<div class="wrap">
-  <header>
-    <span class="seal" aria-hidden="true"><img class="lg-l" src="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%201000%201000%22%20width%3D%221000%22%20height%3D%221000%22%3E%3Crect%20width%3D%221000%22%20height%3D%221000%22%20rx%3D%22226%22%20fill%3D%22%23FFFFFF%22%2F%3E%3Cpath%20d%3D%22M404.48725159355075%20395.8042744656917V401.69103862017244Q398.011811023622%20404.6344206974128%20390.65335583052115%20413.1702287214098Q383.29490063742026%20421.7060367454068%20377.99681289838765%20439.6606674165729L327.0763029621297%20604.4900637420322Q324.13292088488936%20604.1957255343082%20320.895200599925%20604.0485564304461Q317.6574803149606%20603.9013873265841%20314.1254218222722%20603.9013873265841Q311.18203974503183%20603.9013873265841%20307.7971503562054%20604.0485564304461Q304.41226096737904%20604.1957255343082%20301.4688788901387%20604.4900637420322L239.65785526809145%20416.4079490063741Q237.00881139857512%20408.1664791901012%20233.03524559430065%20405.07592800899886Q229.06167979002618%20401.98537682789646%20224.0579302587176%20401.69103862017244V395.8042744656917Q233.1824146981627%20396.0986126734158%20245.54461942257214%20396.3929508811398Q257.9068241469816%20396.68728908886385%20270.56336707911504%20396.68728908886385Q283.8085864266966%20396.68728908886385%20295.582114735658%20396.3929508811398Q307.3556430446194%20396.0986126734158%20314.71409823772024%20395.8042744656917V401.69103862017244Q305.5896137982752%20401.98537682789646%20300.5858642669666%20403.75140607424066Q295.582114735658%20405.51743532058487%20294.84626921634793%20410.6683539557555Q294.11042369703785%20415.81927259092606%20297.64248218972625%20426.4154480689913L338.555493063367%20551.509186351706L330.90269966254215%20566.5204349456318L362.39688788901384%20466.151106111736Q370.0496812898387%20442.01537307836514%20369.7553430821147%20428.0343082114735Q369.46100487439065%20414.05324334458186%20362.83839520059985%20408.01931008623916Q356.2157855268091%20401.98537682789646%20344.1479190101237%20401.69103862017244V395.8042744656917Q355.03843269591295%20396.0986126734158%20363.721409823772%20396.3929508811398Q372.404386951631%20396.68728908886385%20381.8232095988001%20396.68728908886385Q388.0043119610048%20396.68728908886385%20394.0382452193475%20396.3929508811398Q400.0721784776902%20396.0986126734158%20404.48725159355075%20395.8042744656917ZM193.152418447694%20395.8042744656917V401.69103862017244Q187.5599925009373%20402.57405324334457%20185.49962504686908%20406.400449943757Q183.43925759280086%20410.2268466441694%20184.17510311211095%20415.6721034870641Q184.91094863142104%20421.11736032995873%20186.67697787776524%20426.4154480689913L231.12204724409443%20554.4525684289463L223.17491563554552%20565.9317585301836L259.6728533933258%20463.20772403449564L263.79358830146225%20471.4491938507686L218.17116610423693%20604.4900637420322Q215.22778402699657%20604.1957255343082%20211.84289463817018%20604.0485564304461Q208.45800524934378%20603.9013873265841%20205.2202849643794%20603.9013873265841Q201.98256467941502%20603.9013873265841%20198.74484439445064%20604.0485564304461Q195.50712410948626%20604.1957255343082%20192.5637420322459%20604.4900637420322L125.45463067116604%20420.5286839145106Q121.6282339707536%20409.93250843644535%20116.62448443944501%20405.9589426321709Q111.62073490813643%20401.98537682789646%20107.49999999999994%20401.69103862017244V395.8042744656917Q116.91882264716904%20396.0986126734158%20130.1640419947506%20396.3929508811398Q143.40926134233214%20396.68728908886385%20155.47712785901757%20396.68728908886385Q167.54499437570297%20396.68728908886385%20177.25815523059612%20396.3929508811398Q186.97131608548926%20396.0986126734158%20193.152418447694%20395.8042744656917ZM411.5513685789276%20395.8042744656917Q419.4985001874765%20396.0986126734158%20432.74371953505806%20396.3929508811398Q445.9889388826396%20396.68728908886385%20459.23415823022117%20396.68728908886385Q473.6567304086989%20396.68728908886385%20487.04911886014247%20396.3929508811398Q500.441507311586%20396.0986126734158%20506.0339332583427%20396.0986126734158Q534.879077615298%20396.0986126734158%20553.5695538057741%20401.98537682789646Q572.2600299962504%20407.8721409823771%20581.6788526434195%20419.2041619797525Q591.0976752905887%20430.5361829771278%20591.0976752905887%20447.31346081739775Q591.0976752905887%20457.909636295463%20586.8297712785902%20468.0643044619422Q582.5618672665917%20478.2189726284214%20572.4071991001124%20486.7547806524184Q562.2525309336332%20495.2905886764154%20544.4450693663291%20500.29433820772397Q526.6376077990251%20505.29808773903255%20499.55849268841393%20505.29808773903255H471.30202474690657V499.4113235845519H496.6151106111736Q512.8037120359954%20499.4113235845519%20521.1923509561304%20492.7887139107611Q529.5809898762654%20486.16610423697034%20532.6715410573678%20475.12842144731906Q535.7620922384701%20464.09073865766777%20535.7620922384701%20450.55118110236214Q535.7620922384701%20427.2984626921634%20528.4036370453694%20414.4947506561679Q521.0451818522685%20401.69103862017244%20503.38488938882637%20401.69103862017244Q492.4943757030371%20401.69103862017244%20489.4038245219348%20406.694788151481Q486.3132733408324%20411.6985376827896%20486.3132733408324%20427.0041244844394V572.9958755155606Q486.3132733408324%20583.5920509936258%20487.9321334833146%20588.8901387326584Q489.55099362579676%20594.188226471691%20494.1132358455193%20595.9542557180353Q498.6754780652418%20597.7202849643794%20507.7999625046869%20598.3089613798275V604.1957255343082Q499.55849268841393%20603.6070491188601%20486.7547806524184%20603.4598800149981Q473.9510686164229%20603.312710911136%20461.0001874765654%20603.312710911136Q445.9889388826396%20603.312710911136%20432.74371953505806%20603.4598800149981Q419.4985001874765%20603.6070491188601%20411.5513685789276%20604.1957255343082V598.3089613798275Q420.67585301837266%20597.7202849643794%20425.2380952380952%20595.9542557180353Q429.8003374578177%20594.188226471691%20431.4191976002999%20588.8901387326584Q433.03805774278214%20583.5920509936258%20433.03805774278214%20572.9958755155606V427.0041244844394Q433.03805774278214%20416.11361079865014%20431.4191976002999%20410.9626921634795Q429.8003374578177%20405.8117735283089%20425.2380952380952%20403.89857517810265Q420.67585301837266%20401.98537682789646%20411.5513685789276%20401.69103862017244ZM470.12467191601047%20500.29433820772397Q481.6038620172478%20500.58867641544805%20491.02268466441694%20501.4716910386201Q500.441507311586%20502.3547056617922%20507.94713160854894%20503.0905511811023Q515.4527559055118%20503.8263967004124%20521.0451818522685%20504.12073490813646Q550.1846644169478%20505.88676415448066%20564.4600674915634%20515.1584176977877Q578.7354705661792%20524.4300712410948%20582.5618672665917%20542.679040119985L588.7429696287963%20573.2902137232845Q591.3920134983127%20584.4750656167979%20594.3353955755531%20589.0373078365204Q597.2787776527933%20593.599550056243%20602.576865391826%20593.3052118485189Q605.8145856767903%20593.3052118485189%20608.1692913385826%20591.9806899137607Q610.523997000375%20590.6561679790026%20612.8787026621671%20588.0071241094863L616.9994375703037%20591.8335208098987Q608.4636295463067%20600.9580052493438%20598.4561304836895%20604.6372328458942Q588.4486314210724%20608.3164604424446%20575.2034120734908%20608.3164604424446Q557.8374578177727%20608.3164604424446%20546.7997750281214%20601.5466816647918Q535.7620922384701%20594.776902887139%20532.8187101612298%20576.527934008249L527.8149606299212%20547.0941132358455Q526.048931383577%20535.0262467191601%20523.2527184101987%20525.607424071991Q520.4565054368204%20516.1886014248219%20515.7470941132358%20510.7433445819272Q511.0376827896513%20505.29808773903255%20502.5018747656543%20505.29808773903255H470.7133483314585ZM892.5%20395.8042744656917V401.69103862017244Q886.0245594300713%20404.6344206974128%20878.6661042369705%20413.1702287214098Q871.3076490438696%20421.7060367454068%20866.009561304837%20439.6606674165729L815.089051368579%20604.4900637420322Q812.1456692913387%20604.1957255343082%20808.9079490063743%20604.0485564304461Q805.6702287214099%20603.9013873265841%20802.1381702287215%20603.9013873265841Q799.1947881514811%20603.9013873265841%20795.8098987626547%20604.0485564304461Q792.4250093738283%20604.1957255343082%20789.4816272965879%20604.4900637420322L727.6706036745408%20416.4079490063741Q725.0215598050245%20408.1664791901012%20721.04799400075%20405.07592800899886Q717.0744281964755%20401.98537682789646%20712.070678665167%20401.69103862017244V395.8042744656917Q721.195163104612%20396.0986126734158%20733.5573678290214%20396.3929508811398Q745.9195725534308%20396.68728908886385%20758.5761154855643%20396.68728908886385Q771.8213348331459%20396.68728908886385%20783.5948631421072%20396.3929508811398Q795.3683914510686%20396.0986126734158%20802.7268466441695%20395.8042744656917V401.69103862017244Q793.6023622047245%20401.98537682789646%20788.5986126734159%20403.75140607424066Q783.5948631421073%20405.51743532058487%20782.8590176227972%20410.6683539557555Q782.1231721034871%20415.81927259092606%20785.6552305961756%20426.4154480689913L826.5682414698163%20551.509186351706L818.9154480689914%20566.5204349456318L850.4096362954631%20466.151106111736Q858.0624296962881%20442.01537307836514%20857.768091488564%20428.0343082114735Q857.4737532808399%20414.05324334458186%20850.8511436070492%20408.01931008623916Q844.2285339332584%20401.98537682789646%20832.160667416573%20401.69103862017244V395.8042744656917Q843.0511811023623%20396.0986126734158%20851.7341582302213%20396.3929508811398Q860.4171353580803%20396.68728908886385%20869.8359580052494%20396.68728908886385Q876.0170603674542%20396.68728908886385%20882.0509936257969%20396.3929508811398Q888.0849268841396%20396.0986126734158%20892.5%20395.8042744656917ZM681.1651668541433%20395.8042744656917V401.69103862017244Q675.5727409073866%20402.57405324334457%20673.5123734533183%20406.400449943757Q671.4520059992501%20410.2268466441694%20672.1878515185601%20415.6721034870641Q672.9236970378703%20421.11736032995873%20674.6897262842145%20426.4154480689913L719.1347956505438%20554.4525684289463L711.1876640419948%20565.9317585301836L747.6856017997751%20463.20772403449564L751.8063367079116%20471.4491938507686L706.1839145106862%20604.4900637420322Q703.2405324334459%20604.1957255343082%20699.8556430446195%20604.0485564304461Q696.470753655793%20603.9013873265841%20693.2330333708287%20603.9013873265841Q689.9953130858643%20603.9013873265841%20686.7575928008998%20604.0485564304461Q683.5198725159355%20604.1957255343082%20680.5764904386951%20604.4900637420322L613.4673790776153%20420.5286839145106Q609.6409823772029%20409.93250843644535%20604.6372328458943%20405.9589426321709Q599.6334833145858%20401.98537682789646%20595.5127484064492%20401.69103862017244V395.8042744656917Q604.9315710536183%20396.0986126734158%20618.1767904011999%20396.3929508811398Q631.4220097487814%20396.68728908886385%20643.4898762654668%20396.68728908886385Q655.5577427821522%20396.68728908886385%20665.2709036370454%20396.3929508811398Q674.9840644919385%20396.0986126734158%20681.1651668541433%20395.8042744656917Z%22%20fill%3D%22%23FF3131%22%2F%3E%3C%2Fsvg%3E" alt=""><img class="lg-d" src="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%201000%201000%22%20width%3D%221000%22%20height%3D%221000%22%3E%3Crect%20width%3D%221000%22%20height%3D%221000%22%20rx%3D%22226%22%20fill%3D%22%23FF3131%22%2F%3E%3Cpath%20d%3D%22M404.48725159355075%20395.8042744656917V401.69103862017244Q398.011811023622%20404.6344206974128%20390.65335583052115%20413.1702287214098Q383.29490063742026%20421.7060367454068%20377.99681289838765%20439.6606674165729L327.0763029621297%20604.4900637420322Q324.13292088488936%20604.1957255343082%20320.895200599925%20604.0485564304461Q317.6574803149606%20603.9013873265841%20314.1254218222722%20603.9013873265841Q311.18203974503183%20603.9013873265841%20307.7971503562054%20604.0485564304461Q304.41226096737904%20604.1957255343082%20301.4688788901387%20604.4900637420322L239.65785526809145%20416.4079490063741Q237.00881139857512%20408.1664791901012%20233.03524559430065%20405.07592800899886Q229.06167979002618%20401.98537682789646%20224.0579302587176%20401.69103862017244V395.8042744656917Q233.1824146981627%20396.0986126734158%20245.54461942257214%20396.3929508811398Q257.9068241469816%20396.68728908886385%20270.56336707911504%20396.68728908886385Q283.8085864266966%20396.68728908886385%20295.582114735658%20396.3929508811398Q307.3556430446194%20396.0986126734158%20314.71409823772024%20395.8042744656917V401.69103862017244Q305.5896137982752%20401.98537682789646%20300.5858642669666%20403.75140607424066Q295.582114735658%20405.51743532058487%20294.84626921634793%20410.6683539557555Q294.11042369703785%20415.81927259092606%20297.64248218972625%20426.4154480689913L338.555493063367%20551.509186351706L330.90269966254215%20566.5204349456318L362.39688788901384%20466.151106111736Q370.0496812898387%20442.01537307836514%20369.7553430821147%20428.0343082114735Q369.46100487439065%20414.05324334458186%20362.83839520059985%20408.01931008623916Q356.2157855268091%20401.98537682789646%20344.1479190101237%20401.69103862017244V395.8042744656917Q355.03843269591295%20396.0986126734158%20363.721409823772%20396.3929508811398Q372.404386951631%20396.68728908886385%20381.8232095988001%20396.68728908886385Q388.0043119610048%20396.68728908886385%20394.0382452193475%20396.3929508811398Q400.0721784776902%20396.0986126734158%20404.48725159355075%20395.8042744656917ZM193.152418447694%20395.8042744656917V401.69103862017244Q187.5599925009373%20402.57405324334457%20185.49962504686908%20406.400449943757Q183.43925759280086%20410.2268466441694%20184.17510311211095%20415.6721034870641Q184.91094863142104%20421.11736032995873%20186.67697787776524%20426.4154480689913L231.12204724409443%20554.4525684289463L223.17491563554552%20565.9317585301836L259.6728533933258%20463.20772403449564L263.79358830146225%20471.4491938507686L218.17116610423693%20604.4900637420322Q215.22778402699657%20604.1957255343082%20211.84289463817018%20604.0485564304461Q208.45800524934378%20603.9013873265841%20205.2202849643794%20603.9013873265841Q201.98256467941502%20603.9013873265841%20198.74484439445064%20604.0485564304461Q195.50712410948626%20604.1957255343082%20192.5637420322459%20604.4900637420322L125.45463067116604%20420.5286839145106Q121.6282339707536%20409.93250843644535%20116.62448443944501%20405.9589426321709Q111.62073490813643%20401.98537682789646%20107.49999999999994%20401.69103862017244V395.8042744656917Q116.91882264716904%20396.0986126734158%20130.1640419947506%20396.3929508811398Q143.40926134233214%20396.68728908886385%20155.47712785901757%20396.68728908886385Q167.54499437570297%20396.68728908886385%20177.25815523059612%20396.3929508811398Q186.97131608548926%20396.0986126734158%20193.152418447694%20395.8042744656917ZM411.5513685789276%20395.8042744656917Q419.4985001874765%20396.0986126734158%20432.74371953505806%20396.3929508811398Q445.9889388826396%20396.68728908886385%20459.23415823022117%20396.68728908886385Q473.6567304086989%20396.68728908886385%20487.04911886014247%20396.3929508811398Q500.441507311586%20396.0986126734158%20506.0339332583427%20396.0986126734158Q534.879077615298%20396.0986126734158%20553.5695538057741%20401.98537682789646Q572.2600299962504%20407.8721409823771%20581.6788526434195%20419.2041619797525Q591.0976752905887%20430.5361829771278%20591.0976752905887%20447.31346081739775Q591.0976752905887%20457.909636295463%20586.8297712785902%20468.0643044619422Q582.5618672665917%20478.2189726284214%20572.4071991001124%20486.7547806524184Q562.2525309336332%20495.2905886764154%20544.4450693663291%20500.29433820772397Q526.6376077990251%20505.29808773903255%20499.55849268841393%20505.29808773903255H471.30202474690657V499.4113235845519H496.6151106111736Q512.8037120359954%20499.4113235845519%20521.1923509561304%20492.7887139107611Q529.5809898762654%20486.16610423697034%20532.6715410573678%20475.12842144731906Q535.7620922384701%20464.09073865766777%20535.7620922384701%20450.55118110236214Q535.7620922384701%20427.2984626921634%20528.4036370453694%20414.4947506561679Q521.0451818522685%20401.69103862017244%20503.38488938882637%20401.69103862017244Q492.4943757030371%20401.69103862017244%20489.4038245219348%20406.694788151481Q486.3132733408324%20411.6985376827896%20486.3132733408324%20427.0041244844394V572.9958755155606Q486.3132733408324%20583.5920509936258%20487.9321334833146%20588.8901387326584Q489.55099362579676%20594.188226471691%20494.1132358455193%20595.9542557180353Q498.6754780652418%20597.7202849643794%20507.7999625046869%20598.3089613798275V604.1957255343082Q499.55849268841393%20603.6070491188601%20486.7547806524184%20603.4598800149981Q473.9510686164229%20603.312710911136%20461.0001874765654%20603.312710911136Q445.9889388826396%20603.312710911136%20432.74371953505806%20603.4598800149981Q419.4985001874765%20603.6070491188601%20411.5513685789276%20604.1957255343082V598.3089613798275Q420.67585301837266%20597.7202849643794%20425.2380952380952%20595.9542557180353Q429.8003374578177%20594.188226471691%20431.4191976002999%20588.8901387326584Q433.03805774278214%20583.5920509936258%20433.03805774278214%20572.9958755155606V427.0041244844394Q433.03805774278214%20416.11361079865014%20431.4191976002999%20410.9626921634795Q429.8003374578177%20405.8117735283089%20425.2380952380952%20403.89857517810265Q420.67585301837266%20401.98537682789646%20411.5513685789276%20401.69103862017244ZM470.12467191601047%20500.29433820772397Q481.6038620172478%20500.58867641544805%20491.02268466441694%20501.4716910386201Q500.441507311586%20502.3547056617922%20507.94713160854894%20503.0905511811023Q515.4527559055118%20503.8263967004124%20521.0451818522685%20504.12073490813646Q550.1846644169478%20505.88676415448066%20564.4600674915634%20515.1584176977877Q578.7354705661792%20524.4300712410948%20582.5618672665917%20542.679040119985L588.7429696287963%20573.2902137232845Q591.3920134983127%20584.4750656167979%20594.3353955755531%20589.0373078365204Q597.2787776527933%20593.599550056243%20602.576865391826%20593.3052118485189Q605.8145856767903%20593.3052118485189%20608.1692913385826%20591.9806899137607Q610.523997000375%20590.6561679790026%20612.8787026621671%20588.0071241094863L616.9994375703037%20591.8335208098987Q608.4636295463067%20600.9580052493438%20598.4561304836895%20604.6372328458942Q588.4486314210724%20608.3164604424446%20575.2034120734908%20608.3164604424446Q557.8374578177727%20608.3164604424446%20546.7997750281214%20601.5466816647918Q535.7620922384701%20594.776902887139%20532.8187101612298%20576.527934008249L527.8149606299212%20547.0941132358455Q526.048931383577%20535.0262467191601%20523.2527184101987%20525.607424071991Q520.4565054368204%20516.1886014248219%20515.7470941132358%20510.7433445819272Q511.0376827896513%20505.29808773903255%20502.5018747656543%20505.29808773903255H470.7133483314585ZM892.5%20395.8042744656917V401.69103862017244Q886.0245594300713%20404.6344206974128%20878.6661042369705%20413.1702287214098Q871.3076490438696%20421.7060367454068%20866.009561304837%20439.6606674165729L815.089051368579%20604.4900637420322Q812.1456692913387%20604.1957255343082%20808.9079490063743%20604.0485564304461Q805.6702287214099%20603.9013873265841%20802.1381702287215%20603.9013873265841Q799.1947881514811%20603.9013873265841%20795.8098987626547%20604.0485564304461Q792.4250093738283%20604.1957255343082%20789.4816272965879%20604.4900637420322L727.6706036745408%20416.4079490063741Q725.0215598050245%20408.1664791901012%20721.04799400075%20405.07592800899886Q717.0744281964755%20401.98537682789646%20712.070678665167%20401.69103862017244V395.8042744656917Q721.195163104612%20396.0986126734158%20733.5573678290214%20396.3929508811398Q745.9195725534308%20396.68728908886385%20758.5761154855643%20396.68728908886385Q771.8213348331459%20396.68728908886385%20783.5948631421072%20396.3929508811398Q795.3683914510686%20396.0986126734158%20802.7268466441695%20395.8042744656917V401.69103862017244Q793.6023622047245%20401.98537682789646%20788.5986126734159%20403.75140607424066Q783.5948631421073%20405.51743532058487%20782.8590176227972%20410.6683539557555Q782.1231721034871%20415.81927259092606%20785.6552305961756%20426.4154480689913L826.5682414698163%20551.509186351706L818.9154480689914%20566.5204349456318L850.4096362954631%20466.151106111736Q858.0624296962881%20442.01537307836514%20857.768091488564%20428.0343082114735Q857.4737532808399%20414.05324334458186%20850.8511436070492%20408.01931008623916Q844.2285339332584%20401.98537682789646%20832.160667416573%20401.69103862017244V395.8042744656917Q843.0511811023623%20396.0986126734158%20851.7341582302213%20396.3929508811398Q860.4171353580803%20396.68728908886385%20869.8359580052494%20396.68728908886385Q876.0170603674542%20396.68728908886385%20882.0509936257969%20396.3929508811398Q888.0849268841396%20396.0986126734158%20892.5%20395.8042744656917ZM681.1651668541433%20395.8042744656917V401.69103862017244Q675.5727409073866%20402.57405324334457%20673.5123734533183%20406.400449943757Q671.4520059992501%20410.2268466441694%20672.1878515185601%20415.6721034870641Q672.9236970378703%20421.11736032995873%20674.6897262842145%20426.4154480689913L719.1347956505438%20554.4525684289463L711.1876640419948%20565.9317585301836L747.6856017997751%20463.20772403449564L751.8063367079116%20471.4491938507686L706.1839145106862%20604.4900637420322Q703.2405324334459%20604.1957255343082%20699.8556430446195%20604.0485564304461Q696.470753655793%20603.9013873265841%20693.2330333708287%20603.9013873265841Q689.9953130858643%20603.9013873265841%20686.7575928008998%20604.0485564304461Q683.5198725159355%20604.1957255343082%20680.5764904386951%20604.4900637420322L613.4673790776153%20420.5286839145106Q609.6409823772029%20409.93250843644535%20604.6372328458943%20405.9589426321709Q599.6334833145858%20401.98537682789646%20595.5127484064492%20401.69103862017244V395.8042744656917Q604.9315710536183%20396.0986126734158%20618.1767904011999%20396.3929508811398Q631.4220097487814%20396.68728908886385%20643.4898762654668%20396.68728908886385Q655.5577427821522%20396.68728908886385%20665.2709036370454%20396.3929508811398Q674.9840644919385%20396.0986126734158%20681.1651668541433%20395.8042744656917Z%22%20fill%3D%22%23FFFFFF%22%2F%3E%3C%2Fsvg%3E" alt=""></span>
-    <h1 id="biz">AIOS</h1>
-    <span class="sub">Agents Office · operating picture</span>
-    <div class="right"><span class="live" id="live"></span><span id="liveTxt">connecting…</span> · <a href="/">open the office</a> · <button id="themeBtn" type="button" title="Switch between automatic, light and dark">Auto</button></div>
-  </header>
-
-  <div class="shell">
-  <nav class="side" id="side" aria-label="AIOS categories">
-    <div class="gl">Today</div>
+<header class="top" id="top">
+  <div class="brand"><span class="seal" aria-hidden="true"><img class="lg-l" src="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%201000%201000%22%20width%3D%221000%22%20height%3D%221000%22%3E%3Crect%20width%3D%221000%22%20height%3D%221000%22%20rx%3D%22226%22%20fill%3D%22%23FFFFFF%22%2F%3E%3Cpath%20d%3D%22M404.48725159355075%20395.8042744656917V401.69103862017244Q398.011811023622%20404.6344206974128%20390.65335583052115%20413.1702287214098Q383.29490063742026%20421.7060367454068%20377.99681289838765%20439.6606674165729L327.0763029621297%20604.4900637420322Q324.13292088488936%20604.1957255343082%20320.895200599925%20604.0485564304461Q317.6574803149606%20603.9013873265841%20314.1254218222722%20603.9013873265841Q311.18203974503183%20603.9013873265841%20307.7971503562054%20604.0485564304461Q304.41226096737904%20604.1957255343082%20301.4688788901387%20604.4900637420322L239.65785526809145%20416.4079490063741Q237.00881139857512%20408.1664791901012%20233.03524559430065%20405.07592800899886Q229.06167979002618%20401.98537682789646%20224.0579302587176%20401.69103862017244V395.8042744656917Q233.1824146981627%20396.0986126734158%20245.54461942257214%20396.3929508811398Q257.9068241469816%20396.68728908886385%20270.56336707911504%20396.68728908886385Q283.8085864266966%20396.68728908886385%20295.582114735658%20396.3929508811398Q307.3556430446194%20396.0986126734158%20314.71409823772024%20395.8042744656917V401.69103862017244Q305.5896137982752%20401.98537682789646%20300.5858642669666%20403.75140607424066Q295.582114735658%20405.51743532058487%20294.84626921634793%20410.6683539557555Q294.11042369703785%20415.81927259092606%20297.64248218972625%20426.4154480689913L338.555493063367%20551.509186351706L330.90269966254215%20566.5204349456318L362.39688788901384%20466.151106111736Q370.0496812898387%20442.01537307836514%20369.7553430821147%20428.0343082114735Q369.46100487439065%20414.05324334458186%20362.83839520059985%20408.01931008623916Q356.2157855268091%20401.98537682789646%20344.1479190101237%20401.69103862017244V395.8042744656917Q355.03843269591295%20396.0986126734158%20363.721409823772%20396.3929508811398Q372.404386951631%20396.68728908886385%20381.8232095988001%20396.68728908886385Q388.0043119610048%20396.68728908886385%20394.0382452193475%20396.3929508811398Q400.0721784776902%20396.0986126734158%20404.48725159355075%20395.8042744656917ZM193.152418447694%20395.8042744656917V401.69103862017244Q187.5599925009373%20402.57405324334457%20185.49962504686908%20406.400449943757Q183.43925759280086%20410.2268466441694%20184.17510311211095%20415.6721034870641Q184.91094863142104%20421.11736032995873%20186.67697787776524%20426.4154480689913L231.12204724409443%20554.4525684289463L223.17491563554552%20565.9317585301836L259.6728533933258%20463.20772403449564L263.79358830146225%20471.4491938507686L218.17116610423693%20604.4900637420322Q215.22778402699657%20604.1957255343082%20211.84289463817018%20604.0485564304461Q208.45800524934378%20603.9013873265841%20205.2202849643794%20603.9013873265841Q201.98256467941502%20603.9013873265841%20198.74484439445064%20604.0485564304461Q195.50712410948626%20604.1957255343082%20192.5637420322459%20604.4900637420322L125.45463067116604%20420.5286839145106Q121.6282339707536%20409.93250843644535%20116.62448443944501%20405.9589426321709Q111.62073490813643%20401.98537682789646%20107.49999999999994%20401.69103862017244V395.8042744656917Q116.91882264716904%20396.0986126734158%20130.1640419947506%20396.3929508811398Q143.40926134233214%20396.68728908886385%20155.47712785901757%20396.68728908886385Q167.54499437570297%20396.68728908886385%20177.25815523059612%20396.3929508811398Q186.97131608548926%20396.0986126734158%20193.152418447694%20395.8042744656917ZM411.5513685789276%20395.8042744656917Q419.4985001874765%20396.0986126734158%20432.74371953505806%20396.3929508811398Q445.9889388826396%20396.68728908886385%20459.23415823022117%20396.68728908886385Q473.6567304086989%20396.68728908886385%20487.04911886014247%20396.3929508811398Q500.441507311586%20396.0986126734158%20506.0339332583427%20396.0986126734158Q534.879077615298%20396.0986126734158%20553.5695538057741%20401.98537682789646Q572.2600299962504%20407.8721409823771%20581.6788526434195%20419.2041619797525Q591.0976752905887%20430.5361829771278%20591.0976752905887%20447.31346081739775Q591.0976752905887%20457.909636295463%20586.8297712785902%20468.0643044619422Q582.5618672665917%20478.2189726284214%20572.4071991001124%20486.7547806524184Q562.2525309336332%20495.2905886764154%20544.4450693663291%20500.29433820772397Q526.6376077990251%20505.29808773903255%20499.55849268841393%20505.29808773903255H471.30202474690657V499.4113235845519H496.6151106111736Q512.8037120359954%20499.4113235845519%20521.1923509561304%20492.7887139107611Q529.5809898762654%20486.16610423697034%20532.6715410573678%20475.12842144731906Q535.7620922384701%20464.09073865766777%20535.7620922384701%20450.55118110236214Q535.7620922384701%20427.2984626921634%20528.4036370453694%20414.4947506561679Q521.0451818522685%20401.69103862017244%20503.38488938882637%20401.69103862017244Q492.4943757030371%20401.69103862017244%20489.4038245219348%20406.694788151481Q486.3132733408324%20411.6985376827896%20486.3132733408324%20427.0041244844394V572.9958755155606Q486.3132733408324%20583.5920509936258%20487.9321334833146%20588.8901387326584Q489.55099362579676%20594.188226471691%20494.1132358455193%20595.9542557180353Q498.6754780652418%20597.7202849643794%20507.7999625046869%20598.3089613798275V604.1957255343082Q499.55849268841393%20603.6070491188601%20486.7547806524184%20603.4598800149981Q473.9510686164229%20603.312710911136%20461.0001874765654%20603.312710911136Q445.9889388826396%20603.312710911136%20432.74371953505806%20603.4598800149981Q419.4985001874765%20603.6070491188601%20411.5513685789276%20604.1957255343082V598.3089613798275Q420.67585301837266%20597.7202849643794%20425.2380952380952%20595.9542557180353Q429.8003374578177%20594.188226471691%20431.4191976002999%20588.8901387326584Q433.03805774278214%20583.5920509936258%20433.03805774278214%20572.9958755155606V427.0041244844394Q433.03805774278214%20416.11361079865014%20431.4191976002999%20410.9626921634795Q429.8003374578177%20405.8117735283089%20425.2380952380952%20403.89857517810265Q420.67585301837266%20401.98537682789646%20411.5513685789276%20401.69103862017244ZM470.12467191601047%20500.29433820772397Q481.6038620172478%20500.58867641544805%20491.02268466441694%20501.4716910386201Q500.441507311586%20502.3547056617922%20507.94713160854894%20503.0905511811023Q515.4527559055118%20503.8263967004124%20521.0451818522685%20504.12073490813646Q550.1846644169478%20505.88676415448066%20564.4600674915634%20515.1584176977877Q578.7354705661792%20524.4300712410948%20582.5618672665917%20542.679040119985L588.7429696287963%20573.2902137232845Q591.3920134983127%20584.4750656167979%20594.3353955755531%20589.0373078365204Q597.2787776527933%20593.599550056243%20602.576865391826%20593.3052118485189Q605.8145856767903%20593.3052118485189%20608.1692913385826%20591.9806899137607Q610.523997000375%20590.6561679790026%20612.8787026621671%20588.0071241094863L616.9994375703037%20591.8335208098987Q608.4636295463067%20600.9580052493438%20598.4561304836895%20604.6372328458942Q588.4486314210724%20608.3164604424446%20575.2034120734908%20608.3164604424446Q557.8374578177727%20608.3164604424446%20546.7997750281214%20601.5466816647918Q535.7620922384701%20594.776902887139%20532.8187101612298%20576.527934008249L527.8149606299212%20547.0941132358455Q526.048931383577%20535.0262467191601%20523.2527184101987%20525.607424071991Q520.4565054368204%20516.1886014248219%20515.7470941132358%20510.7433445819272Q511.0376827896513%20505.29808773903255%20502.5018747656543%20505.29808773903255H470.7133483314585ZM892.5%20395.8042744656917V401.69103862017244Q886.0245594300713%20404.6344206974128%20878.6661042369705%20413.1702287214098Q871.3076490438696%20421.7060367454068%20866.009561304837%20439.6606674165729L815.089051368579%20604.4900637420322Q812.1456692913387%20604.1957255343082%20808.9079490063743%20604.0485564304461Q805.6702287214099%20603.9013873265841%20802.1381702287215%20603.9013873265841Q799.1947881514811%20603.9013873265841%20795.8098987626547%20604.0485564304461Q792.4250093738283%20604.1957255343082%20789.4816272965879%20604.4900637420322L727.6706036745408%20416.4079490063741Q725.0215598050245%20408.1664791901012%20721.04799400075%20405.07592800899886Q717.0744281964755%20401.98537682789646%20712.070678665167%20401.69103862017244V395.8042744656917Q721.195163104612%20396.0986126734158%20733.5573678290214%20396.3929508811398Q745.9195725534308%20396.68728908886385%20758.5761154855643%20396.68728908886385Q771.8213348331459%20396.68728908886385%20783.5948631421072%20396.3929508811398Q795.3683914510686%20396.0986126734158%20802.7268466441695%20395.8042744656917V401.69103862017244Q793.6023622047245%20401.98537682789646%20788.5986126734159%20403.75140607424066Q783.5948631421073%20405.51743532058487%20782.8590176227972%20410.6683539557555Q782.1231721034871%20415.81927259092606%20785.6552305961756%20426.4154480689913L826.5682414698163%20551.509186351706L818.9154480689914%20566.5204349456318L850.4096362954631%20466.151106111736Q858.0624296962881%20442.01537307836514%20857.768091488564%20428.0343082114735Q857.4737532808399%20414.05324334458186%20850.8511436070492%20408.01931008623916Q844.2285339332584%20401.98537682789646%20832.160667416573%20401.69103862017244V395.8042744656917Q843.0511811023623%20396.0986126734158%20851.7341582302213%20396.3929508811398Q860.4171353580803%20396.68728908886385%20869.8359580052494%20396.68728908886385Q876.0170603674542%20396.68728908886385%20882.0509936257969%20396.3929508811398Q888.0849268841396%20396.0986126734158%20892.5%20395.8042744656917ZM681.1651668541433%20395.8042744656917V401.69103862017244Q675.5727409073866%20402.57405324334457%20673.5123734533183%20406.400449943757Q671.4520059992501%20410.2268466441694%20672.1878515185601%20415.6721034870641Q672.9236970378703%20421.11736032995873%20674.6897262842145%20426.4154480689913L719.1347956505438%20554.4525684289463L711.1876640419948%20565.9317585301836L747.6856017997751%20463.20772403449564L751.8063367079116%20471.4491938507686L706.1839145106862%20604.4900637420322Q703.2405324334459%20604.1957255343082%20699.8556430446195%20604.0485564304461Q696.470753655793%20603.9013873265841%20693.2330333708287%20603.9013873265841Q689.9953130858643%20603.9013873265841%20686.7575928008998%20604.0485564304461Q683.5198725159355%20604.1957255343082%20680.5764904386951%20604.4900637420322L613.4673790776153%20420.5286839145106Q609.6409823772029%20409.93250843644535%20604.6372328458943%20405.9589426321709Q599.6334833145858%20401.98537682789646%20595.5127484064492%20401.69103862017244V395.8042744656917Q604.9315710536183%20396.0986126734158%20618.1767904011999%20396.3929508811398Q631.4220097487814%20396.68728908886385%20643.4898762654668%20396.68728908886385Q655.5577427821522%20396.68728908886385%20665.2709036370454%20396.3929508811398Q674.9840644919385%20396.0986126734158%20681.1651668541433%20395.8042744656917Z%22%20fill%3D%22%23FF3131%22%2F%3E%3C%2Fsvg%3E" alt=""><img class="lg-d" src="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%201000%201000%22%20width%3D%221000%22%20height%3D%221000%22%3E%3Crect%20width%3D%221000%22%20height%3D%221000%22%20rx%3D%22226%22%20fill%3D%22%23FF3131%22%2F%3E%3Cpath%20d%3D%22M404.48725159355075%20395.8042744656917V401.69103862017244Q398.011811023622%20404.6344206974128%20390.65335583052115%20413.1702287214098Q383.29490063742026%20421.7060367454068%20377.99681289838765%20439.6606674165729L327.0763029621297%20604.4900637420322Q324.13292088488936%20604.1957255343082%20320.895200599925%20604.0485564304461Q317.6574803149606%20603.9013873265841%20314.1254218222722%20603.9013873265841Q311.18203974503183%20603.9013873265841%20307.7971503562054%20604.0485564304461Q304.41226096737904%20604.1957255343082%20301.4688788901387%20604.4900637420322L239.65785526809145%20416.4079490063741Q237.00881139857512%20408.1664791901012%20233.03524559430065%20405.07592800899886Q229.06167979002618%20401.98537682789646%20224.0579302587176%20401.69103862017244V395.8042744656917Q233.1824146981627%20396.0986126734158%20245.54461942257214%20396.3929508811398Q257.9068241469816%20396.68728908886385%20270.56336707911504%20396.68728908886385Q283.8085864266966%20396.68728908886385%20295.582114735658%20396.3929508811398Q307.3556430446194%20396.0986126734158%20314.71409823772024%20395.8042744656917V401.69103862017244Q305.5896137982752%20401.98537682789646%20300.5858642669666%20403.75140607424066Q295.582114735658%20405.51743532058487%20294.84626921634793%20410.6683539557555Q294.11042369703785%20415.81927259092606%20297.64248218972625%20426.4154480689913L338.555493063367%20551.509186351706L330.90269966254215%20566.5204349456318L362.39688788901384%20466.151106111736Q370.0496812898387%20442.01537307836514%20369.7553430821147%20428.0343082114735Q369.46100487439065%20414.05324334458186%20362.83839520059985%20408.01931008623916Q356.2157855268091%20401.98537682789646%20344.1479190101237%20401.69103862017244V395.8042744656917Q355.03843269591295%20396.0986126734158%20363.721409823772%20396.3929508811398Q372.404386951631%20396.68728908886385%20381.8232095988001%20396.68728908886385Q388.0043119610048%20396.68728908886385%20394.0382452193475%20396.3929508811398Q400.0721784776902%20396.0986126734158%20404.48725159355075%20395.8042744656917ZM193.152418447694%20395.8042744656917V401.69103862017244Q187.5599925009373%20402.57405324334457%20185.49962504686908%20406.400449943757Q183.43925759280086%20410.2268466441694%20184.17510311211095%20415.6721034870641Q184.91094863142104%20421.11736032995873%20186.67697787776524%20426.4154480689913L231.12204724409443%20554.4525684289463L223.17491563554552%20565.9317585301836L259.6728533933258%20463.20772403449564L263.79358830146225%20471.4491938507686L218.17116610423693%20604.4900637420322Q215.22778402699657%20604.1957255343082%20211.84289463817018%20604.0485564304461Q208.45800524934378%20603.9013873265841%20205.2202849643794%20603.9013873265841Q201.98256467941502%20603.9013873265841%20198.74484439445064%20604.0485564304461Q195.50712410948626%20604.1957255343082%20192.5637420322459%20604.4900637420322L125.45463067116604%20420.5286839145106Q121.6282339707536%20409.93250843644535%20116.62448443944501%20405.9589426321709Q111.62073490813643%20401.98537682789646%20107.49999999999994%20401.69103862017244V395.8042744656917Q116.91882264716904%20396.0986126734158%20130.1640419947506%20396.3929508811398Q143.40926134233214%20396.68728908886385%20155.47712785901757%20396.68728908886385Q167.54499437570297%20396.68728908886385%20177.25815523059612%20396.3929508811398Q186.97131608548926%20396.0986126734158%20193.152418447694%20395.8042744656917ZM411.5513685789276%20395.8042744656917Q419.4985001874765%20396.0986126734158%20432.74371953505806%20396.3929508811398Q445.9889388826396%20396.68728908886385%20459.23415823022117%20396.68728908886385Q473.6567304086989%20396.68728908886385%20487.04911886014247%20396.3929508811398Q500.441507311586%20396.0986126734158%20506.0339332583427%20396.0986126734158Q534.879077615298%20396.0986126734158%20553.5695538057741%20401.98537682789646Q572.2600299962504%20407.8721409823771%20581.6788526434195%20419.2041619797525Q591.0976752905887%20430.5361829771278%20591.0976752905887%20447.31346081739775Q591.0976752905887%20457.909636295463%20586.8297712785902%20468.0643044619422Q582.5618672665917%20478.2189726284214%20572.4071991001124%20486.7547806524184Q562.2525309336332%20495.2905886764154%20544.4450693663291%20500.29433820772397Q526.6376077990251%20505.29808773903255%20499.55849268841393%20505.29808773903255H471.30202474690657V499.4113235845519H496.6151106111736Q512.8037120359954%20499.4113235845519%20521.1923509561304%20492.7887139107611Q529.5809898762654%20486.16610423697034%20532.6715410573678%20475.12842144731906Q535.7620922384701%20464.09073865766777%20535.7620922384701%20450.55118110236214Q535.7620922384701%20427.2984626921634%20528.4036370453694%20414.4947506561679Q521.0451818522685%20401.69103862017244%20503.38488938882637%20401.69103862017244Q492.4943757030371%20401.69103862017244%20489.4038245219348%20406.694788151481Q486.3132733408324%20411.6985376827896%20486.3132733408324%20427.0041244844394V572.9958755155606Q486.3132733408324%20583.5920509936258%20487.9321334833146%20588.8901387326584Q489.55099362579676%20594.188226471691%20494.1132358455193%20595.9542557180353Q498.6754780652418%20597.7202849643794%20507.7999625046869%20598.3089613798275V604.1957255343082Q499.55849268841393%20603.6070491188601%20486.7547806524184%20603.4598800149981Q473.9510686164229%20603.312710911136%20461.0001874765654%20603.312710911136Q445.9889388826396%20603.312710911136%20432.74371953505806%20603.4598800149981Q419.4985001874765%20603.6070491188601%20411.5513685789276%20604.1957255343082V598.3089613798275Q420.67585301837266%20597.7202849643794%20425.2380952380952%20595.9542557180353Q429.8003374578177%20594.188226471691%20431.4191976002999%20588.8901387326584Q433.03805774278214%20583.5920509936258%20433.03805774278214%20572.9958755155606V427.0041244844394Q433.03805774278214%20416.11361079865014%20431.4191976002999%20410.9626921634795Q429.8003374578177%20405.8117735283089%20425.2380952380952%20403.89857517810265Q420.67585301837266%20401.98537682789646%20411.5513685789276%20401.69103862017244ZM470.12467191601047%20500.29433820772397Q481.6038620172478%20500.58867641544805%20491.02268466441694%20501.4716910386201Q500.441507311586%20502.3547056617922%20507.94713160854894%20503.0905511811023Q515.4527559055118%20503.8263967004124%20521.0451818522685%20504.12073490813646Q550.1846644169478%20505.88676415448066%20564.4600674915634%20515.1584176977877Q578.7354705661792%20524.4300712410948%20582.5618672665917%20542.679040119985L588.7429696287963%20573.2902137232845Q591.3920134983127%20584.4750656167979%20594.3353955755531%20589.0373078365204Q597.2787776527933%20593.599550056243%20602.576865391826%20593.3052118485189Q605.8145856767903%20593.3052118485189%20608.1692913385826%20591.9806899137607Q610.523997000375%20590.6561679790026%20612.8787026621671%20588.0071241094863L616.9994375703037%20591.8335208098987Q608.4636295463067%20600.9580052493438%20598.4561304836895%20604.6372328458942Q588.4486314210724%20608.3164604424446%20575.2034120734908%20608.3164604424446Q557.8374578177727%20608.3164604424446%20546.7997750281214%20601.5466816647918Q535.7620922384701%20594.776902887139%20532.8187101612298%20576.527934008249L527.8149606299212%20547.0941132358455Q526.048931383577%20535.0262467191601%20523.2527184101987%20525.607424071991Q520.4565054368204%20516.1886014248219%20515.7470941132358%20510.7433445819272Q511.0376827896513%20505.29808773903255%20502.5018747656543%20505.29808773903255H470.7133483314585ZM892.5%20395.8042744656917V401.69103862017244Q886.0245594300713%20404.6344206974128%20878.6661042369705%20413.1702287214098Q871.3076490438696%20421.7060367454068%20866.009561304837%20439.6606674165729L815.089051368579%20604.4900637420322Q812.1456692913387%20604.1957255343082%20808.9079490063743%20604.0485564304461Q805.6702287214099%20603.9013873265841%20802.1381702287215%20603.9013873265841Q799.1947881514811%20603.9013873265841%20795.8098987626547%20604.0485564304461Q792.4250093738283%20604.1957255343082%20789.4816272965879%20604.4900637420322L727.6706036745408%20416.4079490063741Q725.0215598050245%20408.1664791901012%20721.04799400075%20405.07592800899886Q717.0744281964755%20401.98537682789646%20712.070678665167%20401.69103862017244V395.8042744656917Q721.195163104612%20396.0986126734158%20733.5573678290214%20396.3929508811398Q745.9195725534308%20396.68728908886385%20758.5761154855643%20396.68728908886385Q771.8213348331459%20396.68728908886385%20783.5948631421072%20396.3929508811398Q795.3683914510686%20396.0986126734158%20802.7268466441695%20395.8042744656917V401.69103862017244Q793.6023622047245%20401.98537682789646%20788.5986126734159%20403.75140607424066Q783.5948631421073%20405.51743532058487%20782.8590176227972%20410.6683539557555Q782.1231721034871%20415.81927259092606%20785.6552305961756%20426.4154480689913L826.5682414698163%20551.509186351706L818.9154480689914%20566.5204349456318L850.4096362954631%20466.151106111736Q858.0624296962881%20442.01537307836514%20857.768091488564%20428.0343082114735Q857.4737532808399%20414.05324334458186%20850.8511436070492%20408.01931008623916Q844.2285339332584%20401.98537682789646%20832.160667416573%20401.69103862017244V395.8042744656917Q843.0511811023623%20396.0986126734158%20851.7341582302213%20396.3929508811398Q860.4171353580803%20396.68728908886385%20869.8359580052494%20396.68728908886385Q876.0170603674542%20396.68728908886385%20882.0509936257969%20396.3929508811398Q888.0849268841396%20396.0986126734158%20892.5%20395.8042744656917ZM681.1651668541433%20395.8042744656917V401.69103862017244Q675.5727409073866%20402.57405324334457%20673.5123734533183%20406.400449943757Q671.4520059992501%20410.2268466441694%20672.1878515185601%20415.6721034870641Q672.9236970378703%20421.11736032995873%20674.6897262842145%20426.4154480689913L719.1347956505438%20554.4525684289463L711.1876640419948%20565.9317585301836L747.6856017997751%20463.20772403449564L751.8063367079116%20471.4491938507686L706.1839145106862%20604.4900637420322Q703.2405324334459%20604.1957255343082%20699.8556430446195%20604.0485564304461Q696.470753655793%20603.9013873265841%20693.2330333708287%20603.9013873265841Q689.9953130858643%20603.9013873265841%20686.7575928008998%20604.0485564304461Q683.5198725159355%20604.1957255343082%20680.5764904386951%20604.4900637420322L613.4673790776153%20420.5286839145106Q609.6409823772029%20409.93250843644535%20604.6372328458943%20405.9589426321709Q599.6334833145858%20401.98537682789646%20595.5127484064492%20401.69103862017244V395.8042744656917Q604.9315710536183%20396.0986126734158%20618.1767904011999%20396.3929508811398Q631.4220097487814%20396.68728908886385%20643.4898762654668%20396.68728908886385Q655.5577427821522%20396.68728908886385%20665.2709036370454%20396.3929508811398Q674.9840644919385%20396.0986126734158%20681.1651668541433%20395.8042744656917Z%22%20fill%3D%22%23FFFFFF%22%2F%3E%3C%2Fsvg%3E" alt=""></span>
+    <h1 id="biz">AIOS</h1></div>
+  <nav class="tabs" id="side" aria-label="AIOS categories">
     <button data-go="overview">Overview <span class="n" id="nOverview"></span></button>
     <button data-go="matrix">Matrix <span class="n" id="nMatrix"></span></button>
-    <div class="gl">The business</div>
+    <span class="sep" aria-hidden="true"></span>
     <button data-go="clients">Clients <span class="n" id="nClients"></span></button>
-    <div class="subnav" id="navDash"></div>
     <button data-go="budget" id="navBudget" style="display:none">Budget <span class="n"></span></button>
-    <div class="gl">The office</div>
-    <button data-go="roles">Roles <span class="n" id="nRoles"></span></button>
+    <span class="sep" aria-hidden="true"></span>
     <button data-go="hierarchy">Office</button>
+    <button data-go="roles">Roles <span class="n" id="nRoles"></span></button>
     <button data-go="brain">Brain</button>
     <button data-go="skills">Skills <span class="n" id="nSkills"></span></button>
     <button data-go="tokens">Tokens</button>
     <button data-go="social">Social <span class="n" id="nSocial"></span></button>
     <span class="ind" id="sideInd" aria-hidden="true"></span>
   </nav>
+    <div class="right"><span class="tpill" id="livePill"><span class="live" id="live"></span><span id="liveTxt">connecting…</span></span><a class="tpill" href="/"><span class="lg">Open the 3D office</span><span class="sm">3D office</span></a><button id="themeBtn" class="tpill" type="button" title="Switch between automatic, light and dark">Auto</button></div>
+    <div class="subnav" id="navDash" aria-label="Client dashboards"></div>
+</header>
+<div class="wrap">
   <div class="main">
   <div class="hero" id="hero" data-cat="overview">
     <div class="eyebrow" id="hEye"></div>
@@ -1141,8 +1221,26 @@
     </aside>
   </section>
 
-  <div class="hxo-theo" id="hxTheo" data-cat="hierarchy"><div class="hxo-tw"><span class="hxo-fw l"><img src="/people/pe.png" alt=""><b id="hxTheoDot"></b></span><div><div class="hxo-k">Everything enters here</div><div class="hxo-tn">Theo</div><div class="hxo-tr">Prompt Engineer</div></div></div><div id="hxTheoSlot" hidden></div></div>
-  <div class="hx" id="hx" data-cat="hierarchy"></div>
+  <div class="ox" id="oxStage" data-cat="hierarchy"><!-- the Office stage (7 Nov 2026): ridges and flows behind Theo, Nora and the departments; full width on the office map -->
+    <svg class="ox-land" viewBox="0 0 1600 760" preserveAspectRatio="none" aria-hidden="true">
+      <defs>
+        <linearGradient id="oxG1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:var(--ox-r1-top)"/><stop offset="1" style="stop-color:var(--ox-r1-bot)"/></linearGradient>
+        <linearGradient id="oxG2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:var(--ox-r2-top)"/><stop offset="1" style="stop-color:var(--ox-r2-bot)"/></linearGradient>
+        <linearGradient id="oxG3" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:var(--ox-r3-top)"/><stop offset="1" style="stop-color:var(--ox-r3-bot)"/></linearGradient>
+        <linearGradient id="oxG4" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:var(--ox-r4-top)"/><stop offset="1" style="stop-color:var(--ox-r4-bot)"/></linearGradient>
+        <radialGradient id="oxGlow" cx=".5" cy=".46" r=".42"><stop offset="0" style="stop-color:var(--ox-glow)"/><stop offset="1" style="stop-color:var(--ox-glow);stop-opacity:0"/></radialGradient>
+      </defs>
+      <rect width="1600" height="760" fill="url(#oxGlow)"/>
+      <path d="M0 420 C 180 330, 330 360, 470 300 S 760 250, 900 330 S 1180 280, 1330 230 S 1520 260, 1600 220 L1600 760 L0 760 Z" fill="url(#oxG2)"/>
+      <path d="M0 520 C 140 470, 300 420, 420 450 S 640 520, 800 470 S 1060 380, 1220 430 S 1460 480, 1600 400 L1600 760 L0 760 Z" fill="url(#oxG1)"/>
+      <path d="M0 600 C 200 560, 340 600, 520 560 S 820 520, 980 580 S 1260 640, 1420 580 S 1560 560, 1600 570 L1600 760 L0 760 Z" fill="url(#oxG3)"/>
+      <path d="M0 680 C 220 650, 420 690, 640 660 S 1000 640, 1200 680 S 1480 700, 1600 670 L1600 760 L0 760 Z" fill="url(#oxG4)"/>
+    </svg>
+    <div class="ox-dots" aria-hidden="true"></div>
+    <svg class="ox-flows" id="oxFlows" aria-hidden="true"></svg>
+    <div class="hxo-theo" id="hxTheo"><div class="hxo-tw"><span class="hxo-fw l"><img src="/people/pe.png" alt=""><b id="hxTheoDot"></b></span><div><div class="hxo-tn">Theo</div><div class="hxo-tr">Everything enters here</div></div></div><div id="hxTheoSlot" hidden></div></div>
+    <div class="hx" id="hx"></div>
+  </div>
   <section class="hxt" id="hxTrail" data-cat="hierarchy"></section>
   <div class="hxd-w" id="hxDr" data-cat="hierarchy" aria-hidden="true"></div>
 
@@ -1239,8 +1337,10 @@
     <div class="bfoot" id="bFoot"></div>
   </section>
   </div>
-  </div>
 </div>
+<!-- For You (7 Nov 2026): a red tab on the right edge of the Office tab; it pulls out the list of what waits on you (the whole office, or the department you are in) -->
+<button type="button" class="oxfy-tab" id="oxFyTab" aria-controls="oxFy" aria-expanded="false"><b id="oxFyN">0</b><span>For you</span></button>
+<aside class="oxfy" id="oxFy" aria-label="For you" aria-hidden="true"><button type="button" class="oxfy-x" data-oxfyclose aria-label="Close (Esc)" title="Close (Esc)">✕</button><div class="oxfy-b" id="oxFyBody"></div></aside>
 
 <script>
 const DEPTS = {
@@ -1335,10 +1435,10 @@ async function poll() {
     if (at) S.attention = at.sessions || [];
     if (sa) S.skillAudit = sa;
     S.health = h; S.agents = h.agents || []; S.tasks = Array.isArray(t) ? t : []; S.routines = r.routines || []; S.matrix = m;
-    $('live').classList.add('on'); $('liveTxt').textContent = `live · v${h.version} · ${MODEL[h.model] || h.model} by default`;
+    $('live').classList.add('on'); $('liveTxt').textContent = $('livePill').title = `live · v${h.version} · ${MODEL[h.model] || h.model} by default`;
     $('biz').textContent = h.name || 'AIOS'; document.title = (h.name || 'Agents Office') + ' · AIOS';
     render();
-  } catch (e) { $('live').classList.remove('on'); $('liveTxt').textContent = location.protocol === 'file:' ? 'this is the file, not the office — open http://localhost:4520/aios' : 'office not reachable — is npm start running?'; }
+  } catch (e) { $('live').classList.remove('on'); $('liveTxt').textContent = $('livePill').title = location.protocol === 'file:' ? 'this is the file, not the office — open http://localhost:4520/aios' : 'office not reachable — is npm start running?'; }
 }
 
 // the state of a seat right now, from the task list
@@ -1511,9 +1611,15 @@ function placeAsk() { // the Ask box is one element (one set of ids, one convers
 function applyCat(animate = false) {
   placeAsk();
   for (const el of document.querySelectorAll('[data-cat]')) el.classList.toggle('cat-off', isDash(S.cat) ? el.dataset.cat !== 'dash' : el.dataset.cat !== S.cat);
-  for (const b of document.querySelectorAll('#side button[data-go]')) b.classList.toggle('on', b.dataset.go === S.cat);
+  markTabs(S.cat);
+  document.body.dataset.cat = isDash(S.cat) ? 'dash' : S.cat; // the Office tab goes full width; the other tabs keep a readable width
   foldSubnav(animate); placeInd(animate);
 }
+function markTabs(c) { // the top bar: Clients stays lit on a client's dashboard, whose own button lights in the row under the bar
+  for (const b of document.querySelectorAll('#side button[data-go]')) b.classList.toggle('on', b.dataset.go === c || (b.dataset.go === 'clients' && isDash(c)));
+  for (const b of document.querySelectorAll('#navDash button[data-go]')) b.classList.toggle('on', b.dataset.go === c);
+}
+new ResizeObserver(() => document.documentElement.style.setProperty('--top-h', $('top').offsetHeight + 'px')).observe($('top')); // the For You panel and the Office stage sit under the bar
 let catSeq = 0, catReady = false;
 async function setCat(c, push = true) {
   if (!CAT_IDS.includes(c) && !isDash(c)) c = 'overview';
@@ -1522,7 +1628,7 @@ async function setCat(c, push = true) {
   if (push) history.replaceState(null, '', '#' + (c === 'hierarchy' ? (window.hxPath ? window.hxPath() : 'office') : c)); // Office keeps the department and desk you left it on
   if (first || !changed) { applyCat(false); window.scrollTo({ top: 0 }); }
   else {
-    for (const b of document.querySelectorAll('#side button[data-go]')) b.classList.toggle('on', b.dataset.go === c);
+    markTabs(c);
     foldSubnav(true); placeInd(true); // the pill sets off at once; the page follows it
     const old = await leave(); if (seq !== catSeq) return; // a quicker click took over
     for (const b of old) b.getAnimations().forEach(a => a.cancel());
@@ -3444,36 +3550,82 @@ loadTrackers(); setInterval(() => { if (!document.hidden && !Object.values(S.tkB
     const pic = a.portrait ? `<img src="${esc(a.portrait)}" alt="" loading="lazy">` : `<span class="hxo-ini">${esc(tc(a.name).split(/[\s-]+/).filter(Boolean).slice(0, 2).map(w => w[0]).join('').toUpperCase())}</span>`;
     return `<span class="hxo-fw ${size}" title="${esc(a.person ? `${a.person} · ${tc(a.name)}` : tc(a.name))}${k ? ' · ' + (KT[k] || 'Idle') : ''}">${pic}${k == null ? '' : `<b class="${KC[k] || ''}"></b>`}</span>`;
   };
-  function tile(b, side) {
+  function tile(b, side, order) { // a department on the office map: solid and clickable when it is in the AIOS (PILOT), dashed when it still runs only in the office
     const on = PILOT.includes(b.d), fy = fyItems(x => x === b.d).length, MAX = 8;
     const desks = b.desks.map(a => ({ a, k: keyOf(a) })).sort((x, y) => RANK[x.k] - RANK[y.k]);
+    const last = S.tasks.filter(t => t.dept === b.d && t.state === 'done' && t.doneAt).sort((x, y) => y.doneAt - x.doneAt)[0];
     let now = desks.filter(x => x.k === 'doing' || x.k === 'rework').slice(0, 2).map(x => `<div class="w"><i></i><span><b>${esc(x.a.person || tc(x.a.name))}</b> · ${esc(seatState(x.a).doing.title)}</span></div>`).join('');
-    if (!now) { const last = S.tasks.filter(t => t.dept === b.d && t.state === 'done' && t.doneAt).sort((x, y) => y.doneAt - x.doneAt)[0]; now = `<div><i></i><span>${last ? `Nothing running · last task ${esc(ago(last.doneAt))}` : 'No work yet'}</span></div>`; }
-    const ld = b.lead;
-    return `<article class="hxo-d ${on ? 'on' : 'off'}" data-side="${side}" data-busy="${b.doing ? 1 : 0}"${on ? ` data-hxdept="${esc(b.d)}" role="button" tabindex="0" aria-label="Open ${esc(deptName(b.d))}"` : ' title="Runs in the office. Joins the AIOS later."'}>
+    if (!now) now = `<div><i></i><span>${last ? `Nothing running · last task ${esc(ago(last.doneAt))}` : 'No work yet'}</span></div>`;
+    const ld = b.lead, faces = desks.slice(0, MAX).map(x => fc(x.a, x.k)).join('') + (desks.length > MAX ? `<span class="more">+${desks.length - MAX}</span>` : '');
+    const lead = ld ? `${fc(ld, b.leadKey, on ? 'l' : '')}<div class="hxo-ln"><b>${esc(ld.person || tc(ld.name))}</b>${on ? `<span>Head of ${esc(deptName(b.d))}</span>` : ''}</div>${stp(b.leadKey)}` : '<div class="hxo-ln">No lead on the roster</div>';
+    return `<article class="hxo-d ${on ? 'on' : 'off'}${fy ? ' need' : ''}" data-side="${side}" data-n="${fy}" style="--o:${order}"${on ? ` data-hxdept="${esc(b.d)}" role="button" tabindex="0" aria-label="Open ${esc(deptName(b.d))}"` : ' title="Runs in the office. Joins the AIOS later."'}>
       <div class="hxo-dh"><h4>${esc(deptName(b.d))}</h4>${on ? '' : '<span class="hxo-tag">Not in AIOS yet</span>'}${fy ? `<span class="hxo-badge" title="${fy} for you">${fy}</span>` : ''}</div>
-      <div class="hxo-lead">${ld ? `${fc(ld, b.leadKey)}<span>${ld.person ? `<b>${esc(ld.person)}</b> <em>· Lead</em>` : esc(tc(ld.name))}</span>${stp(b.leadKey)}` : '<span>No lead on the roster</span>'}</div>
-      <div class="hxo-faces">${desks.slice(0, MAX).map(x => fc(x.a, x.k)).join('')}${desks.length > MAX ? `<span class="more">+${desks.length - MAX}</span>` : ''}</div>
-      <div class="hxo-now">${now}</div>
-      <div class="hxo-ct"><div><b>${b.doing}</b>Working</div><div><b>${b.reviewing}</b>Lead review</div><div class="you${fy ? ' n' : ''}"><b>${fy}</b>For you</div></div></article>`;
+      <div class="hxo-lead">${lead}</div>
+      ${on ? `<div class="hxo-faces">${faces}</div><div class="hxo-now">${now}</div>
+      <div class="hxo-ct"><div><b>${b.doing}</b>Working</div><div><b>${b.reviewing}</b>Lead review</div><div class="you${fy ? ' n' : ''}"><b>${fy}</b>For you</div></div>`
+      : `<div class="hxo-faces">${faces}<span class="hxo-last">${b.doing ? `${b.doing} working` : last ? `last task ${esc(ago(last.doneAt))}` : 'No work yet'}</span></div>`}</article>`;
   }
-  function wires() { // straight lines only: up to Theo, out to each department by a right-angle elbow, straight down to a centred bottom tile
-    const map = document.querySelector('#hx .hxo-map'), svg = map && map.querySelector('svg'); if (!svg || getComputedStyle(svg).display === 'none') return;
-    const m = map.getBoundingClientRect(), R = e => { const b = e.getBoundingClientRect(); return { l: b.left - m.left, r: b.right - m.left, t: b.top - m.top, b: b.bottom - m.top, cx: (b.left + b.right) / 2 - m.left, cy: (b.top + b.bottom) / 2 - m.top }; };
-    const n = R(map.querySelector('.hxo-hub'));
-    let p = `<path class="w up" d="M${n.cx} 0 V${n.t}"/>`;
-    for (const t of map.querySelectorAll('.hxo-d')) {
-      const d = R(t), s = t.dataset.side; let path, dot;
-      if (s === 'B') { path = `M${n.cx} ${n.b} V${d.t}`; dot = [n.cx, (n.b + d.t) / 2]; }
-      else { const x0 = s === 'L' ? n.l : n.r, x1 = s === 'L' ? d.r : d.l, xm = (x0 + x1) / 2; path = `M${x0} ${n.cy} H${xm} V${d.cy} H${x1}`; dot = [xm, (n.cy + d.cy) / 2]; }
-      p += `<path class="w${t.classList.contains('on') ? ' on' : ''}" d="${path}"/>` + (t.dataset.busy === '1' ? `<circle class="wd" cx="${dot[0]}" cy="${dot[1]}" r="3.5"/>` : '');
+  // the flows, drawn in one SVG over the stage from the boxes as laid out: Theo → Nora (your ask), Nora → each department (work goes out, a moving dot
+  // when it is in the AIOS), and a department with work for you → You (red, down the gutter beside the tiles so it never crosses one)
+  const SVGNS = 'http://www.w3.org/2000/svg';
+  function flows() {
+    const stage = el('oxStage'), F = el('oxFlows'); if (!stage || !F) return;
+    stage.querySelectorAll('.ox-fl').forEach(e => e.remove()); F.innerHTML = '';
+    if (S.cat !== 'hierarchy' || view !== 'office' || getComputedStyle(F).display === 'none') return;
+    const nora = el('oxNora'), you = el('oxYou'), theo = el('hxTheo'); if (!nora || !you || !theo) return;
+    const s = stage.getBoundingClientRect(), box = e => { const r = e.getBoundingClientRect(); return { x: r.left - s.left, y: r.top - s.top, w: r.width, h: r.height }; };
+    const mk = (tag, a) => { const e = document.createElementNS(SVGNS, tag); for (const k in a) e.setAttribute(k, a[k]); F.appendChild(e); return e; };
+    const label = (x, y, text, red) => { const d = document.createElement('div'); d.className = 'ox-fl' + (red ? ' r' : ''); d.style.left = x + 'px'; d.style.top = y + 'px'; d.textContent = text; stage.appendChild(d); };
+    const dot = (p, cls, dur, begin = 0) => { if (REDUCED.matches) return; const c = mk('circle', { r: cls === 'r' ? 4 : 3.5, class: 'ox-dot ' + cls }); c.innerHTML = `<animateMotion dur="${dur}s" begin="${begin}s" repeatCount="indefinite" path="${p.getAttribute('d')}"/>`; };
+    mk('defs', {}).innerHTML = ['on', 'r', 'off'].map(k => `<marker id="oxA${k}" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="${k === 'off' ? 6 : 7}" markerHeight="${k === 'off' ? 6 : 7}" orient="auto-start-reverse"><path class="ox-ah ${k}" d="M0 0 L10 5 L0 10 z"/></marker>`).join('');
+    const T = box(theo), N = box(nora), Y = box(you), cx = N.x + N.w / 2;
+    if (N.y - (T.y + T.h) > 40) { mk('path', { d: `M${cx} ${T.y + T.h + 4} L${cx} ${N.y - 10}`, class: 'ox-f ask', 'marker-end': 'url(#oxAon)' }); label(cx + 64, (T.y + T.h + N.y) / 2, 'Your ask'); }
+    let firstOut = null;
+    for (const k of ['L', 'R']) {
+      const tiles = [...stage.querySelectorAll(`.hxo-d[data-side="${k}"]`)], left = k === 'L', n = tiles.length;
+      const edge = tiles.reduce((m, t) => { const D = box(t); return left ? Math.max(m, D.x + D.w) : Math.min(m, D.x); }, left ? -1e9 : 1e9);
+      const gap = Math.abs((left ? N.x : N.x + N.w) - edge);
+      let lane = 0;
+      tiles.forEach((t, i) => {
+        const D = box(t), on = t.classList.contains('on');
+        const sx = left ? N.x : N.x + N.w, sy = N.y + N.h * (n > 1 ? 0.28 + 0.44 * i / (n - 1) : 0.5), ex = left ? D.x + D.w + 4 : D.x - 4, ey = D.y + Math.min(D.h * 0.38, 70), mx = (sx + ex) / 2;
+        const p = mk('path', { d: `M${sx} ${sy} C ${mx} ${sy}, ${mx} ${ey}, ${ex} ${ey}`, class: 'ox-f ' + (on ? 'on' : 'off'), 'marker-end': `url(#oxA${on ? 'on' : 'off'})` });
+        if (on) dot(p, 'on', 2.6, i * 0.4);
+        if (left && i === 0) firstOut = { gap, x: (sx + ex) / 2, y: Math.min(sy, ey) - 16 };
+        if (!t.classList.contains('need')) return;
+        // back to you: out of the tile's inner bottom corner, down the gutter beside the column, then across into the You pill
+        const rx = left ? D.x + D.w : D.x, ry = D.y + D.h - 26, gx = left ? edge + Math.min(26, gap / 3) + lane * 9 : edge - Math.min(26, gap / 3) - lane * 9, yy = Y.y + Y.h / 2, yx = left ? Y.x - 6 : Y.x + Y.w + 6;
+        const sg = left ? 1 : -1, dn = yy >= ry ? 1 : -1, r = Math.max(2, Math.min(14, Math.abs(gx - rx) - 1, Math.abs(yy - ry) / 2 - 1)); lane++;
+        const red = mk('path', { d: `M${rx} ${ry} H${gx - sg * r} Q${gx} ${ry} ${gx} ${ry + dn * r} V${yy - dn * r} Q${gx} ${yy} ${gx + sg * r} ${yy} H${yx}`, class: 'ox-f back', 'marker-end': 'url(#oxAr)' });
+        dot(red, 'r', 3.2);
+        label((gx + yx) / 2, yy - 20, `${t.dataset.n} back to you`, true);
+      });
     }
-    svg.innerHTML = p;
+    if (firstOut && firstOut.gap > 150) label(firstOut.x, firstOut.y, 'Work goes out');
   }
-  addEventListener('resize', () => { if (view === 'office' && S.cat === 'hierarchy') wires(); });
+  let flowQ = 0; const flowSoon = () => { cancelAnimationFrame(flowQ); flowQ = requestAnimationFrame(flows); };
+  if (window.ResizeObserver) { const ro = new ResizeObserver(flowSoon); ['oxStage', 'hxTheo'].forEach(id => el(id) && ro.observe(el(id))); } else addEventListener('resize', flowSoon);
   const who = a => a ? (a.person || tc(a.name)) : '';
-  const rail = (items, scope) => `<aside class="hxo-rail"><h3>For you${items.length ? ` <span class="hxo-badge">${items.length}</span>` : ''}</h3><div class="hxo-sc">${scope}</div>
-      ${items.map(t => { const a = agentBy(t.agent); return `<div class="hxo-ri">${a ? fc(a, null) : '<span class="hxo-ini">·</span>'}<div><div class="hxo-rd">${esc(deptName(t.dept))}</div>${fyItem(t)}</div></div>`; }).join('') || '<div class="hxo-sc">Nothing waiting on you here.</div>'}</aside>`;
+  // ---- For You: the red tab on the right edge pulls out the list (the whole office on the map, one department on its page) ----
+  let fyHtml = '';
+  function fyPanel(items, scope) {
+    const tab = el('oxFyTab'), body = el('oxFyBody'); if (!tab || !body) return;
+    el('oxFyN').textContent = items.length; tab.classList.toggle('none', !items.length); tab.title = items.length ? `${items.length} waiting for you` : 'Nothing waiting for you';
+    const html = `<h3>For you${items.length ? ` <span class="hxo-badge">${items.length}</span>` : ''}</h3><div class="hxo-sc">${scope}</div>
+      ${items.map(t => { const a = agentBy(t.agent); return `<div class="hxo-ri">${a ? fc(a, 'waiting', 'm') : '<span class="hxo-ini">·</span>'}<div><div class="hxo-rd">${esc(deptName(t.dept))}</div>${fyItem(t)}</div></div>`; }).join('') || '<div class="hxo-ri none">Nothing waiting on you here.</div>'}`;
+    if (html !== fyHtml) { fyHtml = html; body.innerHTML = html; }
+  }
+  const fyOpen = () => document.body.classList.contains('fy-open');
+  function fySet(open) {
+    document.body.classList.toggle('fy-open', open);
+    el('oxFyTab').setAttribute('aria-expanded', open); el('oxFy').setAttribute('aria-hidden', !open);
+    if (open) el('oxFy').querySelector('.oxfy-x').focus({ preventScroll: true }); else if (el('oxFy').contains(document.activeElement)) el('oxFyTab').focus({ preventScroll: true });
+  }
+  document.addEventListener('click', e => {
+    if (e.target.closest('#oxFyTab')) { fySet(!fyOpen()); return; }
+    if (e.target.closest('[data-oxfy]')) { fySet(true); return; }
+    if (e.target.closest('[data-oxfyclose]')) fySet(false);
+  });
   // ---- a department (level 2): the lead's band, a card per desk, the five-stage trail below (#hxTrail) ----
   const FOLD = 12; let showIdle = false;
   function deskCard(a, k, fyD) {
@@ -3484,24 +3636,27 @@ loadTrackers(); setInterval(() => { if (!document.hidden && !Object.values(S.tkB
       <div class="hxo-k2l">${line}</div><div class="hxo-k2f">${stp(k)}<span>${st.done} done</span></div></article>`;
   }
   document.addEventListener('click', e => { if (e.target.closest('[data-hxidle]')) { showIdle = true; renderHierarchy(); } });
+  let oxHtml = '';
   function renderOffice() {
-    const bl = officeDepts().map(blockOf), half = Math.floor(bl.length / 2), L = [], Rt = [];
-    bl.slice(0, half * 2).forEach((b, i) => (i % 2 ? Rt : L).push(b)); // half each side, alternating so the top row holds the first two
-    const B = bl.length % 2 ? bl[bl.length - 1] : null; // an odd one out sits centred under Nora
+    const bl = officeDepts().map(blockOf), L = [], Rt = [];
+    bl.forEach((b, i) => (i % 2 ? Rt : L).push({ b, i })); // alternating sides, so the top row holds the first two (the pilot); an odd one out goes left
     const fyAll = fyItems(() => true), today = new Date().toDateString();
     const inFlight = S.tasks.filter(t => t.state === 'doing').length, doneToday = S.tasks.filter(t => t.state === 'done' && !t.closed && t.doneAt && new Date(t.doneAt).toDateString() === today).length;
     const routed = S.tasks.filter(t => t.by === 'chief' && t.addedAt).sort((a, b) => b.addedAt - a.addedAt)[0];
     const rl = routed ? (() => { const lead = S.agents.find(a => a.department === routed.dept && a.lead); return `${esc(routed.title)} <em>to ${esc(deptName(routed.dept))}${lead && lead.person ? ', ' + esc(lead.person) : ''} · ${esc(ago(routed.addedAt))}</em>`; })() : 'Every request you approve comes to Nora first.';
-    const hub = `<article class="hxo-hub"><div class="hxo-k">The centre of the office</div>
-      <div class="hxo-who"><span class="hxo-fw xl"><img src="/people/chief.png" alt=""><b class="${chiefBusy ? 'work' : ''}"></b></span><div><div class="hxo-hn">Nora</div><div class="hxo-hr">Chief of Staff</div></div></div>
+    const hub = `<article class="hxo-hub" id="oxNora"><div class="hxo-k">The centre of the office</div>
+      <div class="hxo-who"><span class="hxo-fw xxl"><img src="/people/chief.png" alt=""><b class="${chiefBusy ? 'work' : ''}"></b></span><div><div class="hxo-hn">Nora</div><div class="hxo-hr">Chief of Staff · hands every request to a department</div></div></div>
       <div class="hxo-nb"><span class="hxo-st ${chiefBusy ? 'work' : ''}"><i></i>${chiefBusy ? 'Working on your message' : 'Last sent'}</span><div class="hxo-nt">${rl}</div></div>
       <div class="hxo-hs"><div><b>${inFlight}</b>In flight</div><div class="you${fyAll.length ? ' n' : ''}"><b>${fyAll.length}</b>For you</div><div><b>${doneToday}</b>Done today</div></div></article>`;
-    const fyRail = rail(fyAll, 'Whole office · oldest first · nothing goes out without you');
-    el('hx').innerHTML = `<div class="hxo"><div><div class="hxo-map"><svg aria-hidden="true"></svg>
-        <div class="hxo-col">${L.map(b => tile(b, 'L')).join('')}</div><div class="hxo-mid">${hub}</div><div class="hxo-col">${Rt.map(b => tile(b, 'R')).join('')}</div>
-        ${B ? `<div class="hxo-bot">${tile(B, 'B')}</div>` : ''}</div>
-      <div class="hxo-key">${['doing', 'waiting', 'review', 'error', 'idle'].map(stp).join('')}<span>Solid line: in the AIOS · dashed: still runs in the office · click a solid one to go in</span></div></div>${fyRail}</div>`;
-    requestAnimationFrame(wires); document.fonts?.ready.then(wires);
+    const per = [...new Set(fyAll.map(t => t.dept))].map(d => `${esc(deptName(d))} ${fyAll.filter(t => t.dept === d).length}`).join(' · ');
+    const allOk = fyAll.every(t => forYou(t) === 'ok');
+    const you = fyAll.length
+      ? `<div class="ox-you" id="oxYou"><span class="me">YOU</span><div class="t">${fyAll.length} waiting for ${allOk ? 'your OK' : 'you'}<span>${per}</span></div><button type="button" class="ox-yb" data-oxfy>REVIEW</button></div>`
+      : `<div class="ox-you clear" id="oxYou"><span class="me">YOU</span><div class="t">Nothing waiting on you<span>Everything is with the desks</span></div></div>`;
+    const html = `<div class="ox-map"><section class="ox-col" aria-label="Departments">${L.map(x => tile(x.b, 'L', x.i)).join('')}</section><section class="ox-mid">${hub}${you}</section><section class="ox-col" aria-label="Departments">${Rt.map(x => tile(x.b, 'R', x.i)).join('')}</section></div>`;
+    if (html !== oxHtml || !el('oxNora')) { oxHtml = html; el('hx').innerHTML = html; } // the page redraws every few seconds: write only on change, so the moving dots never restart
+    fyPanel(fyAll, 'Whole office · oldest first · nothing goes out without you');
+    flowSoon(); document.fonts?.ready.then(flowSoon);
   }
   // ---- where you are: #office, #office/<dept>, #office/<dept>/<desk> (#hierarchy/… still lands). Each step in is one browser history entry, so Back goes out one level ----
   const okView = v => PILOT.includes(v) && S.agents.some(a => a.department === v) ? v : 'office';
@@ -3528,8 +3683,10 @@ loadTrackers(); setInterval(() => { if (!document.hidden && !Object.values(S.tkB
   document.addEventListener('click', e => { const t = e.target.closest('[data-hxdept]'); if (t) { go(t.dataset.hxdept); return; } if (e.target.closest('[data-hxoffice]')) go('office'); });
   document.addEventListener('keydown', e => {
     if (e.key === 'Enter' || e.key === ' ') { const t = e.target.closest && e.target.closest('[data-hxdept],[data-hseat]'); if (t && !/^(INPUT|TEXTAREA|SELECT|BUTTON)$/.test(e.target.tagName)) { e.preventDefault(); t.click(); } return; }
-    if (e.key !== 'Escape' || S.cat !== 'hierarchy' || view === 'office' || e.defaultPrevented) return;
+    if (e.key !== 'Escape' || S.cat !== 'hierarchy' || e.defaultPrevented) return;
     if (document.getElementById('rv')?.classList.contains('on') || /^(INPUT|TEXTAREA|SELECT)$/.test(document.activeElement?.tagName || '')) return; // the review pop-up and typing keep their own Esc
+    if (fyOpen()) { fySet(false); return; } // the For You panel closes first
+    if (view === 'office') return;
     if (sel) { closeDesk(); return; } // an open desk's drawer closes first, then the department
     go('office');
   });
@@ -3633,6 +3790,7 @@ loadTrackers(); setInterval(() => { if (!document.hidden && !Object.values(S.tkB
     if (S.cat === 'hierarchy' && S.agents.length && location.hash.slice(1) !== hxPath()) history.replaceState(history.state, '', '#' + hxPath()); // the address bar says where you landed
     const office = view === 'office';
     el('hxTrail').classList.toggle('hx-off', office);
+    el('oxStage').classList.toggle('map', office); // the office map fills the screen, ridges and flows behind it
     if (el('hxTheoDot')) el('hxTheoDot').className = peBusy ? 'work' : '';
     if (office) { renderOffice(); drawer(); return; }
     const b = blockOf(view), ld = b.lead, name = deptName(view), fyD = fyItems(d => d === view), fyAll = fyItems(() => true);
@@ -3645,7 +3803,9 @@ loadTrackers(); setInterval(() => { if (!document.hidden && !Object.values(S.tkB
     const fold = (ds.length > FOLD && !showIdle) ? idle.slice(Math.max(0, FOLD - (ds.length - idle.length))) : []; // past 12 desks the idle ones fold into one card
     const grid = ds.filter(x => !fold.includes(x)).map(x => deskCard(x.a, x.k, fyD)).join('') + (fold.length ? `<button type="button" class="hxo-fold" data-hxidle>${fold.length} idle desk${fold.length > 1 ? 's' : ''} · show</button>` : '');
     const crumb = `<div class="hxo-crumb"><button type="button" data-hxoffice><img src="/people/chief.png" alt="">Office · Nora</button><span class="sep">›</span><span class="here">${ld && ld.portrait ? `<img src="${esc(ld.portrait)}" alt="">` : ''}${esc(name)}${ld && ld.person ? ' · ' + esc(ld.person) : ''}</span><span class="esc">${sel ? 'Esc closes the desk' : 'Esc goes back to the office'}</span></div>`;
-    el('hx').innerHTML = crumb + `<div class="hxo"><div>${band}<div class="hxo-dg">${grid}</div></div>${rail(fyD, `${esc(name)} only · ${fyAll.length} across the office`)}</div>`;
+    oxHtml = ''; el('hx').innerHTML = crumb + `${band}<div class="hxo-dg">${grid}</div>`;
+    fyPanel(fyD, `${esc(name)} only · ${fyAll.length} across the office`);
+    flowSoon(); // clears the office map's flows
     renderTrail([b]);
     drawer();
   };
