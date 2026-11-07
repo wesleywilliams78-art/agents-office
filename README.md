@@ -346,10 +346,12 @@ Open **http://localhost:4520/aios** beside the office. It has three parts and re
   the calendar's files, the Content Calendar folder and every file or link the result names, each
   with OPEN and SAVE A COPY. SIGN OFF marks it good to go; MARK POSTED is the calendar's own tick and
   brings up the next post. Nothing is posted by the office. Kept in `data/social.json` (`social.mjs`).
-- **Roles.** All 35 seats by department: role, what it does, the model it runs on by default,
-  its tools, and whether it has a brief and a role skill (the three bars). NEEDS A BRIEF OR SKILL
-  shows the seats still to set up.
-- **Happening now.** Working, waiting on your OK, recently done, and what is on the timetable.
+- **Happening now.** Working, waiting on your OK, recently done, and what is on the timetable;
+  below it the **News feed**, everything the office has done, newest first (all, work, reviews, matrix).
+- **Seats** (the Roles tab was retired on 7 Nov 2026). Every department opens from the **Office**
+  map, the ones not in the AIOS yet read-only. A desk card says what it is missing (no job line, no
+  brief, no skill), the map tile counts them (*N to brief*), and the desk drawer shows its model,
+  tools, brief and skills.
 - **Tokens.** A coach on top names the one thing to do now that saves the most: hand over a heavy
   chat used today (with a copy button for the handover prompt and the tokens saved per turn), move
   a desk's light Opus runs to Sonnet, fold a desk's corrections into its skill, or hand over earlier

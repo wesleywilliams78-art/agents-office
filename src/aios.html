@@ -58,10 +58,6 @@
   .seg button.on { background: var(--ink); color: var(--bg); border-color: var(--ink); }
   .panel { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; }
 
-  /* roles */
-  .split { display: grid; grid-template-columns: minmax(0, 1fr) 380px; gap: 16px; align-items: start; }
-  .split-main { min-width: 0; }
-  .depts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; align-items: start; }
 
   /* news feed */
   .news { position: sticky; top: 12px; display: flex; flex-direction: column; max-height: calc(100vh - 24px); overflow: hidden; }
@@ -85,38 +81,12 @@
   .ni .nx { font-size: 11.5px; color: var(--grey); margin-top: 2px; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
   .ni .nm { font-size: 10.5px; color: var(--faint); margin-top: 3px; display: flex; align-items: center; gap: 5px; }
   .ni .nm .chip { width: 7px; height: 7px; border-radius: 2px; display: inline-block; }
-  @media (max-width: 1380px) { .depts { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-  @media (max-width: 1100px) { .split { grid-template-columns: 1fr; } .news { position: static; max-height: 560px; } }
-  @media (max-width: 760px) { .depts { grid-template-columns: 1fr; } }
-  .dept { overflow: hidden; }
-  .dept .dh { display: flex; align-items: center; gap: 8px; padding: 10px 12px; border-bottom: 1px solid var(--line); }
-  .dept .chip { width: 10px; height: 10px; border-radius: 3px; flex: none; }
-  .dept .dn { font-size: 11px; font-weight: 700; letter-spacing: .14em; }
-  .dept .dm { margin-left: auto; font-size: 10.5px; color: var(--grey); }
-  .seat { padding: 9px 12px; border-bottom: 1px solid var(--line); cursor: pointer; }
-  .seat:last-child { border-bottom: 0; }
-  .seat:hover { background: var(--soft); }
-  .seat .r0 { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
-  .seat .r0 img { width: 28px; height: 28px; border-radius: 8px; object-fit: cover; flex: none; background: var(--soft); }
-  .seat .r0 b { font-size: 13.5px; font-weight: 700; }
-  .seat .r1 { display: flex; align-items: center; gap: 7px; }
-  .seat .nm { font-size: 11px; font-weight: 700; letter-spacing: .1em; }
-  .seat .role { color: var(--grey); font-size: 11.5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
-  .seat .st { margin-left: auto; display: flex; align-items: center; gap: 5px; font-size: 10px; letter-spacing: .08em; color: var(--grey); flex: none; }
+  .news.wide { position: static; max-height: 620px; } /* on Overview the feed is a panel of its own, not a sticky side column */
   .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--line); flex: none; }
   .dot.doing { background: var(--ok); } .dot.waiting { background: var(--warn); } .dot.error { background: var(--bad); }
-  .seat .does { color: var(--grey); font-size: 11.5px; margin-top: 3px; display: none; }
-  .seat.open .does { display: block; }
-  .seat .meta { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 5px; }
   .tag { font-size: 9.5px; letter-spacing: .06em; padding: 1px 6px; border-radius: 4px; border: 1px solid var(--line); color: var(--grey); white-space: nowrap; }
-  .tag.lead { background: var(--ink); color: var(--bg); border-color: var(--ink); font-weight: 700; }
   .tag.good { color: var(--ok); border-color: color-mix(in srgb, var(--ok) 40%, transparent); }
   .tag.miss { color: var(--warn); border-color: color-mix(in srgb, var(--warn) 40%, transparent); }
-  .ready { display: inline-flex; gap: 2px; }
-  .ready i { width: 5px; height: 11px; border-radius: 1.5px; background: var(--line); display: block; }
-  .ready i.f { background: var(--ok); }
-  .seat .last { font-size: 11px; color: var(--faint); margin-top: 4px; display: none; }
-  .seat.open .last { display: block; }
 
   /* matrix */
   .msg { font-size: 12px; color: var(--grey); margin-bottom: 8px; }
@@ -544,6 +514,10 @@
   .ox-you.clear { background: var(--ox-card); color: var(--ink); border: 1px solid var(--ox-edge2); box-shadow: none; padding-right: 22px; } .ox-you.clear .me { background: var(--soft); color: var(--grey); }
   .hxo-d { background: var(--ox-card); border: 1px solid var(--ox-edge); border-radius: 20px; padding: 16px 18px 14px; display: flex; flex-direction: column; min-width: 0; text-align: left; -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); transition: border-color .2s, transform .2s; }
   .hxo-d.on { cursor: pointer; border-color: var(--ox-edge2); } .hxo-d.on:hover, .hxo-d.on:focus-visible { border-color: var(--ox-edge-hover); transform: translateY(-2px); outline: none; }
+  .hxo-d.off { cursor: pointer; } .hxo-d.off:hover, .hxo-d.off:focus-visible { border-color: var(--ox-edge-hover); outline: none; } /* opens read-only (Roles retired, 7 Nov 2026) */
+  .hxo-gap { flex: none; padding: 3px 9px; border-radius: 99px; border: 1px solid var(--ox-label-red-edge); color: var(--ox-label-red); font-size: 9.5px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; white-space: nowrap; }
+  .hxo-k .hxo-tag { margin-left: 10px; vertical-align: 1px; } .hxo-lbs .gap b { color: var(--ox-label-red); }
+  .hxo-miss { color: var(--ox-label-red); font-size: 10.5px; } .hxo-k2f .hxo-miss + span { margin-left: auto; }
   .hxo-d.need { border-color: var(--ox-need-edge); box-shadow: 0 0 0 1px var(--ox-need-glow), 0 18px 40px -22px var(--ox-need-shadow); }
   .hxo-d.off { background: var(--ox-off); border-style: dashed; border-color: var(--ox-off-edge); }
   .hxo-dh { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; } .hxo-dh h4 { margin: 0; font: 300 27px/1 var(--serif); }
@@ -771,7 +745,7 @@
   @media (max-width: 1100px) { .hero .hstats { position: static; margin-top: 26px; } .hero { padding-bottom: 110px; } }
 
   /* cards: soft curves, tonal layers, no hairline boxes */
-  .panel, .kpi, .dept, .news, .sk, .client, .bpanel, .col, .skkpi, .quad { background: var(--card); border: 1px solid var(--line); border-radius: var(--r); transition: border-color .2s, transform .2s; }
+  .panel, .kpi, .news, .sk, .client, .bpanel, .col, .skkpi, .quad { background: var(--card); border: 1px solid var(--line); border-radius: var(--r); transition: border-color .2s, transform .2s; }
   .panel.trend { padding: 22px 26px; margin-bottom: 22px; }
   .kpis { gap: 14px; border: 0; margin-bottom: 22px; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); }
   .kpi { padding: 20px 20px 16px; }
@@ -798,8 +772,7 @@
   .item { background: var(--bg); border-color: var(--line); padding: 10px 12px; transition: transform .15s; } .item:hover { transform: translateY(-1px); }
   .quad { padding: 16px; border-top: 1px solid var(--line); position: relative; overflow: hidden; }
   .quad::before { content: ""; position: absolute; left: 0; top: 0; right: 0; height: 4px; background: var(--qc); }
-  .seat { border-radius: 0; } .dept { overflow: hidden; } .dept .dh { background: var(--soft); border-bottom: 0; padding: 13px 16px; }
-  .dot, .live { border-radius: 50%; } .ready i { border-radius: 2px; }
+  .dot, .live { border-radius: 50%; }
   .news { background: var(--card); }
   .ni .nic { border-radius: 10px; }
   .bcat .bbar, .bcat .bbar i { border-radius: 999px; }
@@ -822,7 +795,7 @@
   .task .tm, .ni .nm, .ni .nx, .client .citem .cm, .client .cc, .sk .skd, .sk .sks, .item .id, .quad .qhint, .sh .note, .bfoot, .bcat .bp, .none, .quad .empty, .news .note, .bpanel .note { color: #6b6561; }
   .task .tt, .ni .nt, .client .citem .ct, .item .it, .sk .skn { color: var(--ink); }
   .client .cc, .quad .qc { color: var(--red); }
-  .client .cn, .dept .dn { letter-spacing: .16em; text-transform: uppercase; font-size: 11px; }
+  .client .cn { letter-spacing: .16em; text-transform: uppercase; font-size: 11px; }
   :root:not([data-theme]) { --meta: #6b6561; }
   @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --meta: #B79C8F; } }
   :root[data-theme="dark"] { --meta: #B79C8F; }
@@ -908,7 +881,7 @@
     .sh { flex-direction: column; align-items: flex-start; gap: 6px; margin-bottom: 14px; }
     .sh h2 { font-size: 28px; }
     .sh .tools { margin-left: 0; }
-    .split, .depts, .skgrid, .clientGrid, .cols, .bgrid { grid-template-columns: minmax(0, 1fr) !important; }
+    .skgrid, .clientGrid, .cols, .bgrid { grid-template-columns: minmax(0, 1fr) !important; }
     .news { position: static; max-height: none; }
     .quad { min-height: 0; }
     .panel[style*="overflow-x"] { font-size: 12px; }
@@ -917,7 +890,6 @@
     button { padding: 9px 14px; }
     #mUp, #mUpSel { width: 100%; max-width: 100%; }
     .tag { white-space: normal; max-width: 100%; }
-    .seat .meta { min-width: 0; }
     body::after { height: 90px; }
   }
   @media (max-width: 420px) {
@@ -951,26 +923,25 @@
   :root[data-theme="dark"] body::before { filter: brightness(1.4); }
 
   /* the big surfaces: frosted */
-  .panel, .kpi, .dept, .news, .sk, .client, .bpanel, .col, .skkpi, .quad, header .right {
+  .panel, .kpi, .news, .sk, .client, .bpanel, .col, .skkpi, .quad, header .right {
     background: var(--glass); border: 1px solid var(--glass-edge);
     -webkit-backdrop-filter: var(--glass-blur); backdrop-filter: var(--glass-blur);
     box-shadow: inset 0 1px 0 var(--glass-lip);
   }
   .news { background: var(--glass-strong); } /* long lists of small text read on the more solid glass */
-  .dept .dh { background: var(--glass-pill); }
   /* the pills: tinted glass, hairline edge, no second blur */
   .tag, button, .item, .ni .nic, .sk .skp, input, textarea, select {
     background: var(--glass-pill); border-color: var(--glass-line); box-shadow: inset 0 1px 0 var(--glass-lip);
   }
   .item { background: var(--glass-strong); }
   /* the solid ones stay solid: the active rail pill, primary and selected buttons, the lead tag, filled states */
-  button.primary, .seg button.on, button:hover, .tag.lead { background: var(--ink); color: var(--bg); box-shadow: none; }
+  button.primary, .seg button.on, button:hover { background: var(--ink); color: var(--bg); box-shadow: none; }
   @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
-    .panel, .kpi, .dept, .news, .sk, .client, .bpanel, .col, .skkpi, .quad, header .right { background: var(--card); }
+    .panel, .kpi, .news, .sk, .client, .bpanel, .col, .skkpi, .quad, header .right { background: var(--card); }
   }
   /* people who ask the system for less transparency get solid cards */
   @media (prefers-reduced-transparency: reduce) {
-    .panel, .kpi, .dept, .news, .sk, .client, .bpanel, .col, .skkpi, .quad, header .right, .item { background: var(--card); -webkit-backdrop-filter: none; backdrop-filter: none; }
+    .panel, .kpi, .news, .sk, .client, .bpanel, .col, .skkpi, .quad, header .right, .item { background: var(--card); -webkit-backdrop-filter: none; backdrop-filter: none; }
     body::before { display: none; }
   }
 
@@ -1181,7 +1152,6 @@
     <button data-go="budget" id="navBudget" style="display:none">Budget <span class="n"></span></button>
     <span class="sep" aria-hidden="true"></span>
     <button data-go="hierarchy">Office</button>
-    <button data-go="roles">Roles <span class="n" id="nRoles"></span></button>
     <button data-go="brain">Brain</button>
     <button data-go="skills">Skills <span class="n" id="nSkills"></span></button>
     <button data-go="tokens">Tokens</button>
@@ -1258,21 +1228,6 @@
     </div>
   </section>
 
-  <section class="split" data-cat="roles">
-    <div class="split-main">
-      <div class="sh">
-        <h2>Roles</h2>
-        <span class="note">The 35 seats, what each one is for, and what it runs on by default. Click a seat for the detail.</span>
-        <div class="tools seg" id="rShow"><button data-v="all" class="on">ALL SEATS</button><button data-v="gaps">NEEDS A BRIEF OR SKILL</button><button data-v="busy">WORKING</button></div>
-      </div>
-      <div class="depts" id="depts"></div>
-    </div>
-    <aside class="panel news">
-      <div class="nh"><h2>News feed</h2><span class="note">What the office has done, newest first</span></div>
-      <div class="seg nf" id="nShow"><button data-v="all" class="on">ALL</button><button data-v="work">WORK</button><button data-v="review">REVIEWS</button><button data-v="matrix">MATRIX</button></div>
-      <div class="nl" id="news"></div>
-    </aside>
-  </section>
 
   <div class="ox" id="oxStage" data-cat="hierarchy"><!-- the Office stage (7 Nov 2026): ridges and flows behind Theo, Nora and the departments; full width on the office map -->
     <svg class="ox-land" viewBox="0 0 1600 760" preserveAspectRatio="none" aria-hidden="true">
@@ -1372,6 +1327,13 @@
       <div class="panel col"><h3>⏱ SCHEDULED</h3><div id="aSched"></div></div>
     </div>
   </section>
+  <section data-cat="overview"> <!-- the News feed, moved here from Roles when Roles was retired (7 Nov 2026) -->
+    <aside class="panel news wide">
+      <div class="nh"><h2>News feed</h2><span class="note">What the office has done, newest first</span></div>
+      <div class="seg nf" id="nShow"><button data-v="all" class="on">ALL</button><button data-v="work">WORK</button><button data-v="review">REVIEWS</button><button data-v="matrix">MATRIX</button></div>
+      <div class="nl" id="news"></div>
+    </aside>
+  </section>
 
   <section id="budgetSec" data-cat="budget" style="display:none">
     <div class="sh">
@@ -1408,7 +1370,7 @@ const DEPTS = {
 const ORDER = ['emails', 'sales', 'marketing', 'ops', 'fin', 'delivery'];
 const GAPS = { 'no-seat': 'GAP · NO SEAT', 'owner-decision': 'YOUR CALL', 'missing-info': 'GAP · MISSING INFO' };
 const MODEL = { sonnet: 'Sonnet', opus: 'Opus', fable: 'Fable' };
-const S = { health: null, agents: [], tasks: [], routines: [], matrix: { items: [], feeds: [], quadrants: {}, clients: [] }, rShow: 'all', mShow: 'open', nShow: 'all', kShow: 'attn', skillAudit: null, cat: 'overview', openSeat: new Set(), openItem: new Set(), proposing: new Set(), busy: false };
+const S = { health: null, agents: [], tasks: [], routines: [], matrix: { items: [], feeds: [], quadrants: {}, clients: [] }, mShow: 'open', nShow: 'all', kShow: 'attn', skillAudit: null, cat: 'overview', openItem: new Set(), proposing: new Set(), busy: false };
 const $ = id => document.getElementById(id);
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const ago = t => { if (!t) return ''; const s = (Date.now() - t) / 1000; return s < 60 ? 'just now' : s < 3600 ? Math.round(s / 60) + ' min ago' : s < 86400 ? Math.round(s / 3600) + ' h ago' : Math.round(s / 86400) + ' d ago'; };
@@ -1508,10 +1470,10 @@ const roleSkills = a => { const h = houseSkills(); return (a.skills || []).filte
 // readiness: a role written, a standing brief, a skill that says how this seat's work is done
 const readiness = a => [!!a.does, !!a.brief, roleSkills(a).length > 0];
 
-function render() { renderNeeds(); renderWeek(); renderNav(); renderKpis(); renderClients(); renderMatrix(); renderRoles(); window.renderHierarchy?.(); renderSkills(); renderNews(); renderActivity(); renderBudget(); }
+function render() { renderNeeds(); renderWeek(); renderNav(); renderKpis(); renderClients(); renderMatrix(); window.renderHierarchy?.(); renderSkills(); renderNews(); renderActivity(); renderBudget(); }
 
 // categories: the left-hand list shows one category at a time; the choice is remembered and can be linked to (#budget)
-const CAT_IDS = ['overview', 'matrix', 'social', 'clients', 'budget', 'roles', 'hierarchy', 'brain', 'skills', 'tokens'];
+const CAT_IDS = ['overview', 'matrix', 'social', 'clients', 'budget', 'hierarchy', 'brain', 'skills', 'tokens'];
 const isDash = c => /^dash-[a-z0-9-]+$/.test(String(c));
 /* ---------- motion: springs for the rail and the page it drives ----------
    A damped spring sampled into a CSS linear() curve: zeta < 1 overshoots and settles, like motion.md's back.out pops.
@@ -1559,7 +1521,7 @@ function foldSubnav(animate) {
   if (open) [...nav.children].forEach((b, i) => b.animate([{ opacity: 0, transform: 'translateY(-8px)' }, { opacity: 1, transform: 'none' }], { duration: 520, delay: 90 + i * 80, easing: SPRING, fill: 'backwards' }));
 }
 // 2. the chosen category arrives in sequence: the old view steps back fast, the title reveals upward, the cards rise one after another
-const CARD = '.hero, .kpi, .panel, .dept, .client, .quad, .sk, .col, .news, .bpanel, .skkpi, .hx-bay, .hxt-col';
+const CARD = '.hero, .kpi, .panel, .client, .quad, .sk, .col, .news, .bpanel, .skkpi, .hx-bay, .hxt-col';
 function arrive() {
   if (!moving()) return;
   const shown = [...document.querySelectorAll('[data-cat]:not(.cat-off)')];
@@ -1567,7 +1529,7 @@ function arrive() {
   for (const b of shown) {
     if (b.matches('.hero')) { cards.push(b); const h = b.querySelector('h2'); if (h) heads.push(h); continue; }
     if (b.matches(CARD)) { cards.push(b); continue; }
-    const h = b.querySelector(':scope > .sh h2, :scope > .split-main > .sh h2'); if (h) heads.push(h);
+    const h = b.querySelector(':scope > .sh h2'); if (h) heads.push(h);
     for (const c of b.querySelectorAll(CARD)) if (!c.parentElement.closest(CARD)) cards.push(c);
   }
   heads.forEach((h, i) => h.animate([{ clipPath: 'inset(0 0 100% 0)', transform: 'translateY(.45em)' }, { clipPath: 'inset(0 0 -10% 0)', transform: 'none' }], { duration: 640, delay: i * 90, easing: SPRING, fill: 'backwards' }));
@@ -1949,6 +1911,7 @@ function renderNav() { // small counts beside a category: what is waiting on you
 function route(h) { // a hash is the tab, then (Office only) where you are inside it: #office/marketing/gfx is Marketing with Greta's drawer open
   let [c, ...rest] = String(h || '').split('/');
   if (c === 'office') c = 'hierarchy'; // the Office tab keeps its old id inside the page; #hierarchy links from before 7 Nov still land
+  if (c === 'roles') { c = 'hierarchy'; rest = []; } // Roles was retired on 7 Nov 2026: its seats are on the Office's department pages, its News feed on Overview
   if (c === 'hierarchy') { if (window.hxRoute) window.hxRoute(rest); else window.AIOS_HX_WANT = rest; } // the Hierarchy script loads later and picks up AIOS_HX_WANT
   if (!(c === 'hierarchy' && S.cat === 'hierarchy' && catReady)) setCat(c, false); // moving inside Hierarchy (Back, a link) keeps the page where it is
 }
@@ -3215,39 +3178,6 @@ function renderTrend() {
   el.innerHTML = `<div class="trh"><b>${total}</b> tasks finished in 14 days${fails ? ` · <span class="bad">${fails} failed</span>` : ''}</div><div class="trbars">${days.map(d => `<div class="trd" title="${d.d.toLocaleDateString([], { weekday: 'short', day: 'numeric', month: 'short' })}: ${d.ok} done${d.bad ? ', ' + d.bad + ' failed' : ''}"><div class="trb"><i class="bad" style="height:${d.bad / max * 100}%"></i><i class="ok" style="height:${d.ok / max * 100}%"></i></div><span>${d.d.toLocaleDateString([], { weekday: 'narrow' })}</span></div>`).join('')}</div>`;
 }
 
-function renderRoles() {
-  const office = S.health?.model || 'sonnet';
-  $('depts').innerHTML = ORDER.map(k => {
-    let seats = S.agents.filter(a => a.department === k).sort((a, b) => (b.lead ? 1 : 0) - (a.lead ? 1 : 0));
-    const setUp = S.health?.setup?.[k];
-    const all = seats.length, ready = seats.filter(a => readiness(a).every(Boolean)).length;
-    if (S.rShow === 'gaps') seats = seats.filter(a => !readiness(a).every(Boolean));
-    if (S.rShow === 'busy') seats = seats.filter(a => seatState(a).key === 'doing' || seatState(a).key === 'waiting');
-    if (!seats.length && S.rShow !== 'all') return '';
-    return `<div class="panel dept"><div class="dh"><span class="chip" style="background:${DEPTS[k].chip}"></span><span class="dn">${DEPTS[k].name}</span>
-      <span class="dm">${all} seats · ${ready} fully set · ${setUp ? 'set up' : 'not set up yet'}</span></div>` +
-      seats.map(a => {
-        const st = seatState(a), r = readiness(a), open = S.openSeat.has(a.id);
-        const stTxt = st.key === 'doing' ? 'WORKING' : st.key === 'waiting' ? 'WAITING' : st.key === 'error' ? 'LAST RUN FAILED' : 'IDLE';
-        const model = a.model ? `${MODEL[a.model] || a.model} (own)` : `${MODEL[office] || office} (office)`;
-        return `<div class="seat${open ? ' open' : ''}" data-seat="${esc(a.id)}">
-          ${a.person ? `<div class="r0">${a.portrait ? `<img src="${esc(a.portrait)}" alt="" loading="lazy">` : ''}<b>${esc(a.person)}</b></div>` : ''}
-          <div class="r1"><span class="nm">${esc(a.name)}</span>${a.lead ? '<span class="tag lead">LEAD</span>' : ''}<span class="role">${esc(a.role)}</span>
-            <span class="st"><span class="ready" title="role · brief · skill">${r.map(x => `<i class="${x ? 'f' : ''}"></i>`).join('')}</span><span class="dot ${st.key}"></span>${stTxt}</span></div>
-          <div class="does">${esc(a.does)}</div>
-          <div class="meta">
-            <span class="tag">${esc(model)}</span>${a.effort ? `<span class="tag">effort ${esc(a.effort)}</span>` : ''}
-            <span class="tag ${a.brief ? 'good' : 'miss'}">${a.brief ? 'BRIEF' : 'NO BRIEF'}</span>
-            <span class="tag ${roleSkills(a).length ? 'good' : 'miss'}">${roleSkills(a).length ? 'SKILL: ' + esc(roleSkills(a).join(', ')) : 'NO ROLE SKILL'}</span>
-            ${a.lessons ? `<span class="tag">${a.lessons} lesson${a.lessons > 1 ? 's' : ''}</span>` : ''}
-            ${open ? (a.tools || []).map(t => `<span class="tag">${esc(t)}</span>`).join('') : (a.tools || []).length ? `<span class="tag">${a.tools.length} tools</span>` : ''}
-          </div>
-          <div class="last">${st.doing ? 'Now: ' + esc(st.doing.title) : st.waiting ? 'Waiting on your OK: ' + esc(st.waiting.title) : st.last ? `Last: ${esc(st.last.title)} · ${ago(st.last.doneAt)}` : 'No work yet.'} · ${st.done} done in total</div>
-        </div>`;
-      }).join('') + '</div>';
-  }).join('') || '<div class="none">Nothing to show for this filter.</div>';
-}
-
 function renderMatrix() {
   const Q = S.matrix.quadrants || {};
   const items = S.matrix.items.filter(i => S.mShow === 'all' || i.state === 'open');
@@ -3398,8 +3328,6 @@ document.addEventListener('click', e => {
   if (e.target.closest('.dueInput')) return; // picking a date shouldn't also toggle the item open/closed
   const it = e.target.closest('[data-item]');
   if (it) { const id = it.dataset.item; S.openItem.has(id) ? S.openItem.delete(id) : S.openItem.add(id); renderMatrix(); return; }
-  const s = e.target.closest('[data-seat]');
-  if (s) { const id = s.dataset.seat; S.openSeat.has(id) ? S.openSeat.delete(id) : S.openSeat.add(id); renderRoles(); }
 });
 // drag an item to another quadrant: the owner's call beats the office's
 let dragId = null;
@@ -3577,7 +3505,7 @@ loadTrackers(); setInterval(() => { if (!document.hidden && !Object.values(S.tkB
    The desks are whatever the roster holds for that department, so a seat added later simply appears: the grid wraps and has no cap.
    Colour is live state: blue needs you, teal being worked, amber in lead review (the lead node) or in rework after a lead bounce (a desk), grey idle, red last run failed.
    Lead review (leadreview.mjs) writes task.leadReview = { phase: review | rework | signed | escalated, round, open }; stageOf() and the badges read it.
-   Own ids (hx*), own open-desk set, data-hseat; Roles is untouched. render() calls window.renderHierarchy(). Page helpers used: S, DEPTS, MODEL, esc, ago, seatState, readiness, roleSkills. */
+   Own ids (hx*), own open-desk set, data-hseat. render() calls window.renderHierarchy(). Page helpers used: S, DEPTS, MODEL, esc, ago, seatState, readiness, roleSkills. */
 (() => {
   const PILOT = ['marketing', 'delivery'];
   const tc = s => String(s || '').toLowerCase().replace(/(^|[\s-])(\p{L})/gu, (m, a, b) => a + b.toUpperCase()).replace(/Linkedin/g, 'LinkedIn'); // desk names are stored in capitals; the chart shows them as Chief of Staff is written
@@ -3674,15 +3602,15 @@ loadTrackers(); setInterval(() => { if (!document.hidden && !Object.values(S.tkB
     return `<span class="hxo-fw ${size}" title="${esc(a.person ? `${a.person} · ${tc(a.name)}` : tc(a.name))}${k ? ' · ' + (KT[k] || 'Idle') : ''}">${pic}${k == null ? '' : `<b class="${KC[k] || ''}"></b>`}</span>`;
   };
   function tile(b, side, order) { // a department on the office map: solid and clickable when it is in the AIOS (PILOT), dashed when it still runs only in the office
-    const on = PILOT.includes(b.d), fy = fyItems(x => x === b.d).length, MAX = 8;
+    const on = PILOT.includes(b.d), fy = fyItems(x => x === b.d).length, MAX = 8, gaps = [b.lead, ...b.desks].filter(a => a && !readiness(a).every(Boolean)).length;
     const desks = b.desks.map(a => ({ a, k: keyOf(a) })).sort((x, y) => RANK[x.k] - RANK[y.k]);
     const last = S.tasks.filter(t => t.dept === b.d && t.state === 'done' && t.doneAt).sort((x, y) => y.doneAt - x.doneAt)[0];
     let now = desks.filter(x => x.k === 'doing' || x.k === 'rework').slice(0, 2).map(x => `<div class="w"><i></i><span><b>${esc(x.a.person || tc(x.a.name))}</b> · ${esc(seatState(x.a).doing.title)}</span></div>`).join('');
     if (!now) now = `<div><i></i><span>${last ? `Nothing running · last task ${esc(ago(last.doneAt))}` : 'No work yet'}</span></div>`;
     const ld = b.lead, faces = desks.slice(0, MAX).map(x => fc(x.a, x.k)).join('') + (desks.length > MAX ? `<span class="more">+${desks.length - MAX}</span>` : '');
     const lead = ld ? `${fc(ld, b.leadKey, on ? 'l' : '')}<div class="hxo-ln"><b>${esc(ld.person || tc(ld.name))}</b>${on ? `<span>Head of ${esc(deptName(b.d))}</span>` : ''}</div>${stp(b.leadKey)}` : '<div class="hxo-ln">No lead on the roster</div>';
-    return `<article class="hxo-d ${on ? 'on' : 'off'}${fy ? ' need' : ''}" data-side="${side}" data-n="${fy}" style="--o:${order}"${on ? ` data-hxdept="${esc(b.d)}" role="button" tabindex="0" aria-label="Open ${esc(deptName(b.d))}"` : ' title="Runs in the office. Joins the AIOS later."'}>
-      <div class="hxo-dh"><h4>${esc(deptName(b.d))}</h4>${on ? '' : '<span class="hxo-tag">Not in AIOS yet</span>'}${fy ? `<span class="hxo-badge" title="${fy} for you">${fy}</span>` : ''}</div>
+    return `<article class="hxo-d ${on ? 'on' : 'off'}${fy ? ' need' : ''}" data-side="${side}" data-n="${fy}" style="--o:${order}" data-hxdept="${esc(b.d)}" role="button" tabindex="0" aria-label="Open ${esc(deptName(b.d))}"${on ? '' : ' title="Runs in the office, not the AIOS yet. Open it to read its desks."'}>
+      <div class="hxo-dh"><h4>${esc(deptName(b.d))}</h4>${on ? '' : '<span class="hxo-tag">Not in AIOS yet</span>'}${gaps ? `<span class="hxo-gap" title="${gaps} desk${gaps > 1 ? 's' : ''} without a brief or a skill of ${gaps > 1 ? 'their' : 'its'} own">${gaps} to brief</span>` : ''}${fy ? `<span class="hxo-badge" title="${fy} for you">${fy}</span>` : ''}</div>
       <div class="hxo-lead">${lead}</div>
       ${on ? `<div class="hxo-faces">${faces}</div><div class="hxo-now">${now}</div>
       <div class="hxo-ct"><div><b>${b.doing}</b>Working</div><div><b>${b.reviewing}</b>Lead review</div><div class="you${fy ? ' n' : ''}"><b>${fy}</b>For you</div></div>`
@@ -3756,7 +3684,7 @@ loadTrackers(); setInterval(() => { if (!document.hidden && !Object.values(S.tkB
     const line = st.doing ? (k === 'rework' ? `<b>Reworking, round ${st.doing.leadReview.round}:</b> ` : '<b>Now:</b> ') + esc(st.doing.title) : st.waiting ? `<b>Waiting for you:</b> ${esc(st.waiting.title)}` : st.last ? `Last: ${esc(st.last.title)} · ${esc(ago(st.last.doneAt))}` : 'No work yet.';
     return `<article class="hxo-k2${open ? ' sel' : ''}" data-hseat="${esc(a.id)}" role="button" tabindex="0" aria-haspopup="dialog">
       <div class="hxo-k2h">${fc(a, k, 'm')}<div class="hxo-k2n"><b>${esc(who(a))}</b><span>${esc(a.person ? tc(a.name) : a.role)}</span></div>${n ? `<span class="hxo-badge" title="${n} for you">${n}</span>` : ''}</div>
-      <div class="hxo-k2l">${line}</div><div class="hxo-k2f">${stp(k)}<span>${st.done} done</span></div></article>`;
+      <div class="hxo-k2l">${line}</div><div class="hxo-k2f">${stp(k)}${(m => m.length ? `<span class="hxo-miss">${m.join(' · ')}</span>` : '')(['No job line', 'No brief', 'No skill'].filter((x, i) => !readiness(a)[i]))}<span>${st.done} done</span></div></article>`;
   }
   document.addEventListener('click', e => { if (e.target.closest('[data-hxidle]')) { showIdle = true; renderHierarchy(); } });
   let oxHtml = '';
@@ -3782,7 +3710,7 @@ loadTrackers(); setInterval(() => { if (!document.hidden && !Object.values(S.tkB
     flowSoon(); document.fonts?.ready.then(flowSoon);
   }
   // ---- where you are: #office, #office/<dept>, #office/<dept>/<desk> (#hierarchy/… still lands). Each step in is one browser history entry, so Back goes out one level ----
-  const okView = v => PILOT.includes(v) && S.agents.some(a => a.department === v) ? v : 'office';
+  const okView = v => officeDepts().includes(v) ? v : 'office'; // every department opens (Roles retired 7 Nov 2026); one not in the AIOS yet opens read-only
   const hxPath = (v = view, s = sel) => 'office' + (v !== 'office' ? '/' + v + (s ? '/' + s : '') : '');
   window.hxPath = () => hxPath();
   function apply(v, s) { // show a level: the office, a department, or a department with a desk's drawer open
@@ -3916,12 +3844,12 @@ loadTrackers(); setInterval(() => { if (!document.hidden && !Object.values(S.tkB
     el('oxStage').classList.toggle('map', office); // the office map fills the screen, ridges and flows behind it
     if (el('hxTheoDot')) el('hxTheoDot').className = peBusy ? 'work' : '';
     if (office) { renderOffice(); drawer(); return; }
-    const b = blockOf(view), ld = b.lead, name = deptName(view), fyD = fyItems(d => d === view), fyAll = fyItems(() => true);
+    const b = blockOf(view), ld = b.lead, name = deptName(view), fyD = fyItems(d => d === view), fyAll = fyItems(() => true), gapN = [ld, ...b.desks].filter(a => a && !readiness(a).every(Boolean)).length;
     const inReview = S.tasks.find(t => t.dept === view && t.state === 'doing' && lrOf(t) === 'review'), ldDoing = ld && seatState(ld).doing;
     const ldLine = inReview ? `<b>${esc(who(agentBy(inReview.agent)))}</b>’s ${esc(inReview.title)}${inReview.leadReview.round ? ` · after rework ${inReview.leadReview.round}` : ''}`
-      : ldDoing ? `<b>Now:</b> ${esc(ldDoing.title)}` : 'Splits the work across the desks and signs off every piece before you see it.';
-    const band = `<section class="hxo-lb">${ld ? fc(ld, b.leadKey, 'xl') : ''}<div class="hxo-lbm"><div class="hxo-k">Head of ${esc(name.toLowerCase())}</div><div class="hxo-hn">${ld ? esc(who(ld)) : 'No lead'}</div><div class="hxo-lbd">${stp(b.leadKey)}<span>${ldLine}</span></div></div>
-      <div class="hxo-lbs"><div><b>${b.desks.length}</b>Desks</div><div><b>${b.doing}</b>Working</div><div><b>${b.reviewing}</b>Lead review</div><div class="you${fyD.length ? ' n' : ''}"><b>${fyD.length}</b>For you</div></div></section>`;
+      : ldDoing ? `<b>Now:</b> ${esc(ldDoing.title)}` : PILOT.includes(view) ? 'Splits the work across the desks and signs off every piece before you see it.' : 'Runs in the office for now: read its desks here; work for it still goes in through Nora.';
+    const band = `<section class="hxo-lb">${ld ? fc(ld, b.leadKey, 'xl') : ''}<div class="hxo-lbm"><div class="hxo-k">Head of ${esc(name.toLowerCase())}${PILOT.includes(view) ? '' : '<span class="hxo-tag">Not in AIOS yet · read only</span>'}</div><div class="hxo-hn">${ld ? esc(who(ld)) : 'No lead'}</div><div class="hxo-lbd">${stp(b.leadKey)}<span>${ldLine}</span></div></div>
+      <div class="hxo-lbs"><div><b>${b.desks.length}</b>Desks</div><div><b>${b.doing}</b>Working</div><div><b>${b.reviewing}</b>Lead review</div><div class="you${fyD.length ? ' n' : ''}"><b>${fyD.length}</b>For you</div>${gapN ? `<div class="gap"><b>${gapN}</b>To brief</div>` : ''}</div></section>`;
     const ds = b.desks.map(a => ({ a, k: keyOf(a) })), idle = ds.filter(x => x.k === 'idle'); // roster order, so a desk keeps its place as its status changes
     const fold = (ds.length > FOLD && !showIdle) ? idle.slice(Math.max(0, FOLD - (ds.length - idle.length))) : []; // past 12 desks the idle ones fold into one card
     const grid = ds.filter(x => !fold.includes(x)).map(x => deskCard(x.a, x.k, fyD)).join('') + (fold.length ? `<button type="button" class="hxo-fold" data-hxidle>${fold.length} idle desk${fold.length > 1 ? 's' : ''} · show</button>` : '');

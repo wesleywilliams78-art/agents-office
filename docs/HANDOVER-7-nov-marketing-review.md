@@ -9,7 +9,7 @@
   - `20-Brand/content-calendar.md`: desk name replaced (20 mentions).
 - **Desk names and portraits live** (Opus 5.5): Mara (mlead), Riley, Newt, Greta (gfx), Ada, Iggy, Vic (vid).
   - `person` field in the roster (`roster.mjs` EDITABLE), passed through `reloadRoster`/`agentsOut` in `serve.mjs` with `portrait`; portraits are `assets/people/<id>.png|jpg|webp`, served at `/people/<file>`.
-  - Shown on AIOS Hierarchy (desk cards and the lead box) and Roles (seat rows) in `src/aios.html`.
+  - Shown on AIOS Hierarchy (desk cards and the lead box) in `src/aios.html` (the Roles tab with its seat rows was retired on 7 Nov 2026).
   - Two new checks in `check.mjs`; `CLAUDE.md` documents the field. `npm run check` 93/93.
   - Portraits made with Canva `generate-image`, 200×200, prompt pattern: "Hyper-realistic professional headshot photograph of <person>, head and shoulders, <hair>, <expression>, <clothes>. Soft natural window light, plain warm off-white studio backdrop, 85mm portrait lens, shallow depth of field, natural skin texture, looks like a real corporate team photo. No text, no logos, no watermark." Square. Keep it for any new desk so the set matches.
 - Office server restarted 7 Nov ~14:40 as a hidden `node serve.mjs` (its old parent shell was gone).
