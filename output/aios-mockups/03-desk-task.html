@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Level 3 and 4 · Desk and task</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600&family=Newsreader:opsz,wght@6..72,300;6..72,400&display=swap">
+<link rel="stylesheet" href="mock.css">
+<style>
+  body { overflow: hidden; }
+  .under { position: fixed; inset: 0; width: 1905px; height: 920px; border: 0; }
+  .dim { position: fixed; inset: 0; background: rgba(12,11,10,.62); }
+  .drawer { position: fixed; top: 0; right: 0; bottom: 0; width: 780px; background: var(--bg); border-left: 1px solid var(--line2); box-shadow: -30px 0 80px rgba(0,0,0,.5); padding: 22px 28px; display: flex; flex-direction: column; gap: 16px; overflow: hidden; }
+  .x { margin-left: auto; width: 32px; height: 32px; border-radius: 50%; border: 1px solid var(--line2); display: inline-flex; align-items: center; justify-content: center; color: var(--grey); font-size: 15px; }
+  .head { display: grid; grid-template-columns: auto 1fr auto; gap: 16px; align-items: center; }
+  .head .n { font: 300 32px/1 var(--serif); } .head .r { color: var(--grey); font-size: 12px; margin-top: 4px; }
+  .chips { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 10px; }
+  .chips span { font-size: 10.5px; padding: 4px 10px; border: 1px solid var(--line); border-radius: 99px; color: var(--grey); }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: var(--r); padding: 16px 18px; }
+  .card.now { border-color: rgba(127,178,143,.45); }
+  .card .ttl { display: flex; align-items: baseline; gap: 12px; }
+  .card .ttl h3 { margin: 0; font: 300 22px/1.15 var(--serif); }
+  .card .ttl .st { margin-left: auto; }
+  /* level 4: the task trail, one straight line, one face per hand-over */
+  .trail { display: grid; grid-template-columns: repeat(7, 1fr); margin: 18px 0 16px; position: relative; }
+  .trail::before { content: ""; position: absolute; left: 7%; right: 7%; top: 15px; height: 1px; background: var(--line2); }
+  .trail .done-line { position: absolute; left: 7%; width: 57%; top: 15px; height: 1.5px; background: var(--ok); }
+  .step { display: flex; flex-direction: column; align-items: center; gap: 6px; position: relative; text-align: center; }
+  .step .dot { width: 30px; height: 30px; border-radius: 50%; background: var(--card); display: flex; align-items: center; justify-content: center; box-shadow: 0 0 0 2px var(--card), 0 0 0 3.5px var(--line2); }
+  .step .dot img { width: 30px; height: 30px; border-radius: 50%; object-fit: cover; }
+  .step .dot.you { background: var(--red); color: #fff; font-size: 9px; font-weight: 700; letter-spacing: .04em; }
+  .step.ok .dot { box-shadow: 0 0 0 2px var(--card), 0 0 0 3.5px var(--ok); }
+  .step.cur .dot { box-shadow: 0 0 0 2px var(--card), 0 0 0 3.5px var(--ok), 0 0 0 9px rgba(127,178,143,.18); }
+  .step.next { opacity: .45; }
+  .step .l { font-size: 11.5px; font-weight: 600; } .step .s { font-size: 10.5px; color: var(--faint); line-height: 1.3; }
+  .step.cur .s { color: var(--ok); }
+  .split { display: grid; grid-template-columns: 1fr 250px; gap: 18px; }
+  .log { display: flex; flex-direction: column; gap: 9px; font-size: 12px; color: var(--grey); }
+  .log div { display: grid; grid-template-columns: 44px 1fr; gap: 8px; } .log time { color: var(--faint); font-variant-numeric: tabular-nums; }
+  .log b { color: var(--ink); font-weight: 500; }
+  .look { border-radius: 12px; overflow: hidden; border: 1px solid var(--line); background: #8b8885; }
+  .look img { display: block; width: 100%; height: 150px; object-fit: cover; object-position: top left; }
+  .look .cap { background: var(--card2); color: var(--grey); font-size: 10.5px; padding: 6px 10px; }
+  .acts { display: flex; gap: 8px; margin-top: 14px; }
+  .row { display: grid; grid-template-columns: 1fr auto; gap: 14px; align-items: center; }
+  .row .t { font-size: 13px; font-weight: 500; } .row .m { color: var(--faint); font-size: 11px; margin-top: 3px; }
+  .sect { display: flex; align-items: baseline; gap: 10px; margin-bottom: 10px; }
+  .sect h4 { margin: 0; font-size: 10px; letter-spacing: .14em; text-transform: uppercase; color: var(--grey); font-weight: 600; }
+  .sect span { color: var(--faint); font-size: 11px; }
+  .recent div { display: grid; grid-template-columns: 1fr auto; gap: 12px; padding: 8px 0; border-top: 1px solid var(--line); font-size: 12px; }
+  .recent div span:last-child { color: var(--faint); font-size: 11px; }
+</style></head>
+<body>
+<iframe class="under" src="02-department.html" scrolling="no" tabindex="-1" aria-hidden="true"></iframe>
+<div class="dim"></div>
+
+<aside class="drawer">
+  <div class="crumb">
+    <a><img class="face s" src="../../assets/people/chief.png" alt="">Office · Nora</a><span class="sep">›</span>
+    <a><img class="face s" src="../../assets/people/mlead.png" alt="">Marketing · Mara</a><span class="sep">›</span>
+    <a class="here"><img class="face s" src="../../assets/people/gfx.png" alt="">Greta</a>
+    <span class="x">✕</span>
+  </div>
+
+  <div class="head">
+    <span class="fwrap"><img class="face xl" src="../../assets/people/gfx.png" alt=""><b class="work" style="width:14px;height:14px;border-width:3px;border-color:var(--bg)"></b></span>
+    <div><div class="kick">Level 3 · the desk</div><div class="n">Greta</div><div class="r">Graphics Designer · reports to Mara</div>
+      <div class="chips"><span>Sonnet 5.5 · high</span><span>Can look at her own work</span><span>2 skills</span><span>4 standing rules</span></div></div>
+    <button class="btn">Brief and skills</button>
+  </div>
+
+  <section class="card now">
+    <div class="ttl"><span class="kick">Level 4 · the task</span></div>
+    <div class="ttl" style="margin-top:6px"><h3>Kenya Issue 04, five-slide carousel</h3><span class="st work"><i></i>Working · 6 min</span></div>
+    <div class="trail"><i class="done-line"></i>
+      <div class="step ok"><div class="dot you">YOU</div><div class="l">You</div><div class="s">Asked 14:02</div></div>
+      <div class="step ok"><div class="dot"><img src="../../assets/people/pe.png" alt=""></div><div class="l">Theo</div><div class="s">Brief, 2 yes</div></div>
+      <div class="step ok"><div class="dot"><img src="../../assets/people/chief.png" alt=""></div><div class="l">Nora</div><div class="s">Sent to Marketing</div></div>
+      <div class="step ok"><div class="dot"><img src="../../assets/people/mlead.png" alt=""></div><div class="l">Mara</div><div class="s">Gave it to Greta</div></div>
+      <div class="step cur"><div class="dot"><img src="../../assets/people/gfx.png" alt=""></div><div class="l">Greta</div><div class="s">Build 2 of 3</div></div>
+      <div class="step next"><div class="dot"><img src="../../assets/people/mlead.png" alt=""></div><div class="l">Mara</div><div class="s">Lead review</div></div>
+      <div class="step next"><div class="dot you">YOU</div><div class="l">You</div><div class="s">Approve</div></div>
+    </div>
+    <div class="split">
+      <div class="log">
+        <div><time>14:11</time><span><b>Looking at contact sheet 2.</b> Slide 3 moved to the green ground.</span></div>
+        <div><time>14:09</time><span>Dropped the extra series line on slide 1.</span></div>
+        <div><time>14:06</time><span>Build 1 rendered, five slides, 4:5.</span></div>
+        <div><time>14:04</time><span>Read the Kenya issue, brand-visual-system and design-craft.</span></div>
+        <div><time>14:04</time><span>Mara: “Five slides, one number each, flag colours.”</span></div>
+      </div>
+      <div class="look"><img src="../../output/library/kenya-carousel-blind-test/sheet-A.png" alt="Latest contact sheet"><div class="cap">Latest look · contact sheet 2</div></div>
+    </div>
+    <div class="acts"><button class="btn">Full trail</button><button class="btn">Stop task</button></div>
+  </section>
+
+  <section class="card">
+    <div class="sect"><h4>Waiting for you from Greta</h4><span>1</span></div>
+    <div class="row"><div><div class="t">Night Falls on Sentinel, 8-slide carousel</div><div class="m">Signed off by Mara · 50 min · opens the review pop-up</div></div><button class="btn red">Review</button></div>
+  </section>
+
+  <section class="recent">
+    <div class="sect"><h4>Done lately</h4><span>28 in total</span></div>
+    <div><span>Edition 33 five checkpoints carousel</span><span>Approved · 2 d ago</span></div>
+    <div><span>Sweden Issue 02 cover card</span><span>Approved · 4 d ago</span></div>
+    <div><span>Night Falls words-only proof</span><span>Revised once · 5 d ago</span></div>
+  </section>
+</aside>
+</body></html>

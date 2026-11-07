@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Level 2 · Marketing</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600&family=Newsreader:opsz,wght@6..72,300;6..72,400&display=swap">
+<link rel="stylesheet" href="mock.css">
+<style>
+  .canvas { display: flex; flex-direction: column; gap: 14px; min-height: 0; }
+  .leadband { background: var(--card); border: 1px solid rgba(236,48,19,.45); border-radius: var(--r); padding: 16px 20px; display: grid; grid-template-columns: auto 1fr auto; gap: 18px; align-items: center; }
+  .leadband .n { font: 300 28px/1 var(--serif); } .leadband .r { color: var(--grey); font-size: 12px; margin-top: 4px; }
+  .leadband .doing { color: var(--grey); font-size: 12px; margin-top: 8px; display: flex; gap: 10px; align-items: center; }
+  .leadband .doing b { color: var(--ink); font-weight: 500; }
+  .lstats { display: flex; gap: 10px; }
+  .lstats div { background: var(--soft); border-radius: 12px; padding: 9px 14px; min-width: 92px; font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: var(--faint); }
+  .lstats b { display: block; font: 300 26px/1 var(--serif); color: var(--ink); letter-spacing: 0; margin-bottom: 3px; }
+  .lstats .you b { color: #ff8a73; }
+  .desks { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+  .desk { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 13px 14px; display: flex; flex-direction: column; gap: 9px; cursor: pointer; min-height: 118px; }
+  .desk:hover { border-color: var(--line2); }
+  .desk.sel { border-color: var(--ink); }
+  .desk .hd { display: flex; gap: 10px; align-items: center; }
+  .desk .hd .n { font-weight: 600; font-size: 13px; } .desk .hd .r { color: var(--faint); font-size: 11px; }
+  .desk .hd .badge { margin-left: auto; min-width: 20px; height: 20px; font-size: 10.5px; }
+  .desk .now { font-size: 11.5px; color: var(--grey); line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .desk .now b { color: var(--ink); font-weight: 500; }
+  .desk .ft { margin-top: auto; display: flex; align-items: center; justify-content: space-between; color: var(--faint); font-size: 10.5px; }
+  .bar { height: 3px; border-radius: 2px; background: var(--soft); overflow: hidden; } .bar i { display: block; height: 100%; background: var(--ok); }
+  .sh { display: flex; align-items: baseline; gap: 12px; margin-top: 2px; }
+  .sh h2 { margin: 0; font: 300 22px/1 var(--serif); } .sh span { color: var(--faint); font-size: 11.5px; }
+  .stages { flex: 1; display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; min-height: 0; }
+  .stage { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 12px; display: flex; flex-direction: column; gap: 8px; position: relative; }
+  .stage + .stage::before { content: ""; position: absolute; left: -12px; top: 22px; width: 12px; height: 1px; background: var(--line2); }
+  .stage .h { display: flex; align-items: center; gap: 8px; font-size: 10px; letter-spacing: .12em; text-transform: uppercase; color: var(--grey); }
+  .stage .h b { margin-left: auto; font: 300 20px/1 var(--serif); color: var(--ink); letter-spacing: 0; }
+  .stage.you { border-color: rgba(236,48,19,.5); } .stage.you .h b { color: #ff8a73; }
+  .chip { background: var(--bg); border: 1px solid var(--line); border-radius: 10px; padding: 8px 10px; display: grid; grid-template-columns: 26px 1fr; gap: 8px; align-items: center; font-size: 11.5px; line-height: 1.3; }
+  .chip .m { color: var(--faint); font-size: 10.5px; margin-top: 2px; }
+  .empty { color: var(--faint); font-size: 11.5px; }
+</style></head>
+<body><div class="wrap">
+  <div class="top"><div class="logo">WRW</div><h1>Wes's Office</h1><span class="sub">AIOS · the office</span>
+    <div class="right"><span class="livepill"><i></i>Live · updated 4 s ago</span></div></div>
+  <div class="body">
+    <nav class="side"><div class="h">Today</div><a>Overview</a><a>Matrix</a><div class="h">The office</div><a class="on">Office</a><a>Brain</a><a>Skills</a><a>Tokens</a><a>Social</a></nav>
+
+    <main class="canvas">
+      <div class="crumb">
+        <a href="01-office.html"><img class="face s" src="../../assets/people/chief.png" alt="">Office · Nora</a><span class="sep">›</span>
+        <a class="here"><img class="face s" src="../../assets/people/mlead.png" alt="">Marketing · Mara</a>
+        <span class="esc">Esc or Back goes up one level</span>
+      </div>
+
+      <section class="leadband">
+        <span class="fwrap"><img class="face xl" src="../../assets/people/mlead.png" alt=""><b class="rev" style="width:14px;height:14px;border-width:3px"></b></span>
+        <div><div class="kick">Head of Marketing</div><div class="n">Mara</div>
+          <div class="doing"><span class="st rev"><i></i>Reviewing</span><span><b>Vic</b>'s cut of Art of Operations Reel 16 · read 2 of 2</span></div></div>
+        <div class="lstats"><div><b>8</b>Desks</div><div><b>2</b>Working</div><div><b>1</b>Lead review</div><div class="you"><b>3</b>For you</div></div>
+      </section>
+
+      <section class="desks">
+        <article class="desk"><div class="hd"><span class="fwrap"><img class="face" src="../../assets/people/riley.png" alt=""><b></b></span><div><div class="n">Riley</div><div class="r">Research</div></div></div><div class="now">Last: Pizza Hut Sweden operator structure · 5 h ago</div><div class="ft"><span class="st"><i></i>Idle</span><span>10 done</span></div></article>
+        <article class="desk"><div class="hd"><span class="fwrap"><img class="face" src="../../assets/people/newt.png" alt=""><b class="you"></b></span><div><div class="n">Newt</div><div class="r">Newsletter</div></div><span class="badge">1</span></div><div class="now"><b>Waiting for you:</b> Scaling Without Borders, Edition 36</div><div class="ft"><span class="st you"><i></i>Needs you</span><span>4 done</span></div></article>
+        <article class="desk sel"><div class="hd"><span class="fwrap"><img class="face" src="../../assets/people/gfx.png" alt=""><b class="work"></b></span><div><div class="n">Greta</div><div class="r">Graphics Designer</div></div><span class="badge">1</span></div><div class="now"><b>Now:</b> Kenya Issue 04 carousel · build 2 of 3, checking the contact sheet</div><div class="bar"><i style="width:62%"></i></div><div class="ft"><span class="st work"><i></i>Working · 6 min</span><span>28 done</span></div></article>
+        <article class="desk"><div class="hd"><span class="fwrap"><img class="face" src="../../assets/people/ada.png" alt=""><b class="you"></b></span><div><div class="n">Ada</div><div class="r">LinkedIn</div></div><span class="badge">1</span></div><div class="now"><b>Waiting for you:</b> why opening checklists matter · 2 decisions</div><div class="ft"><span class="st you"><i></i>Needs you</span><span>24 done</span></div></article>
+        <article class="desk"><div class="hd"><span class="fwrap"><img class="face" src="../../assets/people/iggy.png" alt=""><b></b></span><div><div class="n">Iggy</div><div class="r">Instagram</div></div></div><div class="now">Next: a piece of next week's Instagram plan, once Mara splits it</div><div class="ft"><span class="st"><i></i>Idle</span><span>13 done</span></div></article>
+        <article class="desk"><div class="hd"><span class="fwrap"><img class="face" src="../../assets/people/vid.png" alt=""><b class="rev"></b></span><div><div class="n">Vic</div><div class="r">Video Editor</div></div></div><div class="now"><b>With Mara:</b> Art of Operations Reel 16 cut · bounce 1 of 2</div><div class="ft"><span class="st rev"><i></i>Lead review</span><span>8 done</span></div></article>
+        <article class="desk"><div class="hd"><span class="fwrap"><img class="face" src="../../assets/people/fer.png" alt=""><b class="work"></b></span><div><div class="n">Rupert</div><div class="r">Report Editor</div></div></div><div class="now"><b>Now:</b> Franchise Entry Report: Kenya, page 5 of 7</div><div class="bar"><i style="width:70%"></i></div><div class="ft"><span class="st work"><i></i>Working · 12 min</span><span>1 done</span></div></article>
+        <article class="desk"><div class="hd"><span class="fwrap"><img class="face" src="../../assets/people/jeremy.png" alt=""><b></b></span><div><div class="n">Yerémi</div><div class="r">YouTube</div></div></div><div class="now">Last: Deep Work build log · 1 h ago</div><div class="ft"><span class="st"><i></i>Idle</span><span>2 done</span></div></article>
+      </section>
+
+      <div class="sh"><h2>Work in Marketing</h2><span>Every open task, in the stage it is in now · click one to open its trail</span></div>
+      <section class="stages">
+        <div class="stage"><div class="h">01 · Nora <b>1</b></div>
+          <div class="chip"><img class="face s" src="../../assets/people/chief.png" alt=""><div>Weekly content plan<div class="m">Booked Mon 08:00</div></div></div></div>
+        <div class="stage"><div class="h">02 · Mara plans <b>1</b></div>
+          <div class="chip"><img class="face s" src="../../assets/people/mlead.png" alt=""><div>Plan next week's Instagram<div class="m">Splitting into 3 pieces · 1 min</div></div></div></div>
+        <div class="stage"><div class="h">03 · Desks <b>2</b></div>
+          <div class="chip"><img class="face s" src="../../assets/people/gfx.png" alt=""><div>Kenya Issue 04 carousel<div class="m">Greta · build 2 of 3</div></div></div>
+          <div class="chip"><img class="face s" src="../../assets/people/fer.png" alt=""><div>Franchise Entry Report: Kenya<div class="m">Rupert · page 5 of 7</div></div></div></div>
+        <div class="stage"><div class="h">04 · Mara reviews <b>1</b></div>
+          <div class="chip"><img class="face s" src="../../assets/people/vid.png" alt=""><div>Art of Operations Reel 16<div class="m">Vic · bounce 1 of 2</div></div></div></div>
+        <div class="stage you"><div class="h">05 · You <b>3</b></div>
+          <div class="chip"><img class="face s" src="../../assets/people/newt.png" alt=""><div>Edition 36 draft<div class="m">Newt · 49 min</div></div></div>
+          <div class="chip"><img class="face s" src="../../assets/people/gfx.png" alt=""><div>Night Falls carousel<div class="m">Greta · 50 min</div></div></div>
+          <div class="chip"><img class="face s" src="../../assets/people/ada.png" alt=""><div>Opening checklists post<div class="m">Ada · 3 h</div></div></div></div>
+      </section>
+    </main>
+
+    <aside class="rail">
+      <h3>For you <span class="badge">3</span></h3>
+      <div class="scope">Marketing only · 5 across the office</div>
+      <div class="ritem"><img class="face s" src="../../assets/people/newt.png" alt=""><div><div class="t">Scaling Without Borders, Edition 36 draft</div><div class="m">Newt · signed off by Mara · 49 min</div><div class="a"><button class="btn red">Review</button></div></div></div>
+      <div class="ritem"><img class="face s" src="../../assets/people/gfx.png" alt=""><div><div class="t">Night Falls on Sentinel, 8-slide carousel</div><div class="m">Greta · signed off by Mara · 50 min</div><div class="a"><button class="btn red">Review</button></div></div></div>
+      <div class="ritem"><img class="face s" src="../../assets/people/ada.png" alt=""><div><div class="t">LinkedIn post: why opening checklists matter</div><div class="m">Ada · 2 decisions · 3 h</div><div class="a"><button class="btn red">Review</button></div></div></div>
+      <div class="more">Ask Mara's team something: the box at the top of the office goes through Theo and Nora as usual.</div>
+    </aside>
+  </div>
+</div></body></html>

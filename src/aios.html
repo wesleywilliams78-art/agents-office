@@ -502,10 +502,157 @@
   .pe .peu { background: var(--soft); border-radius: 10px; padding: 8px 12px; margin: 10px 0 0; white-space: pre-wrap; color: var(--grey); }
   .pe .pet { border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; margin-top: 10px; } .pe .pet .tk { font-size: 10.5px; letter-spacing: .14em; text-transform: uppercase; color: var(--grey); } .pe .pet .tt { font-weight: 600; margin: 2px 0 6px; }
   .pe .pea { margin-top: 10px; line-height: 1.5; white-space: pre-wrap; } .pe .pea.err { color: var(--bad); }
-  /* Hierarchy needs-you blue: the agreed design colour, kept off the theme palette (which has no blue in the red and bone look) */
-  :root { --hx-need: #4C8DF0; --hx-rev: #D9951A; } /* blue needs you · amber is in lead review or in rework after a lead bounce */
+  /* Hierarchy needs-you colour: red since the office map (7 Nov 2026), so red means you on every level; it was the agreed blue before that */
+  :root { --hx-need: var(--red, #EC3013); --hx-rev: #D9951A; } /* red needs you (was blue until the office map, 7 Nov: red always means you) · amber is in lead review or in rework after a lead bounce */
+  /* Office map (7 Nov 2026, level 1 of docs/aios-office-overview-design.md): Theo on top with the ask box, Nora in the centre, every department a tile around her.
+     Any number of departments: half each side, an odd one centred under Nora. Red means you; status is always a dot plus a word. */
+  .hx-off { display: none !important; }
+  .hxo-theo { display: grid; grid-template-columns: 230px 1fr; gap: 18px; align-items: start; padding: 16px 20px; margin: 0 0 18px; border: 1px solid var(--line); border-radius: var(--r, 22px); background: var(--card, var(--panel)); }
+  .hxo-theo .pe { margin: 0; padding: 0; border: 0; background: transparent; box-shadow: none; }
+  .hxo-theo .pe .peh { flex-wrap: nowrap; align-items: center; margin-bottom: 8px; } .hxo-theo .pe .peh .k { display: none; } .hxo-theo .pe .peh .z { font-size: 11.5px; flex: 1; min-width: 0; }
+  .hxo-theo .pe textarea { min-height: 44px; }
+  .hxo-tw { display: flex; align-items: center; gap: 12px; padding-top: 4px; }
+  .hxo-tw .hxo-k { margin-bottom: 2px; } .hxo-tn { font-weight: 600; font-size: 14px; } .hxo-tr { color: var(--faint); font-size: 11.5px; }
+  .hxo-k { color: var(--faint); font-size: 9.5px; letter-spacing: .16em; text-transform: uppercase; }
+  .hxo-fw { position: relative; flex: none; display: inline-block; line-height: 0; }
+  .hxo-fw img, .hxo-ini { width: 24px; height: 24px; border-radius: 50%; object-fit: cover; background: var(--soft); }
+  .hxo-fw.l img { width: 50px; height: 50px; } .hxo-fw.xl img { width: 70px; height: 70px; }
+  .hxo-fw > b { position: absolute; right: -1px; bottom: -1px; width: 9px; height: 9px; border-radius: 50%; border: 2px solid var(--card, var(--panel)); background: var(--faint); }
+  .hxo-fw.l > b, .hxo-fw.xl > b { width: 13px; height: 13px; border-width: 3px; }
+  .hxo-ini { display: inline-flex; align-items: center; justify-content: center; color: var(--faint); font-size: 9px; font-weight: 600; letter-spacing: .04em; line-height: 1; }
+  .hxo-fw > b.work, .hxo-st.work i { background: var(--ok); } .hxo-fw > b.you, .hxo-st.you i { background: var(--red, #EC3013); } .hxo-fw > b.rev, .hxo-st.rev i { background: var(--hx-rev); }
+  .hxo-fw > b.fail, .hxo-st.fail i { background: transparent; border-color: var(--bad); }
+  .hxo-st { display: inline-flex; align-items: center; gap: 6px; font-size: 10px; letter-spacing: .08em; text-transform: uppercase; color: var(--grey); white-space: nowrap; }
+  .hxo-st i { width: 7px; height: 7px; border-radius: 50%; background: var(--faint); flex: none; }
+  .hxo-st.work { color: var(--ok); } .hxo-st.you { color: var(--red, #EC3013); } .hxo-st.rev { color: var(--hx-rev); } .hxo-st.fail { color: var(--bad); } .hxo-st.fail i { border: 1.5px solid var(--bad); background: transparent; }
+  .hxo-badge { display: inline-flex; align-items: center; justify-content: center; min-width: 22px; height: 22px; padding: 0 7px; border-radius: 99px; background: var(--red, #EC3013); color: #fff; font-size: 11px; font-weight: 600; }
+  .hxo { display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 22px; align-items: start; }
+  .hxo-map { position: relative; display: grid; grid-template-columns: minmax(0, 1fr) minmax(280px, 1.1fr) minmax(0, 1fr); column-gap: 34px; row-gap: 26px; }
+  .hxo-map > svg { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; overflow: visible; }
+  .hxo-col { display: flex; flex-direction: column; justify-content: center; gap: 14px; position: relative; min-width: 0; }
+  .hxo-mid { display: flex; align-items: center; position: relative; padding-top: 18px; }
+  .hxo-bot { grid-column: 2; position: relative; }
+  .hxo-d { background: var(--card, var(--panel)); border: 1px solid var(--line); border-radius: 18px; padding: 14px 16px; display: flex; flex-direction: column; gap: 10px; min-width: 0; text-align: left; transition: border-color .2s; }
+  .hxo-d.on { cursor: pointer; } .hxo-d.on:hover, .hxo-d.on:focus-visible { border-color: var(--grey); outline: none; }
+  .hxo-d.off { background: transparent; border-style: dashed; }
+  .hxo-dh { display: flex; align-items: center; gap: 10px; } .hxo-dh h4 { margin: 0; font: 300 21px/1.05 var(--serif); }
+  .hxo-d.off .hxo-dh h4 { color: var(--grey); } .hxo-dh .hxo-badge { margin-left: auto; }
+  .hxo-tag { font-size: 9.5px; letter-spacing: .12em; text-transform: uppercase; color: var(--faint); }
+  .hxo-lead { display: flex; align-items: center; gap: 9px; font-size: 12px; min-width: 0; }
+  .hxo-lead > span:not(.hxo-st):not(.hxo-fw):not(.hxo-ini) { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; } .hxo-lead em { font-style: normal; color: var(--faint); }
+  .hxo-lead .hxo-st { margin-left: auto; }
+  .hxo-faces { display: flex; gap: 5px; align-items: center; flex-wrap: wrap; } .hxo-faces .more { color: var(--faint); font-size: 11px; }
+  .hxo-now { display: flex; flex-direction: column; gap: 4px; font-size: 11.5px; color: var(--grey); min-width: 0; }
+  .hxo-now div { display: flex; gap: 7px; align-items: baseline; min-width: 0; } .hxo-now div i { width: 6px; height: 6px; border-radius: 50%; background: var(--faint); flex: none; transform: translateY(-1px); }
+  .hxo-now div.w i { background: var(--ok); } .hxo-now div.y i { background: var(--red, #EC3013); }
+  .hxo-now span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; } .hxo-now b { color: var(--ink); font-weight: 500; }
+  .hxo-ct { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: auto; }
+  .hxo-ct div { font-size: 9.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--faint); white-space: nowrap; }
+  .hxo-ct b { display: block; font: 300 22px/1.05 var(--serif); letter-spacing: 0; color: var(--ink); } .hxo-ct .you.n b { color: var(--red, #EC3013); }
+  .hxo-hub { width: 100%; background: var(--card, var(--panel)); border: 1px solid color-mix(in srgb, var(--red, #EC3013) 55%, transparent); border-radius: 22px; padding: 22px; position: relative; z-index: 1;
+    box-shadow: 0 0 0 6px color-mix(in srgb, var(--red, #EC3013) 7%, transparent), 0 24px 60px -24px rgba(0,0,0,.45); }
+  .hxo-who { display: flex; align-items: center; gap: 14px; margin: 10px 0 16px; } .hxo-hn { font: 300 30px/1 var(--serif); } .hxo-hr { color: var(--grey); font-size: 12px; margin-top: 4px; }
+  .hxo-nb { background: var(--bg); border: 1px solid var(--line); border-radius: 12px; padding: 11px 13px; } .hxo-nt { font-size: 12.5px; margin-top: 6px; line-height: 1.4; } .hxo-nt em { font-style: normal; color: var(--grey); }
+  .hxo-hs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 14px; }
+  .hxo-hs div { background: var(--soft); border-radius: 12px; padding: 10px 10px; font-size: 9px; letter-spacing: .06em; white-space: nowrap; text-transform: uppercase; color: var(--faint); }
+  .hxo-hs b { display: block; font: 300 28px/1 var(--serif); color: var(--ink); letter-spacing: 0; margin-bottom: 4px; } .hxo-hs .you.n b { color: var(--red, #EC3013); }
+  .hxo-rail { background: var(--card, var(--panel)); border: 1px solid var(--line); border-radius: 18px; padding: 18px; max-height: 820px; overflow: auto; }
+  .hxo-rail h3 { margin: 0; display: flex; align-items: center; gap: 10px; font: 300 24px/1 var(--serif); }
+  .hxo-sc { color: var(--grey); font-size: 11.5px; margin: 8px 0 12px; }
+  .hxo-ri { display: grid; grid-template-columns: 26px 1fr; gap: 10px; padding: 12px 0; border-top: 1px solid var(--line); }
+  .hxo-ri .hx-fy-i { padding: 0; border: 0; margin: 0; background: transparent; } .hxo-rd { color: var(--faint); font-size: 10px; letter-spacing: .1em; text-transform: uppercase; margin-bottom: 2px; }
+  .hxo-key { display: flex; gap: 16px; flex-wrap: wrap; align-items: center; margin-top: 20px; color: var(--faint); font-size: 11px; }
+  .hxo-key .hxo-st { text-transform: none; letter-spacing: 0; font-size: 11px; }
+  /* a department (level 2): lead band, desk cards (roster order; past 12 the idle ones fold), the five-stage trail below */
+  .hxo-fw.m img, .hxo-fw.m .hxo-ini { width: 38px; height: 38px; } .hxo-fw.xl .hxo-ini { width: 70px; height: 70px; font-size: 15px; }
+  .hxo-lb { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 18px; align-items: center; padding: 16px 20px; margin-bottom: 14px; border: 1px solid color-mix(in srgb, var(--red, #EC3013) 45%, transparent); border-radius: 18px; background: var(--card, var(--panel)); }
+  .hxo-lbd { display: flex; gap: 10px; align-items: baseline; margin-top: 8px; font-size: 12px; color: var(--grey); min-width: 0; } .hxo-lbd b { color: var(--ink); font-weight: 500; }
+  .hxo-lbs { display: flex; gap: 10px; }
+  .hxo-lbs div { background: var(--soft); border-radius: 12px; padding: 9px 14px; min-width: 84px; font-size: 9.5px; letter-spacing: .1em; text-transform: uppercase; color: var(--faint); white-space: nowrap; }
+  .hxo-lbs b { display: block; font: 300 26px/1 var(--serif); color: var(--ink); letter-spacing: 0; margin-bottom: 3px; } .hxo-lbs .you.n b { color: var(--red, #EC3013); }
+  .hxo-dg { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; align-items: start; }
+  .hxo-k2 { background: var(--card, var(--panel)); border: 1px solid var(--line); border-radius: 14px; padding: 13px 14px; display: flex; flex-direction: column; gap: 9px; cursor: pointer; min-height: 132px; min-width: 0; transition: border-color .2s; }
+  .hxo-k2:hover, .hxo-k2:focus-visible { border-color: var(--grey); outline: none; } .hxo-k2.sel { border-color: var(--ink); }
+  .hxo-k2h { display: flex; gap: 10px; align-items: center; min-width: 0; } .hxo-k2n { min-width: 0; }
+  .hxo-k2n b { display: block; font-size: 13px; font-weight: 600; } .hxo-k2n span { display: block; color: var(--faint); font-size: 11px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .hxo-k2h .hxo-badge { margin-left: auto; min-width: 20px; height: 20px; font-size: 10.5px; }
+  .hxo-k2l { font-size: 11.5px; color: var(--grey); line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; } .hxo-k2l b { color: var(--ink); font-weight: 500; }
+  .hxo-k2f { margin-top: auto; display: flex; align-items: center; justify-content: space-between; gap: 8px; color: var(--faint); font-size: 10.5px; }
+  .hxo-fold { border: 1px dashed var(--line); border-radius: 14px; background: transparent; color: var(--grey); min-height: 132px; font-size: 11px; letter-spacing: .06em; }
+  @media (max-width: 900px) { .hxo-lb { grid-template-columns: auto minmax(0, 1fr); } .hxo-lbs { grid-column: 1 / -1; flex-wrap: wrap; } }
+  /* the desk and task drawer (levels 3 and 4, 7 Nov 2026): slides in from the right over the department page, so you keep your place */
+  .hxd-w { position: fixed; inset: 0; z-index: 900; visibility: hidden; pointer-events: none; transition: visibility 0s .38s; }
+  .hxd-w.open { visibility: visible; pointer-events: auto; transition-delay: 0s; }
+  .hxd-dim { position: absolute; inset: 0; background: rgba(12,11,10,.6); opacity: 0; transition: opacity .3s; }
+  .hxd-w.open .hxd-dim { opacity: 1; }
+  .hxd { position: absolute; top: 0; right: 0; bottom: 0; width: min(780px, 100vw); background: var(--bg); color: var(--ink); border-left: 1px solid var(--line); box-shadow: -30px 0 80px rgba(0,0,0,.45); display: flex; flex-direction: column; transform: translateX(100%); transition: transform .38s cubic-bezier(.2,.8,.2,1); }
+  .hxd-w.open .hxd { transform: none; }
+  .hxd-top { display: flex; align-items: center; gap: 12px; padding: 20px 28px 12px; }
+  .hxd-top .hxo-crumb { margin: 0; flex: 1; min-width: 0; }
+  .hxd .hxd-x { margin-left: auto; width: 34px; height: 34px; padding: 0; flex: none; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 17px; line-height: 1; letter-spacing: 0; color: var(--grey); border-color: var(--line); background: transparent; }
+  .hxd-sc { flex: 1; min-height: 0; overflow: auto; padding: 8px 28px 28px; display: flex; flex-direction: column; gap: 16px; } .hxd-sc > * { margin: 0; flex: none; }
+  .hxd-head { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 18px; align-items: center; }
+  .hxd-n { font: 300 34px/1.05 var(--serif); margin-top: 4px; } .hxd-r { color: var(--grey); font-size: 12px; margin-top: 5px; }
+  .hxd-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+  .hxd-chips span { font-size: 10.5px; padding: 4px 10px; border: 1px solid var(--line); border-radius: 99px; color: var(--grey); white-space: nowrap; } .hxd-chips .miss { border-style: dashed; color: var(--faint); }
+  .hxd-more { background: var(--card, var(--panel)); border: 1px solid var(--line); border-radius: 14px; padding: 14px 16px; display: flex; flex-direction: column; gap: 12px; font-size: 12px; color: var(--grey); line-height: 1.5; }
+  .hxd-more p { margin: 0; color: var(--ink); white-space: pre-wrap; overflow-wrap: anywhere; }
+  .hxd-k { color: var(--faint); font-size: 9.5px; letter-spacing: .16em; text-transform: uppercase; margin-bottom: 4px; }
+  .hxd-card { background: var(--card, var(--panel)); border: 1px solid var(--line); border-radius: 18px; padding: 16px 18px; min-width: 0; }
+  .hxd-card.now { border-color: color-mix(in srgb, var(--ok) 45%, var(--line)); } .hxd-card.need { border-color: color-mix(in srgb, var(--red, #EC3013) 45%, var(--line)); }
+  .hxd-tt { display: flex; align-items: baseline; gap: 14px; } .hxd-tt h3 { margin: 0; font: 300 22px/1.2 var(--serif); min-width: 0; } .hxd-tt .hxo-st { margin-left: auto; flex: none; }
+  .hxd-trail { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); margin: 22px 0 18px; position: relative; }
+  .hxd-trail::before, .hxd-trail > i { content: ''; position: absolute; top: 15px; height: 1px; left: calc(100% / 14); right: calc(100% / 14); background: var(--line); }
+  .hxd-trail > i { right: auto; height: 1.5px; top: 14.75px; background: var(--ok); }
+  .hxd-s { display: flex; flex-direction: column; align-items: center; gap: 6px; text-align: center; position: relative; min-width: 0; padding: 0 3px; }
+  .hxd-dot { width: 30px; height: 30px; border-radius: 50%; flex: none; background: var(--card, var(--panel)); display: flex; align-items: center; justify-content: center; overflow: hidden; box-shadow: 0 0 0 2px var(--card, var(--panel)), 0 0 0 3.5px var(--line); color: var(--grey); font-size: 9px; font-weight: 700; letter-spacing: .04em; }
+  .hxd-dot img { width: 30px; height: 30px; object-fit: cover; display: block; }
+  .hxd-dot.you { background: var(--red, #EC3013); color: #fff; }
+  .hxd-s.ok .hxd-dot { box-shadow: 0 0 0 2px var(--card, var(--panel)), 0 0 0 3.5px var(--ok); }
+  .hxd-s.cur .hxd-dot { box-shadow: 0 0 0 2px var(--card, var(--panel)), 0 0 0 3.5px var(--ok), 0 0 0 9px color-mix(in srgb, var(--ok) 20%, transparent); }
+  .hxd-s.cur.rev .hxd-dot { box-shadow: 0 0 0 2px var(--card, var(--panel)), 0 0 0 3.5px var(--hx-rev), 0 0 0 9px color-mix(in srgb, var(--hx-rev) 20%, transparent); }
+  .hxd-s.cur.you .hxd-dot { box-shadow: 0 0 0 2px var(--card, var(--panel)), 0 0 0 3.5px var(--red, #EC3013), 0 0 0 9px color-mix(in srgb, var(--red, #EC3013) 22%, transparent); }
+  .hxd-s.next { opacity: .45; } .hxd-s.skip { opacity: .38; } .hxd-s.skip .hxd-dot { box-shadow: 0 0 0 2px var(--card, var(--panel)); outline: 1px dashed var(--faint); outline-offset: 2px; }
+  .hxd-s b { font-size: 11.5px; font-weight: 600; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; } .hxd-s em { font-style: normal; font-size: 10.5px; color: var(--faint); line-height: 1.3; }
+  .hxd-s.cur em { color: var(--ok); } .hxd-s.cur.rev em { color: var(--hx-rev); } .hxd-s.cur.you em { color: var(--red, #EC3013); }
+  .hxd-split { display: grid; grid-template-columns: minmax(0, 1fr) 250px; gap: 18px; align-items: start; } .hxd-split.one { grid-template-columns: minmax(0, 1fr); }
+  .hxd-log { display: flex; flex-direction: column; gap: 9px; font-size: 12px; color: var(--grey); min-width: 0; }
+  .hxd-log div { display: grid; grid-template-columns: 70px minmax(0, 1fr); gap: 10px; line-height: 1.4; } .hxd-log time { color: var(--faint); font-variant-numeric: tabular-nums; white-space: nowrap; } .hxd-log b { color: var(--ink); font-weight: 500; }
+  .hxd-plan { background: var(--soft); border-radius: 12px; padding: 12px 14px; font-size: 11.5px; color: var(--grey); line-height: 1.45; min-width: 0; }
+  .hxd-plan ol { margin: 4px 0 0; padding-left: 18px; display: flex; flex-direction: column; gap: 6px; overflow-wrap: anywhere; }
+  .hxd-note { margin-top: 14px; color: var(--faint); font-size: 11px; }
+  .hxd-acts { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 14px; }
+  .hxd-sh { display: flex; align-items: baseline; gap: 10px; margin-bottom: 4px; } .hxd-sh h4 { margin: 0; font-size: 10px; letter-spacing: .14em; text-transform: uppercase; color: var(--grey); font-weight: 600; }
+  .hxd-sh span { color: var(--faint); font-size: 11px; } .hxd-sh .r { margin-left: auto; } .hxd-sh .hxo-badge { color: #fff; align-self: center; min-width: 20px; height: 20px; font-size: 10.5px; }
+  .hxd-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 14px; align-items: center; padding: 11px 0 3px; }
+  .hxd-row + .hxd-row { border-top: 1px solid var(--line); padding-top: 11px; margin-top: 8px; }
+  .hxd-row .t { font-size: 13px; font-weight: 500; } .hxd-row .m { color: var(--faint); font-size: 11px; margin-top: 3px; } .hxd-e { color: var(--faint); font-size: 12px; padding: 8px 0 2px; }
+  .hxd .hxd-rv { background: var(--red, #EC3013); border-color: var(--red, #EC3013); color: #fff; font-weight: 600; } .hxd .hxd-rv:hover { background: var(--deep, #B6240E); border-color: var(--deep, #B6240E); color: #fff; }
+  .hxd .hxd-dl { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 14px; text-align: left; padding: 10px 8px; margin: 0 -8px; width: calc(100% + 16px); border: 0; border-radius: 0; background: transparent; box-shadow: none; position: relative; color: var(--ink); text-transform: none; letter-spacing: 0; font-size: 12.5px; font-weight: 500; }
+  .hxd .hxd-dl::before { content: ''; position: absolute; top: 0; left: 8px; right: 8px; height: 1px; background: var(--line); } .hxd .hxd-dl:hover { background: var(--soft); color: var(--ink); } .hxd-dl span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; } .hxd-dl em { font-style: normal; color: var(--faint); font-size: 11px; font-weight: 400; white-space: nowrap; }
+  @media (max-width: 640px) {
+    .hxd-top { padding: 14px 16px 10px; } .hxd-sc { padding: 6px 16px 24px; } .hxd-top .hxo-crumb > button[data-hxoffice], .hxd-top .hxo-crumb > button[data-hxoffice] + .sep { display: none; }
+    .hxd-head { grid-template-columns: auto minmax(0, 1fr); } .hxd-head > button { grid-column: 1 / -1; justify-self: start; }
+    .hxd-tt { flex-direction: column; gap: 8px; } .hxd-tt .hxo-st { margin-left: 0; }
+    .hxd-trail { grid-template-columns: 1fr; gap: 14px; margin: 18px 0; }
+    .hxd-trail::before { left: 15px; right: auto; top: 15px; bottom: 15px; width: 1px; height: auto; } .hxd-trail > i { display: none; }
+    .hxd-s { flex-direction: row; text-align: left; gap: 12px; padding: 0; } .hxd-s b { width: 64px; flex: none; }
+    .hxd-split { grid-template-columns: minmax(0, 1fr); } .hxd-log div { grid-template-columns: 62px minmax(0, 1fr); }
+  }
+  .hxo-map .w { fill: none; stroke: color-mix(in srgb, var(--ink) 18%, transparent); stroke-width: 1.5; stroke-dasharray: 4 5; }
+  .hxo-map .w.on { stroke: color-mix(in srgb, var(--red, #EC3013) 75%, transparent); stroke-dasharray: none; }
+  .hxo-map .w.up { stroke: color-mix(in srgb, var(--ink) 35%, transparent); stroke-dasharray: none; } .hxo-map .wd { fill: var(--ok); }
+  .hxo-crumb { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin: -6px 0 22px; }
+  .hxo-crumb button, .hxo-crumb .here { display: inline-flex; align-items: center; gap: 8px; padding: 4px 14px 4px 4px; border: 1px solid var(--line); border-radius: 99px; font-size: 11.5px; letter-spacing: 0; font-weight: 500; text-transform: none; color: var(--grey); background: transparent; }
+  .hxo-crumb .here { color: var(--ink); background: var(--soft); } .hxo-crumb img { width: 26px; height: 26px; border-radius: 50%; object-fit: cover; }
+  .hxo-crumb .sep { color: var(--faint); } .hxo-crumb .esc { margin-left: auto; color: var(--faint); font-size: 11px; }
+  @media (max-width: 1500px) { .hxo { grid-template-columns: 1fr; } .hxo-rail { max-height: none; } }
+  @media (max-width: 900px) {
+    .hxo-theo { grid-template-columns: 1fr; }
+    .hxo-map { grid-template-columns: 1fr; row-gap: 14px; } .hxo-map > svg { display: none; }
+    .hxo-rail { order: -1; } .hxo-mid { order: -1; padding-top: 0; } .hxo-bot { grid-column: 1; } .hxo-ct div { white-space: normal; }
+  }
   /* Hierarchy (4 Nov 2026): the chain as a picture, in the Overview hero's own look. Prompt engineer > Chief of Staff > department lead > desks (as many as the roster holds). */
-  .hx-hero .hs b { font-weight: 600; }
   .hx { --sc-none: var(--faint); position: relative; padding: 28px 24px 22px; margin: 0 0 22px; border: 1px solid var(--line); border-radius: var(--r, 22px); background:
       radial-gradient(circle at 1px 1px, color-mix(in srgb, var(--ink) 10%, transparent) 1px, transparent 0) 0 0 / 22px 22px, var(--card, var(--panel)); }
   .hx-node { position: relative; width: min(560px, 100%); margin: 0 auto; padding: 18px 22px 18px; border-radius: 22px; border: 1px solid var(--line); background: var(--card, var(--panel)); --sc: var(--faint); transition: border-color .25s, box-shadow .25s; }
@@ -1031,18 +1178,10 @@
     </aside>
   </section>
 
-  <div class="hero hx-hero" id="hxHero" data-cat="hierarchy">
-    <div class="eyebrow" id="hxEye"></div>
-    <h2 id="hxHead"></h2>
-    <div class="hs" id="hxSub"></div>
-    <div class="hstats" id="hxStats"></div>
-    <svg class="ridge" viewBox="0 0 1440 150" preserveAspectRatio="none" aria-hidden="true">
-      <path style="opacity:.07" d="M0 150V70C130 28 230 18 350 54S540 112 660 70 820 0 960 44s190 62 290 24 140-36 190-12V150Z"/>
-      <path style="opacity:.13" d="M0 150V108C110 80 210 74 320 100S520 138 640 112 800 70 930 96s210 40 320 6 130-22 190-8V150Z"/>
-    </svg>
-  </div>
+  <div class="hxo-theo" id="hxTheo" data-cat="hierarchy"><div class="hxo-tw"><span class="hxo-fw l"><img src="/people/pe.png" alt=""><b id="hxTheoDot"></b></span><div><div class="hxo-k">Everything enters here</div><div class="hxo-tn">Theo</div><div class="hxo-tr">Prompt Engineer</div></div></div><div id="hxTheoSlot" hidden></div></div>
   <div class="hx" id="hx" data-cat="hierarchy"></div>
   <section class="hxt" id="hxTrail" data-cat="hierarchy"></section>
+  <div class="hxd-w" id="hxDr" data-cat="hierarchy" aria-hidden="true"></div>
 
   <section id="socialSec" data-cat="social">
     <div class="sh">
@@ -1400,12 +1539,14 @@ function tiles(el, html, numSel, labelSel) {
   });
 }
 
+function placeAsk() { // the Ask box is one element (one set of ids, one conversation): in Theo's band on Hierarchy, under the Overview hero anywhere else
+  const hx = S.cat === 'hierarchy', pe = document.getElementById('pe');
+  const host = document.getElementById(hx ? 'hxTheoSlot' : 'hero');
+  if (pe && host && host.nextElementSibling !== pe) host.after(pe);
+  if (pe) pe.dataset.cat = hx ? 'hierarchy' : 'overview';
+}
 function applyCat(animate = false) {
-  { // the Ask box is one element (one set of ids, one conversation): on Hierarchy it sits above the Prompt Engineer node, anywhere else it sits under the Overview hero
-    const pe = document.getElementById('pe'), host = document.getElementById(S.cat === 'hierarchy' ? 'hxHero' : 'hero');
-    if (pe && host && host.nextElementSibling !== pe) host.after(pe);
-    if (pe) pe.dataset.cat = S.cat === 'hierarchy' ? 'hierarchy' : 'overview';
-  }
+  placeAsk();
   for (const el of document.querySelectorAll('[data-cat]')) el.classList.toggle('cat-off', isDash(S.cat) ? el.dataset.cat !== 'dash' : el.dataset.cat !== S.cat);
   for (const b of document.querySelectorAll('#side button[data-go]')) b.classList.toggle('on', b.dataset.go === S.cat);
   foldSubnav(animate); placeInd(animate);
@@ -1415,7 +1556,7 @@ async function setCat(c, push = true) {
   if (!CAT_IDS.includes(c) && !isDash(c)) c = 'overview';
   const first = !catReady, changed = c !== S.cat, seq = ++catSeq; catReady = true;
   S.cat = c; try { localStorage.setItem('aiosCat', c); } catch {}
-  if (push) history.replaceState(null, '', '#' + c);
+  if (push) history.replaceState(null, '', '#' + (c === 'hierarchy' && window.hxPath ? window.hxPath() : c)); // Hierarchy keeps the department and desk you left it on
   if (first || !changed) { applyCat(false); window.scrollTo({ top: 0 }); }
   else {
     for (const b of document.querySelectorAll('#side button[data-go]')) b.classList.toggle('on', b.dataset.go === c);
@@ -1613,8 +1754,13 @@ function renderNav() { // small counts beside a category: what is waiting on you
   set('nSkills', S.skillAudit ? S.skillAudit.summary.attention : '', true);
   set('nSocial', S.social ? S.social.filter(s => ['review', 'check', 'ready', 'needs'].includes(s.state)).length : '', true);
 }
-(() => { let c = location.hash.slice(1); if (!c) { try { c = localStorage.getItem('aiosCat'); } catch {} } setCat(c || 'overview', false); })();
-window.addEventListener('hashchange', () => setCat(location.hash.slice(1), false));
+function route(h) { // a hash is the tab, then (Hierarchy only) where you are inside it: #hierarchy/marketing/gfx is Marketing with Greta's drawer open
+  const [c, ...rest] = String(h || '').split('/');
+  if (c === 'hierarchy') { if (window.hxRoute) window.hxRoute(rest); else window.AIOS_HX_WANT = rest; } // the Hierarchy script loads later and picks up AIOS_HX_WANT
+  if (!(c === 'hierarchy' && S.cat === 'hierarchy' && catReady)) setCat(c, false); // moving inside Hierarchy (Back, a link) keeps the page where it is
+}
+(() => { let c = location.hash.slice(1); if (!c) { try { c = localStorage.getItem('aiosCat'); } catch {} } route(c || 'overview'); })();
+window.addEventListener('hashchange', () => route(location.hash.slice(1)));
 
 // skill audit: the server scores every skill from the task log, the lessons and the connector list; this only draws it
 function renderSkills() {
@@ -3243,24 +3389,8 @@ loadTrackers(); setInterval(() => { if (!document.hidden && !Object.values(S.tkB
   const PILOT = ['marketing'];
   const tc = s => String(s || '').toLowerCase().replace(/(^|[\s-])(\p{L})/gu, (m, a, b) => a + b.toUpperCase()).replace(/Linkedin/g, 'LinkedIn'); // desk names are stored in capitals; the chart shows them as Chief of Staff is written
   let sel = ''; const el = id => document.getElementById(id); // sel: the desk picked in the chart; it opens and filters the trail
-  const COL = { doing: 'var(--ok)', waiting: 'var(--hx-need)', review: 'var(--hx-rev)', rework: 'var(--hx-rev)', error: 'var(--bad)', idle: 'var(--faint)' };
-  const TXT = { doing: 'Working', waiting: 'Waiting on you', review: 'Reviewing', rework: 'In rework', error: 'Last run failed', idle: 'Idle' };
   const lrOf = t => (t && t.leadReview && t.leadReview.phase) || ''; // the lead review phase of a task, if it has one
   let chiefBusy = false, chiefAt = 0;
-  const node = (cls, sc, on, k, status, title, sub, extra = '', style = '') => `<div class="hx-node ${cls}${on ? ' on' : ''}" style="--sc:${sc};${style}"><div class="hx-k">${k}<span class="hx-st"><i class="hx-pulse"></i>${status}</span></div><div class="hx-t">${title}</div><div class="hx-s">${sub}</div>${extra}</div>`;
-  const link = (live, hot, label, sub, colour) => `<div class="hx-link${live ? ' flow' : ''}${hot ? ' hot' : ''}" style="--lc:${colour || 'var(--faint)'}"><i class="dn"></i><i class="up"></i><span><b>${label}</b>${sub}</span></div>`;
-  const face = (person, id) => `<span class="hx-lp"><img src="/people/${id}.png" alt="" loading="lazy">${person}</span>`; // the two fixed nodes above the leads: not roster seats, so name and portrait (assets/people/<id>.png) are set here
-  function desk(a) {
-    const st = seatState(a), isOpen = sel === a.id, r = readiness(a), office = S.health?.model || 'sonnet';
-    const k = (st.key === 'doing' && lrOf(st.doing) === 'rework') ? 'rework' : st.key; // the lead sent this desk's draft back
-    const last = st.doing ? (k === 'rework' ? `Reworking after the lead, round ${st.doing.leadReview.round}: ` : 'Now: ') + esc(st.doing.title) : st.waiting ? 'Waiting on you: ' + esc(st.waiting.title) : st.last ? `Last: ${esc(st.last.title)} · ${ago(st.last.doneAt)}` : 'No work yet.';
-    const model = a.model ? `${MODEL[a.model] || a.model} (own)` : `${MODEL[office] || office} (office)`;
-    return `<div class="hx-desk st-${k}${k === 'doing' || k === 'waiting' || k === 'rework' ? ' on' : ''}${isOpen ? ' sel' : ''}" data-hseat="${esc(a.id)}" style="--sc:${COL[k] || COL.idle}">
-      <div class="hx-dh">${a.portrait ? `<span class="hx-pic"><img src="${esc(a.portrait)}" alt="" loading="lazy"><i class="hx-pulse"></i></span>` : '<i class="hx-pulse"></i>'}${a.person ? `<span class="hx-nm"><b>${esc(a.person)}</b><span>${esc(tc(a.name))}</span></span>` : esc(tc(a.name))}<em>${TXT[k] || 'Idle'}</em></div>
-      <div class="hx-dr">${esc(a.role)}</div>
-      ${isOpen ? `<div class="hx-dd">${esc(a.does)}</div><div class="hx-tags"><span class="tag">${esc(model)}</span>${a.effort ? `<span class="tag">effort ${esc(a.effort)}</span>` : ''}<span class="tag ${a.brief ? 'good' : 'miss'}">${a.brief ? 'BRIEF' : 'NO BRIEF'}</span><span class="tag ${roleSkills(a).length ? 'good' : 'miss'}">${roleSkills(a).length ? 'SKILL: ' + esc(roleSkills(a).join(', ')) : 'NO ROLE SKILL'}</span>${a.lessons ? `<span class="tag">${a.lessons} lesson${a.lessons > 1 ? 's' : ''}</span>` : ''}${(a.tools || []).map(t => `<span class="tag">${esc(t)}</span>`).join('')}</div>` : ''}
-      <div class="hx-dl">${last} · ${st.done} done in total</div></div>`;
-  }
   function pollChief() { // is the Chief of Staff mid-turn? one light read, at most every 4 s, only while this tab is showing
     if (S.cat !== 'hierarchy' || Date.now() - chiefAt < 4000) return; chiefAt = Date.now();
     fetch('/api/assistant').then(r => r.json()).then(j => { const b = !!j.busy; if (b !== chiefBusy) { chiefBusy = b; renderHierarchy(); } }).catch(() => {});
@@ -3304,7 +3434,6 @@ loadTrackers(); setInterval(() => { if (!document.hidden && !Object.values(S.tkB
     return `<div class="hxt-c"><div class="hxt-t">${esc(t.title)}</div><div class="hxt-m"><span>${esc(a ? tc(a.name) : t.agent)}</span>${since ? `<span>${ago(since)}</span>` : ''}</div>${badges.length ? `<div class="hxt-b">${badges.join('')}</div>` : ''}${open}${lesson}${stage === 4 ? `<button type="button" class="btn primary" data-review="${esc(t.id)}">REVIEW</button>` : ''}</div>`;
   }
   // ---- "Hey Wesley, N for you": what waits on him, said by the node that owns it (the lead for a drawn department, the chief for the rest) ----
-  let say = ''; // the node whose list is open: a department key, or 'chief'
   const forYou = t => { // what Wesley has to do on this task, if anything: give his OK, run a Claude Code step, or hand it on
     if (t.closed) return '';
     if (t.state === 'waiting') return 'ok';
@@ -3322,49 +3451,228 @@ loadTrackers(); setInterval(() => { if (!document.hidden && !Object.values(S.tkB
       : `<div class="hx-fy-w">Next: ${esc(tc(ns.toName || ns.to))}${ns.what ? ' — ' + esc(ns.what) : ''}</div><div class="yn"><button type="button" class="primary" data-fyhand="${id}">HAND TO ${esc(String(ns.toName || ns.to).toUpperCase())}</button><button type="button" data-fyacted="${id}">NOT NEEDED</button></div>`;
     return `<div class="hx-fy-i">${head}${body}</div>`;
   }
-  const bubble = (key, items) => !items.length ? '' : `<button type="button" class="hx-say" data-hxsay="${esc(key)}" aria-expanded="${say === key}">Hey Wesley, ${items.length} for you</button>`
-    + (say === key ? `<div class="hx-fy">${items.map(fyItem).join('')}</div>` : '');
   function renderTrail(blocks) {
     const box = el('hxTrail'); if (!box) return;
     const depts = new Set(blocks.map(b => b.d)), seat = sel && agentBy(sel);
     const open = S.tasks.filter(t => depts.has(t.dept) && stageOf(t) >= 0 && (!sel || mine(t, sel)));
     const by = [0, 1, 2, 3, 4].map(i => open.filter(t => stageOf(t) === i).sort((a, b) => (a.startedAt || a.addedAt || 0) - (b.startedAt || b.addedAt || 0)));
     const today = S.tasks.filter(t => depts.has(t.dept) && t.state === 'done' && !t.closed && t.doneAt && new Date(t.doneAt).toDateString() === new Date().toDateString() && (!sel || mine(t, sel))).length;
-    box.innerHTML = `<div class="sh"><h2>Task trail</h2><span class="note">Every open ${[...depts].map(d => esc(DEPTS[d].name.toLowerCase())).join(' and ')} task, in the stage it is in now. ${open.length} open · ${today} done today.</span>${seat ? `<div class="tools"><span class="hxt-f">Showing ${esc(tc(seat.name))}</span><button type="button" data-hxclear>SHOW ALL DESKS</button></div>` : ''}</div>
+    box.innerHTML = `<div class="sh"><h2>Work in ${[...depts].map(d => esc(deptName(d))).join(' and ')}</h2><span class="note">Every open ${[...depts].map(d => esc(DEPTS[d].name.toLowerCase())).join(' and ')} task, in the stage it is in now. ${open.length} open · ${today} done today.</span>${seat ? `<div class="tools"><span class="hxt-f">Showing ${esc(tc(seat.name))}</span><button type="button" data-hxclear>SHOW ALL DESKS</button></div>` : ''}</div>
       <div class="hxt-row">${STAGES.map(([n, d], i) => `<div class="hxt-col${by[i].length ? (i === 3 ? ' rev' : ' has') : ''}${i === 4 && by[i].length ? ' need' : ''}"><div class="hxt-h"><span class="hxt-n">0${i + 1}</span><span class="hxt-name">${n}</span><b>${by[i].length}</b></div><div class="hxt-d">${d}</div><div class="hxt-l">${by[i].map(t => taskCard(t, i)).join('') || `<div class="hxt-e">Nothing here.</div>`}</div></div>`).join('')}</div>`;
   }
+  const blockOf = d => { // one department in numbers: its lead, its desks and what they are doing (the office map and the department chain both read this)
+    const seats = S.agents.filter(a => a.department === d), lead = seats.find(a => a.lead), desks = seats.filter(a => !a.lead);
+    const keys = desks.map(a => seatState(a).key), waiting = keys.filter(k => k === 'waiting').length, doing = keys.filter(k => k === 'doing').length, failed = keys.filter(k => k === 'error').length;
+    const lk = lead ? seatState(lead).key : 'idle', reviewing = S.tasks.filter(t => t.dept === d && t.state === 'doing' && lrOf(t) === 'review').length;
+    const leadKey = (waiting || lk === 'waiting') ? 'waiting' : reviewing ? 'review' : (doing || lk === 'doing') ? 'doing' : 'idle'; // amber while the lead is reading a draft
+    return { d, lead, desks, waiting, doing, failed, reviewing, leadKey, dept: DEPTS[d] || { name: d, chip: 'var(--faint)' } };
+  };
+  // ---- the office map (level 1): Nora in the centre, every department a tile around her, Theo's band (static, #hxTheo) above ----
+  let view = 'office'; window.AIOS_HX_VIEW = view; // 'office', or the department key that is open
+  const deptName = d => tc((DEPTS[d] && DEPTS[d].name) || d);
+  const officeDepts = () => [...new Set([...PILOT, ...Object.keys(DEPTS), ...S.agents.map(a => a.department)])].filter(d => d && d !== 'owner' && S.agents.some(a => a.department === d)); // pilot first, then the rest; a department the roster adds later just joins the list
+  const KC = { doing: 'work', waiting: 'you', review: 'rev', rework: 'rev', error: 'fail', idle: '' };
+  const KT = { doing: 'Working', waiting: 'Needs you', review: 'Reviewing', rework: 'In rework', error: 'Last run failed', idle: 'Idle' };
+  const RANK = { waiting: 0, doing: 1, rework: 2, error: 3, idle: 4 };
+  const keyOf = a => { const st = seatState(a); return (st.key === 'doing' && lrOf(st.doing) === 'rework') ? 'rework' : st.key; };
+  const stp = k => `<span class="hxo-st ${KC[k] || ''}"><i></i>${KT[k] || 'Idle'}</span>`;
+  const fc = (a, k, size = '') => { // a face with its status dot (k null: no dot); initials where the seat has no portrait yet
+    const pic = a.portrait ? `<img src="${esc(a.portrait)}" alt="" loading="lazy">` : `<span class="hxo-ini">${esc(tc(a.name).split(/[\s-]+/).filter(Boolean).slice(0, 2).map(w => w[0]).join('').toUpperCase())}</span>`;
+    return `<span class="hxo-fw ${size}" title="${esc(a.person ? `${a.person} · ${tc(a.name)}` : tc(a.name))}${k ? ' · ' + (KT[k] || 'Idle') : ''}">${pic}${k == null ? '' : `<b class="${KC[k] || ''}"></b>`}</span>`;
+  };
+  function tile(b, side) {
+    const on = PILOT.includes(b.d), fy = fyItems(x => x === b.d).length, MAX = 8;
+    const desks = b.desks.map(a => ({ a, k: keyOf(a) })).sort((x, y) => RANK[x.k] - RANK[y.k]);
+    let now = desks.filter(x => x.k === 'doing' || x.k === 'rework').slice(0, 2).map(x => `<div class="w"><i></i><span><b>${esc(x.a.person || tc(x.a.name))}</b> · ${esc(seatState(x.a).doing.title)}</span></div>`).join('');
+    if (!now) { const last = S.tasks.filter(t => t.dept === b.d && t.state === 'done' && t.doneAt).sort((x, y) => y.doneAt - x.doneAt)[0]; now = `<div><i></i><span>${last ? `Nothing running · last task ${esc(ago(last.doneAt))}` : 'No work yet'}</span></div>`; }
+    const ld = b.lead;
+    return `<article class="hxo-d ${on ? 'on' : 'off'}" data-side="${side}" data-busy="${b.doing ? 1 : 0}"${on ? ` data-hxdept="${esc(b.d)}" role="button" tabindex="0" aria-label="Open ${esc(deptName(b.d))}"` : ' title="Runs in the office. Joins the AIOS later."'}>
+      <div class="hxo-dh"><h4>${esc(deptName(b.d))}</h4>${on ? '' : '<span class="hxo-tag">Not in AIOS yet</span>'}${fy ? `<span class="hxo-badge" title="${fy} for you">${fy}</span>` : ''}</div>
+      <div class="hxo-lead">${ld ? `${fc(ld, b.leadKey)}<span>${ld.person ? `<b>${esc(ld.person)}</b> <em>· Lead</em>` : esc(tc(ld.name))}</span>${stp(b.leadKey)}` : '<span>No lead on the roster</span>'}</div>
+      <div class="hxo-faces">${desks.slice(0, MAX).map(x => fc(x.a, x.k)).join('')}${desks.length > MAX ? `<span class="more">+${desks.length - MAX}</span>` : ''}</div>
+      <div class="hxo-now">${now}</div>
+      <div class="hxo-ct"><div><b>${b.doing}</b>Working</div><div><b>${b.reviewing}</b>Lead review</div><div class="you${fy ? ' n' : ''}"><b>${fy}</b>For you</div></div></article>`;
+  }
+  function wires() { // straight lines only: up to Theo, out to each department by a right-angle elbow, straight down to a centred bottom tile
+    const map = document.querySelector('#hx .hxo-map'), svg = map && map.querySelector('svg'); if (!svg || getComputedStyle(svg).display === 'none') return;
+    const m = map.getBoundingClientRect(), R = e => { const b = e.getBoundingClientRect(); return { l: b.left - m.left, r: b.right - m.left, t: b.top - m.top, b: b.bottom - m.top, cx: (b.left + b.right) / 2 - m.left, cy: (b.top + b.bottom) / 2 - m.top }; };
+    const n = R(map.querySelector('.hxo-hub'));
+    let p = `<path class="w up" d="M${n.cx} 0 V${n.t}"/>`;
+    for (const t of map.querySelectorAll('.hxo-d')) {
+      const d = R(t), s = t.dataset.side; let path, dot;
+      if (s === 'B') { path = `M${n.cx} ${n.b} V${d.t}`; dot = [n.cx, (n.b + d.t) / 2]; }
+      else { const x0 = s === 'L' ? n.l : n.r, x1 = s === 'L' ? d.r : d.l, xm = (x0 + x1) / 2; path = `M${x0} ${n.cy} H${xm} V${d.cy} H${x1}`; dot = [xm, (n.cy + d.cy) / 2]; }
+      p += `<path class="w${t.classList.contains('on') ? ' on' : ''}" d="${path}"/>` + (t.dataset.busy === '1' ? `<circle class="wd" cx="${dot[0]}" cy="${dot[1]}" r="3.5"/>` : '');
+    }
+    svg.innerHTML = p;
+  }
+  addEventListener('resize', () => { if (view === 'office' && S.cat === 'hierarchy') wires(); });
+  const who = a => a ? (a.person || tc(a.name)) : '';
+  const rail = (items, scope) => `<aside class="hxo-rail"><h3>For you${items.length ? ` <span class="hxo-badge">${items.length}</span>` : ''}</h3><div class="hxo-sc">${scope}</div>
+      ${items.map(t => { const a = agentBy(t.agent); return `<div class="hxo-ri">${a ? fc(a, null) : '<span class="hxo-ini">·</span>'}<div><div class="hxo-rd">${esc(deptName(t.dept))}</div>${fyItem(t)}</div></div>`; }).join('') || '<div class="hxo-sc">Nothing waiting on you here.</div>'}</aside>`;
+  // ---- a department (level 2): the lead's band, a card per desk, the five-stage trail below (#hxTrail) ----
+  const FOLD = 12; let showIdle = false;
+  function deskCard(a, k, fyD) {
+    const st = seatState(a), open = sel === a.id, n = fyD.filter(t => t.agent === a.id).length;
+    const line = st.doing ? (k === 'rework' ? `<b>Reworking, round ${st.doing.leadReview.round}:</b> ` : '<b>Now:</b> ') + esc(st.doing.title) : st.waiting ? `<b>Waiting for you:</b> ${esc(st.waiting.title)}` : st.last ? `Last: ${esc(st.last.title)} · ${esc(ago(st.last.doneAt))}` : 'No work yet.';
+    return `<article class="hxo-k2${open ? ' sel' : ''}" data-hseat="${esc(a.id)}" role="button" tabindex="0" aria-haspopup="dialog">
+      <div class="hxo-k2h">${fc(a, k, 'm')}<div class="hxo-k2n"><b>${esc(who(a))}</b><span>${esc(a.person ? tc(a.name) : a.role)}</span></div>${n ? `<span class="hxo-badge" title="${n} for you">${n}</span>` : ''}</div>
+      <div class="hxo-k2l">${line}</div><div class="hxo-k2f">${stp(k)}<span>${st.done} done</span></div></article>`;
+  }
+  document.addEventListener('click', e => { if (e.target.closest('[data-hxidle]')) { showIdle = true; renderHierarchy(); } });
+  function renderOffice() {
+    const bl = officeDepts().map(blockOf), half = Math.floor(bl.length / 2), L = [], Rt = [];
+    bl.slice(0, half * 2).forEach((b, i) => (i % 2 ? Rt : L).push(b)); // half each side, alternating so the top row holds the first two
+    const B = bl.length % 2 ? bl[bl.length - 1] : null; // an odd one out sits centred under Nora
+    const fyAll = fyItems(() => true), today = new Date().toDateString();
+    const inFlight = S.tasks.filter(t => t.state === 'doing').length, doneToday = S.tasks.filter(t => t.state === 'done' && !t.closed && t.doneAt && new Date(t.doneAt).toDateString() === today).length;
+    const routed = S.tasks.filter(t => t.by === 'chief' && t.addedAt).sort((a, b) => b.addedAt - a.addedAt)[0];
+    const rl = routed ? (() => { const lead = S.agents.find(a => a.department === routed.dept && a.lead); return `${esc(routed.title)} <em>to ${esc(deptName(routed.dept))}${lead && lead.person ? ', ' + esc(lead.person) : ''} · ${esc(ago(routed.addedAt))}</em>`; })() : 'Every request you approve comes to Nora first.';
+    const hub = `<article class="hxo-hub"><div class="hxo-k">The centre of the office</div>
+      <div class="hxo-who"><span class="hxo-fw xl"><img src="/people/chief.png" alt=""><b class="${chiefBusy ? 'work' : ''}"></b></span><div><div class="hxo-hn">Nora</div><div class="hxo-hr">Chief of Staff</div></div></div>
+      <div class="hxo-nb"><span class="hxo-st ${chiefBusy ? 'work' : ''}"><i></i>${chiefBusy ? 'Working on your message' : 'Last sent'}</span><div class="hxo-nt">${rl}</div></div>
+      <div class="hxo-hs"><div><b>${inFlight}</b>In flight</div><div class="you${fyAll.length ? ' n' : ''}"><b>${fyAll.length}</b>For you</div><div><b>${doneToday}</b>Done today</div></div></article>`;
+    const fyRail = rail(fyAll, 'Whole office · oldest first · nothing goes out without you');
+    el('hx').innerHTML = `<div class="hxo"><div><div class="hxo-map"><svg aria-hidden="true"></svg>
+        <div class="hxo-col">${L.map(b => tile(b, 'L')).join('')}</div><div class="hxo-mid">${hub}</div><div class="hxo-col">${Rt.map(b => tile(b, 'R')).join('')}</div>
+        ${B ? `<div class="hxo-bot">${tile(B, 'B')}</div>` : ''}</div>
+      <div class="hxo-key">${['doing', 'waiting', 'review', 'error', 'idle'].map(stp).join('')}<span>Solid line: in the AIOS · dashed: still runs in the office · click a solid one to go in</span></div></div>${fyRail}</div>`;
+    requestAnimationFrame(wires); document.fonts?.ready.then(wires);
+  }
+  // ---- where you are: #hierarchy, #hierarchy/<dept>, #hierarchy/<dept>/<desk>. Each step in is one browser history entry, so Back goes out one level ----
+  const okView = v => PILOT.includes(v) && S.agents.some(a => a.department === v) ? v : 'office';
+  const hxPath = (v = view, s = sel) => 'hierarchy' + (v !== 'office' ? '/' + v + (s ? '/' + s : '') : '');
+  window.hxPath = () => hxPath();
+  function apply(v, s) { // show a level: the office, a department, or a department with a desk's drawer open
+    const was = sel, moved = v !== view;
+    view = v; window.AIOS_HX_VIEW = view; sel = v === 'office' ? '' : s || ''; if (moved) showIdle = false; if (!sel) drMore = false;
+    if (S.agents.length) renderHierarchy();
+    if (moved) { const top = el('hxTheo'); if (top && top.getBoundingClientRect().top < 0) top.scrollIntoView({ block: 'start' }); }
+    else if (was && !sel) document.querySelector(`#hx [data-hseat="${CSS.escape(was)}"]`)?.focus({ preventScroll: true }); // a closed drawer hands focus back to its desk card
+  }
+  function nav(v, s = '') { // a click or Esc: going out to the level you came in from is Back, so history never piles up
+    v = okView(v); const to = hxPath(v, s), cur = location.hash.slice(1);
+    if (to === cur) return apply(v, s);
+    if (history.state && history.state.hxFrom === to) { history.back(); return; } // the hashchange that follows calls hxRoute
+    history.pushState({ hxFrom: cur }, '', '#' + to); apply(v, s);
+  }
+  window.hxRoute = parts => { // from the hash (a link, Back, Forward, a reload); before the roster loads the department is taken on trust and checked on the first render
+    const v = parts[0] || 'office';
+    apply(S.agents.length ? okView(v) : v, parts[1] || '');
+  };
+  const go = v => nav(v); // into a department, or back out to the office
+  document.addEventListener('click', e => { const t = e.target.closest('[data-hxdept]'); if (t) { go(t.dataset.hxdept); return; } if (e.target.closest('[data-hxoffice]')) go('office'); });
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Enter' || e.key === ' ') { const t = e.target.closest && e.target.closest('[data-hxdept],[data-hseat]'); if (t && !/^(INPUT|TEXTAREA|SELECT|BUTTON)$/.test(e.target.tagName)) { e.preventDefault(); t.click(); } return; }
+    if (e.key !== 'Escape' || S.cat !== 'hierarchy' || view === 'office' || e.defaultPrevented) return;
+    if (document.getElementById('rv')?.classList.contains('on') || /^(INPUT|TEXTAREA|SELECT)$/.test(document.activeElement?.tagName || '')) return; // the review pop-up and typing keep their own Esc
+    if (sel) { closeDesk(); return; } // an open desk's drawer closes first, then the department
+    go('office');
+  });
+  // ---- a desk (level 3) and the task it is on (level 4): a drawer from the right over the department page (#hxDr) ----
+  // Tasks do not record live steps, so the trail is the stages (who held it, from task.by, team, leadReview, state) and the log is the times they keep.
+  let drFor = '', drMore = false, drHtml = '';
+  const hm = ts => { const d = new Date(ts); return d.toLocaleString([], d.toDateString() === new Date().toDateString() ? { hour: '2-digit', minute: '2-digit' } : { weekday: 'short', hour: '2-digit', minute: '2-digit' }); };
+  const dur = ts => ts ? ago(ts).replace(/ ago$/, '') : '';
+  const cut = (s, n) => { s = String(s || '').replace(/\s+/g, ' ').trim(); return s.length > n ? s.slice(0, n - 1).replace(/\s\S*$/, '') + '…' : s; };
+  const ini = a => tc(a.name).split(/[\s-]+/).filter(Boolean).slice(0, 2).map(w => w[0]).join('').toUpperCase();
+  const stt = (k, more) => more ? stp(k).replace('</span>', ` · ${esc(more)}</span>`) : stp(k);
+  function trailSteps(t, a, ld) {
+    const stg = stageOf(t), lr = t.leadReview || {}, lp = lrOf(t), ps = pieces(t), mp = ps.find(x => x.agent === a.id), viaNora = t.by === 'chief', fin = t.state === 'waiting' || t.state === 'done', h = agentBy(t.handoffFrom);
+    const from = t.by === 'routine' ? { l: 'Routine', s: 'Fired ' + hm(t.addedAt), txt: 'AUTO' } : t.by === 'handoff' ? { l: h ? who(h) : 'A desk', a: h, s: 'Handed it over' }
+      : { l: 'You', you: 1, s: t.by === 'aios' ? 'From the matrix' : t.by === 'decision' ? 'Your yes' : 'Asked ' + hm(t.addedAt) };
+    const desk = stg === 2 ? (mp && mp.state === 'done' ? 'ok' : 'cur') : stg === 1 ? (ps.length && ps.every(x => x.state === 'done') ? 'ok' : 'next') : stg === 0 ? 'next' : 'ok';
+    const rv = lp === 'review' ? 'cur' : (lp === 'signed' || lp === 'escalated') ? 'ok' : fin ? 'skip' : 'next';
+    return [
+      { ...from, st: 'ok' },
+      { l: 'Theo', img: '/people/pe.png', st: viaNora ? 'ok' : 'skip', s: viaNora ? 'Via the ask box' : 'Not this time' },
+      { l: 'Nora', img: '/people/chief.png', st: viaNora ? 'ok' : 'skip', s: viaNora ? 'Sent to ' + deptName(t.dept) : 'Not this time' },
+      { l: ld ? who(ld) : 'Lead', a: ld, st: !t.team ? 'skip' : stg === 1 ? 'cur' : stg === 0 ? 'next' : 'ok', s: !t.team ? 'Went direct' : stg === 1 ? (ps.length ? 'Writing the final' : 'Planning the pieces') : stg === 0 ? 'Will split it' : `Split it · ${ps.length} pieces` },
+      { l: who(a), a, st: desk, s: desk === 'cur' ? (lp === 'rework' ? `Rework · round ${lr.round}` : `Working · ${dur((mp && mp.startedAt) || t.startedAt)}`) : desk === 'ok' ? (mp ? 'Piece done' : 'Wrote it') : t.state === 'scheduled' ? 'Booked' : 'Up next' },
+      { l: ld ? who(ld) : 'Lead', a: ld, rev: 1, st: rv, s: rv === 'cur' ? (lr.round ? `Rereading · round ${lr.round + 1}` : 'Reading it') : lp === 'signed' ? (lr.round ? `Signed off · ${lr.round} rework` : 'Signed off') : lp === 'escalated' ? 'Sent it to you' : lp === 'rework' ? `Sent it back · ${lr.round}×` : fin ? 'No review' : 'Lead review' },
+      { l: 'You', you: 1, st: t.state === 'waiting' ? 'cur' : t.state === 'done' ? 'ok' : 'next', s: t.state === 'waiting' ? 'Your OK' : t.state === 'done' ? (t.closed ? 'Rejected' : t.approvedAt ? 'Approved' : 'Done') : 'Approve' },
+    ];
+  }
+  function trailHtml(steps) {
+    const last = steps.reduce((m, s, i) => (s.st === 'ok' || s.st === 'cur') ? i : m, 0);
+    const dot = s => s.you ? '<span class="hxd-dot you">YOU</span>' : `<span class="hxd-dot">${(s.a && s.a.portrait) || s.img ? `<img src="${esc((s.a && s.a.portrait) || s.img)}" alt="">` : esc(s.txt || (s.a ? ini(s.a) : '·'))}</span>`;
+    return `<div class="hxd-trail" role="list"><i style="width:${(last * 100 / 7).toFixed(3)}%"></i>${steps.map(s => `<div class="hxd-s ${s.st}${s.st === 'cur' && s.rev ? ' rev' : ''}${s.st === 'cur' && s.you ? ' you' : ''}" role="listitem">${dot(s)}<b>${esc(s.l)}</b><em>${esc(s.s)}</em></div>`).join('')}</div>`;
+  }
+  function taskLog(t, a, ld) { // what happened, newest first, from the times the task keeps
+    const lr = t.leadReview || {}, ln = esc(ld ? who(ld) : 'The lead'), dn = esc(who(a)), mp = pieces(t).find(x => x.agent === a.id), h = agentBy(t.handoffFrom), ev = [];
+    const from = { chief: `Nora sent it to ${esc(deptName(t.dept))}.`, routine: 'The routine fired.', aios: 'You sent it from the matrix.', handoff: `${esc(h ? who(h) : 'A desk')} handed it over.`, decision: 'Your yes on a review card started it.' }[t.by] || 'You asked for it.';
+    if (t.addedAt) ev.push([t.addedAt, from]);
+    if (mp && mp.startedAt) ev.push([mp.startedAt, `<b>${dn} started a piece:</b> ${esc(cut(mp.title, 120))}`]); else if (t.startedAt) ev.push([t.startedAt, `<b>${dn} started.</b>`]);
+    if (mp && mp.doneAt) ev.push([mp.doneAt, `${dn} finished the piece.`]);
+    for (const l of (Array.isArray(lr.log) ? lr.log : [])) if (l.at) ev.push([l.at, l.verdict === 'pass' ? `<b>${ln} signed it off.</b>` : `<b>${ln} sent it back:</b> ${esc(cut(l.feedback, 150))}`]);
+    if (t.waitingAt) ev.push([t.waitingAt, lrOf(t) === 'escalated' ? `<b>${ln} sent it to you unresolved.</b>` : 'Waiting for your OK.']);
+    if (t.approvedAt) ev.push([t.approvedAt, 'You approved it.']);
+    return ev.sort((x, y) => y[0] - x[0]).slice(0, 6).map(([at, s]) => `<div><time>${esc(hm(at))}</time><span>${s}</span></div>`).join('');
+  }
+  function deskDrawer(a) {
+    const k = keyOf(a), st = seatState(a), ld = S.agents.find(x => x.department === a.department && x.lead), n = esc(who(a)), office = S.health?.model || 'sonnet', rs = roleSkills(a);
+    const model = (a.model ? MODEL[a.model] || a.model : `${MODEL[office] || office} (office)`) + (a.effort ? ' · ' + a.effort : '');
+    const chips = [`<span>${esc(model)}</span>`, rs.length ? `<span title="${esc(rs.join(', '))}">${rs.length} skill${rs.length > 1 ? 's' : ''}</span>` : '<span class="miss">No skill of its own</span>', a.brief ? '<span>Standing brief</span>' : '<span class="miss">No brief</span>', a.lessons ? `<span>${a.lessons} standing rule${a.lessons > 1 ? 's' : ''}</span>` : ''].join('');
+    const brief = Array.isArray(a.brief) ? a.brief.join('\n') : a.brief || '';
+    const more = !drMore ? '' : `<section class="hxd-more"><div><div class="hxd-k">What ${n} does</div><p>${esc(a.does || '')}</p></div>${brief ? `<div><div class="hxd-k">Standing brief</div><p>${esc(brief)}</p></div>` : ''}<div><div class="hxd-k">Skills</div><p>${esc((a.skills || []).join(', ') || 'None yet')}</p></div><div><div class="hxd-k">Tools it reaches for</div><p>${esc((a.tools || []).join(', ') || 'None named')}</p></div></section>`;
+    const head = `<section class="hxd-head">${fc(a, k, 'xl')}<div><div class="hxd-k">The desk</div><div class="hxd-n">${n}</div><div class="hxd-r">${esc(a.person ? tc(a.name) : a.role)}${ld && ld.id !== a.id ? ` · reports to ${esc(who(ld))}` : ''}</div><div class="hxd-chips">${chips}</div></div><button type="button" data-hxmore aria-expanded="${drMore}">${drMore ? 'HIDE BRIEF' : 'BRIEF AND SKILLS'}</button></section>`;
+    const t = st.doing || st.waiting;
+    let now;
+    if (!t) now = `<section class="hxd-card"><div class="hxd-k">The task it’s on</div><div class="hxd-tt"><h3>Not on a task right now</h3>${stp(k)}</div>${st.last ? `<div class="hxd-note">Last: ${esc(st.last.title)} · ${esc(ago(st.last.doneAt))}</div>` : ''}</section>`;
+    else {
+      const lead = agentBy((t.leadReview || {}).by) || ld, lp = lrOf(t), mp = pieces(t).find(x => x.agent === a.id);
+      const sk = t.state === 'waiting' ? 'waiting' : lp === 'review' ? 'review' : lp === 'rework' ? 'rework' : 'doing';
+      const plan = mp ? `<div class="hxd-plan"><div class="hxd-k">${n}’s piece</div>${esc(cut(mp.title, 200))}</div>` : (t.plan || []).length ? `<div class="hxd-plan"><div class="hxd-k">The plan</div><ol>${t.plan.slice(0, 5).map(p => `<li>${esc(cut(p, 160))}</li>`).join('')}</ol></div>` : '';
+      now = `<section class="hxd-card ${t.state === 'waiting' ? 'need' : 'now'}"><div class="hxd-k">The task it’s on</div><div class="hxd-tt"><h3>${esc(t.title)}</h3>${sk === 'review' ? '<span class="hxo-st rev"><i></i>Lead review</span>' : stt(sk, sk === 'waiting' ? dur(t.waitingAt) : dur((mp && mp.startedAt) || t.startedAt))}</div>
+        ${trailHtml(trailSteps(t, a, lead))}<div class="hxd-split${plan ? '' : ' one'}"><div class="hxd-log">${taskLog(t, a, lead)}</div>${plan}</div>
+        ${t.state === 'waiting' ? `<div class="hxd-acts"><button type="button" class="hxd-rv" data-review="${esc(t.id)}">REVIEW</button></div>` : ''}<div class="hxd-note">Live steps aren’t recorded yet, so this shows each hand-over and the plan.</div></section>`;
+    }
+    const fy = S.tasks.filter(x => x.agent === a.id && x !== t && forYou(x)).sort((x, y) => (x.waitingAt || x.doneAt || 0) - (y.waitingAt || y.doneAt || 0));
+    const fyRow = x => { const kk = forYou(x), lr = x.leadReview || {}, l = agentBy(lr.by);
+      const m = kk === 'ok' ? [lr.phase === 'signed' && l ? `Signed off by ${who(l)}` : lr.phase === 'escalated' && l ? `${who(l)} sent it unresolved` : 'Waiting for your OK', dur(x.waitingAt)].filter(Boolean).join(' · ') : kk === 'cc' ? 'A step only Claude Code can do · see For You' : 'Suggests a hand-over · see For You';
+      return `<div class="hxd-row"><div><div class="t">${esc(x.title)}</div><div class="m">${esc(m)}</div></div><button type="button"${kk === 'ok' ? ' class="hxd-rv"' : ''} data-review="${esc(x.id)}">${kk === 'ok' ? 'REVIEW' : 'OPEN'}</button></div>`; };
+    const waiting = `<section class="hxd-card${fy.length ? ' need' : ''}"><div class="hxd-sh"><h4>Waiting for you from ${n}</h4>${fy.length ? `<span class="hxo-badge">${fy.length}</span>` : ''}</div>${fy.map(fyRow).join('') || `<div class="hxd-e">Nothing else waiting on you from ${n}.</div>`}</section>`;
+    const dl = S.tasks.filter(x => x.state === 'done' && (x.agent === a.id || pieces(x).some(p => p.agent === a.id))).sort((x, y) => (y.doneAt || 0) - (x.doneAt || 0)).slice(0, 3);
+    const recent = `<section><div class="hxd-sh"><h4>Done lately</h4><span class="r">${st.done} in total</span></div>${dl.map(x => `<button type="button" class="hxd-dl" data-review="${esc(x.id)}" title="Open the result"><span>${esc(x.title)}</span><em>${[x.closed ? 'Rejected' : x.error ? 'Failed' : x.approvedAt ? 'Approved' : 'Done', x.revisions ? `revised ${x.revisions === 1 ? 'once' : x.revisions + ' times'}` : '', ago(x.doneAt)].filter(Boolean).join(' · ')}</em></button>`).join('') || '<div class="hxd-e">Nothing finished yet.</div>'}</section>`;
+    const crumb = `<div class="hxo-crumb"><button type="button" data-hxoffice><img src="/people/chief.png" alt="">Office · Nora</button><span class="sep">›</span><button type="button" data-hxclose>${ld && ld.portrait ? `<img src="${esc(ld.portrait)}" alt="">` : ''}${esc(deptName(a.department))}${ld && ld.person ? ' · ' + esc(ld.person) : ''}</button><span class="sep">›</span><span class="here">${a.portrait ? `<img src="${esc(a.portrait)}" alt="">` : ''}${n}</span></div>`;
+    return `<div class="hxd-dim" data-hxclose></div><aside class="hxd" role="dialog" aria-modal="true" aria-label="${n}, ${esc(a.person ? tc(a.name) : a.role)}"><div class="hxd-top">${crumb}<button type="button" class="hxd-x" data-hxclose aria-label="Close (Esc)" title="Close (Esc)">✕</button></div><div class="hxd-sc">${head}${more}${now}${waiting}${recent}</div></aside>`;
+  }
+  function drawer() { // open, refresh or close the drawer; the page redraws every few seconds, so it writes only when something changed and keeps the scroll
+    const w = el('hxDr'); if (!w) return;
+    const a = sel && view !== 'office' && agentBy(sel);
+    if (!a) { if (drFor) { drFor = ''; drMore = false; w.classList.remove('open'); w.setAttribute('aria-hidden', 'true'); } return; }
+    const fresh = drFor !== a.id, html = deskDrawer(a);
+    if (fresh || html !== drHtml) { const sc = w.querySelector('.hxd-sc'), y = sc ? sc.scrollTop : 0; drHtml = html; w.innerHTML = html; if (!fresh) w.querySelector('.hxd-sc').scrollTop = y; }
+    if (fresh) { drFor = a.id; w.removeAttribute('aria-hidden'); requestAnimationFrame(() => { w.classList.add('open'); w.querySelector('.hxd-x')?.focus({ preventScroll: true }); }); }
+  }
+  function closeDesk() { nav(view); } // Back if the drawer was opened from this page, else one step out
+  document.addEventListener('click', e => {
+    if (e.target.closest('#hxDr [data-hxclose]')) { closeDesk(); return; }
+    if (e.target.closest('#hxDr [data-hxmore]')) { drMore = !drMore; drawer(); }
+  });
   window.renderHierarchy = function renderHierarchy() {
     if (!el('hx')) return; pollChief();
     const peBusy = !!(window.AIOS_PE && window.AIOS_PE.busy);
-    const blocks = PILOT.map(d => {
-      const seats = S.agents.filter(a => a.department === d), lead = seats.find(a => a.lead), desks = seats.filter(a => !a.lead);
-      const keys = desks.map(a => seatState(a).key), waiting = keys.filter(k => k === 'waiting').length, doing = keys.filter(k => k === 'doing').length, failed = keys.filter(k => k === 'error').length;
-      const lk = lead ? seatState(lead).key : 'idle', reviewing = S.tasks.filter(t => t.dept === d && t.state === 'doing' && lrOf(t) === 'review').length;
-      const leadKey = (waiting || lk === 'waiting') ? 'waiting' : reviewing ? 'review' : (doing || lk === 'doing') ? 'doing' : 'idle'; // amber while the lead is reading a draft
-      return { d, lead, desks, waiting, doing, failed, reviewing, leadKey, dept: DEPTS[d] };
-    });
-    const all = blocks.flatMap(b => b.desks), W = blocks.reduce((n, b) => n + b.waiting, 0), D = blocks.reduce((n, b) => n + b.doing, 0);
-    const doneToday = S.tasks.filter(t => blocks.some(b => b.d === t.dept) && t.state === 'done' && !t.closed && t.doneAt && new Date(t.doneAt).toDateString() === new Date().toDateString()).length;
-    const h = new Date().getHours(), hi = h < 12 ? 'Good morning' : h < 18 ? 'Good afternoon' : 'Good evening';
-    el('hxEye').innerHTML = `${hi}, Wesley · Hierarchy · ${blocks.map(b => esc(b.dept.name)).join(' · ')} pilot`;
-    el('hxHead').textContent = W ? `${W} desk${W > 1 ? 's' : ''} waiting on you.` : D ? `${D} desk${D > 1 ? 's' : ''} working.` : 'Quiet. Every desk is free.';
-    el('hxSub').innerHTML = `Your request goes in at the top, the Prompt Engineer turns it into a brief, the Chief of Staff hands it to the lead, the lead hands it to a desk. <b>${all.length} desk${all.length === 1 ? '' : 's'}</b> on the roster today, and there is no cap.`;
-    el('hxStats').innerHTML = [[all.length, 'Desks'], [D, 'Working now'], [W, 'Waiting on you']].map(([n, l], i) => `<div class="hstat"><div class="hn${i === 2 && n ? ' alert' : ''}">${n}</div><div class="hl">${l}</div></div>`).join('');
-    const chain = blocks.map(b => {
-      const lead = b.lead, lc = COL[b.leadKey], dc = b.dept.chip;
-      const leadNode = lead ? node('hx-lead', lc, b.leadKey !== 'idle', `03 · Head of ${esc(b.dept.name.toLowerCase())}`, TXT[b.leadKey], (lead.person ? `<span class="hx-lp">${lead.portrait ? `<img src="${esc(lead.portrait)}" alt="" loading="lazy">` : ''}${esc(lead.person)}</span>` : '') + esc(tc(lead.name)), esc(lead.does || lead.role), `<div class="hx-chips"><span class="hx-chip" style="border-color:${dc}">${esc(b.dept.name)}</span><span class="hx-chip part">${b.desks.length} desk${b.desks.length === 1 ? '' : 's'} report in</span></div>` + bubble(b.d, fyItems(d => d === b.d)), `--dc:${dc}`) : node('hx-lead', COL.idle, false, '03 · Head of department', 'No lead', esc(b.dept.name), 'This department has no lead on the roster.');
-      return leadNode + link(b.doing > 0, b.waiting > 0, 'Assigns the work', 'The lead splits it across desks and reviews what comes back', lc)
-        + `<div class="hx-bay"><div class="hx-bl"><span class="chip" style="display:inline-block;width:9px;height:9px;border-radius:50%;background:${dc}"></span>Desks reporting to ${esc(lead ? tc(lead.name) : b.dept.name)}<em>${b.desks.length} seat${b.desks.length === 1 ? '' : 's'}${b.failed ? ` · ${b.failed} failed last run` : ''}</em></div>
-          <div class="hx-desks">${b.desks.map(desk).join('')}<div class="hx-ghost"><b>Room for more</b>A new kind of desk joins here when the roster gets one. Duet and Plaud One can tap in at this level later.</div></div></div>`;
-    }).join('');
-    const tops = node('hx-pe', peBusy ? 'var(--ok)' : 'var(--faint)', peBusy, '01 · Ingestion', peBusy ? 'Working' : 'Ready', face('Theo', 'pe') + 'Prompt Engineer','Takes a request, checks it against your notes and returns a brief with yes/no proposals. You answer; nothing moves without it.',
-      '<div class="hx-chips"><span class="hx-chip">Ask box</span><span class="hx-chip part" title="Telegram goes straight to the Chief of Staff today">Telegram · straight to chief</span><span class="hx-chip plan">Duet · planned</span><span class="hx-chip plan">Plaud One · planned</span></div>');
-    const chief = node('hx-chief', chiefBusy ? 'var(--ok)' : 'var(--faint)', chiefBusy, '02 · Chief of Staff', chiefBusy ? 'Working' : 'Ready', face('Nora', 'chief') + 'Chief of Staff','Reads the approved brief, picks the department and adds the task. It can add tasks and run routines. It never approves, sends, posts or pays.', bubble('chief', fyItems(d => !PILOT.includes(d))));
-    const anyLive = D > 0;
-    el('hx').innerHTML = tops + link(peBusy, false, 'The brief, once you say yes', 'Sent as written, with your decisions', peBusy ? 'var(--ok)' : 'var(--faint)') + chief
-      + link(chiefBusy || anyLive, false, 'Adds the task to the right desk', 'The Chief of Staff picks the department', (chiefBusy || anyLive) ? 'var(--ok)' : 'var(--faint)') + chain
-      + `<div class="hx-key"><span><i class="ln"></i>Assign and feedback, down</span><span><i class="ln d"></i>Sign-off, up</span><span><i class="hx-pulse" style="--sc:var(--ok)"></i>Being worked</span><span><i class="hx-pulse" style="--sc:var(--hx-need)"></i>Needs you</span><span><i class="hx-pulse" style="--sc:var(--hx-rev)"></i>In lead review or rework</span><span><i class="hx-pulse" style="--sc:var(--bad)"></i>Last run failed</span><span><i class="hx-pulse" style="--sc:var(--faint)"></i>Idle</span><span>Lead sign-off is not approval to send. Only you approve.</span></div>`;
-    renderTrail(blocks);
+    if (view !== 'office' && S.agents.length && okView(view) === 'office') { view = 'office'; sel = ''; window.AIOS_HX_VIEW = view; } // a link to a department not in the AIOS lands on the office
+    if (sel && S.agents.length && !S.agents.some(a => a.id === sel && a.department === view)) sel = ''; // and one to a desk that isn't there, on its department
+    if (S.cat === 'hierarchy' && S.agents.length && location.hash.slice(1) !== hxPath()) history.replaceState(history.state, '', '#' + hxPath()); // the address bar says where you landed
+    const office = view === 'office';
+    el('hxTrail').classList.toggle('hx-off', office);
+    if (el('hxTheoDot')) el('hxTheoDot').className = peBusy ? 'work' : '';
+    if (office) { renderOffice(); drawer(); return; }
+    const b = blockOf(view), ld = b.lead, name = deptName(view), fyD = fyItems(d => d === view), fyAll = fyItems(() => true);
+    const inReview = S.tasks.find(t => t.dept === view && t.state === 'doing' && lrOf(t) === 'review'), ldDoing = ld && seatState(ld).doing;
+    const ldLine = inReview ? `<b>${esc(who(agentBy(inReview.agent)))}</b>’s ${esc(inReview.title)}${inReview.leadReview.round ? ` · after rework ${inReview.leadReview.round}` : ''}`
+      : ldDoing ? `<b>Now:</b> ${esc(ldDoing.title)}` : 'Splits the work across the desks and signs off every piece before you see it.';
+    const band = `<section class="hxo-lb">${ld ? fc(ld, b.leadKey, 'xl') : ''}<div class="hxo-lbm"><div class="hxo-k">Head of ${esc(name.toLowerCase())}</div><div class="hxo-hn">${ld ? esc(who(ld)) : 'No lead'}</div><div class="hxo-lbd">${stp(b.leadKey)}<span>${ldLine}</span></div></div>
+      <div class="hxo-lbs"><div><b>${b.desks.length}</b>Desks</div><div><b>${b.doing}</b>Working</div><div><b>${b.reviewing}</b>Lead review</div><div class="you${fyD.length ? ' n' : ''}"><b>${fyD.length}</b>For you</div></div></section>`;
+    const ds = b.desks.map(a => ({ a, k: keyOf(a) })), idle = ds.filter(x => x.k === 'idle'); // roster order, so a desk keeps its place as its status changes
+    const fold = (ds.length > FOLD && !showIdle) ? idle.slice(Math.max(0, FOLD - (ds.length - idle.length))) : []; // past 12 desks the idle ones fold into one card
+    const grid = ds.filter(x => !fold.includes(x)).map(x => deskCard(x.a, x.k, fyD)).join('') + (fold.length ? `<button type="button" class="hxo-fold" data-hxidle>${fold.length} idle desk${fold.length > 1 ? 's' : ''} · show</button>` : '');
+    const crumb = `<div class="hxo-crumb"><button type="button" data-hxoffice><img src="/people/chief.png" alt="">Office · Nora</button><span class="sep">›</span><span class="here">${ld && ld.portrait ? `<img src="${esc(ld.portrait)}" alt="">` : ''}${esc(name)}${ld && ld.person ? ' · ' + esc(ld.person) : ''}</span><span class="esc">${sel ? 'Esc closes the desk' : 'Esc goes back to the office'}</span></div>`;
+    el('hx').innerHTML = crumb + `<div class="hxo"><div>${band}<div class="hxo-dg">${grid}</div></div>${rail(fyD, `${esc(name)} only · ${fyAll.length} across the office`)}</div>`;
+    renderTrail([b]);
+    drawer();
   };
   document.addEventListener('click', async e => { // yes or no on a lead's lesson: the server writes it only on yes
     const b = e.target.closest('[data-hxlesson]'); if (!b) return;
@@ -3376,7 +3684,6 @@ loadTrackers(); setInterval(() => { if (!document.hidden && !Object.values(S.tkB
     renderHierarchy();
   });
   document.addEventListener('click', async e => { // the bubble and its list: open, copy a Claude Code prompt, mark done, or hand on
-    const sb = e.target.closest('[data-hxsay]'); if (sb) { say = say === sb.dataset.hxsay ? '' : sb.dataset.hxsay; renderHierarchy(); return; }
     const b = e.target.closest('[data-fycopy],[data-fyacted],[data-fyhand]'); if (!b) return;
     const t = S.tasks.find(x => x.id === (b.dataset.fycopy || b.dataset.fyacted || b.dataset.fyhand)); if (!t) return;
     const fail = m => { b.disabled = false; b.closest('.hx-fy-i').insertAdjacentHTML('beforeend', `<span class="why">${esc(m)}</span>`); };
@@ -3390,8 +3697,8 @@ loadTrackers(); setInterval(() => { if (!document.hidden && !Object.values(S.tkB
       renderHierarchy();
     } catch (err) { fail(err.message); }
   });
-  document.addEventListener('click', e => { const s = e.target.closest('[data-hseat]'); if (s) { const id = s.dataset.hseat; sel = sel === id ? '' : id; renderHierarchy(); return; } if (e.target.closest('[data-hxclear]')) { sel = ''; renderHierarchy(); } });
-  if (S.agents.length) renderHierarchy();
+  document.addEventListener('click', e => { const s = e.target.closest('[data-hseat]'); if (s) { nav(view, s.dataset.hseat); return; } if (e.target.closest('[data-hxclear]')) { sel = ''; renderHierarchy(); } });
+  if (window.AIOS_HX_WANT) { window.hxRoute(window.AIOS_HX_WANT); delete window.AIOS_HX_WANT; } else if (S.agents.length) renderHierarchy();
 })();
 </script>
 <script>

@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Office layers</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600&family=Newsreader:opsz,wght@6..72,300;6..72,400&display=swap">
+<link rel="stylesheet" href="mock.css">
+<style>
+  .wrap { max-width: 1680px; padding: 26px 40px 22px; }
+  .title { display: flex; align-items: baseline; gap: 16px; margin-bottom: 18px; }
+  .title h1 { margin: 0; font: 300 38px/1 var(--serif); }
+  .title p { margin: 0; color: var(--grey); font-size: 13px; }
+  .grid { flex: 1; display: grid; grid-template-columns: 1fr 230px; gap: 22px; min-height: 0; }
+  .levels { display: grid; grid-template-rows: repeat(4, 1fr); gap: 0; }
+  .lv { display: grid; grid-template-columns: 64px 520px 1fr; gap: 22px; align-items: center; padding: 12px 0; border-top: 1px solid var(--line); position: relative; }
+  .lv:first-child { border-top: 0; }
+  .num { font: 300 64px/1 var(--serif); color: var(--faint); text-align: center; }
+  .lv.l1 .num { color: var(--ink); }
+  .lv h2 { margin: 0 0 6px; font: 300 26px/1.1 var(--serif); }
+  .lv p { margin: 0; color: var(--grey); font-size: 13px; line-height: 1.5; max-width: 760px; }
+  .lv .how { margin-top: 8px; display: flex; gap: 8px; flex-wrap: wrap; }
+  .lv .how span { font-size: 10.5px; padding: 4px 10px; border-radius: 99px; border: 1px solid var(--line2); color: var(--grey); letter-spacing: .04em; }
+  .lv .how span.in { border-color: var(--ink); color: var(--ink); }
+  .thumb { height: 168px; border-radius: 12px; border: 1px solid var(--line2); background-color: var(--card); background-repeat: no-repeat; }
+  .t1 { background-image: url(shots/level-1-office.png); background-size: 857px auto; background-position: -27px -146px; }
+  .t2 { background-image: url(shots/level-2-department.png); background-size: 1240px auto; background-position: -230px -150px; }
+  .t3 { background-image: url(shots/level-3-4-desk-task.png); background-size: 1524px auto; background-position: -806px 0; }
+  .t4 { background-image: url(shots/level-3-4-desk-task.png); background-size: 1560px auto; background-position: -955px -165px; }
+  .yourail { background: var(--card); border: 1px solid rgba(236,48,19,.5); border-radius: var(--r); padding: 18px; display: grid; grid-template-rows: auto repeat(4, 1fr); }
+  .yourail h3 { margin: 0 0 4px; font: 300 24px/1.1 var(--serif); }
+  .yourail .s { color: var(--grey); font-size: 11.5px; line-height: 1.45; margin-bottom: 8px; }
+  .yourail .cell { display: flex; align-items: center; gap: 10px; border-top: 1px solid var(--line); font-size: 12px; color: var(--grey); }
+  .yourail .cell b { color: var(--ink); font-weight: 500; display: block; }
+</style></head>
+<body><div class="wrap">
+  <div class="title"><h1>The office in four levels</h1><p>Click to go in, Esc or Back to come out. Red always means you. One place for “for you” on every level.</p></div>
+  <div class="grid">
+    <div class="levels">
+      <section class="lv l1"><div class="num">1</div>
+        <div><h2>The office</h2><p>Theo at the top, where every request comes in. Nora in the centre. Six departments around her, each a tile with its lead, its desks as faces, what is running now and how many need you. Departments not yet in the AIOS show dashed.</p>
+          <div class="how"><span class="in">Opens on the Office tab</span><span>Click a department to go in</span></div></div>
+        <div class="thumb t1" role="img" aria-label="Level 1"></div></section>
+      <section class="lv"><div class="num">2</div>
+        <div><h2>A department</h2><p>The lead on top with what she is reviewing. Every desk as a card: face, name, status, the task it is on. Below, the department's work in five stages, from Nora to you.</p>
+          <div class="how"><span class="in">Click a desk or a task</span><span>Esc goes back to the office</span></div></div>
+        <div class="thumb t2" role="img" aria-label="Level 2"></div></section>
+      <section class="lv"><div class="num">3</div>
+        <div><h2>A desk</h2><p>Slides in from the right over the department, so you never lose your place. The person, their model and skills, what they are doing now, what is waiting for you from them, what they finished lately.</p>
+          <div class="how"><span class="in">Opens as a side drawer</span><span>Esc closes it</span></div></div>
+        <div class="thumb t3" role="img" aria-label="Level 3"></div></section>
+      <section class="lv"><div class="num">4</div>
+        <div><h2>A task</h2><p>The trail, one face per hand-over: you, Theo, Nora, the lead, the desk, lead review, you. Live steps and the latest picture of the work. When it is ready, REVIEW opens the review pop-up you already use.</p>
+          <div class="how"><span class="in">Inside the drawer</span><span>REVIEW opens the existing pop-up</span></div></div>
+        <div class="thumb t4" role="img" aria-label="Level 4"></div></section>
+    </div>
+    <aside class="yourail">
+      <div><h3>For you <span class="badge">5</span></h3><div class="s">Same panel, same spot, every level. It narrows to where you are.</div></div>
+      <div class="cell"><span class="badge">5</span><span><b>Whole office</b>every department</span></div>
+      <div class="cell"><span class="badge">3</span><span><b>Marketing</b>only Mara's team</span></div>
+      <div class="cell"><span class="badge">1</span><span><b>Greta</b>only her work</span></div>
+      <div class="cell"><span class="badge">✓</span><span><b>This task</b>REVIEW when ready</span></div>
+    </aside>
+  </div>
+</div></body></html>
