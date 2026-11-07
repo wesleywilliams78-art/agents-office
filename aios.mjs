@@ -35,8 +35,14 @@ export function extractPrompt({ business, roster, input, source, today, existing
     'A block headed BRAIN UPDATE, or a section headed FILED TO THE BRAIN, is a note change already proposed to the owner or already filed: it is not an action, so never list filing it.\n' +
     'If the information says an action could not be completed (nothing could be saved, filed or written, a tool or access was missing), do NOT list that same action again: that is how the matrix fills with copies. List at most one gap about the missing capability, and only if nothing above already covers it.\n' +
     'Urgent = has a deadline or a cost of delay inside the next 7 days, or someone is waiting on it. Important = moves revenue, a client relationship, compliance, or the owner\'s stated goals. Be strict: not everything is both.\n' +
-    'Return: {"summary":"<one sentence: what this information means for the office>","items":[{"title":"<imperative, max 80 chars>","detail":"<one or two sentences: what exactly, and the evidence from the input>","urgent":<bool>,"important":<bool>,"dept":"<emails|sales|marketing|ops|fin|delivery|owner>","agent":"<an id from the office, or \\"\\" when no seat fits or it is the owner\'s call>","gap":"<empty, or: no-seat (no agent covers this) | owner-decision | missing-info>","due":"<YYYY-MM-DD if the input implies one, else empty>","why":"<one short phrase: why this quadrant>","client":"<a client id from the list above, or empty>"}]}';
+    'Return: {"summary":"<one sentence: what this information means for the office>","items":[{"title":"<imperative, max 80 chars>","detail":"<one or two sentences: what exactly, and the evidence from the input>","urgent":<bool>,"important":<bool>,"dept":"<emails|sales|marketing|ops|fin|delivery|owner>","agent":"<an id from the office, or \\"\\" when no seat fits or it is the owner\'s call>","gap":"<empty, or: no-seat (no agent covers this) | owner-decision | missing-info>","due":"<YYYY-MM-DD if the input implies one, else empty>","why":"<one short phrase: why this quadrant>","client":"<a client id from the list above, or empty>","link":"<a web address (https://…) or a folder/file path on this computer (C:\\\\…, G:\\\\…) written in the information above where this action is done, copied exactly; empty if none is written there — never invent one>"}]}';
   return { system, user };
+}
+
+// 7 Nov: where the work is done — a web address, or a folder/file on this computer (drive letter or \\server path); anything else is dropped
+export function cleanLink(s) {
+  const v = String(s || '').trim().replace(/^["'`<]|["'`>]$/g, '');
+  return v.length <= 500 && (/^https?:\/\/[^\s"<>]+$/i.test(v) || /^([A-Za-z]:\\|\\\\)[^\0\r\n"<>|?*]*$/.test(v)) ? v : '';
 }
 
 const DEPTS = ['emails', 'sales', 'marketing', 'ops', 'fin', 'delivery', 'owner'];
@@ -51,7 +57,7 @@ export function normalise(j, agents, feedId, clients = []) {
     if (!agent && !gap) gap = dept === 'owner' ? 'owner-decision' : 'no-seat';
     return { id: `${feedId}-${i}`, feed: feedId, title: String(x.title || '').slice(0, 100) || 'Untitled action', detail: String(x.detail || '').slice(0, 600),
       urgent, important, q: quadrantOf(urgent, important), dept, agent: agent ? agent.id : '', gap, due: /^\d{4}-\d{2}-\d{2}$/.test(x.due || '') ? x.due : '',
-      why: String(x.why || '').slice(0, 120), client: clientIds.includes(x.client) ? x.client : '', state: 'open', addedAt: Date.now() };
+      why: String(x.why || '').slice(0, 120), client: clientIds.includes(x.client) ? x.client : '', link: cleanLink(x.link), state: 'open', addedAt: Date.now() };
   }).filter(x => x.title);
   return { summary: String(j.summary || '').slice(0, 400), items };
 }
@@ -79,7 +85,7 @@ export function dedupe(items, known) {
 
 // V3.12 (30 Oct): a desk can put cards on the matrix itself. It ends its result with
 //   MATRIX ITEMS
-//   - <task> | due YYYY-MM-DD | priority high|medium|low | owner wesley|<seat id> | calendar yes|no
+//   - <task> | due YYYY-MM-DD | priority high|medium|low | owner wesley|<seat id> | calendar yes|no | link <url or path, optional>
 //   END MATRIX ITEMS
 // and the office files them when the owner approves the task (never before). Urgent = due within 7 days of today;
 // important = priority high or medium. "calendar yes" means the desk is putting it on Google Calendar too.
@@ -98,7 +104,7 @@ export function parseMatrixBlock(text, agents, feedId, now = Date.now()) {
     const urgent = days !== null ? days <= 7 : pr === 'high', important = pr !== 'low';
     items.push({ id: `${feedId}-${items.length}`, feed: feedId, title: title.slice(0, 100), detail: '', urgent, important, q: quadrantOf(urgent, important),
       dept: agent ? agent.department : 'owner', agent: agent ? agent.id : '', gap: '', due, why: `priority ${pr}${due ? ', due ' + due : ''}`, client: '',
-      state: 'open', addedAt: now, onCalendar: /^y/i.test(field('calendar')) });
+      link: cleanLink(field('link')), state: 'open', addedAt: now, onCalendar: /^y/i.test(field('calendar')) });
     if (items.length >= 20) break;
   }
   return items;

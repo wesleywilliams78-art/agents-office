@@ -199,6 +199,8 @@
   .tag.due { padding: 0 2px 0 6px; }
   .tag.due .dueInput { border: 0; background: none; padding: 0; margin: 0; font: inherit; color: inherit; width: 96px; cursor: pointer; }
   .tag.due .dueInput:focus { outline: none; color: var(--ink); }
+  .tag.lnk { cursor: pointer; color: var(--ink, inherit); border-color: color-mix(in srgb, currentColor 45%, transparent); }
+  .tag.lnk:hover { background: color-mix(in srgb, currentColor 12%, transparent); }
 
   /* activity */
   .cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr)); gap: 12px; }
@@ -2914,11 +2916,22 @@ function itemHtml(i) {
   const taskTxt = task ? (task.state === 'waiting' ? 'draft waiting on your OK' : task.state === 'done' ? (task.error ? 'task failed' : 'task done') : 'task running') : '';
   return `<div class="item ${i.state}${open ? ' x' : ''}" draggable="true" data-item="${esc(i.id)}">
     <div class="it">${esc(i.title)}</div>
-    <div class="im"><span class="tag" style="border-color:${d.chip}">${d.name}</span>${a ? `<span class="tag">${esc(a.name)}</span>` : ''}${i.gap ? `<span class="tag gap">${GAPS[i.gap] || i.gap}</span>` : ''}<span class="tag due"><input type="date" class="dueInput" value="${esc(i.due || '')}" data-orig="${esc(i.due || '')}" data-item="${esc(i.id)}" title="Change the due date"></span>${calTag(i)}${i.state !== 'open' ? `<span class="tag">${esc(i.state.toUpperCase())}</span>` : ''}${taskTxt ? `<span class="tag">${taskTxt}</span>` : ''}</div>
+    <div class="im"><span class="tag" style="border-color:${d.chip}">${d.name}</span>${a ? `<span class="tag">${esc(a.name)}</span>` : ''}${i.gap ? `<span class="tag gap">${GAPS[i.gap] || i.gap}</span>` : ''}<span class="tag due"><input type="date" class="dueInput" value="${esc(i.due || '')}" data-orig="${esc(i.due || '')}" data-item="${esc(i.id)}" title="Change the due date"></span>${calTag(i)}${itemLinks(i)}${i.state !== 'open' ? `<span class="tag">${esc(i.state.toUpperCase())}</span>` : ''}${taskTxt ? `<span class="tag">${taskTxt}</span>` : ''}</div>
     <div class="id">${esc(i.detail)}${i.why ? ` <i>(${esc(i.why)})</i>` : ''}</div>
     <div class="ia">
       ${i.state === 'open' && DEPTS[i.dept] && i.dept !== 'owner' ? `<button data-act="send">SEND TO ${esc(a ? a.name : d.name)}</button>` : ''}
       ${i.state !== 'done' ? '<button data-act="done">DONE</button>' : ''}
+// 7 Nov: one click to where the work is — the card's own link (from the desk or the reader), then the client's standing
+// links (office.config → aios.clients[].links, shown when one of its "match" words is on the card). Web opens a tab,
+// a folder or file on this computer opens in Explorer through /api/open.
+function itemLinks(i) {
+  const out = [], seen = new Set(), add = (label, url) => { if (url && !seen.has(url)) { seen.add(url); out.push({ label, url }); } };
+  if (i.link) add(/^https?:/i.test(i.link) ? 'LINK' : /\.[a-z0-9]{2,5}$/i.test(i.link) ? 'FILE' : 'FOLDER', i.link);
+  const c = i.client && (S.matrix.clients || []).find(x => x.id === i.client), text = (i.title + ' ' + (i.detail || '')).toLowerCase();
+  for (const l of (c && Array.isArray(c.links) ? c.links : []))
+    if (!Array.isArray(l.match) || !l.match.length || l.match.some(w => new RegExp('\\b' + String(w).toLowerCase().replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).test(text))) add(String(l.label || 'LINK').toUpperCase(), l.url);
+  return out.map(l => `<button type="button" class="tag lnk" data-lnk="${esc(l.url)}" title="Open ${esc(l.url)}">↗ ${esc(l.label)}</button>`).join('');
+}
       ${i.state === 'open' ? '<button data-act="drop">DROP</button>' : '<button data-act="reopen">REOPEN</button>'}
       <button data-act="delete">REMOVE</button>
     </div></div>`;
@@ -2999,6 +3012,11 @@ document.addEventListener('click', e => {
   if (s) { const id = s.dataset.seat; S.openSeat.has(id) ? S.openSeat.delete(id) : S.openSeat.add(id); renderRoles(); }
 });
 // drag an item to another quadrant: the owner's call beats the office's
+  const lk = e.target.closest('button[data-lnk]');
+  if (lk) { const u = lk.dataset.lnk;
+    if (/^https?:/i.test(u)) window.open(u, '_blank', 'noopener');
+    else api('/open', { method: 'POST', body: { path: u } }).then(() => { $('fMsg').className = 'msg'; $('fMsg').textContent = 'Opened ' + u; }).catch(er => { $('fMsg').className = 'msg err'; $('fMsg').textContent = 'Could not open it: ' + er.message; });
+    return; }
 let dragId = null;
 document.addEventListener('dragstart', e => { const it = e.target.closest?.('[data-item]'); dragId = it ? it.dataset.item : null; if (it) it.classList.add('dragging'); });
 document.addEventListener('dragend', e => { e.target.closest?.('[data-item]')?.classList.remove('dragging'); });

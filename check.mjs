@@ -142,14 +142,16 @@ await step('interview: the lead asks five questions, then writes briefs + a skil
 await step('matrix: a desk can put its own cards on the matrix with a MATRIX ITEMS block, filed on approval', async () => { // V3.12
   const aios = await import('./aios.mjs');
   const now = Date.parse('2026-10-30T12:00:00');
-  const txt = 'The plan.\n\nMATRIX ITEMS\n- Check the hearing confirmation | due 2026-11-02 | priority high | owner wesley | calendar yes\n- Draft the schedule | due 2026-11-20 | priority medium | owner elead | calendar no\n- Tidy the old folder | priority low | owner wesley\nEND MATRIX ITEMS\n';
+  const txt = 'The plan.\n\nMATRIX ITEMS\n- Check the hearing confirmation | due 2026-11-02 | priority high | owner wesley | calendar yes | link https://docs.google.com/spreadsheets/d/abc/edit\n- Draft the schedule | due 2026-11-20 | priority medium | owner elead | calendar no | link not a link\n- Tidy the old folder | priority low | owner wesley\nEND MATRIX ITEMS\n';
   const it = aios.parseMatrixBlock(txt, [{ id: 'elead', department: 'emails' }], 'fX', now);
   if (!it || it.length !== 3) throw new Error('expected 3 cards, got ' + (it && it.length));
   if (it[0].q !== 'do' || it[0].dept !== 'owner' || !it[0].onCalendar) throw new Error('due in 3 days, high, Wesley, on calendar: ' + JSON.stringify(it[0]));
   if (it[1].q !== 'plan' || it[1].agent !== 'elead' || it[1].dept !== 'emails') throw new Error('due in 3 weeks to the EA: ' + JSON.stringify(it[1]));
   if (it[2].q !== 'drop' || it[2].due) throw new Error('low, no date: ' + JSON.stringify(it[2]));
   if (aios.parseMatrixBlock('no block here', [], 'fY') !== null) throw new Error('a result without the block must file nothing');
-  return 'DO NOW by due date · a seat id lands on that desk · low with no date is DROP · no block, no cards';
+  if (it[0].link !== 'https://docs.google.com/spreadsheets/d/abc/edit' || it[1].link !== '' || it[2].link !== '') throw new Error('links: a web address is kept, junk and none are empty: ' + JSON.stringify(it.map(x => x.link)));
+  if (aios.cleanLink('G:\\My Drive\\Creamy') !== 'G:\\My Drive\\Creamy' || aios.cleanLink('javascript:alert(1)') || aios.cleanLink('notes/creamy.md')) throw new Error('cleanLink: a drive path is kept, a script or a relative path is not');
+  return 'DO NOW by due date · a seat id lands on that desk · low with no date is DROP · no block, no cards · a link rides along';
 });
 await step('matrix: the same action worded differently is not raised again, a different one is', async () => {
   const aios = await import('./aios.mjs');
