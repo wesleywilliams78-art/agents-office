@@ -55,6 +55,7 @@ import * as usage from './usage.mjs';
 import * as teams from './teams.mjs';
 import * as leadreview from './leadreview.mjs';
 import * as leadlessons from './leadlessons.mjs';
+import * as designaudit from './designaudit.mjs';
 import * as aios from './aios.mjs';
 import * as budget from './budget.mjs';
 import * as brainnotes from './brainnotes.mjs';
@@ -104,6 +105,7 @@ const RUN_TIMEOUT = Math.max(60, +cfg.timeout || 300) * 1000; // agents with too
 mcp.configure(cfg);
 routines.allow(process.env.OFFICE_ROUTINE_DEPTS ? process.env.OFFICE_ROUTINE_DEPTS.split(',') : cfg.routines?.departments); // office.config.json: "routines": { "departments": ["emails", "fin", "sales", "ops", "delivery", "marketing"] }
 const TEAMS = teams.settings(cfg); // V3.2 (16 Sep): { enabled, max }
+const DESIGN_AUDIT = designaudit.settings(cfg); // 7 Nov 2026: { enabled (default off), desk, departments, maxRounds, model, effort }: the graphics designer audits every visual before the lead or the owner
 const LEAD_REVIEW = leadreview.settings(cfg); // 4 Nov 2026: { enabled (default off), departments, maxRounds, model, effort } — docs/lead-review-plan.md
 const roster = loadRoster(BRAIN);
 const AGENTS = roster.agents; // id · department · lead · name · role · does · tools · brief
@@ -521,7 +523,9 @@ async function run(task, feedback, mode, asAnswer) { // asAnswer: the owner is a
     : task.dueAt ? `\nThis task was scheduled in advance for ${new Date(task.dueAt).toLocaleString([], { weekday: 'long', day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' })} and is running now; the owner is not at the keyboard${task.late ? ' and this run is late' : ''}. Do the work for now.` : '';
   const modeLine = modeLineFor(mode, task);
   const user = `Task: ${task.title}\nOwner's request: ${task.text}` + (task.plan?.length ? `\nAgreed plan: ${task.plan.join(' → ')}` : '') + routineLine + modeLine +
-    (feedback && mode !== 'approve' ? (/^From the lead, round \d/.test(feedback)
+    (feedback && mode !== 'approve' ? (/^From the design audit, round \d/.test(feedback)
+      ? `\n\nThe graphics designer audited your visuals before the owner sees them and sent them back: "${feedback}"\nFix exactly those points (rebuild with the studio and look again), keep everything that was already right, never change a word or a figure, and do not mention the audit.\nPrevious version:\n${task.result}`
+      : /^From the lead, round \d/.test(feedback)
       ? `\n\nYour department lead read your previous version before it reaches the owner and sent it back: "${feedback}"\nFix exactly those points, keep everything that was already right, and do not mention the review.\nPrevious version:\n${task.result}`
       : asAnswer
       ? `\n\nThe owner is NOT rejecting your previous version. He is giving you information you did not have: "${feedback}"\nTreat it as fact. Update the work using it, keep everything that was already right, and do not apologise or mention a rejection.\nPrevious version:\n${task.result}`
@@ -746,18 +750,38 @@ function reviewSystem(lead, desk, index, read, extra) {
     (notes.length ? `\n\nNOTES THE DESK READ (the first 4,000 characters of each)\n${notes.map(n => `--- ${n}.md ---\n${(index.get(n) || '').slice(0, 4000)}`).join('\n\n')}` : '') +
     (uploads.length ? `\n\nUploaded documents the desk also read (not shown to you): ${uploads.join('; ')}` : '');
 }
+// Design audit (designaudit.mjs, Wesley 7 Nov 2026): a draft that names finished video-studio jobs is opened by the graphics designer with
+// video_look and judged against her design-audit skill before the lead reads it; a send-back reruns the desk (or the team lead) with her
+// fixes, up to maxRounds, then it goes on with what is still open. Her own drafts are not audited twice. Off unless designAudit.enabled.
+const studioJobDone = id => { try { return JSON.parse(fs.readFileSync(path.join(ROOT, 'data', 'video', 'jobs', id + '.json'), 'utf8')).state === 'done'; } catch { return false; } };
+async function runDesignAudit(task, out, mode, answer, approve, desk) {
+  const jobsOf = text => designaudit.jobsIn(text, studioJobDone);
+  if (!designaudit.applies({ cfg: DESIGN_AUDIT, task, desk, approve, answer, waits: !!(task.needsOk || REVIEW_ALL), jobs: jobsOf(out.result) })) return out;
+  const gfx = AGENTS.find(a => a.id === DESIGN_AUDIT.desk); if (!gfx) return out;
+  const model = normModel(DESIGN_AUDIT.model) || 'sonnet', effort = normEffort(DESIGN_AUDIT.effort) || 'medium';
+  const audit = async ({ out: cur, jobs, round, log }) => {
+    refreshSkills(); const index = vaultIndex(), read = relevantNotes(index, gfx.department, task.title + ' ' + task.text, 3, gfx);
+    const p = designaudit.auditPrompt({ task, draft: cur.result, desk, jobs, round, max: DESIGN_AUDIT.maxRounds, log });
+    const r = await askX(agentSystem(gfx, index, read, { extra: p.extra }), p.user, { model, effort, timeout: 300000, job: { task, kind: 'design-audit', agent: gfx.id, mode: 'draft' } });
+    return { text: r.text, used: r.tools };
+  };
+  const rerun = async (fb, prev) => { task.result = prev.result; return run(task, fb, mode, false); }; // run() quotes task.result as "previous version"
+  const r = await designaudit.runLoop({ task, out, jobsOf, audit, rerun, max: DESIGN_AUDIT.maxRounds, by: gfx.id, onChange: persist });
+  console.log(`  🎨 ${task.id} design audit by ${gfx.name}: ${r.designAudit.phase}${r.designAudit.round ? ' after ' + r.designAudit.round + ' round(s)' : ''}${r.designAudit.sawIt === false ? ' (did not open the visuals)' : ''}`);
+  return r.out;
+}
 async function runWithLeadReview(task, feedback, mode, answer, approve) {
   const prev = task.leadReview, seen = [...(prev?.seen || []), ...(prev?.lesson && prev.lesson.status !== 'proposed' ? [prev.lesson.rule] : [])]; // a lesson the owner answered is not proposed again on this task
-  if (!approve) delete task.leadReview; // a new draft is a new review; an approve turn keeps the record of the one before
-  const out = await run(task, feedback, mode, answer);
+  if (!approve) { delete task.leadReview; delete task.designAudit; } // a new draft is a new review; an approve turn keeps the record of the one before
   const desk = AGENTS.find(a => a.id === task.agent);
+  const out = await runDesignAudit(task, await run(task, feedback, mode, answer), mode, answer, approve, desk); // a visual is audited by the graphics designer before the lead reads it
   if (!leadreview.applies({ cfg: LEAD_REVIEW, task, desk, approve, answer, waits: !!(task.needsOk || REVIEW_ALL), result: out.result })) return out;
   const lead = AGENTS.find(a => a.lead && a.department === desk.department);
   if (!lead) return out;
   const model = normModel(LEAD_REVIEW.model) || 'sonnet', effort = normEffort(LEAD_REVIEW.effort) || 'medium';
   const review = async ({ out: cur, round, log }) => {
     refreshSkills();
-    const p = leadreview.reviewPrompt({ task, draft: cur.result, desk, lead, round, max: LEAD_REVIEW.maxRounds, log, ownerFeedback: feedback && !/^From the lead/.test(feedback) ? feedback : '', skills: cur.skills || [] });
+    const p = leadreview.reviewPrompt({ task, draft: cur.result, desk, lead, round, max: LEAD_REVIEW.maxRounds, log, ownerFeedback: feedback && !/^From the (lead|design audit)/.test(feedback) ? feedback : '', skills: cur.skills || [] });
     return ask(reviewSystem(lead, desk, vaultIndex(), cur.read || [], p.extra), p.user, { maxTokens: 1100, timeout: 150000, model, effort, job: { task, kind: 'lead-review', agent: lead.id, mode: 'draft' } });
   };
   const rerun = async (fb, prev) => { task.result = prev.result; return run(task, fb, mode, false); }; // run() quotes task.result as "previous version"
@@ -802,7 +826,7 @@ async function runServerTaskNow(id, { feedback, approve, answer } = {}) {
     Object.assign(task, { read: out.read, tools: [...new Set([...(task.tools || []), ...out.tools])], used: [...new Set([...(task.used || []), ...out.used])], skills: out.skills, error: false, modelUsed: out.modelUsed, modelFrom: out.modelFrom, modelId: out.modelId, effortUsed: out.effortUsed, effortFrom: out.effortFrom, ...(out.team ? { team: out.team } : {}) });
     if (task.needsOk && !task.channel && isEmail(task)) task.channel = 'email';
     if ((task.needsOk || REVIEW_ALL) && !approve && aoofile.isAooReel(task)) aoofile.sendForApproval(ROOT, task, out.result).then(s => console.log(`🎞 Art of Operations reel ${s.sent ? 'sent to Telegram for approval' : 'not sent: ' + s.reason}`)).catch(() => {}); // Wesley reads on his phone
-    if ((task.needsOk || REVIEW_ALL || hasDecisions) && !approve) { task.state = 'waiting'; task.draft = out.result; task.waitingAt = Date.now(); task.ask = (task.needsOk ? (task.channel === 'email' ? `"${task.title}" is written — approve to put it in your Gmail drafts, then send it from your inbox. Reject to tell me what to change.` : routines.askLine(task)) : reviewLine(task)) + brainReview(task, out.result) + siteReview(task, out.result) + (approve ? '' : handoffReview(task, hoText) + decisionReview(task, decText)) + (out.leadReview ? leadreview.askLine(out.leadReview, out.leadName) : '') + (out.leadReview?.lesson ? '\n\n' + leadlessons.card(out.leadReview.lesson, out.leadName, out.deskName) + ' Answer on the card in AIOS Hierarchy.' : ''); }
+    if ((task.needsOk || REVIEW_ALL || hasDecisions) && !approve) { task.state = 'waiting'; task.draft = out.result; task.waitingAt = Date.now(); task.ask = (task.needsOk ? (task.channel === 'email' ? `"${task.title}" is written — approve to put it in your Gmail drafts, then send it from your inbox. Reject to tell me what to change.` : routines.askLine(task)) : reviewLine(task)) + brainReview(task, out.result) + siteReview(task, out.result) + (approve ? '' : handoffReview(task, hoText) + decisionReview(task, decText)) + (task.designAudit ? designaudit.askLine(task.designAudit, agentName(DESIGN_AUDIT.desk)) : '') + (out.leadReview ? leadreview.askLine(out.leadReview, out.leadName) : '') + (out.leadReview?.lesson ? '\n\n' + leadlessons.card(out.leadReview.lesson, out.leadName, out.deskName) + ' Answer on the card in AIOS Hierarchy.' : ''); }
     else {
       task.state = 'done'; task.doneAt = Date.now();
       try { const sc = ubereats.fileScorecard(DATA, out.result); if (sc) { task.result += sc.ok ? `\n\n---\nUBER EATS SCORECARD FILED: ${sc.tier}, read ${sc.readOn}, on the Delivery dashboard.` : `\n\n---\nUBER EATS SCORECARD NOT FILED: ${sc.error}.`; console.log('  ubereats scorecard:', sc.ok ? 'filed' : sc.error); } } catch (e) { console.warn('scorecard:', e.message); } // V3.12: read-only figures for the dashboard, filed without review

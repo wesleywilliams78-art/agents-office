@@ -9,7 +9,7 @@ const money = (v, prefix = '', suffix = '', dp = 0) => `${v < 0 ? '-' : ''}${pre
 
 /** `*word*` marks the word to emphasise. plain() strips the marks (for speech and captions); html() draws them. */
 export const plain = t => String(t).replace(/\*/g, '');
-export const html = t => esc(t).replace(/\*([^*]+)\*/g, '<span class="em">$1<i class="ul"></i></span>');
+export const html = t => esc(t).replace(/[\p{L}\p{N}]+(?:-[\p{L}\p{N}]+)+/gu, '<span style="white-space:nowrap">$&</span>').replace(/\*([^*]+)\*/g, '<span class="em">$1<i class="ul"></i></span>'); // a hyphenated word (seventy-one) is never split across two lines
 
 /** Slow drifting mountain ridges behind the type (the WRW motif), three layers that move at different speeds. */
 export function ridges(id, g, F, start, dur) {

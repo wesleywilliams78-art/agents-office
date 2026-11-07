@@ -4,7 +4,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
-import { BRAND, FORMATS, MAX_CARDS, MAX_SECONDS, HF, tokens } from './shared.mjs';
+import { BRAND, FORMATS, MAX_CARDS, MAX_SECONDS, HF, ROOT, tokens } from './shared.mjs';
 import { reportPalette } from '../franchise-report/palette.mjs';
 import { html as emHtml, kindCss, kineticEntrance, plain, ridges, stat as statKind, waterfall as waterfallKind } from './kinds.mjs';
 
@@ -58,7 +58,9 @@ export function normalise(input) {
     const ground = c.ground || Object.keys(brand?.grounds || {})[0];
     if (brand && !grounds[ground]) p.push(`${n}: ground must be one of ${Object.keys(grounds).join(', ')}${ground === 'country' ? ' ("country" needs report: the issue, for example "02-sweden")' : ''}`);
     const seconds = c.seconds ?? 3; if (!(seconds >= 1 && seconds <= 60)) p.push(`${n}: seconds must be 1 to 60`);
-    const card = { kind, text, ground, seconds, kicker: String(c.kicker || '').slice(0, 60), sub: String(c.sub || '').slice(0, 200), say: c.say ? String(c.say).slice(0, 400) : undefined };
+    let art, artPos; // a picture behind the card: the series' own art, from the Tales of Nirn folder or the office output folder only
+    if (c.art) { const f = path.resolve(String(c.art)); if (![path.join(ROOT, 'videos', 'tales-of-nirn'), path.join(ROOT, 'output')].some(r => f.startsWith(r + path.sep)) || !/.(png|jpe?g|webp)$/i.test(f) || !fs.existsSync(f)) p.push(`${n}: art must be an existing png, jpg or webp file under videos/tales-of-nirn or the office output folder`); else art = f; artPos = /^[0-9% .a-z-]{1,24}$/i.test(String(c.art_pos || '')) ? String(c.art_pos) : 'center'; }
+    const card = { kind, text, ground, seconds, art, artPos, kicker: String(c.kicker || '').slice(0, 60), sub: String(c.sub || '').slice(0, 200), say: c.say ? String(c.say).slice(0, 400) : undefined };
     if (kind === 'stat') {
       if (typeof c.value !== 'number' || !Number.isFinite(c.value)) p.push(`${n}: a stat card needs a numeric value`);
       Object.assign(card, { value: c.value, prefix: String(c.prefix || '').slice(0, 4), suffix: String(c.suffix || '').slice(0, 4), decimals: c.decimals });
@@ -85,7 +87,7 @@ export function normalise(input) {
   const music = s.music && (s.music.file || s.music.prompt) ? { file: s.music.file ? String(s.music.file) : undefined, prompt: s.music.prompt ? String(s.music.prompt).slice(0, 500) : undefined, volume: Math.min(1, Math.max(0.05, s.music.volume ?? 0.25)) } : undefined;
   const voice = vIn ? { voice: vIn.voice || 'wesley', speed: Math.min(1.25, Math.max(0.8, vIn.speed ?? 1)) } : undefined;
   const captions = s.captions ?? (!!voice && out.some(c => c.say && plain(c.say).trim() !== plain(c.text).trim()));
-  return { spec: { deliver, title: String(s.title || 'video').slice(0, 80), brand: s.brand || 'wrw', report: palette?.ref, palette, format, cards: out, logo: s.logo === 'none' ? 'none' : 'auto', style: s.style || 'calm', transition, textMotion, backdrop: s.backdrop || st.backdrop, overlap, align: s.align === 'center' ? 'center' : 'left', fade: Math.min(1.2, Math.max(0.2, s.fade ?? 0.5)), music, voice, captions: !!(voice && captions), totalSeconds: total } };
+  return { spec: { deliver, title: String(s.title || 'video').slice(0, 80), brand: s.brand || 'wrw', report: palette?.ref, palette, format, cards: out, logo: s.logo === 'none' ? 'none' : 'auto', style: s.style || 'calm', transition, textMotion, backdrop: s.backdrop || st.backdrop, overlap, align: s.align === 'center' || s.align === 'left' ? s.align : brand?.align || 'left', fade: Math.min(1.2, Math.max(0.2, s.fade ?? 0.5)), music, voice, captions: !!(voice && captions), totalSeconds: total } };
 }
 
 /** The timing of one card: when it starts, when its words start, and when everything on it has settled (measure and still time). */
@@ -103,8 +105,8 @@ export function cardTiming(spec, i) {
 export const settleTimes = spec => spec.cards.map((_, i) => cardTiming(spec, i).settle);
 
 // the biggest size at which the words (estimated) fit the safe box; the measured check then corrects the estimate
-function fit(text, boxW, boxH, brandFont, scale) {
-  const cw = brandFont === 'Newsreader' ? 0.46 : 0.56, lh = 1.1;
+function fit(text, boxW, boxH, brandFont, scale, caps) {
+  const cw = (brandFont === 'Newsreader' ? 0.46 : brandFont === 'Tw Cen MT Condensed' ? 0.4 : 0.56) + (caps ? 0.22 : 0), lh = 1.1;
   for (let size = 160; size >= 48; size -= 4) {
     const per = Math.max(4, Math.floor(boxW / (size * cw))); let lines = 1, cur = 0;
     for (const w of plain(text).split(/\s+/)) { const n = w.length + (cur ? 1 : 0); if (cur + n > per && cur) { lines++; cur = w.length; } else cur += n; }
@@ -121,6 +123,7 @@ export function writeProject(spec, dir, scale = 1) {
   for (const d of ['fonts', 'assets', 'audio']) fs.mkdirSync(path.join(dir, d), { recursive: true });
   const fonts = Object.values(T.fonts); const faces = [];
   for (const f of fonts) for (const file of [f.file, f.italic].filter(Boolean)) { fs.copyFileSync(path.join(BRAND, 'fonts', file), path.join(dir, 'fonts', file)); faces.push(`@font-face { font-family: "${f.family}"; font-weight: ${f.weight}; font-style: ${file.includes('italic') ? 'italic' : 'normal'}; src: url("fonts/${file}") format("woff2"); }`); }
+  for (const f of new Set(fonts.filter(f => f.local && !f.file))) faces.push(`@font-face { font-family: "${f.family}"; font-weight: ${f.weight}; src: local("${f.local}"); }`); // an installed Windows font has no file to bundle
   const used = new Set(spec.cards.map(c => T.grounds[c.ground].logo).filter(Boolean));
   if (spec.logo !== 'none') for (const l of used) fs.copyFileSync(path.join(BRAND, 'logos', l), path.join(dir, 'assets', l));
   const hasVoice = spec.cards.some(c => c.vo);
@@ -133,9 +136,11 @@ export function writeProject(spec, dir, scale = 1) {
   spec.cards.forEach((c, i) => {
     const g = T.grounds[c.ground], id = 's' + (i + 1), tg = cardTiming(spec, i), t = tg.start, f = spec.fade;
     const accent = contrast(g.accent, g.bg) >= 3 ? g.accent : g.fg;
-    const size = fit(c.text, boxW, boxH, display.family, scale);
+    const size = fit(c.text, boxW, boxH, display.family, scale, g.caps);
     const logo = spec.logo !== 'none' && g.logo ? `<img class="logo" src="assets/${g.logo}" alt="" style="left:${F.side}px;top:${logoTop}px;width:${logoW}px">` : spec.logo !== 'none' && g.wordmark ? `<div class="logo wordmark" style="left:${F.side}px;top:${logoTop}px;color:${g.accent}">creamy</div>` : '';
     const dur = c.seconds + (ov && i < last ? ov : 0);
+    let bgCss = g.bg;
+    if (c.art) { const ext = path.extname(c.art).toLowerCase(), name = `art-${i + 1}${ext}`; fs.copyFileSync(c.art, path.join(dir, 'assets', name)); const v = T.veil ?? 0.6; bgCss = `linear-gradient(rgba(12,9,6,${v}),rgba(12,9,6,${Math.min(0.95, v + 0.25)})), url(assets/${name}) ${c.artPos || 'center'} / cover ${g.bg}`; }
     const back = spec.backdrop === 'ridges' && g.ridges !== false ? ridges(id, g, F, t, dur) : { html: '', js: '' };
     let body = '', bodyJs = '';
     if (c.kind === 'stat') { const k = statKind(id, c, g, F, tg.ts, c.seconds, accent, scale, capSpace); body = k.html; bodyJs = k.js; }
@@ -144,7 +149,8 @@ export function writeProject(spec, dir, scale = 1) {
       body = `
         <div class="stack" style="left:${F.side}px;top:${F.top}px;width:${boxW}px;height:${F.h - F.top - F.bottom - capSpace}px;text-align:${spec.align}">
           ${c.kicker ? `<div class="kicker" style="color:${accent}">${esc(c.kicker)}</div>` : ''}
-          <div class="txt" style="font-size:${size}px">${tm === 'words' ? wordsHtml(c.text) : emHtml(c.text)}</div>
+          <div class="txt" style="font-size:${size}px${g.caps ? ';text-transform:uppercase;letter-spacing:0.14em' : ''}">${tm === 'words' ? wordsHtml(c.text) : emHtml(c.text)}</div>
+          ${g.rule ? '<i class="rule"></i>' : ''}
           ${c.sub ? `<div class="sub">${esc(c.sub)}</div>` : ''}
         </div>`;
       if (c.kicker) bodyJs += `
@@ -158,6 +164,8 @@ export function writeProject(spec, dir, scale = 1) {
       tl.fromTo("#${id} .txt", { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: ${f}, ease: "power1.out" }, ${at(tg.ts)});`;
       if (/\*[^*]+\*/.test(c.text)) bodyJs += `
       tl.fromTo("#${id} .txt .em .ul", { scaleX: 0 }, { scaleX: 1, duration: 0.5, ease: "power3.out" }, ${at(tg.settle - 0.35)});`;
+      if (g.rule) bodyJs += `
+      tl.fromTo("#${id} .rule", { opacity: 0, scaleX: 0.4 }, { opacity: 1, scaleX: 1, duration: ${f}, ease: "power1.out" }, ${at(tg.ts + 0.2)});`;
       if (c.sub) bodyJs += `
       tl.fromTo("#${id} .sub", { opacity: 0 }, { opacity: 1, duration: ${f}, ease: "power1.out" }, ${at(tg.ts + 0.4)});`;
       if (tr === 'fade' && c.seconds >= 1.5) bodyJs += `
@@ -178,9 +186,10 @@ export function writeProject(spec, dir, scale = 1) {
       }
     }
     scenes += `
-      <div id="${id}" class="scene clip" data-start="${t}" data-duration="${dur}" data-track-index="${i % 2}" style="background:${g.bg};color:${g.fg};--accent:${accent}">
+      <div id="${id}" class="scene clip" data-start="${t}" data-duration="${dur}" data-track-index="${i % 2}" style="background:${bgCss};color:${g.fg};--accent:${accent}">
         ${back.html}
         ${logo}${body}
+        ${g.foot ? `<div class="foot" style="bottom:${Math.round(F.bottom * 0.42)}px;color:${accent}">${esc((T.name || '').toUpperCase())}</div>` : ''}
         ${cap}
       </div>`;
     if (i > 0 && ov) { // how this card arrives over the one before (which stays under it for the overlap)
@@ -216,7 +225,9 @@ export function writeProject(spec, dir, scale = 1) {
       .kicker { font-family: "${text.family}", sans-serif; font-weight: ${text.weight}; font-size: ${Math.round(F.w * 0.03)}px; letter-spacing: 0.2em; text-transform: uppercase; }
       .txt { font-family: "${display.family}", Georgia, serif; font-weight: ${display.weight}; line-height: 1.1; letter-spacing: -0.01em; width: 100%; text-wrap: balance; }
       .w { display: inline-block; }
-      .sub { font-family: "${text.family}", sans-serif; font-weight: ${text.weight}; font-size: ${Math.round(F.w * 0.026)}px; line-height: 1.35; opacity: 0.85; width: 100%; }
+      .rule { display: block; width: 62%; height: 2px; margin: 4px 0; background: linear-gradient(90deg, transparent, var(--accent) 18%, var(--accent) 82%, transparent); opacity: 0.8; align-self: ${center ? 'center' : 'flex-start'}; transform-origin: ${center ? 'center' : 'left'}; }
+      .foot { position: absolute; left: 0; right: 0; z-index: 2; text-align: center; font-family: "${text.family}", sans-serif; font-size: ${Math.round(F.w * 0.026)}px; letter-spacing: 0.32em; opacity: 0.85; }
+      .sub { font-family: "${text.family}", sans-serif; font-weight: ${text.weight}; font-size: ${Math.round(F.w * 0.026 * (T.subScale || 1))}px; line-height: 1.35; opacity: 0.85; width: 100%; text-wrap: balance; }
       .cap { position: absolute; z-index: 4; font-family: "${text.family}", sans-serif; font-weight: ${text.weight}; font-size: ${Math.round(F.w * 0.04)}px; line-height: 1.3; text-align: ${center ? 'center' : 'left'}; opacity: 0; }
       .cap .cw { opacity: 0.38; display: inline-block; }${kindCss(F, T)}
     </style>

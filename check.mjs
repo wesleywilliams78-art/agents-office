@@ -656,6 +656,15 @@ await step('video studio: speaks MCP, refuses a bad spec with reasons, and its t
   const tmp3 = fs.mkdtempSync(path.join(os.tmpdir(), 'vs-')); writeProject(rich.spec, tmp3, 1); // text, waterfall and stat cards with ridges, emphasis, kinetic entrances and captions
   const m3 = await measure(rich.spec, tmp3);
   if (!m3.pass) throw new Error('the impact page (waterfall, stat, emphasis) failed its own layout check: ' + m3.issues.join('; '));
+  const art = path.join(ROOT, 'videos', 'tales-of-nirn', 'episodes', 'ep01-night-falls-on-sentinel', 'still', 'key-16x9.png'); // the Tales of Nirn brand: series art behind a card, no logo, art only from the series folder or output
+  if (fs.existsSync(art)) {
+    const tl = normalise({ brand: 'tales', format: '4:5', deliver: 'stills', cards: [{ ground: 'title', text: 'Night Falls on Sentinel', art, art_pos: '22% 50%' }, { ground: 'page', text: '“Just a couple fellas, a bag, and a club.”', sub: 'No fuss.', art }] });
+    if (!tl.spec || tl.spec.align !== 'center') throw new Error('a Tales of Nirn spec with art was refused: ' + JSON.stringify(tl.problems || tl.spec));
+    const tmp4 = fs.mkdtempSync(path.join(os.tmpdir(), 'vs-')); writeProject(tl.spec, tmp4, 1);
+    if (!fs.existsSync(path.join(tmp4, 'assets', 'art-1.png')) || /class="logo/.test(fs.readFileSync(path.join(tmp4, 'index.html'), 'utf8'))) throw new Error('the Tales of Nirn project did not copy its art or carries a logo');
+    const m4 = await measure(tl.spec, tmp4); if (!m4.pass) throw new Error('the Tales of Nirn page failed its own layout check: ' + m4.issues.join('; '));
+  }
+  if (!normalise({ brand: 'tales', cards: [{ text: 'x', art: 'C:/Windows/Fonts/arial.ttf' }] }).problems) throw new Error('art from outside the series folder was accepted');
   return 'five tools · a bad spec refused with reasons, nothing queued · title cards build, type inside the safe area, contrast passes · motion styles (push, words) and a music prompt are accepted and measured';
 });
 await step('video studio look: video_look returns a numbered picture of a finished job, refuses a missing, unfinished or out-of-range one; the designer is told to use it', async () => {
@@ -1174,6 +1183,42 @@ await step('lead review: scope, verdicts, pass · bounce then pass · escalate a
   if (!/last round/.test(p.extra) || !/fix 1/.test(p.user) || !/shorter/.test(p.user) || !/DRAFT BY NEWT\nD/.test(p.user)) throw new Error('prompt: ' + p.extra.slice(0, 200));
   if (!/signed off by LEAD after 1 round of rework/.test(L.askLine({ phase: 'signed', round: 1 }, 'LEAD')) || !/Still open: x/.test(L.askLine({ phase: 'escalated', round: 2, open: 'x' }, 'LEAD')) || L.askLine({ phase: 'review' }) !== '') throw new Error('askLine');
   return 'off by default · scope (8 cases) · verdict parsing · pass · bounce→pass · escalate at round 2 · failed or unreadable review passes · failed rework escalates';
+});
+await step('design audit: visuals found · scope · pass · send-back then pass · escalate · a blind or failed audit is marked · off changes nothing', async () => {
+  const D = await import('./designaudit.mjs');
+  if (D.settings({}).enabled) throw new Error('must ship switched off');
+  const on = D.settings({ designAudit: { enabled: true } }), desk = { id: 'vid', department: 'marketing', name: 'VIDEO EDITOR' }, task = { id: 't2', dept: 'marketing', agent: 'vid', title: 'Reel', text: 'make a reel' };
+  // what counts as a visual: a studio job named in the draft, and only one that exists
+  const draft = 'Slides: `C:\\Users\\W\\agents-office\\output\\video\\xmw6t4vzsxp9-slides\\slide-01.png` and C:/x/output/video/xab12cd34ef.mp4, also job xzz99yy88xx. Not output/video/notes.txt';
+  const found = D.jobsIn(draft).sort().join();
+  if (found !== 'xab12cd34ef,xmw6t4vzsxp9,xzz99yy88xx') throw new Error('jobsIn: ' + found);
+  if (D.jobsIn(draft, id => id === 'xab12cd34ef').join() !== 'xab12cd34ef') throw new Error('jobsIn must drop jobs that do not exist');
+  if (D.jobsIn('a plain caption with no visual').length) throw new Error('no visual, no jobs');
+  // the scope
+  const a = (o = {}) => D.applies({ cfg: on, task, desk, jobs: ['x1'], ...o });
+  if (!a()) throw new Error('a desk draft with a studio job should be audited');
+  for (const [why, o] of [['off', { cfg: D.settings({}) }], ['approve turn', { approve: true }], ['answer turn', { answer: true }], ['does not wait', { waits: false }], ['the designer\'s own', { desk: { id: 'gfx', department: 'marketing' } }], ['no visual', { jobs: [] }], ['department not in', { cfg: D.settings({ designAudit: { enabled: true, departments: ['sales'] } }) }]])
+    if (a(o)) throw new Error('should not audit: ' + why);
+  if (!a({ task: { ...task, team: { lead: 'mlead' } }, desk: { id: 'mlead', lead: true, department: 'marketing' } })) throw new Error('a team task the lead built must be audited too');
+  // the loop, with a fake designer and a fake desk
+  const P = '{"verdict":"pass","dial":"The hook lands.","looked":["x1"]}', B = n => `{"verdict":"bounce","feedback":"slide ${n}: word alone"}`, LOOK = ['mcp__video-studio__video_look'];
+  const mk = (replies, used = LOOK) => { let i = 0; const reruns = [], t = { ...task }; return { t, reruns, go: (max = 2) => D.runLoop({ task: t, out: { result: 'output/video/xab12cd34-slides v0' }, jobsOf: s => D.jobsIn(s), audit: async () => { const r = replies[i++]; if (r instanceof Error) throw r; return { text: r, used }; }, rerun: async fb => { reruns.push(fb); return { result: `output/video/xab12cd34-slides v${reruns.length}` }; }, max, by: 'gfx' }) }; };
+  let m = mk([P]), r = await m.go();
+  if (r.designAudit.phase !== 'passed' || m.reruns.length || !r.designAudit.sawIt || !/passed by GRETA\. Her read: The hook lands\./.test(D.askLine(r.designAudit, 'GRETA'))) throw new Error('pass: ' + JSON.stringify(r.designAudit));
+  m = mk([B(3), P]); r = await m.go();
+  if (r.designAudit.phase !== 'passed' || r.designAudit.round !== 1 || m.reruns[0] !== 'From the design audit, round 1: slide 3: word alone' || !/v1/.test(r.out.result)) throw new Error('send-back then pass: ' + JSON.stringify(r.designAudit));
+  m = mk([B(1), B(2), B(3)]); r = await m.go();
+  if (r.designAudit.phase !== 'escalated' || m.reruns.length !== 2 || !/fixes open after 2 rounds of rework: slide 3/.test(D.askLine(r.designAudit, 'GRETA'))) throw new Error('escalate: ' + JSON.stringify(r.designAudit));
+  m = mk([P], []); r = await m.go();
+  if (r.designAudit.sawIt !== false || !/did not open the visuals/.test(D.askLine(r.designAudit))) throw new Error('a verdict without video_look must be marked');
+  m = mk([new Error('run failed')]); r = await m.go();
+  if (r.designAudit.phase !== 'passed' || !r.designAudit.unreadable || m.reruns.length) throw new Error('a failed audit must pass on, marked');
+  r = await D.runLoop({ task: { ...task }, out: { result: 'output/video/xab12cd34-slides v0' }, jobsOf: s => D.jobsIn(s), audit: async () => ({ text: B(1), used: LOOK }), rerun: async () => ({ result: 'no visual now' }), max: 2, by: 'gfx' });
+  if (r.designAudit.phase !== 'skipped') throw new Error('a rework with no studio job should stop the audit: ' + r.designAudit.phase);
+  // the words
+  const p = D.auditPrompt({ task, draft: 'DRAFT', desk, jobs: ['x1', 'x2'], round: 2, max: 2, log: [{ round: 0, verdict: 'bounce', feedback: 'slide 1' }] });
+  if (!/video_look/.test(p.extra) || !/design-audit/.test(p.extra) || !/last round/.test(p.extra) || !/x1, x2/.test(p.user) || !/slide 1/.test(p.user) || !/DRAFT BY VIDEO EDITOR\nDRAFT/.test(p.user)) throw new Error('prompt');
+  return 'off by default · studio jobs found, missing ones dropped · scope (7 cases + team) · pass · send-back→pass · escalate · blind verdict marked · failed audit passes on · prompt';
 });
 await step('lead lessons: verdict carries one · names and figures refused · targets the followed skill · yes appends once with a backup · cap · fallback to standing rules', async () => {
   const L = await import('./leadreview.mjs'), K = await import('./leadlessons.mjs'), learn = await import('./learn.mjs');

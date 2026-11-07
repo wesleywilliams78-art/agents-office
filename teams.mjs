@@ -163,7 +163,9 @@ export function synthPrompt({ task, pieces, messages, nameOf, feedback, recipe }
     'End with one line: "Team: NAME did X · NAME did Y".' +
     (recipe ? `\n\n${recipe.synth}` : '') +
     `\n\nTHE PIECES\n${parts}${notes}` +
-    (feedback ? `\n\nThe owner reviewed your previous version and asked for changes: "${feedback}"\nPrevious version:\n${task.result}` : '');
+    (feedback ? (/^From the design audit, round \d/.test(feedback) // the graphics designer's send-back (designaudit.mjs), not the owner's
+      ? `\n\nThe graphics designer audited the visuals in your previous version before the owner sees them and sent them back: "${feedback}"\nFix exactly those points (rebuild with the studio and look again), keep everything that was already right, never change a word or a figure, and do not mention the audit.`
+      : `\n\nThe owner reviewed your previous version and asked for changes: "${feedback}"`) + `\nPrevious version:\n${task.result}` : '');
 }
 
 export function noteExtra(team, nameOf) {
