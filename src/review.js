@@ -82,6 +82,18 @@ body.dark #rv .rv-reason p { color: #A3A29C; }
 #rv .rv-perm-t span { color: var(--grey); }
 body.dark #rv .rv-perm-t span { color: #A3A29C; }
 #rv.perm .rv-perm { border-color: #C8553D; }
+#rv .rv-dec { max-width: 72ch; margin-top: 1.4em; padding-top: 1em; border-top: 1px solid var(--hairline); }
+#rv .rv-dec-h { font: 700 10px/1.4 var(--ui); letter-spacing: .14em; color: var(--grey); margin-bottom: 10px; }
+#rv .rv-d { display: flex; align-items: center; gap: 14px; padding: 10px 0; border-bottom: 1px solid var(--hairline); }
+#rv .rv-dq { flex: 1 1 auto; min-width: 0; font: 14px/1.45 var(--ui); }
+#rv .rv-dm { display: block; margin-top: 2px; font: 11.5px/1.4 var(--ui); color: var(--grey); }
+body.dark #rv .rv-dm, body.dark #rv .rv-dec-h { color: #A3A29C; }
+body.dark #rv .rv-dec, body.dark #rv .rv-d { border-color: rgba(236,234,227,.12); }
+#rv .rv-sw { flex: none; display: flex; border: 1px solid var(--hairline); border-radius: 99px; overflow: hidden; }
+#rv .rv-sw button { font: 700 10.5px/1 var(--ui); letter-spacing: .12em; padding: 9px 14px; border: 0; background: none; color: inherit; cursor: pointer; opacity: .55; -webkit-user-select: none; user-select: none; }
+#rv .rv-sw button.on { opacity: 1; color: #fff; }
+#rv .rv-sw .rv-dy.on { background: #1E9070; } #rv .rv-sw .rv-dn.on { background: #C8553D; }
+#rv .rv-d.off .rv-dq { opacity: .55; }
 @media (max-width: 600px) { #rv { padding: 0; } #rv .rv-box { max-height: 100vh; height: 100%; border-radius: 0; } #rv .rv-title { font-size: 22px; } }
 `;
 
@@ -110,7 +122,7 @@ export function initReview({ esc, agentOf, onApprove, onReject, onAnswer, onHand
   el.innerHTML = `<div class="rv-dim"></div><div class="rv-box" role="dialog" aria-modal="true" aria-labelledby="rvTitle">
     <div class="rv-head"><span class="rv-chip"></span><span class="rv-who"></span><span class="rv-kind"></span><span class="rv-q"></span><button class="rv-x" title="Close (Esc) — it stays waiting">×</button></div>
     <div class="rv-title" id="rvTitle"></div><div class="rv-meta"></div>
-    <div class="rv-body"><div class="doc"></div></div>
+    <div class="rv-body"><div class="doc"></div><div class="rv-dec" hidden></div></div>
     <div class="rv-next" hidden></div>
     <div class="rv-reason"><h3>Reason for rejection</h3>
       <p>Say what is wrong and what you want instead. The agent reworks it with this and it comes back here. It also learns from it: a reason that applies every time becomes one of its standing rules.</p>
@@ -151,6 +163,7 @@ export function initReview({ esc, agentOf, onApprove, onReject, onAnswer, onHand
     $('.rv-meta').textContent = bits.join(' · ') || ' ';
     $('.rv-body .doc').innerHTML = render(t.content ?? t.draft ?? t.result, esc);
     $('.rv-body').scrollTop = 0;
+    paintDec(t);
     paintNext(t);
     const btns = $('.rv-btns');
     if (readOnly) { $('.rv-hint').textContent = ''; btns.innerHTML = '<button class="rv-btn rv-close">CLOSE</button>'; }
@@ -162,9 +175,30 @@ export function initReview({ esc, agentOf, onApprove, onReject, onAnswer, onHand
       btns.innerHTML = '<button class="rv-btn rv-back">BACK</button> <button class="rv-btn rv-send" disabled>' + (ans ? 'SEND ANSWER TO ' + esc(a.name) : pm ? 'REJECT & CLOSE' : 'SEND BACK TO ' + esc(a.name)) + '</button>';
       syncSend();
     } else {
-      $('.rv-hint').textContent = email ? 'Approving puts this email in your Gmail drafts, exactly as written. You send it from your inbox; the office never sends email.' : t.needsOk ? 'Approving sends it exactly as written. Reject to say what to change.' : 'Approve to mark it done and save it to your brain. Reject to say what is wrong.';
-      btns.innerHTML = `<button class="rv-btn rv-later">LATER</button> <button class="rv-btn rv-ans" title="Not approving or rejecting: give the agent the context it was missing">ANSWER</button> <button class="rv-btn rv-no">REJECT</button> <button class="rv-btn rv-yes">${email ? 'APPROVE & CREATE DRAFT' : t.needsOk ? 'APPROVE & SEND' : 'APPROVE'}</button>`;
+      const nd = decs(t).length;
+      $('.rv-hint').textContent = nd ? `${nd} decision${nd > 1 ? 's' : ''} at the end, set to the recommendation. Approving starts a task for each Yes; each No is recorded and dropped.` : email ? 'Approving puts this email in your Gmail drafts, exactly as written. You send it from your inbox; the office never sends email.' : t.needsOk ? 'Approving sends it exactly as written. Reject to say what to change.' : 'Approve to mark it done and save it to your brain. Reject to say what is wrong.';
+      btns.innerHTML = `<button class="rv-btn rv-later">LATER</button> <button class="rv-btn rv-ans" title="Not approving or rejecting: give the agent the context it was missing">ANSWER</button> <button class="rv-btn rv-no">REJECT</button> <button class="rv-btn rv-yes">${yesLabel(t, email)}</button>`;
     }
+  }
+  // Decisions (7 Nov 2026): each one the agent put to the owner is a Yes/No switch, preset to its recommendation. APPROVE sends the switches.
+  const picks = {}; // sid → { n: true | false }
+  const decs = t => (!readOnly && t && t.sid && Array.isArray(t.decisions)) ? t.decisions.filter(d => d.ok) : [];
+  const pickOf = (t, d) => { const p = picks[t.sid] || (picks[t.sid] = {}); if (typeof p[d.n] !== 'boolean') p[d.n] = d.rec === 'yes'; return p[d.n]; };
+  const yesLabel = (t, email) => { const base = email ? 'APPROVE & CREATE DRAFT' : t.needsOk ? 'APPROVE & SEND' : 'APPROVE', ds = decs(t); if (!ds.length) return base; const y = ds.filter(d => pickOf(t, d)).length; return `${base} · ${y} YES · ${ds.length - y} NO`; };
+  function paintDec(t) {
+    const box = $('.rv-dec'), all = (!readOnly && t && Array.isArray(t.decisions)) ? t.decisions : [];
+    if (!all.length || el.classList.contains('rej')) { box.hidden = true; box.innerHTML = ''; return; }
+    box.hidden = false;
+    box.innerHTML = `<div class="rv-dec-h">YOUR DECISIONS · EACH YES BECOMES A TASK WHEN YOU APPROVE</div>` + all.map(d => d.ok
+      ? `<div class="rv-d" data-n="${d.n}"><div class="rv-dq"><b>${d.n}.</b> ${esc(d.ask)}<span class="rv-dm">Recommended: ${d.rec === 'yes' ? 'Yes' : 'No'} · on Yes, ${esc(d.toName)} does "${esc(d.title)}"</span></div><div class="rv-sw"><button class="rv-dy${pickOf(t, d) ? ' on' : ''}" data-n="${d.n}">YES</button><button class="rv-dn${pickOf(t, d) ? '' : ' on'}" data-n="${d.n}">NO</button></div></div>`
+      : `<div class="rv-d off"><div class="rv-dq"><b>${d.n}.</b> ${esc(d.ask || '?')}<span class="rv-dm">Cannot run: ${esc(d.problem)}. Use ANSWER to tell the agent what you want.</span></div></div>`).join('');
+  }
+  function setPick(n, v) {
+    const t = cur; if (!t || readOnly) return;
+    const d = decs(t).find(x => String(x.n) === String(n)); if (!d) return;
+    (picks[t.sid] || (picks[t.sid] = {}))[d.n] = v;
+    const row = $(`.rv-d[data-n="${d.n}"]`); if (row) { row.querySelector('.rv-dy').classList.toggle('on', v); row.querySelector('.rv-dn').classList.toggle('on', !v); }
+    const y = $('.rv-yes'); if (y) y.textContent = yesLabel(t, t.needsOk && t.channel === 'email');
   }
   // hand a finished result to another seat: the suggested one, one picked from the list, or the Executive Assistant to decide. Always the owner's click.
   function paintNext(t) {
@@ -217,7 +251,8 @@ export function initReview({ esc, agentOf, onApprove, onReject, onAnswer, onHand
     const t = cur, reason = ta.value.trim(), ans = el.classList.contains('ans'), closeIt = !approved && permOn();
     if (!approved && !reason && !closeIt) return;
     busy = true; syncSend();
-    try { approved ? await onApprove(t) : ans ? await onAnswer(t, reason) : await onReject(t, reason, closeIt); }
+    const ds = decs(t), chosen = ds.length ? Object.fromEntries(ds.map(d => [d.n, pickOf(t, d)])) : null;
+    try { approved ? await onApprove(t, chosen) : ans ? await onAnswer(t, reason) : await onReject(t, reason, closeIt); }
     finally { busy = false; }
     drop(t.sid);
   }
@@ -245,6 +280,7 @@ export function initReview({ esc, agentOf, onApprove, onReject, onAnswer, onHand
     if (b && b.classList.contains('rv-copy')) return copyAnswer(b);
     if (e.target.classList.contains('rv-dim') || (b && (b.classList.contains('rv-x') || b.classList.contains('rv-later') || b.classList.contains('rv-close')))) return close();
     if (!b) return;
+    if (b.classList.contains('rv-dy') || b.classList.contains('rv-dn')) return setPick(b.dataset.n, b.classList.contains('rv-dy'));
     if (b.classList.contains('rv-hand')) return doHand({ to: b.dataset.to });
     if (b.classList.contains('rv-go')) { const v = $('.rv-pick').value; return v ? doHand({ to: v }) : undefined; }
     if (b.classList.contains('rv-ea')) return doHand({ ea: true });

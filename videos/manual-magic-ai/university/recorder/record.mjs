@@ -18,6 +18,8 @@ const BREATH = 0.8, MIN_HOLD = 2.5;
 const b = await browser({ headed });
 const raw = path.join(work, 'raw'); if (!rehearse) { fs.rmSync(raw, { recursive: true, force: true }); fs.mkdirSync(raw, { recursive: true }); }
 const ctx = await context(b, rehearse ? {} : { recordVideo: { dir: raw, size: { width: W, height: VIEW_H } } });
+// Settings pages save as you type (a debounced PUT), so a rehearsal, a --test take and a --reuse re-take must not reach the platform; they get a fake 200 so the page shows its normal "saved" state instead of an error toast.
+if (rehearse || test || reuse) await ctx.route(/api\.manualmagic\.ai\/v1\//, r => ['PUT', 'PATCH', 'DELETE'].includes(r.request().method()) ? r.fulfill({ status: 200, contentType: 'application/json', body: '{}' }) : r.continue());
 const page = await ctx.newPage();
 const pace = script.pace || 1, ui = await director(page, { rehearse: rehearse || test, reuse, pace });
 const log = { id, test, reuse, steps: [], waits: ui.events, startedAt: new Date().toISOString() };

@@ -10,17 +10,18 @@ import path from 'node:path';
 import { ROOT, loadConfig } from './config.mjs';
 import { AGENTS, DEPTS } from './src/data.js';
 import { V1 } from './src/v1data.js';
+import { loadDesks, desksFile } from './desks.mjs';
 
 export const FILE = path.join(ROOT, 'office.agents.json');
 export const LOCAL = path.join(ROOT, 'office.agents.local.json');
 export const brainFile = brainPath => path.join(brainPath, 'Agents Office', 'agents.json');
-const EDITABLE = ['name', 'role', 'does', 'tools', 'brief', 'model', 'effort'];
+const EDITABLE = ['name', 'role', 'does', 'tools', 'brief', 'model', 'effort', 'person']; // person: the desk's first name, shown above its title (7 Nov 2026)
 const BRIEF_MAX = 2000;
 const MODELS = ['sonnet', 'opus', 'fable']; // V3.6: an agent's model, by name; empty = the office default
 const EFFORTS = ['low', 'medium', 'high', 'xhigh', 'max']; // V3.6.1: an agent's effort; empty = the office's, then the model's own
 
 export function defaults() {
-  return AGENTS.map(a => { const p = V1.find(x => x.id === a.id) || {}; return { id: a.id, department: a.dept, lead: !!a.lead, name: a.name, role: p.role || '', does: p.tagline || '', tools: [], brief: '', model: '', effort: '' }; });
+  return AGENTS.map(a => { const p = V1.find(x => x.id === a.id) || {}; return { id: a.id, department: a.dept, lead: !!a.lead, name: a.name, role: p.role || '', does: p.tagline || '', tools: [], brief: '', model: '', effort: '', person: '' }; });
 }
 // returns { agents, problems } — problems are human sentences, never thrown
 export function validate(doc, base = defaults()) {
@@ -32,7 +33,7 @@ export function validate(doc, base = defaults()) {
   for (const e of list) {
     if (!e || typeof e !== 'object' || !e.id) { problems.push('an entry has no "id" — skipped'); continue; }
     const a = out.find(x => x.id === e.id);
-    if (!a) { problems.push(`"${e.id}" is not one of the 35 seats — skipped (new agents are not supported; rename a seat instead)`); continue; }
+    if (!a) { problems.push(`"${e.id}" is not one of the 35 seats or an AIOS desk — skipped (add new desks in brain/Agents Office/aios-desks.json)`); continue; }
     if (seen.has(e.id)) problems.push(`"${e.id}" appears twice — the later entry wins`);
     seen.add(e.id);
     if (e.department !== undefined && e.department !== a.department) problems.push(`"${e.id}": department cannot change (${a.department} → ${e.department}) — ignored`);
@@ -40,6 +41,7 @@ export function validate(doc, base = defaults()) {
     for (const k of Object.keys(e)) if (!['id', 'department', 'lead', ...EDITABLE].includes(k)) problems.push(`"${e.id}": unknown field "${k}" — ignored`);
     if (e.name !== undefined) { const n = String(e.name).trim(); if (!n) problems.push(`"${e.id}": empty name — kept "${a.name}"`); else a.name = n.slice(0, 32).toUpperCase(); }
     if (e.role !== undefined) a.role = String(e.role).trim().slice(0, 80);
+    if (e.person !== undefined) a.person = String(e.person || '').trim().slice(0, 32);
     if (e.does !== undefined) a.does = String(e.does).trim().slice(0, 400);
     if (e.tools !== undefined) { if (!Array.isArray(e.tools)) problems.push(`"${e.id}": tools must be a list — ignored`); else a.tools = e.tools.map(String).map(s => s.trim()).filter(Boolean).slice(0, 12); }
     if (e.model !== undefined) { // V3.6: sonnet · opus · fable, or empty for the office default
@@ -61,6 +63,8 @@ export function validate(doc, base = defaults()) {
 function read(p) { if (!fs.existsSync(p)) return null; try { return JSON.parse(fs.readFileSync(p, 'utf8')); } catch (e) { return { __error: e.message }; } }
 export function loadRoster(brainPath = loadConfig().brainPath) {
   let agents = defaults(); const problems = [];
+  const extra = loadDesks(brainPath, agents.map(a => a.id)); // AIOS desks beyond the 35 (desks.mjs)
+  agents.push(...extra.desks); problems.push(...extra.problems.map(x => `brain/Agents Office/aios-desks.json: ${x}`));
   const sources = [FILE, brainFile(brainPath), LOCAL];
   const label = p => p === FILE || p === LOCAL ? path.basename(p) : 'brain/Agents Office/agents.json';
   for (const p of sources) {
@@ -69,7 +73,7 @@ export function loadRoster(brainPath = loadConfig().brainPath) {
     if (doc.__error) { problems.push(`${rel}: not valid JSON (${doc.__error.split('\n')[0]}) — ignored`); continue; }
     const r = validate(doc, agents); agents = r.agents; problems.push(...r.problems.map(x => `${rel}: ${x}`));
   }
-  const customised = agents.filter((a, i) => { const d = defaults()[i]; return a.name !== d.name || a.role !== d.role || a.does !== d.does || a.brief; }).length;
-  return { agents, problems, customised, briefed: agents.filter(a => a.brief).length, files: sources.filter(p => fs.existsSync(p)).map(label) };
+  const customised = agents.filter((a, i) => { const d = defaults()[i]; if (!d) return false; return a.name !== d.name || a.role !== d.role || a.does !== d.does || a.brief; }).length;
+  return { agents, problems, customised, briefed: agents.filter(a => a.brief).length, files: [...sources.filter(p => fs.existsSync(p)).map(label), ...(fs.existsSync(desksFile(brainPath)) ? ['brain/Agents Office/aios-desks.json'] : [])], added: extra.desks.length };
 }
 export const deptName = k => DEPTS[k]?.name || k;

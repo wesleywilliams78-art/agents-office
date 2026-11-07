@@ -14,9 +14,11 @@ Start here. Open only what the task needs; read big files by slice.
 - `docs/HANDOVER-6-nov-kitchen-map.md`: Imran's Diner Kitchen page in the AIOS (map from the sketch, dish replay, walks, improve marks; model in `data/kitchen-imrans.json`). Next: day-two timed orders, then the whole product list grouped by route (both done; see `docs/HANDOVER-7-nov-kitchen-map.md`).
 - `docs/plan-agent-visibility.md`: plan (7 Nov, not built) to let the GRAPHICS DESIGNER look at its own slides through a `video_look` tool in `connectors/video-studio`. Evidence: two blind tests (1 loss, 1 win) and a spike proving MCP images reach headless agents. Open before building it. Opus 5.5 · high.
 - `docs/HANDOVER-7-nov-agent-visibility.md`: the GRAPHICS DESIGNER can see (`video_look`); blind acceptance test half done (old run finished, new run in progress). Start here for the next chat.
+- `docs/HANDOVER-7-nov-marketing-review.md`: marketing department review, tidy pass, desk first names and portraits (`person` field, `assets/people/`); five yes/no decisions waiting, REPORT EDITOR seat first.
 - `docs/motion-studio.md`: Motion Director, engine rules, style library. Open before any motion work.
 - `docs/blender-studio.md`: Blender bridge and site kits. Open before Blender work.
 - `docs/site-updates.md`: reviewed website edits and guard rails. Open before changing the site flow.
+- `.claude/skills/wrw-deck/` (7 Nov 2026): WRW-branded PowerPoint decks (pptxgenjs in `C:\Users\Wesley\tools\pptxgenjs`). Claude Code only, office agents have no shell. Open its `SKILL.md` before building any `.pptx`; handover `docs/HANDOVER-7-nov-ppt-master-wrw-deck.md`.
 
 ## Config and roster
 - `office.agents.json`: shipped agent defaults. Do not edit unless asked.

@@ -84,6 +84,9 @@ The one thing an agent can ask for beyond that is a change to a note in your bra
 change as a `BRAIN UPDATE`, the review card shows what approving would file, and the office files it
 only when you approve (Markdown notes inside the brain only, the previous version is kept in
 `data/brain-backups/`). Turn it off with `"brainWrite": { "enabled": false }`.
+When an agent wants your yes before doing something (write a tracker row, move a date, draft an email),
+it puts each one as a `DECISION`: the review card shows a Yes/No switch for each, set to the agent's
+recommendation, and approving starts a task for every Yes and records every No in the result.
 The website works the same way: the office serves it at http://localhost:4520/site/, the website desks
 propose exact edits as `SITE UPDATE` blocks, and the office applies them only when you approve (files inside
 `sites/wrw-hospitality/` only, never the libraries or the booking settings; the old file is kept in

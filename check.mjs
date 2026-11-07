@@ -41,9 +41,28 @@ await step('build: graph has linked notes', async () => {
 await step('roster: office.agents.json validates', async () => {
   const { loadRoster } = await import('./roster.mjs');
   const r = loadRoster();
-  if (r.agents.length !== 35) throw new Error('agents: ' + r.agents.length);
+  if (r.agents.length !== 35 + r.added || r.agents.slice(0, 35).some(a => a.added)) throw new Error('agents: ' + r.agents.length + ' (' + r.added + ' added)');
   if (r.problems.length) throw new Error(r.problems.join(' | '));
-  return `35 agents · ${r.customised} customised${r.files.length ? ' · ' + r.files.join(' + ') : ''}`;
+  return `35 agents${r.added ? ' + ' + r.added + ' AIOS desk' + (r.added > 1 ? 's' : '') : ''} · ${r.customised} customised${r.files.length ? ' · ' + r.files.join(' + ') : ''}`;
+});
+await step('roster: AIOS desks join the roster; bad ones are refused (desks.mjs)', async () => {
+  const { loadRoster } = await import('./roster.mjs'); const { desksFile } = await import('./desks.mjs');
+  const brain = fs.mkdtempSync(path.join(os.tmpdir(), 'ao-desks-')); fs.mkdirSync(path.join(brain, 'Agents Office'), { recursive: true });
+  fs.writeFileSync(desksFile(brain), JSON.stringify({ desks: [
+    { id: 'edtr', department: 'marketing', name: 'report editor', role: 'Report Editor', does: 'Owns the report.', person: 'Rupert', model: 'opus' },
+    { id: 'newt', department: 'marketing', name: 'X', does: 'x' },          // clashes with a seat
+    { id: 'boss', department: 'marketing', name: 'X', does: 'x', lead: true },
+    { id: 'nowhere', department: 'legal', name: 'X', does: 'x' },
+    { id: 'blank', department: 'sales', name: 'X' }]}));
+  fs.writeFileSync(path.join(brain, 'Agents Office', 'agents.json'), JSON.stringify({ agents: [{ id: 'edtr', brief: 'Seven pages.' }] }));
+  try {
+    const r = loadRoster(brain), d = r.agents.find(a => a.id === 'edtr');
+    if (r.agents.length !== 36 || r.added !== 1) throw new Error('expected 36 agents, got ' + r.agents.length);
+    if (!d || d.name !== 'REPORT EDITOR' || d.lead || d.person !== 'Rupert' || d.model !== 'opus' || d.department !== 'marketing') throw new Error('desk not loaded: ' + JSON.stringify(d));
+    if (d.brief !== 'Seven pages.') throw new Error('a brief layer did not reach the added desk');
+    if (r.problems.length !== 4) throw new Error('expected four refusals, got: ' + r.problems.join(' | '));
+    return '1 desk added, 4 refused';
+  } finally { fs.rmSync(brain, { recursive: true, force: true }); }
 });
 await step('roster: bad edits are refused, not applied', async () => {
   const { validate } = await import('./roster.mjs');
@@ -57,6 +76,11 @@ await step('roster: brief is accepted and trimmed', async () => {
   const r = validate({ agents: [{ id: 'piper', brief: ['Three tiers.', 'Never discount.'] }, { id: 'lexi', brief: 'x'.repeat(2500) }] });
   if (r.agents.find(a => a.id === 'piper').brief !== 'Three tiers.\nNever discount.') throw new Error('list brief not joined');
   if (r.agents.find(a => a.id === 'lexi').brief.length !== 2000 || !r.problems.some(p => /brief is over/.test(p))) throw new Error('long brief not trimmed with a warning');
+});
+await step('roster: a desk takes a first name (person), kept as typed', async () => {
+  const { validate } = await import('./roster.mjs');
+  const r = validate({ agents: [{ id: 'riley', person: '  Riley ' }] });
+  if (r.problems.length || r.agents.find(a => a.id === 'riley').person !== 'Riley' || r.agents.find(a => a.id === 'lexi').person !== '') throw new Error('person field: ' + r.problems.join(' | '));
 });
 await step('skills: shipped skills load and bind', async () => {
   const { loadSkills } = await import('./skills.mjs'); const { loadRoster } = await import('./roster.mjs');
@@ -412,7 +436,25 @@ await step('handoffs: a HANDOFF block is parsed, resolved to a seat by id or nam
   const tn = h.takeNext(['Report.', '', 'NEXT: gfx — build the Canva deck from the 12 pages'].join(String.fromCharCode(10)), agents, 'recon');
   if (!tn.next || tn.next.to !== 'gfx' || !/Canva/.test(tn.next.what) || /NEXT/.test(tn.text) || tn.text !== 'Report.') throw new Error('NEXT line not taken: ' + JSON.stringify(tn));
   if (h.takeNext('NEXT: nobody — do a thing', agents, 'recon').next.to !== '' || h.takeNext('no suggestion here', agents, 'recon').next !== null) throw new Error('unknown seat or no NEXT line handled wrongly');
-  return 'parsed · "qa" and the full name both find the seat · unknown seat and self-handoff refused · block removed from the result · a NEXT line becomes a suggestion and leaves the deliverable clean';
+  const F = '```', N = String.fromCharCode(10);
+  const cc = h.claudeCode(['YOUR ONE STEP: copy the block below into Claude Code.', 'Builds the Reel; needed by Mon 9 Nov.', '', F, 'This is a separate task for Claude Code, not a reply to the office.', 'Build the Portugal row.', F, '', '## Detail', F + 'js', 'not a prompt', F].join(N));
+  if (!cc || cc.prompts.length !== 1 || !/Build the Portugal row/.test(cc.prompts[0]) || cc.what !== 'Builds the Reel; needed by Mon 9 Nov.') throw new Error('Claude Code block not read: ' + JSON.stringify(cc));
+  if (h.claudeCode('Done.' + N + F + N + 'some code' + N + F) !== null) throw new Error('an ordinary code block was taken for a Claude Code step');
+  return 'parsed · "qa" and the full name both find the seat · unknown seat and self-handoff refused · block removed from the result · a NEXT line becomes a suggestion and leaves the deliverable clean · a Claude Code block is read, an ordinary code block is not';
+});
+await step('decisions: DECISION blocks become Yes/No switches, the owner\'s picks win over the recommendation, and the record says what ran', async () => {
+  const dm = await import('./decisions.mjs'); const { loadRoster } = await import('./roster.mjs'); const agents = loadRoster().agents; const N = String.fromCharCode(10);
+  const txt = ['# Draft', 'Rows 8 and 9 below.', '', 'DECISION', 'ask: Write rows 8 and 9 to the tracker?', 'recommend: yes', 'title: Write Qamaria rows 8 and 9', '---', 'Open sheet X, tab Tracker, set H9 to 11-Nov-2026.', 'END DECISION', '', '```', 'DECISION', 'ask: Move ID 2 to 20 Nov?', 'recommend: No', 'to: qa', 'title: Move ID 2', '---', 'Set H6 to 20-Nov-2026.', 'END DECISION', '```', '', 'DECISION', 'ask: Hand to nobody?', 'to: nobody', '---', 'x', 'END DECISION'].join(N);
+  const b = dm.parse(txt); if (b.length !== 3 || b[0].rec !== 'yes' || b[1].rec !== 'no' || b[1].to !== 'qa') throw new Error('blocks not parsed: ' + JSON.stringify(b.map(x => [x.rec, x.to])));
+  const s = dm.strip(txt); if (/DECISION|```/.test(s) || !s.startsWith('# Draft') || !/Rows 8 and 9/.test(s)) throw new Error('blocks not stripped: ' + s);
+  const pl = dm.plan(b, agents, 'pco'); if (!pl[0].ok || pl[0].to !== 'pco' || pl[0].n !== 1) throw new Error('no "to" should mean the same seat: ' + JSON.stringify(pl[0]));
+  if (!pl[1].ok || pl[1].to !== 'qa') throw new Error('qa not resolved'); if (pl[2].ok) throw new Error('an unknown seat was accepted');
+  const own = dm.plan([{ ask: 'x?', rec: 'yes', to: 'project-co-ordinator', title: 't', text: 'do it' }], agents, 'pco')[0]; if (!own.ok || own.to !== 'pco') throw new Error('a desk naming itself by its name was refused: ' + own.problem); // 7 Nov: the live run wrote its own name
+  dm.answer(pl, { 2: true }); if (pl[0].yes !== true || pl[1].yes !== true) throw new Error('picks wrong: untouched keeps the recommendation, a pick wins');
+  dm.answer(pl, { 1: false }); if (pl[0].yes !== false || pl[1].yes !== false) throw new Error('a No pick or a recommended No was not kept');
+  pl[0].yes = true; pl[0].fired = 't1';
+  const sum = dm.summary(pl, id => id.toUpperCase()); if (!/✓ Yes: Write rows 8 and 9.*PCO started/.test(sum) || !/✗ No: Move ID 2/.test(sum) || !/not on the card/.test(sum)) throw new Error('summary wrong: ' + sum);
+  return 'three blocks parsed (one inside a code fence) · removed from the draft · no "to" = the same seat · unknown seat refused · an untouched switch keeps the recommendation, a pick wins · the record lists each yes with what it started and each no';
 });
 await step('brain updates: a proposed note change is parsed, refused when unsafe, and filed only inside the brain with a backup', async () => {
   const bn = await import('./brainnotes.mjs'); const os = await import('node:os');
@@ -1407,7 +1449,13 @@ else {
       const c = m.servers.filter(s => s.status === 'connected').length;
       return `${m.servers.length} servers · ${c} connected · agents get tools: ${m.tools ? 'yes' : 'no (API backend)'}${m.web ? ' + web' : ''}`;
     });
-    await step('server: /api/health carries the roster', async () => { if (!Array.isArray(up.agents) || up.agents.length !== 35) throw new Error('agents: ' + (up.agents && up.agents.length)); if (!up.agents[0].does) throw new Error('no job description'); });
+    await step('server: /api/health carries the roster', async () => { if (!Array.isArray(up.agents) || up.agents.length < 35) throw new Error('agents: ' + (up.agents && up.agents.length)); if (!up.agents[0].does) throw new Error('no job description'); });
+    await step('server: a desk with a file in assets/people gets a portrait the page can load', async () => {
+      const a = up.agents.find(x => x.portrait); if (!a) return 'no portraits in assets/people yet';
+      const r = await fetch(base + a.portrait); if (r.status !== 200 || !/^image\//.test(r.headers.get('content-type') || '')) throw new Error(a.portrait + ' → ' + r.status);
+      if ((await fetch(base + '/people/..%2Foffice.agents.json')).status !== 404) throw new Error('/people/ served a file outside assets/people');
+      return `${up.agents.filter(x => x.portrait).length} portraits · ${up.agents.filter(x => x.person).length} named desks`;
+    });
     await step('server: the office default is Sonnet and /api/usage always answers', async () => {
       if (up.model !== 'sonnet' || JSON.stringify(up.models) !== '["sonnet","opus","fable"]') throw new Error('health model: ' + up.model);
       if (up.effort !== (cfg.effort || '') || JSON.stringify(up.efforts) !== '["low","medium","high","xhigh","max"]') throw new Error('health effort: ' + up.effort);

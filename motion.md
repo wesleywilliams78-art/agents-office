@@ -35,6 +35,18 @@ The WRW logo. Use the white mark (`kit/logos/wrw-mark-white.png`) on red and ink
 - The theme is the rule, not the content: tell the story with new imagery, type and structure.
 - Side graphics should look like a professional motion editor made them. Wesley rejected a hand-drawn dragon as amateur. Geometry, charts, grids, 3D, morphing shapes and kinetic type all work. For The Art of Operations, the 6×5 grid of square "sites" building in a diagonal wave (see `videos/art-of-operations-title`) is a proven side graphic.
 
+## Before you render
+Idea lifted from OpenMontage (7 Nov 2026), written in our own words. One pass on the plan, not a review loop; it does not add a draft.
+1. **Promise.** Write one line first: what the viewer will know or feel by the end. After the render, check the finished frames against that line. A piece that does not deliver it is not done.
+2. **Slideshow check.** Fail the plan and fix it before rendering if any of these is true:
+   - the same layout, move or clip repeats without a reason;
+   - a visual is there only to decorate and says nothing the line does not;
+   - the motion is a fade or a drift where a spring would land the point;
+   - a shot has no job (it could be cut and nothing is lost);
+   - type carries the whole piece with no figure, shape or footage doing work;
+   - a claim on screen (a number, "proven", a before/after) has no source behind it.
+3. **Footage licence.** Any stock or archive clip gets one line kept with the piece: where it came from and the terms. No line, no clip. Footage that is cleaned up after going live keeps this record.
+
 ## Instagram reels (Art of Operations)
 - 15 s, 9:16, English then Chinese, text and a single figure centred. Grid plan: three rows, one colour each: black, white (bone), red. See memory `instagram-reel-format`.
 - LTX footage must be graded to the brand palette (neutral ink and grey, one red accent) before use; never ship the raw sepia cast.

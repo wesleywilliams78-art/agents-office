@@ -622,7 +622,7 @@ export function initTasks(ctx) {
     }
     apply(t, st);
   }
-  function copyResult(t, st) { if (st.needsOk !== undefined) t.needsOk = !!st.needsOk; if (st.channel) t.channel = st.channel; t.result = st.result; t.error = !!st.error; t.read = st.read || []; t.note = st.note; t.tools = st.tools || []; t.used = st.used || []; t.draft = st.draft; t.nextStep = st.nextStep; t.handedTo = st.handedTo; t.handoffFrom = st.handoffFrom; t.approved = !!st.approved; t.closed = !!st.closed; t.revisions = st.revisions || 0; if (st.modelUsed) { t.modelUsed = st.modelUsed; t.modelFrom = st.modelFrom; t.effortUsed = st.effortUsed || ''; t.effortFrom = st.effortFrom; } }
+  function copyResult(t, st) { if (st.needsOk !== undefined) t.needsOk = !!st.needsOk; if (st.channel) t.channel = st.channel; t.result = st.result; t.error = !!st.error; t.read = st.read || []; t.note = st.note; t.tools = st.tools || []; t.used = st.used || []; t.draft = st.draft; t.decisions = st.decisions; t.nextStep = st.nextStep; t.handedTo = st.handedTo; t.handoffFrom = st.handoffFrom; t.approved = !!st.approved; t.closed = !!st.closed; t.revisions = st.revisions || 0; if (st.modelUsed) { t.modelUsed = st.modelUsed; t.modelFrom = st.modelFrom; t.effortUsed = st.effortUsed || ''; t.effortFrom = st.effortFrom; } }
   // V3.2 (16 Sep): the server's team state → piece cards on the teammates' desks, notes as 💬, the lead's members list
   const seenNotes = new Set();
   function syncTeam(t, st, quiet) {
@@ -680,8 +680,8 @@ export function initTasks(ctx) {
   }
   // V3.9: the reader's APPROVE / REJECT (with its reason) — straight to the server by task id
   async function handover(t, opts) { const r = await post(`/tasks/${t.sid}/handover`, opts); if (r && r.ok) poll && poll(); return r; } // HAND OVER on the review card
-  async function approveTask(t) {
-    const r = await post(`/tasks/${t.sid}/approve`);
+  async function approveTask(t, picks) { // picks: the review card's Yes/No switches, { "1": true, "2": false }
+    const r = await post(`/tasks/${t.sid}/approve`, picks ? { decisions: picks } : {});
     if (r?.task) { apply(t, r.task); chatPush(t.agent, { who: 'agent', text: '✓ Approved — marked done and saved to your brain.' }); } // nothing to send: done now
     else { toDoing(t); chatPush(t.agent, { who: 'agent', text: t.channel === 'email' ? '✓ Approved — putting it in your Gmail drafts now. I never send email: you send it from your inbox.' : '✓ Approved — sending it now. It lands here when it is done.' }); }
     if (onDecided) onDecided(t.agent, true);

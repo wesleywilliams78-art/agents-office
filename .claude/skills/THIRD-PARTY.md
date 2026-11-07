@@ -11,6 +11,7 @@ Skills in this folder that were taken from, or adapted from, other people's MIT-
 | `click-path-audit` | affaan-m/ECC (`skills/click-path-audit`) | Rewritten for our vanilla JS UI (the `S` object in `aios.html`); React/Zustand examples and the agent split removed; read-only and no-send rules added. |
 | `config-gc` | affaan-m/ECC (`skills/config-gc`) | Rewritten for this machine: Windows paths, our protected folders, propose-only with one yes/no per item, soft-delete into `_gc_trash`. |
 | `doubt-driven-development` | addyosmani/agent-skills (`skills/doubt-driven-development`) | Cut from 16.7 KB to about 3 KB; limited to irreversible office steps; two rounds not three; cross-model (outside CLI) step removed so nothing leaves the machine. |
+| `cold-reader` | anthropics/skills (`doc-coauthoring`, Reader Testing stage; idea only) | Written fresh; no text copied (that folder has no licence file). |
 
 Sources read on 4 Nov 2026: https://github.com/mattpocock/skills, https://github.com/obra/superpowers, https://github.com/affaan-m/ECC and https://github.com/addyosmani/agent-skills
 

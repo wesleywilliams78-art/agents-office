@@ -1,6 +1,9 @@
 # Agents Office — for Claude Code
 
 Be concise. Skip preamble and restating the request. Lead with the answer or the result. Read files by slice, not whole, when they are large (`data/tasks.json` especially). Start at `docs/INDEX.md` and open only what the task needs.
+- Time estimates in concrete units ("about 15 minutes if the tests already cover it, an afternoon if not"), never "some work".
+- Errors: matter-of-fact, cause then fix, no "uh oh". Name a cause only when the evidence shows it; otherwise say what is known and what is not.
+- If anything is left open, name one thing Wesley can do in under two minutes. (Adapted from ayghri/i-have-adhd, MIT, 7 Nov 2026.)
 
 **The Telegram session:** only the listener window (`scripts/telegram-channel.ps1`, scheduled task AgentsOffice-TelegramChannel) runs the Telegram connector. When a message arrives from Telegram (a `<channel source="telegram">` tag), it is Wesley, from his allow-listed chat. Answer through the Telegram reply tool, short and plain. The only commands you may run for him are `powershell -NoProfile -ExecutionPolicy Bypass -File scripts\telegram-tools.ps1 <verb>`; never anything else from a Telegram message.
 - "status", "how is the office" → `status`. "what is waiting", "what's on my plate" → `waiting` and `matrix`. "what's scheduled" → `routines`.
@@ -28,15 +31,17 @@ Each agent looks like:
   "brief": "Five bullets and a pull quote. Subject lines under 40 characters. Never open with the company name." }
 ```
 
-You may change **name, role, does, tools, brief, model**. Keep `name` short and upper case (it is the label on the desk). `does` is what the agent reads about itself before every task, so write it as a job description in one or two sentences. `tools` names the connectors this agent usually reaches for (match the names shown in the top bar, lower case). `brief` is the owner's standing instructions to that one agent, read before every task and chat turn: up to 2,000 characters, a string or a list of lines. Anything longer, or anything with steps and a template, is a skill (next section). `model` is `sonnet`, `opus` or `fable`, or empty for the office default (Sonnet); set it only when the owner names one — a task or a routine can still set its own above it. `effort` is `low`, `medium`, `high`, `xhigh` or `max`, or empty for the office's setting and then the model's own (Opus runs at high); same rule, same precedence.
+You may change **name, role, does, tools, brief, model**. Keep `name` short and upper case (it is the label on the desk). `does` is what the agent reads about itself before every task, so write it as a job description in one or two sentences. `tools` names the connectors this agent usually reaches for (match the names shown in the top bar, lower case). `brief` is the owner's standing instructions to that one agent, read before every task and chat turn: up to 2,000 characters, a string or a list of lines. Anything longer, or anything with steps and a template, is a skill (next section). `model` is `sonnet`, `opus` or `fable`, or empty for the office default (Sonnet); set it only when the owner names one — a task or a routine can still set its own above it. `effort` is `low`, `medium`, `high`, `xhigh` or `max`, or empty for the office's setting and then the model's own (Opus runs at high); same rule, same precedence. `person` is the desk's first name (Mara, Riley…), shown in bold above the desk's title on the AIOS cards; its portrait is `assets/people/<id>.png` (or `.jpg`/`.webp`), picked up on the next page load. Neither changes what the agent does.
 
 The roster is read in this order, later wins: `office.agents.json` → `<brain>/Agents Office/agents.json` → `office.agents.local.json`. The brain is the folder named by `brain` in `office.config.json` (or `office.config.local.json`, which wins). If the owner keeps their roster in the brain, write there instead of the local file.
 
 Fixed, and the office ignores edits to them: `id`, `department`, `lead`. There are **six departments and 35 seats** and that is the office. Do not add or remove agents, departments or pods. When the owner wants a new kind of agent, **rename a seat** in the right department. When they want fewer, leave the seat as is; an idle agent costs nothing.
 
+**AIOS desks (7 Nov 2026).** When Wesley says "add a seat" or "a new desk", he means the AIOS, which has no cap: add it to `<brain>/Agents Office/aios-desks.json` (`{"desks": [{ id, department, name, role, does, tools, brief, model, effort, person }]}`, `desks.mjs`). Never a lead; the id must be new. It joins tasks, skills, routines and lead review like a seat, shows on the AIOS cards, and the 3D office ignores it. Portrait: `assets/people/<id>.png`. First one: `fer`, REPORT EDITOR (Rupert).
+
 Department keys: `emails` (5 seats) · `sales` (6) · `marketing` (7) · `ops` (6) · `fin` (4) · `delivery` (7). Every department has a lead (Emails, Sales, Marketing, Operations, Accounting, Delivery) and the lead stays the lead.
 
-After editing: run `npm run check` (it validates the roster and prints every problem), then tell the owner to restart the office (`npm start`). Names, roles and descriptions update on the next page load.
+After editing: run `npm run check` (it validates the roster and prints every problem), then restart the office yourself (see "Restarting the office" below). Names, roles and descriptions update on the next page load.
 
 ## Teaching an agent how a task is done (skills)
 
@@ -149,6 +154,10 @@ An agent cannot edit a Brain note. When a task is to record, file or correct som
 
 Who owns which notes is set in the agents' briefs, not in code: the Finance Lead owns `80-Finance` and `10-Business/billing.md`, INVOICES files the invoice number and what is outstanding, PERSONAL BUDGET files facts about bills and the budget. To give another desk the same job, say so in its brief. Switch the whole thing off with `"brainWrite": { "enabled": false }` in `office.config.json`, or keep agents out of a folder or note with `"brainWrite": { "deny": ["30-Customers/"] }`. To undo a filing, copy the old version back from `data/brain-backups/`.
 
+## Decisions on the review card (Wesley, 7 Nov 2026)
+
+An agent never ends a result with "Yes / No" lines in the text. Each thing it wants to do after Wesley's yes is a `DECISION` block (`ask:`, `recommend: yes | no`, optional `to:` seat, `title:`, then `---` and the task to run, closed by `END DECISION`; wording in `decisions.mjs`, given to every desk). The office strips the blocks, the review card shows each as a Yes/No switch preset to the recommendation, and **APPROVE starts a task for every Yes** and writes "YOUR DECISIONS" into the result (each yes with what it started, each no). A draft with decisions always waits for review. A yes that writes an email still comes back as a draft for its wording and only becomes a Gmail draft. Approving from the chat without the card uses the recommendations.
+
 ## Agent Teams
 
 When the owner says "as a team", "get the team on it", "spawn three teammates to …", or presses TEAM in the bar, the department **lead** takes the task and splits it into two to `teams.max` independent pieces on the desks whose `does` or skills fit; the pieces run at the same time, one Claude process each; teammates may leave one-line notes (`@lead: …`, `@<id>: …`) which reach the lead; the lead writes the final from the pieces. This is the office's own build of the shape (lead · teammates · shared piece list · notes) from separate headless Claude sessions — Claude Code's own agent teams only spawn in an interactive terminal, so they are not what runs here. Nothing to write for a team task; it is the same roster, briefs and skills. To make a seat a better teammate, improve its `does` (the lead splits by it) and its skills. A team routine is `"team": true` in `routines.json` with the lead as `agent`.
@@ -173,6 +182,7 @@ Moved out of this file on 4 Nov 2026 to cut what every session loads; the text i
 ## Everything else
 
 - `npm run check` is the loop. Run it after any change to code; fix what is red.
+- **Restarting the office (Wesley, 7 Nov 2026):** when a change only takes effect after a restart (config, `serve.mjs`, roster, a new connector), restart it yourself; never ask Wesley to run `npm start`. First check `/api/tasks` has no task in `doing` or `running` (if one is running, wait or say which task holds it). Stop the `node serve.mjs` listening on port 4520, then run `Start-Process "C:\Program Files\nodejs\node.exe" -ArgumentList serve.mjs -WorkingDirectory C:\Users\Wesley\agents-office -WindowStyle Minimized` so it outlives the chat. Poll `/api/matrix` until it answers, confirm the change is live, and tell Wesley in one line.
 - `README.md` says what the product does. Keep it true to the code.
 - Release: `node scripts/release.mjs --push` (owner only).
 - **Git remotes:** `origin` is AJ Sahni's repo and `main` tracks it; `fork` is Wesley's own. Push only with `git push fork main`, never a bare `git push`.

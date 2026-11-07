@@ -97,6 +97,9 @@
   .seat { padding: 9px 12px; border-bottom: 1px solid var(--line); cursor: pointer; }
   .seat:last-child { border-bottom: 0; }
   .seat:hover { background: var(--soft); }
+  .seat .r0 { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
+  .seat .r0 img { width: 28px; height: 28px; border-radius: 8px; object-fit: cover; flex: none; background: var(--soft); }
+  .seat .r0 b { font-size: 13.5px; font-weight: 700; }
   .seat .r1 { display: flex; align-items: center; gap: 7px; }
   .seat .nm { font-size: 11px; font-weight: 700; letter-spacing: .1em; }
   .seat .role { color: var(--grey); font-size: 11.5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
@@ -196,11 +199,11 @@
   .tag.cal { cursor: pointer; color: var(--q-plan); border-color: color-mix(in srgb, var(--q-plan) 45%, transparent); }
   .tag.cal:hover { background: color-mix(in srgb, var(--q-plan) 12%, transparent); }
   .tag.cal.on { cursor: default; color: var(--ok); border-color: color-mix(in srgb, var(--ok) 45%, transparent); }
+  .tag.lnk { cursor: pointer; color: var(--ink, inherit); border-color: color-mix(in srgb, currentColor 45%, transparent); }
+  .tag.lnk:hover { background: color-mix(in srgb, currentColor 12%, transparent); }
   .tag.due { padding: 0 2px 0 6px; }
   .tag.due .dueInput { border: 0; background: none; padding: 0; margin: 0; font: inherit; color: inherit; width: 96px; cursor: pointer; }
   .tag.due .dueInput:focus { outline: none; color: var(--ink); }
-  .tag.lnk { cursor: pointer; color: var(--ink, inherit); border-color: color-mix(in srgb, currentColor 45%, transparent); }
-  .tag.lnk:hover { background: color-mix(in srgb, currentColor 12%, transparent); }
 
   /* activity */
   .cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr)); gap: 12px; }
@@ -510,6 +513,8 @@
   .hx-node .hx-k { font-size: 10.5px; letter-spacing: .2em; text-transform: uppercase; color: var(--grey); display: flex; align-items: center; gap: 8px; }
   .hx-node .hx-k .hx-st { margin-left: auto; letter-spacing: .14em; color: var(--sc); display: inline-flex; align-items: center; gap: 6px; }
   .hx-node .hx-t { font: 300 30px/1.05 var(--serif); margin: 8px 0 6px; letter-spacing: -.005em; }
+  .hx-node .hx-lp { display: flex; align-items: center; gap: 10px; margin: 4px 0 10px; font: 700 16px/1.2 var(--ui); letter-spacing: 0; }
+  .hx-node .hx-lp img { width: 52px; height: 52px; border-radius: 14px; object-fit: cover; flex: none; background: var(--soft); }
   .hx-node .hx-s { color: var(--grey); font-size: 13px; max-width: 52ch; }
   .hx-node .hx-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
   .hx-chip { font-size: 10px; letter-spacing: .14em; text-transform: uppercase; padding: 5px 10px; border-radius: 999px; border: 1px solid color-mix(in srgb, var(--ink) 45%, transparent); }
@@ -539,6 +544,11 @@
   .hx-desk.on { border-color: var(--sc); box-shadow: 0 0 0 1px var(--sc); }
   .hx-desk.st-waiting, .hx-desk.st-rework { border-color: var(--sc); box-shadow: 0 0 0 1px var(--sc), 0 8px 22px -12px var(--sc); }
   .hx-desk .hx-dh { display: flex; align-items: center; gap: 8px; font-size: 12px; letter-spacing: .02em; font-weight: 600; }
+  .hx-desk .hx-pic { position: relative; flex: none; width: 46px; height: 46px; }
+  .hx-desk .hx-pic img { width: 100%; height: 100%; border-radius: 12px; object-fit: cover; display: block; background: var(--soft); }
+  .hx-desk .hx-pic .hx-pulse { position: absolute; right: -3px; bottom: -3px; box-shadow: 0 0 0 2px var(--card, var(--panel)); }
+  .hx-desk .hx-nm { display: flex; flex-direction: column; min-width: 0; line-height: 1.25; }
+  .hx-desk .hx-nm b { font-size: 14.5px; font-weight: 700; letter-spacing: 0; }
   .hx-desk .hx-dh em { margin-left: auto; font-style: normal; font-size: 9.5px; letter-spacing: .14em; color: var(--sc); font-weight: 500; }
   .hx-desk .hx-dr { color: var(--grey); font-size: 12px; margin: 4px 0 8px; }
   .hx-desk .hx-dl { color: var(--faint); font-size: 11.5px; line-height: 1.4; }
@@ -569,6 +579,16 @@
   .hxt-b { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 7px; } .hxt-b .tag.rw { color: var(--warn); border-color: color-mix(in srgb, var(--warn) 55%, transparent); }
   .hxt-c .btn { display: inline-block; margin-top: 8px; font-size: 10px; letter-spacing: .12em; }
   .hxt-e { color: var(--faint); font-size: 12px; padding: 4px 2px; }
+  /* "Hey Wesley, N for you" (7 Nov 2026): a speech bubble on the chief's or a lead's node for anything that waits on Wesley, opening a list he acts on */
+  .hx-say { position: relative; display: inline-block; margin-top: 16px; border: 0; border-radius: 14px; padding: 8px 14px; background: var(--hx-need); color: #fff; font: 600 12.5px/1 var(--ui); letter-spacing: .02em; cursor: pointer; box-shadow: 0 6px 18px -8px var(--hx-need); }
+  .hx-say::after { content: ''; position: absolute; left: 18px; top: -6px; border-left: 6px solid transparent; border-right: 6px solid transparent; border-bottom: 7px solid var(--hx-need); }
+  .hx-say:hover { filter: brightness(1.08); }
+  .hx-fy { display: grid; gap: 8px; margin-top: 14px; }
+  .hx-fy-i { border: 1px solid color-mix(in srgb, var(--hx-need) 55%, var(--line)); border-radius: 14px; padding: 10px 12px; background: var(--soft); min-width: 0; }
+  .hx-fy-t { font-size: 13px; font-weight: 600; line-height: 1.35; overflow-wrap: anywhere; } .hx-fy-m { color: var(--grey); font-size: 11.5px; margin-top: 3px; }
+  .hx-fy-w { font-size: 12px; line-height: 1.45; margin-top: 7px; overflow-wrap: anywhere; }
+  .hx-fy-p { margin: 8px 0 0; padding: 9px 10px; max-height: 180px; overflow: auto; border-radius: 10px; border: 1px solid var(--line); background: var(--card, var(--panel)); font: 11.5px/1.45 ui-monospace, Consolas, monospace; white-space: pre-wrap; overflow-wrap: anywhere; }
+  .hx-fy .yn { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; } .hx-fy .btn { display: inline-block; margin-top: 8px; font-size: 10px; letter-spacing: .12em; } .hx-fy .why { display: block; margin-top: 6px; color: var(--bad); font-size: 11.5px; }
   @media (max-width: 1380px) { .hxt-row { grid-template-columns: repeat(2, minmax(0, 1fr)); } .hxt-col::after { display: none; } }
   @media (max-width: 860px) { .hxt-row { grid-template-columns: 1fr; } }
   @media (max-width: 760px) { .hx { padding: 18px 12px 16px; } .hx-node { padding: 16px; } .hx-node .hx-t { font-size: 26px; } .hx-link span { left: calc(50% + 28px); max-width: 24ch; } .hx-desks { grid-template-columns: 1fr; } }
@@ -584,7 +604,9 @@
   .wkEv b { font-weight: 600; } .wkEv i { font-style: normal; font-size: 9.5px; color: var(--faint); margin-left: 5px; text-transform: uppercase; letter-spacing: .06em; }
   .wkEv.g { border-left: 3px solid var(--c); } .wkEv.g.all { background: color-mix(in srgb, var(--c) 22%, transparent); } .wkEv.g.free { opacity: .6; }
   .wkEv.o { border-left: 3px solid var(--faint); } .wkEv.due { border-left: 3px solid #B4830B; } .wkEv.due.late { border-left-color: var(--red, #C8553D); } .wkEv.due.clash { box-shadow: inset 0 0 0 1px var(--red, #C8553D); }
-  .wkNone { font-size: 11px; color: var(--faint); } a.wkEv { color: inherit; text-decoration: none; display: block; }
+  .wkNone { font-size: 11px; color: var(--faint); }
+  .wkMore { font: inherit; font-size: 10.5px; letter-spacing: .06em; text-transform: uppercase; color: var(--faint); background: none; border: 1px dashed var(--line); border-radius: 8px; padding: 5px 7px; cursor: pointer; text-align: left; }
+  .wkMore:hover { color: inherit; border-style: solid; } a.wkEv { color: inherit; text-decoration: none; display: block; }
   @media (max-width: 1100px) { .wkGrid { grid-template-columns: repeat(4, minmax(0, 1fr)); } } @media (max-width: 640px) { .wkGrid { grid-template-columns: 1fr 1fr; } }
   .nTiles { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
   .nTile { text-align: left; font: inherit; color: var(--ink); background: var(--panel); border: 1px solid var(--line); border-radius: 16px; padding: 12px 14px; cursor: pointer; display: grid; gap: 2px; }
@@ -1157,6 +1179,10 @@ if (!window.__needsBound) { window.__needsBound = true;
 // This week (V3.12, 3 Nov): Wesley's Google Calendar (read-only, from its private feeds, /api/gcal) beside the office's own dated work,
 // day by day for seven days: matrix items by due date, scheduled tasks, routine runs. A day with six hours or more booked is marked busy,
 // so a matrix item due that day stands out.
+const WEEK_MAX = 5;
+if (!window.__weekBound) { window.__weekBound = true;
+  document.addEventListener('click', e => { const b = e.target.closest('[data-wkmore]'); if (!b) return; S.weekOpen = S.weekOpen || new Set(); const k = b.dataset.wkmore; S.weekOpen.has(k) ? S.weekOpen.delete(k) : S.weekOpen.add(k); renderWeek(); });
+}
 async function loadGcal() { try { S.gcal = await api('/gcal?from=' + new Date().setHours(0, 0, 0, 0) + '&to=' + (new Date().setHours(0, 0, 0, 0) + 8 * 864e5)); } catch { S.gcal = S.gcal || null; } renderWeek(); }
 function renderWeek() {
   const el = $('week'); if (!el) return;
@@ -1171,12 +1197,13 @@ function renderWeek() {
       ...gev.filter(e => e.allDay).map(e => ({ at: d - 1, html: `<div class="wkEv g all" style="--c:${esc(e.colour || '#4285F4')}" title="${esc(e.cal)} · all day${e.location ? ' · ' + esc(e.location) : ''}">${esc(e.title)}</div>` })),
       ...gev.filter(e => !e.allDay).map(e => ({ at: e.start, html: `<div class="wkEv g${e.free ? ' free' : ''}" style="--c:${esc(e.colour || '#4285F4')}" title="${esc(e.cal)} · ${hm(e.start)}–${hm(e.end)}${e.location ? ' · ' + esc(e.location) : ''}"><b>${hm(Math.max(e.start, d))}</b> ${esc(e.title)}</div>` })),
       ...S.tasks.filter(t => t.state === 'scheduled' && t.dueAt >= d && t.dueAt < end).map(t => ({ at: t.dueAt, html: `<div class="wkEv o" title="Scheduled task · ${esc(who(t.agent))}"><b>${hm(t.dueAt)}</b> ${esc(t.title)}<i>scheduled</i></div>` })),
-      ...S.routines.filter(r => !r.paused && r.nextAt >= d && r.nextAt < end).map(r => ({ at: r.nextAt, html: `<div class="wkEv o" title="Routine · ${esc(who(r.agent))}"><b>${hm(r.nextAt)}</b> ${esc(r.title)}<i>routine</i></div>` })),
+      ...S.routines.filter(r => !r.paused).flatMap(r => (r.upcoming || [r.nextAt]).filter(at => at >= d && at < end).map(at => ({ at, html: `<div class="wkEv o" title="Routine · ${esc(who(r.agent))}"><b>${hm(at)}</b> ${esc(r.title)}<i>routine</i></div>` }))),
       ...(i === 0 && open.some(it => it.due < k) ? [{ at: end - 2, html: `<a class="wkEv due late" href="#matrix">${open.filter(it => it.due < k).length} overdue on the matrix<i>open</i></a>` }] : []),
       ...open.filter(it => it.due === k).map(it => ({ at: end - 1, html: `<div class="wkEv due${it.due < k ? ' late' : ''}${busy >= 6 ? ' clash' : ''}" title="${it.due < k ? 'Overdue since ' + esc(it.due) : 'Due'}${busy >= 6 ? ' on a day with ' + busy.toFixed(1) + ' h booked' : ''}">${esc(it.title)}<i>${it.due < k ? 'overdue' : 'due'}</i></div>` })),
     ].sort((a, b) => a.at - b.at);
-    const dt = new Date(d);
-    return `<div class="wkDay${i === 0 ? ' today' : ''}${busy >= 6 ? ' busy' : ''}"><div class="wkH"><span>${dt.toLocaleDateString('en-GB', { weekday: 'short' })} <b>${dt.getDate()}</b></span>${busy ? `<em>${busy >= 6 ? 'busy · ' : ''}${busy.toFixed(busy % 1 ? 1 : 0)} h booked</em>` : ''}</div>${items.length ? items.map(x => x.html).join('') : '<div class="wkNone">Nothing booked</div>'}</div>`;
+    const dt = new Date(d), open5 = S.weekOpen && S.weekOpen.has(k), shown = open5 ? items : items.slice(0, WEEK_MAX); // at most five a day until "Show more" (7 Nov 2026)
+    const more = items.length > WEEK_MAX ? `<button type="button" class="wkMore" data-wkmore="${k}">${open5 ? 'Show less' : `Show ${items.length - WEEK_MAX} more`}</button>` : '';
+    return `<div class="wkDay${i === 0 ? ' today' : ''}${busy >= 6 ? ' busy' : ''}"><div class="wkH"><span>${dt.toLocaleDateString('en-GB', { weekday: 'short' })} <b>${dt.getDate()}</b></span>${busy ? `<em>${busy >= 6 ? 'busy · ' : ''}${busy.toFixed(busy % 1 ? 1 : 0)} h booked</em>` : ''}</div>${items.length ? shown.map(x => x.html).join('') + more : '<div class="wkNone">Nothing booked</div>'}</div>`;
   }).join('');
   const st = !g ? '' : !g.configured ? '<span class="z">Google Calendar not connected yet: add your calendar’s private iCal address to office.config.local.json → aios.calendars.</span>'
     : g.calendars.map(c => `<span class="wkCal${c.ok ? '' : ' bad'}" title="${c.ok ? 'read ' + ago(c.at) : esc(c.error || '')}"><i style="background:${esc(c.colour || '#4285F4')}"></i>${esc(c.name)}${c.ok ? '' : ' · not read'}</span>`).join('') + `<span class="z">read ${ago(g.at)}</span>`;
@@ -2847,6 +2874,7 @@ function renderRoles() {
         const stTxt = st.key === 'doing' ? 'WORKING' : st.key === 'waiting' ? 'WAITING' : st.key === 'error' ? 'LAST RUN FAILED' : 'IDLE';
         const model = a.model ? `${MODEL[a.model] || a.model} (own)` : `${MODEL[office] || office} (office)`;
         return `<div class="seat${open ? ' open' : ''}" data-seat="${esc(a.id)}">
+          ${a.person ? `<div class="r0">${a.portrait ? `<img src="${esc(a.portrait)}" alt="" loading="lazy">` : ''}<b>${esc(a.person)}</b></div>` : ''}
           <div class="r1"><span class="nm">${esc(a.name)}</span>${a.lead ? '<span class="tag lead">LEAD</span>' : ''}<span class="role">${esc(a.role)}</span>
             <span class="st"><span class="ready" title="role · brief · skill">${r.map(x => `<i class="${x ? 'f' : ''}"></i>`).join('')}</span><span class="dot ${st.key}"></span>${stTxt}</span></div>
           <div class="does">${esc(a.does)}</div>
@@ -2910,17 +2938,6 @@ function renderNews() {
   const { entered } = morph([[$('news'), html]], { key: '[data-k]', enter: 'rise', ghosts: false }); // 7
   for (const n of entered) if (n.classList.contains('hot')) n.querySelector('.nic')?.animate([{ transform: 'none' }, { transform: 'scale(1.35)' }, { transform: 'none' }], { duration: 700, delay: 600, easing: 'cubic-bezier(.3,0,.2,1)' });
 }
-function itemHtml(i) {
-  const a = agentBy(i.agent), d = DEPTS[i.dept] || DEPTS.owner, open = S.openItem.has(i.id);
-  const task = i.task && S.tasks.find(t => t.id === i.task);
-  const taskTxt = task ? (task.state === 'waiting' ? 'draft waiting on your OK' : task.state === 'done' ? (task.error ? 'task failed' : 'task done') : 'task running') : '';
-  return `<div class="item ${i.state}${open ? ' x' : ''}" draggable="true" data-item="${esc(i.id)}">
-    <div class="it">${esc(i.title)}</div>
-    <div class="im"><span class="tag" style="border-color:${d.chip}">${d.name}</span>${a ? `<span class="tag">${esc(a.name)}</span>` : ''}${i.gap ? `<span class="tag gap">${GAPS[i.gap] || i.gap}</span>` : ''}<span class="tag due"><input type="date" class="dueInput" value="${esc(i.due || '')}" data-orig="${esc(i.due || '')}" data-item="${esc(i.id)}" title="Change the due date"></span>${calTag(i)}${itemLinks(i)}${i.state !== 'open' ? `<span class="tag">${esc(i.state.toUpperCase())}</span>` : ''}${taskTxt ? `<span class="tag">${taskTxt}</span>` : ''}</div>
-    <div class="id">${esc(i.detail)}${i.why ? ` <i>(${esc(i.why)})</i>` : ''}</div>
-    <div class="ia">
-      ${i.state === 'open' && DEPTS[i.dept] && i.dept !== 'owner' ? `<button data-act="send">SEND TO ${esc(a ? a.name : d.name)}</button>` : ''}
-      ${i.state !== 'done' ? '<button data-act="done">DONE</button>' : ''}
 // 7 Nov: one click to where the work is — the card's own link (from the desk or the reader), then the client's standing
 // links (office.config → aios.clients[].links, shown when one of its "match" words is on the card). Web opens a tab,
 // a folder or file on this computer opens in Explorer through /api/open.
@@ -2932,6 +2949,17 @@ function itemLinks(i) {
     if (!Array.isArray(l.match) || !l.match.length || l.match.some(w => new RegExp('\\b' + String(w).toLowerCase().replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).test(text))) add(String(l.label || 'LINK').toUpperCase(), l.url);
   return out.map(l => `<button type="button" class="tag lnk" data-lnk="${esc(l.url)}" title="Open ${esc(l.url)}">↗ ${esc(l.label)}</button>`).join('');
 }
+function itemHtml(i) {
+  const a = agentBy(i.agent), d = DEPTS[i.dept] || DEPTS.owner, open = S.openItem.has(i.id);
+  const task = i.task && S.tasks.find(t => t.id === i.task);
+  const taskTxt = task ? (task.state === 'waiting' ? 'draft waiting on your OK' : task.state === 'done' ? (task.error ? 'task failed' : 'task done') : 'task running') : '';
+  return `<div class="item ${i.state}${open ? ' x' : ''}" draggable="true" data-item="${esc(i.id)}">
+    <div class="it">${esc(i.title)}</div>
+    <div class="im"><span class="tag" style="border-color:${d.chip}">${d.name}</span>${a ? `<span class="tag">${esc(a.name)}</span>` : ''}${i.gap ? `<span class="tag gap">${GAPS[i.gap] || i.gap}</span>` : ''}<span class="tag due"><input type="date" class="dueInput" value="${esc(i.due || '')}" data-orig="${esc(i.due || '')}" data-item="${esc(i.id)}" title="Change the due date"></span>${calTag(i)}${itemLinks(i)}${i.state !== 'open' ? `<span class="tag">${esc(i.state.toUpperCase())}</span>` : ''}${taskTxt ? `<span class="tag">${taskTxt}</span>` : ''}</div>
+    <div class="id">${esc(i.detail)}${i.why ? ` <i>(${esc(i.why)})</i>` : ''}</div>
+    <div class="ia">
+      ${i.state === 'open' && DEPTS[i.dept] && i.dept !== 'owner' ? `<button data-act="send">SEND TO ${esc(a ? a.name : d.name)}</button>` : ''}
+      ${i.state !== 'done' ? '<button data-act="done">DONE</button>' : ''}
       ${i.state === 'open' ? '<button data-act="drop">DROP</button>' : '<button data-act="reopen">REOPEN</button>'}
       <button data-act="delete">REMOVE</button>
     </div></div>`;
@@ -3001,6 +3029,11 @@ document.addEventListener('click', e => {
   const pb = e.target.closest('button[data-propose]'); if (pb) { proposeRevision(pb.dataset.propose, pb); return; }
   const db = e.target.closest('button[data-doneprop]'); if (db) { db.disabled = true; api('/skill-audit/done', { method: 'POST', body: { skill: db.dataset.doneprop } }).then(poll).catch(er => { db.disabled = false; $('skMsg').className = 'msg err'; $('skMsg').textContent = 'Could not mark it done: ' + er.message; }); return; }
   const cb = e.target.closest('button[data-copyprop]'); if (cb) { const el = document.querySelector(`[data-prop="${CSS.escape(cb.dataset.copyprop)}"]`); navigator.clipboard.writeText(el ? el.textContent : '').then(() => { cb.textContent = 'COPIED ✓'; setTimeout(() => { cb.textContent = 'COPY'; }, 1500); }).catch(() => { cb.textContent = 'COPY FAILED'; }); return; }
+  const lk = e.target.closest('button[data-lnk]');
+  if (lk) { const u = lk.dataset.lnk;
+    if (/^https?:/i.test(u)) window.open(u, '_blank', 'noopener');
+    else api('/open', { method: 'POST', body: { path: u } }).then(() => { $('fMsg').className = 'msg'; $('fMsg').textContent = 'Opened ' + u; }).catch(er => { $('fMsg').className = 'msg err'; $('fMsg').textContent = 'Could not open it: ' + er.message; });
+    return; }
   const b = e.target.closest('button[data-act]');
   if (b) { const id = b.closest('[data-item]').dataset.item; b.disabled = true; act(id, b.dataset.act); return; }
   const m = e.target.closest('button[data-matrix]');
@@ -3012,11 +3045,6 @@ document.addEventListener('click', e => {
   if (s) { const id = s.dataset.seat; S.openSeat.has(id) ? S.openSeat.delete(id) : S.openSeat.add(id); renderRoles(); }
 });
 // drag an item to another quadrant: the owner's call beats the office's
-  const lk = e.target.closest('button[data-lnk]');
-  if (lk) { const u = lk.dataset.lnk;
-    if (/^https?:/i.test(u)) window.open(u, '_blank', 'noopener');
-    else api('/open', { method: 'POST', body: { path: u } }).then(() => { $('fMsg').className = 'msg'; $('fMsg').textContent = 'Opened ' + u; }).catch(er => { $('fMsg').className = 'msg err'; $('fMsg').textContent = 'Could not open it: ' + er.message; });
-    return; }
 let dragId = null;
 document.addEventListener('dragstart', e => { const it = e.target.closest?.('[data-item]'); dragId = it ? it.dataset.item : null; if (it) it.classList.add('dragging'); });
 document.addEventListener('dragend', e => { e.target.closest?.('[data-item]')?.classList.remove('dragging'); });
@@ -3197,13 +3225,14 @@ loadTrackers(); setInterval(() => { if (!document.hidden && !Object.values(S.tkB
   let chiefBusy = false, chiefAt = 0;
   const node = (cls, sc, on, k, status, title, sub, extra = '', style = '') => `<div class="hx-node ${cls}${on ? ' on' : ''}" style="--sc:${sc};${style}"><div class="hx-k">${k}<span class="hx-st"><i class="hx-pulse"></i>${status}</span></div><div class="hx-t">${title}</div><div class="hx-s">${sub}</div>${extra}</div>`;
   const link = (live, hot, label, sub, colour) => `<div class="hx-link${live ? ' flow' : ''}${hot ? ' hot' : ''}" style="--lc:${colour || 'var(--faint)'}"><i class="dn"></i><i class="up"></i><span><b>${label}</b>${sub}</span></div>`;
+  const face = (person, id) => `<span class="hx-lp"><img src="/people/${id}.png" alt="" loading="lazy">${person}</span>`; // the two fixed nodes above the leads: not roster seats, so name and portrait (assets/people/<id>.png) are set here
   function desk(a) {
     const st = seatState(a), isOpen = sel === a.id, r = readiness(a), office = S.health?.model || 'sonnet';
     const k = (st.key === 'doing' && lrOf(st.doing) === 'rework') ? 'rework' : st.key; // the lead sent this desk's draft back
     const last = st.doing ? (k === 'rework' ? `Reworking after the lead, round ${st.doing.leadReview.round}: ` : 'Now: ') + esc(st.doing.title) : st.waiting ? 'Waiting on you: ' + esc(st.waiting.title) : st.last ? `Last: ${esc(st.last.title)} · ${ago(st.last.doneAt)}` : 'No work yet.';
     const model = a.model ? `${MODEL[a.model] || a.model} (own)` : `${MODEL[office] || office} (office)`;
     return `<div class="hx-desk st-${k}${k === 'doing' || k === 'waiting' || k === 'rework' ? ' on' : ''}${isOpen ? ' sel' : ''}" data-hseat="${esc(a.id)}" style="--sc:${COL[k] || COL.idle}">
-      <div class="hx-dh"><i class="hx-pulse"></i>${esc(tc(a.name))}<em>${TXT[k] || 'Idle'}</em></div>
+      <div class="hx-dh">${a.portrait ? `<span class="hx-pic"><img src="${esc(a.portrait)}" alt="" loading="lazy"><i class="hx-pulse"></i></span>` : '<i class="hx-pulse"></i>'}${a.person ? `<span class="hx-nm"><b>${esc(a.person)}</b><span>${esc(tc(a.name))}</span></span>` : esc(tc(a.name))}<em>${TXT[k] || 'Idle'}</em></div>
       <div class="hx-dr">${esc(a.role)}</div>
       ${isOpen ? `<div class="hx-dd">${esc(a.does)}</div><div class="hx-tags"><span class="tag">${esc(model)}</span>${a.effort ? `<span class="tag">effort ${esc(a.effort)}</span>` : ''}<span class="tag ${a.brief ? 'good' : 'miss'}">${a.brief ? 'BRIEF' : 'NO BRIEF'}</span><span class="tag ${roleSkills(a).length ? 'good' : 'miss'}">${roleSkills(a).length ? 'SKILL: ' + esc(roleSkills(a).join(', ')) : 'NO ROLE SKILL'}</span>${a.lessons ? `<span class="tag">${a.lessons} lesson${a.lessons > 1 ? 's' : ''}</span>` : ''}${(a.tools || []).map(t => `<span class="tag">${esc(t)}</span>`).join('')}</div>` : ''}
       <div class="hx-dl">${last} · ${st.done} done in total</div></div>`;
@@ -3250,6 +3279,27 @@ loadTrackers(); setInterval(() => { if (!document.hidden && !Object.values(S.tkB
       : `<div class="hxt-ls done">${ls.status === 'applied' ? `Lesson adopted into ${ls.target === 'skill' ? esc(ls.skill) : `${dn}'s standing rules`}${ls.skipped ? ' (it was already there)' : ''}.` : 'Lesson declined. Nothing was written.'}</div>`;
     return `<div class="hxt-c"><div class="hxt-t">${esc(t.title)}</div><div class="hxt-m"><span>${esc(a ? tc(a.name) : t.agent)}</span>${since ? `<span>${ago(since)}</span>` : ''}</div>${badges.length ? `<div class="hxt-b">${badges.join('')}</div>` : ''}${open}${lesson}${stage === 4 ? `<a class="btn" href="/#review=${encodeURIComponent(t.id)}" target="agentsOffice">REVIEW IN THE OFFICE ↗</a>` : ''}</div>`;
   }
+  // ---- "Hey Wesley, N for you": what waits on him, said by the node that owns it (the lead for a drawn department, the chief for the rest) ----
+  let say = ''; // the node whose list is open: a department key, or 'chief'
+  const forYou = t => { // what Wesley has to do on this task, if anything: give his OK, run a Claude Code step, or hand it on
+    if (t.closed) return '';
+    if (t.state === 'waiting') return 'ok';
+    if (t.state !== 'done' || t.actedAt || !t.doneAt || Date.now() - t.doneAt > 7 * 864e5) return '';
+    if (t.forYou && t.forYou.prompts && t.forYou.prompts.length) return 'cc';
+    if (t.nextStep && t.nextStep.to && !(t.handedTo || []).length) return 'next';
+    return '';
+  };
+  const fyItems = keep => S.tasks.filter(t => keep(t.dept) && forYou(t)).sort((a, b) => (a.waitingAt || a.doneAt || 0) - (b.waitingAt || b.doneAt || 0));
+  function fyItem(t) {
+    const k = forYou(t), a = agentBy(t.agent), who = esc(a ? tc(a.name) : t.agent), id = esc(t.id), ns = t.nextStep || {};
+    const head = `<div class="hx-fy-t">${esc(t.title)}</div><div class="hx-fy-m">${who} · ${k === 'ok' ? 'waiting for your OK' : k === 'cc' ? 'a step only Claude Code can do' : 'suggests a hand-over'}</div>`;
+    const body = k === 'ok' ? `<a class="btn" href="/#review=${encodeURIComponent(t.id)}" target="agentsOffice">REVIEW IN THE OFFICE ↗</a>`
+      : k === 'cc' ? (t.forYou.what ? `<div class="hx-fy-w">${esc(t.forYou.what)}</div>` : '') + t.forYou.prompts.map((p, i) => `<pre class="hx-fy-p">${esc(p)}</pre><div class="yn"><button type="button" class="primary" data-fycopy="${id}" data-i="${i}">COPY FOR CLAUDE CODE</button></div>`).join('') + `<div class="yn"><button type="button" data-fyacted="${id}">DONE, I RAN IT</button></div>`
+      : `<div class="hx-fy-w">Next: ${esc(tc(ns.toName || ns.to))}${ns.what ? ' — ' + esc(ns.what) : ''}</div><div class="yn"><button type="button" class="primary" data-fyhand="${id}">HAND TO ${esc(String(ns.toName || ns.to).toUpperCase())}</button><button type="button" data-fyacted="${id}">NOT NEEDED</button></div>`;
+    return `<div class="hx-fy-i">${head}${body}</div>`;
+  }
+  const bubble = (key, items) => !items.length ? '' : `<button type="button" class="hx-say" data-hxsay="${esc(key)}" aria-expanded="${say === key}">Hey Wesley, ${items.length} for you</button>`
+    + (say === key ? `<div class="hx-fy">${items.map(fyItem).join('')}</div>` : '');
   function renderTrail(blocks) {
     const box = el('hxTrail'); if (!box) return;
     const depts = new Set(blocks.map(b => b.d)), seat = sel && agentBy(sel);
@@ -3278,14 +3328,14 @@ loadTrackers(); setInterval(() => { if (!document.hidden && !Object.values(S.tkB
     el('hxStats').innerHTML = [[all.length, 'Desks'], [D, 'Working now'], [W, 'Waiting on you']].map(([n, l], i) => `<div class="hstat"><div class="hn${i === 2 && n ? ' alert' : ''}">${n}</div><div class="hl">${l}</div></div>`).join('');
     const chain = blocks.map(b => {
       const lead = b.lead, lc = COL[b.leadKey], dc = b.dept.chip;
-      const leadNode = lead ? node('hx-lead', lc, b.leadKey !== 'idle', `03 · Head of ${esc(b.dept.name.toLowerCase())}`, TXT[b.leadKey], esc(tc(lead.name)), esc(lead.does || lead.role), `<div class="hx-chips"><span class="hx-chip" style="border-color:${dc}">${esc(b.dept.name)}</span><span class="hx-chip part">${b.desks.length} desk${b.desks.length === 1 ? '' : 's'} report in</span></div>`, `--dc:${dc}`) : node('hx-lead', COL.idle, false, '03 · Head of department', 'No lead', esc(b.dept.name), 'This department has no lead on the roster.');
+      const leadNode = lead ? node('hx-lead', lc, b.leadKey !== 'idle', `03 · Head of ${esc(b.dept.name.toLowerCase())}`, TXT[b.leadKey], (lead.person ? `<span class="hx-lp">${lead.portrait ? `<img src="${esc(lead.portrait)}" alt="" loading="lazy">` : ''}${esc(lead.person)}</span>` : '') + esc(tc(lead.name)), esc(lead.does || lead.role), `<div class="hx-chips"><span class="hx-chip" style="border-color:${dc}">${esc(b.dept.name)}</span><span class="hx-chip part">${b.desks.length} desk${b.desks.length === 1 ? '' : 's'} report in</span></div>` + bubble(b.d, fyItems(d => d === b.d)), `--dc:${dc}`) : node('hx-lead', COL.idle, false, '03 · Head of department', 'No lead', esc(b.dept.name), 'This department has no lead on the roster.');
       return leadNode + link(b.doing > 0, b.waiting > 0, 'Assigns the work', 'The lead splits it across desks and reviews what comes back', lc)
         + `<div class="hx-bay"><div class="hx-bl"><span class="chip" style="display:inline-block;width:9px;height:9px;border-radius:50%;background:${dc}"></span>Desks reporting to ${esc(lead ? tc(lead.name) : b.dept.name)}<em>${b.desks.length} seat${b.desks.length === 1 ? '' : 's'}${b.failed ? ` · ${b.failed} failed last run` : ''}</em></div>
           <div class="hx-desks">${b.desks.map(desk).join('')}<div class="hx-ghost"><b>Room for more</b>A new kind of desk joins here when the roster gets one. Duet and Plaud One can tap in at this level later.</div></div></div>`;
     }).join('');
-    const tops = node('hx-pe', peBusy ? 'var(--ok)' : 'var(--faint)', peBusy, '01 · Ingestion', peBusy ? 'Working' : 'Ready', 'Prompt Engineer', 'Takes a request, checks it against your notes and returns a brief with yes/no proposals. You answer; nothing moves without it.',
+    const tops = node('hx-pe', peBusy ? 'var(--ok)' : 'var(--faint)', peBusy, '01 · Ingestion', peBusy ? 'Working' : 'Ready', face('Theo', 'pe') + 'Prompt Engineer','Takes a request, checks it against your notes and returns a brief with yes/no proposals. You answer; nothing moves without it.',
       '<div class="hx-chips"><span class="hx-chip">Ask box</span><span class="hx-chip part" title="Telegram goes straight to the Chief of Staff today">Telegram · straight to chief</span><span class="hx-chip plan">Duet · planned</span><span class="hx-chip plan">Plaud One · planned</span></div>');
-    const chief = node('hx-chief', chiefBusy ? 'var(--ok)' : 'var(--faint)', chiefBusy, '02 · Chief of Staff', chiefBusy ? 'Working' : 'Ready', 'Chief of Staff', 'Reads the approved brief, picks the department and adds the task. It can add tasks and run routines. It never approves, sends, posts or pays.');
+    const chief = node('hx-chief', chiefBusy ? 'var(--ok)' : 'var(--faint)', chiefBusy, '02 · Chief of Staff', chiefBusy ? 'Working' : 'Ready', face('Nora', 'chief') + 'Chief of Staff','Reads the approved brief, picks the department and adds the task. It can add tasks and run routines. It never approves, sends, posts or pays.', bubble('chief', fyItems(d => !PILOT.includes(d))));
     const anyLive = D > 0;
     el('hx').innerHTML = tops + link(peBusy, false, 'The brief, once you say yes', 'Sent as written, with your decisions', peBusy ? 'var(--ok)' : 'var(--faint)') + chief
       + link(chiefBusy || anyLive, false, 'Adds the task to the right desk', 'The Chief of Staff picks the department', (chiefBusy || anyLive) ? 'var(--ok)' : 'var(--faint)') + chain
@@ -3300,6 +3350,21 @@ loadTrackers(); setInterval(() => { if (!document.hidden && !Object.values(S.tkB
     if (t && t.leadReview && j.lesson) t.leadReview.lesson = j.lesson;
     if (j.error && !j.lesson) { box.querySelectorAll('button').forEach(x => { x.disabled = false; }); box.insertAdjacentHTML('beforeend', `<span class="why">${esc(j.error)}</span>`); return; }
     renderHierarchy();
+  });
+  document.addEventListener('click', async e => { // the bubble and its list: open, copy a Claude Code prompt, mark done, or hand on
+    const sb = e.target.closest('[data-hxsay]'); if (sb) { say = say === sb.dataset.hxsay ? '' : sb.dataset.hxsay; renderHierarchy(); return; }
+    const b = e.target.closest('[data-fycopy],[data-fyacted],[data-fyhand]'); if (!b) return;
+    const t = S.tasks.find(x => x.id === (b.dataset.fycopy || b.dataset.fyacted || b.dataset.fyhand)); if (!t) return;
+    const fail = m => { b.disabled = false; b.closest('.hx-fy-i').insertAdjacentHTML('beforeend', `<span class="why">${esc(m)}</span>`); };
+    if (b.dataset.fycopy) { try { await navigator.clipboard.writeText(t.forYou.prompts[+b.dataset.i] || ''); b.textContent = 'COPIED ✓'; } catch { b.textContent = 'SELECT AND COPY ABOVE'; } return; }
+    b.disabled = true;
+    const hand = !!b.dataset.fyhand;
+    try {
+      const r = await fetch(`/api/tasks/${encodeURIComponent(t.id)}/${hand ? 'handover' : 'acted'}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(hand ? { to: t.nextStep.to } : {}) });
+      const j = await r.json(); if (!r.ok || j.error) return fail(j.error || 'it did not go through');
+      if (hand) t.handedTo = [...(t.handedTo || []), j.id]; else t.actedAt = j.actedAt;
+      renderHierarchy();
+    } catch (err) { fail(err.message); }
   });
   document.addEventListener('click', e => { const s = e.target.closest('[data-hseat]'); if (s) { const id = s.dataset.hseat; sel = sel === id ? '' : id; renderHierarchy(); return; } if (e.target.closest('[data-hxclear]')) { sel = ''; renderHierarchy(); } });
   if (S.agents.length) renderHierarchy();

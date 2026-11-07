@@ -60,6 +60,7 @@ import * as budget from './budget.mjs';
 import * as brainnotes from './brainnotes.mjs';
 import * as siteupdates from './siteupdates.mjs';
 import * as handoff from './handoff.mjs';
+import * as decisions from './decisions.mjs';
 import * as salesData from './sales.mjs';
 import * as posData from './pos.mjs';
 import * as social from './social.mjs'; // V3.12: the AIOS Social section, the next post per workstream
@@ -84,7 +85,7 @@ import { pinnedNotes, pickNotes } from './pins.mjs';
 import * as skillaudit from './skillaudit.mjs';
 import { recover } from './recover.mjs';
 import { normModel, modelFor, modelArgs, modelId, modelName, MODEL_KEYS, DEFAULT_MODEL, normEffort, effortFor, effortName, EFFORT_KEYS } from './src/models.js';
-import { parseWhen, describe, valid as validWhen, untilText } from './src/when.js';
+import { parseWhen, describe, valid as validWhen, untilText, occurrences } from './src/when.js';
 import mammoth from 'mammoth';
 import { toMarkdownBytes } from '@firecrawl/anydoc'; // local Rust converter: Office/OpenDocument/RTF/EPUB/CSV → Markdown (tables and headings kept)
 
@@ -111,7 +112,7 @@ for (const w of skills.problems) console.warn('skills:', w);
 // the roster's editable fields are re-read too (a brief written by the lead's interview, or by hand, lands without a restart)
 function reloadRoster() {
   const r = loadRoster(BRAIN);
-  for (const a of r.agents) { const cur = AGENTS.find(x => x.id === a.id); if (cur) Object.assign(cur, { name: a.name, role: a.role, does: a.does, tools: a.tools, brief: a.brief }); }
+  for (const a of r.agents) { const cur = AGENTS.find(x => x.id === a.id); if (cur) Object.assign(cur, { name: a.name, role: a.role, does: a.does, tools: a.tools, brief: a.brief, person: a.person }); else if (a.added) AGENTS.push(a); } // a new AIOS desk (desks.mjs) joins without a restart; a removed one goes at the next restart
   if (r.problems.join() !== roster.problems.join()) for (const w of r.problems) console.warn('agents:', w);
   Object.assign(roster, { problems: r.problems, customised: r.customised, briefed: r.briefed, files: r.files });
 }
@@ -483,7 +484,7 @@ const usesDrive = a => (a.tools || []).some(t => /drive|sheet|docs/i.test(String
 // the system prompt every agent run starts from: who it is, its brief, skills and lessons, its tools, the company, the notes for this task
 function agentSystem(a, index, read, { extra = '', words = 260 } = {}) {
   const d = DEPTS[a.department];
-  return `You are ${a.name}, ${a.role || 'an agent'}, in the ${d.name} department of ${cfg.name}. ${a.does}\n${agentBrief(a)}` + (BRAIN_WRITE ? `\n${brainnotes.INSTRUCTIONS}\n` : '') + (siteDesk(a) ? `\n${siteupdates.instructions(SITE_URL)}\n` : '') + (/HANDOFF/.test(agentBrief(a)) ? `\n${handoff.INSTRUCTIONS}\n` : '') + (usesDrive(a) ? `\n${DRIVE_RULE}\n` : '') + `\n${NEXT_LINE}\n` + `\n${FILES_LINE}\n` + (extra ? `\n${extra}\n` : '') +
+  return `You are ${a.name}, ${a.role || 'an agent'}, in the ${d.name} department of ${cfg.name}. ${a.does}\n${agentBrief(a)}` + (BRAIN_WRITE ? `\n${brainnotes.INSTRUCTIONS}\n` : '') + (siteDesk(a) ? `\n${siteupdates.instructions(SITE_URL)}\n` : '') + (/HANDOFF/.test(agentBrief(a)) ? `\n${handoff.INSTRUCTIONS}\n` : '') + `\n${decisions.INSTRUCTIONS}\n` + (usesDrive(a) ? `\n${DRIVE_RULE}\n` : '') + `\n${NEXT_LINE}\n` + `\n${FILES_LINE}\n` + (extra ? `\n${extra}\n` : '') +
     'Write the finished deliverable itself, not a description of what you would do. Plain text: a short heading, then short sections or bullets. ' +
     `At most ${words} words unless a skill or the owner\'s instructions set a different shape — those win. No preamble, no sign-off. Ground it in the company notes below; where a fact is missing, make a reasonable assumption and mark it (assumed). ` +
     'If you used a tool, say so in one line at the end ("Used: Gmail — searched the client thread").\n\n' +
@@ -655,6 +656,26 @@ function fireHandoffs(task) { // only for a task the owner approved, and only wh
   task.result += '\n\n---\nHANDED ON\n' + made.map(t => `→ ${agentName(t.agent)}: ${t.title}`).join('\n');
   for (const t of made) { console.log(`➜ ${task.id} hands on to ${t.agent}: ${t.title}`); enqueue(() => runServerTask(t.id)).catch(e => console.warn('handoff:', e.message)); }
 }
+function decisionReview(task, text) { // the Yes/No switches for the review card; the blocks themselves are removed from the result
+  const blocks = decisions.parse(text); if (!blocks.length) { delete task.decisions; return ''; }
+  task.decisions = decisions.plan(blocks, AGENTS, task.agent);
+  const good = task.decisions.filter(d => d.ok), bad = task.decisions.filter(d => !d.ok);
+  return (good.length ? ` ${good.length} decision${good.length === 1 ? '' : 's'} on the card: approving starts a task for each one left on Yes.` : '') + (bad.length ? ` Not on the card: ${bad.map(d => `"${d.ask || '?'}" (${d.problem})`).join('; ')}.` : '');
+}
+const WRITES_EMAIL = /\b(draft|write|compose|reply)\b[^\n.]{0,40}\b(e-?mails?|reply|message)\b/i;
+function fireDecisions(task) { // only for a task the owner approved: a task for every decision he left on Yes, a record of every No
+  const ds = task.decisions || []; if (!ds.length || !task.approved) return;
+  const list = load(), made = [];
+  for (const d of ds.filter(x => x.ok && x.yes && !x.fired)) {
+    if (list.some(x => x.agent === d.to && x.title === d.title && Date.now() - (x.addedAt || 0) < 12 * 3600 * 1000)) { d.fired = 'duplicate'; continue; }
+    const text = `${d.text}\n\n(Wesley said yes to this on the review of "${task.title}" by ${agentName(task.agent)}: "${d.ask}". Do exactly this and nothing more, then report what you changed.)`;
+    const t = { id: nid(), dept: d.dept, agent: d.to, title: d.title, text, plan: [], eta: 10, why: `Wesley said yes on ${agentName(task.agent)}'s review`, state: 'doing', startedAt: Date.now(), addedAt: Date.now(), by: 'decision', handoffFrom: task.agent, decisionTask: task.id, ...(WRITES_EMAIL.test(d.title + ' ' + d.ask) ? { needsOk: true, channel: 'email' } : { needsOk: false, channel: 'none' }) }; // an email still comes back for its wording and only ever becomes a Gmail draft
+    list.push(t); made.push(t); d.fired = t.id;
+  }
+  save(list);
+  task.result += '\n\n---\nYOUR DECISIONS\n' + decisions.summary(ds, agentName);
+  for (const t of made) { console.log(`➜ ${task.id} decision yes → ${t.agent}: ${t.title}`); enqueue(() => runServerTask(t.id)).catch(e => console.warn('decision:', e.message)); }
+}
 function writeNote(task) { // the deliverable becomes a note in the brain, linked to what was read
   fs.mkdirSync(NOTES_DIR, { recursive: true });
   const a = AGENTS.find(x => x.id === task.agent);
@@ -690,7 +711,8 @@ function loadRoutines() { // re-read from disk every time: a routine written by 
   if (changed) routines.saveState(DATA, RSTATE);
   return list;
 }
-const routinesOut = () => { const list = loadRoutines(); return { routines: list, depts: routines.ALLOWED, path: rlist.path, problems: rlist.problems }; };
+// upcoming: every run in the next eight days, so the AIOS week shows a daily routine on each day, not just its next run (7 Nov 2026)
+const routinesOut = () => { const now = Date.now(); const list = loadRoutines().map(r => r.paused ? r : { ...r, upcoming: [...new Set([r.nextAt, ...occurrences(r.when, now, now + 8 * 864e5, 40)].filter(Boolean))].sort((a, b) => a - b) }); return { routines: list, depts: routines.ALLOWED, path: rlist.path, problems: rlist.problems }; };
 const agentName = id => AGENTS.find(a => a.id === id)?.name || id;
 // routine-driven runs go one at a time, so a burst of catch-ups after a long sleep does not spawn five Claude processes at once
 let queue = Promise.resolve();
@@ -759,6 +781,7 @@ async function runServerTaskNow(id, { feedback, approve, answer } = {}) {
   try {
     const out = await runWithLeadReview(task, feedback, approve ? 'approve' : task.needsOk ? 'draft' : 'routine', answer, approve);
     const hoText = out.result; if (handoff.parse(hoText).length) out.result = handoff.strip(hoText);
+    const decText = out.result, hasDecisions = !approve && decisions.parse(decText).length > 0; if (hasDecisions) out.result = decisions.strip(decText); // a draft with decisions always waits: they only run on the owner's yes
     if (!approve && /\[content-build\]/i.test(task.text || '')) { // the week's finished content is filed into the Content Calendar folder Wesley posts from
       try { const f = weekpack.fromResult(ROOT, BRAIN, out.result); out.result = weekpack.strip(out.result) + '\n\n---\nFILED IN THE CONTENT CALENDAR FOLDER\n' + (f.filed ? `${f.filed} item(s) in ${f.dir}` : 'not filed: ' + f.reason); console.log(`🗓 content calendar: ${f.filed ? f.filed + ' item(s) filed in ' + f.dir : 'not filed, ' + f.reason}`); } catch (e) { console.warn('content calendar:', e.message); }
     }
@@ -777,11 +800,13 @@ async function runServerTaskNow(id, { feedback, approve, answer } = {}) {
     Object.assign(task, { read: out.read, tools: [...new Set([...(task.tools || []), ...out.tools])], used: [...new Set([...(task.used || []), ...out.used])], skills: out.skills, error: false, modelUsed: out.modelUsed, modelFrom: out.modelFrom, modelId: out.modelId, effortUsed: out.effortUsed, effortFrom: out.effortFrom, ...(out.team ? { team: out.team } : {}) });
     if (task.needsOk && !task.channel && isEmail(task)) task.channel = 'email';
     if ((task.needsOk || REVIEW_ALL) && !approve && aoofile.isAooReel(task)) aoofile.sendForApproval(ROOT, task, out.result).then(s => console.log(`🎞 Art of Operations reel ${s.sent ? 'sent to Telegram for approval' : 'not sent: ' + s.reason}`)).catch(() => {}); // Wesley reads on his phone
-    if ((task.needsOk || REVIEW_ALL) && !approve) { task.state = 'waiting'; task.draft = out.result; task.waitingAt = Date.now(); task.ask = (task.needsOk ? (task.channel === 'email' ? `"${task.title}" is written — approve to put it in your Gmail drafts, then send it from your inbox. Reject to tell me what to change.` : routines.askLine(task)) : reviewLine(task)) + brainReview(task, out.result) + siteReview(task, out.result) + (approve ? '' : handoffReview(task, hoText)) + (out.leadReview ? leadreview.askLine(out.leadReview, out.leadName) : '') + (out.leadReview?.lesson ? '\n\n' + leadlessons.card(out.leadReview.lesson, out.leadName, out.deskName) + ' Answer on the card in AIOS Hierarchy.' : ''); }
+    if ((task.needsOk || REVIEW_ALL || hasDecisions) && !approve) { task.state = 'waiting'; task.draft = out.result; task.waitingAt = Date.now(); task.ask = (task.needsOk ? (task.channel === 'email' ? `"${task.title}" is written — approve to put it in your Gmail drafts, then send it from your inbox. Reject to tell me what to change.` : routines.askLine(task)) : reviewLine(task)) + brainReview(task, out.result) + siteReview(task, out.result) + (approve ? '' : handoffReview(task, hoText) + decisionReview(task, decText)) + (out.leadReview ? leadreview.askLine(out.leadReview, out.leadName) : '') + (out.leadReview?.lesson ? '\n\n' + leadlessons.card(out.leadReview.lesson, out.leadName, out.deskName) + ' Answer on the card in AIOS Hierarchy.' : ''); }
     else {
       task.state = 'done'; task.doneAt = Date.now();
       try { const sc = ubereats.fileScorecard(DATA, out.result); if (sc) { task.result += sc.ok ? `\n\n---\nUBER EATS SCORECARD FILED: ${sc.tier}, read ${sc.readOn}, on the Delivery dashboard.` : `\n\n---\nUBER EATS SCORECARD NOT FILED: ${sc.error}.`; console.log('  ubereats scorecard:', sc.ok ? 'filed' : sc.error); } } catch (e) { console.warn('scorecard:', e.message); } // V3.12: read-only figures for the dashboard, filed without review
-      if (approve) { fileBrainUpdates(task); fileSiteUpdates(task); fireHandoffs(task); fileMatrixItems(task); }
+      const cc = handoff.claudeCode(task.result); // a step only Claude Code can do: the Hierarchy bubble shows it, and Telegram gets it ready to copy
+      if (cc && !task.forYou) { task.forYou = { ...cc, at: Date.now() }; (async () => { await notify.telegram(`For you, from ${agentName(task.agent)} ("${task.title}"): a step only Claude Code can do.${cc.what ? ' ' + cc.what : ''}\nCopy the next message${cc.prompts.length > 1 ? 's' : ''} into Claude Code, one at a time.`); for (const p of cc.prompts) await notify.telegram(p); })().catch(e => console.warn('for-you telegram:', e.message)); }
+      if (approve) { fileBrainUpdates(task); fileSiteUpdates(task); fireHandoffs(task); fireDecisions(task); fileMatrixItems(task); }
       else if (handoff.parse(hoText).length) task.result += '\n\n---\nHANDOFF NOT SENT: this task did not wait for your review, and nothing is handed on without your OK.';
       else if (BRAIN_WRITE && brainnotes.parse(out.result).length) task.result += '\n\n---\nBRAIN UPDATE NOT FILED: this task did not wait for your review, and nothing is filed without your OK.';
       if (!approve && SITE_WRITE && siteupdates.parse(out.result).length) task.result += '\n\n---\nSITE UPDATE NOT APPLIED: this task did not wait for your review, and the website is not changed without your OK.';
@@ -1148,7 +1173,10 @@ const body = req => new Promise((resolve, reject) => { let s = ''; req.on('data'
 
 await rebuildGraph();
 const discovering = mcp.discover().then(l => { console.log(`  connectors: ${l.filter(s => s.status === 'connected').length} connected of ${l.length} (claude mcp list)`); return l; });
-const agentsOut = () => { const setup = setupMap(); return AGENTS.map(a => ({ id: a.id, name: a.name, role: a.role, does: a.does, tools: a.tools, brief: a.brief || '', model: a.model || '', effort: a.effort || '', skills: skills.names(a), lessons: learn.count(BRAIN, a.id), department: a.department, lead: a.lead,
+// a desk's portrait: assets/people/<id>.png (or .jpg / .webp), served at /people/<file>; none → ''
+const PEOPLE = path.join(ROOT, 'assets', 'people');
+const portraitOf = id => { const f = ['.png', '.jpg', '.webp'].map(x => id + x).find(x => fs.existsSync(path.join(PEOPLE, x))); return f ? '/people/' + f : ''; };
+const agentsOut = () => { const setup = setupMap(); return AGENTS.map(a => ({ id: a.id, name: a.name, person: a.person || '', portrait: portraitOf(a.id), role: a.role, does: a.does, tools: a.tools, brief: a.brief || '', model: a.model || '', effort: a.effort || '', skills: skills.names(a), lessons: learn.count(BRAIN, a.id), department: a.department, lead: a.lead,
   interviewer: leadOf(a.department).id === a.id, setUp: setup[a.department] })); };
 /** Add a task to the board: the task bar, the Chief of Staff and the AIOS Social section all come through here. → [status, task | error] */
 async function addTask({ dept, text, model, effort, team, at, by } = {}) {
@@ -1182,6 +1210,11 @@ const server = http.createServer(async (req, res) => {
     if (req.method === 'GET' && url.pathname === '/aios') { // V3.9: the AIOS dashboard — roles, live work, the Eisenhower matrix (plain HTML, no build)
       res.writeHead(200, { 'content-type': 'text/html; charset=utf-8', 'cache-control': 'no-store' });
       return res.end(fs.readFileSync(path.join(ROOT, 'src', 'aios.html'), 'utf8'));
+    }
+    if (req.method === 'GET' && url.pathname.startsWith('/people/')) { // a desk's portrait for the AIOS cards
+      const m = /^\/people\/([a-z0-9-]+\.(png|jpg|webp))$/.exec(url.pathname), f = m && path.join(PEOPLE, m[1]);
+      if (!f || !fs.existsSync(f)) return json(res, 404, { error: 'not found' });
+      res.writeHead(200, { 'content-type': IMAGE_MEDIA['.' + m[2]], 'cache-control': 'max-age=3600' }); return fs.createReadStream(f).pipe(res);
     }
     if (url.pathname.startsWith('/api/matrix')) return matrixApi(req, res, url);
     if (url.pathname === '/api/budget' || url.pathname === '/api/budget/sync') return budgetApi(req, res, url);
@@ -1417,6 +1450,11 @@ const server = http.createServer(async (req, res) => {
       if (src.state !== 'next') return json(res, 409, { error: 'it has already started: cancel it, or let it finish' });
       save(list.filter(t => t.id !== src.id)); return json(res, 200, { ok: true, dept: src.dept, text: src.text });
     }
+    const am = url.pathname.match(/^\/api\/tasks\/([^/]+)\/acted$/);
+    if (am && req.method === 'POST') { // the owner's DONE on a Hierarchy "for you" item: it leaves the bubble; nothing else changes
+      const list = load(), t = list.find(x => x.id === am[1]); if (!t) return json(res, 404, { error: 'no such task' });
+      t.actedAt = Date.now(); save(list); return json(res, 200, { ok: true, actedAt: t.actedAt });
+    }
     const hm = url.pathname.match(/^\/api\/tasks\/([^/]+)\/handover$/);
     if (hm && req.method === 'POST') { // the owner's click: hand a finished task to a seat (the suggested one, one he picks, or the Executive Assistant to decide)
       const src = load().find(t => t.id === hm[1]); if (!src) return json(res, 404, { error: 'no such task' });
@@ -1462,8 +1500,9 @@ const server = http.createServer(async (req, res) => {
       const task = load().find(t => t.id === m[1]);
       if (!task) return json(res, 404, { error: 'no such task' });
       if (task.state !== 'waiting') return json(res, 400, { error: 'this task is not waiting for your OK' });
-      const { feedback, close } = m[2] === 'reject' ? await body(req) : {};
-      const note = String(feedback || '').trim();
+      const { feedback, close, decisions: picks } = await body(req).catch(() => ({}));
+      const note = m[2] === 'reject' ? String(feedback || '').trim() : '';
+      if (m[2] === 'approve' && task.decisions?.length) { decisions.answer(task.decisions, picks); save(load().map(t => t.id === task.id ? task : t)); } // the card's switches; one left untouched keeps the recommendation
       if (m[2] === 'reject' && close === true) { // 4 Nov 2026: REJECT with "permanently reject" ticked: closed for good. No rework run, no send-back count, no lesson, nothing filed.
         Object.assign(task, { state: 'done', closed: true, closedAt: Date.now(), doneAt: Date.now(), result: task.draft || task.result, approved: false }); delete task.ask;
         if (note) task.closeNote = note.slice(0, 2000);
@@ -1473,7 +1512,7 @@ const server = http.createServer(async (req, res) => {
       }
       if (m[2] === 'approve' && !task.needsOk) { // V3.9: a reviewed task with nothing to send — the tick is the finish line, no second run
         Object.assign(task, { state: 'done', result: task.draft || task.result, approved: true, approvedAt: Date.now(), doneAt: Date.now() }); delete task.ask;
-        fileBrainUpdates(task); fileSiteUpdates(task); fireHandoffs(task); fileMatrixItems(task);
+        fileBrainUpdates(task); fileSiteUpdates(task); fireHandoffs(task); fireDecisions(task); fileMatrixItems(task);
         task.note = writeNote(task); save(load().map(t => t.id === task.id ? task : t)); await rebuildGraph();
         console.log(`✅ ${task.id} approved — done (note: ${task.note})`);
         autoFeed(task);

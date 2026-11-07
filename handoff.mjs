@@ -42,6 +42,20 @@ export function plan(blocks, agents, from) {
   });
 }
 
+// A step only Claude Code can do (skill claude-code-prompt): "YOUR ONE STEP: …" above one or more fenced blocks that open
+// "This is a separate task for Claude Code". Returns { what, prompts } for the Hierarchy bubble and Telegram, or null.
+export function claudeCode(text) {
+  const t = String(text || ''), prompts = [];
+  for (const m of t.matchAll(/```[a-z]*[ \t]*\r?\n([\s\S]*?)\r?\n[ \t]*```/g)) {
+    const b = m[1].trim(); if (/^This is a separate task for Claude Code/i.test(b) && !prompts.includes(b)) prompts.push(b.slice(0, 6000));
+    if (prompts.length >= 3) break;
+  }
+  if (!prompts.length) return null;
+  const i = t.search(/YOUR ONE STEP:/i), f = i < 0 ? -1 : t.indexOf('```', i);
+  const what = i < 0 ? '' : t.slice(i, f > i ? f : i + 400).replace(/^YOUR ONE STEP:[^\n]*\n?/i, '').trim().slice(0, 300);
+  return { what, prompts };
+}
+
 // "NEXT: qa — check the one-pager" at the end of a result: the writer's suggestion for the owner's HAND OVER button. Returns { next, text } with the line removed.
 export function takeNext(text, agents, from) {
   const t = String(text || ''), m = /^[ \t*_]*NEXT:[ \t*_]*(.+?)[ \t]*[—–]+[ \t]*(.+?)[ \t*_]*$/m.exec(t);
