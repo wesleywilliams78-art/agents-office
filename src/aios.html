@@ -3751,11 +3751,44 @@ loadTrackers(); setInterval(() => { if (!document.hidden && !Object.values(S.tkB
   const hxPath = (v = view, s = sel) => 'office' + (v !== 'office' ? '/' + v + (s ? '/' + s : '') : '');
   window.hxPath = () => hxPath();
   function apply(v, s) { // show a level: the office, a department, or a department with a desk's drawer open
-    const was = sel, moved = v !== view;
+    const was = sel, moved = v !== view, anim = moved && hxShown();
     view = v; window.AIOS_HX_VIEW = view; sel = v === 'office' ? '' : s || ''; if (moved) showIdle = false; if (!sel) drMore = false;
-    if (S.agents.length) renderHierarchy();
-    if (moved) { const top = el('hxTheo'); if (top && top.getBoundingClientRect().top < 0) top.scrollIntoView({ block: 'start' }); }
-    else if (was && !sel) document.querySelector(`#hx [data-hseat="${CSS.escape(was)}"]`)?.focus({ preventScroll: true }); // a closed drawer hands focus back to its desk card
+    const show = () => {
+      if (S.agents.length) renderHierarchy();
+      if (moved) { const top = el('hxTheo'); if (top && top.getBoundingClientRect().top < 0) top.scrollIntoView({ block: 'start' }); }
+      else if (was && !sel) document.querySelector(`#hx [data-hseat="${CSS.escape(was)}"]`)?.focus({ preventScroll: true }); // a closed drawer hands focus back to its desk card
+    };
+    if (!anim) { hxSeq++; show(); return; }
+    hxLeave().then(() => { show(); hxArrive(); });
+  }
+  /* motion between levels (7 Nov 2026): the level you leave steps back in a tenth of a second, as a tab does, then the new one arrives.
+     Into a department: the crumb slides in, the lead's band rises, the desk cards follow one after another, then the trail.
+     Back to the office: Nora settles in, each department slides in from its own side, You rises, the flows fade back. Off under reduced motion. */
+  let hxSeq = 0;
+  const hxShown = () => moving() && S.cat === 'hierarchy' && S.agents.length > 0 && el('hx').getClientRects().length > 0;
+  function hxLeave() {
+    const seq = ++hxSeq, outs = [el('hx'), el('oxFlows'), el('hxTrail')].filter(e => e && e.getClientRects().length);
+    const anims = outs.map(e => e.animate([{ opacity: 1, transform: 'none' }, { opacity: 0, transform: 'translateY(8px)' }], { duration: 110, easing: 'cubic-bezier(.4,0,1,1)', fill: 'forwards' }));
+    return Promise.race([Promise.all(anims.map(a => a.finished.catch(() => {}))), new Promise(r => setTimeout(r, 160))]) // a window that is not painting still moves on
+      .then(() => { anims.forEach(a => a.cancel()); if (seq !== hxSeq) return new Promise(() => {}); }); // a quicker click took over: its own leave draws the level
+  }
+  function hxArrive() {
+    if (!moving()) return;
+    const rise = [{ opacity: 0, transform: 'translateY(22px) scale(.985)' }, { opacity: 1, transform: 'none' }];
+    const go = (e, k, o) => e && e.animate(k, { duration: 660, easing: SPRING, fill: 'backwards', ...o });
+    const seen = e => { const r = e.getBoundingClientRect(); return r.top < innerHeight + 40; };
+    if (view === 'office') {
+      go(el('oxNora'), [{ opacity: 0, transform: 'scale(.94)' }, { opacity: 1, transform: 'none' }], { duration: 620 });
+      for (const t of document.querySelectorAll('#hx .hxo-d')) go(t, [{ opacity: 0, transform: `translateX(${t.dataset.side === 'L' ? -28 : 28}px)` }, { opacity: 1, transform: 'none' }], { delay: 80 + (parseInt(t.style.getPropertyValue('--o'), 10) || 0) * 70 });
+      go(document.querySelector('#hx .ox-you'), rise, { delay: 300 });
+      go(el('oxFlows'), [{ opacity: 0 }, { opacity: 1 }], { duration: 520, delay: 380, easing: 'ease-out' });
+      return;
+    }
+    go(document.querySelector('#hx .hxo-crumb'), [{ opacity: 0, transform: 'translateX(-14px)' }, { opacity: 1, transform: 'none' }], { duration: 520 });
+    go(document.querySelector('#hx .hxo-lb'), rise, { delay: 60 });
+    const cards = [...document.querySelectorAll('#hx .hxo-dg > *')].filter(seen).slice(0, 18), step = Math.max(45, Math.min(90, 800 / Math.max(1, cards.length)));
+    cards.forEach((c, i) => go(c, rise, { delay: 150 + i * step }));
+    [...document.querySelectorAll('#hxTrail > .sh, #hxTrail .hxt-col')].filter(seen).forEach((c, i) => go(c, rise, { delay: 220 + cards.length * step + i * 70 })); // the trail's heading leads its columns
   }
   function nav(v, s = '') { // a click or Esc: going out to the level you came in from is Back, so history never piles up
     v = okView(v); const to = hxPath(v, s), cur = location.hash.slice(1);
