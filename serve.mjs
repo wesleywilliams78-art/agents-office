@@ -398,7 +398,7 @@ const attachNote = list => (Array.isArray(list) ? list : []).slice(0, 6).map(a =
   .map(a => `\n[Attached by Wesley: "${a.filename || a.note}" is in the Brain as the note \`${a.note}\`. Name that note, in backticks, inside the text of any task you add about it, so the desk reads it.]`).join('');
 async function assistantTurn(text, surface, onEvent) {
   const a = assistantMod.append(DATA, { who: 'user', text, surface });
-  const roster = AGENTS.map(x => `- ${x.id} · ${x.name} · ${x.department}${x.lead ? ' (lead)' : ''} · ${String(x.does || '').slice(0, 110)}`).join('\n');
+  const roster = AGENTS.map(x => `- ${x.id} · ${x.name}${x.person ? ` (${x.person})` : ''} · ${x.department}${x.lead ? ' (lead)' : ''} · ${String(x.does || '').slice(0, 110)}`).join('\n');
   const system = assistantMod.buildSystem({ business: cfg.name, now: new Date().toLocaleString('en-GB', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' }), surface, roster });
   const m = modelFor({ agent: cfg.assistant?.model || 'opus', office: cfg.model }).model;
   const user = assistantMod.transcript(a.slice(0, -1)) + (a.length > 1 ? '\n' : '') + `Wesley${surface === 'telegram' ? ' (on Telegram)' : ''}: ${text}\nYou:`;
@@ -453,7 +453,7 @@ function contextText(index, names) {
 }
 
 /* ---------- the roster, as Claude sees it ---------- */
-const persona = a => `${a.name}${a.lead ? ' (lead)' : ''} · ${a.role} · ${a.does}`;
+const persona = a => `${a.name}${a.person ? ` (${a.person})` : ''}${a.lead ? ' (lead)' : ''} · ${a.role} · ${a.does}`; // the first name too: Wesley calls desks by it ("Rupert")
 function rosterText(dept) { return AGENTS.filter(a => a.department === dept).map(a => { const sk = skills.names(a); return `- ${a.id} · ${persona(a)}${sk.length ? ' · skills: ' + sk.join(', ') : ''}`; }).join('\n'); }
 // what an agent is told about itself: the job, the owner's standing instructions, the skills it follows
 function agentBrief(a) {
@@ -1179,15 +1179,19 @@ const portraitOf = id => { const f = ['.png', '.jpg', '.webp'].map(x => id + x).
 const agentsOut = () => { const setup = setupMap(); return AGENTS.map(a => ({ id: a.id, name: a.name, person: a.person || '', portrait: portraitOf(a.id), role: a.role, does: a.does, tools: a.tools, brief: a.brief || '', model: a.model || '', effort: a.effort || '', skills: skills.names(a), lessons: learn.count(BRAIN, a.id), department: a.department, lead: a.lead,
   interviewer: leadOf(a.department).id === a.id, setUp: setup[a.department] })); };
 /** Add a task to the board: the task bar, the Chief of Staff and the AIOS Social section all come through here. → [status, task | error] */
-async function addTask({ dept, text, model, effort, team, at, by } = {}) {
+async function addTask({ dept, text, model, effort, team, at, by, agent } = {}) {
   const chief = by === 'chief'; // a task the Chief of Staff added: it waits 20 s before it starts, so Wesley can change the model or undo it
   if (!DEPTS[dept] || dept === 'brain') return [400, { error: 'unknown department' }];
   if (!text || !String(text).trim()) return [400, { error: 'empty task' }];
+  const named = agent ? AGENTS.find(a => a.id === agent) : null; // 7 Nov 2026: the desk Wesley named ("Rupert") gets it; the router only titles and plans
+  if (agent && !named) return [400, { error: `no desk with id "${agent}"` }];
+  if (named && named.department !== dept) return [400, { error: `${named.id} is in ${named.department}, not ${dept}` }];
   const dueAt = at ? (typeof at === 'number' ? at : Date.parse(at)) : null; // V3.2.1: a task for a date
   if (at && !(dueAt > 0)) return [400, { error: 'at must be a time (ms or ISO)' }];
   if (dueAt && dueAt < Date.now() - 60000) return [400, { error: 'that time has passed — pick one that is still ahead' }];
   const r = await route(dept, String(text).trim());
-  const asTeam = TEAMS.enabled && (team === true || teams.intent(text) || (dept === 'marketing' && /\breels?\b/i.test(text) && /\b(make|build|produce|create|finish\w*|ready|post|deliver)\b/i.test(text))); // a Reel asked for in Marketing is a team job: script, video, music, check // V3.2 (16 Sep): TEAM in the bar, or "as a team" in the sentence → the lead owns it and splits it
+  if (named) { r.agent = named.id; r.why = `Wesley named ${named.person || named.name}`; }
+  const asTeam = TEAMS.enabled && (team === true || !named && (teams.intent(text) || dept === 'marketing' && /\breels?\b/i.test(text) && /\b(make|build|produce|create|finish\w*|ready|post|deliver)\b/i.test(text))); // a Reel asked for in Marketing is a team job: script, video, music, check // V3.2 (16 Sep): TEAM in the bar, or "as a team" in the sentence → the lead owns it and splits it
   const task = { id: nid(), dept, agent: asTeam ? leadOf(dept).id : r.agent, title: r.title, text: String(text).trim(), plan: r.plan, eta: r.eta, why: asTeam ? `team — ${leadOf(dept).name} splits it across the desks` : r.why, state: 'next', addedAt: Date.now(), by: chief ? 'chief' : 'you', model: normModel(model) || undefined, effort: normEffort(effort) || undefined, // model/effort: set on this task (beats routine, agent, office)
     team: asTeam ? { lead: leadOf(dept).id, asked: team === true ? 'you' : 'text' } : undefined };
   task.needsOk = r.needsOk; task.channel = r.channel || undefined; // V3.9: a task that sends, posts or pays is drafted first and only goes out after the owner's APPROVE & SEND
@@ -1592,7 +1596,7 @@ const server = http.createServer(async (req, res) => {
       if (peBusy) return json(res, 429, { error: 'the prompt engineer is still on your last message' });
       peBusy = true;
       try {
-        const roster = AGENTS.map(x => `${x.id} · ${x.name} · ${x.department}${x.lead ? ' (lead)' : ''} · ${String(x.does || '').slice(0, 110)}`).join('\n');
+        const roster = AGENTS.map(x => `${x.id} · ${x.name}${x.person ? ` (${x.person})` : ''} · ${x.department}${x.lead ? ' (lead)' : ''} · ${String(x.does || '').slice(0, 110)}`).join('\n');
         const r = await peMod.engineer({ request, roster, onResult: j => spent({ kind: 'prompt-engineer' }, tokens.fromResult(j, ranOn(j.modelUsage, peMod.MODEL))) });
         console.log(`✍ prompt engineer: ${request.slice(0, 60)} · ${r.result.status}${r.result.proposals?.length ? ' · ' + r.result.proposals.length + ' proposal(s)' : ''}`);
         return json(res, 200, r.result);

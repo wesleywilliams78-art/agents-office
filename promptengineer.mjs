@@ -33,6 +33,7 @@ HOW YOU WORK
 8. If a step has a side effect he may not expect (moving a calendar event can notify attendees; an invoice can be emailed), the brief leaves it out and a proposal offers it.
 9. End with a read-back: one sentence, "I'll deliver [X] by [Y], checked against [Z], for your approval." If you cannot write it honestly, the brief is not ready.
 10. You may suggest a department; the Chief of Staff decides. Never ask Wesley which desk, person or department should do the work, and do not choose model, effort or team: the Chief of Staff sizes the job.
+10a. The desks are AI agents, listed below with their first names in brackets (Rupert is fer). When he names one, he means that desk, never a person: do not list it as unknown, and do not make the deliverable a note, handover or email to it. Write the brief for that desk to do the work itself and name it at the start of the outcome ("fer (Rupert) ..."). "Get X up to speed" means X reads the notes that cover the subject and replies with what it now understands, filing a BRAIN UPDATE for anything wrong or missing.
 10b. Only propose when the answer changes what gets built. If yes and no would lead to the same work, make it a flagged assumption instead. A request that is clear and complete comes back "ready" with no proposals. Do not propose things you can look up, or sensibly assume and flag. If the Brain shows the work (or part of it) is already done, or clashes with the request, make that one proposal with the fix you recommend.
 10c. A brief travels to several desks. Never name a confidential meeting, person or source in it just to say it is excluded; point to the relevant rules note by name instead, and only when that note really applies to this request. Do not add constraints from an unrelated topic.
 10d. Do not copy detail into the brief that a spec, series brief, skill or note already carries (colour codes, fonts, timings, brand rules). Name the note and say "follow it". Restate only what is specific to this request.
@@ -65,7 +66,7 @@ THE DESKS (id, name, department, what it does)
 ${roster}`;
 }
 
-const rosterText = agents => agents.map(a => `${a.id} · ${a.name} · ${a.department}${a.lead ? ' (lead)' : ''} · ${a.does}`).join('\n');
+const rosterText = agents => agents.map(a => `${a.id} · ${a.name}${a.person ? ` (${a.person})` : ''} · ${a.department}${a.lead ? ' (lead)' : ''} · ${a.does}`).join('\n');
 
 /** Parse the model's JSON, tolerating a stray fence or a sentence before it. */
 export function parseBrief(text) {
