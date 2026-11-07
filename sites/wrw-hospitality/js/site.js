@@ -387,7 +387,8 @@
     if (!scale) return;
     const p1 = scale.querySelector('[data-n="1"]'), p10 = scale.querySelector('[data-n="10"]'), p100 = scale.querySelector('[data-n="100"]');
     const drifted = gsap.utils.toArray('.site', p10), dots = gsap.utils.toArray('.dots li', p100);
-    const drift = { rotation: i => cssNum(drifted[i], '--rot'), x: i => cssNum(drifted[i], '--x'), y: i => cssNum(drifted[i], '--y'), opacity: i => cssNum(drifted[i], '--o', 1) };
+    const k = ctx.conditions.wide ? 1 : .3; // narrow screens: the cards are small, so the drift is smaller and they stay clear of each other
+    const drift = { rotation: i => cssNum(drifted[i], '--rot') * k, x: i => cssNum(drifted[i], '--x') * k, y: i => cssNum(drifted[i], '--y') * k, opacity: i => cssNum(drifted[i], '--o', 1) };
     if (ctx.conditions.wide) {
       const track = scale.querySelector('.scale__track');
       const dist = () => Math.max(0, track.scrollWidth - innerWidth);

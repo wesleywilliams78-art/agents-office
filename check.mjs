@@ -614,6 +614,82 @@ await step('video studio: speaks MCP, refuses a bad spec with reasons, and its t
   if (!m3.pass) throw new Error('the impact page (waterfall, stat, emphasis) failed its own layout check: ' + m3.issues.join('; '));
   return 'five tools · a bad spec refused with reasons, nothing queued · title cards build, type inside the safe area, contrast passes · motion styles (push, words) and a music prompt are accepted and measured';
 });
+await step('video studio look: video_look returns a numbered picture of a finished job, refuses a missing, unfinished or out-of-range one; the designer is told to use it', async () => {
+  const dir = path.join(ROOT, 'connectors', 'video-studio');
+  const { OUT, JOBS, writeJob } = await import('./connectors/video-studio/shared.mjs');
+  const { chrome } = await import('./connectors/video-studio/look.mjs');
+  const zlib = await import('node:zlib');
+  const png = (w, h, rgb) => { // a plain one-colour PNG, enough for the sheet to draw
+    const crc = b => { let c, t = []; for (let n = 0; n < 256; n++) { c = n; for (let k = 0; k < 8; k++) c = c & 1 ? 0xedb88320 ^ (c >>> 1) : c >>> 1; t[n] = c >>> 0; } c = 0xffffffff; for (const x of b) c = t[(c ^ x) & 0xff] ^ (c >>> 8); return (c ^ 0xffffffff) >>> 0; };
+    const chunk = (type, data) => { const l = Buffer.alloc(4); l.writeUInt32BE(data.length); const td = Buffer.concat([Buffer.from(type), data]); const c = Buffer.alloc(4); c.writeUInt32BE(crc(td)); return Buffer.concat([l, td, c]); };
+    const ih = Buffer.alloc(13); ih.writeUInt32BE(w, 0); ih.writeUInt32BE(h, 4); ih[8] = 8; ih[9] = 2;
+    const row = Buffer.concat([Buffer.from([0]), Buffer.from(Array(w).fill(rgb).flat())]);
+    return Buffer.concat([Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]), chunk('IHDR', ih), chunk('IDAT', zlib.deflateSync(Buffer.concat(Array(h).fill(row)))), chunk('IEND', Buffer.alloc(0))]);
+  };
+  const id = 'xcheck' + Date.now().toString(36), sd = path.join(OUT, id + '-slides'); fs.mkdirSync(sd, { recursive: true });
+  const slides = [[236, 48, 19], [243, 242, 242], [32, 30, 29]].map((c, i) => { const f = path.join(sd, `slide-0${i + 1}.png`); fs.writeFileSync(f, png(40, 50, c)); return f; });
+  writeJob({ id, state: 'done', spec: { title: 'check', format: '4:5' }, slides, createdAt: Date.now() });
+  writeJob({ id: id + 'q', state: 'queued', spec: { title: 'check' }, createdAt: Date.now() });
+  const p = spawn(process.execPath, [path.join(dir, 'mcp.mjs')], { stdio: ['pipe', 'pipe', 'ignore'] });
+  let buf = ''; const waits = new Map();
+  p.stdout.on('data', d => { buf += d; let i; while ((i = buf.indexOf('\n')) >= 0) { const l = buf.slice(0, i); buf = buf.slice(i + 1); try { const m = JSON.parse(l); waits.get(m.id)?.(m); } catch {} } });
+  let n = 0; const rpc = (method, params, ms = 8000) => new Promise((res, rej) => { const k = ++n; const t = setTimeout(() => rej(new Error(method + ' timed out')), ms); waits.set(k, m => { clearTimeout(t); res(m); }); p.stdin.write(JSON.stringify({ jsonrpc: '2.0', id: k, method, params }) + '\n'); });
+  const call = (args, ms) => rpc('tools/call', { name: 'video_look', arguments: args }, ms).then(m => m.result);
+  let drew = 'Chrome not installed: picture not drawn';
+  try {
+    await rpc('initialize', { protocolVersion: '2025-06-18', capabilities: {}, clientInfo: { name: 'check', version: '0' } });
+    if (!(await rpc('tools/list', {})).result.tools.some(t => t.name === 'video_look')) throw new Error('video_look is missing from tools/list');
+    if (!(await call({ job_id: 'xnosuchjob' })).isError) throw new Error('a missing job was not refused');
+    if (!(await call({ job_id: id + 'q' })).isError) throw new Error('an unfinished job was not refused');
+    if (!(await call({ job_id: id, slide: 4 })).isError) throw new Error('slide 4 of 3 was not refused');
+    if (chrome()) {
+      for (const args of [{ job_id: id }, { job_id: id, slide: 2 }]) {
+        const r = await call(args, 90000); if (r.isError) throw new Error('video_look failed: ' + r.content[0].text);
+        const img = r.content.find(c => c.type === 'image'); if (!img || img.mimeType !== 'image/png') throw new Error('no PNG image block came back');
+        if (Buffer.from(img.data, 'base64').toString('ascii', 1, 4) !== 'PNG') throw new Error('the image block is not a PNG');
+        if (!r.content.some(c => c.type === 'text' && /"showing"/.test(c.text))) throw new Error('no text block saying what the picture shows');
+      }
+      drew = 'sheet and one slide drawn as PNG';
+    }
+  } finally { p.kill(); for (const j of [id, id + 'q']) fs.rmSync(path.join(JOBS, j + '.json'), { force: true }); for (const d of [sd, path.join(OUT, id + '-look')]) fs.rmSync(d, { recursive: true, force: true }); }
+  const local = path.join(ROOT, 'office.agents.local.json'); let brief = 'no local roster';
+  if (fs.existsSync(local)) { const g = (JSON.parse(fs.readFileSync(local, 'utf8')).agents || []).find(a => a.id === 'gfx'); const b = [].concat(g?.brief || []).join(' ');
+    if (g) { if (/cannot see images/i.test(b)) throw new Error('the gfx brief still says it cannot see images'); if (!/video_look/.test(b)) throw new Error('the gfx brief does not tell it to use video_look'); brief = 'gfx brief points at video_look'; } }
+  const lookMd = path.join(cfg.brainPath, 'Agents Office', 'skills', 'design-craft', 'look.md'); let skill = 'no design-craft look.md in this brain';
+  if (fs.existsSync(lookMd)) { const len = fs.readFileSync(lookMd, 'utf8').length; if (len > 4000) throw new Error(`design-craft/look.md is ${len} characters (limit 4,000)`); skill = `look.md ${len} chars`; }
+  return `refuses missing, unfinished and out-of-range · ${drew} · ${brief} · ${skill}`;
+});
+await step('diagram studio: diagram_guide and diagram_draw are listed, a bad spec is refused with the field to fix, a small workflow draws a PNG in the light editorial look', async () => {
+  const dir = path.join(ROOT, 'connectors', 'diagram-studio');
+  const { ready, ENGINE } = await import('./connectors/diagram-studio/draw.mjs');
+  const { chrome } = await import('./connectors/video-studio/look.mjs');
+  const p = spawn(process.execPath, [path.join(dir, 'mcp.mjs')], { stdio: ['pipe', 'pipe', 'ignore'] });
+  let buf = ''; const waits = new Map();
+  p.stdout.on('data', d => { buf += d; let i; while ((i = buf.indexOf('\n')) >= 0) { const l = buf.slice(0, i); buf = buf.slice(i + 1); try { const m = JSON.parse(l); waits.get(m.id)?.(m); } catch {} } });
+  let n = 0; const rpc = (method, params, ms = 8000) => new Promise((res, rej) => { const k = ++n; const t = setTimeout(() => rej(new Error(method + ' timed out')), ms); waits.set(k, m => { clearTimeout(t); res(m); }); p.stdin.write(JSON.stringify({ jsonrpc: '2.0', id: k, method, params }) + '\n'); });
+  const call = (name, args, ms) => rpc('tools/call', { name, arguments: args }, ms).then(m => m.result);
+  let drew = 'engine or Chrome missing: picture not drawn', folder = null;
+  try {
+    await rpc('initialize', { protocolVersion: '2025-06-18', capabilities: {}, clientInfo: { name: 'check', version: '0' } });
+    const names = (await rpc('tools/list', {})).result.tools.map(t => t.name);
+    for (const t of ['diagram_guide', 'diagram_draw']) if (!names.includes(t)) throw new Error(t + ' is missing from tools/list');
+    if (!(await call('diagram_draw', { type: 'nonsense', diagram: {} })).isError) throw new Error('an unknown type was not refused');
+    if (!ready()) return 'tools listed · Archify engine not installed at ' + ENGINE;
+    const g = await call('diagram_guide', { type: 'workflow' }); if (g.isError || !/schema/.test(g.content[0].text)) throw new Error('diagram_guide gave no schema for workflow');
+    const bad = await call('diagram_draw', { type: 'workflow', diagram: { lanes: [] } }, 60000);
+    if (!bad.isError || !/nodes/.test(bad.content[0].text)) throw new Error('a spec with no nodes was not refused with the field to fix');
+    if (chrome()) {
+      const spec = { lanes: [{ id: 'a', label: 'Lead' }, { id: 'b', label: 'Desk' }], nodes: [{ id: 'p', lane: 'a', col: 0, type: 'backend', label: 'Plan' }, { id: 'm', lane: 'b', col: 1, type: 'frontend', label: 'Make' }, { id: 'c', lane: 'a', col: 2, type: 'security', label: 'Check' }], edges: [{ id: 'e1', from: 'p', to: 'm' }, { id: 'e2', from: 'm', to: 'c' }], mainPath: ['p', 'm', 'c'] };
+      const r = await call('diagram_draw', { type: 'workflow', title: 'check diagram', diagram: spec }, 150000);
+      if (r.isError) throw new Error('diagram_draw failed: ' + r.content[0].text.slice(0, 300));
+      const img = r.content.find(c => c.type === 'image'); if (!img || Buffer.from(img.data, 'base64').toString('ascii', 1, 4) !== 'PNG') throw new Error('no PNG image block came back');
+      folder = JSON.parse(r.content[0].text).folder;
+      const html = fs.readFileSync(path.join(folder, 'diagram.html'), 'utf8'); if (!/data-preset="editorial"/.test(html)) throw new Error('the page is not in the editorial style');
+      drew = 'a three-step workflow drawn as PNG in the editorial look';
+    }
+  } finally { p.kill(); if (folder) fs.rmSync(folder, { recursive: true, force: true }); }
+  return 'two tools · unknown type and missing nodes refused with the fix · ' + drew;
+});
 await step('office assistant: it can look and add work, and it has no way to approve, send, post, pay, delete or run a command', async () => {
   const p = spawn(process.execPath, [path.join(ROOT, 'connectors', 'office-control', 'mcp.mjs')], { stdio: ['pipe', 'pipe', 'ignore'], env: { ...process.env, OFFICE_URL: 'http://127.0.0.1:1' } });
   let buf = ''; const waits = new Map(); p.stdout.on('data', d => { buf += d; let i; while ((i = buf.indexOf('\n')) >= 0) { const l = buf.slice(0, i); buf = buf.slice(i + 1); try { const m = JSON.parse(l); waits.get(m.id)?.(m); } catch {} } });

@@ -536,7 +536,7 @@
   .hx-desk:hover { border-color: var(--grey); transform: translateY(-2px); }
   .hx-desk.on { border-color: var(--sc); box-shadow: 0 0 0 1px var(--sc); }
   .hx-desk.st-waiting, .hx-desk.st-rework { border-color: var(--sc); box-shadow: 0 0 0 1px var(--sc), 0 8px 22px -12px var(--sc); }
-  .hx-desk .hx-dh { display: flex; align-items: center; gap: 8px; font-size: 12px; letter-spacing: .1em; text-transform: uppercase; font-weight: 600; }
+  .hx-desk .hx-dh { display: flex; align-items: center; gap: 8px; font-size: 12px; letter-spacing: .02em; font-weight: 600; }
   .hx-desk .hx-dh em { margin-left: auto; font-style: normal; font-size: 9.5px; letter-spacing: .14em; color: var(--sc); font-weight: 500; }
   .hx-desk .hx-dr { color: var(--grey); font-size: 12px; margin: 4px 0 8px; }
   .hx-desk .hx-dl { color: var(--faint); font-size: 11.5px; line-height: 1.4; }
@@ -927,7 +927,7 @@
     </svg>
   </div>
   <div class="panel pe" id="pe" data-cat="overview">
-    <div class="peh"><span class="k">Ask the office</span><span class="z">The prompt engineer checks it against your notes first. You answer yes or no; the Chief of Staff then adds it to the right desk. Nothing is approved, sent or posted from here.</span><button type="button" id="peTog" title="Engineer off sends your words straight to the Chief of Staff">ENGINEER ON</button></div>
+    <div class="peh"><span class="k">Ask the office</span><span class="z">The Prompt Engineer checks it against your notes first. You answer yes or no; the Chief of Staff then adds it to the right desk. Nothing is approved, sent or posted from here.</span><button type="button" id="peTog" title="Engineer off sends your words straight to the Chief of Staff">ENGINEER ON</button></div>
     <textarea id="peT" rows="2" placeholder="Say what you want done, e.g. plan next week's Instagram and tell me what is waiting on me" aria-label="Ask the office"></textarea>
     <div class="per"><button type="button" class="go" id="peGo">CHECK AND SEND</button><span class="st" id="peSt">Ctrl+Enter sends.</span></div>
     <div id="peOut"></div>
@@ -1354,7 +1354,7 @@ function tiles(el, html, numSel, labelSel) {
 }
 
 function applyCat(animate = false) {
-  { // the Ask box is one element (one set of ids, one conversation): on Hierarchy it sits above the Prompt engineer node, anywhere else it sits under the Overview hero
+  { // the Ask box is one element (one set of ids, one conversation): on Hierarchy it sits above the Prompt Engineer node, anywhere else it sits under the Overview hero
     const pe = document.getElementById('pe'), host = document.getElementById(S.cat === 'hierarchy' ? 'hxHero' : 'hero');
     if (pe && host && host.nextElementSibling !== pe) host.after(pe);
     if (pe) pe.dataset.cat = S.cat === 'hierarchy' ? 'hierarchy' : 'overview';
@@ -3075,7 +3075,7 @@ loadTrackers(); setInterval(() => { if (!document.hidden && !Object.values(S.tkB
   async function start() {
     const text = T.value.trim(); if (!text || busy) return;
     if (!on()) return toChief(text, false);
-    lock(true, 'Prompt engineer: checking your request against your notes (up to two minutes)…');
+    lock(true, 'Prompt Engineer: checking your request against your notes (up to two minutes)…');
     let r;
     try { const res = await post('/api/prompt-engineer', { text }); r = await res.json().catch(() => ({})); if (!res.ok) throw new Error(r.error || res.statusText); }
     catch (e) { lock(false, ''); return failCard(text, e); }
@@ -3085,7 +3085,7 @@ loadTrackers(); setInterval(() => { if (!document.hidden && !Object.values(S.tkB
 
   function failCard(text, e) {
     const c = document.createElement('div'); c.className = 'pec';
-    c.innerHTML = `<div class="pk">Prompt engineer</div><div class="rb">It couldn't check this one (${x(String(e.message || e).slice(0, 140))}). Send your words to the Chief of Staff as they are?</div><div class="r"><button type="button" class="go" data-y>YES, SEND AS IS</button><button type="button" data-n>NO</button></div>`;
+    c.innerHTML = `<div class="pk">Prompt Engineer</div><div class="rb">It couldn't check this one (${x(String(e.message || e).slice(0, 140))}). Send your words to the Chief of Staff as they are?</div><div class="r"><button type="button" class="go" data-y>YES, SEND AS IS</button><button type="button" data-n>NO</button></div>`;
     const done = () => { c.classList.add('off'); c.querySelectorAll('button').forEach(b => { b.disabled = true; }); fade(c); };
     c.querySelector('[data-y]').addEventListener('click', () => { done(); toChief(text, false); });
     c.querySelector('[data-n]').addEventListener('click', done);
@@ -3096,7 +3096,7 @@ loadTrackers(); setInterval(() => { if (!document.hidden && !Object.values(S.tkB
     const props = Array.isArray(r.proposals) ? r.proposals.slice(0, 3) : [], answers = props.map(() => undefined);
     const c = document.createElement('div'); c.className = 'pec';
     const dept = DEPT_NAME[r.department_hint] ? ' · ' + DEPT_NAME[r.department_hint] : '';
-    c.innerHTML = `<div class="pk">Prompt engineer${x(dept)}</div><div class="rb"></div>
+    c.innerHTML = `<div class="pk">Prompt Engineer${x(dept)}</div><div class="rb"></div>
       ${props.map((p, i) => `<div class="pp" data-i="${i}"><div class="pq">${x(p.problem || '')}</div><div class="pf"><b>I'd like to:</b> ${x(p.fix || '')}</div><div class="px"><span><b>If yes:</b> ${x(p.if_yes || '')}</span><span><b>If no:</b> ${x(p.if_no || 'I leave it as it is.')}</span></div><div class="r"><button type="button" class="y" data-a="1">YES</button><button type="button" class="n" data-a="0">NO</button></div></div>`).join('')}
       <details><summary>The brief the desk will work to</summary><div class="bf"></div></details>
       <div class="r"><button type="button" class="go" data-send>SEND TO CHIEF OF STAFF</button><button type="button" data-raw title="Skip the brief and send what you typed">SEND MY WORDS AS THEY ARE</button><span class="st"></span></div>`;
@@ -3164,13 +3164,14 @@ loadTrackers(); setInterval(() => { if (!document.hidden && !Object.values(S.tkB
 </script>
 <script>
 /* ---------- Hierarchy (4 Nov 2026): the chain as a picture ----------
-   Prompt engineer (ingestion) > Chief of Staff > department lead > desks. Only the pilot departments are drawn (PILOT, one line to widen it).
+   Prompt Engineer (ingestion) > Chief of Staff > department lead > desks. Only the pilot departments are drawn (PILOT, one line to widen it).
    The desks are whatever the roster holds for that department, so a seat added later simply appears: the grid wraps and has no cap.
    Colour is live state: blue needs you, teal being worked, amber in lead review (the lead node) or in rework after a lead bounce (a desk), grey idle, red last run failed.
    Lead review (leadreview.mjs) writes task.leadReview = { phase: review | rework | signed | escalated, round, open }; stageOf() and the badges read it.
    Own ids (hx*), own open-desk set, data-hseat; Roles is untouched. render() calls window.renderHierarchy(). Page helpers used: S, DEPTS, MODEL, esc, ago, seatState, readiness, roleSkills. */
 (() => {
   const PILOT = ['marketing'];
+  const tc = s => String(s || '').toLowerCase().replace(/(^|[\s-])(\p{L})/gu, (m, a, b) => a + b.toUpperCase()).replace(/Linkedin/g, 'LinkedIn'); // desk names are stored in capitals; the chart shows them as Chief of Staff is written
   let sel = ''; const el = id => document.getElementById(id); // sel: the desk picked in the chart; it opens and filters the trail
   const COL = { doing: 'var(--ok)', waiting: 'var(--hx-need)', review: 'var(--hx-rev)', rework: 'var(--hx-rev)', error: 'var(--bad)', idle: 'var(--faint)' };
   const TXT = { doing: 'Working', waiting: 'Waiting on you', review: 'Reviewing', rework: 'In rework', error: 'Last run failed', idle: 'Idle' };
@@ -3184,7 +3185,7 @@ loadTrackers(); setInterval(() => { if (!document.hidden && !Object.values(S.tkB
     const last = st.doing ? (k === 'rework' ? `Reworking after the lead, round ${st.doing.leadReview.round}: ` : 'Now: ') + esc(st.doing.title) : st.waiting ? 'Waiting on you: ' + esc(st.waiting.title) : st.last ? `Last: ${esc(st.last.title)} · ${ago(st.last.doneAt)}` : 'No work yet.';
     const model = a.model ? `${MODEL[a.model] || a.model} (own)` : `${MODEL[office] || office} (office)`;
     return `<div class="hx-desk st-${k}${k === 'doing' || k === 'waiting' || k === 'rework' ? ' on' : ''}${isOpen ? ' sel' : ''}" data-hseat="${esc(a.id)}" style="--sc:${COL[k] || COL.idle}">
-      <div class="hx-dh"><i class="hx-pulse"></i>${esc(a.name)}<em>${TXT[k] || 'Idle'}</em></div>
+      <div class="hx-dh"><i class="hx-pulse"></i>${esc(tc(a.name))}<em>${TXT[k] || 'Idle'}</em></div>
       <div class="hx-dr">${esc(a.role)}</div>
       ${isOpen ? `<div class="hx-dd">${esc(a.does)}</div><div class="hx-tags"><span class="tag">${esc(model)}</span>${a.effort ? `<span class="tag">effort ${esc(a.effort)}</span>` : ''}<span class="tag ${a.brief ? 'good' : 'miss'}">${a.brief ? 'BRIEF' : 'NO BRIEF'}</span><span class="tag ${roleSkills(a).length ? 'good' : 'miss'}">${roleSkills(a).length ? 'SKILL: ' + esc(roleSkills(a).join(', ')) : 'NO ROLE SKILL'}</span>${a.lessons ? `<span class="tag">${a.lessons} lesson${a.lessons > 1 ? 's' : ''}</span>` : ''}${(a.tools || []).map(t => `<span class="tag">${esc(t)}</span>`).join('')}</div>` : ''}
       <div class="hx-dl">${last} · ${st.done} done in total</div></div>`;
@@ -3221,15 +3222,15 @@ loadTrackers(); setInterval(() => { if (!document.hidden && !Object.values(S.tkB
     if (t.revisions && stage === 4) badges.push(`<span class="tag">Revision ${t.revisions + 1}</span>`);
     if (lp === 'review') badges.push(`<span class="tag rv">${lr.round ? `Lead rereading · after rework ${lr.round}` : 'Lead reading the first draft'}</span>`);
     if (lp === 'rework') badges.push(`<span class="tag rv">Lead rework · round ${lr.round}</span>`);
-    if (stage === 4 && lp === 'signed') badges.push(`<span class="tag ok" title="Signed off by ${esc(lead ? lead.name : 'the lead')}">Lead signed off${lr.round ? ` · ${lr.round} round${lr.round > 1 ? 's' : ''}` : ''}${lr.unreadable ? ' · unread' : ''}</span>`);
-    if (stage === 4 && lp === 'escalated') badges.push(`<span class="tag rv" title="Escalated by ${esc(lead ? lead.name : 'the lead')}">Lead escalated · ${lr.round} round${lr.round > 1 ? 's' : ''}</span>`);
+    if (stage === 4 && lp === 'signed') badges.push(`<span class="tag ok" title="Signed off by ${esc(lead ? tc(lead.name) : 'the lead')}">Lead signed off${lr.round ? ` · ${lr.round} round${lr.round > 1 ? 's' : ''}` : ''}${lr.unreadable ? ' · unread' : ''}</span>`);
+    if (stage === 4 && lp === 'escalated') badges.push(`<span class="tag rv" title="Escalated by ${esc(lead ? tc(lead.name) : 'the lead')}">Lead escalated · ${lr.round} round${lr.round > 1 ? 's' : ''}</span>`);
     const open = (stage === 4 && lp === 'escalated' && lr.open) ? `<div class="hxt-o">Still open: ${esc(String(lr.open).slice(0, 220))}</div>` : (lp === 'rework' && lr.open ? `<div class="hxt-o">Lead asked: ${esc(String(lr.open).slice(0, 160))}</div>` : '');
     const since = stage === 4 ? t.waitingAt : t.startedAt || t.addedAt;
-    const ls = lr.lesson, dn = esc(a ? a.name : t.agent), ln = esc(lead ? lead.name : 'The lead'); // the lead's proposed lesson (leadlessons.mjs): only the owner's yes writes it
+    const ls = lr.lesson, dn = esc(a ? tc(a.name) : t.agent), ln = esc(lead ? tc(lead.name) : 'The lead'); // the lead's proposed lesson (leadlessons.mjs): only the owner's yes writes it
     const lesson = !(stage === 4 && ls) ? '' : ls.status === 'proposed'
       ? `<div class="hxt-ls"><span class="k">Lesson from the lead</span>${ln} suggests adding this rule to ${ls.target === 'skill' ? esc(ls.skill) : `${dn}'s standing rules`}: “${esc(ls.rule)}”${/[.!?]$/.test(ls.rule) ? '' : '.'} Tell ${dn} to adopt it from now on?${ls.shared ? `<span class="sh">${esc(ls.skill)} is shared: this affects every desk.</span>` : ''}${ls.refused ? `<span class="why">Not written: ${esc(ls.refused)}</span>` : ''}<div class="yn"><button type="button" class="primary" data-hxlesson="yes" data-task="${esc(t.id)}">YES</button><button type="button" data-hxlesson="no" data-task="${esc(t.id)}">NO</button></div></div>`
       : `<div class="hxt-ls done">${ls.status === 'applied' ? `Lesson adopted into ${ls.target === 'skill' ? esc(ls.skill) : `${dn}'s standing rules`}${ls.skipped ? ' (it was already there)' : ''}.` : 'Lesson declined. Nothing was written.'}</div>`;
-    return `<div class="hxt-c"><div class="hxt-t">${esc(t.title)}</div><div class="hxt-m"><span>${esc(a ? a.name : t.agent)}</span>${since ? `<span>${ago(since)}</span>` : ''}</div>${badges.length ? `<div class="hxt-b">${badges.join('')}</div>` : ''}${open}${lesson}${stage === 4 ? `<a class="btn" href="/#review=${encodeURIComponent(t.id)}" target="agentsOffice">REVIEW IN THE OFFICE ↗</a>` : ''}</div>`;
+    return `<div class="hxt-c"><div class="hxt-t">${esc(t.title)}</div><div class="hxt-m"><span>${esc(a ? tc(a.name) : t.agent)}</span>${since ? `<span>${ago(since)}</span>` : ''}</div>${badges.length ? `<div class="hxt-b">${badges.join('')}</div>` : ''}${open}${lesson}${stage === 4 ? `<a class="btn" href="/#review=${encodeURIComponent(t.id)}" target="agentsOffice">REVIEW IN THE OFFICE ↗</a>` : ''}</div>`;
   }
   function renderTrail(blocks) {
     const box = el('hxTrail'); if (!box) return;
@@ -3237,7 +3238,7 @@ loadTrackers(); setInterval(() => { if (!document.hidden && !Object.values(S.tkB
     const open = S.tasks.filter(t => depts.has(t.dept) && stageOf(t) >= 0 && (!sel || mine(t, sel)));
     const by = [0, 1, 2, 3, 4].map(i => open.filter(t => stageOf(t) === i).sort((a, b) => (a.startedAt || a.addedAt || 0) - (b.startedAt || b.addedAt || 0)));
     const today = S.tasks.filter(t => depts.has(t.dept) && t.state === 'done' && !t.closed && t.doneAt && new Date(t.doneAt).toDateString() === new Date().toDateString() && (!sel || mine(t, sel))).length;
-    box.innerHTML = `<div class="sh"><h2>Task trail</h2><span class="note">Every open ${[...depts].map(d => esc(DEPTS[d].name.toLowerCase())).join(' and ')} task, in the stage it is in now. ${open.length} open · ${today} done today.</span>${seat ? `<div class="tools"><span class="hxt-f">Showing ${esc(seat.name)}</span><button type="button" data-hxclear>SHOW ALL DESKS</button></div>` : ''}</div>
+    box.innerHTML = `<div class="sh"><h2>Task trail</h2><span class="note">Every open ${[...depts].map(d => esc(DEPTS[d].name.toLowerCase())).join(' and ')} task, in the stage it is in now. ${open.length} open · ${today} done today.</span>${seat ? `<div class="tools"><span class="hxt-f">Showing ${esc(tc(seat.name))}</span><button type="button" data-hxclear>SHOW ALL DESKS</button></div>` : ''}</div>
       <div class="hxt-row">${STAGES.map(([n, d], i) => `<div class="hxt-col${by[i].length ? (i === 3 ? ' rev' : ' has') : ''}${i === 4 && by[i].length ? ' need' : ''}"><div class="hxt-h"><span class="hxt-n">0${i + 1}</span><span class="hxt-name">${n}</span><b>${by[i].length}</b></div><div class="hxt-d">${d}</div><div class="hxt-l">${by[i].map(t => taskCard(t, i)).join('') || `<div class="hxt-e">Nothing here.</div>`}</div></div>`).join('')}</div>`;
   }
   window.renderHierarchy = function renderHierarchy() {
@@ -3255,16 +3256,16 @@ loadTrackers(); setInterval(() => { if (!document.hidden && !Object.values(S.tkB
     const h = new Date().getHours(), hi = h < 12 ? 'Good morning' : h < 18 ? 'Good afternoon' : 'Good evening';
     el('hxEye').innerHTML = `${hi}, Wesley · Hierarchy · ${blocks.map(b => esc(b.dept.name)).join(' · ')} pilot`;
     el('hxHead').textContent = W ? `${W} desk${W > 1 ? 's' : ''} waiting on you.` : D ? `${D} desk${D > 1 ? 's' : ''} working.` : 'Quiet. Every desk is free.';
-    el('hxSub').innerHTML = `Your request goes in at the top, the prompt engineer turns it into a brief, the Chief of Staff hands it to the lead, the lead hands it to a desk. <b>${all.length} desk${all.length === 1 ? '' : 's'}</b> on the roster today, and there is no cap.`;
+    el('hxSub').innerHTML = `Your request goes in at the top, the Prompt Engineer turns it into a brief, the Chief of Staff hands it to the lead, the lead hands it to a desk. <b>${all.length} desk${all.length === 1 ? '' : 's'}</b> on the roster today, and there is no cap.`;
     el('hxStats').innerHTML = [[all.length, 'Desks'], [D, 'Working now'], [W, 'Waiting on you']].map(([n, l], i) => `<div class="hstat"><div class="hn${i === 2 && n ? ' alert' : ''}">${n}</div><div class="hl">${l}</div></div>`).join('');
     const chain = blocks.map(b => {
       const lead = b.lead, lc = COL[b.leadKey], dc = b.dept.chip;
-      const leadNode = lead ? node('hx-lead', lc, b.leadKey !== 'idle', `03 · Head of ${esc(b.dept.name.toLowerCase())}`, TXT[b.leadKey], esc(lead.name), esc(lead.does || lead.role), `<div class="hx-chips"><span class="hx-chip" style="border-color:${dc}">${esc(b.dept.name)}</span><span class="hx-chip part">${b.desks.length} desk${b.desks.length === 1 ? '' : 's'} report in</span></div>`, `--dc:${dc}`) : node('hx-lead', COL.idle, false, '03 · Head of department', 'No lead', esc(b.dept.name), 'This department has no lead on the roster.');
+      const leadNode = lead ? node('hx-lead', lc, b.leadKey !== 'idle', `03 · Head of ${esc(b.dept.name.toLowerCase())}`, TXT[b.leadKey], esc(tc(lead.name)), esc(lead.does || lead.role), `<div class="hx-chips"><span class="hx-chip" style="border-color:${dc}">${esc(b.dept.name)}</span><span class="hx-chip part">${b.desks.length} desk${b.desks.length === 1 ? '' : 's'} report in</span></div>`, `--dc:${dc}`) : node('hx-lead', COL.idle, false, '03 · Head of department', 'No lead', esc(b.dept.name), 'This department has no lead on the roster.');
       return leadNode + link(b.doing > 0, b.waiting > 0, 'Assigns the work', 'The lead splits it across desks and reviews what comes back', lc)
-        + `<div class="hx-bay"><div class="hx-bl"><span class="chip" style="display:inline-block;width:9px;height:9px;border-radius:50%;background:${dc}"></span>Desks reporting to ${esc(lead ? lead.name : b.dept.name)}<em>${b.desks.length} seat${b.desks.length === 1 ? '' : 's'}${b.failed ? ` · ${b.failed} failed last run` : ''}</em></div>
+        + `<div class="hx-bay"><div class="hx-bl"><span class="chip" style="display:inline-block;width:9px;height:9px;border-radius:50%;background:${dc}"></span>Desks reporting to ${esc(lead ? tc(lead.name) : b.dept.name)}<em>${b.desks.length} seat${b.desks.length === 1 ? '' : 's'}${b.failed ? ` · ${b.failed} failed last run` : ''}</em></div>
           <div class="hx-desks">${b.desks.map(desk).join('')}<div class="hx-ghost"><b>Room for more</b>A new kind of desk joins here when the roster gets one. Duet and Plaud One can tap in at this level later.</div></div></div>`;
     }).join('');
-    const tops = node('hx-pe', peBusy ? 'var(--ok)' : 'var(--faint)', peBusy, '01 · Ingestion', peBusy ? 'Working' : 'Ready', 'Prompt engineer', 'Takes a request, checks it against your notes and returns a brief with yes/no proposals. You answer; nothing moves without it.',
+    const tops = node('hx-pe', peBusy ? 'var(--ok)' : 'var(--faint)', peBusy, '01 · Ingestion', peBusy ? 'Working' : 'Ready', 'Prompt Engineer', 'Takes a request, checks it against your notes and returns a brief with yes/no proposals. You answer; nothing moves without it.',
       '<div class="hx-chips"><span class="hx-chip">Ask box</span><span class="hx-chip part" title="Telegram goes straight to the Chief of Staff today">Telegram · straight to chief</span><span class="hx-chip plan">Duet · planned</span><span class="hx-chip plan">Plaud One · planned</span></div>');
     const chief = node('hx-chief', chiefBusy ? 'var(--ok)' : 'var(--faint)', chiefBusy, '02 · Chief of Staff', chiefBusy ? 'Working' : 'Ready', 'Chief of Staff', 'Reads the approved brief, picks the department and adds the task. It can add tasks and run routines. It never approves, sends, posts or pays.');
     const anyLive = D > 0;

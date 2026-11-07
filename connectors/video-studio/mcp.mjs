@@ -8,6 +8,7 @@ import { execFileSync } from 'node:child_process';
 import { FORMATS, MAX_ACTIVE, ROOT, WORKER, active, ensureDirs, listJobs, newId, readJob, tokens, workerAlive, writeJob } from './shared.mjs';
 import { normaliseAoo } from './aoo.mjs';
 import { KINDS, normalise, STYLES, TEXT_MOTIONS, TRANSITIONS, VOICES } from './compose.mjs';
+import { look } from './look.mjs';
 
 const BRANDS = Object.keys(tokens());
 const TOOLS = [
@@ -58,6 +59,7 @@ const TOOLS = [
     requested_by: { type: 'string', description: 'Your desk name.' },
   } } },
   { name: 'video_job', description: 'Check one video job: queued, running (with the step), done (with the MP4 path, the slide images, the preview stills and what was checked), failed (with the exact reason) or cancelled. Pass wait_seconds (up to 75) and the call waits for the job to finish before it answers: use this right after video_build and repeat it until the job is done or failed.', inputSchema: { type: 'object', required: ['job_id'], properties: { job_id: { type: 'string' }, wait_seconds: { type: 'integer', description: 'Wait up to this many seconds (max 75) for the job to finish.' } } } },
+  { name: 'video_look', description: 'See a finished job with your own eyes before you hand it back: returns a picture of all its slides as one numbered contact sheet (or of one slide, with `slide`). For a video it shows the preview stills. Look for what a viewer would notice first: the focal point, a word cut off or wrapped alone, an underline through letters, text touching an edge or crossing a colour edge, empty space with no purpose, type too small to read on a phone. If something is wrong, rebuild with video_build and look again: at most two rebuilds. Free; read-only.', inputSchema: { type: 'object', required: ['job_id'], properties: { job_id: { type: 'string', description: 'A job whose state is done.' }, slide: { type: 'integer', description: 'Optional: one slide, 1 to the number of slides, shown alone at full size.' } } } },
   { name: 'video_list_jobs', description: 'The ten most recent video jobs and their state.', inputSchema: { type: 'object', properties: {} } },
   { name: 'video_cancel', description: 'Cancel a video job that is queued or running.', inputSchema: { type: 'object', required: ['job_id'], properties: { job_id: { type: 'string' } } } },
 ];
@@ -81,7 +83,7 @@ const tools = {
     if (n.spec.music?.file) { const f = path.resolve(n.spec.music.file); if (!fs.existsSync(f) || !f.startsWith(path.join(ROOT, 'output'))) return fail('music.file must be a file under the office output folder, as returned by music_job.'); n.spec.music.file = f; }
     ensureDirs(); const act = active(listJobs()); if (act.length >= MAX_ACTIVE) return fail(`The queue is full (${act.length} jobs). Check video_list_jobs.`);
     const job = writeJob({ id: newId(), state: 'queued', spec: n.spec, requestedBy: String(a.requested_by || '').slice(0, 60), createdAt: Date.now() });
-    return text({ jobId: job.id, state: 'queued', jobsAhead: act.length, workerStarted: startWorker(), next: 'Now call video_job with this job id and wait_seconds 75, and repeat until the state is done or failed (a short video takes about one to two minutes). Report the file or slide paths it returns. Do not hand back a plan or say it is queued.' });
+    return text({ jobId: job.id, state: 'queued', jobsAhead: act.length, workerStarted: startWorker(), next: 'Now call video_job with this job id and wait_seconds 75, and repeat until the state is done or failed (a short video takes about one to two minutes). When it is done, call video_look and check the slides before you report them. Report the file or slide paths it returns. Do not hand back a plan or say it is queued.' });
   },
   aoo_reel_build(a) {
     const n = normaliseAoo(a); if (n.problems) return fail('Fix and resubmit: ' + n.problems.join('; '));
@@ -94,6 +96,16 @@ const tools = {
     let j = readJob(id); if (!j) return fail('No such job: ' + a.job_id);
     while (j.state !== 'done' && j.state !== 'failed' && j.state !== 'cancelled' && Date.now() < until) { await new Promise(r => setTimeout(r, 2000)); j = readJob(id) || j; kick(); }
     return text(brief(j));
+  },
+  video_look(a) { // a picture for the desk that made the job: the only way an office agent sees its own work (docs/plan-agent-visibility.md)
+    const j = readJob(String(a.job_id || '')); if (!j) return fail('No such job: ' + a.job_id);
+    if (j.state !== 'done') return fail(`Job ${j.id} is ${j.state}; only a finished job can be looked at. Wait for it with video_job.`);
+    const slide = a.slide === undefined ? undefined : Number(a.slide);
+    let pic; try { pic = look(j, slide); } catch (e) { return fail('Could not draw the picture: ' + (e.message || e)); }
+    const what = slide ? `slide ${slide} of ${pic.count}, full size` : `all ${pic.count} ${j.slides?.length ? 'slides' : 'preview stills'}, numbered in order`;
+    return { content: [
+      { type: 'text', text: JSON.stringify({ job: j.id, title: j.spec?.title, format: j.spec?.format, showing: what, studioChecks: j.qa, picture: pic.file, next: 'Look at the picture now. Name what a viewer sees first and anything wrong (by slide number). Fix the weakest one to three points by rebuilding with video_build, then look again: at most two rebuilds. Keep the look the piece already has; never change a word or figure to make it fit.' }, null, 2) },
+      { type: 'image', data: fs.readFileSync(pic.file).toString('base64'), mimeType: 'image/png' }] };
   },
   video_list_jobs() { kick(); return text(listJobs().slice(-10).reverse().map(brief)); },
   video_cancel(a) { const j = readJob(String(a.job_id || '')); if (!j) return fail('No such job: ' + a.job_id); if (j.state === 'queued' || j.state === 'running') { writeJob({ ...j, state: 'cancelled', finishedAt: Date.now() }); return text({ id: j.id, state: 'cancelled' }); } return fail(`Job ${j.id} is ${j.state}; only a queued or running job can be cancelled.`); },

@@ -207,6 +207,7 @@ strong{font-weight:560}
 .sites--1{grid-template-columns:minmax(0,clamp(160px,17vw,260px))}
 .sites--10{max-width:min(640px,96vh)}
 .sites--10 .site[style]{transform:translate(var(--x),var(--y)) rotate(var(--rot));opacity:var(--o)}
+@media (max-width:899px){.sites--10 .site[style]{transform:translate(calc(var(--x) * .3),calc(var(--y) * .3)) rotate(calc(var(--rot) * .3))}} /* same smaller drift as site.js */
 .site__row b.off{opacity:.12}
 .dots{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(10,minmax(0,1fr));gap:clamp(4px,.5vw,8px);width:100%;max-width:min(520px,56vh)}
 .dots li{position:relative;aspect-ratio:1;background:var(--bone)}
