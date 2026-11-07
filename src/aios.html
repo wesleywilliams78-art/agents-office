@@ -445,6 +445,13 @@
   .pe textarea { width: 100%; min-height: 56px; max-height: 240px; resize: vertical; background: var(--soft); border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; color: var(--ink); line-height: 1.45; }
   .pe textarea:focus { outline: none; border-color: var(--grey); }
   .pe .per { display: flex; align-items: center; flex-wrap: wrap; gap: 8px 10px; margin-top: 10px; } .pe .st { color: var(--grey); font-size: 12px; }
+  /* attachments on the ask box (7 Nov 2026): 📎, drop or paste; each file becomes a Brain note that travels with the request */
+  #peClip { padding: 8px 11px; font-size: 14px; line-height: 1; }
+  .peat { display: flex; flex-wrap: wrap; gap: 6px; } .peat:empty { display: none; } .pe .peat { margin-top: 8px; }
+  .peat span { display: inline-flex; align-items: center; gap: 6px; max-width: 320px; padding: 4px 6px 4px 10px; border: 1px solid var(--line); border-radius: 999px; font-size: 11.5px; color: var(--ink); background: var(--soft); }
+  .peat span b { font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; } .peat span.busy { opacity: .7; } .peat span.bad { border-color: var(--red, #EC3013); }
+  .peat button { border: 0; background: transparent; color: var(--grey); padding: 0 4px; cursor: pointer; }
+  .pe.drag { outline: 2px dashed var(--grey); outline-offset: 4px; }
   .pe .pec { border-top: 1px solid var(--line); margin-top: 14px; padding-top: 12px; } .pe .pec.off { opacity: .6; }
   .pe .pec .rb { margin: 0 0 8px; line-height: 1.45; } .pe .pec .pk { font-size: 10.5px; letter-spacing: .14em; text-transform: uppercase; font-weight: 600; margin-bottom: 6px; }
   .pe .pp { border-top: 1px solid var(--line); padding: 10px 0 8px; } .pe .pp .pq { font-weight: 600; margin-bottom: 3px; } .pe .pp .pf { margin-bottom: 4px; }
@@ -466,11 +473,12 @@
   .hxo-tw { display: flex; align-items: center; gap: 10px; align-self: stretch; max-width: 176px; padding-right: 12px; border-right: 1px solid var(--ox-edge); }
   .hxo-tn { font-weight: 600; font-size: 13px; line-height: 1.1; } .hxo-tr { color: var(--meta, var(--faint)); font-size: 9.5px; letter-spacing: .12em; text-transform: uppercase; line-height: 1.3; margin-top: 3px; }
   .hxo-theo .hxo-fw.l img { width: 40px; height: 40px; }
-  .hxo-theo .pe { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; grid-template-areas: "ta tog go" "out out out"; align-items: center; gap: 0 8px; margin: 0; padding: 0; border: 0; background: transparent; box-shadow: none; -webkit-backdrop-filter: none; backdrop-filter: none; }
+  .hxo-theo .pe { display: grid; grid-template-columns: minmax(0, 1fr) auto auto auto; grid-template-areas: "ta clip tog go" "at at at at" "out out out out"; align-items: center; gap: 0 8px; margin: 0; padding: 0; border: 0; background: transparent; box-shadow: none; -webkit-backdrop-filter: none; backdrop-filter: none; }
   .hxo-theo .pe .peh, .hxo-theo .pe .per { display: contents; } .hxo-theo .pe .peh .k, .hxo-theo .pe .peh .z { display: none; }
   .hxo-theo .pe textarea { grid-area: ta; height: 42px; min-height: 42px; resize: none; padding: 11px 4px; border: 0; background: transparent; box-shadow: none; font-size: 13px; }
   .hxo-theo .pe textarea:focus { height: 84px; resize: vertical; }
   .hxo-theo .pe textarea:not(:focus)::placeholder { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .hxo-theo #peClip { grid-area: clip; margin: 0; } .hxo-theo .peat { grid-area: at; margin: 0; padding: 0 0 4px; }
   .hxo-theo #peTog { grid-area: tog; margin: 0; } .hxo-theo #peGo { grid-area: go; padding: 13px 18px; font-weight: 600; letter-spacing: .14em; }
   .hxo-theo #peSt { position: absolute; top: 100%; left: 160px; right: 20px; margin-top: 7px; font-size: 11px; color: var(--faint); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .hxo-theo #peOut { grid-area: out; } .hxo-theo #peOut:not(:empty) { padding: 4px 10px 8px 0; }
@@ -1219,7 +1227,8 @@
   <div class="panel pe" id="pe" data-cat="overview">
     <div class="peh"><span class="k">Ask the office</span><span class="z">The Prompt Engineer checks it against your notes first. You answer yes or no; the Chief of Staff then adds it to the right desk. Nothing is approved, sent or posted from here.</span><button type="button" id="peTog" title="Engineer off sends your words straight to the Chief of Staff">ENGINEER ON</button></div>
     <textarea id="peT" rows="2" placeholder="Say what you want done, e.g. plan next week's Instagram and tell me what is waiting on me" aria-label="Ask the office"></textarea>
-    <div class="per"><button type="button" class="go" id="peGo">CHECK AND SEND</button><span class="st" id="peSt">Ctrl+Enter sends.</span></div>
+    <div class="peat" id="peAt"></div>
+    <div class="per"><button type="button" id="peClip" title="Attach files: a drawing, PDF, photo or document. Each is read into the Brain and travels with your request. You can also drop or paste them here.">📎</button><input type="file" id="peFile" multiple hidden><button type="button" class="go" id="peGo">CHECK AND SEND</button><span class="st" id="peSt">Ctrl+Enter sends.</span></div>
     <div id="peOut"></div>
   </div>
   <div class="needs" id="needs" data-cat="overview"></div>
@@ -3433,10 +3442,36 @@ loadTrackers(); setInterval(() => { if (!document.hidden && !Object.values(S.tkB
     return `BRIEF (approved by Wesley through the prompt engineer${result.department_hint && result.department_hint !== 'unclear' ? `; suggested department: ${result.department_hint}` : ''})\n\n${body}\n\nRead-back: ${readback}${decided ? `\n\nHis decisions:\n${decided}` : ''}\n\nHis own words: ${String(request).trim().slice(0, 2500)}`;
   }
   const KEY = 'aios.promptEngineer', on = () => { try { return localStorage.getItem(KEY) !== 'off'; } catch { return true; } };
-  const T = g('peT'), GO = g('peGo'), ST = g('peSt'), OUT = g('peOut'), TOG = g('peTog');
+  const T = g('peT'), GO = g('peGo'), ST = g('peSt'), OUT = g('peOut'), TOG = g('peTog'), AT = g('peAt'), FILE = g('peFile'), PE = g('pe');
   let busy = false;
   const drawTog = () => { TOG.textContent = on() ? 'ENGINEER ON' : 'ENGINEER OFF'; TOG.style.opacity = on() ? '' : '.55'; };
   TOG.addEventListener('click', () => { try { localStorage.setItem(KEY, on() ? 'off' : 'on'); } catch {} drawTog(); });
+  /* attachments (7 Nov 2026): read into the Brain through /api/upload, the same route as the Chief of Staff's panel; the note names travel with the request */
+  let atts = []; // { filename, note, state: busy | ok | bad, err }
+  const drawAtts = () => { AT.innerHTML = atts.map((a, i) => `<span class="${a.state}"><b title="${x(a.filename)}">📎 ${x(a.filename)}${a.state === 'busy' ? ' · reading…' : a.state === 'bad' ? ' · ' + x(a.err || 'failed') : ''}</b><button type="button" data-i="${i}" title="Remove">✕</button></span>`).join(''); };
+  AT.addEventListener('click', e => { const b = e.target.closest('button'); if (b && !busy) { atts.splice(+b.dataset.i, 1); drawAtts(); } });
+  const b64 = f => new Promise((res, rej) => { const r = new FileReader(); r.onload = () => res(String(r.result).split(',')[1] || ''); r.onerror = () => rej(new Error('could not read the file')); r.readAsDataURL(f); });
+  async function attach(files) {
+    for (const f of [...files]) {
+      const a = { filename: f.name, note: '', state: 'busy' }; atts.push(a); drawAtts();
+      try {
+        const r = await fetch('/api/upload', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ filename: f.name, dataBase64: await b64(f) }) });
+        const j = await r.json().catch(() => ({})); if (!r.ok) throw new Error(j.error || r.statusText);
+        a.note = j.note; a.state = 'ok';
+      } catch (e) { a.state = 'bad'; a.err = String(e.message || e).slice(0, 80); }
+      drawAtts();
+    }
+    T.focus();
+  }
+  const ready = () => atts.filter(a => a.state === 'ok').map(a => ({ note: a.note, filename: a.filename }));
+  g('peClip').addEventListener('click', () => FILE.click());
+  FILE.addEventListener('change', () => { if (FILE.files.length) attach(FILE.files); FILE.value = ''; });
+  T.addEventListener('paste', e => { const fs = [...(e.clipboardData?.files || [])]; if (!fs.length) return; e.preventDefault(); attach(fs.map((f, i) => f.name && f.name !== 'image.png' ? f : new File([f], 'Screenshot ' + new Date().toISOString().slice(0, 19).replace(/[:T]/g, '-') + (fs.length > 1 ? '-' + (i + 1) : '') + '.png', { type: f.type }))); });
+  let dragN = 0;
+  PE.addEventListener('dragenter', e => { if (e.dataTransfer?.types?.includes('Files')) { e.preventDefault(); dragN++; PE.classList.add('drag'); } });
+  PE.addEventListener('dragover', e => { if (e.dataTransfer?.types?.includes('Files')) e.preventDefault(); });
+  PE.addEventListener('dragleave', () => { dragN = Math.max(0, dragN - 1); if (!dragN) PE.classList.remove('drag'); });
+  PE.addEventListener('drop', e => { if (!e.dataTransfer?.files?.length) return; e.preventDefault(); dragN = 0; PE.classList.remove('drag'); attach(e.dataTransfer.files); });
   drawTog();
   const lock = (v, msg) => { busy = v; (window.AIOS_PE = window.AIOS_PE || {}).busy = v; window.renderHierarchy?.(); GO.disabled = v; T.disabled = v; if (msg !== undefined) ST.textContent = msg; };
   const post = async (url, body) => { const r = await fetch(url, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) }); return r; };
@@ -3444,26 +3479,28 @@ loadTrackers(); setInterval(() => { if (!document.hidden && !Object.values(S.tkB
   const fade = c => setTimeout(() => { c.style.transition = 'opacity .4s'; c.style.opacity = '0'; setTimeout(() => c.remove(), 450); }, 1200); // an answered card has done its job: show its "Sent" line for a moment, then drop it off the list
 
   async function start() {
-    const text = T.value.trim(); if (!text || busy) return;
-    if (!on()) return toChief(text, false);
+    if (busy) return;
+    if (atts.some(a => a.state === 'busy')) { ST.textContent = 'Reading the attachment first…'; while (atts.some(a => a.state === 'busy')) await new Promise(r2 => setTimeout(r2, 300)); }
+    const files = ready(), text = T.value.trim() || (files.length ? 'Please look at the attached file' + (files.length > 1 ? 's' : '') + '.' : ''); if (!text) return;
+    if (!on()) return toChief(text, false, undefined, files);
     lock(true, 'Prompt Engineer: checking your request against your notes (up to two minutes)…');
     let r;
-    try { const res = await post('/api/prompt-engineer', { text }); r = await res.json().catch(() => ({})); if (!res.ok) throw new Error(r.error || res.statusText); }
-    catch (e) { lock(false, ''); return failCard(text, e); }
-    if (r.status === 'pass' || !r.brief) return toChief(text, false); // a question or chat: straight to the Chief of Staff
-    lock(false, ''); card(text, r);
+    try { const res = await post('/api/prompt-engineer', { text, attachments: files }); r = await res.json().catch(() => ({})); if (!res.ok) throw new Error(r.error || res.statusText); }
+    catch (e) { lock(false, ''); return failCard(text, e, files); }
+    if (r.status === 'pass' || !r.brief) return toChief(text, false, undefined, files); // a question or chat: straight to the Chief of Staff
+    lock(false, ''); card(text, r, files);
   }
 
-  function failCard(text, e) {
+  function failCard(text, e, files) {
     const c = document.createElement('div'); c.className = 'pec';
     c.innerHTML = `<div class="pk">Prompt Engineer</div><div class="rb">It couldn't check this one (${x(String(e.message || e).slice(0, 140))}). Send your words to the Chief of Staff as they are?</div><div class="r"><button type="button" class="go" data-y>YES, SEND AS IS</button><button type="button" data-n>NO</button></div>`;
     const done = () => { c.classList.add('off'); c.querySelectorAll('button').forEach(b => { b.disabled = true; }); fade(c); };
-    c.querySelector('[data-y]').addEventListener('click', () => { done(); toChief(text, false); });
+    c.querySelector('[data-y]').addEventListener('click', () => { done(); toChief(text, false, undefined, files); });
     c.querySelector('[data-n]').addEventListener('click', done);
     OUT.prepend(c);
   }
 
-  function card(text, r) {
+  function card(text, r, files) {
     const props = Array.isArray(r.proposals) ? r.proposals.slice(0, 3) : [], answers = props.map(() => undefined);
     const c = document.createElement('div'); c.className = 'pec';
     const dept = DEPT_NAME[r.department_hint] ? ' · ' + DEPT_NAME[r.department_hint] : '';
@@ -3482,19 +3519,19 @@ loadTrackers(); setInterval(() => { if (!document.hidden && !Object.values(S.tkB
     };
     c.querySelectorAll('.pp').forEach(el => el.addEventListener('click', e => { const b = e.target.closest('button[data-a]'); if (!b || c.classList.contains('off')) return; answers[+el.dataset.i] = b.dataset.a === '1'; draw(); }));
     const finish = msg => { c.classList.add('off'); c.querySelectorAll('button').forEach(b => { b.disabled = true; }); stx.textContent = msg; fade(c); };
-    go.addEventListener('click', () => { if (busy) return; finish('Sent to the Chief of Staff.'); toChief(briefText(text, r, answers), true, text); });
-    raw.addEventListener('click', () => { if (busy) return; finish('Sent as you typed it.'); toChief(text, false); });
+    go.addEventListener('click', () => { if (busy) return; finish('Sent to the Chief of Staff.'); toChief(briefText(text, r, answers), true, text, files); });
+    raw.addEventListener('click', () => { if (busy) return; finish('Sent as you typed it.'); toChief(text, false, undefined, files); });
     draw(); OUT.prepend(c);
   }
 
-  async function toChief(text, engineered, typed) {
+  async function toChief(text, engineered, typed, files = []) {
     lock(true, 'The Chief of Staff is on it…');
-    const u = document.createElement('div'); u.className = 'peu'; u.textContent = (typed || text).slice(0, 600);
+    const u = document.createElement('div'); u.className = 'peu'; u.textContent = (typed || text).slice(0, 600) + (files.length ? '\n📎 ' + files.map(f => f.filename).join(', ') : '');
     const a = document.createElement('div'); a.className = 'pea'; a.textContent = '';
     const grp = document.createElement('div'); grp.append(u, a); OUT.prepend(grp);
     let changed = false, reply = false;
     try {
-      const res = await post('/api/assistant', { text, surface: 'panel', stream: true, engineered: engineered || undefined });
+      const res = await post('/api/assistant', { text, surface: 'panel', stream: true, engineered: engineered || undefined, attachments: files.length ? files : undefined });
       if (!res.ok || !res.body) { const j = await res.json().catch(() => ({})); throw new Error(j.error || res.statusText); }
       const rd = res.body.getReader(), dec = new TextDecoder(); let buf = '';
       for (;;) {
@@ -3508,7 +3545,7 @@ loadTrackers(); setInterval(() => { if (!document.hidden && !Object.values(S.tkB
         }
       }
       if (!reply && !a.textContent) a.remove();
-      T.value = '';
+      T.value = ''; if (files.length) { const sent = new Set(files.map(f => f.note)); atts = atts.filter(f => !sent.has(f.note)); drawAtts(); }
     } catch (e) { a.className = 'pea err'; a.textContent = "I couldn't reach the Chief of Staff: " + e.message; }
     lock(false, 'Ctrl+Enter sends.'); T.disabled = false;
     if (changed && typeof poll === 'function') setTimeout(poll, 800);

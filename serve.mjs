@@ -167,8 +167,13 @@ const slug = t => String(t).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^
    evidence of), not just a transcript. ---------- */
 const IMAGE_MEDIA = { '.png': 'image/png', '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.webp': 'image/webp', '.gif': 'image/gif' };
 const VISION_PROMPT = "Digest this for someone's personal work record. Transcribe all visible text, numbers and labels exactly, in full. Describe any charts, tables, screenshots or visual structure — what they show, not just that they exist. If it looks like evidence of something (a result, a metric, a message, a certificate, a review), say plainly what it's evidence of. Be thorough and literal: this write-up is the only record of what's in the file — nothing else will ever look at the original again.";
+// 7 Nov 2026: a floor plan or fit-out drawing gets a layout read, so the fit-out desk sees the plan, not just its labels.
+// A CAD PDF has a text layer of room labels only, so one that looks like a drawing goes to vision too (the text layer is kept below the read).
+const DRAWING_PROMPT = " If this is a floor plan, fit-out drawing, kitchen layout or site plan, also give a layout read: the title block (project, drawing number, revision, scale, date); every room or zone with its label and size (from dimension strings where shown, otherwise say it is estimated from the scale); each door or opening and which two spaces it joins; the equipment in each zone, in order along each wall or counter; every entrance and what it is for (guests, staff, deliveries, waste, drive-thru); the service points (counter, tills, pass, pick-up, drive-thru windows); the routes people and food would take between them; sinks, handwash basins, drainage, extract and other services marked; and a last list of what the drawing does not show. Describe and measure; do not judge the layout.";
+const DRAWING_NAME = /floor[\s_-]?plan|site[\s_-]?plan|layout|drawing|fit[\s_-]?out|\bGA\b|elevation|\bdwg\b|\bcad\b/i;
+const DRAWING_TEXT = /\b1\s*:\s*(20|25|50|100|200)\b|drawing\s*(no|number)|\bdwg\b|floor\s*plan|general\s*arrangement|\bscale\s*[:@]/i;
 function visionDigest(block) {
-  const msg = JSON.stringify({ type: 'user', message: { role: 'user', content: [{ type: 'text', text: VISION_PROMPT }, block] } });
+  const msg = JSON.stringify({ type: 'user', message: { role: 'user', content: [{ type: 'text', text: VISION_PROMPT + DRAWING_PROMPT }, block] } });
   const env = mcp.freshEnv(); delete env.CLAUDECODE;
   return new Promise((resolve, reject) => {
     const p = spawn(mcp.resolveBin(), ['-p', '--input-format', 'stream-json', '--output-format', 'stream-json', '--verbose', '--no-session-persistence', // its cost goes to data/tokens.jsonl, not a transcript
@@ -227,6 +232,8 @@ async function extractText(filename, buf) {
     // a real, complete text layer is cheap and exact — but pdf-parse can silently stop partway through
     // a multi-page or multi-column PDF (a two-column CV, say), so don't trust a short result just because
     // it cleared the noise floor: it has to be plausible for the page count too, or go to vision instead.
+    const pdfBlock = { type: 'document', source: { type: 'base64', media_type: 'application/pdf', data: buf.toString('base64') } };
+    if (pdfText.length > 50 && pages <= 8 && (DRAWING_NAME.test(path.basename(filename)) || DRAWING_TEXT.test(pdfText))) return (await visionDigest(pdfBlock)) + '\n\n## Text layer of the drawing\n\n' + pdfText.slice(0, 20000); // a drawing: the layout read first, its exact labels after
     if (pdfText.length > 200 && pdfText.length > pages * 400) return pdfText;
     return visionDigest({ type: 'document', source: { type: 'base64', media_type: 'application/pdf', data: buf.toString('base64') } }); // scanned/image-only PDF
   }
