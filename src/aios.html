@@ -1163,7 +1163,7 @@
 <div class="ccbox" id="ccBox" role="dialog" aria-label="Consultants’ Corner" aria-hidden="true">
   <div class="cchd"><b>Consultants’ Corner</b><span>from YouTube</span><button type="button" class="ccx" id="ccClose" aria-label="Close (the music keeps playing)" title="Close (the music keeps playing)">✕</button></div>
   <div class="ccframe" id="ccFrame"></div>
-  <form class="ccform" id="ccForm"><p>Paste the YouTube link of the playlist once; this browser remembers it.</p><input id="ccUrl" type="url" placeholder="https://www.youtube.com/playlist?list=…" aria-label="YouTube playlist link"><button type="submit" class="primary">PLAY</button><span class="why" id="ccWhy" hidden>That is not a YouTube playlist or video link.</span></form>
+  <form class="ccform" id="ccForm"><p>Paste a YouTube playlist or video link; this browser remembers it.</p><input id="ccUrl" type="url" placeholder="https://www.youtube.com/playlist?list=…" aria-label="YouTube playlist link"><button type="submit" class="primary">PLAY</button><span class="why" id="ccWhy" hidden>That is not a YouTube playlist or video link.</span></form>
   <div class="ccrow" id="ccRow" hidden><button type="button" id="ccStop">STOP</button><button type="button" id="ccEdit">CHANGE THE LINK</button></div>
 </div>
 <div class="wrap">
@@ -1710,7 +1710,8 @@ setInterval(() => { if (!document.hidden && S.cat === 'social') loadSocial(); },
 // browser. Closing the player hides it and the music keeps going while you change tabs; STOP removes the player.
 (() => {
   const KEY = 'aios.ccPlaylist', box = $('ccBox'), btn = $('ccBtn'), frame = $('ccFrame'), form = $('ccForm'), inp = $('ccUrl'), row = $('ccRow');
-  const saved = () => { try { return localStorage.getItem(KEY) || ''; } catch { return ''; } };
+  const START = 'https://www.youtube.com/watch?v=INMPrT880yQ'; // the first three hours (Wesley, 7 Nov 2026); a link pasted in the player replaces it in this browser
+  const saved = () => { try { return localStorage.getItem(KEY) || START; } catch { return START; } };
   const embed = u => { // a playlist link (list=…) or one video (watch?v=…, youtu.be/…) → the privacy-enhanced embed, autoplaying
     let x; try { x = new URL(String(u).trim()); } catch { return ''; }
     if (!/(^|\.)(youtube\.com|youtube-nocookie\.com|youtu\.be)$/.test(x.hostname)) return '';
