@@ -1443,7 +1443,7 @@ function renderSocial() {
     const pl = s.places.map(x => { const web = /^https?:/.test(x), name = web ? x.replace(/^https?:\/\/(www\.)?/, '').slice(0, 60) : x.split(/[\\/]/).filter(Boolean).pop();
       const file = !web && /\.[a-z0-9]{2,5}$/i.test(x);
       return `<div class="sopl"><span title="${esc(x)}">${esc(name)}</span>${web ? `<a class="btn" href="${esc(x)}" target="_blank" rel="noopener">OPEN ↗</a>` : `<button type="button" data-soopen="${esc(x)}">OPEN</button>${file ? `<a class="btn" href="/api/files?path=${encodeURIComponent(x)}" download>SAVE A COPY</a>` : ''}`}</div>`; }).join('');
-    const k = esc(s.key), task = s.task, office = !task ? '' : s.state === 'review' ? `<button type="button" class="pri" data-review="${esc(task.id)}">REVIEW</button>` : `<a class="btn" href="/#review=${encodeURIComponent(task.id)}" target="agentsOffice">OPEN IN THE OFFICE ↗</a>`;
+    const k = esc(s.key), task = s.task, office = !task ? '' : s.state === 'review' ? `<button type="button" class="pri" data-review="${esc(task.id)}">REVIEW</button>` : s.state === 'working' ? '' : `<button type="button" data-review="${esc(task.id)}">READ</button>`; // the pop-up, never the office
     const hand = `<button type="button" class="${['handoff', 'needs'].includes(s.state) ? 'pri' : ''}" data-sohand="${k}"${S.soBusy === s.key ? ' disabled' : ''}>${S.soBusy === s.key ? 'HANDING OFF…' : task ? 'ASK AGAIN' : 'HAND TO THE CHIEF OF STAFF'}</button>`;
     const sign = `<button type="button" class="pri" data-sosign="${k}">SIGN OFF</button>`, posted = `<button type="button" data-soposted="${k}" title="You have posted or scheduled it: the card moves to the next one (same as the tick in the calendar)">MARK POSTED</button>`;
     const btns = s.state === 'working' ? `<span class="note">${esc(task.agentName || task.agent)}${task.team ? ' and the team' : ''} ${task.state === 'next' ? 'starts in a moment' : 'is working on it'}.</span>${office}`
@@ -3209,11 +3209,17 @@ loadTrackers(); setInterval(() => { if (!document.hidden && !Object.values(S.tkB
 
   function taskChip(t) {
     const c = document.createElement('div'); c.className = 'pet';
-    c.innerHTML = `<div class="tk"></div><div class="tt"></div><div class="r" style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><button type="button" data-u>UNDO</button><a class="btn" href="/#review=${encodeURIComponent(t.id)}" target="agentsOffice">OPEN IN THE OFFICE ↗</a><span class="st"></span></div>`;
+    c.innerHTML = `<div class="tk"></div><div class="tt"></div><div class="r" style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><button type="button" data-u>UNDO</button><button type="button" class="primary" data-review="${esc(t.id)}" hidden></button><span class="st"></span></div>`;
     let left = Math.round((t.startsInMs ?? 20000) / 1000), started = false, gone = false, timer;
-    const u = c.querySelector('[data-u]'), s = c.querySelector('.st');
-    const draw = () => { c.querySelector('.tk').textContent = `Added to ${t.deptName || t.dept || 'the office'} · ${t.agentName || t.agent || ''}`; c.querySelector('.tt').textContent = t.title || ''; u.textContent = started ? 'CANCEL' : 'UNDO'; u.hidden = gone; s.textContent = gone ? 'Undone.' : started ? 'Running. It will wait for your review.' : `Starts in ${left} s. Undo to take it back.`; };
-    timer = setInterval(() => { if (left > 0) left--; if (left <= 0) { started = true; clearInterval(timer); } draw(); }, 1000);
+    const u = c.querySelector('[data-u]'), s = c.querySelector('.st'), rb = c.querySelector('[data-review]');
+    const draw = () => { // REVIEW once it waits for him, READ once it is done, nothing while it runs: the pop-up, never the office
+      const now = (S.tasks || []).find(x => x.id === t.id), st = now && now.state, end = !!now && (st === 'waiting' || st === 'done');
+      c.querySelector('.tk').textContent = `Added to ${t.deptName || t.dept || 'the office'} · ${t.agentName || t.agent || ''}`; c.querySelector('.tt').textContent = t.title || ''; u.textContent = started ? 'CANCEL' : 'UNDO'; u.hidden = gone || end;
+      rb.hidden = gone || !end; rb.textContent = st === 'waiting' ? 'REVIEW' : 'READ';
+      s.textContent = gone ? 'Undone.' : st === 'waiting' ? 'Waiting for your review.' : st === 'done' ? 'Done.' : started ? 'Running. It will wait for your review.' : `Starts in ${left} s. Undo to take it back.`;
+      if ((gone || st === 'done') && timer) { clearInterval(timer); timer = 0; }
+    };
+    timer = setInterval(() => { if (left > 0) left--; if (left <= 0) started = true; draw(); }, 1000);
     u.addEventListener('click', async () => {
       if (started && !confirm('It is already running. Cancel it?')) return;
       try { await fetch(`/api/tasks/${t.id}`, { method: 'DELETE' }); } catch {}
@@ -3598,8 +3604,6 @@ loadTrackers(); setInterval(() => { if (!document.hidden && !Object.values(S.tkB
   if (S.cat === 'brain') window.brainTab.open();
 })();
 </script>
-</body>
-</html>
 <script type="module">
 // Review in the AIOS (7 Nov 2026): REVIEW opens the office's own review card (src/review.js) over this page and calls the same
 // routes the office does (approve, reject, answer, handover). Nothing new on the server: an approved email still only becomes a Gmail draft.
@@ -3609,7 +3613,7 @@ const label = a => a.person ? `${a.person}, ${tcase(a.name)}` : tcase(a.name);
 function head(t) { // portrait, first name and title; department, waiting since, and the lead who checked it
   const a = agentBy(t.agent) || { id: t.agent, name: t.agent, department: t.dept }, lr = t.leadReview || {}, lead = lr.by && agentBy(lr.by);
   const checked = !lead ? '' : lr.phase === 'signed' ? ` · checked by ${label(lead)}` : lr.phase === 'escalated' ? ` · ${label(lead)} sent it to you unresolved` : '';
-  return `${a.portrait ? `<img src="${esc(a.portrait)}" alt="">` : ''}<span><b>${esc(a.person ? `${a.person} · ${tcase(a.name)}` : tcase(a.name))}</b><em>${esc(tcase(DEPTS[a.department || t.dept]?.name || ''))} · waiting for your OK${t.waitingAt ? ' since ' + esc(ago(t.waitingAt)) : ''}${esc(checked)}</em></span>`;
+  return `${a.portrait ? `<img src="${esc(a.portrait)}" alt="">` : ''}<span><b>${esc(a.person ? `${a.person} · ${tcase(a.name)}` : tcase(a.name))}</b><em>${esc(tcase(DEPTS[a.department || t.dept]?.name || ''))} · ${t.kindLabel ? esc(t.meta || 'done') : 'waiting for your OK'}${t.waitingAt ? ' since ' + esc(ago(t.waitingAt)) : ''}${esc(checked)}</em></span>`;
 }
 const clip = (s, n) => { s = String(s || '').replace(/\s+/g, ' ').trim(); return s.length > n ? s.slice(0, n - 1).replace(/\s\S*$/, '') + '…' : s; };
 function glance(t) { // the desk's own three lines (AT A GLANCE, glance.mjs); a task written before 7 Nov gets them worked out from what it holds
@@ -3635,10 +3639,16 @@ const rv = initReview({
 let shown = ''; // the one task on the card: after approve or reject the card closes rather than moving on to another
 function openReview(id) {
   const t = S.tasks.find(x => x.id === id);
-  if (!t || t.state !== 'waiting') { window.open('/#review=' + encodeURIComponent(id), 'agentsOffice'); return; } // no longer waiting here: the office shows where it is
+  if (!t) return;
+  if (t.state !== 'waiting') { // a finished task opens read-only (as the office's readTask does); one still running has nothing to read yet
+    if (t.state === 'done' && t.result) rv.read({ sid: t.id, state: t.state, nextStep: t.nextStep, handedTo: t.handedTo, handoffFrom: t.handoffFrom, agent: t.agent, dept: t.dept, title: t.title, content: t.result, used: t.used, read: t.read, kindLabel: t.closed ? 'REJECTED · CLOSED' : t.error ? 'COULD NOT COMPLETE' : t.approved ? 'APPROVED' : 'DONE', meta: t.doneAt ? (t.closed ? 'closed ' : 'done ') + ago(t.doneAt) : '' });
+    return;
+  }
   if (shown && rv.has(shown)) rv.drop(shown);
   rv.push({ ...t, sid: t.id }, { auto: false }); shown = t.id; rv.open(x => x.sid === t.id);
 }
 document.addEventListener('click', e => { const b = e.target.closest('[data-review]'); if (!b) return; e.preventDefault(); openReview(b.dataset.review); });
 setInterval(() => { if (shown && rv.has(shown) && !S.tasks.some(x => x.id === shown && x.state === 'waiting')) rv.drop(shown); }, 2000); // decided in the office or the chat meanwhile
 </script>
+</body>
+</html>

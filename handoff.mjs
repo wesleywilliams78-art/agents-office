@@ -47,7 +47,7 @@ export function plan(blocks, agents, from) {
 export function claudeCode(text) {
   const t = String(text || ''), prompts = [];
   for (const m of t.matchAll(/```[a-z]*[ \t]*\r?\n([\s\S]*?)\r?\n[ \t]*```/g)) {
-    const b = m[1].trim(); if (/^This is a separate task for Claude Code/i.test(b) && !prompts.includes(b)) prompts.push(b.slice(0, 6000));
+    const b = m[1].trim().slice(0, 20000); if (/^This is a separate task for Claude Code/i.test(b) && !prompts.includes(b)) prompts.push(b); // compare what is stored, so a long block written twice is kept once
     if (prompts.length >= 3) break;
   }
   if (!prompts.length) return null;
