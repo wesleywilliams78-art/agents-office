@@ -176,7 +176,7 @@ function visionDigest(block) {
   const msg = JSON.stringify({ type: 'user', message: { role: 'user', content: [{ type: 'text', text: VISION_PROMPT + DRAWING_PROMPT }, block] } });
   const env = mcp.freshEnv(); delete env.CLAUDECODE;
   return new Promise((resolve, reject) => {
-    const p = spawn(mcp.resolveBin(), ['-p', '--input-format', 'stream-json', '--output-format', 'stream-json', '--verbose', '--no-session-persistence', // its cost goes to data/tokens.jsonl, not a transcript
+    const p = spawn(mcp.resolveBin(), ['-p', ...mcp.HEADLESS, '--input-format', 'stream-json', '--output-format', 'stream-json', '--verbose', '--no-session-persistence', // its cost goes to data/tokens.jsonl, not a transcript
       '--disallowedTools', 'Bash,Edit,Write,Read,Glob,Grep,Agent,NotebookEdit,Task,WebFetch,WebSearch', '--model', modelId('sonnet')],
       { cwd: CLI_CWD, env, stdio: ['pipe', 'pipe', 'pipe'] });
     let out = '', err = '', text = '';
@@ -270,7 +270,7 @@ async function askX(system, user, { maxTokens = 4000, tools = true, timeout = RU
   const sysFile = path.join(CLI_CWD, `system-${nid()}.txt`); fs.writeFileSync(sysFile, system);
   const rmSys = () => fs.rm(sysFile, { force: true }, () => {});
   const bigUser = String(user).length > 12000; // a team lead's final step carries every piece: over ~32k characters the command line fails, so it goes in on stdin
-  const args = ['-p', ...(bigUser ? [] : [user]), '--output-format', 'stream-json', '--verbose', '--no-session-persistence', '--system-prompt-file', sysFile,
+  const args = ['-p', ...(bigUser ? [] : [user]), ...mcp.HEADLESS, '--output-format', 'stream-json', '--verbose', '--no-session-persistence', '--system-prompt-file', sysFile,
     '--disallowedTools', ['Bash,Edit,Write,Read,Glob,Grep,Agent,NotebookEdit,Task' + (allowed.includes('WebFetch') ? '' : ',WebFetch,WebSearch'), ...mcp.blockedTools()].join(',')]; // V3.9: never the email send tools
   if (allowed.length) args.push('--allowedTools', allowed.join(','));
   args.push(...(tools ? mcp.cliArgs() : ['--no-chrome'])); // V3.2 (16 Sep): the owner's Chrome, when tools.browser is on
@@ -321,7 +321,7 @@ async function askAssistant(system, user, { onEvent = () => {}, timeout = 240000
   fs.writeFileSync(sysFile, system);
   fs.writeFileSync(mcpFile, JSON.stringify({ mcpServers: { 'office-control': { command: process.execPath, args: [path.join(ROOT, 'connectors', 'office-control', 'mcp.mjs')], env: { OFFICE_URL: `http://127.0.0.1:${cfg.port || 4520}`, OFFICE_ROOT: ROOT, OFFICE_BRAIN: BRAIN } } } }));
   const rm = () => { for (const f of [sysFile, mcpFile]) fs.rm(f, { force: true }, () => {}); };
-  const args = ['-p', user, '--output-format', 'stream-json', '--verbose', '--no-session-persistence', '--system-prompt-file', sysFile, '--mcp-config', mcpFile, '--strict-mcp-config',
+  const args = ['-p', user, ...mcp.HEADLESS, '--output-format', 'stream-json', '--verbose', '--no-session-persistence', '--system-prompt-file', sysFile, '--mcp-config', mcpFile, '--strict-mcp-config',
     '--allowedTools', 'mcp__office-control', '--disallowedTools', 'Bash,Edit,Write,Read,Glob,Grep,Agent,NotebookEdit,Task,WebFetch,WebSearch', '--no-chrome', ...modelArgs(model, effort)];
   const env = mcp.freshEnv(); delete env.CLAUDECODE;
   return new Promise((resolve, reject) => {
@@ -348,7 +348,7 @@ async function askMotion(system, user, { onEvent = () => {}, timeout = 100 * 600
   fs.writeFileSync(sysFile, system);
   fs.writeFileSync(mcpFile, JSON.stringify({ mcpServers: { 'motion-studio': { command: process.execPath, args: [path.join(ROOT, 'connectors', 'motion-studio', 'mcp.mjs')] } } }));
   const rm = () => { for (const f of [sysFile, mcpFile]) fs.rm(f, { force: true }, () => {}); };
-  const args = ['-p', user, '--output-format', 'stream-json', '--verbose', '--no-session-persistence', '--system-prompt-file', sysFile, '--mcp-config', mcpFile, '--strict-mcp-config',
+  const args = ['-p', user, ...mcp.HEADLESS, '--output-format', 'stream-json', '--verbose', '--no-session-persistence', '--system-prompt-file', sysFile, '--mcp-config', mcpFile, '--strict-mcp-config',
     '--allowedTools', 'mcp__motion-studio', '--disallowedTools', 'Bash,Edit,Write,Read,Glob,Grep,Agent,NotebookEdit,Task,WebFetch,WebSearch', '--no-chrome', '--model', motionMod.MODEL, '--effort', motionMod.EFFORT];
   const env = mcp.freshEnv(); delete env.CLAUDECODE;
   return new Promise((resolve, reject) => {

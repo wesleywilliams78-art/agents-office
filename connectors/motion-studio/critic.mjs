@@ -4,7 +4,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { spawn } from 'node:child_process';
-import { freshEnv, resolveBin } from '../../mcp.mjs';
+import { freshEnv, resolveBin, HEADLESS } from '../../mcp.mjs';
 import * as tokens from '../../tokens.mjs'; // 3 Nov 2026: its run goes into the office's token ledger (the AIOS Tokens section) like every other
 import { ROOT, seriesInfo } from './shared.mjs';
 
@@ -81,7 +81,7 @@ export function critique(result, { title = '', brief = '', series = null, narrat
   const content = [...(S ? [{ type: 'text', text: `THIS PIECE BELONGS TO THE SERIES "${S.name}". The next images are the series reference: the delivered work this piece must sit beside. Then the series brief. Consistency with the series is part of every score: a frame that would look out of place next to these, or breaks the brief (wrong mood, wrong motion language, wrong type), cannot score 8.\n\n${S.brief}` }, ...refs, { type: 'text', text: 'Now the contact sheets of the piece to score:' }] : []), ...result.sheets.map(f => ({ type: 'image', source: { type: 'base64', media_type: 'image/jpeg', data: fs.readFileSync(f).toString('base64') } })),
     { type: 'text', text: facts + `\n\nScore all ${result.stills.length} stills. JSON only.` }];
   const dir = path.dirname(result.sheets[0]), sys = path.join(dir, 'critic-system.txt'); fs.writeFileSync(sys, SYSTEM());
-  const args = ['-p', '--input-format', 'stream-json', '--output-format', 'stream-json', '--verbose', '--no-session-persistence', '--system-prompt-file', sys,
+  const args = ['-p', ...HEADLESS, '--input-format', 'stream-json', '--output-format', 'stream-json', '--verbose', '--no-session-persistence', '--system-prompt-file', sys,
     '--tools', '', '--strict-mcp-config', '--no-chrome', '--model', MODEL, '--effort', EFFORT];
   const env = freshEnv(); delete env.CLAUDECODE;
   return new Promise((resolve, reject) => {

@@ -39,6 +39,8 @@ export function resolveBin() {
   return (_bin = 'claude'); // fallback: will fail with ENOENT until resolved; surfaces the same error as before
 }
 
+// 7 Nov 2026: every office run says it is headless, so Wesley's global chat rules (the opening model line) stay out of desk results and upload reads
+export const HEADLESS = ['--append-system-prompt', 'This is a headless office run (claude -p), not an interactive chat with Wesley.'];
 export const DEPT_KEYS = ['emails', 'sales', 'marketing', 'ops', 'fin', 'delivery'];
 
 // Windows: this office process's own PATH is fixed at the moment its terminal launched it — a

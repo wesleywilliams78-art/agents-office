@@ -85,7 +85,7 @@ export async function engineer({ request, now = new Date(), roster, timeout = 18
   fs.writeFileSync(mcpFile, JSON.stringify({ mcpServers: { 'brain-reader': { command: process.execPath, args: [path.join(ROOT, 'connectors', 'brain-reader', 'mcp.mjs')] } } }));
   const user = `WESLEY'S REQUEST\n${request}`;
   const rm = () => { for (const f of [sysFile, mcpFile]) fs.rm(f, { force: true }, () => {}); };
-  const args = ['-p', user, '--output-format', 'stream-json', '--verbose', '--no-session-persistence', '--system-prompt-file', sysFile, '--mcp-config', mcpFile, '--strict-mcp-config',
+  const args = ['-p', user, ...mcp.HEADLESS, '--output-format', 'stream-json', '--verbose', '--no-session-persistence', '--system-prompt-file', sysFile, '--mcp-config', mcpFile, '--strict-mcp-config',
     '--allowedTools', 'mcp__brain-reader', '--disallowedTools', 'Bash,Edit,Write,Read,Glob,Grep,Agent,NotebookEdit,Task,WebFetch,WebSearch', '--no-chrome', ...modelArgs(model, effort)];
   const env = mcp.freshEnv(); delete env.CLAUDECODE;
   return new Promise((resolve, reject) => {
