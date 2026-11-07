@@ -94,6 +94,12 @@ body.dark #rv .rv-dec, body.dark #rv .rv-d { border-color: rgba(236,234,227,.12)
 #rv .rv-sw button.on { opacity: 1; color: #fff; }
 #rv .rv-sw .rv-dy.on { background: #1E9070; } #rv .rv-sw .rv-dn.on { background: #C8553D; }
 #rv .rv-d.off .rv-dq { opacity: .55; }
+#rv .rv-more { display: block; margin: 10px 0 0; font: 600 12px/1 var(--ui); padding: 8px 12px; border-radius: 99px; border: 1px solid var(--hairline); background: none; color: inherit; cursor: pointer; }
+#rv .rv-gl { display: none; max-width: 72ch; }
+#rv.folded .rv-gl { display: grid; gap: 14px; }
+#rv .rv-gl-r span { display: block; font: 700 10px/1 var(--ui); letter-spacing: .14em; text-transform: uppercase; color: var(--grey); margin-bottom: 5px; }
+#rv .rv-gl-r p { margin: 0; font: 15px/1.5 var(--ui); }
+#rv.folded .rv-body .doc, #rv.folded .rv-meta, #rv.folded .rv-next, #rv.folded .rv-copy, #rv.folded .rv-later, #rv.folded .rv-ans { display: none; }
 @media (max-width: 600px) { #rv { padding: 0; } #rv .rv-box { max-height: 100vh; height: 100%; border-radius: 0; } #rv .rv-title { font-size: 22px; } }
 `;
 
@@ -116,13 +122,15 @@ function render(text, esc) {
   return out.join('');
 }
 
-export function initReview({ esc, agentOf, onApprove, onReject, onAnswer, onHandover, listAgents }) {
+// head (optional, the AIOS): t => HTML for the header line in place of "NAME · DEPT". glance (optional): t => { reviewed, built, recommend };
+// the card then opens short (those three lines, the decisions, REJECT and APPROVE) and "Show the full result" opens the rest.
+export function initReview({ esc, agentOf, onApprove, onReject, onAnswer, onHandover, listAgents, head, glance }) {
   const st = document.createElement('style'); st.textContent = CSS; document.head.appendChild(st);
   const el = document.createElement('div'); el.id = 'rv';
   el.innerHTML = `<div class="rv-dim"></div><div class="rv-box" role="dialog" aria-modal="true" aria-labelledby="rvTitle">
     <div class="rv-head"><span class="rv-chip"></span><span class="rv-who"></span><span class="rv-kind"></span><span class="rv-q"></span><button class="rv-x" title="Close (Esc) — it stays waiting">×</button></div>
     <div class="rv-title" id="rvTitle"></div><div class="rv-meta"></div>
-    <div class="rv-body"><div class="doc"></div><div class="rv-dec" hidden></div></div>
+    <div class="rv-body"><div class="rv-gl"></div><div class="doc"></div><button class="rv-more" hidden>Show the full result</button><div class="rv-dec" hidden></div></div>
     <div class="rv-next" hidden></div>
     <div class="rv-reason"><h3>Reason for rejection</h3>
       <p>Say what is wrong and what you want instead. The agent reworks it with this and it comes back here. It also learns from it: a reason that applies every time becomes one of its standing rules.</p>
@@ -147,7 +155,7 @@ export function initReview({ esc, agentOf, onApprove, onReject, onAnswer, onHand
     const a = agentOf(t.agent) || { name: t.agent, dept: t.dept };
     const d = DEPTS[a.dept || t.dept] || {};
     $('.rv-chip').style.background = d.chip || '#999';
-    $('.rv-who').textContent = `${a.name} · ${d.name || ''}`;
+    if (head) $('.rv-who').innerHTML = head(t); else $('.rv-who').textContent = `${a.name} · ${d.name || ''}`;
     const k = $('.rv-kind'); k.className = 'rv-kind' + (readOnly ? ' read' : '');
     const email = t.needsOk && t.channel === 'email';
     k.textContent = readOnly ? (t.kindLabel || 'DELIVERED') : email ? 'EMAIL · YOUR OK TO DRAFT' : t.needsOk ? 'READY TO SEND · YOUR OK' : 'FOR YOUR REVIEW';
@@ -163,6 +171,11 @@ export function initReview({ esc, agentOf, onApprove, onReject, onAnswer, onHand
     $('.rv-meta').textContent = bits.join(' · ') || ' ';
     $('.rv-body .doc').innerHTML = render(t.content ?? t.draft ?? t.result, esc);
     $('.rv-body').scrollTop = 0;
+    if (glance) {
+      const g = !readOnly && glance(t); if (!g) el.classList.remove('folded');
+      $('.rv-gl').innerHTML = !g ? '' : [['Reviewed', g.reviewed], ['Built', g.built], ['Recommend', g.recommend]].filter(x => x[1]).map(([k, v]) => `<div class="rv-gl-r"><span>${k}</span><p>${linkify(esc(v))}</p></div>`).join('');
+      $('.rv-more').hidden = !el.classList.contains('folded');
+    }
     paintDec(t);
     paintNext(t);
     const btns = $('.rv-btns');
@@ -221,8 +234,8 @@ export function initReview({ esc, agentOf, onApprove, onReject, onAnswer, onHand
   }
   const box_disable = d => el.querySelectorAll('.rv-next button, .rv-next select').forEach(b => { b.disabled = d; });
   const syncSend = () => { const b = $('.rv-send'); if (b) b.disabled = busy || (!ta.value.trim() && !permOn()); };
-  function show() { el.classList.add('on'); paint(); }
-  function close() { el.classList.remove('on', 'rej', 'ans', 'perm'); readOnly = null; ta.value = ''; perm.checked = false; }
+  function show() { el.classList.add('on'); el.classList.toggle('folded', !!glance && !readOnly); paint(); }
+  function close() { el.classList.remove('on', 'rej', 'ans', 'perm', 'folded'); readOnly = null; ta.value = ''; perm.checked = false; }
   const typing = () => { const a = document.activeElement; return a && (a.tagName === 'TEXTAREA' || a.tagName === 'INPUT') && !el.contains(a); };
 
   // a task is ready for review: queue it, and pop up unless the owner is mid-sentence or already reading one
@@ -280,6 +293,7 @@ export function initReview({ esc, agentOf, onApprove, onReject, onAnswer, onHand
     if (b && b.classList.contains('rv-copy')) return copyAnswer(b);
     if (e.target.classList.contains('rv-dim') || (b && (b.classList.contains('rv-x') || b.classList.contains('rv-later') || b.classList.contains('rv-close')))) return close();
     if (!b) return;
+    if (b.classList.contains('rv-more')) { el.classList.remove('folded'); b.hidden = true; return; }
     if (b.classList.contains('rv-dy') || b.classList.contains('rv-dn')) return setPick(b.dataset.n, b.classList.contains('rv-dy'));
     if (b.classList.contains('rv-hand')) return doHand({ to: b.dataset.to });
     if (b.classList.contains('rv-go')) { const v = $('.rv-pick').value; return v ? doHand({ to: v }) : undefined; }

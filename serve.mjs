@@ -61,6 +61,7 @@ import * as brainnotes from './brainnotes.mjs';
 import * as siteupdates from './siteupdates.mjs';
 import * as handoff from './handoff.mjs';
 import * as decisions from './decisions.mjs';
+import * as glance from './glance.mjs'; // the three lines at the top of the review card
 import * as salesData from './sales.mjs';
 import * as posData from './pos.mjs';
 import * as social from './social.mjs'; // V3.12: the AIOS Social section, the next post per workstream
@@ -484,7 +485,7 @@ const usesDrive = a => (a.tools || []).some(t => /drive|sheet|docs/i.test(String
 // the system prompt every agent run starts from: who it is, its brief, skills and lessons, its tools, the company, the notes for this task
 function agentSystem(a, index, read, { extra = '', words = 260 } = {}) {
   const d = DEPTS[a.department];
-  return `You are ${a.name}, ${a.role || 'an agent'}, in the ${d.name} department of ${cfg.name}. ${a.does}\n${agentBrief(a)}` + (BRAIN_WRITE ? `\n${brainnotes.INSTRUCTIONS}\n` : '') + (siteDesk(a) ? `\n${siteupdates.instructions(SITE_URL)}\n` : '') + (/HANDOFF/.test(agentBrief(a)) ? `\n${handoff.INSTRUCTIONS}\n` : '') + `\n${decisions.INSTRUCTIONS}\n` + (usesDrive(a) ? `\n${DRIVE_RULE}\n` : '') + `\n${NEXT_LINE}\n` + `\n${FILES_LINE}\n` + (extra ? `\n${extra}\n` : '') +
+  return `You are ${a.name}, ${a.role || 'an agent'}, in the ${d.name} department of ${cfg.name}. ${a.does}\n${agentBrief(a)}` + (BRAIN_WRITE ? `\n${brainnotes.INSTRUCTIONS}\n` : '') + (siteDesk(a) ? `\n${siteupdates.instructions(SITE_URL)}\n` : '') + (/HANDOFF/.test(agentBrief(a)) ? `\n${handoff.INSTRUCTIONS}\n` : '') + `\n${decisions.INSTRUCTIONS}\n` + `\n${glance.INSTRUCTIONS}\n` + (usesDrive(a) ? `\n${DRIVE_RULE}\n` : '') + `\n${NEXT_LINE}\n` + `\n${FILES_LINE}\n` + (extra ? `\n${extra}\n` : '') +
     'Write the finished deliverable itself, not a description of what you would do. Plain text: a short heading, then short sections or bullets. ' +
     `At most ${words} words unless a skill or the owner\'s instructions set a different shape — those win. No preamble, no sign-off. Ground it in the company notes below; where a fact is missing, make a reasonable assumption and mark it (assumed). ` +
     'If you used a tool, say so in one line at the end ("Used: Gmail — searched the client thread").\n\n' +
@@ -782,6 +783,7 @@ async function runServerTaskNow(id, { feedback, approve, answer } = {}) {
     const out = await runWithLeadReview(task, feedback, approve ? 'approve' : task.needsOk ? 'draft' : 'routine', answer, approve);
     const hoText = out.result; if (handoff.parse(hoText).length) out.result = handoff.strip(hoText);
     const decText = out.result, hasDecisions = !approve && decisions.parse(decText).length > 0; if (hasDecisions) out.result = decisions.strip(decText); // a draft with decisions always waits: they only run on the owner's yes
+    if (!approve) { const g = glance.take(out.result); if (g.glance) { task.glance = g.glance; out.result = g.text; } else delete task.glance; } // reviewed / built / recommend: the review card's short view
     if (!approve && /\[content-build\]/i.test(task.text || '')) { // the week's finished content is filed into the Content Calendar folder Wesley posts from
       try { const f = weekpack.fromResult(ROOT, BRAIN, out.result); out.result = weekpack.strip(out.result) + '\n\n---\nFILED IN THE CONTENT CALENDAR FOLDER\n' + (f.filed ? `${f.filed} item(s) in ${f.dir}` : 'not filed: ' + f.reason); console.log(`🗓 content calendar: ${f.filed ? f.filed + ' item(s) filed in ' + f.dir : 'not filed, ' + f.reason}`); } catch (e) { console.warn('content calendar:', e.message); }
     }
@@ -1214,6 +1216,10 @@ const server = http.createServer(async (req, res) => {
     if (req.method === 'GET' && url.pathname === '/aios') { // V3.9: the AIOS dashboard — roles, live work, the Eisenhower matrix (plain HTML, no build)
       res.writeHead(200, { 'content-type': 'text/html; charset=utf-8', 'cache-control': 'no-store' });
       return res.end(fs.readFileSync(path.join(ROOT, 'src', 'aios.html'), 'utf8'));
+    }
+    if (req.method === 'GET' && /^\/src\/(review|data|profile|links)\.js$/.test(url.pathname)) { // the office's review card and what it imports, reused by /aios (read-only, these four files only)
+      res.writeHead(200, { 'content-type': 'text/javascript; charset=utf-8', 'cache-control': 'no-store' });
+      return res.end(fs.readFileSync(path.join(ROOT, url.pathname.slice(1)), 'utf8'));
     }
     if (req.method === 'GET' && url.pathname.startsWith('/people/')) { // a desk's portrait for the AIOS cards
       const m = /^\/people\/([a-z0-9-]+\.(png|jpg|webp))$/.exec(url.pathname), f = m && path.join(PEOPLE, m[1]);
