@@ -333,6 +333,7 @@ strong{font-weight:560}
 .cover__title{font:280 clamp(30px,3vw,52px)/1 var(--display);letter-spacing:-.03em;margin:0}
 .cover__meta{margin-top:auto;padding-top:16px;border-top:1px solid currentColor;font-size:var(--fs-small);display:grid;gap:4px}
 .cover__meta .label{opacity:.8}
+.cover .label{color:inherit;text-wrap:balance} /* the cards set their own ground, so the label takes the card's text colour: red on red was invisible, red on ink too dim */
 [data-tilt]{will-change:transform}
 
 /* Quotes carousel on the deep band */
