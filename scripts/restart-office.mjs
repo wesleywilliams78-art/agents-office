@@ -3,6 +3,7 @@
 // it outlives whoever ran this, and wait until /api/matrix answers. Exit 1 with the reason if any step fails.
 // A Claude Code box run survives this: it was started detached and the new office picks its log back up.
 import { execFileSync, spawn } from 'node:child_process';
+import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { loadConfig } from '../config.mjs';
@@ -26,6 +27,13 @@ for (const pid of pids) {
 }
 for (let i = 0; i < 20 && pids.size; i++) { await sleep(300); try { await get('/api/health'); } catch { break; } }
 
-spawn('powershell', ['-NoProfile', '-Command', `Start-Process "${process.execPath}" -ArgumentList serve.mjs -WorkingDirectory "${ROOT}" -WindowStyle Minimized`], { detached: true, stdio: 'ignore', windowsHide: true }).unref();
+// keep a log (8 Nov 2026: the office stopped three times with nothing to say why): this run's output in data/office.out.log and
+// office.err.log, the run before it kept beside them as office.*.prev.log
+const log = n => path.join(ROOT, 'data', `office.${n}.log`);
+for (const n of ['out', 'err']) try { fs.renameSync(log(n), log(`${n}.prev`)); } catch {}
+const ps = spawn('powershell', ['-NoProfile', '-Command', `Start-Process "${process.execPath}" -ArgumentList serve.mjs -WorkingDirectory "${ROOT}" -WindowStyle Minimized -RedirectStandardOutput "${log('out')}" -RedirectStandardError "${log('err')}"`], { stdio: 'ignore', windowsHide: true });
+// not detached (8 Nov 2026): a detached PowerShell ran nothing at all, so this script never started the office. Start-Process
+// gives the office a life of its own; wait for PowerShell to hand it over before polling
+await new Promise(r => { ps.on('close', r); ps.on('error', r); });
 for (let i = 0; i < 120; i++) { await sleep(1000); try { await get('/api/matrix'); console.log(`Office restarted on ${base}${pids.size ? ` (stopped pid ${[...pids].join(', ')})` : ''}.`); process.exit(0); } catch {} }
 fail('the new office did not answer within 2 minutes. Check its minimized window.');
