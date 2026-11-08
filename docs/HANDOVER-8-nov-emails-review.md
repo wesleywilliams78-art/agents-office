@@ -13,7 +13,7 @@ The department is shown as **Communications**, and Esme's line on the AIOS reads
 | Not changed (Wesley said no) | The Brain folder and note names (`pins.mjs` names `MOC-Emails`). AJ's 3D office (`src/data.js`, `src/tasks.js`, `src/assistant.js`'s `/task` aliases, the dist build, the EMAILS smoke check). |
 
 ## Communications round: eight decisions, all Yes in chat
-These went on Esme's review card (task `mw7rmhr7pklp`). Every block passed `brainnotes.planAll` / `skillupdates.planAll` on the first dry run.
+These went on Esme's review card (task `mw7rmhr7pklp`). Every block passed `brainnotes.planAll` / `skillupdates.planAll` on the first dry run. Wesley approved the card at 13:58, and all eight fired. Decisions 1 to 6 were filed and checked in the files. Decision 7 started Vikram's task `mw7wegy9af86`. Decision 8 was queued behind another job in the Claude Code box (`qmw7wegy91j`; the box cannot cancel a queued item). Claude Code made the four roster changes by hand at about 14:10, with a backup at `data/brain-backups/2026-11-08-emails-review/office.agents.local.before-roster-fixes.json`. When Grace reaches the queued item, the changes are already in: say no to any edit she asks to make for it.
 
 | # | Desk | Change | Kind |
 |---|---|---|---|
@@ -28,6 +28,7 @@ These went on Esme's review card (task `mw7rmhr7pklp`). Every block passed `brai
 
 - **Kofi and Imani:** no other change. Imani has had one task since September and Kofi none, because almost all of the department's mail goes to Esme (98 of 112 tasks).
 - **Roster backup** from before the round: `data/brain-backups/2026-11-08-emails-review/office.agents.local.before.json`.
+- **`npm run check`:** 104/104 with the rename. After the roster edit, two runs each failed one check outside this round, a different one each time: "server: starts" (port clash) and the SOP builder's LibreOffice PDF conversion. Other sessions were running checks and builds at the same time. Rerun when the PC is quiet.
 
 ## Still open
 - **Vikram's list** comes back as its own card. Read it before saying yes: every row should name a source.

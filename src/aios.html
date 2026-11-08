@@ -1569,7 +1569,7 @@
 
 <script>
 const DEPTS = {
-  emails:    { name: 'EMAILS',     chip: '#5ADEB7' },
+  emails:    { name: 'COMMUNICATIONS', chip: '#5ADEB7' },
   sales:     { name: 'SALES',      chip: '#EADC8F' },
   marketing: { name: 'MARKETING',  chip: '#E69393' },
   ops:       { name: 'OPERATIONS', chip: '#BFA2E3' },
@@ -3699,7 +3699,7 @@ loadTrackers(); setInterval(() => { if (!document.hidden && !Object.values(S.tkB
    applyAnswers and briefText are copies of src/promptbrief.js (the server does not serve /src/*.js); keep the two in step. */
 (() => {
   const FIELDS = [['outcome', 'Outcome'], ['inputs', 'Inputs'], ['deliverable', 'Deliverable'], ['acceptance', 'Acceptance checks'], ['constraints', 'Constraints'], ['authority', 'Authority'], ['deadline', 'Deadline'], ['assumptions', 'Assumptions']];
-  const DEPT_NAME = { emails: 'Emails', sales: 'Sales', marketing: 'Marketing', ops: 'Operations', fin: 'Accounting', delivery: 'Delivery' };
+  const DEPT_NAME = { emails: 'Communications', sales: 'Sales', marketing: 'Marketing', ops: 'Operations', fin: 'Accounting', delivery: 'Delivery' };
   const g = id => document.getElementById(id), x = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
   const asText = v => Array.isArray(v) ? v.filter(Boolean).map(t => `- ${t}`).join('\n') : String(v || '').trim();
   function applyAnswers(result, answers = []) {
