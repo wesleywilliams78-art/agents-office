@@ -505,9 +505,9 @@
   .ox > .hxo-theo, .ox > .hx { position: relative; z-index: 2; }
   .ox > .hx { border: 0; background: none; padding: 0; margin: 0 0 22px; }
   .ox.map > .hx { flex: 1; display: flex; margin: 0; }
-  .ox-map { flex: 1; width: 100%; display: grid; grid-template-columns: minmax(300px, 440px) minmax(480px, 1fr) minmax(300px, 440px); gap: 0 48px; padding-top: 34px; }
-  .ox-col { display: flex; flex-direction: column; justify-content: center; gap: 18px; min-width: 0; }
-  .ox-mid { display: grid; grid-template-rows: 1fr auto 1fr; justify-items: center; min-width: 0; }
+  .ox-map { flex: 1; width: 100%; display: grid; grid-template-columns: minmax(300px, 440px) minmax(480px, 1fr) minmax(300px, 440px); gap: 0 48px; padding-top: 26px; }
+  .ox-col { display: flex; flex-direction: column; justify-content: center; gap: 14px; min-width: 0; margin-bottom: 0; } /* no section margin: it pushed the map 48 px past the fold (8 Nov 2026) */
+  .ox-mid { display: grid; grid-template-rows: 1fr auto 1fr; justify-items: center; min-width: 0; margin-bottom: 0; }
   .ox-mid .hxo-hub { grid-row: 2; width: min(470px, 100%); }
   .ox-mid .ox-you { grid-row: 3; align-self: end; margin-top: 30px; }
   .ox-f { fill: none; stroke-width: 1.6; } .ox-f.ask { stroke: var(--ox-flow); stroke-dasharray: 2 7; stroke-linecap: round; }
@@ -520,7 +520,7 @@
   .ox-you .t { font-size: 13px; font-weight: 600; line-height: 1.3; } .ox-you .t span { display: block; font-weight: 400; font-size: 11.5px; opacity: .85; }
   .ox-you .ox-yb, .ox-you .ox-yb:hover { border: 0; background: var(--on-accent); color: var(--red); padding: 13px 18px; font-weight: 600; letter-spacing: .14em; box-shadow: none; } .ox-you .ox-yb:hover { opacity: .9; }
   .ox-you.clear { background: var(--ox-card); color: var(--ink); border: 1px solid var(--ox-edge2); box-shadow: none; padding-right: 22px; } .ox-you.clear .me { background: var(--soft); color: var(--grey); }
-  .hxo-d { background: var(--ox-card); border: 1px solid var(--ox-edge); border-radius: 20px; padding: 16px 18px 14px; display: flex; flex-direction: column; min-width: 0; text-align: left; -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); transition: border-color .2s, transform .2s; }
+  .hxo-d { background: var(--ox-card); border: 1px solid var(--ox-edge); border-radius: 20px; padding: 13px 18px 12px; display: flex; flex-direction: column; min-width: 0; text-align: left; -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); transition: border-color .2s, transform .2s; }
   .hxo-d.on { cursor: pointer; border-color: var(--ox-edge2); } .hxo-d.on:hover, .hxo-d.on:focus-visible { border-color: var(--ox-edge-hover); transform: translateY(-2px); outline: none; }
   .hxo-d.off { cursor: pointer; } .hxo-d.off:hover, .hxo-d.off:focus-visible { border-color: var(--ox-edge-hover); outline: none; } /* opens read-only (Roles retired, 7 Nov 2026) */
   .hxo-gap { flex: none; padding: 3px 9px; border-radius: 99px; border: 1px solid var(--ox-label-red-edge); color: var(--ox-label-red); font-size: 9.5px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; white-space: nowrap; }
@@ -528,14 +528,14 @@
   .hxo-miss { color: var(--ox-label-red); font-size: 10.5px; } .hxo-k2f .hxo-miss + span { margin-left: auto; }
   .hxo-d.need { border-color: var(--ox-need-edge); box-shadow: 0 0 0 1px var(--ox-need-glow), 0 18px 40px -22px var(--ox-need-shadow); }
   .hxo-d.off { background: var(--ox-off); border-style: dashed; border-color: var(--ox-off-edge); }
-  .hxo-dh { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; } .hxo-dh h4 { margin: 0; font: 300 27px/1 var(--serif); }
+  .hxo-dh { display: flex; align-items: center; gap: 10px; margin-bottom: 9px; } .hxo-dh h4 { margin: 0; font: 300 25px/1 var(--serif); }
   .hxo-d.off .hxo-dh h4 { color: var(--grey); } .hxo-dh .hxo-badge { margin-left: auto; }
   .hxo-tag { font-size: 9.5px; letter-spacing: .16em; text-transform: uppercase; color: var(--faint); border: 1px dashed var(--ox-edge2); border-radius: 99px; padding: 3px 9px; white-space: nowrap; }
   .hxo-lead { display: flex; align-items: center; gap: 11px; min-width: 0; }
   .hxo-ln { min-width: 0; } .hxo-ln b { display: block; font-weight: 600; font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; } .hxo-ln span { display: block; color: var(--meta, var(--faint)); font-size: 11.5px; }
   .hxo-d.off .hxo-ln b { color: var(--grey); font-weight: 500; }
   .hxo-lead .hxo-st { margin-left: auto; }
-  .hxo-faces { display: flex; gap: 7px; align-items: center; flex-wrap: wrap; margin: 12px 0 10px; } .hxo-faces .more { color: var(--faint); font-size: 11px; } .hxo-d.off .hxo-faces { margin-bottom: 0; }
+  .hxo-faces { display: flex; gap: 7px; align-items: center; flex-wrap: wrap; margin: 9px 0 8px; } .hxo-faces .more { color: var(--faint); font-size: 11px; } .hxo-d.off .hxo-faces { margin-bottom: 0; }
   .hxo-d .hxo-fw img, .hxo-d .hxo-ini { width: 30px; height: 30px; font-size: 9.5px; background: var(--ox-face); } .hxo-d .hxo-fw.l img, .hxo-d .hxo-fw.l .hxo-ini { width: 40px; height: 40px; }
   .hxo-d .hxo-fw > b { border-color: var(--ox-face-ring); }
   .hxo-last { margin-left: auto; font-size: 11.5px; color: var(--grey); white-space: nowrap; }
@@ -543,9 +543,9 @@
   .hxo-now div { display: flex; gap: 7px; align-items: baseline; min-width: 0; } .hxo-now div i { width: 6px; height: 6px; border-radius: 50%; background: var(--faint); flex: none; transform: translateY(-1px); }
   .hxo-now div.w i { background: var(--ok); } .hxo-now div.y i { background: var(--red, #EC3013); }
   .hxo-now span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; } .hxo-now b { color: var(--ink); font-weight: 500; }
-  .hxo-ct { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 12px; padding-top: 10px; border-top: 1px solid var(--ox-edge); }
+  .hxo-ct { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 9px; padding-top: 8px; border-top: 1px solid var(--ox-edge); }
   .hxo-ct div { font-size: 9.5px; letter-spacing: .12em; text-transform: uppercase; color: var(--faint); white-space: nowrap; }
-  .hxo-ct b { display: block; font: 300 24px/1.05 var(--serif); letter-spacing: 0; color: var(--ink); } .hxo-ct .you.n b { color: var(--red, #EC3013); }
+  .hxo-ct b { display: block; font: 300 22px/1 var(--serif); letter-spacing: 0; color: var(--ink); } .hxo-ct .you.n b { color: var(--red, #EC3013); }
   .hxo-hub { position: relative; z-index: 2; background: linear-gradient(180deg, var(--ox-nora-a), var(--ox-nora-b)); border: 1px solid var(--ox-nora-edge); border-radius: 28px; padding: 24px 26px 22px; -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
     box-shadow: 0 0 0 8px var(--ox-ring1), 0 0 0 18px var(--ox-ring2), 0 40px 90px -30px var(--ox-nora-shadow); }
   .hxo-hub .hxo-k { color: var(--meta, var(--faint)); font-size: 10px; letter-spacing: .2em; }
@@ -1198,7 +1198,6 @@
     <button data-go="hierarchy">Office</button>
     <button data-go="skills">Skills <span class="n" id="nSkills"></span></button>
     <button data-go="tokens">Tokens</button>
-    <button data-go="social">Social <span class="n" id="nSocial"></span></button>
     <span class="ind" id="sideInd" aria-hidden="true"></span>
   </nav>
     <div class="right"><div class="ccpill" id="ccPill"><button type="button" class="ccopen" id="ccBtn" aria-expanded="false" aria-controls="ccBox" title="Consultants’ Corner: open the player"><span class="ccart" id="ccArt" aria-hidden="true"></span><span class="cctx"><b id="ccTitle">Consultants’ Corner</b><small id="ccSub">Press play</small></span><span class="cceq" aria-hidden="true"><i></i><i></i><i></i><i></i></span></button><button type="button" class="ccplay" id="ccPlay" aria-label="Play Consultants’ Corner"><svg viewBox="0 0 24 24" aria-hidden="true"><path class="pl" d="M8 5.5v13l11-6.5z"/><path class="pa" d="M6.5 5h3.8v14H6.5zM13.7 5h3.8v14h-3.8z"/></svg></button><span class="ccprog" aria-hidden="true"><i id="ccProg"></i></span></div><button id="themeBtn" class="tpill" type="button" title="Switch between automatic, light and dark">Auto</button></div>
@@ -1294,9 +1293,7 @@
     <div class="hx" id="hx"></div>
   </div>
   <section class="hxt" id="hxTrail" data-cat="hierarchy"></section>
-  <div class="hxd-w" id="hxDr" data-cat="hierarchy" aria-hidden="true"></div>
-
-  <section id="socialSec" data-cat="social">
+  <section class="hxt hx-off" id="socialSec" data-cat="hierarchy"><!-- Social lives under the Marketing department page (8 Nov 2026); renderHierarchy shows it only there -->
     <div class="sh">
       <h2>Social</h2>
       <span class="note">The next post in each workstream, and only the next. Hand it to the Chief of Staff, review what comes back, sign it off, post it yourself, then mark it posted and the next one comes up. Nothing is posted by the office.</span>
@@ -1305,6 +1302,7 @@
     <div class="msg" id="soMsg"></div>
     <div class="sogrid" id="soGrid"></div>
   </section>
+  <div class="hxd-w" id="hxDr" data-cat="hierarchy" aria-hidden="true"></div>
 
   <section id="skillSec" data-cat="skills">
     <div class="sh">
@@ -1423,6 +1421,8 @@ const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': 
 const ago = t => { if (!t) return ''; const s = (Date.now() - t) / 1000; return s < 60 ? 'just now' : s < 3600 ? Math.round(s / 60) + ' min ago' : s < 86400 ? Math.round(s / 3600) + ' h ago' : Math.round(s / 86400) + ' d ago'; };
 const when = t => new Date(t).toLocaleString([], { weekday: 'short', day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
 const agentBy = id => S.agents.find(a => a.id === id);
+// Tokens tab (7 Nov 2026): a desk with a first name reads "Mara (Marketing Lead)"; the key is the desk's stored name, so one with no person stays as it is
+const deskLabel = k => { const p = S.agents.find(a => a.name === k)?.person; return p ? `${p} (${String(k).toLowerCase().replace(/(^|[\s-])(\p{L})/gu, (m, a, b) => a + b.toUpperCase()).replace(/Linkedin/g, 'LinkedIn')})` : k; };
 const api = (p, o = {}) => fetch('/api' + p, { headers: { 'content-type': 'application/json' }, ...o, body: o.body ? JSON.stringify(o.body) : undefined }).then(async r => { const j = await r.json().catch(() => ({})); if (!r.ok) throw new Error(j.error || r.statusText); return j; });
 
 // Needs you (V3.12, 2 Nov): everything waiting on Wesley in one place, so many streams can run at once. Office tasks waiting for his OK
@@ -1520,7 +1520,7 @@ const readiness = a => [!!a.does, !!a.brief, roleSkills(a).length > 0];
 function render() { renderNeeds(); renderWeek(); renderNav(); renderKpis(); renderClients(); renderMatrix(); window.renderHierarchy?.(); renderSkills(); renderNews(); renderActivity(); renderBudget(); }
 
 // categories: the left-hand list shows one category at a time; the choice is remembered and can be linked to (#budget)
-const CAT_IDS = ['overview', 'matrix', 'social', 'clients', 'budget', 'hierarchy', 'skills', 'tokens'];
+const CAT_IDS = ['overview', 'matrix', 'clients', 'budget', 'hierarchy', 'skills', 'tokens'];
 const isDash = c => /^dash-[a-z0-9-]+$/.test(String(c));
 /* ---------- motion: springs for the rail and the page it drives ----------
    A damped spring sampled into a CSS linear() curve: zeta < 1 overshoots and settles, like motion.md's back.out pops.
@@ -1698,7 +1698,6 @@ async function setCat(c, push = true) {
   }
   if (isDash(c)) renderSales();
   if (c === 'tokens') loadTokens();
-  if (c === 'social') loadSocial();
   if (c !== 'hierarchy') window.brainSheet?.(false); // the Brain sheet belongs to the Office; another tab closes it (and its physics stop)
 }
 
@@ -1745,7 +1744,7 @@ document.addEventListener('click', async e => {
   } catch (err) { msg(err.message, true); }
   S.soBusy = null; await loadSocial();
 });
-setInterval(() => { if (!document.hidden && S.cat === 'social') loadSocial(); }, 15000);
+setInterval(() => { if (!document.hidden && S.cat === 'hierarchy' && window.AIOS_HX_VIEW === 'marketing') loadSocial(); }, 15000);
 
 // Consultants' Corner (7 Nov 2026): the pill in the bar is a now-playing bar for the YouTube video or playlist; its own button plays and pauses, the rest
 // opens a small player under it. A pasted link is kept in this browser. Closing the player keeps the music going while you change tabs; STOP removes it.
@@ -1927,7 +1926,7 @@ function renderTokens() {
   const older = t.oldOffice ? ` The ${t.oldOffice} earlier upload read${t.oldOffice === 1 ? '' : 's'} (images and scans digested by vision) left transcripts, so ${t.oldOffice === 1 ? 'it is' : 'they are'} in the totals above.` : '';
   put('tokJobNote', (t.since ? `From ${from}, when capture started: office runs before then were never saved. Cost is Claude Code's list price for each run.` : 'Nothing captured yet: capture starts with the office\'s next Claude run. Office runs before then were never saved.') + older);
   put('tokJobs', `<tr><th>${BY[S.tokBy]}</th><th class="num">Runs</th><th class="num">Tokens</th><th class="num">Cost</th><th class="num">Tasks</th><th class="num">Approved</th><th class="num">Sent back</th><th class="num">Per approved</th><th class="num">Median to approval</th></tr>` + (jobs.map(g =>
-    `<tr><td>${esc(S.tokBy === 'model' ? modelShort(g.key) : g.key)}</td><td class="num">${g.runs}</td><td class="num">${fmtTok(g.total)}</td><td class="num">${usd(g.cost)}</td><td class="num">${g.tasks || '—'}</td><td class="num">${g.tasks ? g.approved : '—'}</td><td class="num">${g.tasks ? g.revised : '—'}</td><td class="num">${usd(g.perApproved)}</td><td class="num">${hrs(g.hoursToOk)}</td></tr>`).join('') ||
+    `<tr><td>${esc(S.tokBy === 'model' ? modelShort(g.key) : S.tokBy === 'desk' ? deskLabel(g.key) : g.key)}</td><td class="num">${g.runs}</td><td class="num">${fmtTok(g.total)}</td><td class="num">${usd(g.cost)}</td><td class="num">${g.tasks || '—'}</td><td class="num">${g.tasks ? g.approved : '—'}</td><td class="num">${g.tasks ? g.revised : '—'}</td><td class="num">${usd(g.perApproved)}</td><td class="num">${hrs(g.hoursToOk)}</td></tr>`).join('') ||
     `<tr><td colspan="9" class="none">${t.since ? 'No runs to group this way yet.' : 'The table fills in as the office runs.'}</td></tr>`));
   for (const b of document.querySelectorAll('#tokBy button')) b.classList.toggle('on', b.dataset.v === S.tokBy);
   // 5. the return on it
@@ -1935,8 +1934,8 @@ function renderTokens() {
   put('tokRoi', `<div class="panel bpanel"><h3>COST PER APPROVED DELIVERABLE</h3><div class="note">Every run on the task counts: the draft, each revision and the send after your OK.</div>${R.perDeliverable.map(g =>
       `<div class="tokr"><span><b>${esc(g.kind)}</b><div class="sub">${g.approved} of ${g.tasks} approved${g.revisions ? ` · ${g.revisions} revision${g.revisions === 1 ? '' : 's'}, ${usd(g.reviseCost)}` : ''}</div></span><span class="num sub">${usd(g.cost)}</span><span class="num"><b>${usd(g.perApproved)}</b></span></div>`).join('') || `<div class="none">Fills in as captured tasks are approved${from ? ' (from ' + from + ')' : ''}.</div>`}</div>
     <div class="panel bpanel"><h3>REWORK BY DESK</h3><div class="note">Share of the last 30 days' tasks you sent back at least once. From the board, so it has history.</div>${R.rework.filter(g => g.tasks >= 2).slice(0, 8).map(g =>
-      `<div class="tokrw"><div class="h"><b title="${esc(g.desk)}">${esc(g.desk)}</b><span>${g.revised} of ${g.tasks} · ${pc(g.rate)}</span></div><span class="bar"><i style="width:${(g.rate * 100).toFixed(1)}%"></i></span></div>`).join('') || '<div class="none">No reviewed tasks in the last 30 days.</div>'}</div>
-    <div class="panel bpanel"><h3>MODEL FIT</h3><div class="note">Opus runs that used no tools and wrote under 1,500 tokens: work Sonnet could likely do.</div><div class="tokbig">${usd(F.lightCost)}</div><div class="sub" style="color:var(--meta, var(--grey));font-size:11.5px;margin-bottom:6px">${F.lightRuns} of ${F.opusRuns} Opus run${F.opusRuns === 1 ? '' : 's'} · ${usd(F.opusCost)} on Opus in 30 days</div>${F.lightBy.map(x => `<div class="tokr"><b>${esc(x.k)}</b><span></span><span class="num">${usd(x.cost)}</span></div>`).join('')}</div>
+      `<div class="tokrw"><div class="h"><b title="${esc(deskLabel(g.desk))}">${esc(deskLabel(g.desk))}</b><span>${g.revised} of ${g.tasks} · ${pc(g.rate)}</span></div><span class="bar"><i style="width:${(g.rate * 100).toFixed(1)}%"></i></span></div>`).join('') || '<div class="none">No reviewed tasks in the last 30 days.</div>'}</div>
+    <div class="panel bpanel"><h3>MODEL FIT</h3><div class="note">Opus runs that used no tools and wrote under 1,500 tokens: work Sonnet could likely do.</div><div class="tokbig">${usd(F.lightCost)}</div><div class="sub" style="color:var(--meta, var(--grey));font-size:11.5px;margin-bottom:6px">${F.lightRuns} of ${F.opusRuns} Opus run${F.opusRuns === 1 ? '' : 's'} · ${usd(F.opusCost)} on Opus in 30 days</div>${F.lightBy.map(x => `<div class="tokr"><b>${esc(x.agent ? deskLabel(x.k) : x.k)}</b><span></span><span class="num">${usd(x.cost)}</span></div>`).join('')}</div>
     <div class="panel bpanel"><h3>TIME TO APPROVAL</h3><div class="note">Medians over the ${A.tasks} task${A.tasks === 1 ? '' : 's'} approved in the last 30 days.</div><div class="tokr"><span><b>Ready → your OK</b><div class="sub">how long work waits on you</div></span><span></span><span class="num tokbig" style="font-size:26px;margin:0">${hrs(A.yourTurn)}</span></div><div class="tokr"><span><b>Added → approved</b><div class="sub">end to end, revisions included</div></span><span></span><span class="num tokbig" style="font-size:26px;margin:0">${hrs(A.endToEnd)}</span></div></div>`);
 }
 $('tokRefresh').addEventListener('click', () => loadTokens());
@@ -1953,12 +1952,12 @@ function renderNav() { // small counts beside a category: what is waiting on you
   set('nOverview', S.tasks.filter(t => t.state === 'waiting').length, true);
   set('nMatrix', (S.matrix.items || []).filter(i => i.state === 'open').length);
   set('nSkills', S.skillAudit ? S.skillAudit.summary.attention : '', true);
-  set('nSocial', S.social ? S.social.filter(s => ['review', 'check', 'ready', 'needs'].includes(s.state)).length : '', true);
 }
 function route(h) { // a hash is the tab, then (Office only) where you are inside it: #office/marketing/gfx is Marketing with Greta's drawer open
   let [c, ...rest] = String(h || '').split('/');
   if (c === 'office') c = 'hierarchy'; // the Office tab keeps its old id inside the page; #hierarchy links from before 7 Nov still land
   const bm = c === 'brain'; if (bm) { c = 'hierarchy'; rest = []; } // the Brain tab became a sheet over the Office on 7 Nov 2026: #brain lands on the Office with it pulled up
+  if (c === 'social') { c = 'hierarchy'; rest = ['marketing']; } // Social moved under the Marketing department page on 8 Nov 2026: #social lands there
   if (c === 'roles') { c = 'hierarchy'; rest = []; } // Roles was retired on 7 Nov 2026: its seats are on the Office's department pages, its News feed on Overview
   if (c === 'hierarchy') { if (window.hxRoute) window.hxRoute(rest); else window.AIOS_HX_WANT = rest; } // the Hierarchy script loads later and picks up AIOS_HX_WANT
   if (!(c === 'hierarchy' && S.cat === 'hierarchy' && catReady)) setCat(c, false); // moving inside Hierarchy (Back, a link) keeps the page where it is
@@ -3444,8 +3443,6 @@ loadTrackers(); setInterval(() => { if (!document.hidden && !Object.values(S.tkB
   const KEY = 'aios.promptEngineer', on = () => { try { return localStorage.getItem(KEY) !== 'off'; } catch { return true; } };
   const T = g('peT'), GO = g('peGo'), ST = g('peSt'), OUT = g('peOut'), TOG = g('peTog'), AT = g('peAt'), FILE = g('peFile'), PE = g('pe');
   let busy = false;
-  const drawTog = () => { TOG.textContent = on() ? 'ENGINEER ON' : 'ENGINEER OFF'; TOG.style.opacity = on() ? '' : '.55'; };
-  TOG.addEventListener('click', () => { try { localStorage.setItem(KEY, on() ? 'off' : 'on'); } catch {} drawTog(); });
   /* attachments (7 Nov 2026): read into the Brain through /api/upload, the same route as the Chief of Staff's panel; the note names travel with the request */
   let atts = []; // { filename, note, state: busy | ok | bad, err }
   const drawAtts = () => { AT.innerHTML = atts.map((a, i) => `<span class="${a.state}"><b title="${x(a.filename)}">📎 ${x(a.filename)}${a.state === 'busy' ? ' · reading…' : a.state === 'bad' ? ' · ' + x(a.err || 'failed') : ''}</b><button type="button" data-i="${i}" title="Remove">✕</button></span>`).join(''); };
@@ -3472,6 +3469,8 @@ loadTrackers(); setInterval(() => { if (!document.hidden && !Object.values(S.tkB
   PE.addEventListener('dragover', e => { if (e.dataTransfer?.types?.includes('Files')) e.preventDefault(); });
   PE.addEventListener('dragleave', () => { dragN = Math.max(0, dragN - 1); if (!dragN) PE.classList.remove('drag'); });
   PE.addEventListener('drop', e => { if (!e.dataTransfer?.files?.length) return; e.preventDefault(); dragN = 0; PE.classList.remove('drag'); attach(e.dataTransfer.files); });
+  const drawTog = () => { TOG.textContent = on() ? 'ENGINEER ON' : 'ENGINEER OFF'; TOG.style.opacity = on() ? '' : '.55'; };
+  TOG.addEventListener('click', () => { try { localStorage.setItem(KEY, on() ? 'off' : 'on'); } catch {} drawTog(); });
   drawTog();
   const lock = (v, msg) => { busy = v; (window.AIOS_PE = window.AIOS_PE || {}).busy = v; window.renderHierarchy?.(); GO.disabled = v; T.disabled = v; if (msg !== undefined) ST.textContent = msg; };
   const post = async (url, body) => { const r = await fetch(url, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) }); return r; };
@@ -3722,7 +3721,9 @@ loadTrackers(); setInterval(() => { if (!document.hidden && !Object.values(S.tkB
         // back to you: out of the tile's inner bottom corner, down the gutter beside the column, then across into the You pill
         const rx = left ? D.x + D.w : D.x, ry = D.y + D.h - 26, gx = left ? edge + Math.min(26, gap / 3) + lane * 9 : edge - Math.min(26, gap / 3) - lane * 9, yy = Y.y + Y.h / 2, yx = left ? Y.x - 6 : Y.x + Y.w + 6;
         const sg = left ? 1 : -1, dn = yy >= ry ? 1 : -1, r = Math.max(2, Math.min(14, Math.abs(gx - rx) - 1, Math.abs(yy - ry) / 2 - 1)); lane++;
-        const red = mk('path', { d: `M${rx} ${ry} H${gx - sg * r} Q${gx} ${ry} ${gx} ${ry + dn * r} V${yy - dn * r} Q${gx} ${yy} ${gx + sg * r} ${yy} H${yx}`, class: 'ox-f back', 'marker-end': 'url(#oxAr)' });
+        // a tile level with the You pill (too little drop for two rounded corners) gets one smooth S-curve instead of a kinked step (Wesley, 8 Nov 2026)
+        const bx = (rx + yx) / 2, d = Math.abs(yy - ry) < 40 ? `M${rx} ${ry} C ${bx} ${ry}, ${bx} ${yy}, ${yx} ${yy}` : `M${rx} ${ry} H${gx - sg * r} Q${gx} ${ry} ${gx} ${ry + dn * r} V${yy - dn * r} Q${gx} ${yy} ${gx + sg * r} ${yy} H${yx}`;
+        const red = mk('path', { d, class: 'ox-f back', 'marker-end': 'url(#oxAr)' });
         dot(red, 'r', 3.2);
         label((gx + yx) / 2, yy - 20, `${t.dataset.n} back to you`, true);
       });
@@ -3804,7 +3805,7 @@ loadTrackers(); setInterval(() => { if (!document.hidden && !Object.values(S.tkB
   let hxSeq = 0;
   const hxShown = () => moving() && S.cat === 'hierarchy' && S.agents.length > 0 && el('hx').getClientRects().length > 0;
   function hxLeave() {
-    const seq = ++hxSeq, outs = [el('hx'), el('oxFlows'), el('hxTrail')].filter(e => e && e.getClientRects().length);
+    const seq = ++hxSeq, outs = [el('hx'), el('oxFlows'), el('hxTrail'), el('socialSec')].filter(e => e && e.getClientRects().length);
     const anims = outs.map(e => e.animate([{ opacity: 1, transform: 'none' }, { opacity: 0, transform: 'translateY(8px)' }], { duration: 110, easing: 'cubic-bezier(.4,0,1,1)', fill: 'forwards' }));
     return Promise.race([Promise.all(anims.map(a => a.finished.catch(() => {}))), new Promise(r => setTimeout(r, 160))]) // a window that is not painting still moves on
       .then(() => { anims.forEach(a => a.cancel()); if (seq !== hxSeq) return new Promise(() => {}); }); // a quicker click took over: its own leave draws the level
@@ -3825,7 +3826,7 @@ loadTrackers(); setInterval(() => { if (!document.hidden && !Object.values(S.tkB
     go(document.querySelector('#hx .hxo-lb'), rise, { delay: 60 });
     const cards = [...document.querySelectorAll('#hx .hxo-dg > *')].filter(seen).slice(0, 18), step = Math.max(45, Math.min(90, 800 / Math.max(1, cards.length)));
     cards.forEach((c, i) => go(c, rise, { delay: 150 + i * step }));
-    [...document.querySelectorAll('#hxTrail > .sh, #hxTrail .hxt-col')].filter(seen).forEach((c, i) => go(c, rise, { delay: 220 + cards.length * step + i * 70 })); // the trail's heading leads its columns
+    [...document.querySelectorAll('#hxTrail > .sh, #hxTrail .hxt-col, #socialSec > .sh, #socialSec .so')].filter(seen).forEach((c, i) => go(c, rise, { delay: 220 + cards.length * step + i * 70 })); // the trail's heading leads its columns
   }
   function nav(v, s = '') { // a click or Esc: going out to the level you came in from is Back, so history never piles up
     v = okView(v); const to = hxPath(v, s), cur = location.hash.slice(1);
@@ -3940,6 +3941,7 @@ loadTrackers(); setInterval(() => { if (!document.hidden && !Object.values(S.tkB
     if (e.target.closest('#hxDr [data-hxclose]')) { closeDesk(); return; }
     if (e.target.closest('#hxDr [data-hxmore]')) { drMore = !drMore; drawer(); }
   });
+  let soSeen = false;
   window.renderHierarchy = function renderHierarchy() {
     if (!el('hx')) return; pollChief();
     const peBusy = !!(window.AIOS_PE && window.AIOS_PE.busy);
@@ -3948,6 +3950,8 @@ loadTrackers(); setInterval(() => { if (!document.hidden && !Object.values(S.tkB
     if (S.cat === 'hierarchy' && S.agents.length && location.hash.slice(1) !== hxPath()) history.replaceState(history.state, '', '#' + hxPath()); // the address bar says where you landed
     const office = view === 'office';
     el('hxTrail').classList.toggle('hx-off', office);
+    const soOn = view === 'marketing'; el('socialSec').classList.toggle('hx-off', !soOn); // Social sits under Marketing's desks and trail
+    if (soOn && !soSeen) { soSeen = true; loadSocial(); } else if (!soOn) soSeen = false; // read the content calendar each time Marketing opens
     el('oxStage').classList.toggle('map', office); // the office map fills the screen, ridges and flows behind it
     if (el('hxTheoDot')) el('hxTheoDot').className = peBusy ? 'work' : '';
     if (office) { renderOffice(); drawer(); return; }
