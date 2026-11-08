@@ -1,6 +1,8 @@
 // Decisions (Wesley, 7 Nov 2026): a result that needs the owner's yes or no before something is done ends with DECISION
 // blocks instead of "Yes / No" lines in the text. The review card shows each as a Yes/No switch preset to the agent's
 // recommendation; APPROVE starts a task for every yes and records every no, so nothing he said yes to is left undone.
+// A decision whose text is BRAIN UPDATE blocks (8 Nov 2026, Brian's fixes) is not a task: on a yes serve.mjs files those
+// blocks exactly as they were on the card, through brainnotes.mjs with its guard rails and backups.
 
 export const INSTRUCTIONS = 'DECISIONS\n' +
   'When something should only be done after the owner says yes (write to a sheet or file, move a date, correct a record, draft an email, read something further), never write "Yes / No" questions in the text. End your result with one block per decision, exactly like this:\n' +
@@ -17,7 +19,7 @@ export function parse(text) {
     if (out.length >= MAX) break;
     const h = {};
     for (const line of m[1].split(/\r?\n/)) { const k = /^\s*(ask|recommend|to|title)\s*:\s*(.*)$/i.exec(line); if (k) h[k[1].toLowerCase()] = k[2].trim(); }
-    out.push({ ask: (h.ask || '').slice(0, 300), rec: /^\W*no\b/i.test(h.recommend || '') ? 'no' : 'yes', to: h.to || '', title: (h.title || '').slice(0, 90), text: m[2].trim().slice(0, 6000) });
+    out.push({ ask: (h.ask || '').slice(0, 300), rec: /^\W*no\b/i.test(h.recommend || '') ? 'no' : 'yes', to: h.to || '', title: (h.title || '').slice(0, 90), text: m[2].trim().slice(0, /^[ 	]*BRAIN UPDATE[ 	]*$/m.test(m[2]) ? 40000 : 6000) }); // a decision that carries its Brain update whole is filed as written on a yes (8 Nov 2026), so it is not cut
   }
   return out;
 }
@@ -49,6 +51,6 @@ export function answer(list, picks) {
 // the record kept in the result, so the finished task says what he decided and what it started
 export function summary(list, nameOf) {
   return (list || []).map(d => !d.ok ? `– ${d.ask} (not on the card: ${d.problem})`
-    : d.yes ? `✓ Yes: ${d.ask}${d.fired && d.fired !== 'duplicate' ? ` → ${nameOf(d.to)} started "${d.title}"` : d.fired === 'duplicate' ? ` → ${nameOf(d.to)} already has "${d.title}" from the last 12 hours` : ''}`
+    : d.yes ? `✓ Yes: ${d.ask}${d.fired === 'filed' ? ` → filed to the Brain: ${(d.filed || []).map(f => `${f.ok ? '✓' : '✗'} ${f.note} (${f.mode}${f.ok ? '' : ': ' + f.message})`).join(', ')}` : d.fired && d.fired !== 'duplicate' ? ` → ${nameOf(d.to)} started "${d.title}"` : d.fired === 'duplicate' ? ` → ${nameOf(d.to)} already has "${d.title}" from the last 12 hours` : ''}`
     : `✗ No: ${d.ask}`).join('\n');
 }

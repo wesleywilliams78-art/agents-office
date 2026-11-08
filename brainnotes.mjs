@@ -13,7 +13,9 @@ export const INSTRUCTIONS = 'BRAIN NOTES\n' +
   'One task may change up to 3 different notes and up to 12 sections in all (for example every day of a week in one note, one block per day). Anything beyond that is refused, so if you need more, finish what fits and say plainly what is left. ' +
   'Check the note first and only file what is new: an update already in the note is refused. Keep each one short and factual, in the note\'s own style. Never include passwords, API keys, card numbers or bank sort codes and account numbers.';
 
-const MODES = ['append', 'replace-section', 'create'];
+const MODES = ['append', 'replace-section', 'create', 'replace-text', 'move', 'archive']; // 8 Nov 2026, Brian's fixes: replace-text swaps one exact piece of a line (a broken link, a stale fact);
+// move renames or refiles a note and rewrites the [[links]] to it; archive moves it under 99-Archive/ (nothing is ever deleted). Both back up every note they touch.
+const ARCHIVE = '99-Archive', MAX_RELINK = 25;
 const MAX_BODY = 20000, MAX_PER_TASK = 3, MAX_UPDATES = 12; // different notes per task, and updates in all
 
 export function parse(text) {
@@ -21,8 +23,8 @@ export function parse(text) {
   const re = /^[ \t]*BRAIN UPDATE[ \t]*\r?\n([\s\S]*?)\r?\n---[ \t]*\r?\n([\s\S]*?)\r?\n[ \t]*END BRAIN UPDATE[ \t]*$/gm, out = [];
   for (let m; (m = re.exec(t));) {
     const h = {};
-    for (const line of m[1].split(/\r?\n/)) { const k = /^\s*(note|mode|section|reason)\s*:\s*(.*)$/i.exec(line); if (k) h[k[1].toLowerCase()] = k[2].trim(); }
-    out.push({ note: h.note || '', mode: (h.mode || '').toLowerCase(), section: h.section || '', reason: h.reason || '', body: m[2].trim() });
+    for (const line of m[1].split(/\r?\n/)) { const k = /^\s*(note|mode|section|find|to|reason)\s*:\s*(.*)$/i.exec(line); if (k) h[k[1].toLowerCase()] = k[2].trim(); }
+    out.push({ note: h.note || '', mode: (h.mode || '').toLowerCase(), section: h.section || '', find: h.find || '', to: h.to || '', reason: h.reason || '', body: m[2].trim() });
   }
   return out;
 }
@@ -43,7 +45,7 @@ const HEAD = /^(#{1,6})\s+(.*?)\s*#*\s*$/;
 export function plan(brain, b, { deny = [] } = {}) {
   const r = { note: b.note, mode: b.mode, section: b.section, ok: false, problem: '', rel: '' };
   const fail = p => { r.problem = p; return r; };
-  if (!MODES.includes(b.mode)) return fail('mode must be append, replace-section or create');
+  if (!MODES.includes(b.mode)) return fail('mode must be append, replace-section, replace-text, create, move or archive');
   if (!b.body) return fail('nothing to file');
   if (b.body.length > MAX_BODY) return fail('too long for one update');
   if (SECRET.some(re => re.test(b.body))) return fail('looks like it holds a password, key, card number or bank detail, which never goes in the brain');
@@ -81,6 +83,30 @@ export function plan(brain, b, { deny = [] } = {}) {
       if (!hits.length) return fail(`no section called "${b.section}" in that note`);
       if (hits.length > 1) return fail(`more than one section called "${b.section}"`);
     }
+    if (b.mode === 'move' || b.mode === 'archive') {
+      const lower = n.toLowerCase();
+      if (b.mode === 'archive' && lower.startsWith(ARCHIVE.toLowerCase() + '/')) return fail('that note is already archived');
+      let to = b.mode === 'archive' ? `${ARCHIVE}/${n}` : String(b.to || '').trim().replace(/\\/g, '/').replace(/^\.?\/+/, '');
+      if (!to) return fail('move needs to: the new folder/name.md');
+      if (!/\.md$/i.test(to)) to += '.md';
+      if (to.split('/').some(s => !s || s === '.' || s === '..' || s.startsWith('.') || /[:*?"<>|]/.test(s))) return fail('not a valid path to move to');
+      if (to.split('/')[0].toLowerCase() === 'agents office' || to.toLowerCase() === 'claude.md') return fail('a note cannot be moved there');
+      if (deny.some(d => to.toLowerCase().startsWith(String(d).toLowerCase()))) return fail('that folder is switched off for agents in office.config.json');
+      const toAbs = path.resolve(brain, to), toRel = path.relative(brain, toAbs);
+      if (toRel.startsWith('..') || path.isAbsolute(toRel)) return fail('outside the brain');
+      if (to.toLowerCase() === lower) return fail('that is where it already is');
+      if (all.some(x => x.toLowerCase() === to.toLowerCase())) return fail(`there is already a note at ${to}`);
+      const linkers = linkersOf(brain, all, n);
+      if (b.mode === 'move' && linkers.length > MAX_RELINK) return fail(`${linkers.length} notes link to it, more than ${MAX_RELINK}: list it for Claude Code`);
+      r.to = to; r.toAbs = toAbs; r.linkers = b.mode === 'move' ? linkers.length : 0;
+    }
+    if (b.mode === 'replace-text') {
+      if (!b.find) return fail('replace-text needs find: the exact text to replace');
+      if (b.find === b.body) return fail('the new text is the same as the old');
+      const n = text.split(b.find).length - 1;
+      if (!n) return fail('the text to replace is not in that note');
+      if (n > 1) return fail('the text to replace is in that note more than once: give a longer piece');
+    }
   }
   r.ok = true; return r;
 }
@@ -108,6 +134,13 @@ function spliceSection(text, section, body) {
   return [...lines.slice(0, start + 1), '', ...mine, ...(end < lines.length ? ['', ...lines.slice(end)] : [''])].join('\n');
 }
 
+// [[links]] to a note, outside the agents' own area and the rules file. A bare-name link counts only when no other note has that name.
+const LINK = /(!?\[\[)([^\]|#^]+)([^\]]*\]\])/g;
+const canLink = x => !/^agents office\//i.test(x) && x.toLowerCase() !== 'claude.md';
+const targets = (all, rel) => { const noExt = rel.replace(/\.md$/i, '').toLowerCase(), base = noExt.split('/').pop(), unique = all.filter(x => x.split('/').pop().replace(/\.md$/i, '').toLowerCase() === base).length === 1; return k => { k = k.trim().toLowerCase().replace(/\.md$/, ''); return k === noExt || (unique && k === base); }; };
+function linkersOf(brain, all, rel) { const hit = targets(all, rel); return all.filter(x => x !== rel && canLink(x)).filter(x => { const t = fs.readFileSync(path.join(brain, x), 'utf8'); for (const m of t.matchAll(LINK)) if (hit(m[2])) return true; return false; }); }
+const backup = (backupDir, rel, abs) => { if (!backupDir) return; fs.mkdirSync(backupDir, { recursive: true }); fs.copyFileSync(abs, path.join(backupDir, `${rel.replace(/\//g, '__')}.${new Date().toISOString().replace(/[:.]/g, '-')}.md`)); };
+
 // files the allowed updates; the previous version of a changed note is copied to backupDir first
 export function applyAll(brain, blocks, { deny = [], backupDir } = {}) {
   const plans = planAll(brain, blocks, { deny }), done = [];
@@ -116,11 +149,25 @@ export function applyAll(brain, blocks, { deny = [], backupDir } = {}) {
     if (p.ok) {
       try {
         const b = blocks[i], exists = fs.existsSync(p.abs);
-        if (exists && backupDir) { fs.mkdirSync(backupDir, { recursive: true }); fs.copyFileSync(p.abs, path.join(backupDir, `${p.rel.replace(/\//g, '__')}.${new Date().toISOString().replace(/[:.]/g, '-')}.md`)); }
+        if (exists) backup(backupDir, p.rel, p.abs);
+        if (p.mode === 'move' || p.mode === 'archive') { // the note goes to its new place; for a move, every link to it follows (each linking note backed up first)
+          let relinked = 0;
+          if (p.mode === 'move') {
+            const all = listNotes(brain), hit = targets(all, p.rel), newBase = p.to.replace(/\.md$/i, '').split('/').pop(), baseFree = !all.some(x => x !== p.rel && x.split('/').pop().replace(/\.md$/i, '').toLowerCase() === newBase.toLowerCase());
+            for (const x of linkersOf(brain, all, p.rel)) {
+              const ax = path.join(brain, x), t = fs.readFileSync(ax, 'utf8');
+              const nt = t.replace(LINK, (m, a, k, rest) => hit(k) ? a + (baseFree && !k.includes('/') ? newBase : p.to.replace(/\.md$/i, '')) + rest : m);
+              if (nt !== t) { backup(backupDir, x, ax); fs.writeFileSync(ax, nt); relinked++; }
+            }
+          }
+          fs.mkdirSync(path.dirname(p.toAbs), { recursive: true }); fs.renameSync(p.abs, p.toAbs);
+          out.ok = true; out.message = `${p.mode === 'archive' ? 'archived' : 'moved'} to ${p.to}${p.mode === 'move' ? `, links updated in ${relinked} note${relinked === 1 ? '' : 's'}` : ''}`; done.push(out); return;
+        }
         if (p.mode === 'create') { fs.mkdirSync(path.dirname(p.abs), { recursive: true }); fs.writeFileSync(p.abs, b.body + '\n'); }
         else if (p.mode === 'append') fs.writeFileSync(p.abs, fs.readFileSync(p.abs, 'utf8').replace(/\s*$/, '\n') + '\n' + b.body + '\n');
+        else if (p.mode === 'replace-text') { const t = fs.readFileSync(p.abs, 'utf8'), i = t.indexOf(b.find); fs.writeFileSync(p.abs, t.slice(0, i) + b.body + t.slice(i + b.find.length)); }
         else fs.writeFileSync(p.abs, spliceSection(fs.readFileSync(p.abs, 'utf8'), b.section, b.body));
-        out.ok = true; out.message = p.mode === 'create' ? 'created' : p.mode === 'append' ? 'added to the end' : `section "${b.section}" replaced`;
+        out.ok = true; out.message = p.mode === 'create' ? 'created' : p.mode === 'append' ? 'added to the end' : p.mode === 'replace-text' ? 'text replaced' : `section "${b.section}" replaced`;
       } catch (e) { out.message = e.message; }
     }
     done.push(out);

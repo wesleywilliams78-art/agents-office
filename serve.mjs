@@ -690,14 +690,24 @@ function fireHandoffs(task) { // only for a task the owner approved, and only wh
 function decisionReview(task, text) { // the Yes/No switches for the review card; the blocks themselves are removed from the result
   const blocks = decisions.parse(text); if (!blocks.length) { delete task.decisions; return ''; }
   task.decisions = decisions.plan(blocks, AGENTS, task.agent);
+  for (const d of task.decisions.filter(x => x.ok)) { // a decision that carries its own BRAIN UPDATE blocks is filed exactly as written on a yes, with no second run or review (Brian, 8 Nov 2026)
+    const bb = brainnotes.parse(d.text); if (!bb.length) continue;
+    if (!BRAIN_WRITE) { d.ok = false; d.problem = 'Brain updates are switched off in office.config.json'; continue; }
+    const plans = brainnotes.planAll(BRAIN, bb, { deny: BRAIN_DENY }); d.brain = plans.map(p => ({ note: p.rel || p.note, mode: p.mode, ok: p.ok, problem: p.problem || '' }));
+    const no = plans.filter(p => !p.ok); if (no.length) { d.ok = false; d.problem = 'the Brain update cannot be filed: ' + no.map(p => `${p.note || '?'} (${p.problem})`).join('; '); }
+  }
   const good = task.decisions.filter(d => d.ok), bad = task.decisions.filter(d => !d.ok);
-  return (good.length ? ` ${good.length} decision${good.length === 1 ? '' : 's'} on the card: approving starts a task for each one left on Yes.` : '') + (bad.length ? ` Not on the card: ${bad.map(d => `"${d.ask || '?'}" (${d.problem})`).join('; ')}.` : '');
+  return (good.length ? ` ${good.length} decision${good.length === 1 ? '' : 's'} on the card: approving ${good.some(d => d.brain) ? 'files the Brain fix or starts the task' : 'starts a task'} for each one left on Yes.` : '') + (bad.length ? ` Not on the card: ${bad.map(d => `"${d.ask || '?'}" (${d.problem})`).join('; ')}.` : '');
 }
 const WRITES_EMAIL = /\b(draft|write|compose|reply)\b[^\n.]{0,40}\b(e-?mails?|reply|message)\b/i;
 function fireDecisions(task) { // only for a task the owner approved: a task for every decision he left on Yes, a record of every No
   const ds = task.decisions || []; if (!ds.length || !task.approved) return;
   const list = load(), made = [];
   for (const d of ds.filter(x => x.ok && x.yes && !x.fired)) {
+    if (d.brain) { // the fix itself was on the card: file it now, same guard rails and backups as an approved BRAIN UPDATE; a No files nothing
+      d.filed = BRAIN_WRITE ? brainnotes.applyAll(BRAIN, brainnotes.parse(d.text), { deny: BRAIN_DENY, backupDir: path.join(DATA, 'brain-backups') }) : [];
+      d.fired = 'filed'; console.log(`▣ brain: decision ${d.n} of ${task.id} filed — ${d.filed.map(f => `${f.ok ? '✓' : '✗'} ${f.note}`).join(', ')}`); continue;
+    }
     if (list.some(x => x.agent === d.to && x.title === d.title && Date.now() - (x.addedAt || 0) < 12 * 3600 * 1000)) { d.fired = 'duplicate'; continue; }
     const text = `${d.text}\n\n(Wesley said yes to this on the review of "${task.title}" by ${agentName(task.agent)}: "${d.ask}". Do exactly this and nothing more, then report what you changed.)`;
     const t = { id: nid(), dept: d.dept, agent: d.to, title: d.title, text, plan: [], eta: 10, why: `Wesley said yes on ${agentName(task.agent)}'s review`, state: 'doing', startedAt: Date.now(), addedAt: Date.now(), by: 'decision', handoffFrom: task.agent, decisionTask: task.id, ...(WRITES_EMAIL.test(d.title + ' ' + d.ask) ? { needsOk: true, channel: 'email' } : { needsOk: false, channel: 'none' }) }; // an email still comes back for its wording and only ever becomes a Gmail draft

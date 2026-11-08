@@ -4,6 +4,7 @@
 // find any note and read it whole. It can only read Markdown notes inside the Brain; it cannot write, move or delete anything.
 //   brain_search  find notes by words in their name or text
 //   brain_read    read one note in full, in parts of 30,000 characters (next_offset to read on)
+//   brain_audit   the whole Brain scanned for broken links, orphans, oversize, stubs and duplicates (for Brian, the IP Librarian)
 import fs from 'node:fs';
 import path from 'node:path';
 import readline from 'node:readline';
@@ -18,6 +19,7 @@ const rel = f => path.relative(BRAIN, f).replace(/\\/g, '/').replace(/\.md$/i, '
 
 const TOOLS = [
   { name: 'brain_search', description: 'Find notes in Wesley\'s Brain by words in their name or text (read only). Returns the best matches with their size. Use it when a note you were told about is not in front of you or was cut off, then open it with brain_read. Uploaded documents are notes named "Upload - something"; the office\'s own task notes are under "Agents Office".', inputSchema: { type: 'object', required: ['query'], properties: { query: { type: 'string' } } } },
+  { name: 'brain_audit', description: 'Scan the whole Brain for housekeeping problems (read only; the office\'s own "Agents Office" folder is left out). Returns: broken [[links]] (note, link, line), orphans (no links in or out), notes over the size cap, empty or stub notes, notes with the same or nearly the same name, and pairs of notes whose text largely overlaps. It cannot judge stale or contradictory facts or misfiled notes: read the notes for those.', inputSchema: { type: 'object', properties: { cap: { type: 'integer', description: 'size cap in characters, default 20000 (the most one Brain update can rewrite)' }, stub: { type: 'integer', description: 'a note with less text than this is a stub, default 200' } } } },
   { name: 'brain_read', description: 'Read a Brain note IN FULL (read only). Pass the note name as shown, for example "content-calendar" or "20-Brand/content-calendar". A long note comes in parts: pass offset (the next_offset from the last call) to read on, and keep reading until next_offset is null. Use this whenever a note shows "the note continues … not shown" or you need a later part of it. Never say you could not open a note without trying brain_search and brain_read first.', inputSchema: { type: 'object', required: ['note'], properties: { note: { type: 'string' }, offset: { type: 'integer' } } } },
 ];
 
@@ -33,6 +35,50 @@ const HANDLERS = {
       if (s) { const i = low.indexOf(words[0]); hits.push({ s, note: rel(f), chars: t.length, snippet: i >= 0 ? t.slice(Math.max(0, i - 60), i + 160).replace(/\s+/g, ' ') : '' }); }
     }
     return text(hits.sort((x, y) => y.s - x.s).slice(0, 12).map(({ s, ...h }) => h));
+  },
+  brain_audit(a) { // the mechanical half of Brian's weekly audit (brain-audit skill, 8 Nov 2026); judging facts and filing stays with the desk
+    if (!BRAIN) return fail('The Brain folder is not configured.');
+    const cap = a.cap > 0 ? a.cap : 20000, stubMin = a.stub > 0 ? a.stub : 200;
+    const notes = files().filter(f => !/^agents office\//i.test(rel(f))).map(f => { let t = ''; try { t = fs.readFileSync(f, 'utf8').replace(/^﻿/, ''); } catch {} return { f, rel: rel(f), name: nameOf(f), t }; });
+    const all = [], byName = new Map(), byRel = new Map(); // every file in the Brain, so ![[image.png]] and links into Agents Office resolve too
+    (function walk(d) { let es; try { es = fs.readdirSync(d, { withFileTypes: true }); } catch { return; } for (const e of es) { if (e.name.startsWith('.') || e.name === 'node_modules') continue; const p = path.join(d, e.name); if (e.isDirectory()) walk(p); else all.push(path.relative(BRAIN, p).replace(/\\/g, '/')); } })(BRAIN);
+    for (const r of all) { const low = r.toLowerCase(), base = low.split('/').pop(); for (const k of [base, base.replace(/\.md$/, '')]) byName.set(k, r); byRel.set(low, r); byRel.set(low.replace(/\.md$/, ''), r); }
+    const resolve = l => { const k = l.toLowerCase().replace(/\\/g, '/').replace(/^\.?\//, ''); return byRel.get(k) || byName.get(k) || byName.get(k.split('/').pop()) || null; };
+    const body = t => t.replace(/^---\r?\n[\s\S]*?\r?\n---\r?\n/, '');
+    const inbound = new Map(), outbound = new Map(), broken = [];
+    for (const n of notes) {
+      let fence = false; const lines = n.t.split(/\r?\n/);
+      lines.forEach((line, i) => {
+        if (/^\s*```/.test(line)) { fence = !fence; return; } if (fence) return;
+        for (const m of line.matchAll(/!?\[\[([^\]|#^]*)(?:[#^][^\]|]*)?(?:\|[^\]]*)?\]\]/g)) {
+          const target = m[1].trim(); if (!target) continue; // [[#heading]] is a link inside the same note
+          const hit = resolve(target);
+          if (!hit) { broken.push({ note: n.rel, link: m[0], line: i + 1 }); continue; }
+          if (hit.replace(/\.md$/i, '') !== n.rel) { (outbound.get(n.rel) || outbound.set(n.rel, new Set()).get(n.rel)).add(hit); (inbound.get(hit.replace(/\.md$/i, '')) || inbound.set(hit.replace(/\.md$/i, ''), new Set()).get(hit.replace(/\.md$/i, ''))).add(n.rel); }
+        }
+      });
+    }
+    const words = t => body(t).toLowerCase().replace(/[^a-z0-9\s]+/g, ' ').split(/\s+/).filter(Boolean);
+    const shingles = t => { const w = words(t), s = new Set(); for (let i = 0; i + 4 < w.length; i++) s.add(w.slice(i, i + 5).join(' ')); return s; };
+    const key = s => s.toLowerCase().replace(/^upload - /, '').replace(/ - [a-z0-9]{8}$/, '').replace(/\(\d+\)|\bv\d+\b|\bcopy\b/g, '').replace(/[^a-z0-9]+/g, '');
+    const sameName = [], groups = new Map();
+    for (const n of notes) { const k = key(n.name); if (k) (groups.get(k) || groups.set(k, []).get(k)).push(n.rel); }
+    for (const g of groups.values()) if (g.length > 1) sameName.push(g);
+    const sh = notes.map(n => ({ rel: n.rel, s: n.t.length > 300 ? shingles(n.t) : new Set() })), overlap = [];
+    for (let i = 0; i < sh.length; i++) for (let j = i + 1; j < sh.length; j++) {
+      const A = sh[i].s, B = sh[j].s; if (!A.size || !B.size) continue;
+      let c = 0; for (const x of (A.size < B.size ? A : B)) if ((A.size < B.size ? B : A).has(x)) c++;
+      const share = c / Math.min(A.size, B.size); if (share >= 0.5) overlap.push({ a: sh[i].rel, b: sh[j].rel, shared: Math.round(share * 100) + '% of the smaller note' });
+    }
+    return text({
+      scanned: notes.length, cap, stub_under: stubMin,
+      broken_links: broken,
+      orphans: notes.filter(n => !inbound.has(n.rel) && !outbound.has(n.rel)).map(n => n.rel),
+      over_cap: notes.filter(n => n.t.length > cap).map(n => ({ note: n.rel, chars: n.t.length })),
+      stubs: notes.filter(n => body(n.t).replace(/^#.*$/gm, '').replace(/\s+/g, ' ').trim().length < stubMin).map(n => ({ note: n.rel, chars: body(n.t).trim().length })),
+      same_name: sameName,
+      overlapping_text: overlap.sort((x, y) => parseInt(y.shared) - parseInt(x.shared)).slice(0, 30),
+    });
   },
   brain_read(a) {
     if (!BRAIN) return fail('The Brain folder is not configured.');
