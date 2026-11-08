@@ -202,7 +202,9 @@ export function initReview({ esc, agentOf, onApprove, onReject, onAnswer, onHand
     const box = $('.rv-dec'), all = (!readOnly && t && Array.isArray(t.decisions)) ? t.decisions : [];
     if (!all.length || el.classList.contains('rej')) { box.hidden = true; box.innerHTML = ''; return; }
     box.hidden = false;
-    box.innerHTML = `<div class="rv-dec-h">YOUR DECISIONS · EACH YES BECOMES A TASK WHEN YOU APPROVE</div>` + all.map(d => d.ok
+    const direct = d => [d.brain, d.skill].some(x => Array.isArray(x) && x.length), live = all.filter(d => d.ok), nd = live.filter(direct).length; // a yes that files its change itself (Brian's fixes) says so
+    const how = !nd ? 'EACH YES BECOMES A TASK' : nd === live.length ? 'EACH YES IS FILED STRAIGHT AWAY' : 'EACH YES IS FILED OR BECOMES A TASK';
+    box.innerHTML = `<div class="rv-dec-h">YOUR DECISIONS · ${how} WHEN YOU APPROVE</div>` + all.map(d => d.ok
       ? `<div class="rv-d" data-n="${d.n}"><div class="rv-dq"><b>${d.n}.</b> ${esc(d.ask)}<span class="rv-dm">Recommended: ${d.rec === 'yes' ? 'Yes' : 'No'} · on Yes, ${Array.isArray(d.brain) && d.brain.length ? 'filed straight to the Brain: ' + esc(d.brain.map(b => `${b.mode} → ${b.note}`).join(', ')) : `${esc(d.toName)} does "${esc(d.title)}"`}</span></div><div class="rv-sw"><button class="rv-dy${pickOf(t, d) ? ' on' : ''}" data-n="${d.n}">YES</button><button class="rv-dn${pickOf(t, d) ? '' : ' on'}" data-n="${d.n}">NO</button></div></div>`
       : `<div class="rv-d off"><div class="rv-dq"><b>${d.n}.</b> ${esc(d.ask || '?')}<span class="rv-dm">Cannot run: ${esc(d.problem)}. Use ANSWER to tell the agent what you want.</span></div></div>`).join('');
   }
