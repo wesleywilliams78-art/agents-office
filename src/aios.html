@@ -119,7 +119,6 @@
   .so a.btn { cursor: pointer; background: var(--soft); border: 1px solid var(--line); border-radius: 7px; padding: 5px 10px; font-size: 11px; letter-spacing: .06em; font-weight: 600; color: inherit; text-decoration: none; white-space: nowrap; } .so a.btn:hover { border-color: var(--grey); }
   .so.none { opacity: .7; } .so .sol { font-size: 11px; color: var(--faint); }
   .so-wait { opacity: 0; } /* held back until it scrolls into view and rises (soWatch) */
-  .soCal { font-size: 11px; letter-spacing: .08em; color: var(--grey); text-decoration: none; }
   .skgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(380px, 1fr)); gap: 10px; }
   .sk { padding: 12px 13px; }
   .sk .skh { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
@@ -1304,7 +1303,7 @@
     <div class="eyebrow" id="hEye"></div>
     <h2 id="hHead"></h2>
     <div class="hs" id="hSub"></div>
-    <div class="hbtns"><a href="/">Open the office</a><a href="#matrix">The matrix</a></div>
+    <div class="hbtns"><a href="#office">Open the office</a><a href="#matrix">The matrix</a></div><!-- 8 Nov 2026: the AIOS Office map, no longer AJ's office at / -->
     <div class="hstats" id="hStats"></div>
     <svg class="ridge" viewBox="0 0 1440 150" preserveAspectRatio="none" aria-hidden="true">
       <path style="opacity:.07" d="M0 150V70C130 28 230 18 350 54S540 112 660 70 820 0 960 44s190 62 290 24 140-36 190-12V150Z"/>
@@ -1385,7 +1384,6 @@
     <div class="sh" data-sok="head">
       <h2>Social</h2>
       <span class="note">The next post in each workstream, and only the next. Hand it to the Chief of Staff, review what comes back, sign it off, post it yourself, then mark it posted and the next one comes up. Nothing is posted by the office.</span>
-      <div class="tools"><a class="soCal" href="/" target="agentsOffice" title="The office calendar (P) has every post">CALENDAR ↗</a></div>
     </div>
     <div class="msg" id="soMsg"></div>
     <div class="sogrid" id="soGrid"></div>
