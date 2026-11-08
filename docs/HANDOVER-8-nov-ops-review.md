@@ -20,7 +20,8 @@ They were put to Wesley twice: in the chat, and on Orla's review card (task `mw7
 
 ## Still open for Operations
 - **Reggie's first routine run** is Monday 9 Nov at 08:30. Read the result: does it check Qamaria's and Imran's Diner's nation, and does it pass VAT to Maggie?
-- **Dasha's card** (task `mw7oaxqzud0c`): check that the Creamy figures name their currency. Creamy is Norway and the cost file is in Norwegian, but no note confirms NOK. Only Wesley can confirm it.
+- **Dasha's card** (task `mw7oaxqzud0c`): approved by Wesley at 10:19. Filed: `Dashboards/Imrans-Diner-Dashboard.md` (rewritten), `Dashboards/Creamy-Dashboard.md` (new) and a Creamy section in `00-Meta/numbers-ledger.md`. Still open: the Creamy reports state no currency, so every Creamy amount says "currency not confirmed". Creamy is Norway and the cost file is in Norwegian, but only Wesley can confirm NOK. Dasha also flagged Strømmen's April 2026 order count as an outlier and left it out.
+- **Office restarted** at about 10:25. Leon's, Reggie's and Archie's changes are live on `/api/health`.
 - **Gaps only Wesley can fill:** contract basics of his own (a standard client agreement for Leon to check against); a compliance process; a reporting cadence; a house dashboard spec beyond Imran's Diner. Until he gives them, the desks stay general.
 - `00-Meta/numbers-ledger.md`'s first table is still demo data (Dasha's brief says never quote it).
 
