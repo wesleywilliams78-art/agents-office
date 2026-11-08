@@ -3724,16 +3724,17 @@ loadTrackers(); setInterval(() => { if (!document.hidden && !Object.values(S.tkB
     const nora = el('oxNora'), you = el('oxYou'), theo = el('hxTheo'); if (!nora || !you || !theo) return;
     const s = stage.getBoundingClientRect(), box = e => { const r = e.getBoundingClientRect(); return { x: r.left - s.left, y: r.top - s.top, w: r.width, h: r.height }; };
     const mk = (tag, a) => { const e = document.createElementNS(SVGNS, tag); for (const k in a) e.setAttribute(k, a[k]); F.appendChild(e); return e; };
-    const label = (x, y, text, red) => { const d = document.createElement('div'); d.className = 'ox-fl' + (red ? ' r' : ''); d.style.left = x + 'px'; d.style.top = y + 'px'; d.textContent = text; stage.appendChild(d); };
+    const label = (x, y, text, red) => { const d = document.createElement('div'); d.className = 'ox-fl' + (red ? ' r' : ''); d.style.left = x + 'px'; d.style.top = y + 'px'; d.textContent = text; return stage.appendChild(d); };
     const dot = (p, cls, dur, begin = 0) => { if (REDUCED.matches) return; const c = mk('circle', { r: cls === 'r' ? 4 : 3.5, class: 'ox-dot ' + cls }); c.innerHTML = `<animateMotion dur="${dur}s" begin="${begin}s" repeatCount="indefinite" path="${p.getAttribute('d')}"/>`; };
     mk('defs', {}).innerHTML = ['on', 'r', 'off'].map(k => `<marker id="oxA${k}" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="${k === 'off' ? 6 : 7}" markerHeight="${k === 'off' ? 6 : 7}" orient="auto-start-reverse"><path class="ox-ah ${k}" d="M0 0 L10 5 L0 10 z"/></marker>`).join('');
     const T = box(theo), N = box(nora), Y = box(you), cx = N.x + N.w / 2;
     if (N.y - (T.y + T.h) > 40) { mk('path', { d: `M${cx} ${T.y + T.h + 4} L${cx} ${N.y - 10}`, class: 'ox-f ask', 'marker-end': 'url(#oxAon)' }); } // no 'Your ask' / 'Work goes out' labels: the arrows say it (Wesley, 7 Nov 2026)
+    const topY = Math.min(...[...stage.querySelectorAll('.hxo-d.need')].map(t => { const D = box(t), ry = D.y + D.h - 26; return Math.abs(Y.y + Y.h / 2 - ry) < 40 ? ry : Infinity; })); // the highest S-curve start: both sides' labels stay above it, level with each other
     for (const k of ['L', 'R']) {
       const tiles = [...stage.querySelectorAll(`.hxo-d[data-side="${k}"]`)], left = k === 'L', n = tiles.length;
       const edge = tiles.reduce((m, t) => { const D = box(t); return left ? Math.max(m, D.x + D.w) : Math.min(m, D.x); }, left ? -1e9 : 1e9);
       const gap = Math.abs((left ? N.x : N.x + N.w) - edge);
-      let lane = 0;
+      let lane = 0, sum = 0, gIn = 0;
       tiles.forEach((t, i) => {
         const D = box(t), on = t.classList.contains('on');
         const sx = left ? N.x : N.x + N.w, sy = N.y + N.h * (n > 1 ? 0.28 + 0.44 * i / (n - 1) : 0.5), ex = left ? D.x + D.w + 4 : D.x - 4, ey = D.y + Math.min(D.h * 0.38, 70), mx = (sx + ex) / 2;
@@ -3747,8 +3748,15 @@ loadTrackers(); setInterval(() => { if (!document.hidden && !Object.values(S.tkB
         const bx = (rx + yx) / 2, d = Math.abs(yy - ry) < 40 ? `M${rx} ${ry} C ${bx} ${ry}, ${bx} ${yy}, ${yx} ${yy}` : `M${rx} ${ry} H${gx - sg * r} Q${gx} ${ry} ${gx} ${ry + dn * r} V${yy - dn * r} Q${gx} ${yy} ${gx + sg * r} ${yy} H${yx}`;
         const red = mk('path', { d, class: 'ox-f back', 'marker-end': 'url(#oxAr)' });
         dot(red, 'r', 3.2);
-        label((gx + yx) / 2, yy - 20, `${t.dataset.n} back to you`, true);
+        sum += +t.dataset.n || 0; gIn = gx;
       });
+      if (!sum) continue;
+      // one label per side with the side's total (two waiting on one side used to stack theirs): beside the pill when it fits between the
+      // innermost gutter line and the pill, else lifted over the pill's shoulder; either way clear of the pill, the tiles and every line (8 Nov 2026)
+      const lb = label(0, 0, `${sum} back to you`, true), w = lb.offsetWidth, h = lb.offsetHeight, yy = Y.y + Y.h / 2;
+      const a = left ? gIn + 8 : Y.x + Y.w + 8, b = left ? Y.x - 8 : gIn - 8, fits = b - a >= w;
+      const ly = fits ? Math.min(yy - 20, topY - 6 - h / 2) : Math.min(Y.y - 10, topY - 6) - h / 2, lx = fits ? (a + b) / 2 : left ? a + w / 2 : b - w / 2;
+      lb.style.left = lx + 'px'; lb.style.top = ly + 'px';
     }
   }
   let flowQ = 0; const flowSoon = () => { cancelAnimationFrame(flowQ); flowQ = requestAnimationFrame(flows); };
