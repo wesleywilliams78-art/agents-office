@@ -31,7 +31,7 @@ These went on Esme's review card (task `mw7rmhr7pklp`). Every block passed `brai
 - **`npm run check`:** 104/104 with the rename. After the roster edit, two runs each failed one check outside this round, a different one each time: "server: starts" (port clash) and the SOP builder's LibreOffice PDF conversion. Other sessions were running checks and builds at the same time. Rerun when the PC is quiet.
 
 ## Still open
-- **Vikram's list** comes back as its own card. Read it before saying yes: every row should name a source.
+- **Vikram's list** comes back as its own card. The first run (`mw7wegy9af86`) failed with "claude not found on PATH" before the restart. It was posted again as `mw7wxg7exgw1` after the restart, and that run started. Read it before saying yes: every row should name a source.
 - **Routing:** Nora sends client mail to Esme rather than Callum. Esme's skill now hands mail on by desk. If Callum still gets nothing in a week, look at how Nora picks the desk.
 - **Gaps only Wesley can fill:** real reply times, if he ever wants them, and a payables process (from the Finance round).
 
