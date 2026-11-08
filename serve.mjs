@@ -936,6 +936,7 @@ async function runServerTaskNow(id, { feedback, approve, answer } = {}) {
   }
   stepsDone(task); list = load(); const i = list.findIndex(t => t.id === task.id); if (i >= 0) list[i] = task; save(list);
   console.log(`${task.error ? '✗' : task.state === 'waiting' ? '⏸' : '✓'} ${task.id} ${task.error ? 'failed' : task.state === 'waiting' ? 'waiting for your OK' : 'done'} (${task.result.length} chars${task.tools?.length ? ', tools: ' + task.tools.join(' ') : ''}${task.note ? ', note: ' + task.note : ''})`);
+  settleMatrixCard(task);
   autoFeed(task);
   return task;
 }
@@ -1122,6 +1123,16 @@ function fileMatrixItems(task) {
   task.matrixFiled = kept.length;
   console.log(`  matrix: ${kept.length} card(s) filed by ${agentName(task.agent)} from ${task.id}${dropped.length ? ` (${dropped.length} already on it)` : ''}`);
   return kept.length;
+}
+// 8 Nov 2026: a card sent to a desk follows its task. Approved (or done with nothing to approve) closes it;
+// rejected for good, or failed, puts it back on the open list. A card the owner already moved on is left alone.
+function settleMatrixCard(task) {
+  if (!task || !task.matrix || task.state !== 'done') return;
+  const m = aios.load(DATA), item = m.items.find(i => i.id === task.matrix && i.task === task.id);
+  if (!item || item.state !== 'sent') return;
+  const back = !!(task.closed || task.error);
+  aios.patch(item, { state: back ? 'open' : 'done' }); aios.save(DATA, m);
+  console.log(`▦ ${item.id} ${back ? 'back on the matrix' : 'closed'}: task ${task.id} ${task.closed ? 'was rejected' : task.error ? 'failed' : 'is done'}`);
 }
 function autoFeed(task) {
   if (!AUTO_FEED || task.noMatrix || task.state !== 'done' || task.error || !task.result) return; // noMatrix: a status routine's result is a report, not a to-do list
@@ -1668,6 +1679,7 @@ const server = http.createServer(async (req, res) => {
         if (note) task.closeNote = note.slice(0, 2000);
         save(load().map(t => t.id === task.id ? task : t));
         console.log(`⛔ ${task.id} rejected permanently, closed with no further action${note ? ': ' + note.slice(0, 80) : ''}`);
+        settleMatrixCard(task);
         return json(res, 200, { ok: true, id: task.id, state: 'done', closed: true, task });
       }
       if (m[2] === 'approve' && !task.needsOk) { // V3.9: a reviewed task with nothing to send — the tick is the finish line, no second run
@@ -1676,6 +1688,7 @@ const server = http.createServer(async (req, res) => {
         fileBrainUpdates(task); fileSiteUpdates(task); fireHandoffs(task); fireDecisions(task); fileMatrixItems(task);
         task.note = writeNote(task); save(load().map(t => t.id === task.id ? task : t)); await rebuildGraph();
         console.log(`✅ ${task.id} approved — done (note: ${task.note})`);
+        settleMatrixCard(task);
         autoFeed(task);
         return json(res, 200, { ok: true, id: task.id, state: 'done', task });
       }
