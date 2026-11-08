@@ -1,19 +1,20 @@
 # Handover, 8 Nov 2026: Finance reviewed. Next: Emails
 
 ## Finance round: seven decisions, all Yes (Wesley, 8 Nov)
-Asked in the chat and put on Arjun's review card (task `mw7pk4bn23xr`). Every block was dry-run through `brainnotes.planAll` and `skillupdates.planAll` before posting; all passed first time.
+Asked in the chat and put on Arjun's review card (task `mw7pk4bn23xr`), which Wesley approved at about 11:15. Every block was dry-run through `brainnotes.planAll` and `skillupdates.planAll` before posting; all passed first time.
 
 | # | Desk | Change | How it landed |
 |---|---|---|---|
-| 1 | All of Finance | `80-Finance/MOC-Finance.md` lists only real notes: billing, personal-budget, water bill, Imran's Diner sales, the numbers ledger (first table is demo), the VAT Rules sheet (never copy a rate into a note), and the gap: no Imran's Diner costed recipes. `invoicing-rules`, `payables-rules`, `contractor-terms` sit on one line marked "never quote them as rules". | PENDING |
-| 2 | All of Sales | `60-Sales/MOC-Sales.md` the same: pipeline, client-list, `10-Business/icp`, offer-ladder, the proposal skill and Drive master, Kayana. `sales-playbook`, `pipeline-rules`, `proposal-template` marked demo; the demo rule "inbound leads are qualified within the hour" is gone. | PENDING |
-| 3 | Ivana, Arjun | `10-Business/billing.md`: invoices are Google Docs from the master v2 in the Drive Invoicing folder, which the desks may read (the note used to say Canva and "agents never read that folder"). Last number INV014 (YSF Advisory, Oct 2026, £2,000.00, dated 4 Nov, due 11 Nov), next INV015. INV014 sent and unpaid (Wesley, 8 Nov). | PENDING |
-| 4 | Everyone | `00-Meta/numbers-ledger.md`: the first table (14 clients, $38,400 MRR, 23 days, 41%) is labelled as the template's demo data above and below. Nothing deleted. | PENDING |
-| 5 | Maggie, Reggie | VAT handoff. `vat-analyser` gains "A VAT change from Reggie" (confirm at the source, propose the sheet row, name live clients it touches). `vat-rules-feed.md`: RECONCILIATION → Maggie (recon), and "Not recorded" replaced by the research ladder. `menu-engineering`: the ex-VAT rate comes from the VAT Rules sheet by country and channel, not "Norway 1.15". `regulatory-watch` shape step 7: each VAT change is a DECISION `to: recon`. | PENDING |
-| 6 | Maggie (recon) | Brief: Creamy is NOK; VAT changes come from Reggie's Monday watch; ask Wesley for Imran's Diner's costed recipe sheet before any menu engineering there. | PENDING |
-| 7 | Ivana, Arjun | Ivana's job line: checks the invoices Wesley receives so he can pay them (she never pays). Arjun's tools: + google sheets (vat-analyser reads the VAT Rules sheet). | PENDING |
+| 1 | All of Finance | `80-Finance/MOC-Finance.md` lists only real notes: billing, personal-budget, water bill, Imran's Diner sales, the numbers ledger (first table is demo), the VAT Rules sheet (never copy a rate into a note), and the gap: no Imran's Diner costed recipes. `invoicing-rules`, `payables-rules`, `contractor-terms` sit on one line marked "never quote them as rules". | Filed by the card |
+| 2 | All of Sales | `60-Sales/MOC-Sales.md` the same: pipeline, client-list, `10-Business/icp`, offer-ladder, the proposal skill and Drive master, Kayana. `sales-playbook`, `pipeline-rules`, `proposal-template` marked demo; the demo rule "inbound leads are qualified within the hour" is gone. | Filed by the card |
+| 3 | Ivana, Arjun | `10-Business/billing.md`: invoices are Google Docs from the master v2 in the Drive Invoicing folder, which the desks may read (the note used to say Canva and "agents never read that folder"). Last number INV014 (YSF Advisory, Oct 2026, £2,000.00, dated 4 Nov, due 11 Nov), next INV015. INV014 sent and unpaid (Wesley, 8 Nov). | Filed by the card (6 edits, backup in `data/brain-backups/`) |
+| 4 | Everyone | `00-Meta/numbers-ledger.md`: the first table (14 clients, $38,400 MRR, 23 days, 41%) is labelled as the template's demo data above and below. Nothing deleted. | Filed by the card |
+| 5 | Maggie, Reggie | VAT handoff. `vat-analyser` gains "A VAT change from Reggie" (confirm at the source, propose the sheet row, name live clients it touches). `vat-rules-feed.md`: RECONCILIATION → Maggie (recon), and "Not recorded" replaced by the research ladder. `menu-engineering`: the ex-VAT rate comes from the VAT Rules sheet by country and channel, not "Norway 1.15". `regulatory-watch` shape step 7: each VAT change is a DECISION `to: recon`. | Skill update by the card (backups in `data/brain-backups/`) |
+| 6 | Maggie (recon) | Brief: Creamy is NOK; VAT changes come from Reggie's Monday watch; ask Wesley for Imran's Diner's costed recipe sheet before any menu engineering there. | Grace (the Claude Code box) on the card's yes |
+| 7 | Ivana, Arjun | Ivana's job line: checks the invoices Wesley receives so he can pay them (she never pays). Arjun's tools: + google sheets (vat-analyser reads the VAT Rules sheet). | Claude Code: Grace's run made the backup, then the office stopped while her edit waited for approval, so the edit never ran (no error in `data/office.out.log`). Done by hand afterwards. |
 
 - **Budi (apay):** no change. Brief, skill and ledger match.
+- `npm run check`: 104/104. The office stopped once during the round with nothing in its log; another session restarted it at about 11:28, and `/api/health` shows decision 7 live.
 - **Roster backup** from before the edits: `data/brain-backups/2026-11-08-fin-review/office.agents.local.before.json`.
 
 ## Still open for Finance
