@@ -154,7 +154,8 @@ await step('interview: the lead asks five questions, then writes briefs + a skil
   if (onboard.active(data, 'sales')) throw new Error('interview still active after the last answer');
   if (!r5.wrote || r5.wrote.briefs.length !== 2 || !r5.wrote.skill || r5.wrote.skill.name !== 'wholesale-quote') throw new Error('write-up wrong: ' + JSON.stringify(r5.wrote));
   if (!r5.wrote.problems.some(p => /ghost/.test(p))) throw new Error('an agent outside the department was accepted');
-  const merged = loadRoster(brain); if (merged.agents.find(a => a.id === 'piper').brief !== 'Three options, recommend the middle.' || merged.problems.length) throw new Error('brief not merged into the brain roster: ' + merged.problems);
+  const merged = loadRoster(brain), inBrain = JSON.parse(fs.readFileSync(path.join(brain, 'Agents Office', 'agents.json'), 'utf8')).agents; // read the brain file itself: the owner's office.agents.local.json wins over it in the merge
+  if (inBrain.find(a => a.id === 'piper')?.brief !== 'Three options, recommend the middle.' || merged.problems.length) throw new Error('brief not merged into the brain roster: ' + merged.problems);
   const sk = loadSkills(brain, merged.agents); const w = sk.skills.find(x => x.name === 'wholesale-quote');
   if (!w || w.source !== 'brain' || !w.agents.includes('piper') || !w.files.some(f => f.name === 'template.md') || sk.problems.length) throw new Error('skill not loadable: ' + sk.problems);
   const untouched = ['fin', 'marketing', 'delivery', 'ops', 'emails'].find(d => !agents.some(a => a.department === d && a.brief)); // the owner's own roster may already brief some departments
