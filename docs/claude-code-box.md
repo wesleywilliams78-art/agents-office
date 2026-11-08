@@ -7,7 +7,7 @@ Built 8 Nov 2026. In the office she is **Grace**, after Grace Hopper (portrait `
 - **Live progress.** The box shows the step running now, then the reply. "N steps" opens the full list; a step that did not run is marked in red with the reason.
 - **History survives a reload, a restart and another device.** It lives on the PC in `data/claude-box.json` (last 200 messages). Each run's raw output is in `data/claude-box/run-*.jsonl`.
 - **Runs survive an office restart.** Claude is started detached with its output in a log file; the next office picks the log back up (`resumeAfterRestart`). So Claude Code can restart the office itself with `node scripts/restart-office.mjs`.
-- **Grace's tab on the You pill** (Office map, bottom centre): while a step is held, a small tab above the pill shows her portrait, how many are waiting, the oldest one and when it becomes a no. YES, DO IT is the panel's own yes (same `/api/claude-box/answer` call and checks); REVIEW THE TASK opens For You at that step. Nothing held, no tab.
+- **Grace's tab on the You pill** (Office map, bottom centre): while a step is held, her face and a speech bubble above the pill show how many are waiting, the oldest step, which department asked (when a desk did) and when it becomes a no. The tick and cross are the panel's own yes and no (same `/api/claude-box/answer` call and checks); clicking the words opens For You at that step. A department's step also gets a dashed red arrow from its tile into the tab. Nothing held, no tab.
 - **STOP** ends the current run (what it already changed stays changed). A run still going after 90 minutes is stopped.
 
 ## Permissions
