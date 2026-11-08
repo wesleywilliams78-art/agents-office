@@ -4,8 +4,22 @@
     {
       "name": "wrw-site",
       "runtimeExecutable": "node",
-      "runtimeArgs": ["sites/serve.mjs", "wrw-hospitality", "4610"],
+      "runtimeArgs": [
+        "sites/serve.mjs",
+        "wrw-hospitality",
+        "4610"
+      ],
       "port": 4610
+    },
+    {
+      "name": "wrw-v3",
+      "runtimeExecutable": "node",
+      "runtimeArgs": [
+        "sites/serve.mjs",
+        "wrw-hospitality-v3",
+        "4620"
+      ],
+      "port": 4620
     }
   ]
 }

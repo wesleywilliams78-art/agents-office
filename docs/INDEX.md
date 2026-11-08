@@ -18,6 +18,7 @@ Start here. Open only what the task needs; read big files by slice.
 - `docs/motion-studio.md`: Motion Director, engine rules, style library. Open before any motion work.
 - `docs/blender-studio.md`: Blender bridge and site kits. Open before Blender work.
 - `docs/site-updates.md`: reviewed website edits and guard rails. Open before changing the site flow.
+- `docs/HANDOVER-7-nov-mmu-series.md`: Manual Magic University videos MMU-02 to 06 delivered (awaiting Penny); autosave rules and recorder changes; MMU-07 logo and colours is next. Start here for the next MMU video.
 - `.claude/skills/wrw-deck/` (7 Nov 2026): WRW-branded PowerPoint decks (pptxgenjs in `C:\Users\Wesley\tools\pptxgenjs`). Claude Code only, office agents have no shell. Open its `SKILL.md` before building any `.pptx`; handover `docs/HANDOVER-7-nov-ppt-master-wrw-deck.md`.
 
 ## Config and roster
