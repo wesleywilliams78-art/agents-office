@@ -15,7 +15,7 @@ if (!m) { say({ type: 'assistant', message: { content: [{ type: 'text', text: 'f
 const input = { command: m[1].trim(), description: 'check' };
 say({ type: 'assistant', message: { content: [{ type: 'tool_use', id: 't1', name: 'Bash', input }] } });
 const hook = path.join(path.dirname(fileURLToPath(import.meta.url)), 'claude-box-hook.mjs');
-const r = spawnSync(process.execPath, [hook], { input: JSON.stringify({ tool_name: 'Bash', tool_input: input, cwd: process.cwd(), hook_event_name: 'PreToolUse' }), encoding: 'utf8', env: process.env, timeout: 15 * 60 * 1000 });
+const r = spawnSync(process.execPath, [hook], { input: JSON.stringify({ tool_name: 'Bash', tool_input: input, cwd: process.cwd(), hook_event_name: 'PreToolUse' }), encoding: 'utf8', env: process.env, timeout: 15 * 60 * 1000, windowsHide: true }); // hidden: this runs with no console (detached), so a shown hook opened a terminal window and took focus on every npm run check
 let d = {}; try { d = JSON.parse(r.stdout).hookSpecificOutput || {}; } catch {}
 const allowed = d.permissionDecision === 'allow';
 say({ type: 'user', message: { content: [{ type: 'tool_result', tool_use_id: 't1', is_error: !allowed, content: allowed ? 'not run (fake): allowed' : `PreToolUse:Bash hook error: ${d.permissionDecisionReason || 'no decision'}` }] } });
