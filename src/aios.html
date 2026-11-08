@@ -1221,6 +1221,16 @@
   .ccplay svg { width: 15px; height: 15px; fill: currentColor; } .ccplay .pa, .ccplay.pause .pl { display: none; } .ccplay.pause .pa { display: inline; }
   .ccprog { position: absolute; left: 26px; right: 26px; bottom: 2px; height: 2px; border-radius: 2px; background: rgba(127,127,127,.18); opacity: 0; transition: opacity .4s; }
   .ccpill.loaded .ccprog { opacity: 1; } .ccprog i { display: block; height: 100%; width: 0; border-radius: 2px; background: var(--red); transition: width .9s linear; }
+  /* Claude plan usage (8 Nov 2026): session (five-hour window) and week, two thin bars in a pill the height of Consultants' Corner; red past 80% */
+  .uspill { display: inline-flex; align-items: center; height: 44px; padding: 0 16px; border: 1px solid var(--line-strong); border-radius: 99px; cursor: default; color: var(--grey); white-space: nowrap; }
+  .uspill[hidden] { display: none; }
+  .uspill .usg { display: grid; grid-template-columns: auto 54px 4ch; align-items: center; gap: 2px 8px; font-size: 9.5px; font-weight: 700; letter-spacing: .12em; line-height: 1.3; }
+  .uspill .usb { height: 3px; border-radius: 99px; background: var(--line-strong); overflow: hidden; }
+  .uspill .usb i { display: block; height: 100%; border-radius: 99px; background: var(--ink); transition: width .6s cubic-bezier(.2,.8,.2,1), background .3s; }
+  .uspill .usv { text-align: right; letter-spacing: 0; font-size: 10.5px; font-weight: 600; color: var(--ink); font-variant-numeric: tabular-nums; }
+  .uspill .hot i { background: var(--red); } .uspill .usv.hot { color: var(--red); }
+  .uspill.off { font-size: 9.5px; font-weight: 700; letter-spacing: .12em; opacity: .75; }
+  @media (max-width: 1480px) { .uspill { padding: 0 12px; } .uspill .usg { grid-template-columns: auto 40px 4ch; gap: 2px 6px; } }
   @keyframes ccspin { to { transform: rotate(360deg); } }
   @keyframes cceq { 0%, 100% { transform: scaleY(.25); } 50% { transform: scaleY(1); } }
   @media (max-width: 1560px) { .ccpill.loaded .cctx { max-width: 150px; } }
@@ -1358,7 +1368,7 @@
     <button data-go="tokens">Tokens</button>
     <span class="ind" id="sideInd" aria-hidden="true"></span>
   </nav>
-    <div class="right"><div class="ccpill" id="ccPill"><button type="button" class="ccopen" id="ccBtn" aria-expanded="false" aria-controls="ccBox" title="Consultants’ Corner: open the player"><span class="ccart" id="ccArt" aria-hidden="true"></span><span class="cctx"><b id="ccTitle">Consultants’ Corner</b><small id="ccSub">Press play</small></span><span class="cceq" aria-hidden="true"><i></i><i></i><i></i><i></i></span></button><button type="button" class="ccplay" id="ccPlay" aria-label="Play Consultants’ Corner"><svg viewBox="0 0 24 24" aria-hidden="true"><path class="pl" d="M8 5.5v13l11-6.5z"/><path class="pa" d="M6.5 5h3.8v14H6.5zM13.7 5h3.8v14h-3.8z"/></svg></button><span class="ccprog" aria-hidden="true"><i id="ccProg"></i></span></div><button id="themeBtn" class="tpill" type="button" title="Switch between automatic, light and dark">Auto</button></div>
+    <div class="right"><div class="uspill" id="usPill" role="status" hidden></div><div class="ccpill" id="ccPill"><button type="button" class="ccopen" id="ccBtn" aria-expanded="false" aria-controls="ccBox" title="Consultants’ Corner: open the player"><span class="ccart" id="ccArt" aria-hidden="true"></span><span class="cctx"><b id="ccTitle">Consultants’ Corner</b><small id="ccSub">Press play</small></span><span class="cceq" aria-hidden="true"><i></i><i></i><i></i><i></i></span></button><button type="button" class="ccplay" id="ccPlay" aria-label="Play Consultants’ Corner"><svg viewBox="0 0 24 24" aria-hidden="true"><path class="pl" d="M8 5.5v13l11-6.5z"/><path class="pa" d="M6.5 5h3.8v14H6.5zM13.7 5h3.8v14h-3.8z"/></svg></button><span class="ccprog" aria-hidden="true"><i id="ccProg"></i></span></div><button id="themeBtn" class="tpill" type="button" title="Switch between automatic, light and dark">Auto</button></div>
     <div class="subnav" id="navDash" aria-label="Client dashboards"></div>
 </header>
 <span class="livebar" id="livePill"><span class="live" id="live"></span><span id="liveTxt">connecting…</span></span>
@@ -1950,6 +1960,29 @@ document.addEventListener('click', async e => {
   S.soBusy = null; await loadSocial();
 });
 setInterval(() => { if (!document.hidden && S.cat === 'hierarchy' && window.AIOS_HX_VIEW === 'marketing') loadSocial(); }, 15000);
+
+// Usage pill (8 Nov 2026): the plan's gauge from /api/usage, as the old office showed it (src/mcp.js setUsage). The server caches for 60 s, so a minute is the
+// shortest useful poll; it pauses while the tab is hidden and refreshes the moment the tab is seen again.
+(() => {
+  const el = $('usPill'); if (!el) return;
+  const HOT = 80, EVERY = 60000;
+  const when = ts => ts ? new Date(ts).toLocaleString([], { weekday: 'short', hour: 'numeric', minute: '2-digit' }) : 'unknown';
+  const row = (lab, x) => { if (!x) return ''; const p = Math.max(0, Math.min(100, +x.percent || 0)), hot = p >= HOT ? ' hot' : ''; return `<span class="usl">${lab}</span><span class="usb${hot}"><i style="width:${p}%"></i></span><span class="usv${hot}">${p >= 100 ? 'MAX' : p + '%'}</span>`; };
+  function draw(u) {
+    el.hidden = false;
+    if (u && u.ok && u.source === 'claude' && (u.session || u.week)) {
+      el.className = 'uspill';
+      el.innerHTML = `<span class="usg">${row('SESSION', u.session)}${row('WEEK', u.week)}</span>`;
+      el.title = `Your Claude plan, as Claude Code shows it. Session (five-hour window) resets ${when(u.session && u.session.resetsAt)}; week resets ${when(u.week && u.week.resetsAt)}.`;
+    } else {
+      el.className = 'uspill off'; el.textContent = 'USAGE UNAVAILABLE';
+      el.title = `Claude's usage gauge did not answer${u && u.reason ? ' (' + u.reason + ')' : ''}.`;
+    }
+  }
+  async function load() { try { draw(await fetch('/api/usage').then(r => r.json())); } catch { draw(null); } }
+  load(); setInterval(() => { if (!document.hidden) load(); }, EVERY);
+  document.addEventListener('visibilitychange', () => { if (!document.hidden) load(); });
+})();
 
 // Consultants' Corner (7 Nov 2026): the pill in the bar is a now-playing bar for the YouTube video or playlist; its own button plays and pauses, the rest
 // opens a small player under it. A pasted link is kept in this browser. Closing the player keeps the music going while you change tabs; STOP removes it.
