@@ -143,15 +143,26 @@ const save = list => { fs.mkdirSync(DATA, { recursive: true }); fs.writeFileSync
 const nid = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
 /* ---------- the usage gauge (V3.6, A3): Claude's own numbers, the office's count underneath ---------- */
 const USTATE = usage.loadState(DATA);
-let usageCache = { at: 0, value: null, stale: true };
+// 8 Nov 2026: Claude's endpoint answers 429 when asked too often. A finished run used to force a fresh ask on the next poll, and a refusal blanked the pill.
+// Now a run only makes the reading old (re-asked after 3 minutes at most), a 429 holds the office off for 5 minutes (or the Retry-After), and the last good reading shows, marked old, for up to 30.
+let usageLast = null, usageAt = 0, usageGood = null, usageHold = 0, usageStale = true;
+const USAGE_MIN = 3 * 60000, USAGE_BACKOFF = 5 * 60000, USAGE_KEEP = 30 * 60000;
+const usageView = (u, now) => {
+  const office = usage.fallback(USTATE).window;
+  if (u.ok) return { ...u, office };
+  if (usageGood && now - usageGood.at < USAGE_KEEP) return { ...usageGood.value, office, old: true, asOf: usageGood.at, reason: u.reason };
+  return { ...usage.fallback(USTATE), reason: u.reason };
+};
 async function getUsage(force) {
-  if (!force && !usageCache.stale && usageCache.value && Date.now() - usageCache.at < 60000) return usageCache.value;
-  const u = await usage.fetchUsage();
-  const v = u.ok ? { ...u, office: usage.fallback(USTATE).window } : { ...usage.fallback(USTATE), reason: u.reason };
-  usageCache = { at: Date.now(), value: v, stale: false };
-  return v;
+  const now = Date.now();
+  if (!(now < usageHold || (usageLast && now - usageAt < (force ? 0 : usageStale ? USAGE_MIN : 60000)))) {
+    usageLast = await usage.fetchUsage(); usageAt = Date.now(); usageStale = false;
+    if (usageLast.ok) { usageGood = { at: usageAt, value: usageLast }; usageHold = 0; }
+    else if (usageLast.status === 429) usageHold = usageAt + Math.max(USAGE_BACKOFF, (usageLast.retryAfter || 0) * 1000);
+  }
+  return usageView(usageLast, Date.now());
 }
-function bumpUsage(u) { if (!u) return; Object.assign(USTATE, usage.record(USTATE, u)); usage.saveState(DATA, USTATE); usageCache.stale = true; }
+function bumpUsage(u) { if (!u) return; Object.assign(USTATE, usage.record(USTATE, u)); usage.saveState(DATA, USTATE); usageStale = true; }
 // every Claude run the office starts: one row in data/tokens.jsonl (desk, department, routine, what kind of run) and onto the task it was for.
 // job: { task, kind, agent, dept, mode } — kind names the run (task, piece, lead, plan, route, chat, chief, motion, upload, …), mode the pass (draft, revise, answer, approve)
 function spent(job = {}, r) {

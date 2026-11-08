@@ -39,7 +39,7 @@ export async function fetchUsage() {
   if (!token) return { ok: false, reason: 'no Claude Code login found on this machine' };
   try {
     const r = await fetch(ENDPOINT, { headers: { Authorization: 'Bearer ' + token, 'anthropic-beta': 'oauth-2025-04-20', Accept: 'application/json' }, signal: AbortSignal.timeout(10000) });
-    if (!r.ok) return { ok: false, reason: `Claude's usage endpoint answered ${r.status}` };
+    if (!r.ok) return { ok: false, status: r.status, retryAfter: +r.headers.get('retry-after') || 0, reason: `Claude's usage endpoint answered ${r.status}` };
     const u = parseUsage(await r.json());
     if (!u) return { ok: false, reason: "Claude's usage endpoint answered in a shape the office does not know" };
     return { ok: true, source: 'claude', ...u };
