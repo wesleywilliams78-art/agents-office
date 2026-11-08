@@ -1324,7 +1324,7 @@ async function matrixApi(req, res, url) {
       const m2 = aios.load(DATA), it2 = m2.items.find(x => x.id === item.id) || item;
       aios.patch(it2, { state: 'sent', task: task.id, outcome: answer }); aios.save(DATA, m2);
       console.log(`▦ ${item.id} answered → ${r.kind === 'remind' ? 'reminder ' + new Date(r.at).toLocaleString('en-GB') : 'Nora'} → task ${task.id} → ${task.agent}: ${task.title}`);
-      return json(res, 200, { ok: true, kind: r.kind, item: it2, task: { id: task.id, title: task.title, agent: task.agent, agentName: agentName(task.agent), dueAt: task.dueAt || 0 } });
+      return json(res, 200, { ok: true, kind: r.kind, item: it2, task: { id: task.id, title: task.title, agent: task.agent, agentName: AGENTS.find(a => a.id === task.agent)?.person || agentName(task.agent), dueAt: task.dueAt || 0 } });
     }
     const m3 = aios.load(DATA), it3 = m3.items.find(x => x.id === item.id) || item; // re-read: the reading took a few seconds
     aios.patch(it3, { state: 'done', outcome: answer });

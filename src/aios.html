@@ -4096,12 +4096,16 @@ loadTrackers(); setInterval(() => { if (!document.hidden && !Object.values(S.tkB
     if (!o) { inp.focus(); return; }
     inp.disabled = btn.disabled = true; row.querySelector('.why')?.remove();
     try {
-      const r = await fetch('/api/matrix/' + encodeURIComponent(id), { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ state: 'done', outcome: o }) });
+      btn.textContent = 'READING…';
+      const r = await fetch('/api/matrix/' + encodeURIComponent(id) + '/answer', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ answer: o }) }); // the server reads it: work for a desk, a reminder, or an answer
       const j = await r.json(); if (!r.ok || j.error) throw new Error(j.error || 'it did not go through');
       const it = (S.matrix.items || []).find(x => x.id === id); if (it) Object.assign(it, j.item);
-      row.innerHTML = `<div class="fya-t">${esc(j.item.title)}</div><div class="fya-ok">Answered. ${j.item.outcomeNote ? `Filed in the Brain as “${esc(j.item.outcomeNote)}”.` : 'The card is closed.'}</div>`;
-      setTimeout(fyaRedraw, 2500);
-    } catch (err) { inp.disabled = btn.disabled = false; row.insertAdjacentHTML('beforeend', `<span class="why">Not saved: ${esc(err.message)}</span>`); }
+      const said = j.kind === 'task' ? `Sent to ${esc(j.task.agentName)} through Nora: “${esc(j.task.title)}”. The card closes when you approve it.`
+        : j.kind === 'remind' ? `Esme will remind you ${esc(new Date(j.task.dueAt).toLocaleString('en-GB', { weekday: 'long', day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }))}, and the question comes back here.`
+        : `Answered. ${j.item.outcomeNote ? `Filed in the Brain as “${esc(j.item.outcomeNote)}”.` : 'The card is closed.'}${j.unread ? ' (The office could not tell whether it asks for work. If it does, send it from the matrix.)' : ''}`;
+      row.innerHTML = `<div class="fya-t">${esc(j.item.title)}</div><div class="fya-ok">${said}</div>`;
+      setTimeout(fyaRedraw, 4000);
+    } catch (err) { inp.disabled = btn.disabled = false; btn.textContent = 'ANSWER'; row.insertAdjacentHTML('beforeend', `<span class="why">Not saved: ${esc(err.message)}</span>`); }
   });
   document.addEventListener('click', e => {
     if (e.target.closest('[data-fyamore]')) { fyaAll = !fyaAll; fyaRedraw(); return; }
