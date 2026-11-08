@@ -27,6 +27,7 @@ Asked in the chat and put on Arjun's review card (task `mw7pk4bn23xr`), which We
 - **Desks:** Esme (elead, lead), Callum (cmail), Imani (imail), Vikram (vmail), Kofi (kmail).
 - **First fix to propose:** `50-Emails/MOC-Emails.md` lists the demo notes `email-rules`, `vendor-list` and `contractor-terms`. Use the same fix as decisions 1 and 2 above (replace-section on the H1 `MOC — Emails`, real notes listed, demo notes on one line).
 - **Known Emails gap:** no real vendor or contractor list.
+- **Rename to think through first (Wesley, 8 Nov):** "Head of Emails" is not the right role. The department is administrative, so "Head of Communications" or "the Communications Department" may fit better. The department key `emails` and the lead seat `elead` are fixed. Find where the department's display name and the lead's `name`/`role` are set (roster `office.agents.local.json`, `src/aios.html`, any label map), say what a rename would touch, and put it to Wesley as a yes/no with a recommendation before the desk-by-desk walk.
 - **Method:** the same. Read each desk (job line, brief, tools, skills from `/api/skills`, lessons in `<brain>/Agents Office/feedback/<id>.md`, recent `data/tasks.json` by slice, the Brain), ask in chat with AskUserQuestion, then post one card for the lead.
 
 ### The card pattern (scripts were in this session's scratchpad, temporary)
