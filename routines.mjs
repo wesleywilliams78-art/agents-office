@@ -21,7 +21,7 @@ import { describe, nextRun, valid } from './src/when.js';
 export const ALLOWED = ['emails', 'fin', 'sales', 'ops', 'delivery']; // the departments that can own a routine; the owner can add more in office.config.json: "routines": { "departments": [...] }
 /** Replace the allowed list in place (every module holding the array sees it). Unknown keys are ignored; the default stays if nothing valid is given. */
 export function allow(list) { const ok = (Array.isArray(list) ? list : []).filter(k => k in NAMES); if (ok.length) ALLOWED.splice(0, ALLOWED.length, ...ok); return ALLOWED; }
-export const NAMES = { emails: 'Emails', fin: 'Accounting', sales: 'Sales', marketing: 'Marketing', ops: 'Operations', delivery: 'Delivery' };
+export const NAMES = { emails: 'Communications', fin: 'Accounting', sales: 'Sales', marketing: 'Marketing', ops: 'Operations', delivery: 'Delivery' };
 export const file = brainPath => path.join(brainPath, 'Agents Office', 'routines.json');
 export const stateFile = dataDir => path.join(dataDir, 'routines.json');
 export const LATE_AFTER = 90 * 1000; // a run more than 90 s past its minute was missed (asleep, or the office was off) → runs once, marked LATE

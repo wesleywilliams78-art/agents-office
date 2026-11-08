@@ -1090,7 +1090,7 @@ await step('routines: outside Emails, Accounting and Sales is refused, bad ones 
   const rt = await import('./routines.mjs'); const { loadRoster } = await import('./roster.mjs'); const agents = loadRoster().agents;
   const bad = rt.validate({ id: 'x', dept: 'marketing', agent: 'iggy', text: 'post the reel', when: { kind: 'daily', at: '09:00' } }, agents);
   if (!bad.problems.some(p => /later release/.test(p))) throw new Error('marketing routine not refused: ' + bad.problems);
-  if (!/Emails, Accounting, Sales, Operations and Delivery/.test(rt.refusal('marketing'))) throw new Error('refusal sentence');
+  if (!/Communications, Accounting, Sales, Operations and Delivery/.test(rt.refusal('marketing'))) throw new Error('refusal sentence');
   rt.allow(['emails', 'fin', 'sales', 'ops', 'delivery', 'marketing']); // an owner who allows Marketing in office.config.json can own routines there
   const okm = rt.validate({ id: 'cw', dept: 'marketing', agent: 'iggy', text: 'plan the week', when: { kind: 'weekly', days: [1], at: '08:00' } }, agents);
   if (okm.problems.some(p => /later release/.test(p)) || !rt.ALLOWED.includes('marketing')) throw new Error('allowing marketing did not take: ' + okm.problems);
