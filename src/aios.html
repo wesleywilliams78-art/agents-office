@@ -118,6 +118,7 @@
   .so .sob .pri { background: var(--ink); color: var(--panel); border-color: var(--ink); }
   .so a.btn { cursor: pointer; background: var(--soft); border: 1px solid var(--line); border-radius: 7px; padding: 5px 10px; font-size: 11px; letter-spacing: .06em; font-weight: 600; color: inherit; text-decoration: none; white-space: nowrap; } .so a.btn:hover { border-color: var(--grey); }
   .so.none { opacity: .7; } .so .sol { font-size: 11px; color: var(--faint); }
+  .so-wait { opacity: 0; } /* held back until it scrolls into view and rises (soWatch) */
   .soCal { font-size: 11px; letter-spacing: .08em; color: var(--grey); text-decoration: none; }
   .skgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(380px, 1fr)); gap: 10px; }
   .sk { padding: 12px 13px; }
@@ -1294,7 +1295,7 @@
   </div>
   <section class="hxt" id="hxTrail" data-cat="hierarchy"></section>
   <section class="hxt hx-off" id="socialSec" data-cat="hierarchy"><!-- Social lives under the Marketing department page (8 Nov 2026); renderHierarchy shows it only there -->
-    <div class="sh">
+    <div class="sh" data-sok="head">
       <h2>Social</h2>
       <span class="note">The next post in each workstream, and only the next. Hand it to the Chief of Staff, review what comes back, sign it off, post it yourself, then mark it posted and the next one comes up. Nothing is posted by the office.</span>
       <div class="tools"><a class="soCal" href="/" target="agentsOffice" title="The office calendar (P) has every post">CALENDAR ↗</a></div>
@@ -1703,12 +1704,32 @@ async function setCat(c, push = true) {
 
 // Social (V3.12, 3 Nov): the next post in each workstream. The server works out the state; this draws it and sends the buttons.
 async function loadSocial() { try { S.social = (await api('/social')).streams; } catch (e) { $('soMsg').className = 'msg err'; $('soMsg').textContent = 'Could not read the content calendar: ' + e.message; return; } renderSocial(); renderNav(); }
+// Social arrives like the rest of Marketing (8 Nov 2026): its heading and cards sit just out of sight, then rise one after another as they scroll into view,
+// once per visit to Marketing. Straight after Marketing opens they wait for the desks and trail to finish first. The 15-second refresh never replays them.
+const soRevealed = new Set(); let soEnterAt = 0, soTimer = 0;
+function soCheck() { // reveal what has come into view: row by row, a beat apart (a plain scroll check, so it works in a window that is not painting too)
+  const wait = [...document.querySelectorAll('#socialSec .so-wait')];
+  if (!wait.length) { clearInterval(soTimer); soTimer = 0; return; }
+  const hit = wait.filter(t => { const r = t.getBoundingClientRect(); return r.height > 0 && r.top < innerHeight * 0.92 && r.bottom > 0; })
+    .sort((a, b) => a.getBoundingClientRect().top - b.getBoundingClientRect().top || a.getBoundingClientRect().left - b.getBoundingClientRect().left);
+  const lead = performance.now() - soEnterAt < 1500 ? 900 : 0; // straight after Marketing opens, the desks and trail go first
+  hit.forEach((t, i) => { soRevealed.add(t.dataset.sok);
+    t.animate([{ opacity: 0, transform: 'translateY(22px) scale(.985)' }, { opacity: 1, transform: 'none' }], { duration: 660, easing: SPRING, delay: lead + i * 70, fill: 'backwards' });
+    t.classList.remove('so-wait'); });
+}
+function soWatch() { // hold back whatever has not been revealed yet this visit and check for it as you scroll
+  if (!moving()) return;
+  for (const t of document.querySelectorAll('#socialSec > .sh, #soGrid .so')) if (!soRevealed.has(t.dataset.sok)) t.classList.add('so-wait');
+  soCheck(); if (!soTimer) soTimer = setInterval(soCheck, 150);
+}
+window.addEventListener('scroll', () => { if (soTimer) soCheck(); }, { passive: true });
+function soEnter() { soRevealed.clear(); soEnterAt = performance.now(); soWatch(); } // Marketing has just opened
 const SO_STATE = { handoff: ['TO HAND OFF', ''], needs: ['NEEDS YOU', 'need'], working: ['THE OFFICE IS ON IT', 'busy'], review: ['READY FOR YOUR REVIEW', 'need'], check: ['BACK: CHECK IT', 'need'], ready: ['BUILT: CHECK IT', 'need'], signed: ['SIGNED OFF: POST IT', 'go'] };
 function renderSocial() {
   const L = S.social; if (!L) return;
   const today = new Date(); today.setHours(0, 0, 0, 0);
   $('soGrid').innerHTML = L.map(s => {
-    if (!s.post) return `<div class="panel so none" style="--sc:${esc(s.colour)}"><div class="soh"><span class="son">${esc(s.name)}</span><span class="sos">${esc(s.sub)}</span></div><div class="sol">Nothing planned on the calendar for this week or next.</div></div>`;
+    if (!s.post) return `<div class="panel so none" data-sok="${esc(s.key)}" style="--sc:${esc(s.colour)}"><div class="soh"><span class="son">${esc(s.name)}</span><span class="sos">${esc(s.sub)}</span></div><div class="sol">Nothing planned on the calendar for this week or next.</div></div>`;
     const p = s.post, d = new Date(p.date + 'T12:00:00'), late = d < today, [label, cls] = SO_STATE[s.state] || ['', ''];
     const when = d.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' }) + (p.time ? ' · ' + p.time : '');
     const pl = s.places.map(x => { const web = /^https?:/.test(x), name = web ? x.replace(/^https?:\/\/(www\.)?/, '').slice(0, 60) : x.split(/[\\/]/).filter(Boolean).pop();
@@ -1722,7 +1743,7 @@ function renderSocial() {
       : s.state === 'check' || s.state === 'ready' ? sign + office + (s.state === 'ready' ? '' : hand) + posted
       : s.state === 'signed' ? posted + `<button type="button" data-sounsign="${k}">UNDO SIGN-OFF</button>` + office
       : hand + posted;
-    return `<div class="panel so" style="--sc:${esc(s.colour)}">
+    return `<div class="panel so" data-sok="${esc(s.key)}" style="--sc:${esc(s.colour)}">
       <div class="soh"><span class="son">${esc(s.name)}</span><span class="sos">${esc(s.sub)}</span><span class="sost ${cls}">${label}</span></div>
       <div class="sow"><b>${esc(when)}</b>${late ? ' <span class="late">overdue</span>' : ''}${s.later ? ` · then ${s.later} more this week and next` : ''}</div>
       <div class="sof">${esc(p.format)}</div>
@@ -1730,6 +1751,7 @@ function renderSocial() {
       ${pl ? `<div class="sop"><span class="k">WHERE IT IS</span>${pl}</div>` : s.state === 'check' ? '<div class="sol">The office named no file. Open it in the office to read the result.</div>' : ''}
       <div class="sob">${btns}</div></div>`;
   }).join('');
+  soWatch();
 }
 document.addEventListener('click', async e => {
   const el = e.target.closest('[data-sohand],[data-sosign],[data-sounsign],[data-soposted],[data-soopen],[data-soidea]'); if (!el) return;
@@ -3826,7 +3848,7 @@ loadTrackers(); setInterval(() => { if (!document.hidden && !Object.values(S.tkB
     go(document.querySelector('#hx .hxo-lb'), rise, { delay: 60 });
     const cards = [...document.querySelectorAll('#hx .hxo-dg > *')].filter(seen).slice(0, 18), step = Math.max(45, Math.min(90, 800 / Math.max(1, cards.length)));
     cards.forEach((c, i) => go(c, rise, { delay: 150 + i * step }));
-    [...document.querySelectorAll('#hxTrail > .sh, #hxTrail .hxt-col, #socialSec > .sh, #socialSec .so')].filter(seen).forEach((c, i) => go(c, rise, { delay: 220 + cards.length * step + i * 70 })); // the trail's heading leads its columns
+    [...document.querySelectorAll('#hxTrail > .sh, #hxTrail .hxt-col')].filter(seen).forEach((c, i) => go(c, rise, { delay: 220 + cards.length * step + i * 70 })); // the trail's heading leads its columns
   }
   function nav(v, s = '') { // a click or Esc: going out to the level you came in from is Back, so history never piles up
     v = okView(v); const to = hxPath(v, s), cur = location.hash.slice(1);
@@ -3951,7 +3973,7 @@ loadTrackers(); setInterval(() => { if (!document.hidden && !Object.values(S.tkB
     const office = view === 'office';
     el('hxTrail').classList.toggle('hx-off', office);
     const soOn = view === 'marketing'; el('socialSec').classList.toggle('hx-off', !soOn); // Social sits under Marketing's desks and trail
-    if (soOn && !soSeen) { soSeen = true; loadSocial(); } else if (!soOn) soSeen = false; // read the content calendar each time Marketing opens
+    if (soOn && !soSeen) { soSeen = true; soEnter(); loadSocial(); } else if (!soOn) soSeen = false; // read the content calendar each time Marketing opens
     el('oxStage').classList.toggle('map', office); // the office map fills the screen, ridges and flows behind it
     if (el('hxTheoDot')) el('hxTheoDot').className = peBusy ? 'work' : '';
     if (office) { renderOffice(); drawer(); return; }
