@@ -399,6 +399,31 @@ await step('google calendar: the private feed is read with repeats, moved and ca
   fs.rmSync(tmp, { recursive: true, force: true });
   return 'weekly with an exception and a moved instance · monthly first Monday in UTC · all day · cancelled left out · a failed feed keeps its last events · the address is never stored with them';
 });
+await step('meeting agendas: meetings are told from reminders, points land on the right meeting, and the message goes 15 minutes before, once', async () => { // 8 Nov 2026
+  const ag = await import('./agendas.mjs'), g = await import('./gcal.mjs');
+  const ics = ['BEGIN:VCALENDAR', 'BEGIN:VEVENT', 'UID:z', 'SUMMARY:Sync', 'DTSTART:20261110T100000Z', 'DTEND:20261110T103000Z', 'ATTENDEE;CN=a:mailto:a@x', 'ATTENDEE;CN=b:mailto:b@x', 'DESCRIPTION:Join https://meet.google.com/abc-defg-hij', 'END:VEVENT', 'END:VCALENDAR'].join('\r\n');
+  const p = g.instances(g.parse(ics), Date.UTC(2026, 10, 1), Date.UTC(2026, 10, 30), { name: 'Me' })[0];
+  if (p.guests !== 2 || !/meet\.google\.com/.test(p.link)) throw new Error('invitees and the call link are read from the feed: ' + JSON.stringify(p));
+  const T = Date.UTC(2026, 10, 10, 13), E = (id, title, start, mins, x = {}) => ({ id, title, start, end: start + mins * 60000, allDay: false, free: false, guests: 0, link: '', ...x });
+  const yo = E('y', 'Wesley x Yousif - Weekly Check In', T, 60), pe = E('p', 'Call with Penny Hopkinson and Yousif', T + 3600000, 60), events = [yo, pe,
+    E('r', 'Pay rent - 45 Withers Avenue', T - 864e5, 30), E('c', 'Confirm agenda with Imran', T - 7200000, 10), E('f', 'Post the numbers', T - 3600000, 15, { free: true }), E('g', 'Planning', T - 9000000, 30, { guests: 3 })];
+  const why = Object.fromEntries(events.map(e => [e.id, ag.meetingWhy(e)]));
+  if (!why.y || !why.p || !why.g || why.r || why.c || why.f) throw new Error('which entries count as meetings: ' + JSON.stringify(why));
+  const matrix = [{ title: 'Set the Creamy franchise fee with Yousif', outcome: 'Mark this as an agenda point for Tuesday\'s meeting with Yousif.', doneAt: T - 864e5, state: 'sent' },
+    { title: 'Prep for the Penny and Yousif call', state: 'open', due: '2026-11-10' }];
+  const a = ag.collect(yo, { events, matrix }), b = ag.collect(pe, { events, matrix });
+  if (a.points.length !== 1 || !/franchise fee/.test(a.points[0].text)) throw new Error('the Yousif check-in gets his answer only: ' + JSON.stringify(a.points));
+  if (b.points.length !== 1 || !/Penny/.test(b.points[0].text)) throw new Error('the Penny call gets the Penny card only: ' + JSON.stringify(b.points));
+  if (!/^Here is your agenda for Wesley x Yousif/.test(ag.message(yo, a))) throw new Error('the agenda message');
+  if (!/No agenda to prepare for this meeting./.test(ag.message(pe, { points: [], link: '' }))) throw new Error('the no-agenda message');
+  const st = { sent: {}, prep: {} };
+  if (ag.due(events, st, T - 16 * 60000).send.length) throw new Error('nothing goes 16 minutes before');
+  const d = ag.due(events, st, T - 14 * 60000); if (d.send.map(e => e.id).join() !== 'y') throw new Error('the message goes inside the 15 minutes: ' + d.send.map(e => e.id));
+  st.sent.y = { at: 1 }; if (ag.due(events, st, T - 10 * 60000).send.length) throw new Error('it goes once');
+  if (ag.due(events, st, T + 60000).send.length) throw new Error('never after the start');
+  if (!ag.due(events, { sent: {}, prep: {} }, T - 20 * 3600000).prep.some(e => e.id === 'y')) throw new Error('Esme prepares from 24 hours before');
+  return 'invitees and call link read · meetings: guests, a call link or a meeting title, 15 minutes or more · reminders, chores and free blocks left out · shared names go to the right meeting · once, inside the 15 minutes';
+});
 await step('social: each workstream shows only its next post, follows its task, and moves on when posted', async () => { // V3.12 (3 Nov)
   const so = await import('./social.mjs');
   const P = (date, where, format, status, extra = {}) => ({ date, time: '11:00', where, format, status, idea: 'x', account: 'WRW Hospitality', channel: 'Instagram', ...extra });
@@ -1692,7 +1717,10 @@ else {
       const m = await (await fetch(base + '/api/matrix')).json(); if (!Array.isArray(m.items) || Object.keys(m.quadrants || {}).join() !== 'do,plan,delegate,drop') throw new Error(JSON.stringify(m).slice(0, 120));
       const e = await fetch(base + '/api/matrix/feed', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ text: '  ' }) });
       if (e.status !== 400) throw new Error('an empty feed was accepted');
-      return `${m.items.filter(i => i.state === 'open').length} open actions · ${m.items.filter(i => i.state === 'open' && i.gap).length} gaps`;
+      const ans = (id, answer) => fetch(base + '/api/matrix/' + id + '/answer', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ answer }) }); // 8 Nov 2026: Your answers
+      if ((await ans('no-such-card', 'do it')).status !== 404) throw new Error('an answer to a missing card was not refused');
+      const open = m.items.find(i => i.state === 'open'); if (open && (await ans(open.id, '  ')).status !== 400) throw new Error('an empty answer was accepted');
+      return `${m.items.filter(i => i.state === 'open').length} open actions · ${m.items.filter(i => i.state === 'open' && i.gap).length} gaps · /answer refuses an empty answer and a missing card`;
     });
     await step('server: the assistant answers only to the office page on this computer', async () => {
       const evil = await fetch(base + '/api/assistant', { headers: { origin: 'https://evil.example.com' } });

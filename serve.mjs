@@ -78,6 +78,7 @@ import * as storage from './storage.mjs';
 import * as peMod from './promptengineer.mjs'; // 4 Nov 2026: the Prompt Engineer, in front of the Chief of Staff in the panel
 import * as tokens from './tokens.mjs'; // 3 Nov 2026: what the tokens go on (the AIOS Tokens section); every Claude run here is written to data/tokens.jsonl
 import * as notify from './notify.mjs';
+import * as agendas from './agendas.mjs'; // 8 Nov 2026: an agenda for every meeting, on Telegram 15 minutes before (Esme writes the Doc the day before)
 import * as weekpack from './weekpack.mjs';
 import * as aoofile from './aoofile.mjs';
 import * as ferfile from './ferfile.mjs';
@@ -955,6 +956,28 @@ function tickScheduled() { // V3.2.1: a task scheduled for a date fires on its m
   }
   if (changed) save(list);
 }
+// Meeting agendas (agendas.mjs): every minute, look at the next day of Wesley's calendar. A meeting within 24 hours with agenda points
+// and no Doc yet becomes a task for Esme (elead); one starting within 15 minutes gets its Telegram message, once.
+function agendaSignals() { return { events: gcal.load(DATA).events || [], matrix: aios.load(DATA).items, tasks: load(), trackers: trackers.load(DATA) }; }
+function tickAgendas() {
+  const now = Date.now(), events = gcal.load(DATA).events || [], st = agendas.loadState(DATA), { send, prep } = agendas.due(events, st, now);
+  if (!send.length && !prep.length) return;
+  const sig = agendaSignals();
+  for (const m of prep) {
+    const a = agendas.collect(m, sig);
+    if (a.link) { st.prep[m.id] = { link: a.link }; continue; }
+    if (!a.points.length) { st.prep[m.id] = { none: now }; continue; }
+    const day = new Date(m.start).toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' });
+    const task = { id: nid(), dept: 'emails', agent: 'elead', title: `Agenda: ${m.title} (${day})`.slice(0, 90), text: agendas.prepText(m, a), plan: [], eta: 10, why: '', state: 'next', addedAt: now, by: 'agendas', needsOk: false, noMatrix: true };
+    const list = load(); list.push(task); save(list); st.prep[m.id] = { task: task.id };
+    console.log(`🗒 ${task.id} → elead: ${task.title}`); enqueue(() => runServerTask(task.id));
+  }
+  for (const m of send) {
+    st.sent[m.id] = { at: now }; const text = agendas.message(m, agendas.collect(m, sig));
+    notify.telegram(text).then(r => console.log(`🗒 agenda for ${m.title}: ${r.ok ? 'sent on Telegram' : r.reason}`));
+  }
+  agendas.saveState(DATA, st);
+}
 const uniqueId = (base, list) => { let id = base || 'routine', n = 2; while (list.some(r => r.id === id)) id = `${base}-${n++}`; return id; };
 function editRoutine(id, patch) { const r = rlist.routines.find(x => x.id === id); if (!r) return null; Object.assign(r, patch); routines.save(BRAIN, rlist.routines); return loadRoutines().find(x => x.id === id); }
 function removeRoutine(id) { const n = rlist.routines.length; rlist.routines = rlist.routines.filter(x => x.id !== id); if (rlist.routines.length !== n) routines.save(BRAIN, rlist.routines); loadRoutines(); return rlist.routines.length !== n; }
@@ -1128,11 +1151,20 @@ function fileMatrixItems(task) {
 // rejected for good, or failed, puts it back on the open list. A card the owner already moved on is left alone.
 function settleMatrixCard(task) {
   if (!task || !task.matrix || task.state !== 'done') return;
-  const m = aios.load(DATA), item = m.items.find(i => i.id === task.matrix && i.task === task.id);
-  if (!item || item.state !== 'sent') return;
-  const back = !!(task.closed || task.error);
-  aios.patch(item, { state: back ? 'open' : 'done' }); aios.save(DATA, m);
-  console.log(`▦ ${item.id} ${back ? 'back on the matrix' : 'closed'}: task ${task.id} ${task.closed ? 'was rejected' : task.error ? 'failed' : 'is done'}`);
+  const m = aios.load(DATA), items = m.items.filter(i => i.task === task.id && i.state === 'sent'); // one task can carry several cards
+  if (!items.length) return;
+  const back = !!(task.closed || task.error || task.matrixReopen); // matrixReopen: "ask me again Monday" — the reminder puts the question back under Your answers
+  for (const item of items) { aios.patch(item, { state: back ? 'open' : 'done' }); console.log(`▦ ${item.id} ${back ? 'back on the matrix' : 'closed'}: task ${task.id} ${task.matrixReopen ? 'reminded you' : task.closed ? 'was rejected' : task.error ? 'failed' : 'is done'}`); }
+  aios.save(DATA, m);
+}
+// 8 Nov 2026: a card marked sent whose task lacks the mark (sent by hand, not through SEND) gets it at start-up, so it closes on approval;
+// one whose task has already finished is settled now.
+function markSentCards() {
+  const list = load(), cards = aios.load(DATA).items.filter(i => i.state === 'sent' && i.task), fixed = [];
+  for (const c of cards) { const t = list.find(x => x.id === c.task); if (t && !t.matrix) { t.matrix = c.id; fixed.push(t); } }
+  if (!fixed.length) return;
+  save(list); console.log(`▦ ${fixed.length} task(s) sent from the matrix now carry their card: ${fixed.map(t => t.id).join(' ')}`);
+  for (const t of fixed) settleMatrixCard(t);
 }
 function autoFeed(task) {
   if (!AUTO_FEED || task.noMatrix || task.state !== 'done' || task.error || !task.result) return; // noMatrix: a status routine's result is a report, not a to-do list
@@ -1257,7 +1289,7 @@ async function matrixApi(req, res, url) {
   if (url.pathname === '/api/matrix/feed' && req.method === 'POST') {
     try { return json(res, 200, await feedMatrix(await body(req))); } catch (e) { return json(res, e.code || 500, { error: e.message }); }
   }
-  const mm = url.pathname.match(/^\/api\/matrix\/([^/]+)(?:\/(send|calendar))?$/);
+  const mm = url.pathname.match(/^\/api\/matrix\/([^/]+)(?:\/(send|calendar|answer))?$/);
   if (!mm) return json(res, 404, { error: 'not found' });
   const m = aios.load(DATA); const item = m.items.find(x => x.id === mm[1]);
   if (!item) return json(res, 404, { error: 'no such item' });
@@ -1276,6 +1308,31 @@ async function matrixApi(req, res, url) {
     console.log(`▦ ${item.id} → Nora → task ${task.id} → ${task.agent}: ${task.title}${task.needsOk ? ' (waits for your OK)' : ''}`);
     return json(res, 200, { ok: true, item: it2, task });
   }
+  if (mm[2] === 'answer') { // Your answers in For You (8 Nov 2026): Wesley's line is read once — work for a desk, a reminder for a day, or a plain answer
+    if (item.state !== 'open') return json(res, 400, { error: 'this card is not open' });
+    const answer = String((await body(req)).answer || '').trim().slice(0, 600);
+    if (!answer) return json(res, 400, { error: 'empty answer' });
+    let r; try { r = await readAnswer(item, answer); } catch (e) { console.log(`▦ ${item.id}: could not read the answer (${e.message}), filed as an answer`); r = { kind: 'done', unread: true }; }
+    if (r.kind === 'task' || r.kind === 'remind') {
+      const q = `The question was: ${item.title}.${item.detail ? ' ' + item.detail : ''}`;
+      const args = r.kind === 'remind'
+        ? { dept: 'emails', agent: 'elead', at: r.at, text: `Remind Wesley today about this, in two or three lines: what he still has to decide, and what he said when he put it off. ${q}\nHe said: "${answer}"` }
+        : { dept: r.dept, agent: r.agent, text: `Wesley answered a question on the matrix, and his answer asks for this: "${answer}"\n${q}` };
+      const [code, out] = await addTask({ ...args, by: 'chief' });
+      if (code !== 200) return json(res, code, out);
+      const list = load(), task = list.find(t => t.id === out.id) || out; task.matrix = item.id; if (r.kind === 'remind') task.matrixReopen = true; save(list);
+      const m2 = aios.load(DATA), it2 = m2.items.find(x => x.id === item.id) || item;
+      aios.patch(it2, { state: 'sent', task: task.id, outcome: answer }); aios.save(DATA, m2);
+      console.log(`▦ ${item.id} answered → ${r.kind === 'remind' ? 'reminder ' + new Date(r.at).toLocaleString('en-GB') : 'Nora'} → task ${task.id} → ${task.agent}: ${task.title}`);
+      return json(res, 200, { ok: true, kind: r.kind, item: it2, task: { id: task.id, title: task.title, agent: task.agent, agentName: agentName(task.agent), dueAt: task.dueAt || 0 } });
+    }
+    const m3 = aios.load(DATA), it3 = m3.items.find(x => x.id === item.id) || item; // re-read: the reading took a few seconds
+    aios.patch(it3, { state: 'done', outcome: answer });
+    try { it3.outcomeNote = writeAnswerNote(it3); console.log(`▦ ${it3.id} closed with an answer → note "${it3.outcomeNote}"`); }
+    catch (e) { console.log('▦ could not file the answer note: ' + e.message); }
+    aios.save(DATA, m3);
+    return json(res, 200, { ok: true, kind: 'done', unread: !!r.unread, item: it3 });
+  }
   if (mm[2] === 'calendar') { // a 10-min to-do reminder on the owner's own Google Calendar, dated to the item's due date
     if (!/^\d{4}-\d{2}-\d{2}$/.test(item.due || '')) return json(res, 400, { error: 'this one has no due date to put on the calendar' });
     try {
@@ -1293,6 +1350,33 @@ async function matrixApi(req, res, url) {
   }
   aios.save(DATA, m);
   return json(res, 200, { ok: true, item });
+}
+// Wesley's answer to an owner card, read once by Sonnet (8 Nov 2026): does it ask a desk for work, ask to be reminded on a day, or just answer?
+// → { kind: 'task', dept, agent? } | { kind: 'remind', at } | { kind: 'done' }
+async function readAnswer(item, answer) {
+  reloadRoster();
+  const roster = AGENTS.map(a => `${a.department} · ${a.id} · ${a.person ? a.person + ', ' : ''}${a.name}${a.lead ? ' (lead)' : ''} · ${a.does}`).join('\n');
+  const now = new Date(), today = now.toLocaleDateString('en-CA') + ' (' + now.toLocaleDateString('en-GB', { weekday: 'long' }) + ')';
+  const system = 'You read the owner\'s one-line answer to a question his office asked him, and say what the office should do with it. Return ONLY a JSON object, no prose, no code fences.';
+  const user = `Today is ${today}.\nThe question: ${item.title}${item.detail ? '\n' + item.detail : ''}\n\nHis answer: "${answer}"\n\nDesks (department · id · name · what they do):\n${roster}\n\n` +
+    'Pick one:\n- "task": the answer asks the office to do something (research, make, draft, add to an agenda, chase, set up, have a named person do it). Pick the department and, if he names a desk by first name or the work plainly belongs to one desk, its id. Meeting agendas go to emails · elead.\n' +
+    '- "remind": he only wants to be reminded or asked again on a later day ("remind me Thursday", "ask me again Monday", "wrap back round on the 12th"). Give that date.\n' +
+    '- "done": anything else: a fact, a decision, "mark it complete", "already done", "not mine", "don\'t bring it up again".\n' +
+    'If an answer both states a fact and asks for work, it is "task".\n' +
+    'Return: {"kind":"task|remind|done","dept":"<department key, task only>","agent":"<desk id or empty, task only>","date":"<YYYY-MM-DD, remind only>"}';
+  const j = parseJSON(await ask(system, user, { maxTokens: 200, timeout: 60000, model: 'sonnet', job: { kind: 'matrix' } }));
+  if (j.kind === 'remind') {
+    let at = /^\d{4}-\d{2}-\d{2}$/.test(j.date || '') ? new Date(`${j.date}T09:00`).getTime() : NaN; // 09:00 on that day
+    if (!(at > Date.now() + 60000)) at = Date.now() + 10 * 60000; // a day already here (or no day): in ten minutes
+    return { kind: 'remind', at };
+  }
+  if (j.kind === 'task') {
+    const a = AGENTS.find(x => x.id === j.agent);
+    const dept = a ? a.department : DEPTS[j.dept] && j.dept !== 'brain' ? j.dept : 'emails';
+    return { kind: 'task', dept, agent: a ? a.id : undefined };
+  }
+  if (j.kind !== 'done') throw new Error('no kind in the reply');
+  return { kind: 'done' };
 }
 // the owner closed a matrix card and said what happened ("paid 10 Oct"): a fact, so it becomes a note in the brain
 // that the agents find the same way as any other note (name and word overlap), instead of dying on the dashboard
@@ -1449,6 +1533,10 @@ const server = http.createServer(async (req, res) => {
     if ((url.pathname === '/site-preview' || url.pathname === '/site-preview/') && req.method === 'GET') return siteupdates.preview(SITE_ROOT, res, url); // a page in a phone-, tablet- or desktop-sized frame
     if (url.pathname === '/api/trackers' || url.pathname === '/api/trackers/sync') return trackersApi(req, res, url);
     if (url.pathname === '/api/dashboards' && req.method === 'GET') return json(res, 200, { dashboards: dashboardsData() });
+    if (url.pathname === '/api/agendas' && req.method === 'GET') { // meeting agendas, read-only: each meeting in the next two days, why it counts, and the message it would get
+      const sig = agendaSignals(), now = Date.now(), st = agendas.loadState(DATA);
+      return json(res, 200, { meetings: sig.events.filter(e => e.start > now && e.start < now + 2 * 86400000 && agendas.meetingWhy(e)).map(e => ({ title: e.title, start: e.start, why: agendas.meetingWhy(e), sent: !!st.sent[e.id], prep: st.prep[e.id] || null, message: agendas.message(e, agendas.collect(e, sig)) })) });
+    }
     if (url.pathname === '/api/gcal' && req.method === 'GET') { // V3.12: Wesley's Google Calendar, read-only, from the private feeds (gcal.mjs); the feed addresses never leave the server
       if (url.searchParams.get('refresh') === '1') await syncCalendars();
       const g = gcal.load(DATA), from = +url.searchParams.get('from') || Date.now() - 7 * 86400000, to = +url.searchParams.get('to') || Date.now() + 42 * 86400000;
@@ -1835,8 +1923,10 @@ server.listen(cfg.port, cfg.host || '127.0.0.1', () => { // this computer only: 
     console.log(`🗂 storage: ${r.freeGB} GB free · office files ${(r.officeMB).toFixed(0)} MB · filed ${r.library.items} item(s)${r.cleaned.freedMB ? ' · cleared ' + r.cleaned.freedMB + ' MB of rebuildable files' : ''}${r.warn.length ? ' · ' + r.warn.join(' ') : ''}`); } catch (e) { console.warn('storage:', e.message); } };
   setTimeout(tidy, 60000); setInterval(tidy, 6 * 3600000); // a minute after the office starts, then every six hours: file new work, clear rebuildable leftovers, update the report
   box.resumeAfterRestart(); // the Claude Code box: pick up a run that outlived a restart, then the queue
+  try { markSentCards(); } catch (e) { console.warn('matrix marks:', e.message); } // 8 Nov 2026: a sent card's task carries the card, so approval closes it
   setInterval(tickRoutines, 20000); tickRoutines(); // the clock: every 20 s; the first tick catches up anything missed while the office was off (once, marked LATE)
   setTimeout(syncCalendars, 5000); setInterval(syncCalendars, 5 * 60000); // V3.12: Google Calendar every five minutes
+  setInterval(() => { try { tickAgendas(); } catch (e) { console.warn('agendas:', e.message); } }, 60000); // meeting agendas: Esme's Doc the day before, Telegram 15 minutes before
   // V3.12: the fix follows the data (Wesley, 30 Oct: he uploads once a month, on the first Monday). When a restaurant's evidence differs
   // from the evidence its last fix was written from, and has not changed for 30 minutes (the month's files have all landed), a new fix
   // is written. Nothing new uploaded, no new fix. A failure waits three hours before the next try.

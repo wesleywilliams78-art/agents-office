@@ -23,6 +23,7 @@ function props(text) {
   }
   return out;
 }
+const callLink = s => (/https:\/\/[^\s"<>]*(?:meet\.google\.com|zoom\.us|teams\.microsoft\.com|teams\.live\.com|whereby\.com)[^\s"<>]*/i.exec(String(s || '')) || [''])[0];
 const unescape = s => String(s || '').replace(/\\n/gi, '\n').replace(/\\([,;\\])/g, '$1');
 
 // a wall-clock time in a named zone → epoch ms (two passes of the zone's offset, right across clock changes)
@@ -50,7 +51,10 @@ export function parse(text) {
     if (!cur) continue;
     if (p.name === 'UID') cur.uid = p.value;
     else if (p.name === 'SUMMARY') cur.title = unescape(p.value);
-    else if (p.name === 'LOCATION') cur.location = unescape(p.value);
+    else if (p.name === 'LOCATION') { cur.location = unescape(p.value); cur.link = cur.link || callLink(cur.location); }
+    else if (p.name === 'DESCRIPTION') cur.link = cur.link || callLink(unescape(p.value)); // only the call link is kept, never the description
+    else if (p.name === 'X-GOOGLE-CONFERENCE') cur.link = p.value;
+    else if (p.name === 'ATTENDEE') cur.guests = (cur.guests || 0) + 1; // invitees, Wesley included (meeting agendas, 8 Nov 2026)
     else if (p.name === 'STATUS') cur.cancelled = /CANCELLED/i.test(p.value);
     else if (p.name === 'TRANSP') cur.free = /TRANSPARENT/i.test(p.value);
     else if (p.name === 'DTSTART') { const w = when(p.value, p.params); if (w) { cur.start = w.t; cur.allDay = w.allDay; cur.tz = p.params.TZID || ''; cur.raw = p.value; } }
@@ -116,11 +120,11 @@ export function instances(events, from, to, cal) {
     for (const t of expand(e, from, to)) {
       const m = moved.get(e.uid + '|' + t), src = m || e, start = m ? m.start : t, end = m ? m.end : t + (e.end - e.start);
       if (src.cancelled || start >= to || end <= from) continue;
-      out.push({ id: (cal ? cal.name + ':' : '') + e.uid + '|' + start, cal: cal ? cal.name : '', colour: cal ? cal.colour || '' : '', title: src.title || '(busy)', location: src.location || '', start, end, allDay: !!src.allDay, free: !!src.free });
+      out.push({ id: (cal ? cal.name + ':' : '') + e.uid + '|' + start, cal: cal ? cal.name : '', colour: cal ? cal.colour || '' : '', title: src.title || '(busy)', location: src.location || '', start, end, allDay: !!src.allDay, free: !!src.free, guests: src.guests || 0, link: src.link || '' });
     }
   }
   // a moved instance whose original slot falls outside the window can still land inside it
-  for (const m of moved.values()) if (!m.cancelled && m.start < to && m.end > from && !out.some(x => x.id === (cal ? cal.name + ':' : '') + m.uid + '|' + m.start)) out.push({ id: (cal ? cal.name + ':' : '') + m.uid + '|' + m.start, cal: cal ? cal.name : '', colour: cal ? cal.colour || '' : '', title: m.title || '(busy)', location: m.location || '', start: m.start, end: m.end, allDay: !!m.allDay, free: !!m.free });
+  for (const m of moved.values()) if (!m.cancelled && m.start < to && m.end > from && !out.some(x => x.id === (cal ? cal.name + ':' : '') + m.uid + '|' + m.start)) out.push({ id: (cal ? cal.name + ':' : '') + m.uid + '|' + m.start, cal: cal ? cal.name : '', colour: cal ? cal.colour || '' : '', title: m.title || '(busy)', location: m.location || '', start: m.start, end: m.end, allDay: !!m.allDay, free: !!m.free, guests: m.guests || 0, link: m.link || '' });
   return out.sort((a, b) => a.start - b.start);
 }
 
