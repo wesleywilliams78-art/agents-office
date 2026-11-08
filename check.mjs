@@ -164,6 +164,24 @@ await step('interview: the lead asks five questions, then writes briefs + a skil
   fs.rmSync(tmp, { recursive: true, force: true });
   return `5 questions · 2 briefs merged · skill wholesale-quote→piper with template · sales set up, an untouched department not · cancel clears`;
 });
+await step('AIOS sends wait out an office restart: network error retried once it answers, any HTTP reply never, no alert on send paths', async () => { // 8 Nov 2026
+  const html = fs.readFileSync(path.join(ROOT, 'src', 'aios.html'), 'utf8'), rv = fs.readFileSync(path.join(ROOT, 'src', 'review.js'), 'utf8');
+  const m = /const sendWhenBack = async[\s\S]*?\n};\n/.exec(html); if (!m) throw new Error('sendWhenBack is missing from src/aios.html');
+  for (const bad of ["alert(`Could not ${what", "alert('Could not send"]) if (html.includes(bad)) throw new Error('a send path still shows a browser alert: ' + bad);
+  if (!/const send = async[\s\S]{0,200}apiSafe\(/.test(html)) throw new Error('the review card send does not go through apiSafe');
+  if (!/res === false\) return;/.test(rv)) throw new Error('src/review.js closes the card even when the send did not go');
+  const realFetch = globalThis.fetch; let health = 0;
+  globalThis.fetch = async () => { health++; return { ok: true }; };
+  try {
+    const sendWhenBack = new Function(m[0] + '\nreturn sendWhenBack;')();
+    const said = []; let calls = 0;
+    const v = await sendWhenBack(async () => { if (++calls < 2) throw new TypeError('Failed to fetch'); return 'sent'; }, s => said.push(s));
+    if (v !== 'sent' || calls !== 2 || !said[0] || said.at(-1) !== '' || health < 1) throw new Error(`network error was not retried once the office answered (${calls} calls, ${health} health checks)`);
+    calls = 0;
+    await sendWhenBack(async () => { calls++; throw new Error('409 already decided'); }, () => {}).then(() => { throw new Error('an HTTP error did not reach the caller'); }, e => { if (calls !== 1 || e.message.startsWith('an HTTP')) throw new Error('an HTTP reply was retried or swallowed'); });
+  } finally { globalThis.fetch = realFetch; }
+  return 'TypeError → waits, checks /api/health, sends again · Error → straight through, sent once';
+});
 await step('matrix: a desk can put its own cards on the matrix with a MATRIX ITEMS block, filed on approval', async () => { // V3.12
   const aios = await import('./aios.mjs');
   const now = Date.parse('2026-10-30T12:00:00');
@@ -1005,6 +1023,41 @@ await step('connectors: claude mcp list parses', async () => {
   if (l[2].depts.length !== 2) throw new Error('playwright depts: ' + l[2].depts);
 });
 
+/* ---------- 1b-i. long text never rides on the command line (8 Nov 2026: a transcript brief failed with spawn ENAMETOOLONG) ---------- */
+await step('claude runs: no spawn puts a prompt or a system prompt on the command line (Windows caps it at 32,767 characters), and a 40,000-character message goes through on stdin', async () => {
+  const files = [...fs.readdirSync(ROOT).filter(f => f.endsWith('.mjs') && f !== 'check.mjs'), ...fs.readdirSync(path.join(ROOT, 'scripts')).filter(f => f.endsWith('.mjs')).map(f => 'scripts/' + f),
+    ...fs.readdirSync(path.join(ROOT, 'connectors'), { withFileTypes: true }).filter(d => d.isDirectory()).flatMap(d => fs.readdirSync(path.join(ROOT, 'connectors', d.name)).filter(f => f.endsWith('.mjs')).map(f => `connectors/${d.name}/${f}`))];
+  const bad = [];
+  for (const f of files) fs.readFileSync(path.join(ROOT, f), 'utf8').split(/\r?\n/).forEach((l, i) => {
+    if (/\[\s*'-p'\s*,(?!\s*(?:\.\.\.|'--|\]))/.test(l)) bad.push(`${f}:${i + 1} passes text after -p (send it on stdin)`);
+    if (/'--(append-)?system-prompt'\s*,(?!\s*')/.test(l)) bad.push(`${f}:${i + 1} passes a system prompt as an argument (use the -file flag)`); // a short fixed string (mcp.HEADLESS) is fine
+  });
+  if (bad.length) throw new Error(bad.join('; '));
+  const long = 'x'.repeat(40000) + ' END';
+  const out = await new Promise((resolve, reject) => { const p = spawn(process.execPath, [path.join(ROOT, 'scripts', 'claude-box-fake.mjs'), '-p', '--output-format', 'stream-json'], { stdio: ['pipe', 'pipe', 'pipe'] }); let o = ''; p.stdout.on('data', d => { o += d; }); p.on('error', reject); p.on('close', () => resolve(o)); p.stdin.end(long); });
+  if (!/"result":"fake reply"/.test(out)) throw new Error('the 40,000-character message did not reach the stand-in: ' + out.slice(0, 200));
+  return `${files.length} files scanned; 40,000 characters in on stdin`;
+});
+
+/* ---------- 1b-ii. the Claude Code box (8 Nov 2026, docs/claude-code-box.md) ---------- */
+await step('claude code box: the permission policy decides every case in scripts/claude-box.test.mjs as written (routine runs, risky asks, email never)', async () => {
+  const out = await sh('node', ['scripts/claude-box.test.mjs']); return out.trim().split('\n').pop();
+});
+await step('claude code box: a desk\'s "Run in Claude Code" decision reaches the box only on a yes, from inside the approved-yes loop', async () => {
+  const D = await import('./decisions.mjs?' + Date.now()), NL = String.fromCharCode(10);
+  const blk = ['Done.', 'DECISION', 'ask: Run in Claude Code: list the scripts folder?', 'recommend: yes', 'to: claude-code', 'title: List the scripts folder', '---', 'Run ls scripts and report the count.', 'END DECISION'].join(NL);
+  const p = D.plan(D.parse(blk), [{ id: 'a', name: 'A', role: 'r', department: 'ops' }], 'a');
+  if (p.length !== 1 || p[0].to !== D.CLAUDE_CODE || !p[0].ok || p[0].toName !== 'Grace') throw new Error('plan: ' + JSON.stringify(p));
+  D.answer(p, { 1: false }); if (p[0].yes) throw new Error('a no is still a yes');
+  D.answer(p, {}); if (!p[0].yes) throw new Error('an untouched switch does not keep the recommendation');
+  if (!/to: claude-code/.test(D.INSTRUCTIONS) || /copy/i.test(D.INSTRUCTIONS.split('claude-code')[1].replace('Never write a block for the owner to copy', ''))) throw new Error('the desks are not told about to: claude-code');
+  const src = fs.readFileSync(path.join(ROOT, 'serve.mjs'), 'utf8'), fire = src.indexOf('function fireDecisions('), loop = src.indexOf('for (const d of ds.filter(x => x.ok && x.yes && !x.fired))', fire), send = src.indexOf('if (d.to === decisions.CLAUDE_CODE)', loop), end = src.indexOf('save(list);', loop);
+  if (!/if \(!ds\.length \|\| !task\.approved\) return;/.test(src.slice(fire, loop))) throw new Error('fireDecisions no longer stops for a task that was not approved');
+  if (loop < 0 || send < loop || send > end) throw new Error('the box is fed from outside the yes loop');
+  if (!src.includes('d.to === decisions.CLAUDE_CODE) && !boxWho(req)) return json(res, 403')) throw new Error('the approve route does not check who said yes to a Claude Code step');
+  return 'to: claude-code → the box · a no or an unapproved task sends nothing · a yes from anyone but Wesley is refused at approve';
+});
+
 /* ---------- 1c. routines (V3.5) ---------- */
 await step('routines: plain words become a schedule', async () => {
   const w = await import('./src/when.js');
@@ -1511,7 +1564,8 @@ else {
 /* ---------- 3. server smoke ---------- */
 {
   const port = 4600 + Math.floor(Math.random() * 300);
-  const env = { ...process.env, PORT: String(port), OFFICE_ROUTINE_DEPTS: 'emails,fin,sales,ops,delivery' }; // the shipped default, whatever the owner's own config allows
+  const boxData = fs.mkdtempSync(path.join(os.tmpdir(), 'ao-box-')); // the Claude Code box: its own state and a stand-in for claude, so no real run starts
+  const env = { ...process.env, PORT: String(port), OFFICE_ROUTINE_DEPTS: 'emails,fin,sales,ops,delivery', CLAUDE_BOX_DATA: boxData, CLAUDE_BOX_FAKE: path.join(ROOT, 'scripts', 'claude-box-fake.mjs') }; // the shipped default, whatever the owner's own config allows
   const srv = spawn('node', ['serve.mjs'], { cwd: ROOT, env, stdio: ['ignore', 'pipe', 'pipe'] });
   let log = ''; srv.stdout.on('data', d => { log += d; }); srv.stderr.on('data', d => { log += d; });
   const base = `http://localhost:${port}`;
@@ -1520,6 +1574,46 @@ else {
   else {
     ok('server: starts', `${up.name} · ${up.backend} · brain ${up.notes} notes`);
     await step('server: serves the office', async () => { const r = await fetch(base + '/'); const t = await r.text(); if (!/AGENTS OFFICE/.test(t)) throw new Error('html missing'); });
+    { // the Claude Code box: who may use it, and the hold → yes / no path through the real hook (the stand-in claude runs nothing)
+      const http = await import('node:http');
+      const raw = (method, p, headers = {}, b) => new Promise((resolve, reject) => { const q = http.request({ host: '127.0.0.1', port, path: p, method, headers: { 'content-type': 'application/json', ...headers } }, r => { let s = ''; r.on('data', d => { s += d; }); r.on('end', () => { let j = null; try { j = JSON.parse(s); } catch {} resolve({ status: r.statusCode, j }); }); }); q.on('error', reject); if (b) q.write(JSON.stringify(b)); q.end(); });
+      const TS = 'wesgp.taild8765c.ts.net', mine = (cfg.claudeBox?.allowLogins || [])[0];
+      await step('claude code box: only this PC or Wesley\'s own Tailscale login gets in', async () => {
+        const st = async (h, why, want) => { const r = await raw('GET', '/api/claude-box', h); if (r.status !== want) throw new Error(`${why}: ${r.status}, wanted ${want}`); };
+        await st({}, 'this PC', 200);
+        await st({ host: TS, 'tailscale-user-login': 'someone.else@example.com' }, 'another tailnet login', 403);
+        await st({ host: TS }, 'the tailnet name with no login (a tagged or shared device)', 403);
+        await st({ origin: 'https://evil.example' }, 'a stranger\'s page in this PC\'s browser', 403);
+        await st({ host: 'evil.example' }, 'a rebound DNS name', 403);
+        if (mine) { await st({ host: TS, 'tailscale-user-login': mine }, 'Wesley through Tailscale', 200); await st({ host: TS, 'tailscale-user-login': mine, origin: 'https://evil.example' }, 'Wesley\'s login from a stranger\'s page', 403); }
+        const h = await raw('POST', '/api/claude-box/hold', { 'x-claude-box-token': 'guess' }, { tool: 'Bash', label: 'x' }); if (h.status !== 403) throw new Error('a hold without the run\'s token: ' + h.status);
+        return `refused: another login, no login, a stranger's page, a rebound name, a guessed hold token${mine ? ' · let in: ' + mine : ' · no allowLogins set, so the tailnet is refused'}`;
+      });
+      const until = async (pred, ms = 20000) => { const t0 = Date.now(); while (Date.now() - t0 < ms) { const r = await raw('GET', '/api/claude-box'); if (pred(r.j)) return r.j; await new Promise(r => setTimeout(r, 300)); } throw new Error('timed out; state: ' + JSON.stringify((await raw('GET', '/api/claude-box')).j).slice(0, 300)); };
+      const lastReply = s => [...s.messages].reverse().find(m => m.who === 'claude');
+      await step('claude code box: npm run check runs without asking', async () => {
+        await raw('POST', '/api/claude-box', {}, { text: 'TOOL npm run check' });
+        const s = await until(s => !s.busy && lastReply(s)?.result); if (!/ALLOWED/.test(lastReply(s).text) || s.holds.length) throw new Error(lastReply(s).text);
+        return 'allowed by the hook, no hold';
+      });
+      await step('claude code box: a risky command is held; a no from another tailnet login or a script is refused; Wesley\'s no blocks it, his yes lets it through', async () => {
+        const PUSH = 'git ' + 'push fork main';
+        await raw('POST', '/api/claude-box', {}, { text: 'TOOL ' + PUSH });
+        let s = await until(s => s.holds.length === 1); const h = s.holds[0];
+        if (!/Push to GitHub/.test(h.label)) throw new Error('held as: ' + h.label);
+        const stranger = await raw('POST', '/api/claude-box/answer', { host: TS, 'tailscale-user-login': 'someone.else@example.com' }, { id: h.id, yes: true }); if (stranger.status !== 403) throw new Error('another login answered: ' + stranger.status);
+        if ((await raw('GET', '/api/claude-box')).j.holds.length !== 1) throw new Error('the hold went away after a refused answer');
+        const PAGE = { 'sec-fetch-site': 'same-origin', 'sec-fetch-mode': 'cors' }; // what a browser's fetch from the office page sends
+        const script = await raw('POST', '/api/claude-box/answer', {}, { id: h.id, yes: true }); if (script.status !== 403) throw new Error('a script on this PC answered: ' + script.status);
+        await raw('POST', '/api/claude-box/answer', PAGE, { id: h.id, yes: false });
+        s = await until(s => !s.busy && lastReply(s)?.result); if (!/REFUSED/.test(lastReply(s).text) || !/said no/.test(lastReply(s).text)) throw new Error('after no: ' + lastReply(s).text);
+        await raw('POST', '/api/claude-box', {}, { text: 'TOOL ' + PUSH });
+        s = await until(s => s.holds.length === 1); await raw('POST', '/api/claude-box/answer', PAGE, { id: s.holds[0].id, yes: true });
+        s = await until(s => !s.busy && lastReply(s)?.result && lastReply(s).item !== undefined && !s.holds.length && /ALLOWED|REFUSED/.test(lastReply(s).text) && s.messages.filter(m => m.who === 'claude').length >= 3);
+        if (!/ALLOWED/.test(lastReply(s).text)) throw new Error('after yes: ' + lastReply(s).text);
+        return 'held as "Push to GitHub" · another login 403, a script 403, hold kept · no → refused · yes → allowed';
+      });
+    }
     await step('uploads: a zip is unpacked and every readable file inside becomes a section of one note; junk and unsupported files are named, not silently dropped', async () => {
       const JSZip = (await import('jszip')).default; const BRAIN_DIR = (await import('./config.mjs')).loadConfig().brainPath; const z = new JSZip(); const NL = String.fromCharCode(10);
       z.file('sales/week1.csv', 'day,sales' + NL + 'Mon,120' + NL + 'Tue,95' + NL); z.file('notes.txt', 'Creamy weekend note: waffles sold out.'); z.file('__MACOSX/._notes.txt', 'junk'); z.file('tool.exe', 'MZ');
@@ -1629,7 +1723,7 @@ else {
       const closeAt = src.indexOf("m[2] === 'reject' && close === true"), reworkAt = src.indexOf("enqueue(() => runServerTask(task.id, m[2] === 'approve'");
       if (closeAt < 0 || reworkAt < 0 || closeAt > reworkAt) throw new Error('the close branch must return before the rework run is queued');
       const ui = fs.readFileSync(path.join(ROOT, 'src/review.js'), 'utf8');
-      if (!ui.includes('Permanently reject, no further action') || !ui.includes('onReject(t, reason, closeIt)')) throw new Error('the review screen has lost the toggle');
+      if (!ui.includes('Permanently reject, no further action') || !ui.includes('onReject(t, reason, closeIt')) throw new Error('the review screen has lost the toggle');
       return 'closed with no rework run, no send-back and no lesson · toggle on the reason screen';
     });
     await step('server: rejects an empty task', async () => { const r = await fetch(base + '/api/tasks', { method: 'POST', headers: { 'content-type': 'application/json' }, body: '{"dept":"sales","text":""}' }); if (r.status !== 400) throw new Error('status ' + r.status); });

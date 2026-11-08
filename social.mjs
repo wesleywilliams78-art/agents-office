@@ -44,7 +44,7 @@ export function streams({ posts, done = {}, social = { tasks: {}, signed: {} }, 
     const mine = posts.filter(p => p.where === s.id && p.date >= from && !gone(p) && !done[keyOf(p)]);
     const p = mine[0]; if (!p) return { ...s, post: null };
     const key = keyOf(p), t = byId.get(social.tasks[key]), signedAt = social.signed[key] || null;
-    const files = String(p.files || '').split(/\s*;\s*|\s+\(/).map(x => x.trim()).filter(looksLikePath);
+    const files = String(p.files || '').split(/\s*;\s*|\s+\((?![^()]*\)\.[A-Za-z0-9]{2,5}\b)/).map(x => x.trim()).filter(looksLikePath); // " (note)" ends a path; "(no audio).mp4" is part of one
     const found = [...new Set([...(p.folder ? [p.folder] : []), ...files, ...places(t && t.result)])];
     const ready = /built|approved|drafted|ready/.test(p.status || '') && !/not drafted/.test(p.status || ''); // "planned, not drafted yet" is not ready
     const state = t && ['next', 'doing', 'scheduled'].includes(t.state) ? 'working'

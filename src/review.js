@@ -38,6 +38,7 @@ body.dark #rv .rv-meta, body.dark #rv .rv-foot { border-color: rgba(236,234,227,
 #rv .rv-foot .rv-btns { display: flex; gap: 10px; align-items: center; flex-wrap: nowrap; }
 #rv .rv-foot .rv-btn { white-space: nowrap; }
 body.dark #rv .rv-foot .rv-hint { color: #A3A29C; }
+#rv .rv-foot .rv-wait { font: 600 11.5px/1.4 var(--ui); color: #C8553D; flex: 1 1 0; min-width: 0; max-width: 300px; margin-right: auto; } #rv .rv-wait:not([hidden]) + .rv-hint { display: none; }
 #rv .rv-btn { font: 700 11px/1 var(--ui); letter-spacing: .12em; padding: 11px 18px; border-radius: 99px; cursor: pointer; border: 1px solid var(--hairline); background: none; color: inherit; }
 #rv .rv-btn:disabled { opacity: .4; cursor: default; }
 #rv .rv-copy { padding: 11px 16px; }
@@ -137,7 +138,7 @@ export function initReview({ esc, agentOf, onApprove, onReject, onAnswer, onHand
       <textarea placeholder="e.g. Too long, and the tone is too formal for this client. Lead with the price, three bullets max."></textarea>
       <div class="rv-ex"><button>Too long</button><button>Wrong tone</button><button>Missing the numbers</button><button>Not what I asked for</button></div>
       <label class="rv-perm"><input type="checkbox"><span class="rv-perm-sw" aria-hidden="true"></span><span class="rv-perm-t"><b>Permanently reject, no further action</b><span>Closes the task for good. The agent does not rework it, it is not counted against the agent, and no lesson is kept. A reason is optional.</span></span></label></div>
-    <div class="rv-foot"><span class="rv-hint"></span><button class="rv-btn rv-copy" title="Copy the whole answer as text">COPY</button><span class="rv-btns"></span></div></div>`;
+    <div class="rv-foot"><span class="rv-wait" hidden></span><span class="rv-hint"></span><button class="rv-btn rv-copy" title="Copy the whole answer as text">COPY</button><span class="rv-btns"></span></div></div>`;
   document.body.appendChild(el);
   wireLinks(el);
   const $ = s => el.querySelector(s);
@@ -265,11 +266,14 @@ export function initReview({ esc, agentOf, onApprove, onReject, onAnswer, onHand
     if (!cur || busy) return;
     const t = cur, reason = ta.value.trim(), ans = el.classList.contains('ans'), closeIt = !approved && permOn();
     if (!approved && !reason && !closeIt) return;
-    busy = true; syncSend();
+    busy = true; syncSend(); const yes = $('.rv-yes'); if (yes) yes.disabled = true;
+    const say = s => { const w = $('.rv-wait'); w.textContent = s || ''; w.hidden = !s; }; // a send that waits for the office, or did not go: the text stays in the box
     const ds = decs(t), chosen = ds.length ? Object.fromEntries(ds.map(d => [d.n, pickOf(t, d)])) : null;
-    try { approved ? await onApprove(t, chosen) : ans ? await onAnswer(t, reason) : await onReject(t, reason, closeIt); }
-    finally { busy = false; }
-    drop(t.sid);
+    let res;
+    try { res = approved ? await onApprove(t, chosen, say) : ans ? await onAnswer(t, reason, say) : await onReject(t, reason, closeIt, say); }
+    finally { busy = false; syncSend(); const y = $('.rv-yes'); if (y) y.disabled = false; }
+    if (res === false) return;
+    say(''); drop(t.sid);
   }
 
   // COPY: the whole answer as the agent wrote it (plain text with light markdown), onto the clipboard

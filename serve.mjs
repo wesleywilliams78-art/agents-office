@@ -87,6 +87,7 @@ import * as motionMod from './motion.mjs';
 import { pinnedNotes, pickNotes } from './pins.mjs';
 import * as skillaudit from './skillaudit.mjs';
 import * as skillupdates from './skillupdates.mjs';
+import * as claudeboxMod from './claudebox.mjs';
 import { recover } from './recover.mjs';
 import { normModel, modelFor, modelArgs, modelId, modelName, MODEL_KEYS, DEFAULT_MODEL, normEffort, effortFor, effortName, EFFORT_KEYS } from './src/models.js';
 import { parseWhen, describe, valid as validWhen, untilText, occurrences } from './src/when.js';
@@ -411,6 +412,30 @@ async function motionTurn(text, onEvent) {
 const LOCAL_HOST = /^(localhost|127\.0\.0\.1|\[::1\])(:\d+)?$/i;
 // the assistant can start work, so a web page you happen to have open must not be able to talk to it: same-machine pages only (or a host you list in office.config.json "assistant.allowHosts")
 const assistantAllowed = req => { const host = String(req.headers.host || ''), extra = Array.isArray(cfg.assistant?.allowHosts) ? cfg.assistant.allowHosts : []; if (!LOCAL_HOST.test(host) && !extra.includes(host)) return false; const o = req.headers.origin; if (!o) return true; try { const u = new URL(o); return LOCAL_HOST.test(u.host) || extra.includes(u.host); } catch { return false; } };
+// The Claude Code box (claudebox.mjs, 8 Nov 2026): Claude Code with file and shell tools, driven from the bottom of For You. Who may use it:
+// a page on this PC (localhost), or Wesley through Tailscale Serve, which adds Tailscale-User-Login to what it forwards; only the logins in
+// office.config(.local).json "claudeBox.allowLogins" pass. Another tailnet login, a tagged device or a stranger's page is refused.
+const BOX_LOGINS = (Array.isArray(cfg.claudeBox?.allowLogins) ? cfg.claudeBox.allowLogins : []).map(s => String(s).toLowerCase());
+const TS_HOST = /^[a-z0-9-]+\.[a-z0-9-]+\.ts\.net$/i;
+function boxWho(req) {
+  if (!/^(::1|127\.0\.0\.1|::ffff:127\.0\.0\.1)$/.test(req.socket.remoteAddress || '')) return null;
+  const host = String(req.headers.host || ''), login = String(req.headers['tailscale-user-login'] || '').trim().toLowerCase(), o = req.headers.origin;
+  let oh = null; if (o) { try { oh = new URL(o).host; } catch { return null; } }
+  if (login) return BOX_LOGINS.includes(login) && TS_HOST.test(host) && (!oh || oh === host) ? login : null;
+  return LOCAL_HOST.test(host) && (!oh || LOCAL_HOST.test(oh)) ? 'this PC' : null;
+}
+const boxEnv = mcp.freshEnv(); delete boxEnv.CLAUDECODE;
+const box = claudeboxMod.create({ root: ROOT, data: process.env.CLAUDE_BOX_DATA || DATA, port: cfg.port, env: boxEnv, // npm run check gives its server a data folder of its own and a stand-in for claude
+  ...(process.env.CLAUDE_BOX_FAKE ? { bin: process.execPath, binArgs: [process.env.CLAUDE_BOX_FAKE] } : { bin: mcp.resolveBin() }), model: cfg.claudeBox?.model || '', effort: cfg.claudeBox?.effort || '', onDone: boxStepDone,
+  prompt: claudeboxMod.PROMPT + ` Wesley's Brain (his notes) is the folder ${BRAIN}; his skills are in its "Agents Office/skills" folder. The repo's own brain/ folder is only a sample: never use it for his notes or skills.`,
+  blocked: () => mcp.blockedTools(), // the same email block the desks get: send, reply and forward are refused at the CLI
+  ctx: () => ({ repo: ROOT, brain: BRAIN, media: cfg.media?.root || '', scratch: path.join(DATA, 'claude-box', 'scratch'), mailServers: [...new Set(mcp.blockedTools().map(t => /^mcp__(.+?)__/.exec(t)?.[1]).filter(Boolean))] }) });
+function boxStepDone(item, r) { // a desk's "Run in Claude Code" step finished: what it did goes back on the task it came from
+  const s = item.source || {}, list = load(), t = list.find(x => x.id === s.task); if (!t) return;
+  const d = (t.decisions || []).find(x => x.n === s.n); if (d) d.box = { state: r.ok ? 'done' : 'failed', at: Date.now() };
+  t.result = (t.result || '') + `\n\n---\nCLAUDE CODE ${r.ok ? 'RAN' : 'STOPPED ON'} "${s.title}"\n${String(r.text || '').slice(0, 3000)}${r.refused.length ? '\nNot run (Wesley said no, or no answer): ' + r.refused.join('; ') : ''}`;
+  save(list); console.log(`⌨ ${t.id}: Claude Code step "${s.title}" ${r.ok ? 'done' : 'stopped'}`);
+}
 let peBusy = false; // the Prompt Engineer: one at a time
 let assistantBusy = false, assistantEmit = null; // assistantEmit: the open panel conversation, so a task the Chief of Staff adds can show up as a chip at once
 const attachNote = list => (Array.isArray(list) ? list : []).slice(0, 6).map(a => ({ note: String(a?.note || '').replace(/[\r\n`]/g, ' ').trim().slice(0, 140), filename: String(a?.filename || '').replace(/[\r\n`]/g, ' ').trim().slice(0, 120) })).filter(a => /^Upload - /.test(a.note))
@@ -733,6 +758,10 @@ function fireDecisions(task) { // only for a task the owner approved: a task for
       d.fired = 'filed'; console.log(`▣ brain: decision ${d.n} of ${task.id} filed — ${d.filed.map(f => `${f.ok ? '✓' : '✗'} ${f.note}`).join(', ')}`); continue;
     }
     if (d.skill) { d.applied = answerSkillDecision(d, true); d.fired = 'skill'; continue; } // the edit was on the card: make it now, backed up first
+    if (d.to === decisions.CLAUDE_CODE) { // a step only Claude Code can do: the prompt goes into the Claude Code box and runs there, one step at a time; risky calls still ask in the box
+      box.send(`${d.text}\n\n(Wesley said yes to this on the review of "${task.title}" by ${agentName(task.agent)}: "${d.ask}". Do exactly this and nothing more, then report what you changed in a few lines.)`, { task: task.id, n: d.n, title: d.title, ask: d.ask, agent: task.agent, agentName: agentName(task.agent) });
+      d.fired = 'claude-code'; d.box = { state: 'queued', at: Date.now() }; continue;
+    }
     if (list.some(x => x.agent === d.to && x.title === d.title && Date.now() - (x.addedAt || 0) < 12 * 3600 * 1000)) { d.fired = 'duplicate'; continue; }
     const text = `${d.text}\n\n(Wesley said yes to this on the review of "${task.title}" by ${agentName(task.agent)}: "${d.ask}". Do exactly this and nothing more, then report what you changed.)`;
     const t = { id: nid(), dept: d.dept, agent: d.to, title: d.title, text, plan: [], eta: 10, why: `Wesley said yes on ${agentName(task.agent)}'s review`, state: 'doing', startedAt: Date.now(), addedAt: Date.now(), by: 'decision', handoffFrom: task.agent, decisionTask: task.id, ...(WRITES_EMAIL.test(d.title + ' ' + d.ask) ? { needsOk: true, channel: 'email' } : { needsOk: false, channel: 'none' }) }; // an email still comes back for its wording and only ever becomes a Gmail draft
@@ -740,7 +769,7 @@ function fireDecisions(task) { // only for a task the owner approved: a task for
   }
   for (const d of ds.filter(x => x.ok && !x.yes && x.skill && !x.fired)) { answerSkillDecision(d, false); d.fired = 'declined'; } // a no to a skill change is remembered, so it is not suggested again
   save(list);
-  task.result += '\n\n---\nYOUR DECISIONS\n' + decisions.summary(ds, agentName);
+  task.result += '\n\n---\nYOUR DECISIONS\n' + decisions.summary(ds, id => id === decisions.CLAUDE_CODE ? 'Grace (Claude Code)' : agentName(id));
   for (const t of made) { console.log(`➜ ${task.id} decision yes → ${t.agent}: ${t.title}`); enqueue(() => runServerTask(t.id)).catch(e => console.warn('decision:', e.message)); }
 }
 function writeNote(task) { // the deliverable becomes a note in the brain, linked to what was read
@@ -1629,7 +1658,11 @@ const server = http.createServer(async (req, res) => {
       if (task.state !== 'waiting') return json(res, 400, { error: 'this task is not waiting for your OK' });
       const { feedback, close, decisions: picks } = await body(req).catch(() => ({}));
       const note = m[2] === 'reject' ? String(feedback || '').trim() : '';
-      if (m[2] === 'approve' && task.decisions?.length) { decisions.answer(task.decisions, picks); save(load().map(t => t.id === task.id ? task : t)); } // the card's switches; one left untouched keeps the recommendation
+      if (m[2] === 'approve' && task.decisions?.length) {
+        decisions.answer(task.decisions, picks); // the card's switches; one left untouched keeps the recommendation
+        if (task.decisions.some(d => d.ok && d.yes && d.to === decisions.CLAUDE_CODE) && !boxWho(req)) return json(res, 403, { error: 'A "Run in Claude Code" yes can only come from Wesley: this PC, or his own Tailscale login. Nothing was approved.' });
+        save(load().map(t => t.id === task.id ? task : t));
+      }
       if (m[2] === 'reject' && close === true) { // 4 Nov 2026: REJECT with "permanently reject" ticked: closed for good. No rework run, no send-back count, no lesson, nothing filed.
         Object.assign(task, { state: 'done', closed: true, closedAt: Date.now(), doneAt: Date.now(), result: task.draft || task.result, approved: false }); delete task.ask;
         if (note) task.closeNote = note.slice(0, 2000);
@@ -1747,6 +1780,27 @@ const server = http.createServer(async (req, res) => {
       finally { assistantBusy = false; assistantEmit = null; }
       return;
     }
+    if (url.pathname.startsWith('/api/claude-box')) { // the Claude Code box (claudebox.mjs): Wesley only (boxWho); the hook's holds by the run's token
+      if (url.pathname === '/api/claude-box/hold') { // from scripts/claude-box-hook.mjs on this PC: create a hold, or read its answer
+        if (!isLoopback(req) || req.headers['tailscale-user-login']) return json(res, 403, { error: 'the hook only' });
+        const token = String(req.headers['x-claude-box-token'] || '');
+        if (req.method === 'POST') { const b = await body(req), h = box.hold(token, b); return h ? json(res, 200, { hold: { id: h.id } }) : json(res, 403, { error: 'not the running box' }); }
+        const s = box.holdState(token, String(url.searchParams.get('id') || '')); return s ? json(res, 200, s) : json(res, 404, { error: 'no such hold' });
+      }
+      const who = boxWho(req);
+      if (!who) return json(res, 403, { error: 'The Claude Code box answers only to Wesley: this PC, or his own Tailscale login.' });
+      if (url.pathname === '/api/claude-box' && req.method === 'GET') return json(res, 200, { ...box.state(), who });
+      if (req.method !== 'POST') return json(res, 405, { error: 'POST' });
+      const b = await body(req).catch(() => ({}));
+      try {
+        if (url.pathname === '/api/claude-box') { box.send(b.text); return json(res, 200, box.state()); }
+        if (url.pathname === '/api/claude-box/new') { if (box.busy) return json(res, 409, { error: 'wait for the current run to finish, or stop it' }); box.newConversation(); return json(res, 200, box.state()); }
+        if (url.pathname === '/api/claude-box/stop') { box.stop('Wesley stopped it'); return json(res, 200, box.state()); }
+        if (url.pathname === '/api/claude-box/answer') { // a yes or no comes from the box on a page (a browser's fetch), not from a script that calls the API (not a wall against a local program, a stop for other Claude sessions)
+          if (req.headers['sec-fetch-site'] !== 'same-origin' || req.headers['sec-fetch-mode'] !== 'cors') return json(res, 403, { error: 'Answer from the Claude Code box on the office page.' }); box.answer(String(b.id || ''), b.yes === true, who); return json(res, 200, box.state()); }
+      } catch (e) { return json(res, 400, { error: e.message }); }
+      return json(res, 404, { error: 'not found' });
+    }
     json(res, 404, { error: 'not found' });
   } catch (e) { console.error(e); json(res, 500, { error: e.message }); }
 });
@@ -1766,6 +1820,7 @@ server.listen(cfg.port, cfg.host || '127.0.0.1', () => { // this computer only: 
     const kind = storage.shouldAlert(st, r); if (kind) { const sent = await notify.telegram(storage.alertText(kind, r)); console.log(`📲 disk alert (${kind}): ${sent.ok ? 'sent' : 'not sent, ' + sent.reason}`); if (sent.ok) fs.writeFileSync(af, JSON.stringify({ level: r.level, at: Date.now() })); }
     console.log(`🗂 storage: ${r.freeGB} GB free · office files ${(r.officeMB).toFixed(0)} MB · filed ${r.library.items} item(s)${r.cleaned.freedMB ? ' · cleared ' + r.cleaned.freedMB + ' MB of rebuildable files' : ''}${r.warn.length ? ' · ' + r.warn.join(' ') : ''}`); } catch (e) { console.warn('storage:', e.message); } };
   setTimeout(tidy, 60000); setInterval(tidy, 6 * 3600000); // a minute after the office starts, then every six hours: file new work, clear rebuildable leftovers, update the report
+  box.resumeAfterRestart(); // the Claude Code box: pick up a run that outlived a restart, then the queue
   setInterval(tickRoutines, 20000); tickRoutines(); // the clock: every 20 s; the first tick catches up anything missed while the office was off (once, marked LATE)
   setTimeout(syncCalendars, 5000); setInterval(syncCalendars, 5 * 60000); // V3.12: Google Calendar every five minutes
   // V3.12: the fix follows the data (Wesley, 30 Oct: he uploads once a month, on the first Monday). When a restaurant's evidence differs

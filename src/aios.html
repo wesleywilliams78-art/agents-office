@@ -483,6 +483,24 @@
   .hxo-theo #peTog { grid-area: tog; margin: 0; } .hxo-theo #peGo { grid-area: go; padding: 13px 18px; font-weight: 600; letter-spacing: .14em; }
   .hxo-theo #peSt { position: absolute; top: 100%; left: 160px; right: 20px; margin-top: 7px; font-size: 11px; color: var(--faint); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .hxo-theo #peOut { grid-area: out; } .hxo-theo #peOut:not(:empty) { padding: 4px 10px 8px 0; }
+  /* Theo's result (8 Nov 2026): it floats under the band and never pushes the map. Only the latest result shows, as one card:
+     the task chip on top, Nora's note behind DETAILS, no echo of his own words. ✕ closes it. */
+  .hxo-theo #peOut:not(:empty) { position: absolute; top: calc(100% + 30px); left: 50%; width: min(820px, max(520px, 100vw - 1040px)); transform: translateX(-50%); z-index: 5; padding: 0; } /* as wide as the gap between the side tiles, so it never sits on one */
+  .hxo-theo #peOut > * { display: none; } .hxo-theo #peOut > :first-child:is(.pec, :has(> .pet, > .pea:not(:empty), > .ped)) { display: block; }
+  .hxo-theo #peOut > :first-child { position: relative; margin: 0; max-height: min(58vh, 520px); overflow-y: auto; overscroll-behavior: contain; padding: 14px 16px; border: 1px solid var(--ox-edge2); border-radius: 22px; background: linear-gradient(var(--fy-bg), var(--fy-bg)), var(--bg); box-shadow: 0 30px 70px -30px var(--fy-shadow); }
+  .hxo-theo #peOut .peu { display: none; }
+  .ox.map > .hxo-theo { z-index: 6; } .ox > .hxo-theo.away { display: none; } /* inside a department Theo steps away: asks go through Nora on the office level */
+  .pe .pex, .pe .pex:hover { float: right; width: 30px; height: 30px; margin: 0 0 6px 10px; padding: 0; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; letter-spacing: 0; font-size: 13px; color: var(--grey); background: transparent; border: 1px solid var(--ox-edge2); box-shadow: none; }
+  .pe .pex:hover { color: var(--ink); }
+  .pe .pet { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; grid-template-areas: "av tk act" "av tt act" "av st act"; align-items: center; gap: 1px 14px; border: 0; padding: 0; margin: 0; }
+  .pe .pet .av { grid-area: av; width: 44px; height: 44px; border-radius: 50%; object-fit: cover; background: var(--soft); }
+  .pe .pet .tk { grid-area: tk; } .pe .pet .tt { grid-area: tt; margin: 0; font-size: 14px; line-height: 1.3; }
+  .pe .pet > .st { grid-area: st; display: inline-flex; align-items: center; gap: 7px; font-size: 12px; color: var(--grey); } .pe .pet > .st i { width: 7px; height: 7px; border-radius: 50%; background: var(--hx-rev, #D9951A); flex: none; }
+  .pe .pet > .st.run i { background: var(--ok); } .pe .pet > .st.you i { background: var(--red, #EC3013); } .pe .pet > .st.off i { background: var(--faint); }
+  .pe .pet > .r { grid-area: act; display: flex; gap: 8px; align-items: center; margin-right: 40px; }
+  .pe .ped:not([open]) { display: none; } .pe .ped { margin-top: 12px; border-top: 1px solid var(--ox-edge); padding-top: 10px; } .pe .ped > summary { pointer-events: none; font-size: 10.5px; letter-spacing: .14em; text-transform: uppercase; color: var(--grey); list-style: none; } .pe .ped > summary::-webkit-details-marker { display: none; }
+  .pe .ped .pea { margin-top: 6px; } .pe .pet .more.shut { border-color: var(--ox-edge-hover); color: var(--ink); }
+  .pe .pea { white-space: normal; font-size: 13px; } .pe .pea p { margin: 0 0 8px; } .pe .pea ul { margin: 0 0 8px; padding-left: 18px; } .pe .pea li { margin: 0 0 5px; } .pe .pea > :last-child { margin-bottom: 0; }
   .hxo-k { color: var(--faint); font-size: 9.5px; letter-spacing: .16em; text-transform: uppercase; }
   .hxo-fw { position: relative; flex: none; display: inline-block; line-height: 0; }
   .hxo-fw img, .hxo-ini { width: 24px; height: 24px; border-radius: 50%; object-fit: cover; background: var(--soft); }
@@ -573,6 +591,36 @@
   .hxo-ri { display: grid; grid-template-columns: 38px minmax(0, 1fr); gap: 12px; padding: 16px 0; border-top: 1px solid var(--ox-edge); } .hxo-ri.none { display: block; color: var(--faint); } .hxo-ri > .hxo-fw { align-self: start; }
   .hxo-ri .hx-fy-i { padding: 0; border: 0; margin: 0; background: transparent; } .hxo-ri .hx-fy-t { font-size: 14px; margin: 4px 0; } .hxo-ri .hx-fy-m { margin-bottom: 10px; }
   .hxo-rd { color: var(--meta, var(--faint)); font-size: 10px; letter-spacing: .2em; text-transform: uppercase; }
+  /* the Claude Code box (8 Nov 2026): at the bottom of For You. Type, and the office runs Claude Code in the repo; risky steps ask here first */
+  .ccb { margin-top: 26px; padding-top: 18px; border-top: 1px solid var(--ox-edge2); }
+  .ccb-h { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; } .ccb-h h4 { margin: 0; font: 300 30px/1 var(--serif); }
+  .ccb-who { display: flex; align-items: center; gap: 12px; min-width: 0; } .ccb-who img { width: 48px; height: 48px; border-radius: 50%; object-fit: cover; flex: none; border: 1px solid var(--ox-edge2); }
+  .ccb-role { display: block; margin-top: 5px; font-size: 11px; color: var(--grey); letter-spacing: .02em; }
+  .ccb-st { font-size: 11px; color: var(--grey); display: inline-flex; align-items: center; gap: 6px; } .ccb-st::before { content: ''; width: 7px; height: 7px; border-radius: 50%; background: var(--faint); }
+  .ccb-st.on::before { background: #3BA55C; } .ccb-st.busy::before { background: var(--red); animation: ccbP 1.1s ease-in-out infinite; } .ccb-st.off::before { background: transparent; border: 1px solid var(--grey); }
+  @keyframes ccbP { 50% { opacity: .25; } }
+  .ccb-h .ccb-new { margin-left: auto; padding: 6px 11px; font-size: 10.5px; letter-spacing: .08em; border-radius: 999px; background: transparent; border: 1px solid var(--ox-edge2); color: var(--grey); box-shadow: none; }
+  .ccb-sub { color: var(--grey); font-size: 11.5px; line-height: 1.45; margin: 8px 0 12px; }
+  .ccb-log { display: flex; flex-direction: column; gap: 10px; max-height: min(52vh, 560px); overflow-y: auto; overscroll-behavior: contain; padding-right: 2px; }
+  .ccb-m { font-size: 13px; line-height: 1.5; overflow-wrap: anywhere; } .ccb-m p { margin: 0 0 6px; } .ccb-m p:last-child { margin: 0; }
+  .ccb-m.you { align-self: flex-end; max-width: 88%; background: var(--ox-inset); border: 1px solid var(--ox-edge); border-radius: 14px 14px 4px 14px; padding: 8px 12px; white-space: pre-wrap; }
+  .ccb-m.desk { border-left: 3px solid var(--red); padding: 4px 0 4px 10px; color: var(--grey); white-space: pre-wrap; max-height: 9em; overflow: hidden; position: relative; } .ccb-m.desk.full { max-height: none; }
+  .ccb-m.desk b { color: var(--ink); font-weight: 600; display: block; white-space: normal; margin-bottom: 2px; }
+  .ccb-m.claude { padding: 2px 0; } .ccb-m.claude.err { color: var(--red); } .ccb-m.sys { color: var(--faint); font-size: 11px; text-align: center; letter-spacing: .06em; }
+  .ccb-m code { font: 12px/1.4 ui-monospace, Consolas, monospace; background: var(--ox-inset); border-radius: 4px; padding: 1px 4px; } .ccb-m pre { font: 11.5px/1.45 ui-monospace, Consolas, monospace; background: var(--ox-inset); border-radius: 8px; padding: 8px 10px; overflow-x: auto; white-space: pre; margin: 4px 0 8px; }
+  .ccb-t { font-size: 11px; color: var(--grey); margin: 4px 0 6px; } .ccb-t summary { cursor: pointer; list-style: none; } .ccb-t summary::-webkit-details-marker { display: none; }
+  .ccb-t ol { margin: 6px 0 0; padding-left: 18px; } .ccb-t li { margin: 2px 0; overflow-wrap: anywhere; } .ccb-t li.no { color: var(--red); }
+  .ccb-now { font-size: 11.5px; color: var(--ink); display: flex; gap: 8px; align-items: baseline; } .ccb-now::before { content: '●'; color: var(--red); font-size: 9px; animation: ccbP 1.1s ease-in-out infinite; }
+  .ccb-ask { border: 1px solid var(--red); border-radius: 14px; padding: 12px 14px; margin: 12px 0 0; background: color-mix(in srgb, var(--red) 7%, transparent); }
+  .ccb-ask b { display: block; font-size: 13.5px; line-height: 1.4; } .ccb-ask .z { display: block; color: var(--grey); font-size: 11.5px; margin: 4px 0 8px; }
+  .ccb-ask pre { font: 11px/1.4 ui-monospace, Consolas, monospace; background: var(--ox-inset); border-radius: 8px; padding: 7px 9px; margin: 0 0 10px; max-height: 8em; overflow: auto; white-space: pre-wrap; overflow-wrap: anywhere; }
+  .ccb-ask .yn { display: flex; gap: 8px; } .ccb-ask .yn button { flex: 1; padding: 11px; font-weight: 600; }
+  .ccb-f { display: flex; gap: 8px; align-items: flex-end; margin-top: 14px; }
+  .ccb-f textarea { flex: 1; min-width: 0; resize: none; min-height: 44px; max-height: 40vh; font: 14px/1.4 var(--ui, inherit); padding: 11px 12px; border-radius: 12px; border: 1px solid var(--ox-edge2); background: var(--ox-inset); color: var(--ink); }
+  .ccb-f textarea:focus { outline: none; border-color: var(--grey); } .ccb-f button { padding: 12px 16px; }
+  .ccb-off { border: 1px dashed var(--ox-edge2); border-radius: 12px; padding: 10px 12px; color: var(--grey); font-size: 12px; line-height: 1.45; margin-top: 12px; }
+  .oxfy-tab .ccb-tq { width: 24px; height: 24px; border-radius: 50%; background: var(--ink); color: var(--bg); font-size: 12px; font-style: normal; display: flex; align-items: center; justify-content: center; } .oxfy-tab .ccb-tq[hidden] { display: none; }
+  @media (max-width: 480px) { .oxfy { padding: 18px 16px 26px; } .ccb-log { max-height: 46vh; } .ccb-f textarea { font-size: 16px; } } /* 16 px: iOS does not zoom into the box */
   /* a department (level 2): lead band, desk cards (roster order; past 12 the idle ones fold), the five-stage trail below */
   .hxo-fw.m img, .hxo-fw.m .hxo-ini { width: 38px; height: 38px; } .hxo-fw.xl .hxo-ini { width: 70px; height: 70px; font-size: 15px; }
   .hxo-lb { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 18px; align-items: center; padding: 16px 20px; margin-bottom: 14px; border: 1px solid color-mix(in srgb, var(--red, #EC3013) 45%, transparent); border-radius: 18px; background: var(--card, var(--panel)); }
@@ -1206,6 +1254,8 @@
     .hxo-tw { max-width: none; border-right: 0; padding: 0 0 8px; border-bottom: 1px solid var(--ox-edge); margin-bottom: 4px; }
     .hxo-theo .pe { grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: "ta ta" "tog go" "st st" "out out"; gap: 6px 8px; }
     .hxo-theo #peSt { grid-area: st; position: static; margin: 0; white-space: normal; }
+    .hxo-theo #peOut:not(:empty) { position: static; width: auto; transform: none; margin-top: 6px; } .hxo-theo #peOut > :first-child { padding: 12px; border-radius: 16px; box-shadow: none; }
+    .pe .pet { grid-template-columns: auto minmax(0, 1fr); grid-template-areas: "av tk" "av tt" "av st" "act act"; } .pe .pet > .r { margin: 8px 0 0; }
     .ox-you .t span { display: none; }
   }
   @media (max-width: 480px) { body[data-cat="hierarchy"] .oxfy-tab { top: auto; bottom: 18px; transform: none; padding: 12px 8px; gap: 8px; } body.fy-open .oxfy-tab { display: none !important; } }
@@ -1391,8 +1441,12 @@
   </div>
 </div>
 <!-- For You (7 Nov 2026): a red tab on the right edge of the Office tab; it pulls out the list of what waits on you (the whole office, or the department you are in) -->
-<button type="button" class="oxfy-tab" id="oxFyTab" aria-controls="oxFy" aria-expanded="false"><b id="oxFyN">0</b><span>For you</span></button>
-<aside class="oxfy" id="oxFy" aria-label="For you" aria-hidden="true"><button type="button" class="oxfy-x" data-oxfyclose aria-label="Close (Esc)" title="Close (Esc)">✕</button><div class="oxfy-b" id="oxFyBody"></div></aside>
+<button type="button" class="oxfy-tab" id="oxFyTab" aria-controls="oxFy" aria-expanded="false"><b id="oxFyN">0</b><i class="ccb-tq" id="gcTabQ" hidden title="Grace is asking you">?</i><span>For you</span></button>
+<aside class="oxfy" id="oxFy" aria-label="For you" aria-hidden="true"><button type="button" class="oxfy-x" data-oxfyclose aria-label="Close (Esc)" title="Close (Esc)">✕</button><div class="oxfy-b" id="oxFyBody"></div>
+<section class="ccb" id="gcBox" aria-label="Grace, Claude Code"><div class="ccb-h"><div class="ccb-who"><img src="/people/grace.png" alt="" onerror="this.remove()"><div><h4>Grace</h4><span class="ccb-role">Runs Claude Code in the office folder</span></div></div><span class="ccb-st" id="gcSt">Connecting…</span><button type="button" class="ccb-new" id="gcNew" title="Start a fresh conversation">NEW CONVERSATION</button></div>
+<div class="ccb-sub">Reading, editing, checks and commits just run; anything risky asks you here first.</div>
+<div class="ccb-log" id="gcLog" aria-live="polite"></div><div id="gcAsk"></div><div id="gcOff"></div>
+<form class="ccb-f" id="gcForm"><textarea id="gcIn" rows="1" placeholder="Ask Grace…" aria-label="Message for Grace"></textarea><button type="submit" class="primary" id="gcGo">SEND</button></form></section></aside>
 <!-- Brain sheet (7 Nov 2026): the Brain map pulls up over the Office from a tab on its bottom-left edge (bottom-centre is under Wispr Flow's pill); Esc, ✕ or the dimmed Office closes it -->
 <button type="button" class="bmtab" id="bmTab" aria-controls="brainSec" aria-expanded="false"><span><em>Open the </em>Brain</span><i aria-hidden="true">↑</i></button>
 <div class="bmdim" data-bmclose aria-hidden="true"></div>
@@ -1454,6 +1508,20 @@ const agentBy = id => S.agents.find(a => a.id === id);
 // Tokens tab (7 Nov 2026): a desk with a first name reads "Mara (Marketing Lead)"; the key is the desk's stored name, so one with no person stays as it is
 const deskLabel = k => { const p = S.agents.find(a => a.name === k)?.person; return p ? `${p} (${String(k).toLowerCase().replace(/(^|[\s-])(\p{L})/gu, (m, a, b) => a + b.toUpperCase()).replace(/Linkedin/g, 'LinkedIn')})` : k; };
 const api = (p, o = {}) => fetch('/api' + p, { headers: { 'content-type': 'application/json' }, ...o, body: o.body ? JSON.stringify(o.body) : undefined }).then(async r => { const j = await r.json().catch(() => ({})); if (!r.ok) throw new Error(j.error || r.statusText); return j; });
+// Sending while the office restarts (8 Nov 2026): a send that gets no reply at all (fetch throws a TypeError) keeps what was typed, says so through say(), checks /api/health every 2 s
+// for up to 2 minutes and sends again once it answers. Any reply, error codes included, is final and never retried, so nothing goes twice. Resolves false if the office stays down.
+const sendWhenBack = async (go, say) => {
+  try { return await go(); } catch (e) { if (!(e instanceof TypeError)) throw e; }
+  say("Office restarting · sending when it's back");
+  for (const end = Date.now() + 120000; Date.now() < end;) {
+    await new Promise(r => setTimeout(r, 2000));
+    if (!await fetch('/api/health', { cache: 'no-store' }).then(r => r.ok, () => false)) continue;
+    try { const v = await go(); say(''); return v; } catch (e) { if (!(e instanceof TypeError)) { say(''); throw e; } }
+  }
+  say('The office is still not answering. What you typed is kept here: press send again in a minute.');
+  return false;
+};
+const apiSafe = (p, o, say) => sendWhenBack(() => api(p, o), say);
 
 // Needs you (V3.12, 2 Nov): everything waiting on Wesley in one place, so many streams can run at once. Office tasks waiting for his OK
 // (a click opens that review card in the office), and Claude Code sessions on this PC that finished or want a permission, from the
@@ -1699,6 +1767,7 @@ function placeAsk() { // the Ask box is one element (one set of ids, one convers
   const host = document.getElementById(hx ? 'hxTheoSlot' : 'hero');
   if (pe && host && host.nextElementSibling !== pe) host.after(pe);
   if (pe) pe.dataset.cat = hx ? 'hierarchy' : 'overview';
+  const t = document.getElementById('peT'); if (t) { t.dataset.ph ??= t.placeholder; t.placeholder = hx ? 'Say what you want done…' : t.dataset.ph; } // Theo's band has no room for the long example
 }
 function applyCat(animate = false) {
   placeAsk();
@@ -3443,7 +3512,7 @@ async function act(id, what) {
   for (const q of document.querySelectorAll('.quad')) lastHtml.set(q, ''); // the clicked button was disabled: the next draw must rewrite the cards, even if nothing changed (a cancel, a failed call)
   try {
     if (what === 'delete') await api('/matrix/' + id, { method: 'DELETE' });
-    else if (what === 'send') { const r = await api('/matrix/' + id + '/send', { method: 'POST' }); $('fMsg').className = 'msg'; $('fMsg').textContent = `Sent: ${r.task.title} → ${agentBy(r.task.agent)?.name || r.task.agent}${r.task.needsOk ? '. It will wait for your OK before anything goes out.' : '.'}`; }
+    else if (what === 'send') { const r = await apiSafe('/matrix/' + id + '/send', { method: 'POST' }, m => { $('fMsg').className = 'msg'; $('fMsg').textContent = m; }); if (r === false) return; $('fMsg').className = 'msg'; $('fMsg').textContent = `Sent: ${r.task.title} → ${agentBy(r.task.agent)?.name || r.task.agent}${r.task.needsOk ? '. It will wait for your OK before anything goes out.' : '.'}`; }
     else if (what === 'calendar') { $('fMsg').className = 'msg'; $('fMsg').textContent = 'Adding to Google Calendar…'; const r = await api('/matrix/' + id + '/calendar', { method: 'POST' }); $('fMsg').textContent = r.note || 'Added to Google Calendar.'; }
     else if (what === 'done') { // closing a card: say what happened, so the office learns it (blank = just mark it done)
       const o = window.prompt('What happened? (optional)\n\nFor example "Paid 10 Oct" or "Mary\'s address is …". It is filed in the Brain so the agents know, and the card is not raised again.\nLeave blank to just mark it done.', '');
@@ -3452,7 +3521,7 @@ async function act(id, what) {
     }
     else await api('/matrix/' + id, { method: 'POST', body: { state: what === 'drop' ? 'dropped' : 'open' } });
     await poll();
-  } catch (e) { alert(e.message); }
+  } catch (e) { $('fMsg').className = 'msg err'; $('fMsg').textContent = e.message; }
 }
 
 document.addEventListener('click', e => {
@@ -3573,7 +3642,7 @@ loadTrackers(); setInterval(() => { if (!document.hidden && !Object.values(S.tkB
   TOG.addEventListener('click', () => { try { localStorage.setItem(KEY, on() ? 'off' : 'on'); } catch {} drawTog(); });
   drawTog();
   const lock = (v, msg) => { busy = v; (window.AIOS_PE = window.AIOS_PE || {}).busy = v; window.renderHierarchy?.(); GO.disabled = v; T.disabled = v; if (msg !== undefined) ST.textContent = msg; };
-  const post = async (url, body) => { const r = await fetch(url, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) }); return r; };
+  const post = async (url, body) => { const r = await sendWhenBack(() => fetch(url, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) }), m => { ST.textContent = m; }); if (r === false) throw new Error('the office is still not answering, your words are kept in the box'); return r; };
 
   const fade = c => setTimeout(() => { c.style.transition = 'opacity .4s'; c.style.opacity = '0'; setTimeout(() => c.remove(), 450); }, 1200); // an answered card has done its job: show its "Sent" line for a moment, then drop it off the list
 
@@ -3627,7 +3696,13 @@ loadTrackers(); setInterval(() => { if (!document.hidden && !Object.values(S.tkB
     lock(true, 'The Chief of Staff is on it…');
     const u = document.createElement('div'); u.className = 'peu'; u.textContent = (typed || text).slice(0, 600) + (files.length ? '\n📎 ' + files.map(f => f.filename).join(', ') : '');
     const a = document.createElement('div'); a.className = 'pea'; a.textContent = '';
-    const grp = document.createElement('div'); grp.append(u, a); OUT.prepend(grp);
+    const xb = document.createElement('button'); xb.type = 'button'; xb.className = 'pex'; xb.title = 'Close. The task carries on.'; xb.textContent = '✕'; xb.addEventListener('click', () => grp.remove());
+    const grp = document.createElement('div'); grp.append(xb, u, a); OUT.prepend(grp);
+    const fold = () => { // a task was started: the chip says it all, Nora's note waits behind DETAILS on the chip
+      const r = grp.querySelector('.pet > .r'); if (!r || a.closest('.ped') || !a.textContent) return;
+      const d = document.createElement('details'); d.className = 'ped'; d.innerHTML = '<summary>Nora’s note</summary>'; grp.append(d); d.append(a);
+      const b = document.createElement('button'); b.type = 'button'; b.className = 'more'; b.textContent = 'DETAILS'; b.addEventListener('click', () => { d.open = !d.open; b.classList.toggle('shut', d.open); b.textContent = d.open ? 'HIDE' : 'DETAILS'; }); r.append(b);
+    };
     let changed = false, reply = false;
     try {
       const res = await post('/api/assistant', { text, surface: 'panel', stream: true, engineered: engineered || undefined, attachments: files.length ? files : undefined });
@@ -3639,27 +3714,33 @@ loadTrackers(); setInterval(() => { if (!document.hidden && !Object.values(S.tkB
           const line = buf.slice(0, i).trim(); buf = buf.slice(i + 1); if (!line) continue; let ev; try { ev = JSON.parse(line); } catch { continue; }
           if (ev.t === 'tool') { ST.textContent = (ev.words || 'working') + '…'; if (/add_task|add_routine|run_routine/.test(ev.name || '')) changed = true; }
           else if (ev.t === 'task') { grp.insertBefore(taskChip(ev.task), a); changed = true; }
-          else if (ev.t === 'reply') { a.textContent = ev.text || ''; reply = true; }
+          else if (ev.t === 'reply') { a.innerHTML = mdx(ev.text || ''); reply = true; fold(); }
           else if (ev.t === 'error') { a.className = 'pea err'; a.textContent = "I couldn't finish that: " + (ev.error || 'unknown error'); reply = true; }
         }
       }
-      if (!reply && !a.textContent) a.remove();
+      if (!reply && !a.textContent) a.remove(); else fold();
       T.value = ''; if (files.length) { const sent = new Set(files.map(f => f.note)); atts = atts.filter(f => !sent.has(f.note)); drawAtts(); }
     } catch (e) { a.className = 'pea err'; a.textContent = "I couldn't reach the Chief of Staff: " + e.message; }
     lock(false, 'Ctrl+Enter sends.'); T.disabled = false;
     if (changed && typeof poll === 'function') setTimeout(poll, 800);
   }
 
+  function mdx(s) { // the Chief of Staff writes light Markdown: paragraphs, "- " bullets, **bold**, `code`
+    const il = t => x(t).replace(/\*\*([^*\n]+)\*\*/g, '<b>$1</b>').replace(/`([^`\n]+)`/g, '<code>$1</code>');
+    return String(s).split(/\n{2,}/).filter(p => p.trim()).map(p => { const ls = p.split('\n'); return ls.every(l => /^\s*[-•*] /.test(l)) ? `<ul>${ls.map(l => `<li>${il(l.replace(/^\s*[-•*] /, ''))}</li>`).join('')}</ul>` : `<p>${ls.map(il).join('<br>')}</p>`; }).join('');
+  }
   function taskChip(t) {
     const c = document.createElement('div'); c.className = 'pet';
-    c.innerHTML = `<div class="tk"></div><div class="tt"></div><div class="r" style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><button type="button" data-u>UNDO</button><button type="button" class="primary" data-review="${esc(t.id)}" hidden></button><span class="st"></span></div>`;
+    const ag = typeof agentBy === 'function' ? agentBy(t.agent) : null, who = (ag && ag.person) || t.agentName || t.agent || '';
+    c.innerHTML = `${ag && ag.portrait ? `<img class="av" src="${esc(ag.portrait)}" alt="">` : ''}<div class="tk"></div><div class="tt"></div><span class="st"><i></i><span></span></span><div class="r"><button type="button" data-u>UNDO</button><button type="button" class="primary" data-review="${esc(t.id)}" hidden></button></div>`;
     let left = Math.round((t.startsInMs ?? 20000) / 1000), started = false, gone = false, timer;
-    const u = c.querySelector('[data-u]'), s = c.querySelector('.st'), rb = c.querySelector('[data-review]');
+    const u = c.querySelector('[data-u]'), sw = c.querySelector('.st'), s = sw.querySelector('span'), rb = c.querySelector('[data-review]');
     const draw = () => { // REVIEW once it waits for him, READ once it is done, nothing while it runs: the pop-up, never the office
       const now = (S.tasks || []).find(x => x.id === t.id), st = now && now.state, end = !!now && (st === 'waiting' || st === 'done');
-      c.querySelector('.tk').textContent = `Added to ${t.deptName || t.dept || 'the office'} · ${t.agentName || t.agent || ''}`; c.querySelector('.tt').textContent = t.title || ''; u.textContent = started ? 'CANCEL' : 'UNDO'; u.hidden = gone || end;
+      c.querySelector('.tk').textContent = `${t.deptName || t.dept || 'The office'} · ${who}`; c.querySelector('.tt').textContent = t.title || ''; u.textContent = started ? 'CANCEL' : 'UNDO'; u.hidden = gone || end;
       rb.hidden = gone || !end; rb.textContent = st === 'waiting' ? 'REVIEW' : 'READ';
-      s.textContent = gone ? 'Undone.' : st === 'waiting' ? 'Waiting for your review.' : st === 'done' ? 'Done.' : started ? 'Running. It will wait for your review.' : `Starts in ${left} s. Undo to take it back.`;
+      s.textContent = gone ? 'Undone.' : st === 'waiting' ? 'Waiting for your review.' : st === 'done' ? 'Done.' : started ? 'Running. It will wait for your review.' : `Starts in ${left} s`;
+      sw.className = 'st' + (gone ? ' off' : st === 'waiting' ? ' you' : st === 'done' ? ' off' : started ? ' run' : '');
       if ((gone || st === 'done') && timer) { clearInterval(timer); timer = 0; }
     };
     timer = setInterval(() => { if (left > 0) left--; if (left <= 0) started = true; draw(); }, 1000);
@@ -3806,6 +3887,7 @@ loadTrackers(); setInterval(() => { if (!document.hidden && !Object.values(S.tkB
     const dot = (p, cls, dur, begin = 0) => { if (REDUCED.matches) return; const c = mk('circle', { r: cls === 'r' ? 4 : 3.5, class: 'ox-dot ' + cls }); c.innerHTML = `<animateMotion dur="${dur}s" begin="${begin}s" repeatCount="indefinite" path="${p.getAttribute('d')}"/>`; };
     mk('defs', {}).innerHTML = ['on', 'r', 'off'].map(k => `<marker id="oxA${k}" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="${k === 'off' ? 6 : 7}" markerHeight="${k === 'off' ? 6 : 7}" orient="auto-start-reverse"><path class="ox-ah ${k}" d="M0 0 L10 5 L0 10 z"/></marker>`).join('');
     const T = box(theo), N = box(nora), Y = box(you), cx = N.x + N.w / 2;
+    const res = theo.querySelector('#peOut > :first-child'); if (res && res.getClientRects().length) { const R = box(res); T.h = Math.max(T.h, R.y + R.h - T.y); } // Theo's result card floats under the band: the arrow to Nora starts below it
     if (N.y - (T.y + T.h) > 40) { mk('path', { d: `M${cx} ${T.y + T.h + 4} L${cx} ${N.y - 10}`, class: 'ox-f ask', 'marker-end': 'url(#oxAon)' }); } // no 'Your ask' / 'Work goes out' labels: the arrows say it (Wesley, 7 Nov 2026)
     const topY = Math.min(...[...stage.querySelectorAll('.hxo-d.need')].map(t => { const D = box(t), ry = D.y + D.h - 26; return Math.abs(Y.y + Y.h / 2 - ry) < 40 ? ry : Infinity; })); // the highest S-curve start: both sides' labels stay above it, level with each other
     for (const k of ['L', 'R']) {
@@ -3838,7 +3920,7 @@ loadTrackers(); setInterval(() => { if (!document.hidden && !Object.values(S.tkB
     }
   }
   let flowQ = 0; const flowSoon = () => { cancelAnimationFrame(flowQ); flowQ = requestAnimationFrame(flows); };
-  if (window.ResizeObserver) { const ro = new ResizeObserver(flowSoon); ['oxStage', 'hxTheo'].forEach(id => el(id) && ro.observe(el(id))); } else addEventListener('resize', flowSoon);
+  if (window.ResizeObserver) { const ro = new ResizeObserver(flowSoon); ['oxStage', 'hxTheo', 'peOut'].forEach(id => el(id) && ro.observe(el(id))); } else addEventListener('resize', flowSoon);
   const who = a => a ? (a.person || tc(a.name)) : '';
   // ---- For You: the red tab on the right edge pulls out the list (the whole office on the map, one department on its page) ----
   let fyHtml = '';
@@ -3860,6 +3942,81 @@ loadTrackers(); setInterval(() => { if (!document.hidden && !Object.values(S.tkB
     if (e.target.closest('[data-oxfy]')) { fySet(true); return; }
     if (e.target.closest('[data-oxfyclose]')) fySet(false);
   });
+  // ---- the Claude Code box (8 Nov 2026): the bottom of For You. The office runs Claude Code in the repo (claudebox.mjs); the history lives
+  // on the PC, so a reload or another device shows the same conversation. Risky steps come back as a yes/no here; offline says so plainly ----
+  (() => {
+    const g = id => document.getElementById(id), log = g('gcLog'), inp = g('gcIn'), form = g('gcForm');
+    if (!log || !inp || !form) return;
+    let st = null, off = '', lastLog = '', lastAsk = '', timer = 0, sending = false, waiting = '';
+    const DRAFT = 'aios.ccbox.draft';
+    try { inp.value = localStorage.getItem(DRAFT) || ''; } catch {}
+    const fmt = s => { // escape, then ``` blocks, `code`, **bold**, paragraphs
+      const parts = String(s || '').split(/```[a-z]*\n?([\s\S]*?)```/g);
+      return parts.map((p, i) => i % 2 ? `<pre>${esc(p.replace(/\n$/, ''))}</pre>` : p.split(/\n{2,}/).filter(x => x.trim()).map(x => `<p>${esc(x).replace(/`([^`\n]+)`/g, '<code>$1</code>').replace(/\*\*([^*\n]+)\*\*/g, '<b>$1</b>').replace(/\n/g, '<br>')}</p>`).join('')).join('');
+    };
+    const mins = ms => { const m = Math.round(ms / 60000); return m < 1 ? 'under a minute' : m === 1 ? '1 minute' : m + ' minutes'; };
+    function toolsHtml(m) {
+      const t = m.tools || []; if (!t.length) return '';
+      const no = t.filter(x => x.refused).length;
+      return `<details class="ccb-t"><summary>${t.length} step${t.length === 1 ? '' : 's'}${no ? ` · ${no} not run` : ''} ▾</summary><ol>${t.map(x => `<li class="${x.refused ? 'no' : ''}">${esc(x.label)}${x.refused ? ` <em>(not run: ${esc(x.refused)})</em>` : ''}</li>`).join('')}</ol></details>`;
+    }
+    function msgHtml(m) {
+      if (m.who === 'you') return `<div class="ccb-m you">${esc(m.text)}</div>`;
+      if (m.who === 'system') return `<div class="ccb-m sys">${esc(m.text)}</div>`;
+      if (m.who === 'desk') return `<div class="ccb-m desk" title="Tap to show all"><b>From ${esc(m.source?.agentName || m.source?.agent || 'a desk')}, on your yes: ${esc(m.source?.title || '')}</b>${esc(m.text)}</div>`;
+      const now = m.partial ? [...(m.tools || [])].reverse().find(x => !x.done) : null;
+      return `<div class="ccb-m claude${m.error ? ' err' : ''}">${toolsHtml(m)}${fmt(m.text)}${m.partial ? `<div class="ccb-now">${esc(now ? now.label : m.text ? 'Still working…' : 'Thinking…')}</div>` : ''}</div>`;
+    }
+    function render() {
+      const s = st, stEl = g('gcSt'), go = g('gcGo'), q = g('gcTabQ');
+      stEl.className = 'ccb-st ' + (off ? 'off' : s?.busy ? 'busy' : 'on');
+      stEl.textContent = off ? 'Office offline' : !s ? 'Connecting…' : s.holds.length ? 'Waiting for your yes or no' : s.busy ? `Working · ${mins(Date.now() - s.startedAt)}${s.queued.length ? ` · ${s.queued.length} queued` : ''}` : s.conversation ? 'Ready · same conversation' : 'Ready';
+      g('gcOff').innerHTML = waiting || off ? `<div class="ccb-off">${esc(waiting || off)}</div>` : '';
+      go.textContent = s?.busy ? 'QUEUE' : 'SEND'; go.disabled = !!off; g('gcNew').disabled = !!off || !!s?.busy;
+      if (q) q.hidden = !(s && s.holds.length);
+      if (!s) return;
+      const html = (s.messages.length ? s.messages.map(msgHtml).join('') : '<div class="ccb-m sys">Nothing yet. Try: “run npm run check and tell me the result”.</div>') + (s.busy ? `<div class="ccb-m sys"><button type="button" class="ccb-new" data-ccstop>STOP</button></div>` : '');
+      if (html !== lastLog) { const end = !lastLog || log.scrollHeight - log.scrollTop - log.clientHeight < 60; lastLog = html; log.innerHTML = html; if (end) log.scrollTop = log.scrollHeight; }
+      const ask = s.holds.map(h => `<div class="ccb-ask"><b>Grace wants to: ${esc(h.label)}</b><span class="z">${esc(h.reason)}. Asks for ${mins(h.at + 600000 - Date.now())} more, then it is a no.</span>${h.detail && h.detail !== h.label ? `<pre>${esc(h.detail)}</pre>` : ''}<div class="yn"><button type="button" class="primary" data-ccans="${esc(h.id)}" data-yes="1">YES, DO IT</button><button type="button" data-ccans="${esc(h.id)}">NO</button></div></div>`).join('');
+      if (ask !== lastAsk) { lastAsk = ask; g('gcAsk').innerHTML = ask; }
+    }
+    async function call(p, body) {
+      let r; try {
+        const go = () => fetch('/api/claude-box' + p, body ? { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) } : { cache: 'no-store' });
+        r = body ? await sendWhenBack(go, m => { waiting = m; render(); }) : await go(); // a send waits for the office to come back; the polling GET just reports it offline
+        if (r === false) throw new TypeError('still down');
+      }
+      catch { off = 'Office offline: the PC is off or asleep, or the office is not running. Nothing can run until it is back; your history is kept on the PC.'; render(); return null; }
+      const j = await r.json().catch(() => null);
+      if (!j) { off = 'Office offline: the PC did not answer properly (it may be asleep or restarting).'; render(); return null; }
+      if (r.status === 403) { off = j.error || 'This device may not use Claude Code.'; st = null; render(); return null; }
+      if (!r.ok) throw new Error(j.error || r.statusText);
+      off = ''; waiting = ''; if (j.messages) st = j; render(); return j;
+    }
+    function schedule() { clearTimeout(timer); const fast = st && (st.busy || st.holds.length); timer = setTimeout(poll, document.hidden ? 15000 : fast ? 1500 : document.body.classList.contains('fy-open') ? 5000 : 12000); }
+    async function poll() { try { await call(''); } catch {} schedule(); }
+    form.addEventListener('submit', async e => {
+      e.preventDefault(); const text = inp.value.trim(); if (!text || sending) return;
+      sending = true; g('gcGo').disabled = true;
+      try { const r = await call('', { text }); if (r) { inp.value = ''; try { localStorage.removeItem(DRAFT); } catch {} fit(); } }
+      catch (err) { off = ''; g('gcOff').innerHTML = `<div class="ccb-off">${esc(err.message)}</div>`; }
+      finally { sending = false; g('gcGo').disabled = !!off; schedule(); }
+    });
+    const touch = matchMedia('(pointer: coarse)').matches;
+    inp.addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey && !touch && !e.isComposing) { e.preventDefault(); form.requestSubmit(); } });
+    const fit = () => { inp.style.height = 'auto'; inp.style.height = Math.min(inp.scrollHeight + 2, innerHeight * 0.4) + 'px'; };
+    inp.addEventListener('input', () => { fit(); try { localStorage.setItem(DRAFT, inp.value); } catch {} });
+    document.addEventListener('click', async e => {
+      const warn = err => { g('gcOff').innerHTML = `<div class="ccb-off">${esc(err.message)}</div>`; };
+      const a = e.target.closest('[data-ccans]'); if (a) { a.disabled = true; try { await call('/answer', { id: a.dataset.ccans, yes: a.dataset.yes === '1' }); } catch (err) { warn(err); } schedule(); return; }
+      if (e.target.closest('[data-ccstop]')) { if (confirm('Stop Grace now? What she already changed stays changed.')) { try { await call('/stop', {}); } catch (err) { warn(err); } } return; }
+      if (e.target.closest('#gcNew')) { try { await call('/new', {}); } catch (err) { warn(err); } return; }
+      const d = e.target.closest('.ccb-m.desk'); if (d) d.classList.toggle('full');
+      if (e.target.closest('#oxFyTab')) setTimeout(poll, 50);
+    });
+    document.addEventListener('visibilitychange', () => { if (!document.hidden) poll(); });
+    fit(); poll();
+  })();
   // ---- a department (level 2): the lead's band, a card per desk, the five-stage trail below (#hxTrail) ----
   const FOLD = 12; let showIdle = false;
   function deskCard(a, k, fyD) {
@@ -3902,6 +4059,7 @@ loadTrackers(); setInterval(() => { if (!document.hidden && !Object.values(S.tkB
     const was = sel, moved = v !== view, anim = moved && hxShown();
     view = v; window.AIOS_HX_VIEW = view; sel = v === 'office' ? '' : s || ''; if (moved) showIdle = false; if (!sel) drMore = false;
     const show = () => {
+      el('hxTheo')?.classList.toggle('away', view !== 'office');
       if (S.agents.length) renderHierarchy();
       if (moved) { const top = el('hxTheo'); if (top && top.getBoundingClientRect().top < 0) top.scrollIntoView({ block: 'start' }); }
       else if (was && !sel) document.querySelector(`#hx [data-hseat="${CSS.escape(was)}"]`)?.focus({ preventScroll: true }); // a closed drawer hands focus back to its desk card
@@ -4356,13 +4514,17 @@ function glance(t) { // the desk's own three lines (AT A GLANCE, glance.mjs); a 
     recommend: lr.phase === 'escalated' && lead ? clip(`${label(lead)} could not sign it off: ${lr.open || 'see the full result'}`, 240) : dial && lead ? clip(`${label(lead)}: ${dial}`, 240) : 'Approve if it reads right; reject to say what to change.',
   };
 }
-const send = (t, what, body) => api(`/tasks/${encodeURIComponent(t.sid)}/${what}`, { method: 'POST', body }).catch(e => { alert(`Could not ${what === 'approve' ? 'approve' : what === 'answer' ? 'send your answer' : 'send it back'}: ${e.message}`); }).finally(() => poll());
+const send = async (t, what, body, say) => { // false = it did not go: the card stays open with what was typed, and the reason is shown on the card
+  try { if (await apiSafe(`/tasks/${encodeURIComponent(t.sid)}/${what}`, { method: 'POST', body }, say) === false) return false; }
+  catch (e) { say(`Could not ${what === 'approve' ? 'approve' : what === 'answer' ? 'send your answer' : 'send it back'}: ${e.message}`); return false; }
+  finally { poll(); }
+};
 const rv = initReview({
   esc, head, glance,
   agentOf: id => { const a = agentBy(id); return a && { name: (a.person || a.name).toUpperCase(), dept: a.department }; },
-  onApprove: (t, picks) => send(t, 'approve', picks ? { decisions: picks } : {}),
-  onReject: (t, reason, close) => send(t, 'reject', close ? { feedback: reason || '', close: true } : { feedback: reason }),
-  onAnswer: (t, text) => send(t, 'answer', { feedback: text }),
+  onApprove: (t, picks, say) => send(t, 'approve', picks ? { decisions: picks } : {}, say),
+  onReject: (t, reason, close, say) => send(t, 'reject', close ? { feedback: reason || '', close: true } : { feedback: reason }, say),
+  onAnswer: (t, text, say) => send(t, 'answer', { feedback: text }, say),
   onHandover: (t, opts) => api(`/tasks/${encodeURIComponent(t.sid)}/handover`, { method: 'POST', body: opts }).then(r => { poll(); return r; }).catch(e => ({ error: e.message })),
   listAgents: () => S.agents.map(a => ({ id: a.id, name: a.person ? `${a.person.toUpperCase()} · ${a.name}` : a.name })),
 });
