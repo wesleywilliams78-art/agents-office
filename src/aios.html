@@ -564,6 +564,10 @@
   .hxo-ct { display: grid; grid-template-columns: repeat(4, auto); justify-content: space-between; gap: 8px; margin-top: 9px; padding-top: 8px; border-top: 1px solid var(--ox-edge); }
   .hxo-ct div { font-size: 9.5px; letter-spacing: .12em; text-transform: uppercase; color: var(--faint); white-space: nowrap; }
   .hxo-ct b { display: block; font: 300 22px/1 var(--serif); letter-spacing: 0; color: var(--ink); } .hxo-ct .you.n b { color: var(--red, #EC3013); }
+  /* the Matrix count opens the matrix for that department (8 Nov 2026) */
+  .hxo-ct .hxo-mx { all: unset; cursor: pointer; font-size: 9.5px; letter-spacing: .12em; text-transform: uppercase; color: var(--faint); white-space: nowrap; border-radius: 6px; }
+  .hxo-ct .hxo-mx:hover, .hxo-ct .hxo-mx:hover b, .hxo-ct .hxo-mx:focus-visible, .hxo-ct .hxo-mx:focus-visible b { color: var(--red, #EC3013); } .hxo-ct .hxo-mx:focus-visible { outline: 2px solid var(--red, #EC3013); outline-offset: 3px; }
+  .mdf { font-size: 12px; color: var(--grey); } .mdf:empty { display: none; } .mdf b { color: var(--ink); font-weight: 600; } .mdf a { color: var(--red, #EC3013); }
   .hxo-hub { position: relative; z-index: 2; background: linear-gradient(180deg, var(--ox-nora-a), var(--ox-nora-b)); border: 1px solid var(--ox-nora-edge); border-radius: 28px; padding: 24px 26px 22px; -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
     box-shadow: 0 0 0 8px var(--ox-ring1), 0 0 0 18px var(--ox-ring2), 0 40px 90px -30px var(--ox-nora-shadow); }
   .hxo-hub .hxo-k { color: var(--meta, var(--faint)); font-size: 10px; letter-spacing: .2em; }
@@ -1343,6 +1347,7 @@
     <div class="sh">
       <h2>Eisenhower matrix</h2>
       <span class="note">What follows from finished work, sorted and named to a seat automatically. Feed the office through the office itself — this just shows what came out of it.</span>
+      <span class="mdf" id="mDept"></span>
       <div class="tools seg" id="mShow"><button data-v="open" class="on">OPEN</button><button data-v="all">ALL</button></div>
       <div class="tools" id="mUp"><select id="mUpSel" title="An uploaded document to read in full"><option value="">Read an uploaded document…</option></select><button id="mUpGo" type="button">READ INTO MATRIX</button></div>
     </div>
@@ -1797,6 +1802,7 @@ async function setCat(c, push = true) {
   if (!CAT_IDS.includes(c) && !isDash(c)) c = 'overview';
   const first = !catReady, changed = c !== S.cat, seq = ++catSeq; catReady = true;
   S.cat = c; try { localStorage.setItem('aiosCat', c); } catch {}
+  if (push && c === 'matrix' && S.mDept) { S.mDept = ''; renderMatrix(); } // the Matrix tab itself shows every department
   if (push) history.replaceState(null, '', '#' + (c === 'hierarchy' ? (window.hxPath ? window.hxPath() : 'office') : c)); // Office keeps the department and desk you left it on
   if (first || !changed) { applyCat(false); window.scrollTo({ top: 0 }); }
   else {
@@ -2090,6 +2096,7 @@ function route(h) { // a hash is the tab, then (Office only) where you are insid
   const bm = c === 'brain'; if (bm) { c = 'hierarchy'; rest = []; } // the Brain tab became a sheet over the Office on 7 Nov 2026: #brain lands on the Office with it pulled up
   const sk = c === 'skills'; if (sk) { c = 'hierarchy'; rest = []; } // Skills moved under Nora on 8 Nov 2026: #skills lands on the Office with the Skills sheet up
   if (c === 'social') { c = 'hierarchy'; rest = ['marketing']; } // Social moved under the Marketing department page on 8 Nov 2026: #social lands there
+  if (c === 'matrix') { S.mDept = DEPTS[rest[0]] && rest[0] !== 'owner' ? rest[0] : ''; renderMatrix(); } // #matrix/marketing: the matrix for one department (a tile's Matrix count)
   if (c === 'roles') { c = 'hierarchy'; rest = []; } // Roles was retired on 7 Nov 2026: its seats are on the Office's department pages, its News feed on Overview
   if (c === 'hierarchy') { if (window.hxRoute) window.hxRoute(rest); else window.AIOS_HX_WANT = rest; } // the Hierarchy script loads later and picks up AIOS_HX_WANT
   if (!(c === 'hierarchy' && S.cat === 'hierarchy' && catReady)) setCat(c, false); // moving inside Hierarchy (Back, a link) keeps the page where it is
@@ -3410,7 +3417,10 @@ function renderTrend() {
 
 function renderMatrix() {
   const Q = S.matrix.quadrants || {};
-  const items = S.matrix.items.filter(i => S.mShow === 'all' || i.state === 'open');
+  const dn = S.mDept && DEPTS[S.mDept] ? DEPTS[S.mDept].name.charAt(0) + DEPTS[S.mDept].name.slice(1).toLowerCase() : ''; // #matrix/<dept>: one department's cards (8 Nov 2026)
+  const items = S.matrix.items.filter(i => (S.mShow === 'all' || i.state === 'open') && (!dn || i.dept === S.mDept));
+  const md = dn ? `<b>${esc(dn)} only</b> · <a href="#matrix">show every department</a>` : '';
+  if ($('mDept').innerHTML !== md) $('mDept').innerHTML = md;
   const pairs = [];
   for (const el of document.querySelectorAll('.quad')) {
     const q = el.dataset.q, list = items.filter(i => i.q === q).sort((a, b) => (a.due || '9') < (b.due || '9') ? -1 : 1);
@@ -3882,7 +3892,7 @@ loadTrackers(); setInterval(() => { if (!document.hidden && !Object.values(S.tkB
       <div class="hxo-dh"><h4>${esc(deptName(b.d))}</h4>${on ? '' : '<span class="hxo-tag">Not in AIOS yet</span>'}${gaps ? `<span class="hxo-gap" title="${gaps} desk${gaps > 1 ? 's' : ''} without a brief or a skill of ${gaps > 1 ? 'their' : 'its'} own">${gaps} to brief</span>` : ''}${fy ? `<span class="hxo-badge" title="${fy} for you">${fy}</span>` : ''}</div>
       <div class="hxo-lead">${lead}</div>
       ${on ? `<div class="hxo-faces">${faces}</div><div class="hxo-now">${now}</div>
-      <div class="hxo-ct"><div><b>${b.doing}</b>Working</div><div><b>${b.reviewing}</b>Lead review</div><div class="you${fy ? ' n' : ''}"><b>${fy}</b>For you</div><div title="${mx} open card${mx === 1 ? '' : 's'} for ${esc(deptName(b.d))} on the Eisenhower matrix"><b>${mx}</b>Matrix</div></div>`
+      <div class="hxo-ct"><div><b>${b.doing}</b>Working</div><div><b>${b.reviewing}</b>Lead review</div><div class="you${fy ? ' n' : ''}"><b>${fy}</b>For you</div>${mx ? `<button type="button" class="hxo-mx" data-mxdept="${esc(b.d)}" title="Open the ${mx} matrix card${mx === 1 ? '' : 's'} for ${esc(deptName(b.d))}"><b>${mx}</b>Matrix</button>` : `<div title="No open cards for ${esc(deptName(b.d))} on the Eisenhower matrix"><b>0</b>Matrix</div>`}</div>`
       : `<div class="hxo-faces">${faces}<span class="hxo-last">${b.doing ? `${b.doing} working` : last ? `last task ${esc(ago(last.doneAt))}` : 'No work yet'}${mx ? ` · ${mx} on the matrix` : ''}</span></div>`}</article>`;
   }
   // the flows, drawn in one SVG over the stage from the boxes as laid out: Theo → Nora (your ask), Nora → each department (work goes out, a moving dot
@@ -4160,6 +4170,7 @@ loadTrackers(); setInterval(() => { if (!document.hidden && !Object.values(S.tkB
     apply(S.agents.length ? okView(v) : v, parts[1] || '');
   };
   const go = v => nav(v); // into a department, or back out to the office
+  document.addEventListener('click', e => { const m = e.target.closest('[data-mxdept]'); if (!m) return; e.stopPropagation(); location.hash = 'matrix/' + m.dataset.mxdept; }, true); // a tile's Matrix count: the matrix for that department, not the department page
   document.addEventListener('click', e => { const t = e.target.closest('[data-hxdept]'); if (t) { go(t.dataset.hxdept); return; } if (e.target.closest('[data-hxoffice]')) go('office'); });
   document.addEventListener('keydown', e => {
     if (e.key === 'Enter' || e.key === ' ') { const t = e.target.closest && e.target.closest('[data-hxdept],[data-hseat]'); if (t && !/^(INPUT|TEXTAREA|SELECT|BUTTON)$/.test(e.target.tagName)) { e.preventDefault(); t.click(); } return; }
