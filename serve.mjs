@@ -1263,17 +1263,18 @@ async function matrixApi(req, res, url) {
   if (!item) return json(res, 404, { error: 'no such item' });
   if (req.method === 'DELETE') { m.items = m.items.filter(x => x.id !== item.id); aios.save(DATA, m); return json(res, 200, { ok: true }); }
   if (req.method !== 'POST') return json(res, 405, { error: 'POST or DELETE' });
-  if (mm[2] === 'send') { // hand the action to its seat: a real task, run here; anything outbound waits for the OK
+  if (mm[2] === 'send') { // hand the action to its seat through Nora (8 Nov 2026): the same path as a request in the office, so the Office map shows it; anything outbound waits for the OK
     if (!DEPTS[item.dept] || item.dept === 'brain') return json(res, 400, { error: 'this one is the owner\'s — no department to send it to' });
+    if (item.state !== 'open') return json(res, 400, { error: 'this card is not open' });
     const text = `${item.title}. ${item.detail}`.trim();
-    const r = await route(item.dept, text);
-    const agent = item.agent && AGENTS.find(a => a.id === item.agent && a.department === item.dept) ? item.agent : r.agent;
-    const task = { id: nid(), dept: item.dept, agent, title: r.title, text, plan: r.plan, eta: r.eta, why: r.why, state: 'doing', startedAt: Date.now(), addedAt: Date.now(), by: 'aios', needsOk: r.needsOk, matrix: item.id };
-    const list = load(); list.push(task); save(list);
-    aios.patch(item, { state: 'sent', task: task.id }); aios.save(DATA, m);
-    console.log(`▦ ${item.id} → task ${task.id} → ${agent}: ${task.title}${task.needsOk ? ' (waits for your OK)' : ''}`);
-    enqueue(() => runServerTask(task.id));
-    return json(res, 200, { ok: true, item, task });
+    const agent = item.agent && AGENTS.some(a => a.id === item.agent && a.department === item.dept) ? item.agent : undefined;
+    const [code, out] = await addTask({ dept: item.dept, text, agent, by: 'chief' });
+    if (code !== 200) return json(res, code, out);
+    const list = load(), task = list.find(t => t.id === out.id) || out; task.matrix = item.id; save(list); // it starts in 20 s, so the mark is on before it runs
+    const m2 = aios.load(DATA), it2 = m2.items.find(x => x.id === item.id) || item; // re-read: the router took a few seconds
+    aios.patch(it2, { state: 'sent', task: task.id }); aios.save(DATA, m2);
+    console.log(`▦ ${item.id} → Nora → task ${task.id} → ${task.agent}: ${task.title}${task.needsOk ? ' (waits for your OK)' : ''}`);
+    return json(res, 200, { ok: true, item: it2, task });
   }
   if (mm[2] === 'calendar') { // a 10-min to-do reminder on the owner's own Google Calendar, dated to the item's due date
     if (!/^\d{4}-\d{2}-\d{2}$/.test(item.due || '')) return json(res, 400, { error: 'this one has no due date to put on the calendar' });

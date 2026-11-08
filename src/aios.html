@@ -3416,7 +3416,7 @@ function newsEvents() {
   const ev = [], who = id => agentBy(id)?.name || id;
   for (const t of S.tasks) {
     const base = { agent: t.agent, dept: t.dept, title: t.title, id: t.id };
-    const src = t.routine ? 'Routine fired' : t.by === 'aios' ? 'Sent from the matrix' : t.by === 'handoff' ? 'Handed over by ' + who(t.handoffFrom) : t.dueAt ? 'Scheduled task fired' : 'New task';
+    const src = t.routine ? 'Routine fired' : t.by === 'aios' || t.matrix ? 'Sent from the matrix' : t.by === 'handoff' ? 'Handed over by ' + who(t.handoffFrom) : t.dueAt ? 'Scheduled task fired' : 'New task';
     if (t.addedAt) ev.push({ ...base, at: t.addedAt, kind: 'work', icon: t.routine ? '⏱' : '＋', verb: src });
     if (t.startedAt && t.state !== 'next' && t.state !== 'scheduled') ev.push({ ...base, at: t.startedAt, kind: 'work', icon: '▸', verb: t.team ? 'Team started' : 'Started' });
     if (t.waitingAt) ev.push({ ...base, at: t.waitingAt, kind: 'review', icon: '⏸', verb: t.state === 'waiting' ? (t.channel === 'email' ? 'Email ready — waiting for your OK' : 'Ready for your review') : (t.revisions ? `Revision ${t.revisions + 1} submitted` : 'Submitted for review'), hot: t.state === 'waiting' });
@@ -3475,7 +3475,7 @@ function itemHtml(i) {
 
 function renderActivity() {
   const T = S.tasks, name = id => agentBy(id)?.name || id;
-  const row = (t, extra = '') => `<div class="task"><div><div class="tt">${esc(t.title)}</div><div class="tm">${esc(name(t.agent))} · ${DEPTS[t.dept]?.name || t.dept}${t.routine ? ' · routine' : ''}${t.by === 'aios' ? ' · from the matrix' : ''}${t.by === 'handoff' ? ' · handed over' : ''} · ${extra}</div></div>` +
+  const row = (t, extra = '') => `<div class="task"><div><div class="tt">${esc(t.title)}</div><div class="tm">${esc(name(t.agent))} · ${DEPTS[t.dept]?.name || t.dept}${t.routine ? ' · routine' : ''}${t.by === 'aios' || t.matrix ? ' · from the matrix' : ''}${t.by === 'handoff' ? ' · handed over' : ''} · ${extra}</div></div>` +
     (t.state === 'done' && !t.error ? `<div class="tb">${matrixCell(t)}</div>` : '') + '</div>';
   // a finished task has fed the matrix (automatically or by hand), is being read now, or can be read by hand
   const matrixCell = t => {
@@ -3514,7 +3514,7 @@ async function act(id, what) {
   for (const q of document.querySelectorAll('.quad')) lastHtml.set(q, ''); // the clicked button was disabled: the next draw must rewrite the cards, even if nothing changed (a cancel, a failed call)
   try {
     if (what === 'delete') await api('/matrix/' + id, { method: 'DELETE' });
-    else if (what === 'send') { const r = await apiSafe('/matrix/' + id + '/send', { method: 'POST' }, m => { $('fMsg').className = 'msg'; $('fMsg').textContent = m; }); if (r === false) return; $('fMsg').className = 'msg'; $('fMsg').textContent = `Sent: ${r.task.title} → ${agentBy(r.task.agent)?.name || r.task.agent}${r.task.needsOk ? '. It will wait for your OK before anything goes out.' : '.'}`; }
+    else if (what === 'send') { const r = await apiSafe('/matrix/' + id + '/send', { method: 'POST' }, m => { $('fMsg').className = 'msg'; $('fMsg').textContent = m; }); if (r === false) return; $('fMsg').className = 'msg'; $('fMsg').textContent = `Nora is handing “${r.task.title}” to ${agentBy(r.task.agent)?.name || r.task.agent}. It starts in 20 seconds and shows on the Office map${r.task.needsOk ? '; it waits for your OK before anything goes out.' : '.'}`; }
     else if (what === 'calendar') { $('fMsg').className = 'msg'; $('fMsg').textContent = 'Adding to Google Calendar…'; const r = await api('/matrix/' + id + '/calendar', { method: 'POST' }); $('fMsg').textContent = r.note || 'Added to Google Calendar.'; }
     else if (what === 'done') { // closing a card: say what happened, so the office learns it (blank = just mark it done)
       const o = window.prompt('What happened? (optional)\n\nFor example "Paid 10 Oct" or "Mary\'s address is …". It is filed in the Brain so the agents know, and the card is not raised again.\nLeave blank to just mark it done.', '');
@@ -4130,12 +4130,12 @@ loadTrackers(); setInterval(() => { if (!document.hidden && !Object.values(S.tkB
   function trailSteps(t, a, ld) {
     const stg = stageOf(t), lr = t.leadReview || {}, lp = lrOf(t), ps = pieces(t), mp = ps.find(x => x.agent === a.id), viaNora = t.by === 'chief', fin = t.state === 'waiting' || t.state === 'done', h = agentBy(t.handoffFrom);
     const from = t.by === 'routine' ? { l: 'Routine', s: 'Fired ' + hm(t.addedAt), txt: 'AUTO' } : t.by === 'handoff' ? { l: h ? who(h) : 'A desk', a: h, s: 'Handed it over' }
-      : { l: 'You', you: 1, s: t.by === 'aios' ? 'From the matrix' : t.by === 'decision' ? 'Your yes' : 'Asked ' + hm(t.addedAt) };
+      : { l: 'You', you: 1, s: t.by === 'aios' || t.matrix ? 'From the matrix' : t.by === 'decision' ? 'Your yes' : 'Asked ' + hm(t.addedAt) };
     const desk = stg === 2 ? (mp && mp.state === 'done' ? 'ok' : 'cur') : stg === 1 ? (ps.length && ps.every(x => x.state === 'done') ? 'ok' : 'next') : stg === 0 ? 'next' : 'ok';
     const rv = lp === 'review' ? 'cur' : (lp === 'signed' || lp === 'escalated') ? 'ok' : fin ? 'skip' : 'next';
     return [
       { ...from, st: 'ok' },
-      { l: 'Theo', img: '/people/pe.png', st: viaNora ? 'ok' : 'skip', s: viaNora ? 'Via the ask box' : 'Not this time' },
+      { l: 'Theo', img: '/people/pe.png', st: viaNora && !t.matrix ? 'ok' : 'skip', s: t.matrix ? 'Your SEND was the yes' : viaNora ? 'Via the ask box' : 'Not this time' },
       { l: 'Nora', img: '/people/chief.png', st: viaNora ? 'ok' : 'skip', s: viaNora ? 'Sent to ' + deptName(t.dept) : 'Not this time' },
       { l: ld ? who(ld) : 'Lead', a: ld, st: !t.team ? 'skip' : stg === 1 ? 'cur' : stg === 0 ? 'next' : 'ok', s: !t.team ? 'Went direct' : stg === 1 ? (ps.length ? 'Writing the final' : 'Planning the pieces') : stg === 0 ? 'Will split it' : `Split it · ${ps.length} pieces` },
       { l: who(a), a, st: desk, s: desk === 'cur' ? (lp === 'rework' ? `Rework · round ${lr.round}` : `Working · ${dur((mp && mp.startedAt) || t.startedAt)}`) : desk === 'ok' ? (mp ? 'Piece done' : 'Wrote it') : t.state === 'scheduled' ? 'Booked' : 'Up next' },
