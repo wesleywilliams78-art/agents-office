@@ -567,7 +567,6 @@
   /* the Matrix count opens the matrix for that department (8 Nov 2026) */
   .hxo-ct .hxo-mx { all: unset; cursor: pointer; font-size: 9.5px; letter-spacing: .12em; text-transform: uppercase; color: var(--faint); white-space: nowrap; border-radius: 6px; }
   .hxo-ct .hxo-mx:hover, .hxo-ct .hxo-mx:hover b, .hxo-ct .hxo-mx:focus-visible, .hxo-ct .hxo-mx:focus-visible b { color: var(--red, #EC3013); } .hxo-ct .hxo-mx:focus-visible { outline: 2px solid var(--red, #EC3013); outline-offset: 3px; }
-  .mdf { font-size: 12px; color: var(--grey); } .mdf:empty { display: none; } .mdf b { color: var(--ink); font-weight: 600; } .mdf a { color: var(--red, #EC3013); }
   .hxo-hub { position: relative; z-index: 2; background: linear-gradient(180deg, var(--ox-nora-a), var(--ox-nora-b)); border: 1px solid var(--ox-nora-edge); border-radius: 28px; padding: 24px 26px 22px; -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
     box-shadow: 0 0 0 8px var(--ox-ring1), 0 0 0 18px var(--ox-ring2), 0 40px 90px -30px var(--ox-nora-shadow); }
   .hxo-hub .hxo-k { color: var(--meta, var(--faint)); font-size: 10px; letter-spacing: .2em; }
@@ -618,7 +617,8 @@
   .ccb-log { display: flex; flex-direction: column; gap: 10px; max-height: min(52vh, 560px); overflow-y: auto; overscroll-behavior: contain; padding-right: 2px; }
   .ccb-m { font-size: 13px; line-height: 1.5; overflow-wrap: anywhere; } .ccb-m p { margin: 0 0 6px; } .ccb-m p:last-child { margin: 0; }
   .ccb-m.you { align-self: flex-end; max-width: 88%; background: var(--ox-inset); border: 1px solid var(--ox-edge); border-radius: 14px 14px 4px 14px; padding: 8px 12px; white-space: pre-wrap; }
-  .ccb-m.desk { border-left: 3px solid var(--red); padding: 4px 0 4px 10px; color: var(--grey); white-space: pre-wrap; max-height: 9em; overflow: hidden; position: relative; } .ccb-m.desk.full { max-height: none; }
+  .ccb-m.desk { border-left: 3px solid var(--red); padding: 4px 0 4px 10px; color: var(--grey); white-space: pre-wrap; position: relative; }
+  .ccb-fold > summary { cursor: pointer; list-style: none; white-space: normal; } .ccb-fold > summary::-webkit-details-marker { display: none; } .ccb-fold > summary .ar { color: var(--grey); margin-left: 6px; font-size: 11px; } .ccb-fold[open] > summary { margin-bottom: 6px; } .ccb-fold[open] > summary .ar { display: inline-block; transform: rotate(180deg); } /* 8 Nov 2026: long messages fold behind an arrow */
   .ccb-m.desk b { color: var(--ink); font-weight: 600; display: block; white-space: normal; margin-bottom: 2px; }
   .ccb-m.claude { padding: 2px 0; } .ccb-m.claude.err { color: var(--red); } .ccb-m.sys { color: var(--faint); font-size: 11px; text-align: center; letter-spacing: .06em; }
   .ccb-m code { font: 12px/1.4 ui-monospace, Consolas, monospace; background: var(--ox-inset); border-radius: 4px; padding: 1px 4px; } .ccb-m pre { font: 11.5px/1.45 ui-monospace, Consolas, monospace; background: var(--ox-inset); border-radius: 8px; padding: 8px 10px; overflow-x: auto; white-space: pre; margin: 4px 0 8px; }
@@ -1273,6 +1273,73 @@
     .ox-you .t span { display: none; }
   }
   @media (max-width: 480px) { body[data-cat="hierarchy"] .oxfy-tab { top: auto; bottom: 18px; transform: none; padding: 12px 8px; gap: 8px; } body.fy-open .oxfy-tab { display: none !important; } }
+  /* ===== The Eisenhower matrix, dressed like the Office map (8 Nov 2026): the same cards, edges, glow, serif numbers and faces.
+     Only #matrixSec, only the Office map's tokens (--ox-*), so light, dark and a reskin follow it ===== */
+  #matrixSec .mxh { align-items: flex-end; gap: 14px 12px; margin-bottom: 18px; }
+  #matrixSec .mxh-t { flex: 1 1 480px; min-width: 0; }
+  #matrixSec .mxh-t h2 { font: 300 48px/1 var(--serif); letter-spacing: -.01em; margin: 0 0 10px; }
+  #matrixSec .mxh-t .note { display: block; max-width: 620px; font-size: 13px; line-height: 1.5; }
+  #matrixSec .mxh .tools { margin-left: 0; align-items: center; }
+  #matrixSec #mShow { padding: 4px; gap: 2px; border-radius: 99px; border: 1px solid var(--ox-edge2); background: var(--ox-card); }
+  #matrixSec #mShow button { border: 0; border-radius: 99px; padding: 8px 16px; background: transparent; box-shadow: none; color: var(--grey); font-size: 10.5px; letter-spacing: .14em; }
+  #matrixSec #mShow button.on, #matrixSec #mShow button.on:hover { background: var(--ink); color: var(--bg); } #matrixSec #mShow button:not(.on):hover { background: transparent; color: var(--ink); }
+  #matrixSec #mUp select { max-width: 280px; padding: 10px 14px; border-radius: 99px; border: 1px solid var(--ox-edge2); background: var(--ox-card); color: var(--ink); }
+  #matrixSec #mUp button { padding: 10px 16px; border-radius: 99px; border: 1px solid var(--ox-edge2); background: transparent; box-shadow: none; font-size: 10.5px; letter-spacing: .14em; }
+  #matrixSec #mUp button:hover { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+  #matrixSec .mdf { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 26px; } #matrixSec .mdf:empty { display: none; }
+  #matrixSec .mdc { display: inline-flex; align-items: center; gap: 9px; padding: 6px 6px 6px 15px; border-radius: 99px; border: 1px solid var(--ox-edge2); background: var(--ox-card); color: var(--ink); font-size: 12.5px; font-weight: 500; text-decoration: none; -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); transition: border-color .2s, transform .2s, background .2s; }
+  #matrixSec .mdc i { width: 8px; height: 8px; border-radius: 50%; flex: none; }
+  #matrixSec .mdc b { min-width: 26px; height: 26px; padding: 0 8px; box-sizing: border-box; border-radius: 99px; background: var(--ox-inset); font: 400 14px/26px var(--serif); text-align: center; color: var(--ink); }
+  #matrixSec .mdc:hover { border-color: var(--ox-edge-hover); transform: translateY(-1px); }
+  #matrixSec .mdc.on { background: var(--ink); border-color: var(--ink); color: var(--bg); } #matrixSec .mdc.on b { background: var(--red, #EC3013); color: var(--on-accent); }
+  #matrixSec .matrix { grid-template-columns: 30px 1fr 1fr; grid-template-rows: 26px auto auto; gap: 14px; }
+  #matrixSec .axis { gap: 16px; font-size: 10px; font-weight: 600; letter-spacing: .24em; color: var(--ox-label-fg); }
+  #matrixSec .axis::before, #matrixSec .axis::after { content: ""; flex: 1; height: 1px; background: linear-gradient(90deg, transparent, var(--ox-edge2)); }
+  #matrixSec .axis::after { background: linear-gradient(90deg, var(--ox-edge2), transparent); }
+  #matrixSec .axis.v::before, #matrixSec .axis.v::after { width: 1px; height: auto; }
+  #matrixSec .quad { position: relative; isolation: isolate; overflow: hidden; min-height: 250px; gap: 10px; padding: 22px 20px 20px; border-radius: 24px; border: 1px solid var(--ox-edge2); background: var(--ox-card); box-shadow: 0 28px 60px -44px rgba(0,0,0,.45); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); }
+  #matrixSec .quad::before { content: ""; position: absolute; left: 0; top: 0; right: auto; width: 75%; height: 190px; z-index: -1; pointer-events: none; background: radial-gradient(ellipse at 0 0, color-mix(in srgb, var(--qc) 24%, transparent), transparent 70%); }
+  #matrixSec .quad.hot { border-color: var(--ox-need-edge); box-shadow: 0 0 0 1px var(--ox-need-glow), 0 28px 60px -30px var(--ox-need-shadow); }
+  #matrixSec .quad .qh { align-items: flex-start; gap: 12px; margin-bottom: 6px; }
+  #matrixSec .quad .qhl { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+  #matrixSec .quad .qn { font: 300 32px/1 var(--serif); letter-spacing: 0; text-transform: none; color: var(--ink); }
+  #matrixSec .quad .qhint { font-size: 10px; letter-spacing: .18em; text-transform: uppercase; color: var(--meta, var(--faint)); }
+  #matrixSec .quad .qc { margin-left: auto; font: 300 56px/.8 var(--serif); color: var(--qc) !important; }
+  #matrixSec .quad .empty { flex: 1; display: flex; align-items: center; justify-content: center; min-height: 110px; padding: 16px; border: 1px dashed var(--ox-edge2); border-radius: 16px; color: var(--meta, var(--faint)); font-size: 12.5px; text-align: center; }
+  #matrixSec .quad.drag { outline: 2px dashed color-mix(in srgb, var(--qc) 70%, transparent); outline-offset: -7px; }
+  #matrixSec .item { padding: 15px 16px 14px; border-radius: 16px; border: 1px solid var(--ox-edge); background: var(--ox-inset); box-shadow: none; transition: border-color .2s, transform .2s, box-shadow .2s, background .2s; }
+  #matrixSec .item:hover { border-color: var(--ox-edge-hover); transform: translateY(-2px); box-shadow: 0 18px 36px -26px rgba(0,0,0,.6); }
+  #matrixSec .item.x { border-color: var(--ox-edge-hover); background: var(--ox-card); }
+  #matrixSec .item.late { box-shadow: inset 3px 0 0 var(--red, #EC3013); } #matrixSec .item.late:hover { box-shadow: inset 3px 0 0 var(--red, #EC3013), 0 18px 36px -26px rgba(0,0,0,.6); }
+  #matrixSec .item.done, #matrixSec .item.dropped { opacity: .55; }
+  #matrixSec .item .it { font-size: 14.5px; font-weight: 600; line-height: 1.35; letter-spacing: -.005em; color: var(--ink); }
+  #matrixSec .item .iw { display: flex; align-items: center; gap: 10px; margin-top: 12px; min-width: 0; }
+  #matrixSec .iwho { display: flex; align-items: center; gap: 10px; flex: 1; min-width: 0; }
+  #matrixSec .iwho img, #matrixSec .iini { width: 30px; height: 30px; flex: none; box-sizing: border-box; border-radius: 50%; border: 1px solid var(--ox-face-ring); background: var(--ox-face); object-fit: cover; }
+  #matrixSec .iini { display: inline-flex; align-items: center; justify-content: center; font: 600 11px/1 var(--ui); font-style: normal; color: var(--dc); }
+  #matrixSec .iwn { display: flex; flex-direction: column; gap: 2px; min-width: 0; font-size: 12px; line-height: 1.25; }
+  #matrixSec .iwn b, #matrixSec .iwn .idp { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  #matrixSec .iwn b { font-weight: 600; color: var(--ink); } #matrixSec .iwn em { font-style: normal; font-weight: 400; color: var(--grey); }
+  #matrixSec .idp { display: inline-flex; align-items: center; gap: 6px; color: var(--meta, var(--faint)); font-size: 11px; } #matrixSec .idp i { width: 6px; height: 6px; border-radius: 50%; flex: none; }
+  #matrixSec .tag.due { flex: none; margin-left: auto; padding: 6px 10px; border-radius: 99px; border: 1px solid var(--ox-edge2); background: transparent; box-shadow: none; }
+  #matrixSec .tag.due .dueInput { width: 94px; font-size: 11px; letter-spacing: .02em; color: var(--ink); color-scheme: light dark; } #matrixSec .tag.due .dueInput[value=""] { color: var(--faint); opacity: .7; }
+  #matrixSec .tag.due.late { border-color: var(--ox-need-edge); background: color-mix(in srgb, var(--red, #EC3013) 14%, transparent); } #matrixSec .tag.due.late .dueInput { color: var(--ox-label-red); font-weight: 600; }
+  #matrixSec .tag.due.soon { border-color: color-mix(in srgb, var(--warn) 60%, transparent); } #matrixSec .tag.due.soon .dueInput { color: var(--warn); }
+  #matrixSec .item .im { gap: 6px; margin-top: 11px; }
+  #matrixSec .item .im .tag { padding: 4px 10px; border-radius: 99px; border: 1px solid var(--ox-edge2); background: transparent; box-shadow: none; color: var(--grey); font-size: 9.5px; letter-spacing: .12em; }
+  #matrixSec .item .im .tag.gap { color: var(--ox-label-red); border-color: var(--ox-label-red-edge); }
+  #matrixSec .item .im .tag.cal { border-style: dashed; cursor: pointer; } #matrixSec .item .im .tag.cal:hover { color: var(--ink); border-color: var(--ox-edge-hover); background: transparent; } #matrixSec .item .im .tag.cal.on { color: var(--ok); border-style: solid; cursor: default; }
+  #matrixSec .item .im .tag.lnk:hover { color: var(--ink); background: transparent; border-color: var(--ox-edge-hover); }
+  #matrixSec .item .id { margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--ox-edge); font-size: 12.5px; line-height: 1.55; }
+  #matrixSec .item .ia { gap: 6px; margin-top: 12px; }
+  #matrixSec .item .ia button { padding: 9px 15px; border-radius: 99px; border: 1px solid var(--ox-edge2); background: transparent; box-shadow: none; font-size: 10px; letter-spacing: .14em; }
+  #matrixSec .item .ia button:hover { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+  #matrixSec .item .ia button.primary { background: var(--red, #EC3013); border-color: var(--red, #EC3013); color: var(--on-accent); font-weight: 600; } #matrixSec .item .ia button.primary:hover { background: var(--deep); border-color: var(--deep); }
+  @media (max-width: 720px) {
+    #matrixSec .matrix { grid-template-columns: 1fr; grid-template-rows: none; } #matrixSec .axis { display: none; }
+    #matrixSec .mxh-t { flex-basis: 100%; } #matrixSec .mxh-t h2 { font-size: 36px; } #matrixSec #mUp select { max-width: 100%; flex: 1; }
+    #matrixSec .quad { min-height: 0; padding: 18px 14px 14px; } #matrixSec .quad .qc { font-size: 44px; }
+  }
 </style>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500&family=Newsreader:opsz,wght@6..72,300;6..72,400&family=Noto+Serif+SC:wght@300&display=swap">
 </head>
@@ -1344,13 +1411,13 @@
   </section>
 
   <section id="matrixSec" data-cat="matrix">
-    <div class="sh">
-      <h2>Eisenhower matrix</h2>
-      <span class="note">What follows from finished work, sorted and named to a seat automatically. Feed the office through the office itself — this just shows what came out of it.</span>
-      <span class="mdf" id="mDept"></span>
+    <div class="sh mxh"><!-- 8 Nov 2026: dressed like the Office map (title, then the department chips) -->
+      <div class="mxh-t"><h2>Eisenhower matrix</h2>
+      <span class="note">What follows from finished work, sorted and named to a seat automatically. Feed the office through the office itself — this just shows what came out of it.</span></div>
       <div class="tools seg" id="mShow"><button data-v="open" class="on">OPEN</button><button data-v="all">ALL</button></div>
       <div class="tools" id="mUp"><select id="mUpSel" title="An uploaded document to read in full"><option value="">Read an uploaded document…</option></select><button id="mUpGo" type="button">READ INTO MATRIX</button></div>
     </div>
+    <nav class="mdf" id="mDept" aria-label="Departments on the matrix"></nav>
     <div class="msg" id="fMsg"></div>
     <div class="matrix" id="matrix">
       <div></div><div class="axis">Urgent</div><div class="axis">Not urgent</div>
@@ -2096,7 +2163,7 @@ function route(h) { // a hash is the tab, then (Office only) where you are insid
   const bm = c === 'brain'; if (bm) { c = 'hierarchy'; rest = []; } // the Brain tab became a sheet over the Office on 7 Nov 2026: #brain lands on the Office with it pulled up
   const sk = c === 'skills'; if (sk) { c = 'hierarchy'; rest = []; } // Skills moved under Nora on 8 Nov 2026: #skills lands on the Office with the Skills sheet up
   if (c === 'social') { c = 'hierarchy'; rest = ['marketing']; } // Social moved under the Marketing department page on 8 Nov 2026: #social lands there
-  if (c === 'matrix') { S.mDept = DEPTS[rest[0]] && rest[0] !== 'owner' ? rest[0] : ''; renderMatrix(); } // #matrix/marketing: the matrix for one department (a tile's Matrix count)
+  if (c === 'matrix') { S.mDept = DEPTS[rest[0]] ? rest[0] : ''; renderMatrix(); } // #matrix/marketing: the matrix for one department (a tile's Matrix count)
   if (c === 'roles') { c = 'hierarchy'; rest = []; } // Roles was retired on 7 Nov 2026: its seats are on the Office's department pages, its News feed on Overview
   if (c === 'hierarchy') { if (window.hxRoute) window.hxRoute(rest); else window.AIOS_HX_WANT = rest; } // the Hierarchy script loads later and picks up AIOS_HX_WANT
   if (!(c === 'hierarchy' && S.cat === 'hierarchy' && catReady)) setCat(c, false); // moving inside Hierarchy (Back, a link) keeps the page where it is
@@ -3417,15 +3484,19 @@ function renderTrend() {
 
 function renderMatrix() {
   const Q = S.matrix.quadrants || {};
-  const dn = S.mDept && DEPTS[S.mDept] ? DEPTS[S.mDept].name.charAt(0) + DEPTS[S.mDept].name.slice(1).toLowerCase() : ''; // #matrix/<dept>: one department's cards (8 Nov 2026)
+  const dn = S.mDept && DEPTS[S.mDept] ? mxDeptName(S.mDept) : ''; // #matrix/<dept>: one department's cards (8 Nov 2026); #matrix/owner: the ones only you can answer
   const items = S.matrix.items.filter(i => (S.mShow === 'all' || i.state === 'open') && (!dn || i.dept === S.mDept));
-  const md = dn ? `<b>${esc(dn)} only</b> · <a href="#matrix">show every department</a>` : '';
+  // the department chips (8 Nov 2026): every department with something on the matrix, its count, one click to filter
+  const shown = S.matrix.items.filter(i => S.mShow === 'all' || i.state === 'open'), per = d => shown.filter(i => i.dept === d).length;
+  const chip = (d, label, n, colour) => `<a href="#matrix${d ? '/' + d : ''}" class="mdc${(S.mDept || '') === d ? ' on' : ''}"${(S.mDept || '') === d ? ' aria-current="true"' : ''}>${colour ? `<i style="background:${colour}"></i>` : ''}${esc(label)}<b>${n}</b></a>`;
+  const md = chip('', 'Every department', shown.length) + [...ORDER, 'owner'].filter(d => per(d) || d === S.mDept).map(d => chip(d, mxDeptName(d), per(d), d === 'owner' ? 'var(--red, #EC3013)' : DEPTS[d]?.chip)).join('');
   if ($('mDept').innerHTML !== md) $('mDept').innerHTML = md;
   const pairs = [];
   for (const el of document.querySelectorAll('.quad')) {
-    const q = el.dataset.q, list = items.filter(i => i.q === q).sort((a, b) => (a.due || '9') < (b.due || '9') ? -1 : 1);
-    pairs.push([el, `<div class="qh"><span class="qn">${esc(Q[q]?.name || q)}</span><span class="qhint">${esc(Q[q]?.hint || '')}</span><span class="qc">${list.length}</span></div>` +
-      (list.map(itemHtml).join('') || '<div class="empty">Nothing here.</div>')]);
+    const q = el.dataset.q, list = items.filter(i => i.q === q).sort((a, b) => (a.due || '9') < (b.due || '9') ? -1 : 1), nm = String(Q[q]?.name || q);
+    el.classList.toggle('hot', q === 'do' && list.length > 0); // Do now glows like a tile that needs you
+    pairs.push([el, `<div class="qh"><div class="qhl"><span class="qn">${esc(nm.charAt(0) + nm.slice(1).toLowerCase())}</span><span class="qhint">${esc(Q[q]?.hint || '')}</span></div><span class="qc">${list.length}</span></div>` +
+      (list.map(itemHtml).join('') || `<div class="empty">${dn ? `Nothing for ${esc(dn)} here.` : 'Clear. Nothing in this box.'}</div>`)]);
   }
   morph(pairs, { key: '[data-item]', enter: 'drop' }); // 4: cards that stay glide, new ones drop in, cleared ones fold away
 }
@@ -3476,16 +3547,28 @@ function itemLinks(i) {
     if (!Array.isArray(l.match) || !l.match.length || l.match.some(w => new RegExp('\\b' + String(w).toLowerCase().replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).test(text))) add(String(l.label || 'LINK').toUpperCase(), l.url);
   return out.map(l => `<button type="button" class="tag lnk" data-lnk="${esc(l.url)}" title="Open ${esc(l.url)}">↗ ${esc(l.label)}</button>`).join('');
 }
+// the department as the Office map says it ("Marketing"); the owner's own cards are "Yours to answer"
+function mxDeptName(d) { const n = String(DEPTS[d]?.name || d); return d === 'owner' ? 'Yours to answer' : n.charAt(0) + n.slice(1).toLowerCase(); } // a declaration: route() calls renderMatrix before this line runs
+// a matrix card (restyled 8 Nov 2026 to match the Office map): the title, then who has it (face, name, department) and when it is due,
+// then only the tags that say something. Same data attributes and buttons as before, so drag, open, SEND, DONE, DROP and the date all work as they did
 function itemHtml(i) {
   const a = agentBy(i.agent), d = DEPTS[i.dept] || DEPTS.owner, open = S.openItem.has(i.id);
   const task = i.task && S.tasks.find(t => t.id === i.task);
   const taskTxt = task ? (task.state === 'waiting' ? 'draft waiting on your OK' : task.state === 'done' ? (task.error ? 'task failed' : 'task done') : 'task running') : '';
-  return `<div class="item ${i.state}${open ? ' x' : ''}" draggable="true" data-item="${esc(i.id)}">
+  const today = new Date().toISOString().slice(0, 10), soon = new Date(Date.now() + 2 * 864e5).toISOString().slice(0, 10);
+  const when = i.state !== 'open' || !i.due ? '' : i.due < today ? ' late' : i.due <= soon ? ' soon' : '';
+  const nm = a ? (a.person || (s => s.charAt(0) + s.slice(1).toLowerCase())(String(a.name))) : '';
+  const face = a && a.portrait ? `<img src="${esc(a.portrait)}" alt="">` : `<i class="iini" style="--dc:${i.dept === 'owner' ? 'var(--red, #EC3013)' : d.chip}">${esc(a ? nm.charAt(0) : i.dept === 'owner' ? 'Y' : mxDeptName(i.dept).charAt(0))}</i>`;
+  const job = a && a.person ? (s => s.charAt(0) + s.slice(1).toLowerCase())(String(a.name)) + ' · ' : ''; // two lines: the name, then "job · department"
+  const who = `<span class="iwho">${face}<span class="iwn"><b>${a ? esc(nm) : i.dept === 'owner' ? 'You' : esc(mxDeptName(i.dept))}</b>${a || i.dept === 'owner' ? `<span class="idp"><i style="background:${i.dept === 'owner' ? 'var(--red, #EC3013)' : d.chip}"></i>${esc(job + mxDeptName(i.dept))}</span>` : ''}</span></span>`;
+  const tags = `${i.gap ? `<span class="tag gap">${GAPS[i.gap] || i.gap}</span>` : ''}${i.due ? calTag(i) : ''}${itemLinks(i)}${i.state !== 'open' ? `<span class="tag">${esc(i.state.toUpperCase())}</span>` : ''}${taskTxt ? `<span class="tag">${taskTxt}</span>` : ''}`;
+  return `<div class="item ${i.state}${open ? ' x' : ''}${when}" draggable="true" data-item="${esc(i.id)}">
     <div class="it">${esc(i.title)}</div>
-    <div class="im"><span class="tag" style="border-color:${d.chip}">${d.name}</span>${a ? `<span class="tag">${esc(a.name)}</span>` : ''}${i.gap ? `<span class="tag gap">${GAPS[i.gap] || i.gap}</span>` : ''}<span class="tag due"><input type="date" class="dueInput" value="${esc(i.due || '')}" data-orig="${esc(i.due || '')}" data-item="${esc(i.id)}" title="Change the due date"></span>${calTag(i)}${itemLinks(i)}${i.state !== 'open' ? `<span class="tag">${esc(i.state.toUpperCase())}</span>` : ''}${taskTxt ? `<span class="tag">${taskTxt}</span>` : ''}</div>
+    <div class="iw">${who}<span class="tag due${when}" title="${when === ' late' ? 'Overdue' : when ? 'Due within two days' : 'Due date'}"><input type="date" class="dueInput" value="${esc(i.due || '')}" data-orig="${esc(i.due || '')}" data-item="${esc(i.id)}" title="Change the due date"></span></div>
+    ${tags ? `<div class="im">${tags}</div>` : ''}
     <div class="id">${esc(i.detail)}${i.why ? ` <i>(${esc(i.why)})</i>` : ''}</div>
     <div class="ia">
-      ${i.state === 'open' && DEPTS[i.dept] && i.dept !== 'owner' ? `<button data-act="send">SEND TO ${esc(a ? a.name : d.name)}</button>` : ''}
+      ${i.state === 'open' && DEPTS[i.dept] && i.dept !== 'owner' ? `<button class="primary" data-act="send">SEND TO ${esc(a ? (a.person || a.name).toUpperCase() : d.name)}</button>` : ''}
       ${i.state !== 'done' ? '<button data-act="done">DONE</button>' : ''}
       ${i.state === 'open' ? '<button data-act="drop">DROP</button>' : '<button data-act="reopen">REOPEN</button>'}
       <button data-act="delete">REMOVE</button>
@@ -4011,7 +4094,8 @@ loadTrackers(); setInterval(() => { if (!document.hidden && !Object.values(S.tkB
     const g = id => document.getElementById(id), log = g('gcLog'), inp = g('gcIn'), form = g('gcForm');
     if (!log || !inp || !form) return;
     let st = null, off = '', lastLog = '', lastAsk = '', timer = 0, sending = false, waiting = '';
-    const DRAFT = 'aios.ccbox.draft';
+    const DRAFT = 'aios.ccbox.draft', OPEN = new Set(); // OPEN: folded messages Wesley opened, kept across re-draws
+    log.addEventListener('toggle', e => { const id = e.target.dataset?.mid; if (id) e.target.open ? OPEN.add(id) : OPEN.delete(id); }, true);
     try { inp.value = localStorage.getItem(DRAFT) || ''; } catch {}
     const fmt = s => { // escape, then ``` blocks, `code`, **bold**, paragraphs
       const parts = String(s || '').split(/```[a-z]*\n?([\s\S]*?)```/g);
@@ -4024,9 +4108,10 @@ loadTrackers(); setInterval(() => { if (!document.hidden && !Object.values(S.tkB
       return `<details class="ccb-t"><summary>${t.length} step${t.length === 1 ? '' : 's'}${no ? ` · ${no} not run` : ''} ▾</summary><ol>${t.map(x => `<li class="${x.refused ? 'no' : ''}">${esc(x.label)}${x.refused ? ` <em>(not run: ${esc(x.refused)})</em>` : ''}</li>`).join('')}</ol></details>`;
     }
     function msgHtml(m) {
-      if (m.who === 'you') return `<div class="ccb-m you">${esc(m.text)}</div>`;
+      const fold = (cls, head, text) => `<details class="ccb-m ${cls} ccb-fold" data-mid="${esc(m.id)}"${OPEN.has(m.id) ? ' open' : ''}><summary>${head}<span class="ar">▾</span></summary>${esc(text)}</details>`;
+      if (m.who === 'you') { const t = String(m.text || ''); return t.length > 160 || (t.match(/\n/g) || []).length > 2 ? fold('you', esc(t.replace(/\s+/g, ' ').slice(0, 70) + '…'), t) : `<div class="ccb-m you">${esc(t)}</div>`; }
       if (m.who === 'system') return `<div class="ccb-m sys">${esc(m.text)}</div>`;
-      if (m.who === 'desk') return `<div class="ccb-m desk" title="Tap to show all"><b>From ${esc(m.source?.agentName || m.source?.agent || 'a desk')}, on your yes: ${esc(m.source?.title || '')}</b>${esc(m.text)}</div>`;
+      if (m.who === 'desk') return fold('desk', `<b>From ${esc(m.source?.agentName || m.source?.agent || 'a desk')}, on your yes: ${esc(m.source?.title || '')}</b>`, m.text);
       const now = m.partial ? [...(m.tools || [])].reverse().find(x => !x.done) : null;
       return `<div class="ccb-m claude${m.error ? ' err' : ''}">${toolsHtml(m)}${fmt(m.text)}${m.partial ? `<div class="ccb-now">${esc(now ? now.label : m.text ? 'Still working…' : 'Thinking…')}</div>` : ''}</div>`;
     }
@@ -4074,7 +4159,6 @@ loadTrackers(); setInterval(() => { if (!document.hidden && !Object.values(S.tkB
       const a = e.target.closest('[data-ccans]'); if (a) { a.disabled = true; try { await call('/answer', { id: a.dataset.ccans, yes: a.dataset.yes === '1' }); } catch (err) { warn(err); } schedule(); return; }
       if (e.target.closest('[data-ccstop]')) { if (confirm('Stop Grace now? What she already changed stays changed.')) { try { await call('/stop', {}); } catch (err) { warn(err); } } return; }
       if (e.target.closest('#gcNew')) { try { await call('/new', {}); } catch (err) { warn(err); } return; }
-      const d = e.target.closest('.ccb-m.desk'); if (d) d.classList.toggle('full');
       if (e.target.closest('#oxFyTab')) setTimeout(poll, 50);
     });
     document.addEventListener('visibilitychange', () => { if (!document.hidden) poll(); });
