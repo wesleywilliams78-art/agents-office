@@ -1304,9 +1304,30 @@ await step('lead review: scope, verdicts, pass · bounce then pass · escalate a
   if (!/READ 1, THE RULES/.test(p.extra) || !/READ 2, THE BAR/.test(p.extra) || !/move the dial/.test(p.extra) || !/RULES THE DESK WORKED UNDER/.test(p.extra) || !/"dial"/.test(p.extra)) throw new Error('the prompt must check the rules and the bar: ' + p.extra.slice(0, 300));
   if (pv('{"verdict":"pass","dial":"Yes: a sharp hook for owners adding sites."}').dial !== 'Yes: a sharp hook for owners adding sites.') throw new Error('dial not read');
   if (!/The lead's read: Yes\./.test(L.askLine({ phase: 'signed', round: 0, dial: 'Yes.' }, 'LEAD'))) throw new Error('askLine should show the lead\'s read');
-  if (!/last round/.test(p.extra) || !/fix 1/.test(p.user) || !/shorter/.test(p.user) || !/DRAFT BY NEWT\nD/.test(p.user)) throw new Error('prompt: ' + p.extra.slice(0, 200));
+  if (!/already reworked it 2 times: bounce only for a missed target/.test(p.extra) || !/READ 0, THE TARGETS/.test(p.extra) || !/fix 1/.test(p.user) || !/shorter/.test(p.user) || !/DRAFT BY NEWT\nD/.test(p.user)) throw new Error('prompt: ' + p.extra.slice(0, 200));
   if (!/signed off by LEAD after 1 round of rework/.test(L.askLine({ phase: 'signed', round: 1 }, 'LEAD')) || !/Still open: x/.test(L.askLine({ phase: 'escalated', round: 2, open: 'x' }, 'LEAD')) || L.askLine({ phase: 'review' }) !== '') throw new Error('askLine');
-  return 'off by default · scope (8 cases) · verdict parsing · pass · bounce→pass · escalate at round 2 · failed or unreadable review passes · failed rework escalates';
+  // a missed target (Wesley, 8 Nov 2026): never passed or forwarded unresolved; reworked with new routes up to barRounds, then "exhausted" with a yes/no
+  if (on.barRounds !== 3 || L.settings({ leadReview: { barRounds: 99 } }).barRounds !== 5 || L.settings({ leadReview: { maxRounds: 3, barRounds: 1 } }).barRounds !== 3) throw new Error('barRounds: ' + JSON.stringify(on));
+  const T = (n, extra = '') => `{"verdict":"bounce","feedback":"short ${n}","bar":{"missed":true,"what":"29 of 55 sources"},"routes":["route ${n}"],"tried":[{"route":"web search","gave":"29 sources"}]${extra}}`;
+  if (pv('{"verdict":"pass","bar":{"missed":true,"what":"29 of 55"},"routes":["browser"]}').verdict !== 'bounce') throw new Error('a missed target must never pass');
+  if (pv('{"verdict":"exhausted","feedback":"x"}').verdict !== 'bounce') throw new Error('exhausted without a target is a plain bounce');
+  const mkb = (replies, results) => { let i = 0; const t = { ...task }, reruns = []; return { t, reruns, go: () => L.runLoop({ task: t, out: { result: 'v0' }, review: async () => replies[Math.min(i++, replies.length - 1)], rerun: async (fb, prev, to) => { reruns.push({ fb, to }); return { result: results ? results[reruns.length - 1] : 'v' + reruns.length }; }, max: 2, barMax: 3, by: 'mlead' }) }; };
+  m = mkb([T(1), T(2), T(3), P]); r = await m.go();
+  if (r.leadReview.phase !== 'signed' || m.reruns.length !== 3 || !/Routes to try this round, none of them tried before: 1\. route 1/.test(m.reruns[0].fb)) throw new Error('a missed target gets a third rework round past maxRounds: ' + JSON.stringify(r.leadReview));
+  m = mkb([T(1), T(2), T(3), T(4)]); r = await m.go();
+  if (r.leadReview.phase !== 'escalated' || !r.leadReview.exhausted || m.reruns.length !== 3 || !/cap of 3 rework rounds/.test(r.leadReview.exhausted.why) || r.leadReview.exhausted.target !== '29 of 55 sources' || r.leadReview.exhausted.tried[0].gave !== '29 sources') throw new Error('target cap: ' + JSON.stringify(r.leadReview));
+  m = mkb([T(1), T(1)]); r = await m.go();
+  if (!r.leadReview.exhausted || m.reruns.length !== 1 || !/no route that had not already been tried/.test(r.leadReview.exhausted.why)) throw new Error('a repeated route must not rerun: ' + JSON.stringify(r.leadReview));
+  m = mkb([T(1), T(2)], ['v0']); r = await m.go();
+  if (!r.leadReview.exhausted || m.reruns.length !== 1 || !/unchanged/.test(r.leadReview.exhausted.why)) throw new Error('an unchanged rework must stop: ' + JSON.stringify(r.leadReview));
+  m = mkb([T(1, ',"to":"fer"'), '{"verdict":"exhausted","bar":{"missed":true,"what":"40 of 55"},"tried":[{"route":"browser","gave":"6 locator counts"}],"why":"No more public sources.","decision":{"ask":"Build with 40?","recommend":"yes","task":"Write the issue from 40 sources."}}']); r = await m.go();
+  if (m.reruns[0].to !== 'fer' || r.leadReview.exhausted?.why !== 'No more public sources.' || r.leadReview.exhausted.target !== '40 of 55') throw new Error('better seat and exhausted verdict: ' + JSON.stringify(r.leadReview));
+  const db = L.decisionBlock(r.leadReview, 'Finland streams'); const dp = (await import('./decisions.mjs')).parse(db);
+  if (dp.length !== 1 || dp[0].ask !== 'Build with 40?' || !/6 locator counts/.test(dp[0].text) || !/every route is now spent/.test(L.askLine(r.leadReview, 'MARA'))) throw new Error('exhausted card: ' + db);
+  if ((await import('./decisions.mjs')).parse(L.decisionBlock({ exhausted: { target: '29 of 55', tried: [], why: 'cap' } }, 'X'))[0]?.rec !== 'yes') throw new Error('a default yes/no must be offered');
+  const own = []; r = await L.runLoop({ task: { ...task }, out: { result: 'Bar status: 29 of 55. Not at the bar.' }, review: async () => P, rerun: async fb => { own.push(fb); return { result: 'now at 55' }; }, max: 2, barMax: 3, by: 'mlead' });
+  if (own.length !== 1 || r.leadReview.phase !== 'signed' || !/short of its target/.test(own[0])) throw new Error('a pass over the desk\'s own "not at the bar" must go back: ' + JSON.stringify(r.leadReview));
+  return 'off by default · scope (8 cases) · verdict parsing · pass · bounce→pass · escalate at round 2 · failed or unreadable review passes · failed rework escalates · missed target: never passed, 3 rounds, new routes only, unchanged rework stops, better seat, exhausted with a yes/no, the desk\'s own "not at the bar"';
 });
 await step('design audit: visuals found · scope · pass · send-back then pass · escalate · a blind or failed audit is marked · off changes nothing', async () => {
   const D = await import('./designaudit.mjs');

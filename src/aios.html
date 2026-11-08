@@ -4338,7 +4338,7 @@ loadTrackers(); setInterval(() => { if (!document.hidden && !Object.values(S.tkB
     if (mp && mp.startedAt) ev.push([mp.startedAt, `<b>${dn} started a piece:</b> ${esc(cut(mp.title, 120))}`]); else if (t.startedAt) ev.push([t.startedAt, `<b>${dn} started.</b>`]);
     if (mp && mp.doneAt) ev.push([mp.doneAt, `${dn} finished the piece.`]);
     for (const l of (Array.isArray(lr.log) ? lr.log : [])) if (l.at) ev.push([l.at, l.verdict === 'pass' ? `<b>${ln} signed it off.</b>` : `<b>${ln} sent it back:</b> ${esc(cut(l.feedback, 150))}`]);
-    if (t.waitingAt) ev.push([t.waitingAt, lrOf(t) === 'escalated' ? `<b>${ln} sent it to you unresolved.</b>` : 'Waiting for your OK.']);
+    if (t.waitingAt) ev.push([t.waitingAt, lrOf(t) === 'escalated' ? (lr.exhausted ? `<b>${ln} sent it to you: target missed, every route tried.</b>` : `<b>${ln} sent it to you unresolved.</b>`) : 'Waiting for your OK.']);
     if (t.approvedAt) ev.push([t.approvedAt, 'You approved it.']);
     return ev.sort((x, y) => y[0] - x[0]).slice(0, 6).map(([at, s]) => `<div><time>${esc(hm(at))}</time><span>${s}</span></div>`).join('');
   }
@@ -4373,7 +4373,7 @@ loadTrackers(); setInterval(() => { if (!document.hidden && !Object.values(S.tkB
     }
     const fy = S.tasks.filter(x => x.agent === a.id && x !== t && forYou(x)).sort((x, y) => (x.waitingAt || x.doneAt || 0) - (y.waitingAt || y.doneAt || 0));
     const fyRow = x => { const kk = forYou(x), lr = x.leadReview || {}, l = agentBy(lr.by);
-      const m = kk === 'ok' ? [lr.phase === 'signed' && l ? `Signed off by ${who(l)}` : lr.phase === 'escalated' && l ? `${who(l)} sent it unresolved` : 'Waiting for your OK', dur(x.waitingAt)].filter(Boolean).join(' · ') : kk === 'cc' ? 'A step only Claude Code can do · see For You' : 'Suggests a hand-over · see For You';
+      const m = kk === 'ok' ? [lr.phase === 'signed' && l ? `Signed off by ${who(l)}` : lr.phase === 'escalated' && l ? (lr.exhausted ? `${who(l)} sent it: every route tried` : `${who(l)} sent it unresolved`) : 'Waiting for your OK', dur(x.waitingAt)].filter(Boolean).join(' · ') : kk === 'cc' ? 'A step only Claude Code can do · see For You' : 'Suggests a hand-over · see For You';
       return `<div class="hxd-row"><div><div class="t">${esc(x.title)}</div><div class="m">${esc(m)}</div></div><button type="button"${kk === 'ok' ? ' class="hxd-rv"' : ''} data-review="${esc(x.id)}">${kk === 'ok' ? 'REVIEW' : 'OPEN'}</button></div>`; };
     const waiting = `<section class="hxd-card${fy.length ? ' need' : ''}"><div class="hxd-sh"><h4>Waiting for you from ${n}</h4>${fy.length ? `<span class="hxo-badge">${fy.length}</span>` : ''}</div>${fy.map(fyRow).join('') || `<div class="hxd-e">Nothing else waiting on you from ${n}.</div>`}</section>`;
     const dl = S.tasks.filter(x => x.state === 'done' && (x.agent === a.id || pieces(x).some(p => p.agent === a.id))).sort((x, y) => (y.doneAt || 0) - (x.doneAt || 0)).slice(0, 3);
@@ -4685,7 +4685,7 @@ const tcase = s => String(s || '').toLowerCase().replace(/(^|[\s-])(\p{L})/gu, (
 const label = a => a.person ? `${a.person}, ${tcase(a.name)}` : tcase(a.name);
 function head(t) { // portrait, first name and title; department, waiting since, and the lead who checked it
   const a = agentBy(t.agent) || { id: t.agent, name: t.agent, department: t.dept }, lr = t.leadReview || {}, lead = lr.by && agentBy(lr.by);
-  const checked = !lead ? '' : lr.phase === 'signed' ? ` · checked by ${label(lead)}` : lr.phase === 'escalated' ? ` · ${label(lead)} sent it to you unresolved` : '';
+  const checked = !lead ? '' : lr.phase === 'signed' ? ` · checked by ${label(lead)}` : lr.phase === 'escalated' ? (lr.exhausted ? ` · ${label(lead)} sent it to you: every route tried` : ` · ${label(lead)} sent it to you unresolved`) : '';
   return `${a.portrait ? `<img src="${esc(a.portrait)}" alt="">` : ''}<span><b>${esc(a.person ? `${a.person} · ${tcase(a.name)}` : tcase(a.name))}</b><em>${esc(tcase(DEPTS[a.department || t.dept]?.name || ''))} · ${t.kindLabel ? esc(t.meta || 'done') : 'waiting for your OK'}${t.waitingAt ? ' since ' + esc(ago(t.waitingAt)) : ''}${esc(checked)}</em></span>`;
 }
 const clip = (s, n) => { s = String(s || '').replace(/\s+/g, ' ').trim(); return s.length > n ? s.slice(0, n - 1).replace(/\s\S*$/, '') + '…' : s; };
@@ -4696,7 +4696,7 @@ function glance(t) { // the desk's own three lines (AT A GLANCE, glance.mjs); a 
   return {
     reviewed: r.length ? `${r.length} note${r.length > 1 ? 's' : ''}: ${r.slice(0, 3).join(', ')}${r.length > 3 ? ` and ${r.length - 3} more` : ''}` : (t.used || []).length ? 'Used ' + t.used.join(', ') : '',
     built: clip(first, 200),
-    recommend: lr.phase === 'escalated' && lead ? clip(`${label(lead)} could not sign it off: ${lr.open || 'see the full result'}`, 240) : dial && lead ? clip(`${label(lead)}: ${dial}`, 240) : 'Approve if it reads right; reject to say what to change.',
+    recommend: lr.phase === 'escalated' && lead ? clip(lr.exhausted ? `${label(lead)}: target missed after every route (${lr.exhausted.target}). ${lr.exhausted.why} Say yes or no below on how to go on.` : `${label(lead)} could not sign it off: ${lr.open || 'see the full result'}`, 240) : dial && lead ? clip(`${label(lead)}: ${dial}`, 240) : 'Approve if it reads right; reject to say what to change.',
   };
 }
 const send = async (t, what, body, say) => { // false = it did not go: the card stays open with what was typed, and the reason is shown on the card

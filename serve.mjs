@@ -871,20 +871,26 @@ async function runWithLeadReview(task, feedback, mode, answer, approve) {
   const lead = AGENTS.find(a => a.lead && a.department === desk.department);
   if (!lead) return out;
   const model = normModel(LEAD_REVIEW.model) || 'sonnet', effort = normEffort(LEAD_REVIEW.effort) || 'medium';
+  const deskNow = () => AGENTS.find(a => a.id === task.agent) || desk; // a target rework may move the task to a better-placed seat
   const review = async ({ out: cur, round, log }) => {
     refreshSkills();
-    const p = leadreview.reviewPrompt({ task, draft: cur.result, desk, lead, round, max: LEAD_REVIEW.maxRounds, log, ownerFeedback: feedback && !/^From the (lead|design audit)/.test(feedback) ? feedback : '', skills: cur.skills || [] });
-    return ask(reviewSystem(lead, desk, vaultIndex(), cur.read || [], p.extra), p.user, { maxTokens: 1100, timeout: 150000, model, effort, job: { task, kind: 'lead-review', agent: lead.id, mode: 'draft' } });
+    const p = leadreview.reviewPrompt({ task, draft: cur.result, desk: deskNow(), lead, round, max: LEAD_REVIEW.maxRounds, barMax: LEAD_REVIEW.barRounds, log, ownerFeedback: feedback && !/^From the (lead|design audit)/.test(feedback) ? feedback : '', skills: cur.skills || [] });
+    return ask(reviewSystem(lead, deskNow(), vaultIndex(), cur.read || [], p.extra), p.user, { maxTokens: 1600, timeout: 150000, model, effort, job: { task, kind: 'lead-review', agent: lead.id, mode: 'draft' } });
   };
-  const rerun = async (fb, prev) => { task.result = prev.result; return run(task, fb, mode, false); }; // run() quotes task.result as "previous version"
-  const r = await leadreview.runLoop({ task, out, review, rerun, max: LEAD_REVIEW.maxRounds, by: lead.id, onChange: persist });
+  const rerun = async (fb, prev, to) => { // run() quotes task.result as "previous version"
+    const seat = to && AGENTS.find(a => a.id === to && a.department === desk.department && !a.lead && a.id !== task.agent);
+    if (seat) { task.agent = seat.id; persist(task); console.log(`  ⚖ ${task.id} lead moved the rework to ${seat.name}`); }
+    task.result = prev.result; return run(task, fb, mode, false);
+  };
+  const r = await leadreview.runLoop({ task, out, review, rerun, max: LEAD_REVIEW.maxRounds, barMax: LEAD_REVIEW.barRounds, by: lead.id, onChange: persist });
+  if (r.leadReview.exhausted) r.out.result = String(r.out.result || '') + leadreview.decisionBlock(r.leadReview, task.title); // the owner's yes/no on how to go on
   if (seen.length) r.leadReview.seen = seen;
   if (r.leadReview.proposed) { // the lead's lesson waits for the owner's yes; nothing is written here (leadlessons.mjs)
     const v = leadlessons.vet({ lesson: r.leadReview.proposed, skills: refreshSkills().skills, deskSkills: r.out.skills || [], clients: (cfg.aios?.clients || []).map(c => c && c.name), seen });
     if (v.lesson) r.leadReview.lesson = v.lesson; else r.leadReview.lessonRefused = v.refused;
   }
   console.log(`  ⚖ ${task.id} lead review by ${lead.name}: ${r.leadReview.phase}${r.leadReview.round ? ' after ' + r.leadReview.round + ' round(s)' : ''}${r.leadReview.lesson ? ', proposes a lesson' : r.leadReview.lessonRefused ? ', lesson dropped (' + r.leadReview.lessonRefused + ')' : ''}`);
-  return { ...r.out, leadReview: r.leadReview, leadName: lead.name, deskName: desk.name };
+  return { ...r.out, leadReview: r.leadReview, leadName: lead.name, deskName: deskNow().name };
 }
 const RUNNING = new Set(); // a task is never run twice at once: the page and the server may both ask to start the same new task
 async function runServerTask(id, opts = {}) {
@@ -1719,7 +1725,7 @@ const server = http.createServer(async (req, res) => {
       if ((src.handoffDepth || 0) >= 3) return json(res, 400, { error: 'this has already been handed over three times: start a fresh task instead' });
       const target = ea ? AGENTS.find(a => a.id === 'elead') : AGENTS.find(a => a.id === (to || src.nextStep?.to));
       if (!target) return json(res, 400, { error: 'pick a seat to hand it to' });
-      if (!ea && (target.id === src.agent || target.id === src.handoffFrom)) return json(res, 400, { error: 'a task is not handed back to the seat that wrote it or handed it over' });
+      if (!ea && target.id === src.agent) return json(res, 400, { error: 'a task is not handed back to the seat that wrote it' }); // the seat that handed it over may take it back (8 Nov 2026: RESEARCH returns its streams to the REPORT EDITOR); handoffDepth caps the ping-pong
       const hint = ea ? '' : String(src.nextStep?.what || '').trim();
       let title, text;
       if (ea) {
