@@ -591,6 +591,17 @@
   .hxo-ri { display: grid; grid-template-columns: 38px minmax(0, 1fr); gap: 12px; padding: 16px 0; border-top: 1px solid var(--ox-edge); } .hxo-ri.none { display: block; color: var(--faint); } .hxo-ri > .hxo-fw { align-self: start; }
   .hxo-ri .hx-fy-i { padding: 0; border: 0; margin: 0; background: transparent; } .hxo-ri .hx-fy-t { font-size: 14px; margin: 4px 0; } .hxo-ri .hx-fy-m { margin-bottom: 10px; }
   .hxo-rd { color: var(--meta, var(--faint)); font-size: 10px; letter-spacing: .2em; text-transform: uppercase; }
+  /* Your answers (8 Nov 2026): the matrix questions only Wesley can answer, under For You on the office map. One line each; the answer closes the card and is filed in the Brain */
+  .fya { margin-top: 26px; padding-top: 18px; border-top: 1px solid var(--ox-edge2); } .fya:empty { display: none; }
+  .fya h4 { margin: 0; display: flex; align-items: center; gap: 12px; font: 300 30px/1 var(--serif); }
+  .fya-i { padding: 16px 0; border-top: 1px solid var(--ox-edge); }
+  .fya-t { font-size: 14px; font-weight: 600; line-height: 1.35; overflow-wrap: anywhere; } .fya-d { color: var(--grey); font-size: 12px; line-height: 1.45; margin-top: 5px; overflow-wrap: anywhere; }
+  .fya-f { display: flex; gap: 8px; margin-top: 10px; } .fya-f input { flex: 1; min-width: 0; font: 14px/1.4 var(--ui, inherit); padding: 10px 12px; border-radius: 12px; border: 1px solid var(--ox-edge2); background: var(--ox-inset); color: var(--ink); } .fya-f input:focus { outline: none; border-color: var(--grey); }
+  .fya-f .primary { padding: 10px 16px; background: var(--red); border-color: var(--red); color: var(--on-accent); } .fya-f .primary:hover { background: var(--deep); border-color: var(--deep); }
+  .fya .fya-n, .fya .fya-n:hover { margin-top: 8px; padding: 0; border: 0; background: transparent; color: var(--grey); font-size: 11.5px; font-weight: 400; letter-spacing: 0; text-transform: none; text-decoration: underline; text-underline-offset: 3px; } .fya .fya-n:hover { color: var(--ink); }
+  .fya-more { width: 100%; margin-top: 4px; padding: 12px; border-radius: 12px; border: 1px solid var(--ox-edge2); background: transparent; color: var(--ink); font-size: 11px; letter-spacing: .12em; }
+  .fya-ok { margin-top: 6px; font-size: 12px; color: var(--grey); } .fya .why { display: block; margin-top: 6px; color: var(--bad); font-size: 11.5px; }
+  @media (max-width: 480px) { .fya-f input { font-size: 16px; } }
   /* the Claude Code box (8 Nov 2026): at the bottom of For You. Type, and the office runs Claude Code in the repo; risky steps ask here first */
   .ccb { margin-top: 26px; padding-top: 18px; border-top: 1px solid var(--ox-edge2); }
   .ccb-h { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; } .ccb-h h4 { margin: 0; font: 300 30px/1 var(--serif); }
@@ -1442,7 +1453,7 @@
 </div>
 <!-- For You (7 Nov 2026): a red tab on the right edge of the Office tab; it pulls out the list of what waits on you (the whole office, or the department you are in) -->
 <button type="button" class="oxfy-tab" id="oxFyTab" aria-controls="oxFy" aria-expanded="false"><b id="oxFyN">0</b><i class="ccb-tq" id="gcTabQ" hidden title="Grace is asking you">?</i><span>For you</span></button>
-<aside class="oxfy" id="oxFy" aria-label="For you" aria-hidden="true"><button type="button" class="oxfy-x" data-oxfyclose aria-label="Close (Esc)" title="Close (Esc)">✕</button><div class="oxfy-b" id="oxFyBody"></div>
+<aside class="oxfy" id="oxFy" aria-label="For you" aria-hidden="true"><button type="button" class="oxfy-x" data-oxfyclose aria-label="Close (Esc)" title="Close (Esc)">✕</button><div class="oxfy-b" id="oxFyBody"></div><section class="fya" id="oxFyAns" aria-label="Your answers"></section>
 <section class="ccb" id="gcBox" aria-label="Grace, Claude Code"><div class="ccb-h"><div class="ccb-who"><img src="/people/grace.png" alt="" onerror="this.remove()"><div><h4>Grace</h4><span class="ccb-role">Runs Claude Code in the office folder</span></div></div><span class="ccb-st" id="gcSt">Connecting…</span><button type="button" class="ccb-new" id="gcNew" title="Start a fresh conversation">NEW CONVERSATION</button></div>
 <div class="ccb-sub">Reading, editing, checks and commits just run; anything risky asks you here first.</div>
 <div class="ccb-log" id="gcLog" aria-live="polite"></div><div id="gcAsk"></div><div id="gcOff"></div>
@@ -3927,13 +3938,54 @@ loadTrackers(); setInterval(() => { if (!document.hidden && !Object.values(S.tkB
   const who = a => a ? (a.person || tc(a.name)) : '';
   // ---- For You: the red tab on the right edge pulls out the list (the whole office on the map, one department on its page) ----
   let fyHtml = '';
-  function fyPanel(items, scope) {
+  function fyPanel(items, scope, answers) {
     const tab = el('oxFyTab'), body = el('oxFyBody'); if (!tab || !body) return;
-    el('oxFyN').textContent = items.length; tab.classList.toggle('none', !items.length); tab.title = items.length ? `${items.length} waiting for you` : 'Nothing waiting for you';
+    const nq = fyaPanel(answers); // the questions only Wesley can answer: on the office map only
+    el('oxFyN').textContent = items.length; tab.classList.toggle('none', !items.length && !nq); tab.title = (items.length ? `${items.length} waiting for you` : 'Nothing waiting for you') + (nq ? ` · ${nq} question${nq === 1 ? '' : 's'} to answer` : '');
     const html = `<h3>For you${items.length ? ` <span class="hxo-badge">${items.length}</span>` : ''}</h3><div class="hxo-sc">${scope}</div>
       ${items.map(t => { const a = agentBy(t.agent); return `<div class="hxo-ri">${a ? fc(a, 'waiting', 'm') : '<span class="hxo-ini">·</span>'}<div><div class="hxo-rd">${esc(deptName(t.dept))}</div>${fyItem(t)}</div></div>`; }).join('') || '<div class="hxo-ri none">Nothing waiting on you here.</div>'}`;
     if (html !== fyHtml) { fyHtml = html; body.innerHTML = html; }
   }
+  // ---- Your answers (8 Nov 2026): the open matrix cards only Wesley can answer (dept "owner"), most pressing first. ANSWER closes the card
+  // with his line as its outcome, which the server files in the Brain (writeAnswerNote, the same as DONE on the matrix); "Not now" hides one for a week ----
+  const FYA_KEY = 'aiosFyaLater', FYA_SHOW = 5, FYA_RANK = { do: 0, plan: 1, delegate: 2, drop: 3 };
+  let fyaAll = false, fyaHtml = '', fyaLater = {}; try { fyaLater = JSON.parse(localStorage.getItem(FYA_KEY) || '{}') || {}; } catch {}
+  function fyaPanel(show) {
+    const box = el('oxFyAns'); if (!box) return 0;
+    const now = Date.now(), qs = show ? (S.matrix.items || []).filter(i => i.dept === 'owner' && i.state === 'open' && !(fyaLater[i.id] > now))
+      .sort((a, b) => (FYA_RANK[a.q] ?? 4) - (FYA_RANK[b.q] ?? 4) || (a.due || '9999').localeCompare(b.due || '9999') || (a.addedAt || 0) - (b.addedAt || 0)) : [];
+    const list = fyaAll ? qs : qs.slice(0, FYA_SHOW);
+    const html = qs.length ? `<h4>Your answers <span class="hxo-badge">${qs.length}</span></h4><div class="hxo-sc">Questions only you can answer · one line each · filed in the Brain so the desks know</div>`
+      + list.map(i => `<div class="fya-i" data-fya="${esc(i.id)}"><div class="fya-t">${esc(i.title)}</div>${i.detail ? `<div class="fya-d">${esc(i.detail)}</div>` : ''}<form class="fya-f"><input type="text" maxlength="600" placeholder="Your answer…" aria-label="Your answer: ${esc(i.title)}"><button type="submit" class="primary">ANSWER</button></form><button type="button" class="fya-n" data-fyalater>Not now · ask me in a week</button></div>`).join('')
+      + (qs.length > FYA_SHOW ? `<button type="button" class="fya-more" data-fyamore>${fyaAll ? 'SHOW FEWER' : `SHOW ALL ${qs.length} →`}</button>` : '') : '';
+    if (html !== fyaHtml && !box.contains(document.activeElement)) { // the page redraws every few seconds: never while he is typing, and a half-typed answer survives the redraw
+      const typed = {}; box.querySelectorAll('[data-fya] input').forEach(x => { if (x.value) typed[x.closest('[data-fya]').dataset.fya] = x.value; });
+      fyaHtml = html; box.innerHTML = html;
+      box.querySelectorAll('[data-fya] input').forEach(x => { const v = typed[x.closest('[data-fya]').dataset.fya]; if (v) x.value = v; });
+    }
+    return qs.length;
+  }
+  const fyaRedraw = () => { if (el('oxFyAns').contains(document.activeElement)) document.activeElement.blur(); fyaHtml = ''; renderHierarchy(); };
+  document.addEventListener('submit', async e => {
+    const f = e.target.closest('.fya-f'); if (!f) return; e.preventDefault();
+    const row = f.closest('[data-fya]'), id = row.dataset.fya, inp = f.querySelector('input'), btn = f.querySelector('button'), o = inp.value.trim();
+    if (!o) { inp.focus(); return; }
+    inp.disabled = btn.disabled = true; row.querySelector('.why')?.remove();
+    try {
+      const r = await fetch('/api/matrix/' + encodeURIComponent(id), { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ state: 'done', outcome: o }) });
+      const j = await r.json(); if (!r.ok || j.error) throw new Error(j.error || 'it did not go through');
+      const it = (S.matrix.items || []).find(x => x.id === id); if (it) Object.assign(it, j.item);
+      row.innerHTML = `<div class="fya-t">${esc(j.item.title)}</div><div class="fya-ok">Answered. ${j.item.outcomeNote ? `Filed in the Brain as “${esc(j.item.outcomeNote)}”.` : 'The card is closed.'}</div>`;
+      setTimeout(fyaRedraw, 2500);
+    } catch (err) { inp.disabled = btn.disabled = false; row.insertAdjacentHTML('beforeend', `<span class="why">Not saved: ${esc(err.message)}</span>`); }
+  });
+  document.addEventListener('click', e => {
+    if (e.target.closest('[data-fyamore]')) { fyaAll = !fyaAll; fyaRedraw(); return; }
+    const b = e.target.closest('[data-fyalater]'); if (!b) return;
+    const now = Date.now(); for (const k in fyaLater) if (!(fyaLater[k] > now)) delete fyaLater[k];
+    fyaLater[b.closest('[data-fya]').dataset.fya] = now + 7 * 864e5; try { localStorage.setItem(FYA_KEY, JSON.stringify(fyaLater)); } catch {}
+    fyaRedraw();
+  });
   const fyOpen = () => document.body.classList.contains('fy-open');
   function fySet(open) {
     document.body.classList.toggle('fy-open', open);
@@ -4051,7 +4103,7 @@ loadTrackers(); setInterval(() => { if (!document.hidden && !Object.values(S.tkB
       : `<div class="ox-you clear" id="oxYou"><span class="me">YOU</span><div class="t">Nothing waiting on you<span>Everything is with the desks</span></div></div>`;
     const html = `<div class="ox-map"><section class="ox-col" aria-label="Departments">${L.map(x => tile(x.b, 'L', x.i)).join('')}</section><section class="ox-mid">${hub}${you}</section><section class="ox-col" aria-label="Departments">${Rt.map(x => tile(x.b, 'R', x.i)).join('')}</section></div>`;
     if (html !== oxHtml || !el('oxNora')) { oxHtml = html; el('hx').innerHTML = html; } // the page redraws every few seconds: write only on change, so the moving dots never restart
-    fyPanel(fyAll, 'Whole office · oldest first · nothing goes out without you');
+    fyPanel(fyAll, 'Whole office · oldest first · nothing goes out without you', true);
     flowSoon(); document.fonts?.ready.then(flowSoon);
   }
   // ---- where you are: #office, #office/<dept>, #office/<dept>/<desk> (#hierarchy/… still lands). Each step in is one browser history entry, so Back goes out one level ----
