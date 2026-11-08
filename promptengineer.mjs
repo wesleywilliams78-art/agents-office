@@ -85,11 +85,13 @@ export async function engineer({ request, now = new Date(), roster, timeout = 18
   fs.writeFileSync(mcpFile, JSON.stringify({ mcpServers: { 'brain-reader': { command: process.execPath, args: [path.join(ROOT, 'connectors', 'brain-reader', 'mcp.mjs')] } } }));
   const user = `WESLEY'S REQUEST\n${request}`;
   const rm = () => { for (const f of [sysFile, mcpFile]) fs.rm(f, { force: true }, () => {}); };
-  const args = ['-p', user, ...mcp.HEADLESS, '--output-format', 'stream-json', '--verbose', '--no-session-persistence', '--system-prompt-file', sysFile, '--mcp-config', mcpFile, '--strict-mcp-config',
+  const args = ['-p', ...mcp.HEADLESS, // the request goes in on stdin: with an attachment it can pass Windows' 32,767-character command line (spawn ENAMETOOLONG)
+    '--output-format', 'stream-json', '--verbose', '--no-session-persistence', '--system-prompt-file', sysFile, '--mcp-config', mcpFile, '--strict-mcp-config',
     '--allowedTools', 'mcp__brain-reader', '--disallowedTools', 'Bash,Edit,Write,Read,Glob,Grep,Agent,NotebookEdit,Task,WebFetch,WebSearch', '--no-chrome', ...modelArgs(model, effort)];
   const env = mcp.freshEnv(); delete env.CLAUDECODE;
   return new Promise((resolve, reject) => {
-    const p = spawn(mcp.resolveBin(), args, { cwd: CLI_CWD, env, stdio: ['ignore', 'pipe', 'pipe'] });
+    const p = spawn(mcp.resolveBin(), args, { cwd: CLI_CWD, env, stdio: ['pipe', 'pipe', 'pipe'] });
+    p.stdin.on('error', () => {}); p.stdin.end(user);
     let out = '', err = '', text = '', ok = false, cost = null; const used = [];
     const timer = setTimeout(() => { p.kill('SIGKILL'); rm(); reject(new Error(`took longer than ${timeout / 1000} s`)); }, timeout);
     const feed = line => {

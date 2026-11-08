@@ -270,8 +270,8 @@ async function askX(system, user, { maxTokens = 4000, tools = true, timeout = RU
   // (spawn ENAMETOOLONG). Hand it over as a file instead of an argument.
   const sysFile = path.join(CLI_CWD, `system-${nid()}.txt`); fs.writeFileSync(sysFile, system);
   const rmSys = () => fs.rm(sysFile, { force: true }, () => {});
-  const bigUser = String(user).length > 12000; // a team lead's final step carries every piece: over ~32k characters the command line fails, so it goes in on stdin
-  const args = ['-p', ...(bigUser ? [] : [user]), ...mcp.HEADLESS, '--output-format', 'stream-json', '--verbose', '--no-session-persistence', '--system-prompt-file', sysFile,
+  // the user turn always goes in on stdin: a team lead's final step or a long brief passes ~32k characters and the command line fails
+  const args = ['-p', ...mcp.HEADLESS, '--output-format', 'stream-json', '--verbose', '--no-session-persistence', '--system-prompt-file', sysFile,
     '--disallowedTools', ['Bash,Edit,Write,Read,Glob,Grep,Agent,NotebookEdit,Task' + (allowed.includes('WebFetch') ? '' : ',WebFetch,WebSearch'), ...mcp.blockedTools()].join(',')]; // V3.9: never the email send tools
   if (allowed.length) args.push('--allowedTools', allowed.join(','));
   args.push(...(tools ? mcp.cliArgs() : ['--no-chrome'])); // V3.2 (16 Sep): the owner's Chrome, when tools.browser is on
@@ -279,8 +279,8 @@ async function askX(system, user, { maxTokens = 4000, tools = true, timeout = RU
   const env = mcp.freshEnv(); delete env.CLAUDECODE; // the CLI refuses to nest inside another Claude Code session
   if (job?.task) logStep(job, { t: 'start', kind: job.kind, round: job.mode === 'revise' || job.mode === 'answer' ? job.mode : undefined });
   return new Promise((resolve, reject) => {
-    const p = spawn(mcp.resolveBin(), args, { cwd: CLI_CWD, env, stdio: [bigUser ? 'pipe' : 'ignore', 'pipe', 'pipe'] });
-    if (bigUser) { p.stdin.on('error', () => {}); p.stdin.end(String(user)); }
+    const p = spawn(mcp.resolveBin(), args, { cwd: CLI_CWD, env, stdio: ['pipe', 'pipe', 'pipe'] });
+    p.stdin.on('error', () => {}); p.stdin.end(String(user));
     let out = '', err = '', text = '', used = [], gotResult = false, usageOut = null, modelUsed = null, ran = null; const partial = []; // partial: every piece of text the agent has written so far, so a run that is stopped does not lose its work
     const stopped = msg => { const e = new Error(msg); e.partial = partial.join(String.fromCharCode(10, 10)).trim(); e.used = used; return e; };
     const timer = setTimeout(() => { p.kill('SIGKILL'); reject(stopped(`Claude took longer than ${timeout / 1000} s`)); }, timeout);
@@ -322,11 +322,12 @@ async function askAssistant(system, user, { onEvent = () => {}, timeout = 240000
   fs.writeFileSync(sysFile, system);
   fs.writeFileSync(mcpFile, JSON.stringify({ mcpServers: { 'office-control': { command: process.execPath, args: [path.join(ROOT, 'connectors', 'office-control', 'mcp.mjs')], env: { OFFICE_URL: `http://127.0.0.1:${cfg.port || 4520}`, OFFICE_ROOT: ROOT, OFFICE_BRAIN: BRAIN } } } }));
   const rm = () => { for (const f of [sysFile, mcpFile]) fs.rm(f, { force: true }, () => {}); };
-  const args = ['-p', user, ...mcp.HEADLESS, '--output-format', 'stream-json', '--verbose', '--no-session-persistence', '--system-prompt-file', sysFile, '--mcp-config', mcpFile, '--strict-mcp-config',
+  const args = ['-p', ...mcp.HEADLESS, '--output-format', 'stream-json', '--verbose', '--no-session-persistence', '--system-prompt-file', sysFile, '--mcp-config', mcpFile, '--strict-mcp-config', // the conversation goes in on stdin: 14 turns and a brief passed 32,767 characters on 8 Nov (spawn ENAMETOOLONG)
     '--allowedTools', 'mcp__office-control', '--disallowedTools', 'Bash,Edit,Write,Read,Glob,Grep,Agent,NotebookEdit,Task,WebFetch,WebSearch', '--no-chrome', ...modelArgs(model, effort)];
   const env = mcp.freshEnv(); delete env.CLAUDECODE;
   return new Promise((resolve, reject) => {
-    const p = spawn(mcp.resolveBin(), args, { cwd: CLI_CWD, env, stdio: ['ignore', 'pipe', 'pipe'] });
+    const p = spawn(mcp.resolveBin(), args, { cwd: CLI_CWD, env, stdio: ['pipe', 'pipe', 'pipe'] });
+    p.stdin.on('error', () => {}); p.stdin.end(String(user));
     let out = '', err = '', text = '', ok = false; const used = [];
     const timer = setTimeout(() => { p.kill('SIGKILL'); rm(); reject(new Error(`took longer than ${timeout / 1000} s`)); }, timeout);
     const feed = line => {
@@ -349,11 +350,12 @@ async function askMotion(system, user, { onEvent = () => {}, timeout = 100 * 600
   fs.writeFileSync(sysFile, system);
   fs.writeFileSync(mcpFile, JSON.stringify({ mcpServers: { 'motion-studio': { command: process.execPath, args: [path.join(ROOT, 'connectors', 'motion-studio', 'mcp.mjs')] } } }));
   const rm = () => { for (const f of [sysFile, mcpFile]) fs.rm(f, { force: true }, () => {}); };
-  const args = ['-p', user, ...mcp.HEADLESS, '--output-format', 'stream-json', '--verbose', '--no-session-persistence', '--system-prompt-file', sysFile, '--mcp-config', mcpFile, '--strict-mcp-config',
+  const args = ['-p', ...mcp.HEADLESS, '--output-format', 'stream-json', '--verbose', '--no-session-persistence', '--system-prompt-file', sysFile, '--mcp-config', mcpFile, '--strict-mcp-config', // the conversation goes in on stdin (Windows' command-line limit)
     '--allowedTools', 'mcp__motion-studio', '--disallowedTools', 'Bash,Edit,Write,Read,Glob,Grep,Agent,NotebookEdit,Task,WebFetch,WebSearch', '--no-chrome', '--model', motionMod.MODEL, '--effort', motionMod.EFFORT];
   const env = mcp.freshEnv(); delete env.CLAUDECODE;
   return new Promise((resolve, reject) => {
-    const p = spawn(mcp.resolveBin(), args, { cwd: CLI_CWD, env, stdio: ['ignore', 'pipe', 'pipe'] });
+    const p = spawn(mcp.resolveBin(), args, { cwd: CLI_CWD, env, stdio: ['pipe', 'pipe', 'pipe'] });
+    p.stdin.on('error', () => {}); p.stdin.end(String(user));
     let out = '', err = '', text = '', ok = false; const used = [], shown = new Set();
     const timer = setTimeout(() => { p.kill('SIGKILL'); rm(); reject(new Error(`took longer than ${timeout / 60000} minutes`)); }, timeout);
     const feed = line => {
