@@ -1656,6 +1656,8 @@ function placeInd(animate) {
 }
 addEventListener('resize', () => placeInd(false));
 document.fonts?.ready.then(() => placeInd(false));
+// a tab can change width after the pill is placed (8 Nov: the MATRIX count went 154 → 92, the tabs after it moved left and the pill stayed): follow it
+if (window.ResizeObserver) { const ro = new ResizeObserver(() => placeInd(false)); $('side').querySelectorAll('button').forEach(b => ro.observe(b)); }
 // 3. the client sub-menu: folded away elsewhere, unfolds under Clients (open on narrow screens, where the rail is a row)
 function foldSubnav(animate) {
   const nav = $('navDash'), open = S.cat === 'clients' || isDash(S.cat);
