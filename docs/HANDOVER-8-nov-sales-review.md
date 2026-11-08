@@ -21,7 +21,7 @@ Wesley flipped decision 5 (lead review) from the recommended No to Yes.
 - **Femi:** `pipeline.md` entries now carry `Last contact:`. Chapati and Karak Chai are "(date to confirm)"; Kayana is 4 Nov (Matt's email).
 - **Fixes in passing:** `pipeline.md` Folo → Femi, Yusuf → Yousif; call-prep's client list path → `30-Customers/client-list.md`.
 - **Backups** of every Brain file and the roster before the edits: `data/brain-backups/2026-11-08-sales-review/`.
-- **Still open for Sales:** no bad-fit definition in the ICP (only Wesley can say), no last-contact dates for Chapati and Karak Chai, no enrichment connector.
+- **Still open for Sales:** no bad-fit definition in the ICP (only Wesley can say), no enrichment connector. Chapati and Karak Chai went cold and were dropped from the pipeline (Wesley, 8 Nov); the old entries are in the backup folder as `pipeline-before-drop.md`.
 
 ## Operations: start here
 Desks: Orla (olead, lead), Sana (scout), Leon (legal), Reggie (comply), Archie (report), Dasha (dash). Same method: per desk, show job, brief, tools, skills, lessons and Brain; one yes/no per fix; roster writes go to `office.agents.local.json`; skills go to the Brain.
