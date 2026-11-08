@@ -30,6 +30,13 @@ Done overnight (7–8 Nov) while Wesley slept. Defaults, built to be refined one
 5. **Lead review for the four new departments: not yet.** Only Marketing has it; Delivery was activated without it. Add one department at a time after Delivery.
 6. **Compact the office map so six solid tiles fit at 1905×920: yes.** The bottom row now sits 116 px below the fold (the page scrolls; nothing is clipped).
 
+### These six are on a review card in the AIOS (8 Nov, morning)
+Wesley asked for the decisions to sit in the office flow, not only in Telegram.
+- Task `mw7mo382eqdn`, Orla (olead): "Relay six overnight set-up decisions to Wesley's review card". It is under Office → Operations → For You, waiting for his OK, and the card shows six Yes/No switches preset to the recommendations above (5 yes, 1 no).
+- On APPROVE, each Yes starts a task for Orla. For decisions 1, 3, 4, 5 and 6 her result is a claude-code-prompt step (COPY FOR CLAUDE CODE under For You), because desks cannot change config, code, routines or 11 Brain notes. Decision 2 is a read only.
+- Decision 3 changed from monthly to every Monday at 08:30, because routines have no monthly schedule.
+- The script that built the card: `decisions-task.mjs` in this session's scratchpad (temporary). The pattern is in memory `yes-no-proposals`.
+
 ## Gaps (the Brain had no source, so the briefs stay general)
 - **Sales:** no playbook or pipeline rules of your own; `icp.md` has no bad-fit definition; no enrichment or Apollo connector.
 - **Operations:** no compliance process, reporting cadence or contract basics of your own; no house dashboard spec beyond the Imran's Diner work.
@@ -39,6 +46,9 @@ Done overnight (7–8 Nov) while Wesley slept. Defaults, built to be refined one
 
 ## Start here in the morning
 Open `#office/sales` and read the six Sales desks in their drawers. Answer decision 1 (Drive) first, because Piper cannot finish a proposal without it. Then Operations, Finance and Emails, one per round, in the same way as Marketing and Delivery.
+
+## Start prompt for the next chat
+"Read docs/HANDOVER-8-nov-all-departments.md. I've answered the six decisions on Orla's card: run any COPY FOR CLAUDE CODE steps that came out of it, then walk me through Sales desk by desk."
 
 ## Files
 - Roster before tonight: `C:\Users\Wesley\AppData\Local\Temp\claude\38fd8dfc9966ab97\5079ba4b-493b-4e85-924f-6c671405c817\scratchpad\office.agents.local.before.json` (temporary folder; the roster file itself is gitignored).
