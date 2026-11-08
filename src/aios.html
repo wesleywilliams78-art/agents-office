@@ -1021,6 +1021,33 @@
     body[data-cat="hierarchy"] .livebar #liveTxt { overflow: hidden; text-overflow: ellipsis; }
   }
   @media (prefers-reduced-motion: reduce) { .bmsheet, .bmdim, .bmtab { transition: none; } }
+  /* Skills sheet (8 Nov 2026): Skills sits under Nora. The line on her card pulls the skill audit up over the Office, the Brain sheet's way; it scrolls inside */
+  .hxo-sk { display: flex; align-items: center; gap: 8px; width: 100%; margin-top: 10px; padding: 8px 12px; border: 1px solid var(--ox-edge); border-radius: 12px; background: var(--ox-inset); color: var(--grey); font-size: 12px; letter-spacing: 0; text-transform: none; text-align: left; cursor: pointer; }
+  .hxo-sk:hover { color: var(--ink); border-color: var(--ox-edge-hover); background: var(--ox-inset); }
+  .hxo-sk b { font-weight: 700; color: var(--ink); letter-spacing: .12em; font-size: 10px; text-transform: uppercase; } .hxo-sk .n { color: var(--red, #EC3013); font-weight: 700; } .hxo-sk i { margin-left: auto; font-style: normal; }
+  .skdim { position: fixed; inset: 0; z-index: 900; background: var(--bm-dim); opacity: 0; visibility: hidden; cursor: pointer; transition: opacity .3s, visibility 0s .3s; }
+  .sksheet { position: fixed; left: 0; right: 0; bottom: 0; z-index: 901; height: 85vh; height: 85dvh; margin: 0; padding: 26px 32px 24px; overflow-y: auto; overscroll-behavior: contain; background: var(--bm-sheet-bg); border-top: 1px solid var(--ox-edge2); border-radius: 24px 24px 0 0; box-shadow: 0 -40px 90px -30px var(--bm-sheet-shadow); transform: translateY(100%); visibility: hidden; transition: transform .36s cubic-bezier(.2,.8,.2,1), visibility 0s .36s; }
+  .sksheet::before { content: ''; position: absolute; top: 9px; left: 50%; width: 44px; height: 4px; margin-left: -22px; border-radius: 99px; background: var(--ox-edge2); }
+  body.sk-open .skdim { opacity: 1; visibility: visible; transition-delay: 0s; }
+  body.sk-open .sksheet { transform: none; visibility: visible; transition-delay: 0s; }
+  body.sk-open { overflow: hidden; }
+  .sksheet .bmsheet-x, .sksheet .bmsheet-x:hover { position: absolute; top: 20px; right: 22px; width: 36px; height: 36px; padding: 0; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px; letter-spacing: 0; color: var(--grey); }
+  .sksheet .bmsheet-x:hover { color: var(--ink); }
+  .sksheet .sh { padding-right: 52px; margin-bottom: 14px; }
+  .skrev:empty { display: none; }
+  .skrev { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; padding: 12px 14px; margin-bottom: 10px; }
+  .skrev .who { display: flex; align-items: center; gap: 10px; } .skrev img { width: 38px; height: 38px; border-radius: 50%; object-fit: cover; }
+  .skrev .t { font-weight: 700; font-size: 13.5px; } .skrev .m { color: var(--grey); font-size: 12px; } .skrev .r { margin-left: auto; display: flex; gap: 8px; align-items: center; }
+  .sk .skq-h { font-size: 10px; letter-spacing: .14em; color: var(--grey); text-transform: uppercase; margin: 8px 0 4px; }
+  .sk .skq { display: flex; gap: 10px; align-items: flex-start; padding: 8px 0; border-top: 1px solid var(--line); font-size: 12.5px; }
+  .sk .skq .a { flex: 1; min-width: 0; } .sk .skq .m { display: block; color: var(--grey); font-size: 11.5px; margin-top: 2px; }
+  .sk .skq details { margin-top: 4px; font-size: 11.5px; } .sk .skq summary { cursor: pointer; color: var(--grey); }
+  .sk .skq pre { white-space: pre-wrap; font: 11.5px/1.45 ui-monospace, Consolas, monospace; background: var(--bg); border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; margin: 4px 0 0; max-height: 220px; overflow: auto; }
+  .sk .skq.off { color: var(--grey); }
+  .sk .skq-sw { display: flex; flex: none; } .sk .skq-sw button { padding: 5px 10px; font-size: 10px; } .sk .skq-sw button:first-child { border-radius: 8px 0 0 8px; } .sk .skq-sw button:last-child { border-radius: 0 8px 8px 0; margin-left: -1px; }
+  .sk .skq-sw button.on { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+  @media (max-width: 600px) { .sksheet { height: 100vh; height: 100dvh; border-radius: 0; padding: 18px 14px 14px; } .sksheet .bmsheet-x, .sksheet .bmsheet-x:hover { top: 12px; right: 10px; } .sksheet .sh .note { display: none; } }
+  @media (prefers-reduced-motion: reduce) { .sksheet, .skdim { transition: none; } }
   /* Review card (7 Nov 2026): the office's own card (src/review.js), skinned to the AIOS look (body # wins over the card's own later stylesheet) */
   body #rv { z-index: 1000; --cream: var(--panel); --hairline: var(--line); }
   body #rv .rv-box { background: var(--panel); color: var(--ink); border-color: var(--line); border-radius: 12px; }
@@ -1197,7 +1224,6 @@
     <button data-go="budget" id="navBudget" style="display:none">Budget <span class="n"></span></button>
     <span class="sep" aria-hidden="true"></span>
     <button data-go="hierarchy">Office</button>
-    <button data-go="skills">Skills <span class="n" id="nSkills"></span></button>
     <button data-go="tokens">Tokens</button>
     <span class="ind" id="sideInd" aria-hidden="true"></span>
   </nav>
@@ -1305,17 +1331,6 @@
   </section>
   <div class="hxd-w" id="hxDr" data-cat="hierarchy" aria-hidden="true"></div>
 
-  <section id="skillSec" data-cat="skills">
-    <div class="sh">
-      <h2>Skill audit</h2>
-      <span class="note">Which skills the office really uses, which it doesn't, which are being corrected, and whether the connectors a skill relies on are wired and proven. Ask for a revision on any card.</span>
-      <div class="tools seg" id="kShow"><button data-v="attn" class="on">NEEDS ATTENTION</button><button data-v="unused">UNUSED OR QUIET</button><button data-v="refining">BEING REFINED</button><button data-v="all">ALL</button></div>
-    </div>
-    <div class="msg" id="skMsg"></div>
-    <div class="skkpis" id="skKpis"></div>
-    <div class="skgrid" id="skGrid"></div>
-  </section>
-
   <section id="tokSec" data-cat="tokens">
     <div class="sh">
       <h2>Tokens</h2>
@@ -1402,6 +1417,20 @@
       </div>
     </div>
 </section>
+<!-- Skills sheet (8 Nov 2026): Skills left the tab bar and sits under Nora; the line on her card pulls this up over the Office, like the Brain. Esc, ✕ or the dimmed Office closes it -->
+<div class="skdim" data-skclose aria-hidden="true"></div>
+<section class="sksheet" id="skillSec" role="dialog" aria-modal="true" aria-label="Skills" aria-hidden="true">
+    <button type="button" class="bmsheet-x" data-skclose aria-label="Close (Esc)" title="Close (Esc)">✕</button>
+    <div class="sh">
+      <h2>Skills</h2>
+      <span class="note">How each desk does its kind of work. Nora owns them; Brian reviews them every Friday. Each suggestion is a yes or no: a yes makes the change, with a backup, and a no is remembered.</span>
+      <div class="tools seg" id="kShow"><button data-v="attn" class="on">NEEDS ATTENTION</button><button data-v="unused">UNUSED OR QUIET</button><button data-v="refining">BEING REFINED</button><button data-v="all">ALL</button></div>
+    </div>
+    <div class="msg" id="skMsg"></div>
+    <div class="skrev" id="skRev"></div>
+    <div class="skkpis" id="skKpis"></div>
+    <div class="skgrid" id="skGrid"></div>
+</section>
 
 <script>
 const DEPTS = {
@@ -1416,7 +1445,7 @@ const DEPTS = {
 const ORDER = ['emails', 'sales', 'marketing', 'ops', 'fin', 'delivery'];
 const GAPS = { 'no-seat': 'GAP · NO SEAT', 'owner-decision': 'YOUR CALL', 'missing-info': 'GAP · MISSING INFO' };
 const MODEL = { sonnet: 'Sonnet', opus: 'Opus', fable: 'Fable' };
-const S = { health: null, agents: [], tasks: [], routines: [], matrix: { items: [], feeds: [], quadrants: {}, clients: [] }, mShow: 'open', nShow: 'all', kShow: 'attn', skillAudit: null, cat: 'overview', openItem: new Set(), proposing: new Set(), busy: false };
+const S = { health: null, agents: [], tasks: [], routines: [], matrix: { items: [], feeds: [], quadrants: {}, clients: [] }, mShow: 'open', nShow: 'all', kShow: 'attn', skillAudit: null, cat: 'overview', openItem: new Set(), proposing: new Set(), skPicks: {}, skApplying: new Set(), skGridHtml: '', busy: false };
 const $ = id => document.getElementById(id);
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const ago = t => { if (!t) return ''; const s = (Date.now() - t) / 1000; return s < 60 ? 'just now' : s < 3600 ? Math.round(s / 60) + ' min ago' : s < 86400 ? Math.round(s / 3600) + ' h ago' : Math.round(s / 86400) + ' d ago'; };
@@ -1521,7 +1550,7 @@ const readiness = a => [!!a.does, !!a.brief, roleSkills(a).length > 0];
 function render() { renderNeeds(); renderWeek(); renderNav(); renderKpis(); renderClients(); renderMatrix(); window.renderHierarchy?.(); renderSkills(); renderNews(); renderActivity(); renderBudget(); }
 
 // categories: the left-hand list shows one category at a time; the choice is remembered and can be linked to (#budget)
-const CAT_IDS = ['overview', 'matrix', 'clients', 'budget', 'hierarchy', 'skills', 'tokens'];
+const CAT_IDS = ['overview', 'matrix', 'clients', 'budget', 'hierarchy', 'tokens'];
 const isDash = c => /^dash-[a-z0-9-]+$/.test(String(c));
 /* ---------- motion: springs for the rail and the page it drives ----------
    A damped spring sampled into a CSS linear() curve: zeta < 1 overshoots and settles, like motion.md's back.out pops.
@@ -1700,6 +1729,7 @@ async function setCat(c, push = true) {
   if (isDash(c)) renderSales();
   if (c === 'tokens') loadTokens();
   if (c !== 'hierarchy') window.brainSheet?.(false); // the Brain sheet belongs to the Office; another tab closes it (and its physics stop)
+  if (c !== 'hierarchy') skillSheet(false); // so does the Skills sheet (Nora's card)
 }
 
 // Social (V3.12, 3 Nov): the next post in each workstream. The server works out the state; this draws it and sends the buttons.
@@ -1973,17 +2003,18 @@ function renderNav() { // small counts beside a category: what is waiting on you
     if (!was && e.classList.contains('alert') && numsSeen.has(id)) stamp(e); numsSeen.set(id, 1); };
   set('nOverview', S.tasks.filter(t => t.state === 'waiting').length, true);
   set('nMatrix', (S.matrix.items || []).filter(i => i.state === 'open').length);
-  set('nSkills', S.skillAudit ? S.skillAudit.summary.attention : '', true);
 }
 function route(h) { // a hash is the tab, then (Office only) where you are inside it: #office/marketing/gfx is Marketing with Greta's drawer open
   let [c, ...rest] = String(h || '').split('/');
   if (c === 'office') c = 'hierarchy'; // the Office tab keeps its old id inside the page; #hierarchy links from before 7 Nov still land
   const bm = c === 'brain'; if (bm) { c = 'hierarchy'; rest = []; } // the Brain tab became a sheet over the Office on 7 Nov 2026: #brain lands on the Office with it pulled up
+  const sk = c === 'skills'; if (sk) { c = 'hierarchy'; rest = []; } // Skills moved under Nora on 8 Nov 2026: #skills lands on the Office with the Skills sheet up
   if (c === 'social') { c = 'hierarchy'; rest = ['marketing']; } // Social moved under the Marketing department page on 8 Nov 2026: #social lands there
   if (c === 'roles') { c = 'hierarchy'; rest = []; } // Roles was retired on 7 Nov 2026: its seats are on the Office's department pages, its News feed on Overview
   if (c === 'hierarchy') { if (window.hxRoute) window.hxRoute(rest); else window.AIOS_HX_WANT = rest; } // the Hierarchy script loads later and picks up AIOS_HX_WANT
   if (!(c === 'hierarchy' && S.cat === 'hierarchy' && catReady)) setCat(c, false); // moving inside Hierarchy (Back, a link) keeps the page where it is
   if (bm) { if (window.brainSheet) window.brainSheet(true); else window.AIOS_BM_WANT = true; } // the Brain script loads later and picks up AIOS_BM_WANT
+  if (sk) skillSheet(true);
 }
 (() => { let c = location.hash.slice(1); if (!c) { try { c = localStorage.getItem('aiosCat'); } catch {} } route(c || 'overview'); })();
 window.addEventListener('hashchange', () => route(location.hash.slice(1)));
@@ -1993,26 +2024,75 @@ function renderSkills() {
   const A = S.skillAudit; if (!A) return;
   const sm = A.summary;
   $('skKpis').innerHTML = [['skills', sm.total], ['need attention', sm.attention], ['never used', sm.unused], ['used once', sm.quiet], ['being refined', sm.refining], ['new', sm.newSkills]].map(([l, n]) => `<span class="skkpi"><b>${n}</b>${l}</span>`).join('');
-  const f = S.kShow, list = A.skills.filter(x => f === 'all' ? true : f === 'attn' ? x.attention > 0 : f === 'refining' ? x.refining : ['unused', 'quiet', 'new'].includes(x.state));
+  const f = S.kShow, list = A.skills.filter(x => f === 'all' ? true : f === 'attn' ? x.attention > 0 || !!x.proposal : f === 'refining' ? x.refining : ['unused', 'quiet', 'new'].includes(x.state)).sort((a, b) => !!b.proposal - !!a.proposal); // suggestions waiting on you come first
   const label = { house: 'HOUSE STYLE', busy: 'BUSY', active: 'ACTIVE', quiet: 'USED ONCE', unused: 'NEVER USED', new: 'NEW' };
-  $('skGrid').innerHTML = list.map(x => {
+  const gridHtml = list.map(x => {
     const links = x.links.map(l => `<span class="tag ${l.connected && (l.proven || l.wired) ? 'good' : 'miss'}" title="${esc(l.notes.join('; '))}">${esc(l.name)} · ${l.proven ? 'proven, used ×' + l.usedByAgents : l.connected ? (l.wired ? 'wired, not yet used' : 'not wired') : 'not usable'}</span>`).join('');
     const recs = x.recs.map(r => `<li class="${r.level}">${r.level === 'warn' ? '⚠ ' : r.level === 'ok' ? '✓ ' : '· '}${esc(r.text)}</li>`).join('');
-    const p = x.proposal ? `<div class="skp" data-prop="${esc(x.name)}">${esc(x.proposal.text)}</div><div class="skb"><button data-copyprop="${esc(x.name)}">COPY</button><button data-doneprop="${esc(x.name)}" title="I have done what this suggestion asks">MARK DONE</button><span class="note">suggested ${ago(x.proposal.at)}; nothing is changed until you say so</span></div>` : '';
+    const p = x.proposal ? skSuggestions(x) : '';
     return `<div class="panel sk" data-skill="${esc(x.name)}">
       <div class="skh"><span class="skn">${esc(x.name)}</span><span class="tag ${x.state === 'unused' ? 'miss' : x.state === 'busy' ? 'good' : ''}">${label[x.state]}</span>${x.refining ? '<span class="tag">BEING REFINED</span>' : ''}</div>
       <div class="skd">${esc(x.description)}</div>
       <div class="sks"><span>${x.house ? 'every seat' : esc(x.seats.map(s => s.name).join(', ') || 'no seat')}</span><span>used ${x.uses}×${x.lastUsed ? ', last ' + ago(x.lastUsed) : ''}</span>${x.uses ? `<span>reworked ${x.reworked} of ${x.uses}</span>` : ''}${x.lessonCount ? `<span>${x.lessonCount} correction${x.lessonCount > 1 ? 's' : ''}</span>` : ''}<span>${x.chars} / 6000 characters</span>${x.actioned ? `<span>${x.actioned} suggestion${x.actioned > 1 ? 's' : ''} actioned, last ${ago(x.lastActioned)}</span>` : ''}</div>
       ${links ? `<div class="skl">${links}</div>` : ''}
       <ul class="skr">${recs}</ul>
-      ${p}${x.house ? '' : `<div class="skb"><button data-propose="${esc(x.name)}"${S.proposing.has(x.name) ? ' disabled' : ''}>${S.proposing.has(x.name) ? 'THINKING… (about 20 seconds)' : x.proposal ? 'ASK AGAIN' : 'SUGGEST A REVISION'}</button></div>`}
+      ${p}${x.house ? '' : x.source !== 'brain' ? '<div class="skb"><span class="note">Shipped with the office: copy it into the Brain to change it.</span></div>' : `<div class="skb"><button data-propose="${esc(x.name)}"${S.proposing.has(x.name) ? ' disabled' : ''}>${S.proposing.has(x.name) ? 'THINKING… (about 30 seconds)' : x.proposal ? 'ASK AGAIN' : 'SUGGEST A REVISION'}</button></div>`}
     </div>`;
   }).join('') || '<div class="empty">Nothing here.</div>';
+  if (gridHtml !== S.skGridHtml) { S.skGridHtml = gridHtml; $('skGrid').innerHTML = gridHtml; } // the poll redraws every few seconds: write only on change, so an open "exact edit" stays open
+  // Brian's Friday review is one card at the top: REVIEW opens the office's review card, where each yes/no is set and APPROVE carries them out
+  const rv = A.review || {}, t = rv.task, br = S.agents.find(a => a.id === 'brian');
+  const revHtml = `<div class="panel skrev"><div class="who">${br ? `<img src="/people/brian.png" alt="">` : ''}<div><div class="t">${t ? esc(t.title) : 'Friday skills review'}</div><div class="m">${t
+    ? (t.state === 'waiting' ? `${t.suggestions} suggestion${t.suggestions === 1 ? '' : 's'} from ${esc(br?.person || 'Brian')}, waiting for your yes or no · ${esc(ago(t.at))}` : t.state === 'doing' || t.state === 'next' ? `${esc(br?.person || 'Brian')} is reviewing the skills now` : `Last run ${esc(ago(t.at))}`) + (rv.nextAt ? ` · next ${esc(new Date(rv.nextAt).toLocaleString('en-GB', { weekday: 'short', day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }))}` : '')
+    : `${esc(br?.person || 'Brian')} reads the audit and the week's corrections every Friday at 16:00 and puts each improvement to you as a yes or no.`}</div></div></div>${t && t.state === 'waiting' ? `<div class="r"><button type="button" class="pri" data-review="${esc(t.id)}">REVIEW</button></div>` : ''}</div>`;
+  if ($('skRev').innerHTML !== revHtml) $('skRev').innerHTML = revHtml;
 }
+// a suggestion for one skill: each change is a yes/no preset to the recommendation, and APPLY carries out every yes (8 Nov 2026)
+const skPick = (name, d) => { const p = S.skPicks[name] || (S.skPicks[name] = {}); if (typeof p[d.n] !== 'boolean') p[d.n] = d.rec === 'yes'; return p[d.n]; };
+function skSuggestions(x) {
+  const P = x.proposal, ok = P.pending.filter(d => d.ok), y = ok.filter(d => skPick(x.name, d)).length;
+  const rows = P.pending.map(d => d.ok
+    ? `<div class="skq"><div class="a"><b>${d.n}.</b> ${esc(d.ask)}<span class="m">Recommended: ${d.rec === 'yes' ? 'Yes' : 'No'} · on Yes, changes ${esc((d.skill || []).map(s => `${s.skill}/${s.file} (${s.mode})`).join(', '))}</span><details><summary>The exact edit</summary><pre>${esc(d.text)}</pre></details></div><div class="skq-sw"><button type="button" data-skpick="${esc(x.name)}" data-n="${d.n}" data-v="1"${skPick(x.name, d) ? ' class="on"' : ''}>YES</button><button type="button" data-skpick="${esc(x.name)}" data-n="${d.n}" data-v="0"${skPick(x.name, d) ? '' : ' class="on"'}>NO</button></div></div>`
+    : `<div class="skq off"><div class="a"><b>${d.n}.</b> ${esc(d.ask || '?')}<span class="m">Cannot be made: ${esc(d.problem)}</span></div></div>`).join('');
+  return `<div class="skq-h">Suggested ${esc(ago(P.at))} · a yes changes the skill, with a backup · a no is remembered</div>${P.note ? `<div class="skd">${esc(P.note)}</div>` : ''}${rows}<div class="skb"><button type="button" class="pri" data-skapply="${esc(x.name)}"${S.skApplying.has(x.name) ? ' disabled' : ''}>${S.skApplying.has(x.name) ? 'APPLYING…' : `APPLY · ${y} YES · ${ok.length - y} NO`}</button></div>`;
+}
+async function applySuggestions(name) {
+  if (S.skApplying.has(name)) return;
+  S.skApplying.add(name); renderSkills(); $('skMsg').className = 'msg'; $('skMsg').textContent = '';
+  try {
+    const r = await api('/skill-audit/answer', { method: 'POST', body: { skill: name, picks: S.skPicks[name] || {} } });
+    const done = r.outcome.filter(o => o.yes && o.ok).length, failed = r.outcome.filter(o => o.yes && !o.ok), no = r.outcome.filter(o => !o.yes).length;
+    $('skMsg').className = failed.length ? 'msg err' : 'msg';
+    $('skMsg').textContent = `${name}: ${done} change${done === 1 ? '' : 's'} made${no ? `, ${no} no remembered` : ''}.` + (failed.length ? ' Not made: ' + failed.map(o => `${o.ask} (${o.message})`).join('; ') : '');
+    delete S.skPicks[name];
+  } catch (e) { $('skMsg').className = 'msg err'; $('skMsg').textContent = 'Could not apply: ' + e.message; }
+  S.skApplying.delete(name); await poll();
+}
+// the sheet: Nora's Skills line pulls it up over the Office (the Brain sheet's pattern); Esc, ✕ or the dimmed Office closes it
+const skIsOpen = () => document.body.classList.contains('sk-open');
+function skillSheet(open) {
+  if (open && S.cat !== 'hierarchy') return; if (open === skIsOpen()) return;
+  const sh = $('skillSec'); document.body.classList.toggle('sk-open', open);
+  sh.setAttribute('aria-hidden', !open); sh.inert = !open;
+  if (open && location.hash === '#skills') history.replaceState(history.state, '', '#' + (window.hxPath ? window.hxPath() : 'office')); // so the next #skills link fires again
+  if (open) { renderSkills(); sh.querySelector('.bmsheet-x').focus({ preventScroll: true }); }
+  else if (sh.contains(document.activeElement)) document.querySelector('[data-skopen]')?.focus({ preventScroll: true });
+}
+$('skillSec').inert = true;
+document.addEventListener('click', e => {
+  if (e.target.closest('[data-skopen]')) { skillSheet(true); return; }
+  if (e.target.closest('[data-skclose]')) { skillSheet(false); return; }
+  const pk = e.target.closest('button[data-skpick]'); if (pk) { (S.skPicks[pk.dataset.skpick] || (S.skPicks[pk.dataset.skpick] = {}))[pk.dataset.n] = pk.dataset.v === '1'; renderSkills(); return; }
+  const ap = e.target.closest('button[data-skapply]'); if (ap) applySuggestions(ap.dataset.skapply);
+});
+document.addEventListener('keydown', e => { // capture: closes the sheet before the For You panel, the drawer or the Office use Esc
+  if (e.key !== 'Escape' || !skIsOpen() || document.getElementById('rv')?.classList.contains('on')) return;
+  e.preventDefault(); e.stopImmediatePropagation(); skillSheet(false);
+}, true);
 async function proposeRevision(name, btn) { // the 5-second poll redraws this list, so the waiting state lives in S.proposing, not on the button
   if (S.proposing.has(name)) return;
-  S.proposing.add(name); btn.disabled = true; btn.textContent = 'THINKING… (about 20 seconds)'; $('skMsg').className = 'msg'; $('skMsg').textContent = '';
-  try { await api('/skill-audit/propose', { method: 'POST', body: { skill: name } }); }
+  S.proposing.add(name); btn.disabled = true; btn.textContent = 'THINKING… (about 30 seconds)'; $('skMsg').className = 'msg'; $('skMsg').textContent = '';
+  try { const r = await api('/skill-audit/propose', { method: 'POST', body: { skill: name } }); if (!r.proposal?.pending?.length) $('skMsg').textContent = `${name}: no change suggested. ${r.proposal?.note || ''}`; delete S.skPicks[name]; }
   catch (e) { $('skMsg').className = 'msg err'; $('skMsg').textContent = 'Could not get a suggestion: ' + e.message; }
   S.proposing.delete(name); await poll();
 }
@@ -3384,8 +3464,6 @@ document.addEventListener('click', e => {
   const bm = e.target.closest('[data-bm]'); if (bm) { S.bMonth = bm.dataset.bm; renderBudget(); return; }
   const nb = e.target.closest('button[data-go]'); if (nb) { setCat(nb.dataset.go); return; } // the menu, and buttons on a page that open another (Open Delivery)
   const pb = e.target.closest('button[data-propose]'); if (pb) { proposeRevision(pb.dataset.propose, pb); return; }
-  const db = e.target.closest('button[data-doneprop]'); if (db) { db.disabled = true; api('/skill-audit/done', { method: 'POST', body: { skill: db.dataset.doneprop } }).then(poll).catch(er => { db.disabled = false; $('skMsg').className = 'msg err'; $('skMsg').textContent = 'Could not mark it done: ' + er.message; }); return; }
-  const cb = e.target.closest('button[data-copyprop]'); if (cb) { const el = document.querySelector(`[data-prop="${CSS.escape(cb.dataset.copyprop)}"]`); navigator.clipboard.writeText(el ? el.textContent : '').then(() => { cb.textContent = 'COPIED ✓'; setTimeout(() => { cb.textContent = 'COPY'; }, 1500); }).catch(() => { cb.textContent = 'COPY FAILED'; }); return; }
   const lk = e.target.closest('button[data-lnk]');
   if (lk) { const u = lk.dataset.lnk;
     if (/^https?:/i.test(u)) window.open(u, '_blank', 'noopener');
@@ -3800,10 +3878,12 @@ loadTrackers(); setInterval(() => { if (!document.hidden && !Object.values(S.tkB
     const inFlight = S.tasks.filter(t => t.state === 'doing').length, doneToday = S.tasks.filter(t => t.state === 'done' && !t.closed && t.doneAt && new Date(t.doneAt).toDateString() === today).length;
     const routed = S.tasks.filter(t => t.by === 'chief' && t.addedAt).sort((a, b) => b.addedAt - a.addedAt)[0];
     const rl = routed ? (() => { const lead = S.agents.find(a => a.department === routed.dept && a.lead); return `${esc(routed.title)} <em>to ${esc(deptName(routed.dept))}${lead && lead.person ? ', ' + esc(lead.person) : ''} · ${esc(ago(routed.addedAt))}</em>`; })() : 'Every request you approve comes to Nora first.';
+    const skLine = () => { const sm = S.skillAudit?.summary; if (!sm) return ''; const w = sm.waiting || 0; // Skills sit under Nora (8 Nov 2026): this line pulls up the Skills sheet
+      return `<button type="button" class="hxo-sk" data-skopen aria-controls="skillSec"><b>Skills</b><span>${w ? `<span class="n">${w} suggestion${w === 1 ? '' : 's'} waiting</span>` : 'No suggestions waiting'}${sm.unused ? ` · ${sm.unused} never used` : ''}</span><i aria-hidden="true">↑</i></button>`; };
     const hub = `<article class="hxo-hub" id="oxNora"><div class="hxo-k">The centre of the office</div>
       <div class="hxo-who"><span class="hxo-fw xxl"><img src="/people/chief.png" alt=""><b class="${chiefBusy ? 'work' : ''}"></b></span><div><div class="hxo-hn">Nora</div><div class="hxo-hr">Chief of Staff · hands every request to a department</div></div></div>
       <div class="hxo-nb"><span class="hxo-st ${chiefBusy ? 'work' : ''}"><i></i>${chiefBusy ? 'Working on your message' : 'Last sent'}</span><div class="hxo-nt">${rl}</div></div>
-      <div class="hxo-hs"><div><b>${inFlight}</b>In flight</div><div class="you${fyAll.length ? ' n' : ''}"><b>${fyAll.length}</b>For you</div><div><b>${doneToday}</b>Done today</div></div></article>`;
+      <div class="hxo-hs"><div><b>${inFlight}</b>In flight</div><div class="you${fyAll.length ? ' n' : ''}"><b>${fyAll.length}</b>For you</div><div><b>${doneToday}</b>Done today</div></div>${skLine()}</article>`;
     const per = [...new Set(fyAll.map(t => t.dept))].map(d => `${esc(deptName(d))} ${fyAll.filter(t => t.dept === d).length}`).join(' · ');
     const allOk = fyAll.every(t => forYou(t) === 'ok');
     const you = fyAll.length

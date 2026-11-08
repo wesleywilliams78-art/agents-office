@@ -558,18 +558,63 @@ await step('skill audit: usage, rework, lessons and connector wiring are scored,
   const down = audit({ skills: [mk('idle')], agents, tasks: [], servers: [{ ...servers[0], status: 'failed' }], brainPath: path.join(ROOT, 'no-brain'), now });
   if (!down.skills[0].recs.some(x => x.level === 'warn' && /not usable/.test(x.text))) throw new Error('a down connector was not flagged');
   const sa = await import('./skillaudit.mjs'), dir = fs.mkdtempSync(path.join(os.tmpdir(), 'sa-'));
-  sa.saveProposal(dir, 'social', 'change A');
-  if (!sa.markProposalDone(dir, 'social') || sa.markProposalDone(dir, 'social')) throw new Error('marking a suggestion done must work once and then report nothing open');
-  if (sa.loadProposals(dir).social.text) throw new Error('an actioned suggestion is still pending');
+  sa.saveProposal(dir, 'social', { pending: [{ n: 1, ask: 'change A?', rec: 'yes', ok: true }] });
+  const pp = sa.loadProposals(dir);
+  if (!sa.closeProposal(pp, 'social', [{ ask: 'change A?', yes: true, ok: true }]) || sa.closeProposal(pp, 'social', [])) throw new Error('answering a suggestion must work once and then report nothing open');
+  sa.saveProposals(dir, pp);
+  if (sa.loadProposals(dir).social.pending) throw new Error('an answered suggestion is still pending');
   const after = audit({ skills: [mk('social')], agents, tasks: [], servers, brainPath: path.join(ROOT, 'no-brain'), now, proposals: sa.loadProposals(dir) }).skills[0];
   if (after.proposal || after.actioned !== 1) throw new Error('the card should show nothing pending and one actioned');
   const many = [1, 2, 3, 4].map(i => ({ id: i, agent: 'vid', skills: ['social'], revisions: i <= 2 ? 1 : 0, doneAt: now - day }));
   const before = audit({ skills: [mk('social')], agents, tasks: many, servers, brainPath: path.join(ROOT, 'no-brain'), now, proposals: {} }).skills[0];
   const acked = audit({ skills: [mk('social')], agents, tasks: many, servers, brainPath: path.join(ROOT, 'no-brain'), now, proposals: { social: { history: [{ text: 'x', at: now - day, doneAt: now }] } } }).skills[0];
   if (!before.attention || acked.attention || acked.refining) throw new Error('marking a suggestion done must take the rework it answered off the review list (before ' + before.attention + ', after ' + acked.attention + ')');
-  sa.saveProposal(dir, 'social', 'change B');
-  if (!sa.loadProposals(dir).social.text || sa.loadProposals(dir).social.history.length !== 1) throw new Error('a new suggestion must be possible and keep the history');
-  return 'counts uses and rework · a link used in a real task is proven · a wired link never used is "prove it with a test" · a down connector is a warning · MARK DONE clears one suggestion, keeps history, and a new one can follow';
+  sa.saveProposal(dir, 'social', { pending: [{ n: 1, ask: 'change B?', rec: 'yes', ok: true }] });
+  if (!sa.loadProposals(dir).social.pending?.length || sa.loadProposals(dir).social.history.length !== 1) throw new Error('a new suggestion must be possible and keep the history');
+  return 'counts uses and rework · a link used in a real task is proven · a wired link never used is "prove it with a test" · a down connector is a warning · answering clears the suggestions, keeps history, and a new one can follow';
+});
+await step('skill updates: a yes writes the exact edit with a backup, a no writes nothing, limits and paths are refused', async () => {
+  const su = await import('./skillupdates.mjs'), dec = await import('./decisions.mjs');
+  const brain = fs.mkdtempSync(path.join(os.tmpdir(), 'su-')), skillsDir = path.join(brain, 'Agents Office', 'skills'), bk = path.join(brain, 'backups');
+  const sdir = path.join(skillsDir, 'proposal'); fs.mkdirSync(sdir, { recursive: true });
+  const orig = '---\nname: proposal\ndescription: d\nagents: [piper]\n---\n# Writing a proposal\nUse this for proposals.\n\n## Rules\n- Short.\n';
+  fs.writeFileSync(path.join(sdir, 'SKILL.md'), orig); fs.writeFileSync(path.join(sdir, 'template.md'), '# Template\n');
+  fs.writeFileSync(path.join(brain, 'outside.md'), 'x');
+  const ids = ['piper', 'brian'], blk = (h, body) => `SKILL UPDATE\n${h}\n---\n${body}\nEND SKILL UPDATE`;
+  // a decision carrying a skill update survives the decision parser whole
+  const d = dec.parse(`Text.\nDECISION\nask: Add the price rule?\nrecommend: yes\ntitle: Price rule\n---\n${blk('skill: proposal\nmode: add-rule\nreason: twice corrected', 'Always state the price in pounds.')}\nEND DECISION`)[0];
+  const blocks = su.parse(d.text);
+  if (blocks.length !== 1 || blocks[0].mode !== 'add-rule') throw new Error('the skill update inside a decision was not read: ' + JSON.stringify(blocks));
+  // a no writes nothing (and is remembered)
+  const props = su.remember({}, blocks, d.ask);
+  if (fs.readFileSync(path.join(sdir, 'SKILL.md'), 'utf8') !== orig || fs.existsSync(bk)) throw new Error('a no changed the skill or made a backup');
+  if (!su.isDeclined(props, su.parse(d.text.replace('pounds.', 'pounds. '))) ) throw new Error('a no was not remembered for the same suggestion');
+  // a yes writes it, with a backup of the old version
+  const r = su.applyAll(skillsDir, blocks, { agentIds: ids, backupDir: bk });
+  const now = fs.readFileSync(path.join(sdir, 'SKILL.md'), 'utf8');
+  if (!r.ok || !/## Rules\n- Short\.\n- Always state the price in pounds\.\n/.test(now)) throw new Error('the yes did not add the rule: ' + r.message + '\n' + now);
+  if (r.backups.length !== 1 || fs.readFileSync(r.backups[0], 'utf8') !== orig) throw new Error('no backup of the old version');
+  if (su.applyAll(skillsDir, blocks, { agentIds: ids, backupDir: bk }).ok) throw new Error('the same rule was added twice');
+  // refused: over the limits, outside the skills folder, a secret, an unknown desk, a shipped-only skill
+  const refused = (h, body, why) => { const p = su.planAll(skillsDir, su.parse(blk(h, body)), { agentIds: ids }); if (p.ok) throw new Error('not refused: ' + why); return p.problem; };
+  refused('skill: proposal\nmode: append', 'x'.repeat(6100), 'SKILL.md over 6,000 characters');
+  refused('skill: proposal\nfile: template.md\nmode: append', 'y'.repeat(4100), 'a file over 4,000 characters');
+  refused('skill: ../..\nmode: append', 'z', 'a path outside the skills folder');
+  refused('skill: proposal\nfile: ../../outside.md\nmode: append', 'z', 'a file outside the skill folder');
+  refused('skill: proposal\nmode: append', 'api_key: sk-abcdefghijklmnopqrstuvwxyz', 'a secret');
+  refused('skill: proposal\nmode: replace-text\nfind: agents: [piper]', 'agents: [nobody]', 'an unknown desk in agents:');
+  refused('skill: house-style\nmode: append', 'z', 'a skill that is not in the Brain');
+  fs.writeFileSync(path.join(sdir, 'big.md'), 'w'.repeat(3990));
+  fs.writeFileSync(path.join(sdir, 'big2.md'), 'v'.repeat(3990));
+  refused('skill: proposal\nfile: template.md\nmode: append', 'u'.repeat(200), 'the files beside SKILL.md over 8,000 in total');
+  if (fs.readFileSync(path.join(skillsDir, 'proposal', 'template.md'), 'utf8') !== '# Template\n' || fs.readFileSync(path.join(brain, 'outside.md'), 'utf8') !== 'x') throw new Error('a refused edit wrote something');
+  const ok2 = su.applyAll(skillsDir, su.parse(blk('skill: proposal\nmode: replace-text\nfind: Use this for proposals.', 'Use this for every client proposal.')), { agentIds: ids, backupDir: bk });
+  if (!ok2.ok || !fs.readFileSync(path.join(sdir, 'SKILL.md'), 'utf8').includes('Use this for every client proposal.')) throw new Error('replace-text did not apply: ' + ok2.message);
+  fs.rmSync(path.join(sdir, 'big2.md'));
+  const mv = su.applyAll(skillsDir, su.parse(blk('skill: proposal\nfile: detail.md\nmode: create', '# Detail\nMoved here.') + '\n' + blk('skill: proposal\nmode: replace-section\nsection: Rules', '- Short.\n- Detail in `detail.md` beside this file.')), { agentIds: ids, backupDir: bk });
+  if (!mv.ok || fs.readFileSync(path.join(sdir, 'detail.md'), 'utf8') !== '# Detail\nMoved here.\n' || !fs.readFileSync(path.join(sdir, 'SKILL.md'), 'utf8').includes('Detail in `detail.md`')) throw new Error('create + replace-section did not move detail out: ' + mv.message);
+  refused('skill: proposal\nfile: detail.md\nmode: create', 'again', 'creating a file that is already there');
+  return 'a decision carries its skill edit whole · a no writes nothing and is remembered · a yes adds the rule with a backup · the same rule is not added twice · over 6,000 / 4,000 / 8,000, outside Agents Office/skills/, a secret, an unknown desk and a shipped skill are refused';
 });
 await step('local video connector: speaks MCP, refuses bad requests without queueing, and always forces local generation', async () => {
   const dir = path.join(ROOT, 'connectors', 'ltx-local');

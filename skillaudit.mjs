@@ -95,8 +95,9 @@ export function audit({ skills, agents, tasks, servers, brainPath, now = Date.no
       uses, lastUsed, reworked, reworkRate: uses ? Math.round(100 * reworked / uses) : 0, ageDays, chars, state,
       lessonCount: lessons.length, lessons: lessons.slice(0, 4),
       links, recs, attention: recs.filter(r => r.level === 'warn').length, refining: !house && uses > 0 && (lessonsNew.length > 0 || reworkedNew > 0),
-      proposal: proposals[s.name]?.text ? proposals[s.name] : null, // an actioned suggestion keeps only its history, so nothing is pending
+      proposal: proposals[s.name]?.pending?.length ? { pending: proposals[s.name].pending, note: proposals[s.name].note || '', at: proposals[s.name].at } : null, // yes/no suggestions waiting (8 Nov 2026); an answered one keeps only its history
       actioned: (proposals[s.name]?.history || []).length, lastActioned: (proposals[s.name]?.history || []).slice(-1)[0]?.doneAt || 0,
+      declined: (proposals[s.name]?.declined || []).slice(-6).map(d => ({ ask: d.ask, at: d.at })), // what the owner said no to: never suggested again
     });
   }
   const order = { warn: 0, idea: 1, ok: 2 };
@@ -105,25 +106,29 @@ export function audit({ skills, agents, tasks, servers, brainPath, now = Date.no
   return { at: now, skills: out, summary: { total: out.length, unused: real.filter(x => x.state === 'unused').length, quiet: real.filter(x => x.state === 'quiet').length, newSkills: real.filter(x => x.state === 'new').length, attention: real.filter(x => x.attention).length, refining: real.filter(x => x.refining).length, linksNeverUsed: real.reduce((n, x) => n + x.links.filter(l => l.connected && l.wired && l.usedByAgents === 0).length, 0) } };
 }
 
-/** The prompt that asks Claude for a concrete revision of one skill, from the evidence the audit holds. Read-only: it proposes, the owner decides. */
-export function proposalPrompt(item, skillText, reworkedTitles = []) {
-  const system = 'You improve the written instructions ("skills") that AI agents follow in a small business office. You propose edits; you never apply them. Be concrete and short. Never invent facts about the business.';
-  const user = `SKILL: ${item.name}\nWhat it is for: ${item.description}\nFollowed by: ${item.seats.map(s => s.name).join(', ') || 'no one'}\nUsed on ${item.uses} tasks; reworked on ${item.reworked}; last used ${item.lastUsed ? new Date(item.lastUsed).toISOString().slice(0, 10) : 'never'}.\n` +
+/** The prompt that asks Claude for a revision of one skill as yes/no suggestions, each carrying the exact edit (8 Nov 2026).
+ *  It proposes; only the owner's yes changes the skill (skillupdates.mjs). */
+export function proposalPrompt(item, skillText, reworkedTitles = [], { decisionsText = '', skillUpdatesText = '' } = {}) {
+  const system = 'You improve the written instructions ("skills") that AI agents follow in a small business office. You propose exact edits; you never apply them. Be concrete and short. Never invent facts about the business.\n\n' + decisionsText + '\n\n' + skillUpdatesText;
+  const user = `SKILL: ${item.name} (${item.source === 'brain' ? 'in the Brain' : 'shipped with the repo: it cannot be edited this way, so suggest nothing and say it should be copied into the Brain first'})\nWhat it is for: ${item.description}\nFollowed by: ${item.seats.map(s => s.name).join(', ') || 'no one'}\nUsed on ${item.uses} tasks; reworked on ${item.reworked}; last used ${item.lastUsed ? new Date(item.lastUsed).toISOString().slice(0, 10) : 'never'}.\n` +
     (item.lessons.length ? `\nCORRECTIONS THE OWNER HAS GIVEN THESE SEATS:\n${item.lessons.map(l => '- ' + l).join('\n')}\n` : '') +
     (reworkedTitles.length ? `\nTASKS THAT WERE SENT BACK:\n${reworkedTitles.slice(0, 6).map(l => '- ' + l).join('\n')}\n` : '') +
     (item.links.length ? `\nCONNECTORS IT NAMES: ${item.links.map(l => `${l.name} (${l.connected ? 'connected' : 'not connected'}, used by agents ${l.usedByAgents} times)`).join('; ')}\n` : '') +
-    `\nAUDIT NOTES:\n${item.recs.map(r => '- ' + r.text).join('\n')}\n\nTHE SKILL AS WRITTEN NOW:\n"""\n${String(skillText).slice(0, 5500)}\n"""\n\n` +
-    'Reply in this shape, plain text, under 250 words:\n1. The three changes that would help most, each as: the problem, then the exact replacement or added line to put in the skill.\n2. One thing to remove or shorten if there is any.\n3. One sentence on whether to keep, merge or retire the skill, and why.\nIf there is not enough evidence to improve it, say so and say what evidence to wait for.';
+    ((item.declined || []).length ? `\nTHE OWNER SAID NO TO THESE BEFORE; do not suggest them again:\n${item.declined.map(d => '- ' + d.ask).join('\n')}\n` : '') +
+    `\nAUDIT NOTES:\n${item.recs.map(r => '- ' + r.text).join('\n')}\n\nTHE SKILL AS WRITTEN NOW (SKILL.md, ${String(skillText).length} of 6000 characters):\n"""\n${String(skillText).slice(0, 6000)}\n"""\n\n` +
+    `Reply with one plain sentence on whether to keep, merge or retire the skill and why, then at most three DECISION blocks, the most useful first. Each one is one change; its text is the SKILL UPDATE block(s) that make it (skill: ${item.name}) and nothing else. Copy find text exactly from the skill above. If there is not enough evidence to improve it, write no decisions and say what evidence to wait for.`;
   return { system, user };
 }
 
 export const proposalsFile = dataDir => path.join(dataDir, 'skill-proposals.json');
 export function loadProposals(dataDir) { try { return JSON.parse(fs.readFileSync(proposalsFile(dataDir), 'utf8').replace(/^﻿/, '')); } catch { return {}; } }
-export function saveProposal(dataDir, name, text) { const p = loadProposals(dataDir); p[name] = { ...(p[name] || {}), text, at: Date.now() }; fs.mkdirSync(dataDir, { recursive: true }); fs.writeFileSync(proposalsFile(dataDir), JSON.stringify(p, null, 2)); return p[name]; }
-/** The owner has done what the suggestion asked: it leaves the card, a line of history stays, and the skill can be audited and suggested for again as before. */
-export function markProposalDone(dataDir, name) {
-  const p = loadProposals(dataDir), cur = p[name];
-  if (!cur?.text) return null;
-  p[name] = { history: [...(cur.history || []), { text: cur.text, at: cur.at, doneAt: Date.now() }].slice(-20) };
-  fs.mkdirSync(dataDir, { recursive: true }); fs.writeFileSync(proposalsFile(dataDir), JSON.stringify(p, null, 2)); return p[name];
+export function saveProposals(dataDir, p) { fs.mkdirSync(dataDir, { recursive: true }); fs.writeFileSync(proposalsFile(dataDir), JSON.stringify(p, null, 2)); return p; }
+/** A fresh set of yes/no suggestions for one skill replaces any unanswered one; history and the no's stay. */
+export function saveProposal(dataDir, name, { pending, note = '' }) { const p = loadProposals(dataDir); const { text, ...rest } = p[name] || {}; p[name] = { ...rest, pending, note, at: Date.now() }; saveProposals(dataDir, p); return p[name]; }
+/** The owner answered: the suggestions leave the card, a line of history stays (its time stops older rework counting against the skill). */
+export function closeProposal(p, name, outcome) {
+  const cur = p[name]; if (!cur?.pending?.length) return null;
+  const { pending, note, at, ...rest } = cur;
+  p[name] = { ...rest, history: [...(cur.history || []), { text: outcome.map(o => `${o.yes ? (o.ok ? '✓ applied' : '✗ not applied') : '✗ no'}: ${o.ask}${o.message ? ' (' + o.message + ')' : ''}`).join('\n'), at, doneAt: Date.now() }].slice(-20) };
+  return p[name];
 }

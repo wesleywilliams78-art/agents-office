@@ -86,6 +86,7 @@ import * as assistantMod from './assistant.mjs';
 import * as motionMod from './motion.mjs';
 import { pinnedNotes, pickNotes } from './pins.mjs';
 import * as skillaudit from './skillaudit.mjs';
+import * as skillupdates from './skillupdates.mjs';
 import { recover } from './recover.mjs';
 import { normModel, modelFor, modelArgs, modelId, modelName, MODEL_KEYS, DEFAULT_MODEL, normEffort, effortFor, effortName, EFFORT_KEYS } from './src/models.js';
 import { parseWhen, describe, valid as validWhen, untilText, occurrences } from './src/when.js';
@@ -696,8 +697,29 @@ function decisionReview(task, text) { // the Yes/No switches for the review card
     const plans = brainnotes.planAll(BRAIN, bb, { deny: BRAIN_DENY }); d.brain = plans.map(p => ({ note: p.rel || p.note, mode: p.mode, ok: p.ok, problem: p.problem || '' }));
     const no = plans.filter(p => !p.ok); if (no.length) { d.ok = false; d.problem = 'the Brain update cannot be filed: ' + no.map(p => `${p.note || '?'} (${p.problem})`).join('; '); }
   }
+  for (const d of task.decisions.filter(x => x.ok)) skillDecision(d); // a decision that carries SKILL UPDATE blocks changes the skill on a yes (8 Nov 2026)
   const good = task.decisions.filter(d => d.ok), bad = task.decisions.filter(d => !d.ok);
-  return (good.length ? ` ${good.length} decision${good.length === 1 ? '' : 's'} on the card: approving ${good.some(d => d.brain) ? 'files the Brain fix or starts the task' : 'starts a task'} for each one left on Yes.` : '') + (bad.length ? ` Not on the card: ${bad.map(d => `"${d.ask || '?'}" (${d.problem})`).join('; ')}.` : '');
+  return (good.length ? ` ${good.length} decision${good.length === 1 ? '' : 's'} on the card: approving ${good.some(d => d.brain || d.skill) ? 'makes the change or starts the task' : 'starts a task'} for each one left on Yes.` : '') + (bad.length ? ` Not on the card: ${bad.map(d => `"${d.ask || '?'}" (${d.problem})`).join('; ')}.` : '');
+}
+// Skill updates (skillupdates.mjs, 8 Nov 2026): a suggestion that carries the exact edit to one of the owner's skills. It is checked here
+// for the card, and carried out only on the owner's yes, with a backup; a no is remembered so the same suggestion is not made again.
+const SKILL_BACKUPS = path.join(DATA, 'brain-backups');
+function skillDecision(d) {
+  const sb = skillupdates.parse(d.text); if (!sb.length) return false;
+  const p = skillupdates.planAll(skillsBrainDir(BRAIN), sb, { agentIds: AGENTS.map(a => a.id) });
+  d.skill = p.plans.map(x => ({ skill: x.skill, file: x.file, mode: x.mode, ok: x.ok, problem: x.problem }));
+  const no = skillupdates.isDeclined(skillaudit.loadProposals(DATA), sb);
+  if (no) { d.ok = false; d.problem = `you said no to this on ${new Date(no.at).toLocaleDateString('en-GB')}`; }
+  else if (!p.ok) { d.ok = false; d.problem = 'the skill change cannot be made: ' + p.problem; }
+  return true;
+}
+function answerSkillDecision(d, yes) { // the owner's yes applies the edit (all of it or none, backed up first); a no is remembered
+  const sb = skillupdates.parse(d.text);
+  if (!yes) { skillaudit.saveProposals(DATA, skillupdates.remember(skillaudit.loadProposals(DATA), sb, d.ask)); return { ok: true, message: 'no, remembered' }; }
+  const r = skillupdates.applyAll(skillsBrainDir(BRAIN), sb, { agentIds: AGENTS.map(a => a.id), backupDir: SKILL_BACKUPS });
+  console.log(`▣ skill: ${r.ok ? '✓' : '✗'} ${r.message}${r.backups.length ? ' (backup ' + r.backups.map(b => path.basename(b)).join(', ') + ')' : ''}`);
+  if (r.ok) refreshSkills();
+  return r;
 }
 const WRITES_EMAIL = /\b(draft|write|compose|reply)\b[^\n.]{0,40}\b(e-?mails?|reply|message)\b/i;
 function fireDecisions(task) { // only for a task the owner approved: a task for every decision he left on Yes, a record of every No
@@ -708,11 +730,13 @@ function fireDecisions(task) { // only for a task the owner approved: a task for
       d.filed = BRAIN_WRITE ? brainnotes.applyAll(BRAIN, brainnotes.parse(d.text), { deny: BRAIN_DENY, backupDir: path.join(DATA, 'brain-backups') }) : [];
       d.fired = 'filed'; console.log(`▣ brain: decision ${d.n} of ${task.id} filed — ${d.filed.map(f => `${f.ok ? '✓' : '✗'} ${f.note}`).join(', ')}`); continue;
     }
+    if (d.skill) { d.applied = answerSkillDecision(d, true); d.fired = 'skill'; continue; } // the edit was on the card: make it now, backed up first
     if (list.some(x => x.agent === d.to && x.title === d.title && Date.now() - (x.addedAt || 0) < 12 * 3600 * 1000)) { d.fired = 'duplicate'; continue; }
     const text = `${d.text}\n\n(Wesley said yes to this on the review of "${task.title}" by ${agentName(task.agent)}: "${d.ask}". Do exactly this and nothing more, then report what you changed.)`;
     const t = { id: nid(), dept: d.dept, agent: d.to, title: d.title, text, plan: [], eta: 10, why: `Wesley said yes on ${agentName(task.agent)}'s review`, state: 'doing', startedAt: Date.now(), addedAt: Date.now(), by: 'decision', handoffFrom: task.agent, decisionTask: task.id, ...(WRITES_EMAIL.test(d.title + ' ' + d.ask) ? { needsOk: true, channel: 'email' } : { needsOk: false, channel: 'none' }) }; // an email still comes back for its wording and only ever becomes a Gmail draft
     list.push(t); made.push(t); d.fired = t.id;
   }
+  for (const d of ds.filter(x => x.ok && !x.yes && x.skill && !x.fired)) { answerSkillDecision(d, false); d.fired = 'declined'; } // a no to a skill change is remembered, so it is not suggested again
   save(list);
   task.result += '\n\n---\nYOUR DECISIONS\n' + decisions.summary(ds, agentName);
   for (const t of made) { console.log(`➜ ${task.id} decision yes → ${t.agent}: ${t.title}`); enqueue(() => runServerTask(t.id)).catch(e => console.warn('decision:', e.message)); }
@@ -1155,26 +1179,35 @@ async function calendarReminder(item) {
   if (!text) throw new Error('Claude did not confirm the event was created');
   return text;
 }
-// a revision suggestion for one skill, from the audit's evidence; saved for the owner to action (or MARK DONE) in the Skills section
+// a revision suggestion for one skill, from the audit's evidence: up to three yes/no changes, each carrying its exact edit (8 Nov 2026).
+// They wait in the Skills sheet on Nora's card; a yes makes the change (answerSkillDecision), a no is remembered.
 async function makeProposal(skill) {
   const sk = refreshSkills(); const s = sk.skills.find(x => x.name === skill);
   if (!s) return null;
   const tasks = load();
-  const a = skillaudit.audit({ skills: sk.skills, agents: AGENTS, tasks, servers: mcp.summary().servers, brainPath: BRAIN });
+  const a = skillaudit.audit({ skills: sk.skills, agents: AGENTS, tasks, servers: mcp.summary().servers, brainPath: BRAIN, proposals: skillaudit.loadProposals(DATA) });
   const item = a.skills.find(x => x.name === skill);
   const sent = tasks.filter(t => (t.skills || []).includes(skill) && t.revisions).map(t => t.title);
-  const pr = skillaudit.proposalPrompt(item, s.text, sent);
-  const text = String(await ask(pr.system, pr.user, { maxTokens: 900, timeout: 120000, model: 'sonnet', job: { kind: 'skill' } })).trim();
-  return text ? skillaudit.saveProposal(DATA, skill, text) : null;
+  const pr = skillaudit.proposalPrompt(item, s.text, sent, { decisionsText: decisions.INSTRUCTIONS, skillUpdatesText: skillupdates.INSTRUCTIONS });
+  const text = String(await ask(pr.system, pr.user, { maxTokens: 3000, timeout: 180000, model: 'sonnet', job: { kind: 'skill' } })).trim();
+  if (!text) return null;
+  const pending = decisions.parse(text).slice(0, 3).map((b, i) => {
+    const d = { n: i + 1, ask: b.ask, rec: b.rec, title: b.title || b.ask.slice(0, 80), text: b.text, ok: !!b.ask };
+    if (!skillDecision(d)) { d.ok = false; d.problem = 'it carries no exact edit'; }
+    else if (d.skill.some(x => x.skill !== skill)) { d.ok = false; d.problem = 'it edits a different skill'; }
+    return d;
+  });
+  const note = decisions.strip(text).slice(0, 600);
+  return pending.length ? skillaudit.saveProposal(DATA, skill, { pending, note }) : { pending: [], note };
 }
-// a rejected job is a lesson: after it is recorded, the skill the agent followed is asked how it should change, and the answer waits in Skills.
+// a rejected job is a lesson: after it is recorded, the skill the agent followed is asked how it should change, and the answer waits in the Skills sheet on Nora's card as yes/no changes.
 // An open suggestion is left alone so the owner's list does not churn.
 async function proposeFromRejection(task) {
   const names = (task.skills || []).filter(n => { const s = refreshSkills().skills.find(x => x.name === n); return s && !s.everyone; });
   for (const n of names.slice(0, 1)) {
-    if (skillaudit.loadProposals(DATA)[n]?.text) continue;
+    if (skillaudit.loadProposals(DATA)[n]?.pending?.length) continue;
     const p = await makeProposal(n);
-    if (p) console.log('  ↳ skill "' + n + '" has a suggested revision waiting in Skills');
+    if (p) console.log('  ↳ skill "' + n + '" has suggested changes waiting in the Skills sheet');
   }
 }
 async function matrixApi(req, res, url) {
@@ -1311,13 +1344,26 @@ const server = http.createServer(async (req, res) => {
       try { return json(res, 200, JSON.parse(fs.readFileSync(path.join(DATA, 'timeboxes.json'), 'utf8'))); } catch { return json(res, 200, { items: [] }); }
     }
     if (url.pathname === '/api/skill-audit' && req.method === 'GET') { // AIOS: which skills are used, refined, quiet, and whether their connectors are really wired
-      const sk = refreshSkills();
-      return json(res, 200, skillaudit.audit({ skills: sk.skills, agents: AGENTS, tasks: load(), servers: mcp.summary().servers, brainPath: BRAIN, proposals: skillaudit.loadProposals(DATA) }));
+      const sk = refreshSkills(), tasks = load();
+      const a = skillaudit.audit({ skills: sk.skills, agents: AGENTS, tasks, servers: mcp.summary().servers, brainPath: BRAIN, proposals: skillaudit.loadProposals(DATA) });
+      // Brian's Friday skills review (routine skills-review, 8 Nov 2026): its latest run is one review card in the Skills sheet and a count on Nora's card
+      const rt = tasks.filter(t => t.routine === 'skills-review').sort((x, y) => (y.addedAt || 0) - (x.addedAt || 0))[0], rr = loadRoutines().find(r => r.id === 'skills-review');
+      a.review = { nextAt: rr && !rr.paused ? rr.nextAt : 0, task: rt ? { id: rt.id, title: rt.title, state: rt.state, agent: rt.agent, at: rt.doneAt || rt.addedAt, suggestions: (rt.decisions || []).filter(d => d.skill && d.ok).length, decisions: (rt.decisions || []).length } : null };
+      a.summary.waiting = a.skills.reduce((n, x) => n + (x.proposal?.pending || []).filter(d => d.ok).length, 0) + (rt && rt.state === 'waiting' ? a.review.task.suggestions : 0);
+      return json(res, 200, a);
     }
-    if (url.pathname === '/api/skill-audit/done' && req.method === 'POST') { // the owner has implemented the suggestion: mark it actioned, keep the skill open to future suggestions
-      const { skill } = await body(req);
-      const r = skillaudit.markProposalDone(DATA, String(skill || ''));
-      return r ? json(res, 200, { ok: true }) : json(res, 404, { error: 'no open suggestion for that skill' });
+    if (url.pathname === '/api/skill-audit/answer' && req.method === 'POST') { // the owner's yes/no on each suggestion for one skill: a yes makes the edit (backed up first), a no is remembered
+      const { skill, picks } = await body(req), name = String(skill || '');
+      const cur = skillaudit.loadProposals(DATA)[name]?.pending;
+      if (!cur?.length) return json(res, 404, { error: 'no open suggestion for that skill' });
+      const p0 = picks && typeof picks === 'object' ? picks : {}, outcome = [];
+      for (const d of cur) {
+        if (!d.ok) { outcome.push({ ask: d.ask, yes: false, ok: false, message: d.problem }); continue; }
+        const yes = typeof p0[d.n] === 'boolean' ? p0[d.n] : d.rec === 'yes';
+        const r = answerSkillDecision(d, yes); outcome.push({ ask: d.ask, yes, ok: r.ok, message: yes ? r.message : '' });
+      }
+      const p = skillaudit.loadProposals(DATA); skillaudit.closeProposal(p, name, outcome); skillaudit.saveProposals(DATA, p);
+      return json(res, 200, { ok: true, outcome });
     }
     if (url.pathname === '/api/lead-lesson' && req.method === 'POST') { // the owner's yes or no on a lesson the lead proposed (leadlessons.mjs); only a yes writes
       const { task: id, decision } = await body(req);

@@ -37,7 +37,7 @@ function listNotes(brain, dir = '', acc = []) {
   }
   return acc;
 }
-const SECRET = [/\bsort\s*code\b/i, /\b(?:\d[ -]?){13,19}\b/, /\bIBAN\b/i, /\b[A-Z]{2}\d{2}[A-Z0-9]{11,30}\b/, /\b(?:password|passcode|api[_ -]?key|secret|token)\s*[:=]\s*\S+/i, /\bsk-[A-Za-z0-9_-]{16,}/];
+export const SECRET = [/\bsort\s*code\b/i, /\b(?:\d[ -]?){13,19}\b/, /\bIBAN\b/i, /\b[A-Z]{2}\d{2}[A-Z0-9]{11,30}\b/, /\b(?:password|passcode|api[_ -]?key|secret|token)\s*[:=]\s*\S+/i, /\bsk-[A-Za-z0-9_-]{16,}/];
 const norm = s => String(s).toLowerCase().replace(/^#+\s*/, '').replace(/[:\s]+$/, '').trim();
 const HEAD = /^(#{1,6})\s+(.*?)\s*#*\s*$/;
 

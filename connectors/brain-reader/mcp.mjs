@@ -5,12 +5,14 @@
 //   brain_search  find notes by words in their name or text
 //   brain_read    read one note in full, in parts of 30,000 characters (next_offset to read on)
 //   brain_audit   the whole Brain scanned for broken links, orphans, oversize, stubs and duplicates (for Brian, the IP Librarian)
+//   skill_audit   the office's skill audit, read from the running office (for Brian's Friday skills review, 8 Nov 2026)
 import fs from 'node:fs';
 import path from 'node:path';
 import readline from 'node:readline';
 import { loadConfig } from '../../config.mjs';
 
 const BRAIN = (() => { try { return loadConfig().brainPath; } catch { return ''; } })();
+const PORT = (() => { try { return loadConfig().port; } catch { return 4520; } })();
 const text = o => ({ content: [{ type: 'text', text: typeof o === 'string' ? o : JSON.stringify(o, null, 1) }] });
 const fail = m => ({ content: [{ type: 'text', text: m }], isError: true });
 const files = () => { const out = []; (function walk(d, depth) { let es; try { es = fs.readdirSync(d, { withFileTypes: true }); } catch { return; } for (const e of es) { if (e.name.startsWith('.') || e.name === 'node_modules') continue; const p = path.join(d, e.name); if (e.isDirectory()) { if (depth < 4) walk(p, depth + 1); } else if (e.name.endsWith('.md')) out.push(p); } })(BRAIN, 0); return out; };
@@ -20,6 +22,7 @@ const rel = f => path.relative(BRAIN, f).replace(/\\/g, '/').replace(/\.md$/i, '
 const TOOLS = [
   { name: 'brain_search', description: 'Find notes in Wesley\'s Brain by words in their name or text (read only). Returns the best matches with their size. Use it when a note you were told about is not in front of you or was cut off, then open it with brain_read. Uploaded documents are notes named "Upload - something"; the office\'s own task notes are under "Agents Office".', inputSchema: { type: 'object', required: ['query'], properties: { query: { type: 'string' } } } },
   { name: 'brain_audit', description: 'Scan the whole Brain for housekeeping problems (read only; the office\'s own "Agents Office" folder is left out). Returns: broken [[links]] (note, link, line), orphans (no links in or out), notes over the size cap, empty or stub notes, notes with the same or nearly the same name, and pairs of notes whose text largely overlaps. It cannot judge stale or contradictory facts or misfiled notes: read the notes for those.', inputSchema: { type: 'object', properties: { cap: { type: 'integer', description: 'size cap in characters, default 20000 (the most one Brain update can rewrite)' }, stub: { type: 'integer', description: 'a note with less text than this is a stub, default 200' } } } },
+  { name: 'skill_audit', description: "The office's skill audit (read only): every skill with how often it was used, how often its work was sent back, the corrections its desks were given, connectors it names that are not wired or never used, the audit's own notes, whether it lives in the Brain (only those can be changed), any suggestion already waiting, and the suggestions Wesley said no to (never suggest those again). Read a skill's files with brain_read (\"Agents Office/skills/<name>/SKILL\") and a desk's corrections with brain_read (\"Agents Office/feedback/<desk id>\").", inputSchema: { type: 'object', properties: { skill: { type: 'string', description: 'one skill name; leave out for all' } } } },
   { name: 'brain_read', description: 'Read a Brain note IN FULL (read only). Pass the note name as shown, for example "content-calendar" or "20-Brand/content-calendar". A long note comes in parts: pass offset (the next_offset from the last call) to read on, and keep reading until next_offset is null. Use this whenever a note shows "the note continues … not shown" or you need a later part of it. Never say you could not open a note without trying brain_search and brain_read first.', inputSchema: { type: 'object', required: ['note'], properties: { note: { type: 'string' }, offset: { type: 'integer' } } } },
 ];
 
@@ -35,6 +38,14 @@ const HANDLERS = {
       if (s) { const i = low.indexOf(words[0]); hits.push({ s, note: rel(f), chars: t.length, snippet: i >= 0 ? t.slice(Math.max(0, i - 60), i + 160).replace(/\s+/g, ' ') : '' }); }
     }
     return text(hits.sort((x, y) => y.s - x.s).slice(0, 12).map(({ s, ...h }) => h));
+  },
+  async skill_audit(a) {
+    let r; try { r = await fetch(`http://localhost:${PORT}/api/skill-audit`, { signal: AbortSignal.timeout(20000) }); } catch (e) { return fail('The office is not answering on port ' + PORT + ': ' + e.message); }
+    if (!r.ok) return fail('The office answered ' + r.status);
+    const d = await r.json(), want = String(a.skill || '').trim().toLowerCase();
+    const list = d.skills.filter(x => !want || x.name === want).map(x => ({ name: x.name, where: x.source === 'brain' ? 'Brain (Agents Office/skills/' + x.name + ')' : 'shipped, cannot be changed this way', desks: x.house ? 'every desk' : x.seats.map(s => s.id), state: x.state, uses: x.uses, reworked: x.reworked, chars: x.chars, corrections: x.lessonCount, notes: x.recs.filter(r => r.level !== 'ok').map(r => r.text), links: x.links.filter(l => !l.proven).map(l => l.name + ': ' + (l.notes.join('; ') || 'wired, never used')), waiting: (x.proposal?.pending || []).map(p => p.ask), saidNo: (x.declined || []).map(n => n.ask) }));
+    if (want && !list.length) return fail('No skill called ' + a.skill);
+    return text({ summary: d.summary, skills: list });
   },
   brain_audit(a) { // the mechanical half of Brian's weekly audit (brain-audit skill, 8 Nov 2026); judging facts and filing stays with the desk
     if (!BRAIN) return fail('The Brain folder is not configured.');
