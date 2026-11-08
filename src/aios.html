@@ -498,15 +498,15 @@
   /* the office map (full width, 7 Nov 2026): departments in two columns, Nora in the centre, You at the bottom, the flows drawn behind them (#oxFlows) */
   .ox { position: relative; padding: 26px 64px 0; } /* 64 px each side keeps the For You tab clear of the cards */
   .ox-land, .ox-dots, .ox-flows { display: none; }
-  .ox.map { min-height: calc(100vh - var(--top-h, 64px)); display: flex; flex-direction: column; padding: 24px 60px 26px; overflow: hidden; }
+  .ox.map { min-height: calc(100vh - var(--top-h, 64px)); display: flex; flex-direction: column; padding: 24px 60px 56px; overflow: hidden; } /* 56 px at the foot keeps the tiles clear of the fixed Open the Brain pill (8 Nov 2026) */
   .ox.map .ox-land { display: block; position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
   .ox.map .ox-dots { display: block; position: absolute; inset: 0; pointer-events: none; background: radial-gradient(circle at 1px 1px, var(--ox-dots) 1px, transparent 0) 0 0 / 26px 26px; -webkit-mask: linear-gradient(#000 0 55%, transparent 85%); mask: linear-gradient(#000 0 55%, transparent 85%); }
   .ox.map .ox-flows { display: block; position: absolute; inset: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; overflow: visible; }
   .ox > .hxo-theo, .ox > .hx { position: relative; z-index: 2; }
   .ox > .hx { border: 0; background: none; padding: 0; margin: 0 0 22px; }
   .ox.map > .hx { flex: 1; display: flex; margin: 0; }
-  .ox-map { flex: 1; width: 100%; display: grid; grid-template-columns: minmax(300px, 440px) minmax(480px, 1fr) minmax(300px, 440px); gap: 0 48px; padding-top: 26px; }
-  .ox-col { display: flex; flex-direction: column; justify-content: center; gap: 14px; min-width: 0; margin-bottom: 0; } /* no section margin: it pushed the map 48 px past the fold (8 Nov 2026) */
+  .ox-map { flex: 1; width: 100%; display: grid; grid-template-columns: minmax(300px, 440px) minmax(480px, 1fr) minmax(300px, 440px); gap: 0 48px; padding-top: 20px; }
+  .ox-col { display: flex; flex-direction: column; justify-content: center; gap: 10px; min-width: 0; margin-bottom: 0; } /* no section margin: it pushed the map 48 px past the fold (8 Nov 2026) */
   .ox-mid { display: grid; grid-template-rows: 1fr auto 1fr; justify-items: center; min-width: 0; margin-bottom: 0; }
   .ox-mid .hxo-hub { grid-row: 2; width: min(470px, 100%); }
   .ox-mid .ox-you { grid-row: 3; align-self: end; margin-top: 30px; }
@@ -520,7 +520,7 @@
   .ox-you .t { font-size: 13px; font-weight: 600; line-height: 1.3; } .ox-you .t span { display: block; font-weight: 400; font-size: 11.5px; opacity: .85; }
   .ox-you .ox-yb, .ox-you .ox-yb:hover { border: 0; background: var(--on-accent); color: var(--red); padding: 13px 18px; font-weight: 600; letter-spacing: .14em; box-shadow: none; } .ox-you .ox-yb:hover { opacity: .9; }
   .ox-you.clear { background: var(--ox-card); color: var(--ink); border: 1px solid var(--ox-edge2); box-shadow: none; padding-right: 22px; } .ox-you.clear .me { background: var(--soft); color: var(--grey); }
-  .hxo-d { background: var(--ox-card); border: 1px solid var(--ox-edge); border-radius: 20px; padding: 13px 18px 12px; display: flex; flex-direction: column; min-width: 0; text-align: left; -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); transition: border-color .2s, transform .2s; }
+  .hxo-d { background: var(--ox-card); border: 1px solid var(--ox-edge); border-radius: 20px; padding: 12px 18px 11px; display: flex; flex-direction: column; min-width: 0; text-align: left; -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); transition: border-color .2s, transform .2s; }
   .hxo-d.on { cursor: pointer; border-color: var(--ox-edge2); } .hxo-d.on:hover, .hxo-d.on:focus-visible { border-color: var(--ox-edge-hover); transform: translateY(-2px); outline: none; }
   .hxo-d.off { cursor: pointer; } .hxo-d.off:hover, .hxo-d.off:focus-visible { border-color: var(--ox-edge-hover); outline: none; } /* opens read-only (Roles retired, 7 Nov 2026) */
   .hxo-gap { flex: none; padding: 3px 9px; border-radius: 99px; border: 1px solid var(--ox-label-red-edge); color: var(--ox-label-red); font-size: 9.5px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; white-space: nowrap; }
@@ -528,15 +528,15 @@
   .hxo-miss { color: var(--ox-label-red); font-size: 10.5px; } .hxo-k2f .hxo-miss + span { margin-left: auto; }
   .hxo-d.need { border-color: var(--ox-need-edge); box-shadow: 0 0 0 1px var(--ox-need-glow), 0 18px 40px -22px var(--ox-need-shadow); }
   .hxo-d.off { background: var(--ox-off); border-style: dashed; border-color: var(--ox-off-edge); }
-  .hxo-dh { display: flex; align-items: center; gap: 10px; margin-bottom: 9px; } .hxo-dh h4 { margin: 0; font: 300 25px/1 var(--serif); }
+  .hxo-dh { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; } .hxo-dh h4 { margin: 0; font: 300 25px/1 var(--serif); }
   .hxo-d.off .hxo-dh h4 { color: var(--grey); } .hxo-dh .hxo-badge { margin-left: auto; }
   .hxo-tag { font-size: 9.5px; letter-spacing: .16em; text-transform: uppercase; color: var(--faint); border: 1px dashed var(--ox-edge2); border-radius: 99px; padding: 3px 9px; white-space: nowrap; }
   .hxo-lead { display: flex; align-items: center; gap: 11px; min-width: 0; }
   .hxo-ln { min-width: 0; } .hxo-ln b { display: block; font-weight: 600; font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; } .hxo-ln span { display: block; color: var(--meta, var(--faint)); font-size: 11.5px; }
   .hxo-d.off .hxo-ln b { color: var(--grey); font-weight: 500; }
   .hxo-lead .hxo-st { margin-left: auto; }
-  .hxo-faces { display: flex; gap: 7px; align-items: center; flex-wrap: wrap; margin: 9px 0 8px; } .hxo-faces .more { color: var(--faint); font-size: 11px; } .hxo-d.off .hxo-faces { margin-bottom: 0; }
-  .hxo-d .hxo-fw img, .hxo-d .hxo-ini { width: 30px; height: 30px; font-size: 9.5px; background: var(--ox-face); } .hxo-d .hxo-fw.l img, .hxo-d .hxo-fw.l .hxo-ini { width: 40px; height: 40px; }
+  .hxo-faces { display: flex; gap: 7px; align-items: center; flex-wrap: wrap; margin: 8px 0 7px; } .hxo-faces .more { color: var(--faint); font-size: 11px; } .hxo-d.off .hxo-faces { margin-bottom: 0; }
+  .hxo-d .hxo-fw img, .hxo-d .hxo-ini { width: 30px; height: 30px; font-size: 9.5px; background: var(--ox-face); } .hxo-d .hxo-fw.l img, .hxo-d .hxo-fw.l .hxo-ini { width: 36px; height: 36px; }
   .hxo-d .hxo-fw > b { border-color: var(--ox-face-ring); }
   .hxo-last { margin-left: auto; font-size: 11.5px; color: var(--grey); white-space: nowrap; }
   .hxo-now { display: flex; flex-direction: column; gap: 4px; font-size: 11.5px; color: var(--grey); min-width: 0; }
