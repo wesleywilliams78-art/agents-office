@@ -1455,6 +1455,13 @@ const server = http.createServer(async (req, res) => {
       res.writeHead(200, { 'content-type': 'text/html; charset=utf-8', 'cache-control': 'no-store' });
       return res.end(fs.readFileSync(path.join(ROOT, 'src', 'aios.html'), 'utf8'));
     }
+    if (req.method === 'GET' && (url.pathname === '/aios.webmanifest' || url.pathname === '/aios-sw.js')) { // 16 Nov 2026: the AIOS as an app on Wesley's phone (through Tailscale Serve); the worker caches nothing
+      res.writeHead(200, { 'content-type': url.pathname.endsWith('.js') ? 'text/javascript; charset=utf-8' : 'application/manifest+json; charset=utf-8', 'cache-control': 'no-cache' });
+      return res.end(fs.readFileSync(path.join(ROOT, 'src', url.pathname.slice(1)), 'utf8'));
+    }
+    if (req.method === 'GET' && /^\/app\/icon-(192|512|maskable-512)\.png$/.test(url.pathname)) { // the phone app's home-screen icons
+      res.writeHead(200, { 'content-type': 'image/png', 'cache-control': 'max-age=86400' }); return fs.createReadStream(path.join(ROOT, 'assets', url.pathname.slice(1))).pipe(res);
+    }
     if (req.method === 'GET' && /^\/src\/(review|data|profile|links)\.js$/.test(url.pathname)) { // the office's review card and what it imports, reused by /aios (read-only, these four files only)
       res.writeHead(200, { 'content-type': 'text/javascript; charset=utf-8', 'cache-control': 'no-store' });
       return res.end(fs.readFileSync(path.join(ROOT, url.pathname.slice(1)), 'utf8'));

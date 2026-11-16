@@ -328,6 +328,13 @@ To go back to tasks finishing on their own, add `"review": { "all": false }` to 
 
 Open **http://localhost:4520/aios** beside the office. It has three parts and refreshes every five seconds:
 
+**On your phone.** The AIOS installs as an app. With Tailscale Serve pointing your tailnet name
+at port 4520, open `https://<pc>.<tailnet>.ts.net/aios` in Chrome on Android, then menu → **Add to
+Home screen** → **Install**. It opens full screen on the AIOS. Nothing is cached on the phone
+(`src/aios-sw.js` only shows an *Office unreachable* page when the PC or Tailscale is off), so
+what you see is always live. The office still listens on 127.0.0.1 only.
+
+
 - **Eisenhower matrix.** Paste what came out of a piece of work (call notes, an email thread, a
   client's reply), or pick a finished task, and press READ IT. The office lists the actions that
   follow, sorts them into DO NOW · SCHEDULE · DELEGATE · DROP, and names the seat for each one.

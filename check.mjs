@@ -1733,6 +1733,18 @@ else {
       const c = m.servers.find(s => s.id === 'claude-in-chrome'); if (!c || c.key !== 'chrome' || !Array.isArray(c.depts) || c.depts.length !== 6) throw new Error('chrome not in /api/mcp: ' + JSON.stringify(c));
       return `teams on (max ${up.teams.max}) · Chrome ${c.status}${up.browser.device ? ' · ' + up.browser.device : ''} · wired to every pod`;
     });
+    await step('server: the AIOS installs as a phone app — manifest, icons and a worker that caches nothing', async () => { // 16 Nov 2026
+      const page = await (await fetch(base + '/aios')).text();
+      if (!/<link rel="manifest" href="\/aios\.webmanifest">/.test(page) || !/serviceWorker\.register\('\/aios-sw\.js'\)/.test(page)) throw new Error('/aios does not link the manifest and the worker');
+      const r = await fetch(base + '/aios.webmanifest'); if (!/manifest\+json/.test(r.headers.get('content-type') || '')) throw new Error('manifest type ' + r.headers.get('content-type'));
+      const m = await r.json(); if (m.start_url !== '/aios' || m.display !== 'standalone' || !m.name) throw new Error('manifest: ' + JSON.stringify(m).slice(0, 160));
+      for (const size of ['192x192', '512x512']) if (!m.icons.some(i => i.sizes === size && i.purpose === 'any')) throw new Error('no ' + size + ' icon');
+      for (const i of m.icons) { const ir = await fetch(base + i.src), b = Buffer.from(await ir.arrayBuffer()); if (!ir.ok || ir.headers.get('content-type') !== 'image/png' || b.readUInt32BE(16) + 'x' + b.readUInt32BE(20) !== i.sizes) throw new Error(i.src + ' is not a ' + i.sizes + ' PNG'); }
+      const w = await fetch(base + '/aios-sw.js'), src = await w.text(); if (!w.ok || !/javascript/.test(w.headers.get('content-type') || '')) throw new Error('worker ' + w.status);
+      if (/caches\.|cache\.put|addAll\(/.test(src) || !/mode !== 'navigate'\) return/.test(src)) throw new Error('the worker must leave API calls alone and cache nothing');
+      if ((await fetch(base + '/app/icon-999.png')).status !== 404) throw new Error('an unknown icon was served');
+      return `${m.icons.length} icons · start ${m.start_url} · worker passes everything through, offline page only`;
+    });
     await step('server: /aios serves the dashboard and /api/matrix holds the Eisenhower matrix', async () => { // V3.9
       const p = await fetch(base + '/aios'); if (!p.ok || !/Eisenhower matrix/.test(await p.text())) throw new Error('/aios ' + p.status);
       const m = await (await fetch(base + '/api/matrix')).json(); if (!Array.isArray(m.items) || Object.keys(m.quadrants || {}).join() !== 'do,plan,delegate,drop') throw new Error(JSON.stringify(m).slice(0, 120));

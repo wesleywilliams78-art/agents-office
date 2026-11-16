@@ -1,0 +1,17 @@
+{
+  "id": "/aios",
+  "name": "Agents Office",
+  "short_name": "Office",
+  "description": "The AIOS: what is waiting on you, the matrix and the office, from your phone.",
+  "start_url": "/aios",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#F4F3EE",
+  "theme_color": "#F4F3EE",
+  "icons": [
+    { "src": "/app/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/app/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/app/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
