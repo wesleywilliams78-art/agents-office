@@ -5,6 +5,7 @@
 //   brain_search  find notes by words in their name or text
 //   brain_read    read one note in full, in parts of 30,000 characters (next_offset to read on)
 //   brain_audit   the whole Brain scanned for broken links, orphans, oversize, stubs and duplicates (for Brian, the IP Librarian)
+//   token_digest  runs scripts/token-digest.mjs and returns the short token digest (for Toki, the token-watch desk, 8 Nov 2026)
 //   skill_audit   the office's skill audit, read from the running office (for Brian's Friday skills review, 8 Nov 2026)
 import fs from 'node:fs';
 import path from 'node:path';
@@ -22,6 +23,7 @@ const rel = f => path.relative(BRAIN, f).replace(/\\/g, '/').replace(/\.md$/i, '
 const TOOLS = [
   { name: 'brain_search', description: 'Find notes in Wesley\'s Brain by words in their name or text (read only). Returns the best matches with their size. Use it when a note you were told about is not in front of you or was cut off, then open it with brain_read. Uploaded documents are notes named "Upload - something"; the office\'s own task notes are under "Agents Office".', inputSchema: { type: 'object', required: ['query'], properties: { query: { type: 'string' } } } },
   { name: 'brain_audit', description: 'Scan the whole Brain for housekeeping problems (read only; the office\'s own "Agents Office" folder is left out). Returns: broken [[links]] (note, link, line), orphans (no links in or out), notes over the size cap, empty or stub notes, notes with the same or nearly the same name, and pairs of notes whose text largely overlaps. It cannot judge stale or contradictory facts or misfiled notes: read the notes for those.', inputSchema: { type: 'object', properties: { cap: { type: 'integer', description: 'size cap in characters, default 20000 (the most one Brain update can rewrite)' }, stub: { type: 'integer', description: 'a note with less text than this is a stub, default 200' } } } },
+  { name: 'token_digest', description: "The office's token digest (read only apart from refreshing 80-Finance/token-digest.md): yesterday's and the week's tokens by desk, department, kind and routine, the top runs, rework, model fit, the plan gauge and the Claude Code chats. Run it once, then write from it; quote only its numbers.", inputSchema: { type: 'object', properties: {} } },
   { name: 'skill_audit', description: "The office's skill audit (read only): every skill with how often it was used, how often its work was sent back, the corrections its desks were given, connectors it names that are not wired or never used, the audit's own notes, whether it lives in the Brain (only those can be changed), any suggestion already waiting, and the suggestions Wesley said no to (never suggest those again). Read a skill's files with brain_read (\"Agents Office/skills/<name>/SKILL\") and a desk's corrections with brain_read (\"Agents Office/feedback/<desk id>\").", inputSchema: { type: 'object', properties: { skill: { type: 'string', description: 'one skill name; leave out for all' } } } },
   { name: 'brain_read', description: 'Read a Brain note IN FULL (read only). Pass the note name as shown, for example "content-calendar" or "20-Brand/content-calendar". A long note comes in parts: pass offset (the next_offset from the last call) to read on, and keep reading until next_offset is null. Use this whenever a note shows "the note continues … not shown" or you need a later part of it. Never say you could not open a note without trying brain_search and brain_read first.', inputSchema: { type: 'object', required: ['note'], properties: { note: { type: 'string' }, offset: { type: 'integer' } } } },
 ];
@@ -38,6 +40,9 @@ const HANDLERS = {
       if (s) { const i = low.indexOf(words[0]); hits.push({ s, note: rel(f), chars: t.length, snippet: i >= 0 ? t.slice(Math.max(0, i - 60), i + 160).replace(/\s+/g, ' ') : '' }); }
     }
     return text(hits.sort((x, y) => y.s - x.s).slice(0, 12).map(({ s, ...h }) => h));
+  },
+  async token_digest() {
+    try { const { execFileSync } = await import('node:child_process'), { fileURLToPath } = await import('node:url'); return text(execFileSync(process.execPath, [fileURLToPath(new URL('../../scripts/token-digest.mjs', import.meta.url))], { encoding: 'utf8', timeout: 60000 })); } catch (e) { return fail('The digest did not run: ' + e.message.slice(0, 200)); }
   },
   async skill_audit(a) {
     let r; try { r = await fetch(`http://localhost:${PORT}/api/skill-audit`, { signal: AbortSignal.timeout(20000) }); } catch (e) { return fail('The office is not answering on port ' + PORT + ': ' + e.message); }

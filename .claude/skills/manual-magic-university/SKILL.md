@@ -35,7 +35,7 @@ The tools live in `videos/manual-magic-ai/university/`. Read its `README.md` bef
 - Loudness is two-pass (4 Nov 2026). `edit.mjs` measures the whole mix, then applies one fixed gain to −16 LUFS. One-pass `loudnorm` rides its gain, so a quiet opening got turned right up (the bed's chords came out louder than the whoosh). Never go back to one pass.
 - Opening sound: `sting: { file: 'assets/sound/whoosh.wav', peak: 1.9, gainDb: -4 }`, a synthesised whoosh (`assets/sound/whoosh.py`) that builds over the title card and peaks on the cut into the platform. Not a jingle (Wesley, 2 Nov).
 - In Git Bash, never pass `/` as an argument: it becomes a Windows path. Run `discover.mjs` with no path for the Dashboard.
-- Wesley reviews a test video before the real take.
+- **Read-only videos: one take (Wesley, 8 Nov 2026).** A video that saves nothing in the demo account has no "real take" to wait for: its first take is the finished video. Give it its final name in the script (`file: 'MMU-NN <Title>'`, never "TEST"), deliver it, and give Wesley the Drive link to review. Approve means it is final; amends mean a rebuild. Only a video that saves something (a typed field, anything through `ui.commit`) gets a `--test` take for Wesley to review first, then the separate real take.
 
 ## Style
 - Pace slow enough to follow: each caption stays up at least 2.5 s and covers its narration line plus 0.8 s.

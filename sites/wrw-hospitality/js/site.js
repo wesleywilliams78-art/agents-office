@@ -86,16 +86,17 @@
       document.querySelectorAll('.steps-bar li').forEach((li, i) => li.toggleAttribute('aria-current', i === 1));
       document.querySelector('.steps-bar li:nth-child(2)')?.setAttribute('aria-current', 'step');
       body.replaceChildren();
-      if (cfg.CAL_LINK) {
-        const path = cfg.CAL_LINK.replace(/^https?:\/\/cal\.com\//, '').replace(/^\/+/, '');
+      const calPath = (String(cfg.CAL_LINK || '').trim().match(/^(?:https?:\/\/)?(?:www\.|app\.)?cal\.com\/([^?#\s]+)|^\/?([\w.-]+\/[\w.\/-]+)$/i) || []).slice(1).find(Boolean)?.replace(/\/+$/, '');
+      if (calPath) {
+        const path = calPath;
         const frame = document.createElement('iframe');
         frame.src = 'https://cal.com/' + path + '?embed=true';
         frame.title = 'Book a call with Wesley Williams';
         body.append(frame);
       } else {
         const ph = document.createElement('p');
-        ph.className = 'ph-block';
-        ph.textContent = '[PLACEHOLDER: the Cal.com booking calendar appears here once CAL_LINK is set in js/config.js. The event is set to “requires confirmation”.]';
+        ph.className = 'gate__note';
+        ph.textContent = 'Online booking is not open yet. I will reply to agree a time.';
         body.append(ph);
       }
       scrollToEl(gate);

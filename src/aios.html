@@ -182,6 +182,31 @@
     header .right { margin-left: 0; }
   }
 
+  /* project plan Gantt (Delivery) — all colours from the theme tokens */
+  .gtP { border: 1px solid var(--line); border-radius: 12px; background: var(--panel); margin-bottom: 10px; }
+  .gtP > summary { list-style: none; cursor: pointer; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; padding: 12px 16px; }
+  .gtP > summary::-webkit-details-marker { display: none; }
+  .gtP > summary::before { content: '▸'; color: var(--faint); font-size: 12px; transition: transform .15s; } .gtP[open] > summary::before { transform: rotate(90deg); }
+  .gtn { font-family: var(--serif); font-size: 20px; } .gtm { font-size: 12px; color: var(--grey); } .gtm b { color: var(--ink); font-weight: 600; } .gtm .bad { color: var(--bad); font-weight: 600; }
+  .gtr { margin-left: auto; display: flex; gap: 8px; align-items: center; } .gtr a { font-size: 10px; letter-spacing: .08em; color: var(--grey); } .gtr button { font-size: 10px; padding: 3px 9px; }
+  .gtBody { padding: 0 16px 14px; } .gtNote { font-size: 12px; color: var(--grey); padding: 4px 0 10px; } .gtNote.warn { color: var(--warn); }
+  .gtTools { display: flex; gap: 14px; align-items: center; margin: 0 0 8px; font-size: 11px; color: var(--grey); flex-wrap: wrap; } .gtTools button { font-size: 10px; padding: 3px 9px; }
+  .gtKey { display: inline-flex; align-items: center; gap: 5px; } .gtKey i { display: inline-block; width: 16px; height: 8px; border-radius: 2px; } .gtKey i.dm { width: 8px; transform: rotate(45deg); background: var(--ink); border-radius: 1px; }
+  .gtC { position: relative; overflow-x: auto; }
+  .gtRow { display: flex; align-items: center; height: 22px; min-width: 760px; } .gtRow.ph { height: 26px; margin-top: 4px; background: var(--soft); border-radius: 6px; }
+  .gtL { flex: 0 0 330px; width: 330px; padding: 0 8px 0 4px; font-size: 11.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--ink); box-sizing: border-box; }
+  .gtL .id { color: var(--faint); margin-right: 6px; font-variant-numeric: tabular-nums; } .gtL.ph { font-weight: 600; cursor: pointer; background: none; border: 0; text-align: left; font-family: inherit; color: var(--ink); padding-left: 8px; text-transform: none; letter-spacing: 0; font-size: 12px; }
+  .gtL .s { color: var(--grey); font-weight: 400; margin-left: 6px; } .gtL .s .bad { color: var(--bad); font-weight: 600; } .gtL.dn { color: var(--faint); }
+  .gtT { position: relative; flex: 1; height: 100%; }
+  .gtBar { position: absolute; top: 6px; height: 10px; border-radius: 3px; background: var(--soft); border: 1px solid var(--faint); box-sizing: border-box; overflow: hidden; min-width: 3px; }
+  .gtBar i { display: block; height: 100%; background: var(--grey); } .gtBar.dn { border-color: var(--ok); background: var(--ok); } .gtBar.od { border-color: var(--bad); background: rgba(236,48,19,.25); } .gtBar.od i { background: var(--bad); } .gtBar.ip { border-color: var(--grey); }
+  .gtBar.cp { box-shadow: 0 0 0 1.5px var(--ink); border-color: transparent; } .gtBar.cp.od { border-color: transparent; }
+  .gtRow.ph .gtBar { top: 9px; height: 8px; background: var(--line); border-color: transparent; } .gtRow.ph .gtBar i { background: var(--ok); }
+  .gtMs { position: absolute; top: 5px; width: 11px; height: 11px; margin-left: -5px; background: var(--ink); transform: rotate(45deg) scale(.82); border-radius: 1px; } .gtMs.dn { background: var(--ok); } .gtMs.od { background: var(--bad); }
+  .gtOv { position: absolute; top: 0; bottom: 0; pointer-events: none; } .gtOv .wk { position: absolute; top: 0; bottom: 0; border-left: 1px solid var(--line); opacity: .7; }
+  .gtOv .td { position: absolute; top: 0; bottom: 0; border-left: 2px solid var(--bad); } .gtOv .td b { position: absolute; top: 0; left: 4px; font-size: 9px; letter-spacing: .1em; color: var(--bad); font-weight: 700; background: var(--panel); padding: 0 3px; border-radius: 3px; }
+  .gtHd { position: relative; height: 34px; min-width: 760px; display: flex; } .gtHd .gtT { height: 34px; } .gtHd .mo, .gtHd .wd { position: absolute; font-size: 10px; color: var(--grey); white-space: nowrap; } .gtHd .mo { top: 2px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; } .gtHd .wd { top: 18px; color: var(--faint); transform: translateX(-50%); }
+
   /* client project tracker cards */
   .tkWrap { padding: 14px 16px 16px; margin-bottom: 12px; }
   .tkn { font-family: var(--serif); font-size: 20px; }
@@ -380,6 +405,55 @@
   .client .citem:first-child { border-top: 0; }
   .client .citem .ct { font-weight: 600; }
   .client .citem .cm { color: var(--grey); font-size: 10.5px; margin-top: 2px; }
+  /* onboarding (13 Nov 2026): a progress head with the six steps, then one panel per step, a question per row */
+  #onbSec .note code { font-size: 11px; background: var(--soft); padding: 1px 5px; border-radius: 4px; }
+  .obload { padding: 30px 0; color: var(--grey); }
+  .obnewf { max-width: 560px; padding: 22px; display: grid; gap: 14px; }
+  .obnewf > label { display: grid; gap: 8px; font-size: 11px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--grey); }
+  .obnewf input#obName { font: 400 22px/1.2 var(--serif); padding: 10px 12px; background: var(--soft); border: 1px solid var(--line); border-radius: 10px; color: var(--ink); letter-spacing: 0; text-transform: none; }
+  .obnewf input#obName:focus { outline: none; border-color: var(--grey); }
+  .obkind { display: flex; gap: 8px; } .obkind label { cursor: pointer; } .obkind input { position: absolute; opacity: 0; pointer-events: none; }
+  .obkind span { display: inline-block; padding: 7px 16px; border: 1px solid var(--line); border-radius: 99px; font-size: 11px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--grey); }
+  .obkind input:checked + span { background: var(--ink); border-color: var(--ink); color: var(--bg); } .obkind input:focus-visible + span { outline: 2px solid var(--red); outline-offset: 2px; }
+  .obhint { margin: 0; font-size: 12px; color: var(--grey); }
+  .obgo { display: flex; align-items: center; gap: 12px; }
+  .obst { font-size: 11px; font-style: normal; color: var(--faint); } .obst.bad { color: var(--red); }
+  .obhead { padding: 16px 18px; margin-bottom: 14px; display: grid; grid-template-columns: 1fr auto; gap: 10px 16px; align-items: center; }
+  .obbar { height: 6px; border-radius: 99px; background: var(--soft); overflow: hidden; } .obbar i { display: block; height: 100%; background: var(--red); border-radius: 99px; transition: width .4s cubic-bezier(.2,.8,.2,1); }
+  .obcount { font-size: 12px; color: var(--grey); } .obcount b { font: 400 20px/1 var(--serif); color: var(--ink); }
+  .obsteps { grid-column: 1 / -1; list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px; }
+  .obsteps a { display: inline-flex; align-items: center; gap: 7px; padding: 5px 12px 5px 5px; border: 1px solid var(--line); border-radius: 99px; font-size: 12px; color: var(--ink); text-decoration: none; }
+  .obsteps a:hover { border-color: var(--line-strong); }
+  .obsteps a span, .obsec h3 span { display: inline-grid; place-items: center; width: 20px; height: 20px; border-radius: 50%; background: var(--soft); font-size: 10.5px; font-weight: 700; color: var(--grey); }
+  .obsteps li.part a span { background: var(--ink); color: var(--bg); } .obsteps li.full a span { background: var(--red); color: var(--on-accent); }
+  .obsteps em { font-style: normal; font-size: 10.5px; color: var(--faint); }
+  .obsec { padding: 16px 18px 6px; margin-bottom: 12px; scroll-margin-top: calc(var(--top-h, 120px) + 12px); }
+  .obsec h3 { display: flex; align-items: center; gap: 10px; margin: 0 0 8px; font: 400 19px/1.2 var(--serif); }
+  .obq { display: grid; grid-template-columns: minmax(180px, 2fr) 3fr; gap: 4px 16px; align-items: start; padding: 10px 0; border-top: 1px solid var(--line); }
+  .obq > span { font-size: 13px; padding-top: 7px; color: var(--grey); } .obq.has > span { color: var(--ink); }
+  .obq textarea { width: 100%; min-height: 34px; resize: vertical; background: var(--soft); border: 1px solid transparent; border-radius: 8px; padding: 7px 10px; color: var(--ink); font: inherit; font-size: 13px; line-height: 1.45; }
+  .obq textarea:focus { outline: none; border-color: var(--grey); background: var(--panel); }
+  .obq .obst { grid-column: 2; min-height: 0; }
+  .obtag { margin-left: 4px; font: 600 9.5px/1 var(--ui); font-style: normal; letter-spacing: .1em; text-transform: uppercase; color: var(--faint); border: 1px solid var(--line); border-radius: 99px; padding: 3px 7px; }
+  .obopt { grid-column: 1 / -1; display: flex; flex-wrap: wrap; align-items: center; gap: 6px; padding-top: 10px; border-top: 1px solid var(--line); }
+  .obnewf .obopt { padding-top: 0; border-top: 0; }
+  .obol { font-size: 10.5px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--grey); margin-right: 4px; }
+  .obchips { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+  .obchip, .obchip:hover { padding: 6px 12px; border: 1px solid var(--line); border-radius: 99px; background: transparent; box-shadow: none; color: var(--grey); font-size: 12px; font-weight: 500; letter-spacing: 0; text-transform: none; cursor: pointer; }
+  .obchip:hover { color: var(--ink); border-color: var(--line-strong); }
+  .obchip.on, .obchip.on:hover { background: var(--ink); border-color: var(--ink); color: var(--bg); }
+  .obopt .obchip.on, .obopt .obchip.on:hover { background: var(--red); border-color: var(--red); color: var(--on-accent); }
+  .obother { width: 110px; padding: 6px 10px; border: 1px dashed var(--line); border-radius: 99px; background: transparent; color: var(--ink); font: inherit; font-size: 12px; }
+  .obother:focus { outline: none; border-style: solid; border-color: var(--grey); width: 180px; }
+  .obin, .oblinks select { padding: 7px 10px; background: var(--soft); border: 1px solid transparent; border-radius: 8px; color: var(--ink); font: inherit; font-size: 13px; color-scheme: light dark; }
+  .obin:focus, .oblinks select:focus { outline: none; border-color: var(--grey); }
+  .oblinks { display: grid; gap: 6px; }
+  .oblink { display: grid; grid-template-columns: 150px 1fr 130px 28px; gap: 6px; align-items: center; }
+  .obll { font-size: 12.5px; font-weight: 600; }
+  .obx, .obx:hover { width: 28px; height: 28px; padding: 0; border: 0; border-radius: 50%; background: transparent; box-shadow: none; color: var(--faint); font-size: 16px; } .obx:hover { color: var(--red); background: var(--soft); }
+  .oblinks select.obadd { justify-self: start; background: transparent; border: 1px dashed var(--line); border-radius: 99px; color: var(--grey); font-size: 12px; padding: 6px 12px; cursor: pointer; }
+  @media (max-width: 760px) { .oblink { grid-template-columns: 1fr 28px; } .oblink .obin, .oblink select { grid-column: 1; } .oblink .obx { grid-row: 1; grid-column: 2; } }
+  @media (max-width: 760px) { .obq { grid-template-columns: 1fr; } .obq .obst { grid-column: 1; } .obhead { grid-template-columns: 1fr; } }
 
   /* personal budget: read from the owner's Google Sheet, shown on this machine only */
   .bmonths { display: flex; gap: 5px; flex-wrap: wrap; margin-bottom: 10px; }
@@ -407,6 +481,31 @@
   .bl.hd { font-size: 10px; letter-spacing: .1em; color: var(--grey); border-top: 0; margin-top: 8px; }
   .bl .in { color: var(--ok); }
   .bl .bnote { color: var(--grey); font-size: 11px; }
+  /* Personal budget in the Finance visuals' language (8 Nov 2026): same tokens as .tkv, one strip of figures, coloured bars, a month chart */
+  body[data-cat="hierarchy"] #budgetSec { padding: 0 64px 56px; } @media (max-width: 760px) { body[data-cat="hierarchy"] #budgetSec { padding: 0 14px 56px; } }
+  #budgetSec { --tk-1: #EC3013; --tk-2: #4C8DF6; --tk-3: #2FB5A0; --tk-4: #E0A526; --tk-5: #9B6BDF; --tk-6: #8A8F98; --tk-7: #E0679A; --tk-8: #8BC34A; margin-top: 8px; }
+  #budgetSec .bkpis { grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 18px; padding: 14px 20px; border: 1px solid var(--line); border-radius: 18px; background: var(--card, var(--panel)); }
+  #budgetSec .bkpis .kpi { border: 0; background: none; padding: 0; } #budgetSec .bkpis .kpi .v { font-size: 22px; font-weight: 600; }
+  #budgetSec .bpanel { padding: 14px 18px; border-radius: 18px; } #budgetSec .bpanel .sub { font-size: 11.5px; color: var(--meta, var(--grey)); margin: -2px 0 10px; }
+  #budgetSec .bcat .bbar { height: 12px; } #budgetSec .bcat .bbar i { border-radius: 4px; } #budgetSec .bcat .bbar i.k1 { background: var(--tk-1); } #budgetSec .bcat .bbar i.k2 { background: var(--tk-2); } #budgetSec .bcat .bbar i.k3 { background: var(--tk-3); } #budgetSec .bcat .bbar i.k4 { background: var(--tk-4); } #budgetSec .bcat .bbar i.k5 { background: var(--tk-5); } #budgetSec .bcat .bbar i.k6 { background: var(--tk-6); } #budgetSec .bcat .bbar i.k7 { background: var(--tk-7); }
+  #budgetSec .bmc { display: flex; align-items: flex-end; gap: 10px; height: 170px; } #budgetSec .bmcol { flex: 1; min-width: 0; max-width: 90px; height: 100%; display: flex; flex-direction: column; justify-content: flex-end; gap: 3px; cursor: pointer; border-radius: 8px; padding: 2px; }
+  #budgetSec .bmcol:hover, #budgetSec .bmcol.on { background: color-mix(in srgb, var(--ink) 8%, transparent); }
+  #budgetSec .bmcol .pair { flex: 1 1 auto; min-height: 0; display: flex; align-items: flex-end; gap: 3px; } #budgetSec .bmcol .pair i { flex: 1; border-radius: 3px; display: block; } #budgetSec .in { background: var(--tk-3); } #budgetSec .out { background: var(--tk-1); }
+  #budgetSec .bmcol .nv, #budgetSec .bmcol .ml { font-size: 10.5px; text-align: center; color: var(--grey); font-variant-numeric: tabular-nums; flex: 0 0 auto; white-space: nowrap; } #budgetSec .bmcol .nv.good { color: var(--ok); } #budgetSec .bmcol .nv.bad { color: var(--bad); }
+  #budgetSec .lg { display: flex; flex-wrap: wrap; gap: 4px 14px; margin-top: 10px; font-size: 11px; color: var(--grey); } #budgetSec .lg span { display: inline-flex; align-items: center; gap: 6px; } #budgetSec .sw { width: 10px; height: 10px; border-radius: 3px; display: inline-block; }
+  @media (max-width: 900px) { #budgetSec .bkpis { grid-template-columns: 1fr 1fr; } #budgetSec .bmc { gap: 4px; } #budgetSec .bmcol .nv { display: none; } }
+  /* tidy (9 Nov 2026): one even strip with hairline dividers (no inset-lip arcs), one figure style, pills and header on one line */
+  #budgetSec .sh { align-items: center; } #budgetSec .sh .tools { align-items: center; } #budgetSec .sh .tools button { height: 34px; padding: 0 16px; line-height: 1; display: inline-flex; align-items: center; }
+  #budgetSec .bmonths { gap: 8px; margin: 14px 0 16px; } #budgetSec .bmonths button { height: 34px; padding: 0 18px; line-height: 1; display: inline-flex; align-items: center; justify-content: center; white-space: nowrap; }
+  #budgetSec .bkpis { gap: 0; padding: 18px 0; align-items: stretch; }
+  #budgetSec .bkpis .kpi { display: flex; flex-direction: column; justify-content: flex-start; gap: 8px; padding: 0 24px; min-width: 0; border: 0; border-left: 1px solid var(--line); border-radius: 0; box-shadow: none; -webkit-backdrop-filter: none; backdrop-filter: none; background: none; }
+  #budgetSec .bkpis .kpi:first-child { border-left: 0; }
+  #budgetSec .bkpis .kpi .v { font-family: var(--serif) !important; font-weight: 400 !important; font-size: 28px; line-height: 1.1; white-space: nowrap; letter-spacing: 0; }
+  #budgetSec .bkpis .kpi .v.st { font-size: 28px; }
+  #budgetSec .bkpis .kpi .l { margin: 0; font-size: 10.5px; letter-spacing: .16em; line-height: 1.3; }
+  #budgetSec .bcat { grid-template-columns: 150px minmax(0, 1fr) 96px 44px; gap: 12px; padding: 7px 0; }
+  #budgetSec .bpanel h3 { font-size: 11px; letter-spacing: .16em; margin: 0 0 14px; } #budgetSec .bpanel .sub { margin: -8px 0 14px; }
+  @media (max-width: 900px) { #budgetSec .bkpis { padding: 8px 0; } #budgetSec .bkpis .kpi { padding: 10px 16px; } #budgetSec .bkpis .kpi:nth-child(odd) { border-left: 0; } }
   .bfoot { font-size: 11px; color: var(--grey); margin-top: 8px; }
   .bfoot .bad { color: var(--warn); }
   @media (max-width: 760px) { .bcat { grid-template-columns: 100px minmax(0, 1fr) 80px; } .bcat .bp { display: none; } .bl { grid-template-columns: minmax(0, 1fr) 90px; } .bl > :nth-child(n+3):not(.bnum) { display: none; } .bl.hd > :nth-child(n+3) { display: none; } }
@@ -503,6 +602,7 @@
   .pe .pet > .r { grid-area: act; display: flex; gap: 8px; align-items: center; margin-right: 40px; }
   .pe .ped:not([open]) { display: none; } .pe .ped { margin-top: 12px; border-top: 1px solid var(--ox-edge); padding-top: 10px; } .pe .ped > summary { pointer-events: none; font-size: 10.5px; letter-spacing: .14em; text-transform: uppercase; color: var(--grey); list-style: none; } .pe .ped > summary::-webkit-details-marker { display: none; }
   .pe .ped .pea { margin-top: 6px; } .pe .pet .more.shut { border-color: var(--ox-edge-hover); color: var(--ink); }
+  .pe .pey { display: flex; gap: 8px; margin-top: 12px; } .pe .pey button { min-width: 84px; height: 34px; padding: 0 18px; letter-spacing: .12em; font-size: 11px; }
   .pe .pea { white-space: normal; font-size: 13px; } .pe .pea p { margin: 0 0 8px; } .pe .pea ul { margin: 0 0 8px; padding-left: 18px; } .pe .pea li { margin: 0 0 5px; } .pe .pea > :last-child { margin-bottom: 0; }
   .hxo-k { color: var(--faint); font-size: 9.5px; letter-spacing: .16em; text-transform: uppercase; }
   .hxo-fw { position: relative; flex: none; display: inline-block; line-height: 0; }
@@ -660,6 +760,27 @@
   .hxo-lbs { display: flex; gap: 10px; }
   .hxo-lbs div { background: var(--soft); border-radius: 12px; padding: 9px 14px; min-width: 84px; font-size: 9.5px; letter-spacing: .1em; text-transform: uppercase; color: var(--faint); white-space: nowrap; }
   .hxo-lbs b { display: block; font: 300 26px/1 var(--serif); color: var(--ink); letter-spacing: 0; margin-bottom: 3px; } .hxo-lbs .you.n b { color: var(--red, #EC3013); }
+  /* Finance token visuals (8 Nov 2026): the colours are the six tokens below, one block to reskin; chats use --tk-chat */
+  .tkv { --tk-1: #EC3013; --tk-2: #4C8DF6; --tk-3: #2FB5A0; --tk-4: #E0A526; --tk-5: #9B6BDF; --tk-6: #8A8F98; --tk-7: #E0679A; --tk-8: #8BC34A; --tk-chat: var(--ink); display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; margin-bottom: 14px; }
+  .tkv .c1 { background: var(--tk-1); } .tkv .c2 { background: var(--tk-2); } .tkv .c3 { background: var(--tk-3); } .tkv .c4 { background: var(--tk-4); } .tkv .c5 { background: var(--tk-5); } .tkv .c6 { background: var(--tk-6); } .tkv .c7 { background: var(--tk-7); } .tkv .c8 { background: var(--tk-8); } .tkv .cchat { background: var(--tk-chat); opacity: .55; }
+  .tkv .tkp { padding: 14px 18px; border-radius: 18px; } 
+  .tkv h3 { margin: 0 0 4px; font-size: 11px; letter-spacing: .08em; } .tkv .sub { font-size: 11.5px; color: var(--meta, var(--grey)); margin-bottom: 10px; } .tkv .sub b { color: var(--ink); } .tkv .none { font-size: 12px; color: var(--grey); }
+  .tkv .bars { display: flex; align-items: flex-end; gap: 14px; height: 150px; padding-top: 6px; } .tkv .tkb { flex: 1; min-width: 0; max-width: 90px; height: 100%; display: flex; flex-direction: column; justify-content: flex-end; align-items: stretch; gap: 3px; }
+  .tkv .tkb .stk { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column-reverse; justify-content: flex-start; gap: 1px; } .tkv .tkb .stk i { display: block; border-radius: 2px; flex: 0 0 auto; }
+  .tkv .tkb .v, .tkv .tkb .d { font-size: 10.5px; color: var(--grey); text-align: center; flex: 0 0 auto; font-variant-numeric: tabular-nums; }
+  .tkv .lg { display: flex; flex-wrap: wrap; gap: 4px 14px; margin-top: 10px; font-size: 11px; color: var(--grey); } .tkv .lg span { display: inline-flex; align-items: center; gap: 6px; } .tkv .sw { width: 10px; height: 10px; border-radius: 3px; display: inline-block; }
+  .tkv .hr { display: grid; grid-template-columns: minmax(70px, 130px) minmax(0, 1fr) 54px; gap: 10px; align-items: center; margin: 6px 0; font-size: 12.5px; } .tkv .hr .n { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--ink); }
+  .tkv .hr .tr { display: flex; height: 12px; gap: 1px; } .tkv .hr .tr i { display: block; height: 100%; border-radius: 2px; } .tkv .hr .v { text-align: right; color: var(--grey); font-variant-numeric: tabular-nums; }
+  .tkv .mt { margin: 8px 0 12px; } .tkv .mt .h { display: flex; justify-content: space-between; font-size: 12.5px; margin-bottom: 4px; } .tkv .meter { display: block; height: 10px; border-radius: 6px; background: color-mix(in srgb, var(--ink) 12%, transparent); overflow: hidden; } .tkv .meter i { display: block; height: 100%; background: var(--tk-3); } .tkv .meter i.hot { background: var(--tk-1); }
+  .tkv .fl { font-size: 12.5px; margin: 6px 0; line-height: 1.4; }
+  @media (max-width: 900px) { .tkv { grid-template-columns: minmax(0, 1fr); } .tkv .bars { gap: 6px; } .tkv .hr { grid-template-columns: 80px minmax(0, 1fr) 46px; } }
+  /* Finance tokens card (8 Nov 2026, Toki): this week, top desks, the gauge, the latest note; reuses /api/tokens and /api/usage */
+  .hxo-tk { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 18px; align-items: start; padding: 14px 20px; margin-bottom: 14px; border: 1px solid var(--line); border-radius: 18px; background: var(--card, var(--panel)); }
+  .hxo-tk .k { font-size: 10.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--grey); margin-bottom: 4px; }
+  .hxo-tk b.big { display: block; font-size: 22px; font-weight: 600; color: var(--ink); } .hxo-tk .s { font-size: 11.5px; color: var(--grey); }
+  .hxo-tk .r { display: flex; justify-content: space-between; gap: 8px; font-size: 12.5px; color: var(--ink); } .hxo-tk .r span:last-child { color: var(--grey); }
+  .hxo-tk a { color: var(--ink); text-decoration: underline; text-underline-offset: 3px; font-size: 12.5px; }
+  @media (max-width: 900px) { .hxo-tk { grid-template-columns: 1fr 1fr; } }
   .hxo-dg { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; align-items: start; }
   .hxo-k2 { background: var(--card, var(--panel)); border: 1px solid var(--line); border-radius: 14px; padding: 13px 14px; display: flex; flex-direction: column; gap: 9px; cursor: pointer; min-height: 132px; min-width: 0; transition: border-color .2s; }
   .hxo-k2:hover, .hxo-k2:focus-visible { border-color: var(--grey); outline: none; } .hxo-k2.sel { border-color: var(--ink); }
@@ -686,6 +807,7 @@
   .hxd-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
   .hxd-chips span { font-size: 10.5px; padding: 4px 10px; border: 1px solid var(--line); border-radius: 99px; color: var(--grey); white-space: nowrap; } .hxd-chips .miss { border-style: dashed; color: var(--faint); }
   .hxd-more { background: var(--card, var(--panel)); border: 1px solid var(--line); border-radius: 14px; padding: 14px 16px; display: flex; flex-direction: column; gap: 12px; font-size: 12px; color: var(--grey); line-height: 1.5; }
+  .hxd-visits { gap: 6px; } .hxd-visits a { color: var(--ink); text-decoration: underline; } .hxd-src { color: var(--faint); font-size: 10.5px; }
   .hxd-more p { margin: 0; color: var(--ink); white-space: pre-wrap; overflow-wrap: anywhere; }
   .hxd-k { color: var(--faint); font-size: 9.5px; letter-spacing: .16em; text-transform: uppercase; margin-bottom: 4px; }
   .hxd-card { background: var(--card, var(--panel)); border: 1px solid var(--line); border-radius: 18px; padding: 16px 18px; min-width: 0; }
@@ -784,25 +906,68 @@
   @media (max-width: 1380px) { .hxt-row { grid-template-columns: repeat(2, minmax(0, 1fr)); } .hxt-col::after { display: none; } }
   @media (max-width: 860px) { .hxt-row { grid-template-columns: 1fr; } }
   @media (max-width: 760px) { .hx { padding: 18px 12px 16px; } .hx-desks { grid-template-columns: 1fr; } }
-  .needs { margin-bottom: 18px; } .needs .nHead, .week .nHead { display: flex; align-items: baseline; flex-wrap: wrap; gap: 6px 12px; margin: 0 4px 10px; } .week .z { color: var(--faint); font-size: 12px; } .needs .k, .week .k { font-size: 10.5px; letter-spacing: .14em; text-transform: uppercase; color: var(--ink); font-weight: 600; } .needs .z { color: var(--faint); font-size: 12px; }
-  .week { margin-bottom: 22px; } .wkCal { display: inline-flex; align-items: center; gap: 5px; font-size: 11px; color: var(--ink); } .wkCal i { width: 8px; height: 8px; border-radius: 2px; } .wkCal.bad { color: var(--red, #C8553D); }
-  .wkGrid { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 8px; }
-  .wkDay { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 10px; min-height: 150px; display: flex; flex-direction: column; gap: 5px; min-width: 0; }
-  .wkDay.today { border-color: var(--ink); box-shadow: inset 0 0 0 1px var(--ink); } .wkDay.busy .wkH em { color: var(--red, #C8553D); }
-  .wkH { display: flex; justify-content: space-between; align-items: baseline; gap: 6px; font-size: 11px; text-transform: uppercase; letter-spacing: .08em; color: var(--faint); margin-bottom: 2px; }
-  .wkH b { font-family: var(--serif); font-weight: 400; font-size: 20px; color: var(--ink); letter-spacing: 0; } .wkH em { font-style: normal; font-size: 9.5px; text-transform: none; letter-spacing: 0; }
-  .wkEv { font-size: 11.5px; line-height: 1.3; padding: 5px 7px; border-radius: 8px; background: var(--soft); overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; }
-  .wkEv b { font-weight: 600; } .wkEv i { font-style: normal; font-size: 9.5px; color: var(--faint); margin-left: 5px; text-transform: uppercase; letter-spacing: .06em; }
-  .wkEv.g { border-left: 3px solid var(--c); } .wkEv.g.all { background: color-mix(in srgb, var(--c) 22%, transparent); } .wkEv.g.free { opacity: .6; }
-  .wkEv.o { border-left: 3px solid var(--faint); } .wkEv.due { border-left: 3px solid #B4830B; } .wkEv.due.late { border-left-color: var(--red, #C8553D); } .wkEv.due.clash { box-shadow: inset 0 0 0 1px var(--red, #C8553D); }
-  .wkNone { font-size: 11px; color: var(--faint); }
-  .wkMore { font: inherit; font-size: 10.5px; letter-spacing: .06em; text-transform: uppercase; color: var(--faint); background: none; border: 1px dashed var(--line); border-radius: 8px; padding: 5px 7px; cursor: pointer; text-align: left; }
-  .wkMore:hover { color: inherit; border-style: solid; } a.wkEv { color: inherit; text-decoration: none; display: block; }
-  @media (max-width: 1100px) { .wkGrid { grid-template-columns: repeat(4, minmax(0, 1fr)); } } @media (max-width: 640px) { .wkGrid { grid-template-columns: 1fr 1fr; } }
-  .nTiles { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
-  .nTile { text-align: left; font: inherit; color: var(--ink); background: var(--panel); border: 1px solid var(--line); border-radius: 16px; padding: 12px 14px; cursor: pointer; display: grid; gap: 2px; }
-  .nTile b { font-family: var(--serif); font-weight: 400; font-size: 28px; line-height: 1; } .nTile span { font-size: 12px; font-weight: 600; } .nTile em { font-style: normal; font-size: 10.5px; color: var(--faint); }
-  .nTile.hot b { color: var(--red, #C8553D); } .nTile.on { border-color: var(--ink); box-shadow: inset 0 0 0 1px var(--ink); }
+  /* ===== Overview, the CEO's week (16 Nov 2026): the Office map's look. Glass cards on the painted ground (--ox-card, --ox-edge2), serif names,
+     small-caps labels, status as a dot plus a word, red only for what is late or waits on you. ===== */
+  .ovK { font-size: 10.5px; letter-spacing: .16em; text-transform: uppercase; font-weight: 600; color: var(--ink); }
+  .ovZ { font-size: 12px; color: var(--meta, var(--faint)); } .ovZ.bad { color: var(--ox-label-red); }
+  .ovCard, .cw { border: 1px solid var(--ox-edge2); border-radius: 22px; background: var(--ox-card); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); }
+  .ovH, .cwH { display: flex; align-items: baseline; flex-wrap: wrap; gap: 6px 14px; margin: 0 2px 12px; }
+  /* the week by client: Client · Overdue · seven days; today's column is a soft band */
+  .cw { padding: 18px 20px 14px; margin-bottom: 18px; }
+  .cwKeys { margin-left: auto; display: inline-flex; gap: 12px; flex-wrap: wrap; }
+  .cwKey { display: inline-flex; align-items: center; gap: 6px; font-size: 10.5px; color: var(--meta, var(--faint)); } .cwKey i { width: 3px; height: 12px; border-radius: 2px; background: var(--c); }
+  .cwT { display: grid; grid-template-columns: minmax(150px, 1.15fr) 104px repeat(7, minmax(0, 1fr)); }
+  .cwT > div { min-width: 0; padding: 9px 6px; border-top: 1px solid var(--ox-edge); }
+  .cwT > .hd { border-top: 0; padding: 0 6px 8px; font-size: 10px; letter-spacing: .14em; text-transform: uppercase; color: var(--meta, var(--faint)); }
+  .cwT > .hd b { font: 300 19px/1 var(--serif); letter-spacing: 0; color: var(--ink); margin-left: 6px; }
+  .cwT > .td { background: var(--soft); } .cwT > .hd.td { border-radius: 12px 12px 0 0; color: var(--ink); }
+  .cwT > .nm { padding-left: 2px; } .cwN { display: block; font: 300 18px/1.15 var(--serif); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .cwT > .nm small { display: block; margin-top: 3px; font-size: 9.5px; letter-spacing: .12em; text-transform: uppercase; color: var(--meta, var(--faint)); }
+  .cm { display: block; margin: 0 0 4px; padding: 4px 7px; border-radius: 8px; border-left: 3px solid var(--c, var(--faint)); background: var(--ox-inset); color: var(--ink); font-size: 11px; line-height: 1.3; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-decoration: none; }
+  .cm b { font-weight: 600; margin-right: 5px; } a.cm:hover { border-color: var(--c); background: var(--ox-card); box-shadow: 0 0 0 1px var(--ox-edge-hover); }
+  .cm.free { opacity: .6; } .cm.du, .cwKey .du { --c: var(--hx-rev, #D9951A); } .cm.ms, .cwKey .ms { --c: var(--ink); } .cm.mx { --c: var(--hx-rev, #D9951A); } .cm.rt, .cwKey .rt { --c: var(--ox-flow-off); } .cwKey .mt { --c: #4285F4; }
+  .cmMore { display: block; font: inherit; font-size: 10px; letter-spacing: .08em; text-transform: uppercase; color: var(--meta, var(--faint)); background: none; border: 1px dashed var(--ox-edge2); border-radius: 8px; padding: 3px 7px; cursor: pointer; }
+  .cmMore:hover { color: var(--ink); border-style: solid; }
+  .ovChip { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 999px; border: 1px solid var(--ox-need-edge); color: var(--ox-label-red); font-size: 11px; font-weight: 600; text-decoration: none; white-space: nowrap; }
+  .ovChip i, .ovSt i { width: 7px; height: 7px; border-radius: 50%; background: var(--red); flex: none; } .ovChip:hover { background: var(--ox-need-glow); }
+  .ovNone { font-size: 11px; color: var(--meta, var(--faint)); }
+  .cwQ { margin: 10px 2px 0; font-size: 11.5px; color: var(--meta, var(--faint)); }
+  /* what needs you (above the week), the live projects (under it, side by side) */
+  .ovCard { padding: 18px 20px; margin-bottom: 18px; }
+  .ovProj { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(400px, 100%), 1fr)); gap: 12px; align-items: start; } .ovProj > .ovH { grid-column: 1 / -1; margin-bottom: 0; }
+  .ovSegs { display: flex; flex-wrap: wrap; gap: 6px; margin: -2px 0 10px; }
+  .ovSeg { font: inherit; font-size: 10.5px; letter-spacing: .1em; text-transform: uppercase; padding: 5px 11px; border-radius: 999px; border: 1px solid var(--ox-edge2); background: transparent; color: var(--grey); cursor: pointer; }
+  .ovSeg b { font-weight: 600; color: var(--ink); margin-left: 4px; } .ovSeg.hot b { color: var(--red); } .ovSeg.on { border-color: var(--ink); color: var(--ink); box-shadow: inset 0 0 0 1px var(--ink); }
+  .needs .nList { margin: 0; border: 0; border-radius: 14px; background: transparent; }
+  .needs .nRow { grid-template-columns: 96px minmax(0, 1fr) auto auto; padding: 10px 6px; border-top-color: var(--ox-edge); }
+  .ovAll { display: block; width: 100%; margin-top: 6px; }
+  .ovP { padding: 14px 16px 12px; border: 1px solid var(--ox-edge); border-radius: 16px; background: var(--ox-inset); }
+  .ovPh { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+  .ovPn { font: 300 22px/1.1 var(--serif); }
+  .ovPk { font-size: 9.5px; letter-spacing: .14em; text-transform: uppercase; color: var(--meta, var(--faint)); }
+  .ovSt { margin-left: auto; display: inline-flex; align-items: center; gap: 7px; font-size: 11.5px; color: var(--grey); }
+  .ovSt.soon i { background: var(--hx-rev, #D9951A); } .ovSt.ok i { background: var(--ok); } .ovSt.bad { color: var(--ink); }
+  .ovBar { height: 5px; margin: 12px 0 5px; border-radius: 5px; background: var(--soft); overflow: hidden; } .ovBar i { display: block; height: 100%; border-radius: 5px; background: var(--ok); }
+  .ovPm { font-size: 11px; color: var(--meta, var(--faint)); }
+  .ovPc { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; margin: 12px 0 0; }
+  .ovPc a { display: grid; gap: 3px; padding: 7px 9px; border-radius: 12px; color: var(--ink); text-decoration: none; } .ovPc a:hover { background: var(--soft); }
+  .ovPc a.w2 { grid-column: span 2; }
+  .ovPc b { font: 300 26px/1 var(--serif); } .ovPc b.r { color: var(--red); } .ovPc b.sm { font-size: 22px; }
+  .ovPc span { font-size: 9.5px; letter-spacing: .12em; text-transform: uppercase; color: var(--meta, var(--faint)); }
+  .ovPl { display: grid; gap: 3px; margin-top: 10px; padding: 9px 9px 2px; border-top: 1px solid var(--ox-edge); color: var(--ink); text-decoration: none; font-size: 12.5px; line-height: 1.35; }
+  .ovPl b { font-weight: 500; } .ovPl:hover b { text-decoration: underline; text-underline-offset: 3px; }
+  /* office health folds under the CEO view */
+  .ovHealth { margin: 6px 0 0; } .ovHealth > summary { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; padding: 14px 20px; border: 1px solid var(--ox-edge2); border-radius: 999px; background: var(--ox-card); cursor: pointer; list-style: none; }
+  .ovHealth > summary::-webkit-details-marker { display: none; } .ovHealth > summary::before { content: '▸'; color: var(--meta, var(--faint)); } .ovHealth[open] > summary::before { content: '▾'; } .ovHealth[open] > summary { margin-bottom: 18px; }
+  .tkCard, .gtP { scroll-margin-top: calc(var(--top-h, 64px) + 18px); } .ovFlash { animation: ovFlash 1.8s ease-out; } @keyframes ovFlash { 0%, 35% { box-shadow: 0 0 0 3px var(--ox-need-edge); } 100% { box-shadow: 0 0 0 3px transparent; } }
+  /* phone: each client becomes a block, empty days drop out and each kept day carries its own label */
+  @media (max-width: 860px) {
+    .cwT { grid-template-columns: minmax(0, 1fr) auto; } .cwT > .hd, .cwKeys { display: none; }
+    .cwT > .nm { border-top: 1px solid var(--ox-edge2); padding-top: 12px; } .cwT > .od { border-top: 1px solid var(--ox-edge2); padding-top: 12px; text-align: right; }
+    .cwT > .dy { grid-column: 1 / -1; border-top: 0; padding: 2px 0; display: grid; grid-template-columns: 58px minmax(0, 1fr); column-gap: 8px; background: none; }
+    .cwT > .dy:empty { display: none; } .cwT > .dy::before { content: attr(data-d); grid-row: 1 / span 9; font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: var(--meta, var(--faint)); padding-top: 5px; }
+    .cwT > .dy > * { grid-column: 2; }
+  }
   .nList { margin-top: 10px; background: var(--panel); border: 1px solid var(--line); border-radius: 16px; overflow: hidden; }
   .nRow { display: grid; grid-template-columns: 128px 1fr auto auto; gap: 12px; align-items: center; padding: 10px 14px; border-top: 1px solid var(--line); color: var(--ink); text-decoration: none; font-size: 12.5px; }
   .nRow:first-child { border-top: 0; } a.nRow:hover { background: var(--soft); }
@@ -812,7 +977,7 @@
   .nChip.off { background: var(--soft); color: var(--ink); } .nChip.cc { background: #D97757; color: #fff; } .nChip.perm { background: var(--red, #C8553D); color: #fff; }
   .nAgo { font-size: 11px; color: var(--faint); white-space: nowrap; } .nGo { font-size: 11px; font-weight: 600; white-space: nowrap; }
   .nBtns { display: flex; gap: 6px; } .nBtns button { font: inherit; font-size: 11px; padding: 4px 10px; border-radius: 999px; border: 1px solid var(--line); background: var(--panel); color: var(--ink); cursor: pointer; }
-  @media (max-width: 860px) { .nTiles { grid-template-columns: repeat(2, 1fr); } .nRow { grid-template-columns: 1fr auto; } .nRow .nChip { grid-column: 1 / -1; } .nRow .nGo, .nRow .nBtns { grid-column: 1 / -1; } }
+  @media (max-width: 860px) { .nRow, .needs .nRow { grid-template-columns: 1fr auto; } .nRow .nChip { grid-column: 1 / -1; } .nRow .nGo, .nRow .nBtns { grid-column: 1 / -1; } }
   .hero { position: relative; overflow: hidden; background: var(--hero-bg); color: var(--hero-fg); border-radius: 30px; padding: 40px 44px 96px; margin-bottom: 22px; }
   .hero .ridge { position: absolute; left: 0; right: 0; bottom: -1px; width: 100%; height: 150px; pointer-events: none; }
   .hero .ridge path { fill: var(--hero-ridge); }
@@ -1070,8 +1235,11 @@
   @media (max-width: 1100px) { .bm-grid { grid-template-columns: 1fr; } .bm-side { max-height: none; min-height: 0; } .bm-stage { height: 62vh; } }
   /* Brain sheet (7 Nov 2026): the map above, pulled up to 85% of the window over the Office from a tab on its bottom-left edge.
      Bottom-left because Wispr Flow's pill covers the bottom centre of every window; clear of the You pill (centre) and the live pill (right). */
-  .bmtab { display: none; }
+  .bmtab, .mxtab { display: none; }
   body[data-cat="hierarchy"] .bmtab { display: flex; position: fixed; left: 28px; bottom: 0; z-index: 800; align-items: center; gap: 10px; padding: 11px 18px 10px; border: 1px solid var(--ox-edge2); border-bottom: 0; border-radius: 14px 14px 0 0; background: var(--ox-card); color: var(--grey); box-shadow: 0 -10px 30px -14px var(--bm-tab-shadow); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); transition: color .18s, border-color .18s, padding .2s cubic-bezier(.2,.8,.2,1); }
+  body[data-cat="hierarchy"] .mxtab { display: flex; position: fixed; left: 236px; bottom: 0; z-index: 800; align-items: center; gap: 10px; padding: 11px 18px 10px; border: 1px solid var(--ox-edge2); border-bottom: 0; border-radius: 14px 14px 0 0; background: var(--ox-card); color: var(--grey); box-shadow: 0 -10px 30px -14px var(--bm-tab-shadow); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); cursor: pointer; font: inherit; transition: color .18s, padding .2s cubic-bezier(.2,.8,.2,1); }
+  body[data-cat="hierarchy"] .mxtab:hover { color: var(--ink); padding-bottom: 14px; }
+  .mxtab em { font-style: normal; } .mxtab span { font-size: 11px; letter-spacing: .2em; font-weight: 700; text-transform: uppercase; } .mxtab i { font-style: normal; width: 22px; height: 22px; border-radius: 50%; background: var(--soft); display: flex; align-items: center; justify-content: center; font-size: 12px; letter-spacing: 0; }
   body[data-cat="hierarchy"] .bmtab:hover { color: var(--ink); border-color: var(--ox-edge-hover); background: var(--ox-card); padding-bottom: 14px; }
   .bmtab em { font-style: normal; }
   .bmtab span { font-size: 11px; letter-spacing: .2em; font-weight: 700; text-transform: uppercase; }
@@ -1096,7 +1264,7 @@
     body[data-cat="hierarchy"] .bmtab { left: 10px; padding: 9px 13px 8px; }
   }
   @media (max-width: 480px) { /* the live pill moves to the left on a phone: the tab says just BRAIN and the pill sits beside it, short of the For You tab */
-    .bmtab em { display: none; }
+    .bmtab em, .mxtab em { display: none; } body[data-cat="hierarchy"] .mxtab { left: 96px; padding: 9px 13px 8px; }
     body[data-cat="hierarchy"] .livebar { left: 104px; max-width: calc(100vw - 160px); overflow: hidden; white-space: nowrap; }
     body[data-cat="hierarchy"] .livebar #liveTxt { overflow: hidden; text-overflow: ellipsis; }
   }
@@ -1210,6 +1378,11 @@
   header.top .subnav button:hover { color: var(--ink); border-color: var(--line-strong); }
   header.top .subnav button.sub2 { text-transform: none; letter-spacing: .02em; font-weight: 500; border-style: dashed; } header.top .subnav button.sub2::before { content: '› '; color: var(--faint); }
   header.top .subnav button.on { background: var(--ink); border-color: var(--ink); color: var(--bg); }
+  /* Workstreams (13 Nov 2026): + New client leads the row, a hairline splits it from the clients; a client still onboarding shows its progress */
+  header.top .subnav button.obnew { border-color: var(--red); color: var(--red); } header.top .subnav button.obnew:hover { background: var(--red); color: var(--on-accent); border-color: var(--red); }
+  header.top .subnav button.obnew.on { background: var(--red); border-color: var(--red); color: var(--on-accent); }
+  header.top .subnav .obsep { flex: none; width: 1px; height: 18px; background: var(--line-strong); margin: 0 4px; }
+  header.top .subnav button .obp { margin-left: 6px; font-weight: 500; letter-spacing: 0; opacity: .7; }
   /* the live version, tucked into the bottom-right corner (7 Nov 2026) */
   .livebar { position: fixed; right: 14px; bottom: 12px; z-index: 50; display: inline-flex; align-items: center; gap: 7px; padding: 5px 11px; border-radius: 99px; border: 1px solid var(--line); background: var(--top-bg); color: var(--faint); font-size: 10.5px; opacity: .75; -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); transition: opacity .2s; }
   .livebar:hover { opacity: 1; } .livebar .live { width: 6px; height: 6px; }
@@ -1371,6 +1544,7 @@
     #matrixSec .mxh-t { flex-basis: 100%; } #matrixSec .mxh-t h2 { font-size: 36px; } #matrixSec #mUp select { max-width: 100%; flex: 1; }
     #matrixSec .quad { min-height: 0; padding: 18px 14px 14px; } #matrixSec .quad .qc { font-size: 44px; }
   }
+[data-review].sent{opacity:.45;pointer-events:none;cursor:default}
 </style>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500&family=Newsreader:opsz,wght@6..72,300;6..72,400&family=Noto+Serif+SC:wght@300&display=swap">
 </head>
@@ -1380,17 +1554,13 @@
     <h1 id="biz">Office</h1></div>
   <nav class="tabs" id="side" aria-label="AIOS categories">
     <button data-go="overview">Overview <span class="n" id="nOverview"></span></button>
-    <button data-go="matrix">Matrix <span class="n" id="nMatrix"></span></button>
-    <span class="sep" aria-hidden="true"></span>
-    <button data-go="clients">Clients <span class="n" id="nClients"></span></button>
-    <button data-go="budget" id="navBudget" style="display:none">Budget <span class="n"></span></button>
-    <span class="sep" aria-hidden="true"></span>
     <button data-go="hierarchy">Office</button>
-    <button data-go="tokens">Tokens</button>
+    <span class="sep" aria-hidden="true"></span>
+    <button data-go="clients">Workstreams <span class="n" id="nClients"></span></button>
     <span class="ind" id="sideInd" aria-hidden="true"></span>
   </nav>
     <div class="right"><div class="uspill" id="usPill" role="status" hidden></div><div class="ccpill" id="ccPill"><button type="button" class="ccopen" id="ccBtn" aria-expanded="false" aria-controls="ccBox" title="Consultants’ Corner: open the player"><span class="ccart" id="ccArt" aria-hidden="true"></span><span class="cctx"><b id="ccTitle">Consultants’ Corner</b><small id="ccSub">Press play</small></span><span class="cceq" aria-hidden="true"><i></i><i></i><i></i><i></i></span></button><button type="button" class="ccplay" id="ccPlay" aria-label="Play Consultants’ Corner"><svg viewBox="0 0 24 24" aria-hidden="true"><path class="pl" d="M8 5.5v13l11-6.5z"/><path class="pa" d="M6.5 5h3.8v14H6.5zM13.7 5h3.8v14h-3.8z"/></svg></button><span class="ccprog" aria-hidden="true"><i id="ccProg"></i></span></div><button id="themeBtn" class="tpill" type="button" title="Switch between automatic, light and dark">Auto</button></div>
-    <div class="subnav" id="navDash" aria-label="Client dashboards"></div>
+    <div class="subnav" id="navDash" aria-label="Workstreams"></div>
 </header>
 <span class="livebar" id="livePill"><span class="live" id="live"></span><span id="liveTxt">connecting…</span></span>
 <div class="ccbox" id="ccBox" role="dialog" aria-label="Consultants’ Corner" aria-hidden="true">
@@ -1401,6 +1571,7 @@
 </div>
 <div class="wrap">
   <div class="main">
+  <!-- Overview, the CEO's week (16 Nov 2026): the red hero (kept at Wesley's ask), then what needs you, the week by client, the live projects. Office health folds away at the foot. -->
   <div class="hero" id="hero" data-cat="overview">
     <div class="eyebrow" id="hEye"></div>
     <h2 id="hHead"></h2>
@@ -1419,20 +1590,21 @@
     <div class="per"><button type="button" id="peClip" title="Attach files: a drawing, PDF, photo or document. Each is read into the Brain and travels with your request. You can also drop or paste them here.">📎</button><input type="file" id="peFile" multiple hidden><button type="button" class="go" id="peGo">CHECK AND SEND</button><span class="st" id="peSt">Ctrl+Enter sends.</span></div>
     <div id="peOut"></div>
   </div>
-  <div class="needs" id="needs" data-cat="overview"></div>
-  <div class="week" id="week" data-cat="overview"></div>
-  <div class="kpis" id="kpis" data-cat="overview"></div>
-  <div class="panel trend" id="trend" data-cat="overview"></div>
+  <div class="ovCard needs" id="needs" data-cat="overview"></div>
+  <div class="cw" id="week" data-cat="overview"></div>
+  <div class="ovCard ovProj" id="ovProj" data-cat="overview"></div>
 
   <section id="clientsSec" data-cat="clients">
     <div class="sh">
-      <h2>Clients</h2>
-      <span class="note">Next actions by client, pulled from the matrix as tasks finish.</span>
+      <h2>Workstreams</h2>
+      <span class="note">One workstream per client we represent. Next actions by client, pulled from the matrix as tasks finish.</span>
     </div>
     <div class="panel client agency" id="clientAgency"></div>
     <div id="trackerBox"></div>
     <div class="clientGrid" id="clientGrid"></div>
   </section>
+
+  <section id="onbSec" data-cat="onb"><!-- 13 Nov 2026: + New client and each client's onboarding; the answers live in Brain 30-Customers/<id>-onboarding.md --></section>
 
   <section id="dashSec" data-cat="dash">
     <div class="sh">
@@ -1493,31 +1665,15 @@
   </section>
   <div class="hxd-w" id="hxDr" data-cat="hierarchy" aria-hidden="true"></div>
 
-  <section id="tokSec" data-cat="tokens">
-    <div class="sh">
-      <h2>Tokens</h2>
-      <span class="note">Where the tokens go: your Claude Code chats, read from their transcripts on this PC, and the office's own runs, from its ledger. Nothing leaves this computer.</span>
-      <div class="tools"><button id="tokRefresh" type="button">↻ REFRESH</button></div>
-    </div>
-    <div class="msg" id="tokMsg"></div>
-    <div class="panel tokcoach" id="tokCoach" style="display:none"></div>
-    <div class="kpis" id="tokHead"></div>
-    <div class="panel trend" id="tokDays"></div>
-    <div class="panel tokpanel">
-      <div class="tokph"><h3>CHATS</h3><span class="note" id="tokChatNote"></span><div class="seg"><button type="button" id="tokAllBtn">SHOW ALL</button></div></div>
-      <div class="tokwrap"><table class="wa" id="tokChats"></table></div>
-      <div class="tokph tokold"><h3>OLDER THAN 24 HOURS</h3><span class="note" id="tokOldNote"></span><div class="seg"><button type="button" id="tokOldBtn">SHOW</button></div></div>
-      <div class="tokwrap" id="tokOldWrap" style="display:none"><table class="wa" id="tokOld"></table></div>
-    </div>
-    <div class="panel tokpanel">
-      <div class="tokph"><h3>OFFICE JOBS</h3><span class="note" id="tokJobNote"></span>
-        <div class="seg" id="tokBy"><button data-v="desk" class="on">DESK</button><button data-v="dept">DEPARTMENT</button><button data-v="routine">ROUTINE</button><button data-v="model">MODEL</button><button data-v="kind">KIND OF RUN</button></div></div>
-      <div class="tokwrap"><table class="wa" id="tokJobs"></table></div>
-    </div>
-    <div class="tokroi" id="tokRoi"></div>
-  </section>
+  <section class="hxt hx-off" id="planSec" data-cat="hierarchy"><!-- Project plans (Gantt) under Delivery (9 Nov 2026): read-only, drawn from each project's Google master sheet; renderPlans shows it on the Delivery page only --></section>
 
-  <section data-cat="overview">
+  <section class="hxt hx-off" id="finSec" data-cat="hierarchy"><!-- Finance token card and visuals (8 Nov 2026): under the head, the desks and the workflow; renderHierarchy fills and shows it on the Finance page only --></section>
+
+  <details class="ovHealth" id="ovHealth" data-cat="overview"><!-- the office's own numbers (seats, briefs, the 14-day trend, live columns, news) folded under the CEO view, 16 Nov 2026 -->
+  <summary><span class="ovK">Office health and activity</span><span class="ovZ">seats, routines, the last 14 days, what is running, the news feed</span></summary>
+  <div class="kpis" id="kpis"></div>
+  <div class="panel trend" id="trend"></div>
+  <section>
     <div class="sh"><h2>Happening now</h2><span class="note" id="nowNote">Live from the office.</span></div>
     <div class="cols">
       <div class="panel col"><h3><span class="dot doing"></span>WORKING</h3><div id="aDoing"></div></div>
@@ -1526,15 +1682,16 @@
       <div class="panel col"><h3>⏱ SCHEDULED</h3><div id="aSched"></div></div>
     </div>
   </section>
-  <section data-cat="overview"> <!-- the News feed, moved here from Roles when Roles was retired (7 Nov 2026) -->
+  <section> <!-- the News feed, moved here from Roles when Roles was retired (7 Nov 2026) -->
     <aside class="panel news wide">
       <div class="nh"><h2>News feed</h2><span class="note">What the office has done, newest first</span></div>
       <div class="seg nf" id="nShow"><button data-v="all" class="on">ALL</button><button data-v="work">WORK</button><button data-v="review">REVIEWS</button><button data-v="matrix">MATRIX</button></div>
       <div class="nl" id="news"></div>
     </aside>
   </section>
+  </details>
 
-  <section id="budgetSec" data-cat="budget" style="display:none">
+  <section id="budgetSec" class="hx-off" data-cat="hierarchy"><!-- Personal budget sits on the Finance page under the tokens (8 Nov 2026), where the Personal Budget desk works -->
     <div class="sh">
       <h2>Personal budget</h2>
       <span class="note">Read from your Personal Budget Ledger in Google Sheets. Shown on this machine only.</span>
@@ -1545,7 +1702,7 @@
     <div class="bkpis" id="bKpis"></div>
     <div class="bgrid">
       <div class="panel bpanel"><h3 id="bCatTitle">OUTGOINGS BY CATEGORY</h3><div id="bCats"></div></div>
-      <div class="panel bpanel"><h3>MONTH BY MONTH</h3><div id="bMonths"></div></div>
+      <div class="panel bpanel"><h3>MONTH BY MONTH</h3><div class="sub">Income and outgoings each month. Click a month to open it.</div><div id="bMonths"></div></div>
     </div>
     <div class="panel bpanel"><div class="bledhead"><h3 id="bLedTitle">LEDGER</h3><button data-bled id="bLedBtn">SHOW</button></div><div id="bLedger"></div></div>
     <div class="bfoot" id="bFoot"></div>
@@ -1561,6 +1718,7 @@
 <form class="ccb-f" id="gcForm"><textarea id="gcIn" rows="1" placeholder="Ask Grace…" aria-label="Message for Grace"></textarea><button type="submit" class="primary" id="gcGo">SEND</button></form></section></aside>
 <!-- Brain sheet (7 Nov 2026): the Brain map pulls up over the Office from a tab on its bottom-left edge (bottom-centre is under Wispr Flow's pill); Esc, ✕ or the dimmed Office closes it -->
 <button type="button" class="bmtab" id="bmTab" aria-controls="brainSec" aria-expanded="false"><span><em>Open the </em>Brain</span><i aria-hidden="true">↑</i></button>
+<button type="button" class="mxtab" id="mxTab" data-go="matrix"><span><em>Open the </em>Matrix</span><i aria-hidden="true">↑</i></button>
 <div class="bmdim" data-bmclose aria-hidden="true"></div>
 <section class="bmsheet" id="brainSec" role="dialog" aria-modal="true" aria-label="The Brain" aria-hidden="true">
     <button type="button" class="bmsheet-x" data-bmclose aria-label="Close (Esc)" title="Close (Esc)">✕</button>
@@ -1644,7 +1802,7 @@ function renderNeeds() {
   const sess = (S.attention || []).filter(x => !x.dismissed), code = sess.filter(x => x.state === 'waiting' || x.state === 'needs'), working = sess.filter(x => x.state === 'working');
   const doing = S.tasks.filter(t => t.state === 'doing'), show = S.needShow || 'all', who = id => agentBy(id)?.name || id;
   const folder = p => String(p || '').split(/[\\/]/).filter(Boolean).pop() || '';
-  const tile = (k, n, l, sub) => `<button type="button" class="nTile${show === k ? ' on' : ''}${n && k !== 'work' ? ' hot' : ''}" data-need="${k}"><b>${n}</b><span>${l}</span><em>${sub}</em></button>`;
+  const tile = (k, n, l, sub) => `<button type="button" class="ovSeg${show === k ? ' on' : ''}${n && k !== 'work' ? ' hot' : ''}" data-need="${k}" title="${sub}">${l}<b>${n}</b></button>`; // 16 Nov 2026: pills on the CEO Overview, once tiles
   const rows = [];
   if (show !== 'work') {
     if (show !== 'code') for (const t of office) rows.push({ at: t.waitingAt || t.addedAt || 0, html: `<a class="nRow" href="#" data-review="${esc(t.id)}"><span class="nChip off">OFFICE</span><span class="nMain"><b>${esc(t.title)}</b><span class="z">${esc(who(t.agent))}${t.channel === 'email' ? ' · email ready for your OK' : ' · ready for your review'}</span></span><span class="nAgo">${ago(t.waitingAt || t.addedAt)}</span><span class="nGo">Review →</span></a>` });
@@ -1656,50 +1814,162 @@ function renderNeeds() {
   }
   rows.sort((a, b) => a.at - b.at);
   const total = office.length + code.length;
-  el.innerHTML = `<div class="nHead"><span class="k">Needs you</span><span class="z">${total ? `${total} waiting · oldest first` : 'Nothing is waiting on you'}</span></div>
-    <div class="nTiles">${tile('all', total, 'Waiting on you', 'everything')}${tile('office', office.length, 'Office', 'tasks to review')}${tile('code', code.length, 'Claude Code', 'sessions finished or asking')}${tile('work', working.length + doing.length, 'Working', 'nothing needed yet')}</div>
-    ${rows.length ? `<div class="nList">${rows.map(r => r.html).join('')}</div>` : ''}`;
+  const NEED_MAX = 6, all = S.needAll, list = all ? rows : rows.slice(0, NEED_MAX);
+  el.innerHTML = `<div class="ovH"><span class="ovK">Needs you</span><span class="ovZ">${total ? `${total} waiting · oldest first` : 'Nothing is waiting on you'}</span></div>
+    <div class="ovSegs">${tile('all', total, 'Everything', 'everything waiting on you')}${tile('office', office.length, 'Office', 'tasks to review')}${tile('code', code.length, 'Claude Code', 'sessions finished or asking')}${tile('work', working.length + doing.length, 'Working', 'running, nothing needed yet')}</div>
+    ${rows.length ? `<div class="nList">${list.map(r => r.html).join('')}</div>${rows.length > NEED_MAX ? `<button type="button" class="cmMore ovAll" data-needall>${all ? 'show fewer' : 'show all ' + rows.length}</button>` : ''}` : `<div class="ovZ">${show === 'work' ? 'Nothing running.' : 'All clear.'}</div>`}`;
 }
 if (!window.__needsBound) { window.__needsBound = true;
   document.addEventListener('click', async e => {
     const t = e.target.closest('[data-need]'), d = e.target.closest('[data-ndone]'), c = e.target.closest('[data-ncopy]');
     if (t) { S.needShow = S.needShow === t.dataset.need && t.dataset.need !== 'all' ? 'all' : t.dataset.need; renderNeeds(); }
+    if (e.target.closest('[data-needall]')) { S.needAll = !S.needAll; renderNeeds(); }
     if (d) { const x = (S.attention || []).find(y => y.id === d.dataset.ndone); if (x) x.dismissed = true; renderNeeds(); try { await api('/attention/' + d.dataset.ndone + '/dismiss', { method: 'POST' }); } catch {} }
     if (c) { try { await navigator.clipboard.writeText(c.dataset.ncopy); c.textContent = 'Copied'; } catch { c.textContent = c.dataset.ncopy; } }
   });
 }
-// This week (V3.12, 3 Nov): Wesley's Google Calendar (read-only, from its private feeds, /api/gcal) beside the office's own dated work,
-// day by day for seven days: matrix items by due date, scheduled tasks, routine runs. A day with six hours or more booked is marked busy,
-// so a matrix item due that day stands out.
-const WEEK_MAX = 5;
+// This week by client (16 Nov 2026, the CEO's Overview): one row per client, seven days across from today, an Overdue column first.
+// Built in the page from what the office already reads: Google Calendar (an event joins a client when the client's name is in its title),
+// the project trackers (actions due, grouped per day), the project plans (milestones, tasks ending), the matrix (items due) and, on the
+// office's own row, scheduled tasks and routine runs. Diary events that name no client sit on "Your diary". Every mark links to where
+// the work already lives: a tracker column (#clients/<client>/<od|du|nx>), the plan on Delivery, the matrix.
+const CW_MAX = 3;
+const ovNorm = s => String(s || '').toLowerCase().normalize('NFKD').replace(/[̀-ͯ]/g, '').replace(/['’]/g, '');
+const ovPlanName = p => String(p.name || p.client).split(/\s+/)[0];
+function ovClients() {
+  const rows = [], by = new Map();
+  const add = (id, name, x = {}) => {
+    let c = by.get(id); if (!c) { c = { id, name, ids: new Set(), keys: new Set(), agency: false }; rows.push(c); }
+    by.set(id, c); c.ids.add(id); Object.assign(c, x);
+    const n = ovNorm(name), w = n.split(/\s+/);
+    c.keys.add(n); c.keys.add(ovNorm(id).replace(/-/g, ' '));
+    if (w.length === 1 && w[0].length >= 4) c.keys.add(w[0]);                    // a one-word name (Creamy)
+    if (/^[a-z]{3,}s$/.test(w[0]) && /['’]s\b/.test(String(name))) c.keys.add(w[0].slice(0, -1)); // a possessive (Imran's Diner → imran)
+    return c;
+  };
+  for (const c of S.matrix.clients || []) add(c.id, c.name, { agency: c.scope === 'agency' });
+  for (const t of S.trackers?.trackers || []) { const c = by.get(t.client) || add(t.client, String(t.name).replace(/\s*project tracker$/i, '')); c.tracker = t; }
+  for (const p of S.plans?.plans || []) { const c = by.get(p.client) || add(p.client, ovPlanName(p)); c.plan = p; }
+  return rows;
+}
 if (!window.__weekBound) { window.__weekBound = true;
-  document.addEventListener('click', e => { const b = e.target.closest('[data-wkmore]'); if (!b) return; S.weekOpen = S.weekOpen || new Set(); const k = b.dataset.wkmore; S.weekOpen.has(k) ? S.weekOpen.delete(k) : S.weekOpen.add(k); renderWeek(); });
+  document.addEventListener('click', e => {
+    const b = e.target.closest('[data-cwmore]'); if (b) { S.cwOpen = S.cwOpen || new Set(); const k = b.dataset.cwmore; S.cwOpen.has(k) ? S.cwOpen.delete(k) : S.cwOpen.add(k); renderWeek(); return; }
+    const p = e.target.closest('[data-plopen]'); if (p) { (S.gtOpen = S.gtOpen || {})[p.dataset.plopen] = true; ovFocus(`details.gtP[data-gt="${CSS.escape(p.dataset.plopen)}"]`); }
+  });
+}
+// after a link lands on another tab, bring the thing it points at into view and flash it once (it may take a render or two to appear)
+function ovFocus(sel) {
+  let n = 0; const t = setInterval(() => {
+    const el = document.querySelector(sel);
+    if (el && el.offsetParent) { clearInterval(t); el.scrollIntoView({ behavior: 'smooth', block: 'start' }); el.classList.add('ovFlash'); setTimeout(() => el.classList.remove('ovFlash'), 1900); }
+    else if (++n > 50) clearInterval(t);
+  }, 120);
 }
 async function loadGcal() { try { S.gcal = await api('/gcal?from=' + new Date().setHours(0, 0, 0, 0) + '&to=' + (new Date().setHours(0, 0, 0, 0) + 8 * 864e5)); } catch { S.gcal = S.gcal || null; } renderWeek(); }
 function renderWeek() {
   const el = $('week'); if (!el) return;
   const g = S.gcal, t0 = new Date().setHours(0, 0, 0, 0), who = id => agentBy(id)?.name || id, hm = t => new Date(t).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
-  const ymdOf = t => new Date(t).toLocaleDateString('en-CA'), days = [...Array(7).keys()].map(i => new Date(t0).setDate(new Date(t0).getDate() + i));
-  const open = (S.matrix.items || []).filter(i => i.state === 'open' && i.due);
-  const col = days.map((d, i) => {
-    const end = new Date(d).setDate(new Date(d).getDate() + 1), k = ymdOf(d);
-    const gev = g && g.events ? g.events.filter(e => e.start < end && e.end > d) : [];
-    const busy = gev.filter(e => !e.allDay && !e.free).reduce((n, e) => n + (Math.min(e.end, end) - Math.max(e.start, d)), 0) / 36e5;
-    const items = [
-      ...gev.filter(e => e.allDay).map(e => ({ at: d - 1, html: `<div class="wkEv g all" style="--c:${esc(e.colour || '#4285F4')}" title="${esc(e.cal)} · all day${e.location ? ' · ' + esc(e.location) : ''}">${esc(e.title)}</div>` })),
-      ...gev.filter(e => !e.allDay).map(e => ({ at: e.start, html: `<div class="wkEv g${e.free ? ' free' : ''}" style="--c:${esc(e.colour || '#4285F4')}" title="${esc(e.cal)} · ${hm(e.start)}–${hm(e.end)}${e.location ? ' · ' + esc(e.location) : ''}"><b>${hm(Math.max(e.start, d))}</b> ${esc(e.title)}</div>` })),
-      ...S.tasks.filter(t => t.state === 'scheduled' && t.dueAt >= d && t.dueAt < end).map(t => ({ at: t.dueAt, html: `<div class="wkEv o" title="Scheduled task · ${esc(who(t.agent))}"><b>${hm(t.dueAt)}</b> ${esc(t.title)}<i>scheduled</i></div>` })),
-      ...S.routines.filter(r => !r.paused).flatMap(r => (r.upcoming || [r.nextAt]).filter(at => at >= d && at < end).map(at => ({ at, html: `<div class="wkEv o" title="Routine · ${esc(who(r.agent))}"><b>${hm(at)}</b> ${esc(r.title)}<i>routine</i></div>` }))),
-      ...(i === 0 && open.some(it => it.due < k) ? [{ at: end - 2, html: `<a class="wkEv due late" href="#matrix">${open.filter(it => it.due < k).length} overdue on the matrix<i>open</i></a>` }] : []),
-      ...open.filter(it => it.due === k).map(it => ({ at: end - 1, html: `<div class="wkEv due${it.due < k ? ' late' : ''}${busy >= 6 ? ' clash' : ''}" title="${it.due < k ? 'Overdue since ' + esc(it.due) : 'Due'}${busy >= 6 ? ' on a day with ' + busy.toFixed(1) + ' h booked' : ''}">${esc(it.title)}<i>${it.due < k ? 'overdue' : 'due'}</i></div>` })),
-    ].sort((a, b) => a.at - b.at);
-    const dt = new Date(d), open5 = S.weekOpen && S.weekOpen.has(k), shown = open5 ? items : items.slice(0, WEEK_MAX); // at most five a day until "Show more" (7 Nov 2026)
-    const more = items.length > WEEK_MAX ? `<button type="button" class="wkMore" data-wkmore="${k}">${open5 ? 'Show less' : `Show ${items.length - WEEK_MAX} more`}</button>` : '';
-    return `<div class="wkDay${i === 0 ? ' today' : ''}${busy >= 6 ? ' busy' : ''}"><div class="wkH"><span>${dt.toLocaleDateString('en-GB', { weekday: 'short' })} <b>${dt.getDate()}</b></span>${busy ? `<em>${busy >= 6 ? 'busy · ' : ''}${busy.toFixed(busy % 1 ? 1 : 0)} h booked</em>` : ''}</div>${items.length ? shown.map(x => x.html).join('') + more : '<div class="wkNone">Nothing booked</div>'}</div>`;
+  const ymdOf = t => new Date(t).toLocaleDateString('en-CA'), days = [...Array(7).keys()].map(i => new Date(t0).setDate(new Date(t0).getDate() + i)), keys = days.map(ymdOf), today = keys[0];
+  const cut = s => { s = String(s || ''); return s.length > 70 ? s.slice(0, 69) + '…' : s; };
+  const clients = ovClients(), events = (g && g.events) || [], open = (S.matrix.items || []).filter(i => i.state === 'open' && i.due);
+  const home = { id: '_office', name: 'The office', sub: 'own work · routines', ids: new Set(['']), keys: new Set(), office: true };
+  for (const c of clients) if (c.agency) { c.ids.forEach(i => home.ids.add(i)); home.sub = c.name + ' · routines'; }
+  const diary = { id: '_diary', name: 'Your diary', sub: 'meetings with no client named', ids: new Set(), keys: new Set(), diary: true };
+  const rows = [...clients.filter(c => !c.agency), home, diary];
+  const evRow = e => { const t = ovNorm(e.title); return rows.find(c => !c.office && !c.diary && [...c.keys].some(k => k && t.includes(k))) || diary; };
+  const tkLink = (c, k) => c.tracker ? `#clients/${encodeURIComponent(c.tracker.client)}/${k}` : '';
+  let meets = 0, dueN = 0;
+  const cells = new Map(rows.map(c => [c.id, keys.map(() => [])]));
+  const put = (c, i, at, html) => { if (i >= 0) cells.get(c.id)[i].push({ at, html }); };
+  for (const e of events) {
+    const c = evRow(e);
+    days.forEach((d, i) => { const end = new Date(d).setDate(new Date(d).getDate() + 1); if (!(e.start < end && e.end > d)) return;
+      if (!e.allDay && !e.free) meets++;
+      put(c, i, e.allDay ? d - 1 : e.start, `<span class="cm mt${e.free ? ' free' : ''}" style="--c:${esc(e.colour || '#4285F4')}" title="${esc(e.title)} · ${e.allDay ? 'all day' : hm(e.start) + '–' + hm(e.end)}${e.location ? ' · ' + esc(e.location) : ''} · ${esc(e.cal)}">${e.allDay ? '' : `<b>${hm(Math.max(e.start, d))}</b>`}${esc(cut(e.title))}</span>`); });
+  }
+  for (const c of rows) {
+    const v = c.tracker?.view;
+    if (v) keys.forEach((k, i) => { const due = v.due.filter(r => r.date === k); if (!due.length) return; dueN += due.length;
+      put(c, i, days[i] + 864e5 - 30, `<a class="cm du" href="${tkLink(c, 'du')}" title="${esc(due.map(r => '· ' + r.action + (r.owner ? ' (' + r.owner + ')' : '')).join('\n'))}">${due.length === 1 ? esc(cut(due[0].action)) : `<b>${due.length}</b>tracker actions due`}</a>`); });
+    const pv = c.plan?.view;
+    if (pv) { const tasks = pv.phases.flatMap(p => p.tasks).filter(t => !t.done);
+      keys.forEach((k, i) => { const end = tasks.filter(t => t.end === k); if (!end.length) return; dueN += end.length;
+        const ms = end.filter(t => t.milestone), rest = end.filter(t => !t.milestone), href = '#office/delivery', pl = esc(c.plan.client);
+        for (const t of ms) put(c, i, days[i] + 864e5 - 25, `<a class="cm ms" href="${href}" data-plopen="${pl}" title="Milestone · ${esc(t.id)} ${esc(t.task)}${t.owner ? ' · ' + esc(t.owner) : ''}"><b>◆</b>${esc(cut(t.task))}</a>`);
+        if (rest.length) put(c, i, days[i] + 864e5 - 20, `<a class="cm du" href="${href}" data-plopen="${pl}" title="${esc(rest.map(t => '· ' + t.id + ' ' + t.task + (t.owner ? ' (' + t.owner + ')' : '')).join('\n'))}">${rest.length === 1 ? esc(cut(rest[0].task)) : `<b>${rest.length}</b>plan tasks end`}</a>`); });
+    }
+    for (const it of open.filter(it => c.ids.has(it.client || ''))) { const i = keys.indexOf(it.due); if (i < 0) continue; dueN++;
+      put(c, i, days[i] + 864e5 - 10, `<a class="cm mx" href="#matrix" title="On the matrix · due ${esc(it.due)}">${esc(cut(it.title))}</a>`); }
+  }
+  days.forEach((d, i) => { const end = new Date(d).setDate(new Date(d).getDate() + 1);
+    for (const t of S.tasks.filter(t => t.state === 'scheduled' && t.dueAt >= d && t.dueAt < end)) put(home, i, t.dueAt, `<span class="cm rt" title="Scheduled task · ${esc(who(t.agent))}"><b>${hm(t.dueAt)}</b>${esc(cut(t.title))}</span>`);
+    const runs = S.routines.filter(r => !r.paused).flatMap(r => (r.upcoming || [r.nextAt]).filter(at => at >= d && at < end).map(at => ({ at, r })));
+    if (runs.length) put(home, i, end - 5, `<span class="cm rt" title="${esc(runs.map(x => hm(x.at) + ' ' + x.r.title + ' · ' + who(x.r.agent)).join('\n'))}">${runs.length === 1 ? `<b>${hm(runs[0].at)}</b>${esc(cut(runs[0].r.title))}` : `<b>${runs.length}</b>routine runs`}</span>`);
+  });
+  const overdue = c => {
+    const tk = c.tracker?.view?.overdue.length || 0, pl = c.plan?.view?.overdue || 0, mx = open.filter(it => c.ids.has(it.client || '') && it.due < today).length, n = tk + pl + mx;
+    if (!n) return '<span class="ovNone">none</span>';
+    const href = tk ? tkLink(c, 'od') : pl ? '#office/delivery' : '#matrix', why = [tk && tk + ' on the tracker', pl && pl + ' on the plan', mx && mx + ' on the matrix'].filter(Boolean).join(' · ');
+    return `<a class="ovChip" href="${href}"${!tk && pl ? ` data-plopen="${esc(c.plan.client)}"` : ''} title="${esc(why)}"><i></i>${n} overdue</a>`;
+  };
+  const live = c => c.tracker?.view || c.plan?.view;
+  const busy = c => live(c) || cells.get(c.id).some(x => x.length) || (c.office && open.some(it => c.ids.has(it.client || '') && it.due < today));
+  const shown = rows.filter(busy), quiet = rows.filter(c => !busy(c) && !c.office && !c.diary);
+  const hd = `<div class="hd nm">Client</div><div class="hd">Overdue</div>` + days.map((d, i) => { const dt = new Date(d); return `<div class="hd${i === 0 ? ' td' : ''}">${i === 0 ? 'Today' : dt.toLocaleDateString('en-GB', { weekday: 'short' })}<b>${dt.getDate()}</b></div>`; }).join('');
+  const body = shown.map(c => {
+    const name = `<div class="nm"><span class="cwN">${esc(c.name)}</span><small>${c.office || c.diary ? esc(c.sub) : c.tracker ? 'project tracker' : c.plan ? 'project plan' : 'client'}</small></div>`;
+    const od = c.diary ? '<div class="od"></div>' : `<div class="od">${overdue(c)}</div>`;
+    return name + od + cells.get(c.id).map((list, i) => {
+      list.sort((a, b) => a.at - b.at);
+      const k = c.id + '|' + keys[i], all = S.cwOpen && S.cwOpen.has(k), show = all ? list : list.slice(0, CW_MAX);
+      const more = list.length > CW_MAX ? `<button type="button" class="cmMore" data-cwmore="${esc(k)}">${all ? 'show less' : '+' + (list.length - CW_MAX) + ' more'}</button>` : '';
+      return `<div class="dy${i === 0 ? ' td' : ''}" data-d="${esc(new Date(days[i]).toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric' }))}">${show.map(x => x.html).join('')}${more}</div>`;
+    }).join('');
   }).join('');
-  const st = !g ? '' : !g.configured ? '<span class="z">Google Calendar not connected yet: add your calendar’s private iCal address to office.config.local.json → aios.calendars.</span>'
-    : g.calendars.map(c => `<span class="wkCal${c.ok ? '' : ' bad'}" title="${c.ok ? 'read ' + ago(c.at) : esc(c.error || '')}"><i style="background:${esc(c.colour || '#4285F4')}"></i>${esc(c.name)}${c.ok ? '' : ' · not read'}</span>`).join('') + `<span class="z">read ${ago(g.at)}</span>`;
-  el.innerHTML = `<div class="nHead"><span class="k">This week</span>${st}</div><div class="wkGrid">${col}</div>`;
+  const st = !g ? '' : !g.configured ? '<span class="ovZ">Google Calendar not connected: add its private iCal address to office.config.local.json → aios.calendars.</span>'
+    : g.calendars.filter(c => !c.ok).map(c => `<span class="ovZ bad">${esc(c.name)} calendar not read</span>`).join('') + `<span class="ovZ">diary read ${ago(g.at)}</span>`;
+  const key = '<span class="cwKey"><i class="mt"></i>meeting</span><span class="cwKey"><i class="du"></i>due</span><span class="cwKey"><i class="ms"></i>milestone</span><span class="cwKey"><i class="rt"></i>office</span>';
+  el.innerHTML = `<div class="cwH"><span class="ovK">This week by client</span><span class="ovZ">${meets} meeting${meets === 1 ? '' : 's'} · ${dueN} dated action${dueN === 1 ? '' : 's'} · click any mark to open it where it lives</span>${st}<span class="cwKeys">${key}</span></div>
+    <div class="cwT">${hd}${body}</div>${quiet.length ? `<div class="cwQ">Quiet this week: ${quiet.map(c => esc(c.name)).join(' · ')}</div>` : ''}`;
+  S.ovWeek = { meets, due: dueN };
+  renderProjects(); renderHero();
+}
+// Live projects (16 Nov 2026): one card per project tracker and project plan, the furthest behind first. Counts, a progress bar and the one
+// action that has waited longest; never the full list. Every number opens that column of the tracker in Workstreams, or the plan on Delivery.
+function renderProjects() {
+  const el = $('ovProj'); if (!el) return;
+  const fmt = d => d ? new Date(d + 'T12:00:00').toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }) : '';
+  const cname = id => (S.matrix.clients || []).find(c => c.id === id)?.name;
+  const state = (od, du) => od ? '<span class="ovSt bad"><i></i>Behind</span>' : du ? '<span class="ovSt soon"><i></i>Due soon</span>' : '<span class="ovSt ok"><i></i>On track</span>';
+  const cards = [];
+  for (const t of S.trackers?.trackers || []) {
+    const v = t.view, name = cname(t.client) || String(t.name).replace(/\s*project tracker$/i, ''), base = '#clients/' + encodeURIComponent(t.client) + '/';
+    if (!v) { cards.push({ od: -1, html: `<div class="ovP"><div class="ovPh"><span class="ovPn">${esc(name)}</span><span class="ovPk">Project tracker</span></div><div class="ovPm">${t.error ? 'Could not read the tracker: ' + esc(t.error) : t.syncing ? 'Reading the tracker…' : 'Not read yet.'}</div></div>` }); continue; }
+    const done = v.complete ?? 0, total = v.total ?? done + v.open, pct = total ? Math.round(done / total * 100) : 0;
+    const wes = [...v.overdue, ...v.due, ...v.next].filter(r => /\bwes(ley)?\b/i.test(r.waitingOn)).length, top = v.overdue[0];
+    cards.push({ od: v.overdue.length, html: `<div class="ovP">
+      <div class="ovPh"><span class="ovPn">${esc(name)}</span><span class="ovPk">Project tracker</span>${state(v.overdue.length, v.due.length)}</div>
+      <div class="ovBar"><i style="width:${pct}%"></i></div><div class="ovPm">${done} of ${total} actions done · ${pct}% · read ${ago(v.syncedAt)}</div>
+      <div class="ovPc"><a href="${base}od"><b class="${v.overdue.length ? 'r' : ''}">${v.overdue.length}</b><span>Overdue</span></a><a href="${base}du"><b>${v.due.length}</b><span>Due in 14 days</span></a><a href="${base}nx"><b>${v.next.length}</b><span>Up next</span></a><a href="${base}od" title="Open actions whose Waiting on column names you"><b class="${wes ? 'r' : ''}">${wes}</b><span>Waiting on you</span></a></div>
+      ${top ? `<a class="ovPl" href="${base}od"><span class="ovPk">Longest overdue</span><b>${esc(top.action.length > 96 ? top.action.slice(0, 95) + '…' : top.action)}</b><span class="ovZ">${Math.abs(top.days)} d late · due ${fmt(top.date)}${top.owner ? ' · ' + esc(top.owner) : ''}${top.waitingOn ? ' · waiting on ' + esc(top.waitingOn) : ''}</span></a>` : ''}
+    </div>` });
+  }
+  for (const p of S.plans?.plans || []) {
+    const v = p.view, name = cname(p.client) || ovPlanName(p), pl = esc(p.client);
+    if (!v) { cards.push({ od: -1, html: `<div class="ovP"><div class="ovPh"><span class="ovPn">${esc(name)}</span><span class="ovPk">Project plan</span></div><div class="ovPm">${p.error ? 'Could not read the plan: ' + esc(p.error) : 'Not read yet.'}</div></div>` }); continue; }
+    const tasks = v.phases.flatMap(x => x.tasks), late = tasks.filter(t => t.overdue).sort((a, b) => b.daysLate - a.daysLate), top = late[0], nm = v.nextMilestone;
+    const pct = v.shown ? Math.round(v.done / v.shown * 100) : 0, soon = tasks.filter(t => !t.done && !t.overdue && Date.parse(t.end) - Date.now() < 14 * 864e5).length;
+    cards.push({ od: v.overdue, html: `<div class="ovP">
+      <div class="ovPh"><span class="ovPn">${esc(name)}</span><span class="ovPk">Project plan</span>${state(v.overdue, soon)}</div>
+      <div class="ovBar"><i style="width:${pct}%"></i></div><div class="ovPm">${v.done} of ${v.shown} tasks done · ${pct}% · read ${ago(v.syncedAt)}</div>
+      <div class="ovPc"><a href="#office/delivery" data-plopen="${pl}"><b class="${v.overdue ? 'r' : ''}">${v.overdue}</b><span>Overdue</span></a><a href="#office/delivery" data-plopen="${pl}"><b>${soon}</b><span>Ending in 14 days</span></a><a href="#office/delivery" data-plopen="${pl}" class="w2"><b class="sm">${nm ? esc(fmt(nm.end)) : '—'}</b><span>${nm ? 'Next milestone' + (nm.days < 0 ? `, ${-nm.days} d late` : '') : 'No open milestone'}</span></a></div>
+      ${top ? `<a class="ovPl" href="#office/delivery" data-plopen="${pl}"><span class="ovPk">Longest overdue</span><b>${esc(top.task.length > 96 ? top.task.slice(0, 95) + '…' : top.task)}</b><span class="ovZ">${top.daysLate} d late · due ${fmt(top.end)}${top.owner ? ' · ' + esc(top.owner) : ''}</span></a>` : ''}
+    </div>` });
+  }
+  cards.sort((a, b) => b.od - a.od);
+  const od = cards.reduce((n, c) => n + Math.max(0, c.od), 0);
+  el.innerHTML = `<div class="ovH"><span class="ovK">Live projects</span><span class="ovZ">${cards.length ? `${cards.length} live · ${od} actions overdue · furthest behind first` : !S.trackers || !S.plans ? 'Reading the projects…' : 'No project tracker or plan set up yet'}</span></div>${cards.map(c => c.html).join('')}`;
 }
 async function poll() {
   try {
@@ -1727,11 +1997,15 @@ const roleSkills = a => { const h = houseSkills(); return (a.skills || []).filte
 // readiness: a role written, a standing brief, a skill that says how this seat's work is done
 const readiness = a => [!!a.does, !!a.brief, roleSkills(a).length > 0];
 
-function render() { renderNeeds(); renderWeek(); renderNav(); renderKpis(); renderClients(); renderMatrix(); window.renderHierarchy?.(); renderSkills(); renderNews(); renderActivity(); renderBudget(); }
+// 9 Nov 2026: once APPROVE or REJECT is sent the server marks the task queued; every REVIEW button for it greys out until the run starts, so a second click cannot queue a duplicate
+function markQueued() { const q = new Set(S.tasks.filter(t => t.state === 'waiting' && t.queuedAt).map(t => t.id)); document.querySelectorAll('[data-review]').forEach(el => { const on = q.has(el.dataset.review); el.classList.toggle('sent', on); if (el.tagName === 'BUTTON') el.disabled = on; if (on) { el.title = 'Sent: it is queued and starts by itself'; if (el.tagName === 'BUTTON' && /^review$/i.test(el.textContent.trim())) { el.dataset.was = el.textContent; el.textContent = 'SENT'; } } else if (el.dataset.was) { el.textContent = el.dataset.was; delete el.dataset.was; } }); }
+function render() { renderNeeds(); renderWeek(); renderNav(); renderKpis(); renderClients(); renderMatrix(); window.renderHierarchy?.(); renderSkills(); renderNews(); renderActivity(); renderBudget(); markQueued(); }
 
 // categories: the left-hand list shows one category at a time; the choice is remembered and can be linked to (#budget)
-const CAT_IDS = ['overview', 'matrix', 'clients', 'budget', 'hierarchy', 'tokens'];
+const CAT_IDS = ['overview', 'matrix', 'clients', 'hierarchy'];
 const isDash = c => /^dash-[a-z0-9-]+$/.test(String(c));
+const isOnb = c => /^ob-[a-z0-9-]+$/.test(String(c)); // 13 Nov 2026: ob-new (the New client form) and ob-<id> (a client's onboarding), under Workstreams
+const catOf = c => isDash(c) ? 'dash' : isOnb(c) ? 'onb' : c;
 /* ---------- motion: springs for the rail and the page it drives ----------
    A damped spring sampled into a CSS linear() curve: zeta < 1 overshoots and settles, like motion.md's back.out pops.
    The curve is the whole move (its end is where the spring has settled), so duration sets the pace and zeta the bounce. */
@@ -1772,7 +2046,7 @@ document.fonts?.ready.then(() => placeInd(false));
 if (window.ResizeObserver) { const ro = new ResizeObserver(() => placeInd(false)); $('side').querySelectorAll('button').forEach(b => ro.observe(b)); }
 // 3. the client sub-menu: folded away elsewhere, unfolds under Clients (open on narrow screens, where the rail is a row)
 function foldSubnav(animate) {
-  const nav = $('navDash'), open = S.cat === 'clients' || isDash(S.cat);
+  const nav = $('navDash'), open = S.cat === 'clients' || isDash(S.cat) || isOnb(S.cat);
   if (nav.classList.contains('open') === open) return;
   const from = nav.offsetHeight; nav.classList.toggle('open', open); const to = nav.offsetHeight;
   if (!animate || !moving() || NARROW.matches || from === to) return;
@@ -1885,19 +2159,19 @@ function placeAsk() { // the Ask box is one element (one set of ids, one convers
 }
 function applyCat(animate = false) {
   placeAsk();
-  for (const el of document.querySelectorAll('[data-cat]:not(body)')) el.classList.toggle('cat-off', isDash(S.cat) ? el.dataset.cat !== 'dash' : el.dataset.cat !== S.cat);
+  for (const el of document.querySelectorAll('[data-cat]:not(body)')) el.classList.toggle('cat-off', el.dataset.cat !== catOf(S.cat));
   markTabs(S.cat);
-  document.body.dataset.cat = isDash(S.cat) ? 'dash' : S.cat; // the Office tab goes full width; the other tabs keep a readable width (the [data-cat] queries skip body, or a tab switch hides the whole page)
+  document.body.dataset.cat = catOf(S.cat); // the Office tab goes full width; the other tabs keep a readable width (the [data-cat] queries skip body, or a tab switch hides the whole page)
   foldSubnav(animate); placeInd(animate);
 }
-function markTabs(c) { // the top bar: Clients stays lit on a client's dashboard, whose own button lights in the row under the bar
-  for (const b of document.querySelectorAll('#side button[data-go]')) b.classList.toggle('on', b.dataset.go === c || (b.dataset.go === 'clients' && isDash(c)));
+function markTabs(c) { // the top bar: Workstreams stays lit on a client's dashboard or onboarding, whose own button lights in the row under the bar
+  for (const b of document.querySelectorAll('#side button[data-go]')) b.classList.toggle('on', b.dataset.go === c || (b.dataset.go === 'clients' && (isDash(c) || isOnb(c))));
   for (const b of document.querySelectorAll('#navDash button[data-go]')) b.classList.toggle('on', b.dataset.go === c);
 }
 new ResizeObserver(() => document.documentElement.style.setProperty('--top-h', $('top').offsetHeight + 'px')).observe($('top')); // the For You panel and the Office stage sit under the bar
 let catSeq = 0, catReady = false;
 async function setCat(c, push = true) {
-  if (!CAT_IDS.includes(c) && !isDash(c)) c = 'overview';
+  if (!CAT_IDS.includes(c) && !isDash(c) && !isOnb(c)) c = 'overview';
   const first = !catReady, changed = c !== S.cat, seq = ++catSeq; catReady = true;
   S.cat = c; try { localStorage.setItem('aiosCat', c); } catch {}
   if (push && c === 'matrix' && S.mDept) { S.mDept = ''; renderMatrix(); } // the Matrix tab itself shows every department
@@ -1911,7 +2185,7 @@ async function setCat(c, push = true) {
     applyCat(false); window.scrollTo({ top: 0 }); arrive();
   }
   if (isDash(c)) renderSales();
-  if (c === 'tokens') loadTokens();
+  if (isOnb(c)) renderOnb();
   if (c !== 'hierarchy') window.brainSheet?.(false); // the Brain sheet belongs to the Office; another tab closes it (and its physics stop)
   if (c !== 'hierarchy') skillSheet(false); // so does the Skills sheet (Nora's card)
 }
@@ -2102,106 +2376,6 @@ const pc = x => Math.round((x || 0) * 100) + '%';
 const ocost = o => o.costed ? usd(o.cost) + (o.runs > o.costed ? ` + ${o.runs - o.costed} with no cost recorded` : '') : o.runs ? 'no cost recorded' : usd(0); // upload reads from before capture left a transcript, not a cost
 const modelShort = m => String(m || '').replace(/^claude-/, '').replace(/-\d{8}$/, '').replace(/-(\d+)-(\d+)$/, ' $1.$2').replace(/-(\d+)$/, ' $1').replace(/^\w/, c => c.toUpperCase());
 // the coach's words for each kind of action (tokens.mjs coach() picks the action; the copy button carries what to paste)
-const HANDOVER_PROMPT = 'Write a handover note so a fresh chat can carry on this work without rereading this one: the goal, what is done, decisions made and why, files changed, what is left and the very next step. Under 400 words. Save it as docs/HANDOVER-<short-topic>.md and tell me the path.';
-const COACH = {
-  handover: c => ({
-    h: c.chat.telegram ? 'Restart the Telegram listener' : `Hand over “${esc(c.chat.title)}” to a new chat`,
-    p: `Its latest call carried <b>${fmtTok(c.lastCtx)}</b> of context, and a turn there runs about ${c.callsPerTurn} call${c.callsPerTurn === 1 ? '' : 's'}, so every turn re-reads it ${c.callsPerTurn === 1 ? 'once' : c.callsPerTurn + ' times'}. A new chat starts near ${fmtTok(c.fresh)}.`,
-    do: c.chat.telegram ? 'Close the listener window and start the <b>AgentsOffice-TelegramChannel</b> task again: it comes back with a fresh context.' : `In that chat, paste the handover prompt. When the note is saved, start a new chat with <b>“Read CLAUDE.md, then &lt;the note&gt;, and carry on.”</b>`,
-    copy: c.chat.telegram ? '' : HANDOVER_PROMPT, button: 'COPY HANDOVER PROMPT',
-    note: `${esc(c.chat.project)} · last used ${ago(c.chat.last)}${c.others ? ` · ${c.others} more chat${c.others === 1 ? '' : 's'} used today also carr${c.others === 1 ? 'ies' : 'y'} over 300k` : ''}`,
-    big: '~' + fmtTok(c.perTurn), label: 'tokens saved per turn' }),
-  model: c => ({
-    h: `Move ${esc(c.desk)} to Sonnet`,
-    p: `${c.runs} of its Opus runs in the last 30 days used no tools and wrote under 1,500 tokens. That is work Sonnet handles well, for less of your allowance.`,
-    do: `In Claude Code, say <b>“${c.agent ? `set ${esc(c.desk)} to Sonnet` : `run ${esc(c.desk)} on Sonnet`}”</b>.`, copy: c.agent ? `Set ${c.desk} (${c.agent}) to Sonnet in office.agents.local.json, then run npm run check.` : `Run "${c.desk}" on Sonnet instead of Opus.`, button: 'COPY INSTRUCTION',
-    big: usd(c.cost), label: 'on Opus, 30 days' }),
-  rework: c => ({
-    h: `Fold ${esc(c.desk)}’s corrections into its skill`,
-    p: `${c.revised} of its ${c.tasks} tasks in the last 30 days were sent back, and every send-back is a second full run.`,
-    do: `In Claude Code, say <b>“fold the lessons for ${esc(c.desk)} into its skill”</b>.`, copy: `Fold the lessons for ${c.desk} into its skill.`, button: 'COPY INSTRUCTION',
-    big: pc(c.rate), label: 'sent back' }),
-  habit: c => ({
-    h: 'Hand over at 300k, not at the limit',
-    p: `${c.late} of your ${c.chats} chats this month ran past 600k of context. Between them they re-read ${fmtTok(c.cr)} cached tokens.`,
-    do: 'When a chat below turns <b>HAND OVER SOONER</b>, ask it for a handover note and start a new one.', copy: HANDOVER_PROMPT, button: 'COPY HANDOVER PROMPT',
-    big: String(c.late), label: 'chats ran to the limit' }),
-  ok: () => ({ h: 'Nothing to fix right now', p: 'No chat used today is carrying a heavy context, Opus runs fit their work, and no desk is often sent back.' }),
-};
-document.addEventListener('click', async e => { // the coach's copy button
-  const b = e.target.closest('#tokCoach button[data-copy]'); if (!b) return;
-  const was = b.textContent;
-  try { await navigator.clipboard.writeText(b.dataset.copy); b.textContent = 'COPIED ✓'; } catch { b.textContent = 'COPY FAILED'; }
-  setTimeout(() => { b.textContent = was; }, 1800);
-});
-async function loadTokens() {
-  if (S.tokBusy) return; S.tokBusy = true;
-  if (!S.tok) { $('tokMsg').className = 'msg'; $('tokMsg').textContent = 'Reading the chat transcripts… (a few seconds the first time)'; }
-  try { S.tok = await api('/tokens'); $('tokMsg').textContent = ''; } catch (e) { $('tokMsg').className = 'msg err'; $('tokMsg').textContent = e.message; }
-  S.tokBusy = false; renderTokens();
-}
-function renderTokens() {
-  const t = S.tok; if (!t || !t.headline) return;
-  const put = (id, html) => { const el = $(id); if (el && lastHtml.get(el) !== html) { el.innerHTML = html; lastHtml.set(el, html); } }; // the minute's refresh only redraws what changed
-  // 0. the coach: the one action worth taking now
-  const C = t.coach || { kind: 'ok' }, coach = COACH[C.kind](C);
-  $('tokCoach').style.display = ''; $('tokCoach').classList.toggle('ok', C.kind === 'ok');
-  put('tokCoach', `<div><div class="eb">Coach · one thing to do now</div><h3>${coach.h}</h3><p>${coach.p}</p>${coach.do ? `<div class="do">${coach.do}</div>` : ''}
-    ${coach.copy || coach.note ? `<div class="btns">${coach.copy ? `<button type="button" class="primary" data-copy="${esc(coach.copy)}">${coach.button}</button>` : ''}${coach.note ? `<span class="note">${coach.note}</span>` : ''}</div>` : ''}</div>
-    ${coach.big ? `<div class="gain"><b>${coach.big}</b><span>${coach.label}</span></div>` : ''}`);
-  // 1. today, 7 days, 30 days
-  put('tokHead', [['today', 'Today'], ['d7', 'Last 7 days'], ['d30', 'Last 30 days']].map(([k, l]) => {
-    const h = t.headline[k], all = h.chats.total + h.office.total, cr = h.chats.cr + h.office.cr;
-    return `<div class="kpi"><div class="v">${fmtTok(all)}</div><div class="l">${l}</div><div class="tks"><span><i class="c"></i>Chats ${fmtTok(h.chats.total)} · ${fmtTok(h.chats.out)} written</span><span><i class="o"></i>Office ${fmtTok(h.office.total)} · ${h.office.runs} run${h.office.runs === 1 ? '' : 's'} · ${ocost(h.office)}</span><span>${pc(all ? cr / all : 0)} of it cache reads</span></div></div>`;
-  }).join(''));
-  // 2. day by day, chats and office stacked
-  const val = x => S.tokMetric === 'out' ? x.out : x.total, max = Math.max(1, ...t.days.map(d => val(d.chats) + val(d.office)));
-  const sc = t.days.reduce((n, d) => n + val(d.chats), 0), so = t.days.reduce((n, d) => n + val(d.office), 0), today = t.days[t.days.length - 1]?.d;
-  const h = (v, cls) => v > 0 ? `<i class="${cls}" style="height:max(3px, ${(v / max * 100).toFixed(2)}%)"></i>` : '';
-  put('tokDays', `<div class="tokph"><div class="trh"><b>${fmtTok(sc + so)}</b> ${S.tokMetric === 'out' ? 'tokens written' : 'tokens'} in 30 days · chats ${pc((sc / (sc + so)) || 0)} · office ${so && so / (sc + so) < 0.01 ? 'under 1%' : pc((so / (sc + so)) || 0)}</div>
-    <span class="toklg"><span><i class="c"></i>chats</span><span><i class="o"></i>office</span></span>
-    <div class="seg" id="tokMetric"><button data-v="all"${S.tokMetric === 'all' ? ' class="on"' : ''}>ALL TOKENS</button><button data-v="out"${S.tokMetric === 'out' ? ' class="on"' : ''}>WRITTEN ONLY</button></div></div>
-    <div class="trbars tokbars">${t.days.map(d => { const dt = new Date(d.d + 'T12:00:00');
-      const tip = `${dt.toLocaleDateString([], { weekday: 'short', day: 'numeric', month: 'short' })}: chats ${fmtTok(d.chats.total)} (${fmtTok(d.chats.out)} written, ${fmtTok(d.chats.cr)} cache reads) · office ${fmtTok(d.office.total)}, ${d.office.runs} run${d.office.runs === 1 ? '' : 's'}, ${ocost(d.office)}`;
-      return `<div class="trd" title="${esc(tip)}"><div class="trb">${h(val(d.office), 'o')}${h(val(d.chats), 'c')}</div><span>${dt.getDay() === 1 || d.d === today ? dt.getDate() : ''}</span></div>`; }).join('')}</div>`);
-  // 3. the chats, biggest first: the ones used in the last 24 hours on top; older ones drop into a folded list below (kept, not shown)
-  const cut = (t.at || Date.now()) - 864e5, live = t.chats.filter(c => c.last >= cut), old = t.chats.filter(c => c.last < cut), oldCount = t.chatCount - live.length;
-  const rows = S.tokAll ? live : live.slice(0, 12), VCLS = { handover: 'miss', heavy: 'warn', ok: 'good' }, liveHeavy = live.filter(c => c.verdict.key !== 'ok').length;
-  put('tokChatNote', `${live.length} chat${live.length === 1 ? '' : 's'} used in the last 24 hours${liveHeavy ? ` · <b>${liveHeavy}</b> running heavy` : ''}. Peak context is the most one call carried, of the ${fmtTok(t.window)} window. Read per written is cache-read tokens for each token Claude wrote: a long chat re-reads itself on every turn.`);
-  $('tokAllBtn').textContent = S.tokAll ? 'TOP 12' : `SHOW ALL ${live.length}`; $('tokAllBtn').style.display = live.length > 12 ? '' : 'none';
-  const head = '<tr><th>Chat</th><th class="num">Turns</th><th class="num">Peak context</th><th class="num">Tokens</th><th class="num">Written</th><th class="num">Cache reads</th><th class="num">Read per written</th><th>Verdict</th></tr>';
-  const chatRow = c => `<tr><td><div class="tokt" title="${esc(c.title)}">${esc(c.title)}</div><div class="note">${esc(c.project)} · ${ago(c.last)}${c.models[0] ? ' · ' + esc(modelShort(c.models[0])) : ''}${c.subagents ? ` · ${c.subagents} sub-agent${c.subagents === 1 ? '' : 's'}` : ''}</div></td>
-    <td class="num">${c.turns}</td><td class="num"><div class="tokpk"><span class="bar"><i${c.peak >= 0.6 * t.window ? ' class="hot"' : ''} style="width:${Math.min(100, c.peak / t.window * 100).toFixed(1)}%"></i></span>${fmtTok(c.peak)}</div></td>
-    <td class="num">${fmtTok(c.total)}</td><td class="num">${fmtTok(c.out)}</td><td class="num">${pc(c.share)}</td><td class="num">${Math.round(c.perOut).toLocaleString()}</td>
-    <td><span class="tag ${VCLS[c.verdict.key]}"${c.verdict.why ? ` title="${esc(c.verdict.why)}"` : ''}>${esc(c.verdict.text.toUpperCase())}</span></td></tr>`;
-  put('tokChats', head + (rows.map(chatRow).join('') || '<tr><td colspan="8" class="none">No chats used in the last 24 hours.</td></tr>'));
-  put('tokOldNote', `${oldCount} chat${oldCount === 1 ? '' : 's'} from the last 30 days not used since ${new Date(cut).toLocaleString([], { weekday: 'short', hour: '2-digit', minute: '2-digit' })}${old.length < oldCount ? ` (the ${old.length} biggest listed)` : ''}. Still counted in the totals above.`);
-  $('tokOldBtn').textContent = S.tokOld ? 'HIDE' : `SHOW ${old.length}`; $('tokOldBtn').parentElement.style.display = old.length ? '' : 'none';
-  $('tokOldWrap').style.display = S.tokOld && old.length ? '' : 'none';
-  put('tokOld', S.tokOld ? head + old.map(chatRow).join('') : '');
-  // 4. the office's jobs, from the day capture started
-  const BY = { desk: 'Desk', dept: 'Department', routine: 'Routine', model: 'Model', kind: 'Kind of run' }, jobs = t.jobs[S.tokBy] || [];
-  const from = t.since ? new Date(t.since).toLocaleDateString([], { day: 'numeric', month: 'short', year: 'numeric' }) : '';
-  const older = t.oldOffice ? ` The ${t.oldOffice} earlier upload read${t.oldOffice === 1 ? '' : 's'} (images and scans digested by vision) left transcripts, so ${t.oldOffice === 1 ? 'it is' : 'they are'} in the totals above.` : '';
-  put('tokJobNote', (t.since ? `From ${from}, when capture started: office runs before then were never saved. Cost is Claude Code's list price for each run.` : 'Nothing captured yet: capture starts with the office\'s next Claude run. Office runs before then were never saved.') + older);
-  put('tokJobs', `<tr><th>${BY[S.tokBy]}</th><th class="num">Runs</th><th class="num">Tokens</th><th class="num">Cost</th><th class="num">Tasks</th><th class="num">Approved</th><th class="num">Sent back</th><th class="num">Per approved</th><th class="num">Median to approval</th></tr>` + (jobs.map(g =>
-    `<tr><td>${esc(S.tokBy === 'model' ? modelShort(g.key) : S.tokBy === 'desk' ? deskLabel(g.key) : g.key)}</td><td class="num">${g.runs}</td><td class="num">${fmtTok(g.total)}</td><td class="num">${usd(g.cost)}</td><td class="num">${g.tasks || '—'}</td><td class="num">${g.tasks ? g.approved : '—'}</td><td class="num">${g.tasks ? g.revised : '—'}</td><td class="num">${usd(g.perApproved)}</td><td class="num">${hrs(g.hoursToOk)}</td></tr>`).join('') ||
-    `<tr><td colspan="9" class="none">${t.since ? 'No runs to group this way yet.' : 'The table fills in as the office runs.'}</td></tr>`));
-  for (const b of document.querySelectorAll('#tokBy button')) b.classList.toggle('on', b.dataset.v === S.tokBy);
-  // 5. the return on it
-  const R = t.roi, F = R.modelFit, A = R.approval;
-  put('tokRoi', `<div class="panel bpanel"><h3>COST PER APPROVED DELIVERABLE</h3><div class="note">Every run on the task counts: the draft, each revision and the send after your OK.</div>${R.perDeliverable.map(g =>
-      `<div class="tokr"><span><b>${esc(g.kind)}</b><div class="sub">${g.approved} of ${g.tasks} approved${g.revisions ? ` · ${g.revisions} revision${g.revisions === 1 ? '' : 's'}, ${usd(g.reviseCost)}` : ''}</div></span><span class="num sub">${usd(g.cost)}</span><span class="num"><b>${usd(g.perApproved)}</b></span></div>`).join('') || `<div class="none">Fills in as captured tasks are approved${from ? ' (from ' + from + ')' : ''}.</div>`}</div>
-    <div class="panel bpanel"><h3>REWORK BY DESK</h3><div class="note">Share of the last 30 days' tasks you sent back at least once. From the board, so it has history.</div>${R.rework.filter(g => g.tasks >= 2).slice(0, 8).map(g =>
-      `<div class="tokrw"><div class="h"><b title="${esc(deskLabel(g.desk))}">${esc(deskLabel(g.desk))}</b><span>${g.revised} of ${g.tasks} · ${pc(g.rate)}</span></div><span class="bar"><i style="width:${(g.rate * 100).toFixed(1)}%"></i></span></div>`).join('') || '<div class="none">No reviewed tasks in the last 30 days.</div>'}</div>
-    <div class="panel bpanel"><h3>MODEL FIT</h3><div class="note">Opus runs that used no tools and wrote under 1,500 tokens: work Sonnet could likely do.</div><div class="tokbig">${usd(F.lightCost)}</div><div class="sub" style="color:var(--meta, var(--grey));font-size:11.5px;margin-bottom:6px">${F.lightRuns} of ${F.opusRuns} Opus run${F.opusRuns === 1 ? '' : 's'} · ${usd(F.opusCost)} on Opus in 30 days</div>${F.lightBy.map(x => `<div class="tokr"><b>${esc(x.agent ? deskLabel(x.k) : x.k)}</b><span></span><span class="num">${usd(x.cost)}</span></div>`).join('')}</div>
-    <div class="panel bpanel"><h3>TIME TO APPROVAL</h3><div class="note">Medians over the ${A.tasks} task${A.tasks === 1 ? '' : 's'} approved in the last 30 days.</div><div class="tokr"><span><b>Ready → your OK</b><div class="sub">how long work waits on you</div></span><span></span><span class="num tokbig" style="font-size:26px;margin:0">${hrs(A.yourTurn)}</span></div><div class="tokr"><span><b>Added → approved</b><div class="sub">end to end, revisions included</div></span><span></span><span class="num tokbig" style="font-size:26px;margin:0">${hrs(A.endToEnd)}</span></div></div>`);
-}
-$('tokRefresh').addEventListener('click', () => loadTokens());
-$('tokAllBtn').addEventListener('click', () => { S.tokAll = !S.tokAll; renderTokens(); });
-$('tokOldBtn').addEventListener('click', () => { S.tokOld = !S.tokOld; renderTokens(); });
-$('tokBy').addEventListener('click', e => { const v = e.target.dataset?.v; if (v) { S.tokBy = v; renderTokens(); } });
-$('tokDays').addEventListener('click', e => { const v = e.target.closest('#tokMetric button')?.dataset.v; if (v) { S.tokMetric = v; renderTokens(); } });
 function renderNav() { // small counts beside a category: what is waiting on you, what is open, what needs attention
   const set = (id, n, alert) => { const e = $(id); if (!e) return;
     const old = parseFloat(e.textContent), was = e.classList.contains('alert');
@@ -2216,8 +2390,15 @@ function route(h) { // a hash is the tab, then (Office only) where you are insid
   if (c === 'office') c = 'hierarchy'; // the Office tab keeps its old id inside the page; #hierarchy links from before 7 Nov still land
   const bm = c === 'brain'; if (bm) { c = 'hierarchy'; rest = []; } // the Brain tab became a sheet over the Office on 7 Nov 2026: #brain lands on the Office with it pulled up
   const sk = c === 'skills'; if (sk) { c = 'hierarchy'; rest = []; } // Skills moved under Nora on 8 Nov 2026: #skills lands on the Office with the Skills sheet up
+  if (c === 'budget') { c = 'hierarchy'; rest = ['fin']; } // Personal budget moved into the Finance page on 8 Nov 2026: #budget lands there
+  if (c === 'tokens') { c = 'hierarchy'; rest = ['fin']; } // the Tokens tab moved into the Finance page on 8 Nov 2026: #tokens lands there
   if (c === 'social') { c = 'hierarchy'; rest = ['marketing']; } // Social moved under the Marketing department page on 8 Nov 2026: #social lands there
   if (c === 'matrix') { S.mDept = DEPTS[rest[0]] ? rest[0] : ''; renderMatrix(); } // #matrix/marketing: the matrix for one department (a tile's Matrix count)
+  if (c === 'clients' && rest[0]) { // #clients/<client>/<od|du|nx> (16 Nov 2026): from the Overview, that client's tracker card in Workstreams with that column open in full
+    const k = ['od', 'du', 'nx'].includes(rest[1]) ? rest[1] : 'od', id = decodeURIComponent(rest[0]);
+    S.tkOpen = { ...(S.tkOpen || {}), [id + k]: true }; if (typeof renderClients === 'function' && S.trackers) renderClients();
+    ovFocus(`#tk-${CSS.escape(id)} .tkCard.${k}`);
+  }
   if (c === 'roles') { c = 'hierarchy'; rest = []; } // Roles was retired on 7 Nov 2026: its seats are on the Office's department pages, its News feed on Overview
   if (c === 'hierarchy') { if (window.hxRoute) window.hxRoute(rest); else window.AIOS_HX_WANT = rest; } // the Hierarchy script loads later and picks up AIOS_HX_WANT
   if (!(c === 'hierarchy' && S.cat === 'hierarchy' && catReady)) setCat(c, false); // moving inside Hierarchy (Back, a link) keeps the page where it is
@@ -2312,9 +2493,7 @@ const mLabel = m => new Date(m + 'T12:00:00').toLocaleDateString('en-GB', { mont
 async function loadBudget() { try { S.budget = await api('/budget'); } catch { S.budget = { configured: false }; } renderBudget(); }
 function renderBudget() {
   const b = S.budget, sec = $('budgetSec');
-  sec.style.display = b && b.configured ? '' : 'none';
-  $('navBudget').style.display = b && b.configured ? '' : 'none'; // no budget set up: no Budget category
-  if (S.cat === 'budget' && !(b && b.configured) && S.budget) setCat('overview');
+  sec.classList.toggle('hx-off', !(b && b.configured && S.cat === 'hierarchy' && window.AIOS_HX_VIEW === 'fin')); // no budget set up, or not the Finance page: hidden
   if (!b || !b.configured) return;
   const busy = !!b.syncing || !!S.bBusy, snap = b.snapshot;
   $('bSync').disabled = busy; $('bSync').textContent = busy ? 'READING THE SHEET…' : '↻ REFRESH';
@@ -2328,12 +2507,12 @@ function renderBudget() {
   $('bMonth').innerHTML = months.map(m => `<button data-v="${m.month}"${m.month === cur.month ? ' class="on"' : ''}>${mLabel(m.month).toUpperCase()}</button>`).join('');
   const kpi = (v, l, cls = '') => `<div class="kpi"><div class="v ${cls}">${v}</div><div class="l">${l}</div></div>`;
   $('bKpis').innerHTML = kpi(gbp(cur.income), 'income') + kpi(gbp(cur.outgoings), 'outgoings') + kpi(gbp(cur.net), 'net', cur.net >= 0 ? 'good' : 'bad') +
-    kpi(gbp(cur.recurringNet), 'recurring net · the baseline', cur.recurringNet >= 0 ? 'good' : 'bad') + kpi(cur.status.toUpperCase(), cur.status === 'Actual' ? 'money that has landed' : cur.status === 'Forecast' ? 'not yet happened' : 'part landed, part forecast');
+    kpi(gbp(cur.recurringNet), 'recurring net · the baseline', cur.recurringNet >= 0 ? 'good' : 'bad') + kpi(cur.status, cur.status === 'Actual' ? 'money that has landed' : cur.status === 'Forecast' ? 'not yet happened' : 'part landed, part forecast');
   $('bCatTitle').textContent = 'OUTGOINGS BY CATEGORY · ' + mLabel(cur.month).toUpperCase();
   const top = cur.categories[0]?.amount || 1;
-  $('bCats').innerHTML = cur.categories.map(c => `<div class="bcat"><span class="bn" title="${esc(c.name)}">${esc(c.name)}</span><span class="bbar"><i style="width:${Math.max(2, c.amount / top * 100).toFixed(1)}%"></i></span><span class="ba">${gbp(c.amount)}</span><span class="bp">${cur.outgoings ? Math.round(c.amount / cur.outgoings * 100) : 0}%</span></div>`).join('') || '<div class="none">No outgoings this month.</div>';
-  $('bMonths').innerHTML = '<div class="bm hd"><span>MONTH</span><span class="bnum">INCOME</span><span class="bnum">OUTGOINGS</span><span class="bnum">NET</span><span></span></div>' +
-    months.map(m => `<div class="bm${m.month === cur.month ? ' on' : ''}" data-bm="${m.month}"><span>${mLabel(m.month)}</span><span class="bnum">${gbp(m.income)}</span><span class="bnum">${gbp(m.outgoings)}</span><span class="bnum ${m.net >= 0 ? 'good' : 'bad'}">${gbp(m.net)}</span><span class="tag">${m.status.toUpperCase()}</span></div>`).join('');
+  $('bCats').innerHTML = cur.categories.map(c => `<div class="bcat"><span class="bn" title="${esc(c.name)}">${esc(c.name)}</span><span class="bbar"><i class="k${(cur.categories.indexOf(c) % 7) + 1}" style="width:${Math.max(2, c.amount / top * 100).toFixed(1)}%"></i></span><span class="ba">${gbp(c.amount)}</span><span class="bp">${cur.outgoings ? Math.round(c.amount / cur.outgoings * 100) : 0}%</span></div>`).join('') || '<div class="none">No outgoings this month.</div>';
+  const mx = Math.max(1, ...months.map(m => Math.max(m.income, m.outgoings)));
+  $('bMonths').innerHTML = '<div class="bmc">' + months.map(m => `<div class="bmcol${m.month === cur.month ? ' on' : ''}" data-bm="${m.month}" title="${esc(mLabel(m.month) + ': income ' + gbp(m.income) + ', outgoings ' + gbp(m.outgoings) + ', net ' + gbp(m.net))}"><span class="nv ${m.net >= 0 ? 'good' : 'bad'}">${gbp(m.net)}</span><div class="pair"><i class="in" style="height:max(2px, ${(m.income / mx * 100).toFixed(1)}%)"></i><i class="out" style="height:max(2px, ${(m.outgoings / mx * 100).toFixed(1)}%)"></i></div><span class="ml">${mLabel(m.month)}</span></div>`).join('') + '</div><div class="lg"><span><i class="sw in"></i>Income</span><span><i class="sw out"></i>Outgoings</span><span>Figure above is the net</span></div>';
   const rows = snap.rows.filter(r => r.month === cur.month).sort((a, b) => (a.flow === b.flow ? b.amount - a.amount : a.flow === 'Income' ? -1 : 1));
   $('bLedTitle').textContent = 'LEDGER · ' + mLabel(cur.month).toUpperCase() + ' · ' + rows.length + ' LINES';
   $('bLedBtn').textContent = S.bLedger ? 'HIDE' : 'SHOW';
@@ -2369,10 +2548,124 @@ const dTag = v => v == null ? '' : `<div class="d ${v >= 0 ? 'up' : 'dn'}">${v >
 const mName = m => new Date(m + '-01T12:00:00').toLocaleDateString('en-GB', { month: 'short', year: '2-digit' });
 const SCOL = ['var(--red, #C8553D)', 'var(--ink)', 'var(--faint)'];
 async function loadDash() {
-  try { S.dash = (await api('/dashboards')).dashboards; } catch { S.dash = S.dash || []; }
-  $('navDash').innerHTML = S.dash.map(d => `<button data-go="dash-${esc(d.id)}">${esc(d.name)}</button>` + (d.data && d.data.delivery && d.data.delivery.available ? `<button class="sub2" data-go="dash-${esc(d.id)}--delivery">Delivery</button>` : '') + (d.data && d.data.reviews && d.data.reviews.available ? `<button class="sub2" data-go="dash-${esc(d.id)}--reviews">Reviews</button>` : '') + (d.data && d.data.kitchen ? `<button class="sub2" data-go="dash-${esc(d.id)}--kitchen">Kitchen</button>` : '')).join('');
-  applyCat(); if (isDash(S.cat)) renderSales();
+  const [dr, ob] = await Promise.allSettled([api('/dashboards'), api('/onboarding')]);
+  S.dash = dr.status === 'fulfilled' ? dr.value.dashboards : S.dash || [];
+  if (ob.status === 'fulfilled') S.onb = { ...(S.onb || {}), ...ob.value };
+  navWork(); if (isDash(S.cat)) renderSales(); if (isOnb(S.cat)) renderOnb();
 }
+// the Workstreams row (13 Nov 2026): + New client, then each client by name with its own tabs; a client with an onboarding note gets an Onboarding tab,
+// and one with no dashboard yet is a pill of its own that opens its onboarding
+const obSlug = s => String(s || '').toLowerCase().normalize('NFKD').replace(/[̀-ͯ]/g, '').replace(/['’]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+const obProg = o => o.answered < o.total ? `<span class="obp">${o.answered}/${o.total}</span>` : '';
+function navWork() {
+  const obs = (S.onb && S.onb.clients) || [], dashOf = o => (S.dash || []).find(d => d.id === o.id || obSlug(d.name) === o.id);
+  const sub = (d, k, label) => `<button class="sub2" data-go="dash-${esc(d.id)}--${k}">${label}</button>`;
+  $('navDash').innerHTML = `<button class="obnew" data-go="ob-new" title="Start a new client's onboarding: the answers go into the Brain">+ New client</button><span class="obsep" aria-hidden="true"></span>` +
+    (S.dash || []).map(d => { const o = obs.find(x => dashOf(x) === d);
+      return `<button data-go="dash-${esc(d.id)}">${esc(d.name)}</button>` + (d.data && d.data.delivery && d.data.delivery.available ? sub(d, 'delivery', 'Delivery') : '') + (d.data && d.data.reviews && d.data.reviews.available ? sub(d, 'reviews', 'Reviews') : '') + (d.data && d.data.kitchen ? sub(d, 'kitchen', 'Kitchen') : '') +
+        (o ? `<button class="sub2" data-go="ob-${esc(o.id)}">Onboarding${obProg(o)}</button>` : ''); }).join('') +
+    obs.filter(o => !dashOf(o)).map(o => `<button data-go="ob-${esc(o.id)}" title="${esc(o.kind === 'employment' ? 'Employment' : 'Client')} · onboarding">${esc(o.name)}${obProg(o)}</button>`).join('');
+  applyCat();
+}
+// the onboarding page: ob-new asks for a name, client or employment, and which extra sections; ob-<id> is the questions, saved into the Brain note as each one is left
+// Answers are plain text in the note (clientonboarding.mjs says how each type is written): picks "A, B", links "- Platform: value — access: Requested"
+const obPicks = v => String(v || '').split(/,\s*/).map(s => s.trim()).filter(Boolean);
+const obLinks = v => String(v || '').split('\n').map(l => /^- (.+?):\s?(.*?)(?: — access: (.*))?$/.exec(l.trim())).filter(Boolean).map(m => ({ label: m[1].trim(), value: m[2].trim(), access: (m[3] || '').trim() }));
+const obLinksOut = rows => rows.map(r => `- ${r.label}: ${r.value}${r.access ? ' — access: ' + r.access : ''}`).join('\n');
+const obActive = c => S.onb.questions.filter(s => !s.optional || c.sections.includes(s.id));
+const obCount = c => { const a = obActive(c); return { done: a.reduce((n, s) => n + s.qs.filter(q => c.answers[q.key]).length, 0), total: a.reduce((n, s) => n + s.qs.length, 0) }; };
+const obSwitches = on => `<div class="obopt"><span class="obol">Extra sections</span>${S.onb.questions.filter(s => s.optional).map(s => `<button type="button" class="obchip${on.includes(s.id) ? ' on' : ''}" data-obsec="${esc(s.id)}" aria-pressed="${on.includes(s.id)}">${on.includes(s.id) ? '✓ ' : '+ '}${esc(s.title)}</button>`).join('')}</div>`;
+function obField(q, v) { // the control for one question, by its type
+  const k = esc(q.key), opts = q.options || [];
+  if (q.type === 'date') return `<input type="date" class="obin" data-obq="${k}" value="${esc(/^\d{4}-\d{2}-\d{2}$/.test(v || '') ? v : '')}">`;
+  if (q.type === 'choice' || q.type === 'picks') {
+    const sel = q.type === 'picks' ? obPicks(v) : v ? [v] : [], all = [...opts, ...sel.filter(x => !opts.includes(x))];
+    return `<div class="obchips" data-obq="${k}" data-obt="${q.type}">${all.map(o => `<button type="button" class="obchip${sel.includes(o) ? ' on' : ''}" data-obpick="${esc(o)}" aria-pressed="${sel.includes(o)}">${esc(o)}</button>`).join('')}<input class="obother" placeholder="Other…" aria-label="Another answer" data-obother></div>`;
+  }
+  if (q.type === 'links') {
+    const rows = obLinks(v), used = rows.map(r => r.label);
+    return `<div class="oblinks" data-obq="${k}" data-obt="links">${rows.map((r, i) => `<div class="oblink" data-obrow="${i}"><span class="obll">${esc(r.label)}</span><input class="obin" data-oblv placeholder="Link or @handle" value="${esc(r.value)}"><select data-obla aria-label="${esc(r.label)} access"><option value="">Access?</option>${(S.onb.access || []).map(a => `<option${a === r.access ? ' selected' : ''}>${esc(a)}</option>`).join('')}</select><button type="button" class="obx" data-obdel="${i}" aria-label="Remove ${esc(r.label)}">×</button></div>`).join('')}
+      <select class="obadd" data-obadd aria-label="Add a platform"><option value="">+ Add ${rows.length ? 'another' : 'a platform'}…</option>${opts.filter(o => !used.includes(o)).map(o => `<option>${esc(o)}</option>`).join('')}<option value="__other">Other…</option></select></div>`;
+  }
+  return `<textarea rows="1" data-obq="${k}">${esc(v || '')}</textarea>`;
+}
+async function renderOnb() {
+  const el = $('onbSec'); if (!el || !isOnb(S.cat)) return;
+  const id = S.cat.slice(3);
+  if (!S.onb || !S.onb.questions) { el.innerHTML = '<div class="obload">Loading…</div>'; try { S.onb = { ...(S.onb || {}), ...(await api('/onboarding')) }; } catch (e) { el.innerHTML = `<div class="obload">Could not load onboarding: ${esc(e.message)}</div>`; return; } if (S.cat !== 'ob-' + id) return; }
+  if (id === 'new') {
+    S.obNewOn = S.obNewOn || S.onb.questions.filter(s => s.optional && s.on).map(s => s.id);
+    el.innerHTML = `<div class="sh"><h2>New client</h2><span class="note">Starts a workstream and its onboarding. Every answer is kept in one Brain note, so the office reads it before any work for them.</span></div>
+      <form class="panel obnewf" id="obNewF"><label>Who are we representing?<input id="obName" maxlength="80" placeholder="e.g. Harbour Coffee Co." autocomplete="off" required></label>
+      <div class="obkind" role="radiogroup" aria-label="Kind of workstream">${Object.entries(S.onb.kinds || { client: 'Client', employment: 'Employment' }).map(([k, v], i) => `<label><input type="radio" name="obKind" value="${k}"${i ? '' : ' checked'}><span>${esc(v)}</span></label>`).join('')}</div>
+      <p class="obhint">Employment duties are run like a client: same questions, same note. Everyone gets ${S.onb.questions.filter(s => !s.optional).map(s => s.title).join(', ')}; add the sections that fit them. You can change these later.</p>
+      <div id="obNewSecs">${obSwitches(S.obNewOn)}</div>
+      <div class="obgo"><button class="primary" type="submit">START ONBOARDING</button><span class="obst" id="obNewSt"></span></div></form>`;
+    $('obName').focus(); return;
+  }
+  let c; try { c = (await api('/onboarding/' + id)).client; } catch (e) { el.innerHTML = `<div class="obload">No onboarding for this client yet. <button data-go="ob-new">+ NEW CLIENT</button></div>`; return; }
+  if (S.cat !== 'ob-' + id) return;
+  S.obC = c; const act = obActive(c), { done, total } = obCount(c);
+  el.innerHTML = `<div class="sh"><h2>${esc(c.name)}</h2><span class="note">${c.kind === 'employment' ? 'Employment' : 'Client'} workstream · onboarding · saved to the Brain as <code>30-Customers/${esc(c.id)}-onboarding.md</code> each time you leave an answer.</span></div>
+    <div class="panel obhead"><div class="obbar"><i style="width:${total ? Math.round(done / total * 100) : 0}%"></i></div><div class="obcount"><b id="obDone">${done}</b> of <span id="obTot">${total}</span> answered</div>
+    <ol class="obsteps">${act.map((s, i) => `<li><a href="#ob-${esc(c.id)}" data-objump="${esc(s.id)}"><span>${i + 1}</span>${esc(s.title)} <em></em></a></li>`).join('')}</ol>${obSwitches(c.sections)}</div>
+    ${act.map((s, i) => `<div class="panel obsec" id="obS-${esc(s.id)}"><h3><span>${i + 1}</span>${esc(s.title)}${s.optional ? '<em class="obtag">extra</em>' : ''}</h3>${s.qs.map(q => `<div class="obq${c.answers[q.key] ? ' has' : ''}" data-obwrap="${esc(q.key)}"><span>${esc(q.q)}</span><div class="obf">${obField(q, c.answers[q.key])}</div><em class="obst"></em></div>`).join('')}</div>`).join('')}`;
+  el.querySelectorAll('textarea[data-obq]').forEach(obGrow); obTally();
+}
+function obTally() { // the count, the bar, each step's n/m and the pill, from S.obC
+  const c = S.obC; if (!c || !$('obDone')) return; const { done, total } = obCount(c);
+  $('obDone').textContent = done; $('obTot').textContent = total; document.querySelector('#onbSec .obbar i').style.width = (total ? Math.round(done / total * 100) : 0) + '%';
+  obActive(c).forEach(s => { const li = document.querySelector(`#onbSec [data-objump="${s.id}"]`)?.parentElement; if (!li) return; const n = s.qs.filter(q => c.answers[q.key]).length; li.className = n === s.qs.length ? 'full' : n ? 'part' : ''; li.querySelector('em').textContent = `${n}/${s.qs.length}`; });
+  const o = (S.onb.clients || []).find(x => x.id === c.id); if (o && (o.answered !== done || o.total !== total)) { o.answered = done; o.total = total; navWork(); }
+}
+async function obSave(key, value) { // one answer; the server rewrites the Brain note
+  const c = S.obC, w = document.querySelector(`#onbSec [data-obwrap="${key}"]`), st = w && w.querySelector('.obst');
+  if (st) { st.textContent = 'Saving…'; st.className = 'obst'; }
+  try {
+    const r = await api('/onboarding/' + c.id, { method: 'POST', body: { answers: { [key]: value } } });
+    c.answers = r.client.answers; if (st) st.textContent = 'Saved'; if (w) w.classList.toggle('has', !!c.answers[key]); obTally(); return true;
+  } catch (err) { if (st) { st.textContent = err.message; st.className = 'obst bad'; } return false; }
+}
+const obRedraw = key => { const q = S.onb.questions.flatMap(s => s.qs).find(x => x.key === key), f = document.querySelector(`#onbSec [data-obwrap="${key}"] .obf`); if (q && f) f.innerHTML = obField(q, S.obC.answers[key]); };
+const obGrow = t => { t.style.height = 'auto'; t.style.height = Math.min(320, t.scrollHeight + 2) + 'px'; };
+const obLinkVal = box => obLinksOut([...box.querySelectorAll('.oblink')].map(r => ({ label: r.querySelector('.obll').textContent, value: r.querySelector('[data-oblv]').value.trim(), access: r.querySelector('[data-obla]').value })));
+document.addEventListener('input', e => { if (e.target.matches('#onbSec textarea[data-obq]')) obGrow(e.target); });
+document.addEventListener('click', async e => {
+  if (!e.target.closest('#onbSec')) return;
+  const j = e.target.closest('[data-objump]'); if (j) { e.preventDefault(); $('obS-' + j.dataset.objump)?.scrollIntoView({ behavior: moving() ? 'smooth' : 'auto', block: 'start' }); return; }
+  const sw = e.target.closest('[data-obsec]'); if (sw) { // an extra section switched on or off
+    const id = sw.dataset.obsec;
+    if (S.cat === 'ob-new') { S.obNewOn = S.obNewOn.includes(id) ? S.obNewOn.filter(x => x !== id) : [...S.obNewOn, id]; $('obNewSecs').innerHTML = obSwitches(S.obNewOn); return; }
+    const c = S.obC, on = c.sections.includes(id) ? c.sections.filter(x => x !== id) : [...c.sections, id];
+    sw.disabled = true; try { await api('/onboarding/' + c.id, { method: 'POST', body: { sections: on } }); } catch {} renderOnb(); return;
+  }
+  const p = e.target.closest('[data-obpick]'); if (p) { // a chip: choice takes one, picks toggles
+    const box = p.closest('[data-obq]'), key = box.dataset.obq, o = p.dataset.obpick, cur = S.obC.answers[key] || '';
+    const val = box.dataset.obt === 'choice' ? (cur === o ? '' : o) : (obPicks(cur).includes(o) ? obPicks(cur).filter(x => x !== o) : [...obPicks(cur), o]).join(', ');
+    if (await obSave(key, val)) obRedraw(key); return;
+  }
+  const d = e.target.closest('[data-obdel]'); if (d) { const box = d.closest('[data-obq]'); d.closest('.oblink').remove(); if (await obSave(box.dataset.obq, obLinkVal(box))) obRedraw(box.dataset.obq); }
+});
+document.addEventListener('change', async e => {
+  const t = e.target; if (!t.closest('#onbSec')) return;
+  if (t.matches('textarea[data-obq], input[type=date][data-obq]')) { obSave(t.dataset.obq, t.value); return; }
+  if (t.matches('[data-obother]')) { const box = t.closest('[data-obq]'), key = box.dataset.obq, v = t.value.replace(/,/g, ' ').trim(); if (!v) return; const cur = S.obC.answers[key] || ''; if (await obSave(key, box.dataset.obt === 'choice' ? v : [...obPicks(cur).filter(x => x !== v), v].join(', '))) obRedraw(key); return; }
+  if (t.matches('[data-oblv], [data-obla]')) { const box = t.closest('[data-obq]'); obSave(box.dataset.obq, obLinkVal(box)); return; }
+  if (t.matches('[data-obadd]')) { // a platform added: its row appears, the cursor goes to it
+    const box = t.closest('[data-obq]'), key = box.dataset.obq; let label = t.value; if (!label) return;
+    if (label === '__other') { label = (prompt('Which platform?') || '').replace(/[:\n—]/g, ' ').trim(); if (!label) { t.value = ''; return; } }
+    const rows = obLinks(S.obC.answers[key]); rows.push({ label, value: '', access: '' });
+    if (await obSave(key, obLinksOut(rows))) { obRedraw(key); [...document.querySelectorAll(`#onbSec [data-obwrap="${key}"] [data-oblv]`)].pop()?.focus(); }
+  }
+});
+document.addEventListener('submit', async e => {
+  if (e.target.id !== 'obNewF') return; e.preventDefault();
+  const st = $('obNewSt'), name = $('obName').value.trim(), kind = (document.querySelector('input[name=obKind]:checked') || {}).value || 'client';
+  st.textContent = 'Starting…'; st.className = 'obst';
+  try { const r = await api('/onboarding', { method: 'POST', body: { name, kind, sections: S.obNewOn } }); S.obNewOn = null; await loadDash(); setCat('ob-' + r.client.id); }
+  catch (err) { st.textContent = err.message; st.className = 'obst bad'; }
+});
+
 // a single restaurant site (till reports): headline, monthly turnover bars, a weekday-by-hour busyness map, menu / category / item bars
 const money = (n, c) => n == null ? '—' : Math.abs(n) >= 1e6 ? c + (n / 1e6).toFixed(2) + 'm' : Math.abs(n) >= 1e4 ? c + Math.round(n / 1e3) + 'k' : c + Math.round(n).toLocaleString('en-GB');
 const DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
@@ -3461,13 +3754,13 @@ function renderSales() {
     <div class="sBars">${bars('Top products · ' + mName(d.latest), d.products, 'turnover')}${bars('How they paid', d.payments, 'turnover')}${bars('Where orders came from', d.platforms, 'turnover')}</div>${starDogHtml(d)}`;
 }
 // Project tracker cards (overdue / due / up next) per client, from the client's tracker sheet; see trackers.mjs. Sorting is done on the server for today's date.
-async function loadTrackers() { try { S.trackers = await api('/trackers'); } catch { S.trackers = S.trackers || { configured: false, trackers: [] }; } renderClients(); }
+async function loadTrackers() { try { S.trackers = await api('/trackers'); } catch { S.trackers = S.trackers || { configured: false, trackers: [] }; } renderClients(); renderWeek(); }
 function trackerHtml(clientId, clientName) {
   const T = S.trackers; if (!T || !T.configured) return '';
   const t = T.trackers.find(x => x.client === clientId); if (!t) return '';
   const v = t.view, url = 'https://docs.google.com/spreadsheets/d/' + t.sheet + '/edit';
   const head = `<div class="tkh"><span class="tkn">${esc(clientName || clientId)}</span><span class="tkt">Project tracker</span>${v ? `<span class="tkm">${v.open} open${v.total ? ' of ' + v.total : ''} · read ${ago(v.syncedAt)}</span>` : ''}<span class="tkr"><a href="${esc(url)}" target="_blank" rel="noopener">OPEN SHEET</a><button data-trsync="${esc(clientId)}"${t.syncing || (S.tkBusy || {})[clientId] ? ' disabled' : ''}>${t.syncing || (S.tkBusy || {})[clientId] ? 'READING…' : 'SYNC'}</button></span></div>`;
-  if (!v) return `<div class="panel tkWrap">${head}<div class="none">${t.error ? 'Could not read the tracker: ' + esc(t.error) : t.syncing ? 'Reading the tracker…' : 'Not read yet.'}</div></div>`;
+  if (!v) return `<div class="panel tkWrap" id="tk-${esc(clientId)}">${head}<div class="none">${t.error ? 'Could not read the tracker: ' + esc(t.error) : t.syncing ? 'Reading the tracker…' : 'Not read yet.'}</div></div>`;
   const fmt = d => d ? new Date(d + 'T12:00:00').toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }) : 'no date';
   const card = (kind, title, list, sub) => {
     const open = (S.tkOpen || {})[clientId + kind], show = open ? list : list.slice(0, 4);
@@ -3475,11 +3768,67 @@ function trackerHtml(clientId, clientName) {
       return `<li><div class="tkA">${esc(r.action.length > 92 ? r.action.slice(0, 91) + '…' : r.action)}</div><div class="tkS"><b>${esc(when)}</b>${r.date ? ' · ' + fmt(r.date) : ''}${r.owner ? ' · ' + esc(r.owner) : ''}${r.waitingOn ? ' · waiting on ' + esc(r.waitingOn) : ''}${r.priority && /high/i.test(r.priority) ? ' · <i>high</i>' : ''}</div></li>`; };
     return `<div class="tkCard ${kind}"><div class="tkN"><b>${list.length}</b><span>${title}</span></div><div class="tkSub">${sub}</div><ul>${show.map(row).join('') || '<li><div class="tkS">nothing</div></li>'}</ul>${list.length > 4 ? `<button class="tkMore" data-tkmore="${esc(clientId + kind)}">${open ? 'show fewer' : 'and ' + (list.length - 4) + ' more'}</button>` : ''}</div>`;
   };
-  return `<div class="panel tkWrap">${head}<div class="tkGrid">${card('od', 'Overdue', v.overdue, 'target date has passed')}${card('du', 'Due', v.due, 'in the next 14 days')}${card('nx', 'Up next', v.next, 'dated later, in progress, or marked Now / Next')}</div>${v.undated ? `<div class="tkU">${v.undated} open action${v.undated === 1 ? ' has' : 's have'} no date in the tracker.</div>` : ''}</div>`;
+  return `<div class="panel tkWrap" id="tk-${esc(clientId)}">${head}<div class="tkGrid">${card('od', 'Overdue', v.overdue, 'target date has passed')}${card('du', 'Due', v.due, 'in the next 14 days')}${card('nx', 'Up next', v.next, 'dated later, in progress, or marked Now / Next')}</div>${v.undated ? `<div class="tkU">${v.undated} open action${v.undated === 1 ? ' has' : 's have'} no date in the tracker.</div>` : ''}</div>`;
 }
 document.addEventListener('click', async e => {
   const b = e.target.closest('[data-trsync]'); if (b) { S.tkBusy = { ...(S.tkBusy || {}), [b.dataset.trsync]: true }; renderClients(); try { await api('/trackers/sync', { method: 'POST', body: { client: b.dataset.trsync } }); } catch {} S.tkBusy = { ...(S.tkBusy || {}), [b.dataset.trsync]: false }; loadTrackers(); return; }
   const m = e.target.closest('[data-tkmore]'); if (m) { S.tkOpen = S.tkOpen || {}; S.tkOpen[m.dataset.tkmore] = !S.tkOpen[m.dataset.tkmore]; renderClients(); }
+});
+// Project plan Gantt under Delivery: one fold-out per plan sheet (office.config.local.json → aios.plans). Read-only; plans.mjs does the date arithmetic on the server.
+async function loadPlans() { try { S.plans = await api('/plans'); } catch { S.plans = S.plans || { configured: false, plans: [] }; } renderPlans(); renderWeek(); }
+const GT_DAY = 86400000, gtMs = s => Date.parse(s + 'T00:00:00Z'), gtFmt = (s, y) => new Date(s + 'T12:00:00').toLocaleDateString('en-GB', { day: 'numeric', month: 'short', ...(y ? { year: 'numeric' } : {}) });
+function gtChart(v) {
+  const todayIso = new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 10), tMs = gtMs(todayIso);
+  const mon = ms => { const d = new Date(ms), k = (d.getUTCDay() + 6) % 7; return ms - k * GT_DAY; };
+  const lo = Math.min(mon(gtMs(v.first)), tMs - 3 * GT_DAY), hi = Math.max(gtMs(v.last), tMs) + 4 * GT_DAY, span = hi - lo;
+  const L = ms => ((ms - lo) / span * 100).toFixed(3) + '%', W = (a, b) => Math.max(0.35, (b - a + GT_DAY) / span * 100).toFixed(3) + '%';
+  const weeks = []; for (let m = mon(lo); m <= hi; m += 7 * GT_DAY) if (m >= lo - 1) weeks.push(m);
+  const step = Math.max(1, Math.ceil(weeks.length / 18));
+  let hd = '', lastMo = '';
+  weeks.forEach((m, i) => { const d = new Date(m), mo = d.toLocaleDateString('en-GB', { month: 'short', year: '2-digit', timeZone: 'UTC' });
+    if (mo !== lastMo) { hd += `<span class="mo" style="left:${L(m)}">${mo}</span>`; lastMo = mo; }
+    if (i % step === 0) hd += `<span class="wd" style="left:${L(m)}">${d.getUTCDate()}</span>`; });
+  const ov = `<div class="gtOv" style="left:330px;right:0;top:34px">${weeks.map(m => `<i class="wk" style="left:${L(m)}"></i>`).join('')}<i class="td" style="left:${L(tMs)}"><b>TODAY</b></i></div>`;
+  const rows = v.phases.map(p => {
+    const k = v.client + '|' + p.name, def = p.overdue > 0 || p.tasks.some(t => !t.done && (t.pct > 0 || /progress|blocked/i.test(t.status))) || (v.phases[0] === p && !v.phases.some(x => x.overdue || x.tasks.some(t => !t.done && (t.pct > 0 || /progress|blocked/i.test(t.status))))), open = (S.gtPh || {})[k] ?? def;
+    const head = `<div class="gtRow ph"><button type="button" class="gtL ph" data-gtph="${esc(k)}" aria-expanded="${open}">${open ? '▾' : '▸'} ${esc(p.name)}<span class="s">${p.done}/${p.tasks.length} done${p.overdue ? ` · <span class="bad">${p.overdue} overdue</span>` : ''}</span></button><div class="gtT"><div class="gtBar" style="left:${L(gtMs(p.start))};width:${W(gtMs(p.start), gtMs(p.end))}" title="${esc(p.name)} · ${gtFmt(p.start)} – ${gtFmt(p.end)} · ${p.pct}%"><i style="width:${p.pct}%"></i></div></div></div>`;
+    if (!open) return head;
+    return head + p.tasks.map(t => {
+      const s = gtMs(t.start), e = gtMs(t.end), pc = t.done ? 100 : t.pct || 0, cls = (t.done ? 'dn' : t.overdue ? 'od' : pc || /progress/i.test(t.status) ? 'ip' : '') + (t.critical ? ' cp' : '');
+      const tip = `${t.id} ${t.task}\nOwner: ${t.owner || 'not set'} · ${gtFmt(t.start, 1)} – ${gtFmt(t.end, 1)}\n${t.status || 'no status'}${pc ? ' · ' + pc + '%' : ''}${t.overdue ? ' · ' + t.daysLate + 'd overdue' : ''}${t.critical ? ' · critical path' : ''}${t.deps ? '\nAfter: ' + t.deps : ''}`;
+      return `<div class="gtRow" title="${esc(tip)}"><div class="gtL${t.done ? ' dn' : ''}"><span class="id">${esc(t.id)}</span>${esc(t.task)}</div><div class="gtT"><div class="gtBar ${cls}" style="left:${L(s)};width:${W(s, e)}"><i style="width:${t.overdue && !pc ? 100 : pc}%"></i></div>${t.milestone ? `<i class="gtMs ${t.done ? 'dn' : t.overdue ? 'od' : ''}" style="left:calc(${L(e + GT_DAY)} - 1px)"></i>` : ''}</div></div>`;
+    }).join('');
+  }).join('');
+  return `<div class="gtC"><div class="gtIn" style="position:relative;min-width:760px"><div class="gtHd"><div class="gtL"></div><div class="gtT">${hd}</div></div>${ov}${rows}</div></div>`;
+}
+function plansHtml() {
+  const P = S.plans; if (!P || !P.configured) return '';
+  const items = P.plans.map(p => {
+    const v = p.view, url = 'https://docs.google.com/spreadsheets/d/' + p.sheet + '/edit', busy = p.syncing || (S.gtBusy || {})[p.client];
+    const tools = `<span class="gtr"><a href="${esc(url)}" target="_blank" rel="noopener">OPEN SHEET</a><button type="button" data-plsync="${esc(p.client)}"${busy ? ' disabled' : ''}>${busy ? 'READING…' : 'SYNC'}</button></span>`;
+    const open = (S.gtOpen || {})[p.client] ? ' open' : '';
+    if (!v) return `<details class="gtP" data-gt="${esc(p.client)}"${open}><summary><span class="gtn">${esc(p.name)}</span><span class="gtm">${p.error ? 'Could not read the plan: ' + esc(p.error) : busy ? 'Reading the plan…' : 'Not read yet.'}</span>${tools}</summary></details>`;
+    const nm = v.nextMilestone, nmTxt = nm ? `Next milestone <b>${esc(nm.task.length > 60 ? nm.task.slice(0, 59) + '…' : nm.task)}</b> · ${gtFmt(nm.end)}${nm.days < 0 ? ` (<span class="bad">${-nm.days}d late</span>)` : nm.days === 0 ? ' (today)' : ` (in ${nm.days}d)`}` : 'No open milestone';
+    const sum = `<span class="gtn">${esc(p.name)}</span><span class="gtm">${nmTxt}</span><span class="gtm">${v.overdue ? `<span class="bad">${v.overdue} overdue</span>` : '<b>0</b> overdue'} · ${v.done}/${v.shown} done · read ${esc(ago(v.syncedAt))}</span>${tools}`;
+    const miss = v.missing.length ? `<div class="gtNote warn">${v.shown ? 'Some tasks can’t be drawn. ' : 'Can’t draw this plan yet. '}Add to the “${esc(v.tab || 'Master Plan')}” tab: ${v.missing.map(esc).join('; ')}. Nothing is guessed.</div>` : '';
+    const body = v.shown ? `<div class="gtTools"><button type="button" data-gtall="${esc(p.client)}|1">EXPAND ALL</button><button type="button" data-gtall="${esc(p.client)}|0">COLLAPSE ALL</button><span class="gtKey"><i style="background:var(--ok)"></i>done</span><span class="gtKey"><i style="background:var(--grey)"></i>in progress</span><span class="gtKey"><i style="background:var(--soft);border:1px solid var(--faint)"></i>not started</span><span class="gtKey"><i style="background:var(--bad)"></i>overdue</span><span class="gtKey"><i style="box-shadow:0 0 0 1.5px var(--ink);background:var(--soft)"></i>critical path</span><span class="gtKey"><i class="dm"></i>milestone</span><span>Hover a row for owner and dates · read-only, the sheet is the master</span></div>${gtChart(v)}` : '';
+    return `<details class="gtP" data-gt="${esc(p.client)}"${open}><summary>${sum}</summary><div class="gtBody">${miss}${body}</div></details>`;
+  }).join('');
+  return `<div class="sh"><h2>Project plans</h2><span class="note">Drawn straight from each project’s Google master sheet. Edit the sheet; this only displays it.</span></div>${items}`;
+}
+let gtHtml = '';
+function renderPlans() {
+  const sec = $('planSec'); if (!sec) return;
+  const on = S.plans && S.plans.configured && S.cat === 'hierarchy' && window.AIOS_HX_VIEW === 'delivery';
+  sec.classList.toggle('hx-off', !on); if (!on) return;
+  const h = plansHtml(); if (h !== gtHtml) { gtHtml = h; sec.innerHTML = h; }
+}
+document.addEventListener('toggle', e => { const d = e.target; if (d.dataset && d.dataset.gt) (S.gtOpen = S.gtOpen || {})[d.dataset.gt] = d.open; }, true);
+document.addEventListener('click', async e => {
+  const sy = e.target.closest('[data-plsync]'); if (sy) { e.preventDefault(); const c = sy.dataset.plsync; S.gtBusy = { ...(S.gtBusy || {}), [c]: true }; renderPlans(); try { await api('/plans/sync', { method: 'POST', body: { client: c } }); } catch {} S.gtBusy = { ...(S.gtBusy || {}), [c]: false }; loadPlans(); return; }
+  if (e.target.closest('.gtr a')) { e.stopPropagation(); return; }
+  const ph = e.target.closest('[data-gtph]'); if (ph) { const k = ph.dataset.gtph, was = ph.getAttribute('aria-expanded') === 'true'; (S.gtPh = S.gtPh || {})[k] = !was; renderPlans(); return; }
+  const al = e.target.closest('[data-gtall]'); if (al) { const [c, on] = al.dataset.gtall.split('|'), p = (S.plans?.plans || []).find(x => x.client === c); (p?.view?.phases || []).forEach(x => { (S.gtPh = S.gtPh || {})[c + '|' + x.name] = on === '1'; }); renderPlans(); }
 });
 function renderClients() {
   const clients = S.matrix.clients || [];
@@ -3523,9 +3872,14 @@ function renderHero() {
   const today = T.filter(t => t.state === 'done' && t.doneAt && new Date(t.doneAt).toDateString() === new Date().toDateString()).length;
   const h = new Date().getHours(), hi = h < 12 ? 'Good morning' : h < 18 ? 'Good afternoon' : 'Good evening';
   $('hEye').innerHTML = `${hi}, Wesley · ${new Date().toLocaleDateString([], { weekday: 'long', day: 'numeric', month: 'long' })}`;
-  $('hHead').textContent = waiting ? `${waiting} thing${waiting > 1 ? 's' : ''} waiting on your OK.` : doNow ? `${doNow} to do now.` : 'Nothing needs you right now.';
-  $('hSub').textContent = `${S.agents.length} seats in the office · ${working ? working + ' working now' : 'all quiet'} · ${today} finished today · ${open.length} actions open on the matrix.`;
-  tiles($('hStats'), [[waiting, 'Waiting on you', waiting], [doNow, 'Do now', doNow], [today, 'Done today', 0]].map(([n, l, a]) => `<div class="hstat"><div class="hn${a ? ' alert' : ''}">${n}</div><div class="hl">${l}</div></div>`).join(''), '.hn', '.hl');
+  // the CEO's Overview (16 Nov 2026): one sentence on what needs you and which projects are behind, then the week's numbers
+  const tk = S.trackers?.trackers || [], pl = S.plans?.plans || [], wk = S.ovWeek || { meets: 0, due: 0 };
+  const od = tk.reduce((n, t) => n + (t.view?.overdue.length || 0), 0) + pl.reduce((n, p) => n + (p.view?.overdue || 0), 0);
+  const behind = tk.filter(t => t.view?.overdue.length).length + pl.filter(p => p.view?.overdue).length, live = tk.filter(t => t.view).length + pl.filter(p => p.view).length;
+  const said = [waiting && `${waiting} thing${waiting > 1 ? 's' : ''} waiting on your OK`, behind && `${behind} of ${live} live project${live > 1 ? 's' : ''} behind`].filter(Boolean);
+  $('hHead').textContent = said.length ? said.join(', ').replace(/^./, c => c.toUpperCase()) + '.' : doNow ? `${doNow} to do now.` : 'Nothing needs you right now.';
+  $('hSub').textContent = `${working ? working + ' desk' + (working > 1 ? 's' : '') + ' working now' : 'The office is quiet'} · ${today} finished today · ${open.length} actions open on the matrix.`;
+  tiles($('hStats'), [[waiting, 'Waiting on you', waiting], [od, 'Overdue on projects', od], [wk.meets, 'Meetings this week', 0], [wk.due, 'Due this week', 0]].map(([n, l, a]) => `<div class="hstat"><div class="hn${a ? ' alert' : ''}">${n}</div><div class="hl">${l}</div></div>`).join(''), '.hn', '.hl');
 }
 // 14 days of finished work, one bar per day, split by outcome; hover a bar for the day and the count
 function renderTrend() {
@@ -3743,8 +4097,9 @@ poll(); setInterval(() => { if (!S.busy && !S.editingDate && !document.hidden) p
 loadBudget(); setInterval(() => { if (!document.hidden && !S.bBusy) loadBudget(); }, 30000);
 loadDash(); setInterval(() => { if (!document.hidden) loadDash(); }, 120000);
 loadGcal(); setInterval(() => { if (!document.hidden) loadGcal(); }, 60000);
-setInterval(() => { if (!document.hidden && S.cat === 'tokens') loadTokens(); }, 60000); // Tokens: only while it is open (the server re-reads only what the transcripts added)
+setInterval(() => { if (!document.hidden && S.cat === 'hierarchy' && window.AIOS_HX_VIEW === 'fin' && window.finRefresh) window.finRefresh(); }, 90000); // Tokens: only while it is open (the server re-reads only what the transcripts added)
 loadTrackers(); setInterval(() => { if (!document.hidden && !Object.values(S.tkBusy || {}).some(Boolean)) loadTrackers(); }, 60000);
+loadPlans(); setInterval(() => { if (!document.hidden && !Object.values(S.gtBusy || {}).some(Boolean)) loadPlans(); }, 60000);
 </script>
 <script>
 /* ---------- Ask the office: the prompt engineer in front of the Chief of Staff (4 Nov 2026) ----------
@@ -3872,7 +4227,7 @@ loadTrackers(); setInterval(() => { if (!document.hidden && !Object.values(S.tkB
           const line = buf.slice(0, i).trim(); buf = buf.slice(i + 1); if (!line) continue; let ev; try { ev = JSON.parse(line); } catch { continue; }
           if (ev.t === 'tool') { ST.textContent = (ev.words || 'working') + '…'; if (/add_task|add_routine|run_routine/.test(ev.name || '')) changed = true; }
           else if (ev.t === 'task') { grp.insertBefore(taskChip(ev.task), a); changed = true; }
-          else if (ev.t === 'reply') { a.innerHTML = mdx(ev.text || ''); reply = true; fold(); }
+          else if (ev.t === 'reply') { a.innerHTML = mdx(ev.text || ''); reply = true; fold(); yesNo(grp, ev.text || ''); }
           else if (ev.t === 'error') { a.className = 'pea err'; a.textContent = "I couldn't finish that: " + (ev.error || 'unknown error'); reply = true; }
         }
       }
@@ -3883,6 +4238,13 @@ loadTrackers(); setInterval(() => { if (!document.hidden && !Object.values(S.tkB
     if (changed && typeof poll === 'function') setTimeout(poll, 800);
   }
 
+  function yesNo(grp, txt) { // 13 Nov 2026 (Wesley): a reply that ends on a question gets YES / NO under it; a click sends that one word back as the answer
+    grp.querySelector('.pey')?.remove();
+    const last = String(txt).trim().split(/\n+/).pop() || ''; if (!/\?[\s*_)"”]*$/.test(last.trim())) return;
+    const row = document.createElement('div'); row.className = 'pey';
+    for (const w of ['Yes', 'No']) { const b = document.createElement('button'); b.type = 'button'; b.textContent = w.toUpperCase(); b.className = w === 'Yes' ? 'primary' : ''; b.addEventListener('click', () => { if (T.disabled) return; row.remove(); toChief(w, false, w); }); row.append(b); }
+    grp.append(row);
+  }
   function mdx(s) { // the Chief of Staff writes light Markdown: paragraphs, "- " bullets, **bold**, `code`
     const il = t => x(t).replace(/\*\*([^*\n]+)\*\*/g, '<b>$1</b>').replace(/`([^`\n]+)`/g, '<code>$1</code>');
     return String(s).split(/\n{2,}/).filter(p => p.trim()).map(p => { const ls = p.split('\n'); return ls.every(l => /^\s*[-•*] /.test(l)) ? `<ul>${ls.map(l => `<li>${il(l.replace(/^\s*[-•*] /, ''))}</li>`).join('')}</ul>` : `<p>${ls.map(il).join('<br>')}</p>`; }).join('');
@@ -4405,6 +4767,7 @@ loadTrackers(); setInterval(() => { if (!document.hidden && !Object.values(S.tkB
     const chips = [`<span>${esc(model)}</span>`, rs.length ? `<span title="${esc(rs.join(', '))}">${rs.length} skill${rs.length > 1 ? 's' : ''}</span>` : '<span class="miss">No skill of its own</span>', a.brief ? '<span>Standing brief</span>' : '<span class="miss">No brief</span>', a.lessons ? `<span>${a.lessons} standing rule${a.lessons > 1 ? 's' : ''}</span>` : ''].join('');
     const brief = Array.isArray(a.brief) ? a.brief.join('\n') : a.brief || '';
     const more = !drMore ? '' : `<section class="hxd-more"><div><div class="hxd-k">What ${n} does</div><p>${esc(a.does || '')}</p></div>${brief ? `<div><div class="hxd-k">Standing brief</div><p>${esc(brief)}</p></div>` : ''}<div><div class="hxd-k">Skills</div><p>${esc((a.skills || []).join(', ') || 'None yet')}</p></div><div><div class="hxd-k">Tools it reaches for</div><p>${esc((a.tools || []).join(', ') || 'None named')}</p></div></section>`;
+    const visits = (a.visits || []).length ? `<section class="hxd-more hxd-visits"><div class="hxd-k">Audit visits</div>${a.visits.map(v => `<p><b>${esc(v.client)}</b> · <a href="${esc(v.url)}" target="_blank" rel="noopener">${esc(v.title || 'Audit visit')}</a>${v.source ? ` <span class="hxd-src">${esc(v.source)}</span>` : ''}</p>`).join('')}</section>` : '';
     const head = `<section class="hxd-head">${fc(a, k, 'xl')}<div><div class="hxd-k">The desk</div><div class="hxd-n">${n}</div><div class="hxd-r">${esc(a.person ? tc(a.name) : a.role)}${ld && ld.id !== a.id ? ` · reports to ${esc(who(ld))}` : ''}</div><div class="hxd-chips">${chips}</div></div><button type="button" data-hxmore aria-expanded="${drMore}">${drMore ? 'HIDE BRIEF' : 'BRIEF AND SKILLS'}</button></section>`;
     const t = st.doing || st.waiting;
     let now;
@@ -4426,7 +4789,7 @@ loadTrackers(); setInterval(() => { if (!document.hidden && !Object.values(S.tkB
     const dl = S.tasks.filter(x => x.state === 'done' && (x.agent === a.id || pieces(x).some(p => p.agent === a.id))).sort((x, y) => (y.doneAt || 0) - (x.doneAt || 0)).slice(0, 3);
     const recent = `<section><div class="hxd-sh"><h4>Done lately</h4><span class="r">${st.done} in total</span></div>${dl.map(x => `<button type="button" class="hxd-dl" data-review="${esc(x.id)}" title="Open the result"><span>${esc(x.title)}</span><em>${[x.closed ? 'Rejected' : x.error ? 'Failed' : x.approvedAt ? 'Approved' : 'Done', x.revisions ? `revised ${x.revisions === 1 ? 'once' : x.revisions + ' times'}` : '', ago(x.doneAt)].filter(Boolean).join(' · ')}</em></button>`).join('') || '<div class="hxd-e">Nothing finished yet.</div>'}</section>`;
     const crumb = `<div class="hxo-crumb"><button type="button" data-hxoffice><img src="/people/chief.png" alt="">Office · Nora</button><span class="sep">›</span><button type="button" data-hxclose>${ld && ld.portrait ? `<img src="${esc(ld.portrait)}" alt="">` : ''}${esc(deptName(a.department))}${ld && ld.person ? ' · ' + esc(ld.person) : ''}</button><span class="sep">›</span><span class="here">${a.portrait ? `<img src="${esc(a.portrait)}" alt="">` : ''}${n}</span></div>`;
-    return `<div class="hxd-dim" data-hxclose></div><aside class="hxd" role="dialog" aria-modal="true" aria-label="${n}, ${esc(a.person ? tc(a.name) : a.role)}"><div class="hxd-top">${crumb}<button type="button" class="hxd-x" data-hxclose aria-label="Close (Esc)" title="Close (Esc)">✕</button></div><div class="hxd-sc">${head}${more}${now}${waiting}${recent}</div></aside>`;
+    return `<div class="hxd-dim" data-hxclose></div><aside class="hxd" role="dialog" aria-modal="true" aria-label="${n}, ${esc(a.person ? tc(a.name) : a.role)}"><div class="hxd-top">${crumb}<button type="button" class="hxd-x" data-hxclose aria-label="Close (Esc)" title="Close (Esc)">✕</button></div><div class="hxd-sc">${head}${visits}${more}${now}${waiting}${recent}</div></aside>`;
   }
   function drawer() { // open, refresh or close the drawer; the page redraws every few seconds, so it writes only when something changed and keeps the scroll
     const w = el('hxDr'); if (!w) return;
@@ -4442,6 +4805,61 @@ loadTrackers(); setInterval(() => { if (!document.hidden && !Object.values(S.tkB
     if (e.target.closest('#hxDr [data-hxmore]')) { drMore = !drMore; drawer(); }
   });
   let soSeen = false;
+  /* Finance visuals (8 Nov 2026, Toki): drawn from /api/tokens (days, week7, deskKinds, jobs, roi, coach) and /api/usage; no second source.
+     Colours are tokens (--tk-1 … --tk-6 and --tk-chat, set on .tkv), so a reskin changes one block. Every bar carries its number as text and a tooltip, never colour alone. */
+  const tkCol = new Map(), tkCls = n => { if (n === 'Chats') return 'chat'; if (n === 'Other office runs' || n === 'No department') return 6; if (!tkCol.has(n)) tkCol.set(n, [1, 2, 3, 4, 5, 7, 8][tkCol.size % 7]); return tkCol.get(n); };
+  function finViz(t, u) {
+    const sw = n => `<i class="sw c${tkCls(n)}"></i>`, legend = names => `<div class="lg">${names.map(n => `<span>${sw(n)}${esc(n)}</span>`).join('')}</div>`;
+    // 1. the last seven days: chats and the office (by department) stacked
+    const days = t.days.slice(-7), w7 = t.week7 || [], seg = (v, n, max) => v > 0 ? `<i class="c${tkCls(n)}" style="height:max(2px, ${(v / max * 100).toFixed(2)}%)" title="${esc(n)} ${fmtTok(v)}"></i>` : '';
+    const stacks = days.map(d => { const w = w7.find(x => x.d === d.d) || { depts: {} }, parts = Object.entries(w.depts).sort((a, b) => b[1] - a[1]), known = parts.reduce((n, p) => n + p[1], 0);
+      const rest = Math.max(0, d.office.total - known); if (rest > 0) parts.push(['Other office runs', rest]); return { d, parts, total: d.chats.total + d.office.total }; });
+    const omax = Math.max(1, ...stacks.map(s => s.d.office.total)), cmax = Math.max(1, ...stacks.map(s => s.d.chats.total)), deptNames = [...new Set(stacks.flatMap(s => s.parts.map(p => p[0])))];
+    const wd = s => new Date(s.d.d + 'T12:00:00').toLocaleDateString([], { weekday: 'short' }), dlong = s => new Date(s.d.d + 'T12:00:00').toLocaleDateString([], { weekday: 'short', day: 'numeric', month: 'short' });
+    const obars = stacks.map(s => `<div class="tkb" title="${esc(dlong(s) + ': office ' + fmtTok(s.d.office.total) + s.parts.slice(0, 5).map(p => ' · ' + p[0] + ' ' + fmtTok(p[1])).join(''))}"><span class="v">${fmtTok(s.d.office.total)}</span><div class="stk">${s.parts.map(p => seg(p[1], p[0], omax)).join('')}</div><span class="d">${wd(s)}</span></div>`).join('');
+    const cbars = stacks.map(s => `<div class="tkb" title="${esc(dlong(s) + ': chats ' + fmtTok(s.d.chats.total) + ', ' + fmtTok(s.d.chats.out) + ' written')}"><span class="v">${fmtTok(s.d.chats.total)}</span><div class="stk">${seg(s.d.chats.total, 'Chats', cmax)}</div><span class="d">${wd(s)}</span></div>`).join('');
+    const c7 = days.reduce((n, d) => n + d.chats.total, 0), o7 = days.reduce((n, d) => n + d.office.total, 0);
+    const p1 = `<div class="panel tkp"><h3>THE OFFICE · LAST 7 DAYS</h3><div class="sub"><b>${fmtTok(o7)}</b> tokens, by department. Each chart has its own scale: chats are far bigger.</div><div class="bars">${obars}</div>${legend(deptNames)}</div>
+      <div class="panel tkp"><h3>CLAUDE CODE CHATS · LAST 7 DAYS</h3><div class="sub"><b>${fmtTok(c7)}</b> tokens · ${pc(c7 / (c7 + o7 || 1))} of everything this week, the office ${pc(o7 / (c7 + o7 || 1))}. The aim is for this to shrink.</div><div class="bars">${cbars}</div>${legend(['Chats'])}</div>`;
+    // 2. top desks, 30 days, split by the kind of job
+    const desks = (t.jobs.desk || []).filter(x => x.key).sort((a, b) => b.total - a.total).slice(0, 6), dk = t.deskKinds || {}, dtop = Math.max(1, ...desks.map(x => x.total));
+    const kindsSeen = new Set();
+    const rows = desks.map(x => { const ks = Object.entries(dk[x.key] || {}).sort((a, b) => b[1] - a[1]); ks.forEach(k => kindsSeen.add(k[0]));
+      return `<div class="hr"><span class="n" title="${esc(deskLabel(x.key))}">${esc(deskLabel(x.key))}</span><span class="tr">${ks.map(k => `<i class="c${tkCls(k[0])}" style="width:${(k[1] / dtop * 100).toFixed(2)}%" title="${esc(k[0])} ${fmtTok(k[1])}"></i>`).join('')}</span><span class="v">${fmtTok(x.total)}</span></div>`; }).join('');
+    const p2 = `<div class="panel tkp"><h3>TOP DESKS · 30 DAYS</h3><div class="sub">Tokens by desk, split by what the run was for.</div>${rows || '<div class="none">No desk runs captured yet.</div>'}${legend([...kindsSeen])}</div>`;
+    // 3. the seven days by kind of run, chats as their own row
+    const kinds = {}; for (const w of w7) for (const [k, v] of Object.entries(w.kinds)) kinds[k] = (kinds[k] || 0) + v;
+    const kr = [['Chats', c7], ...Object.entries(kinds)].filter(x => x[1] > 0).sort((a, b) => b[1] - a[1]).slice(0, 7), ktop = Math.max(1, ...kr.map(x => x[1]));
+    const p3 = `<div class="panel tkp"><h3>BY KIND OF RUN · 7 DAYS</h3><div class="sub">Where the week went: your chats, Grace (the Claude box), desk work, reviews.</div>${kr.map(([k, v]) => `<div class="hr"><span class="n">${esc(k)}</span><span class="tr"><i class="c${tkCls(k)}" style="width:${(v / ktop * 100).toFixed(2)}%"></i></span><span class="v">${fmtTok(v)}</span></div>`).join('')}</div>`;
+    // 4. the plan gauge
+    const m = (l, p) => `<div class="mt"><div class="h"><span>${l}</span><b>${p != null ? p + '%' : '—'}</b></div><span class="meter"><i style="width:${p != null ? Math.min(100, p) : 0}%"${p >= 80 ? ' class="hot"' : ''}></i></span></div>`;
+    const ok = u && u.ok && u.session, ow = u && u.ok && u.window;
+    const p4 = `<div class="panel tkp"><h3>PLAN GAUGE</h3>${ok ? m('This session', u.session.percent) + m('This week', u.week && u.week.percent) + `<div class="sub">${u.old ? 'An old reading: Claude’s gauge is busy.' : 'Claude’s own gauge.'}</div>` : `<div class="sub">No percentage right now${ow ? ` · the office itself used ${fmtTok(ow.tokens)} this session` : ''}.</div>`}</div>`;
+    // 5. what is flagged: the same flags Toki's digest carries
+    const R = t.roi || {}, F = R.modelFit || {}, rw = (R.rework || []).filter(g => g.tasks >= 4 && g.rate >= 0.3)[0], big = (t.chats || []).filter(c => c.last >= (t.at || Date.now()) - 864e5 && c.lastCtx >= 0.3 * t.window);
+    const flags = [];
+    if (F.lightRuns) flags.push(`<b>Model fit:</b> ${F.lightRuns} of ${F.opusRuns} Opus runs did Sonnet-sized work (${usd(F.lightCost)}).`);
+    if (rw) flags.push(`<b>Rework:</b> ${esc(deskLabel(rw.desk))} had ${rw.revised} of ${rw.tasks} tasks sent back (${pc(rw.rate)}).`);
+    if (big.length) flags.push(`<b>Big chats:</b> ${big.length} Claude Code chat${big.length === 1 ? '' : 's'} active today carrying over 300k of context.`);
+    const p5 = `<div class="panel tkp"><h3>FLAGGED</h3>${flags.length ? flags.map(f => `<div class="fl">${f}</div>`).join('') : '<div class="sub">Nothing flagged.</div>'}<div class="sub">Toki’s daily note turns these into yes/no changes.</div></div>`;
+    return `<div class="tkv">${p1}${p2}${p3}${p4}${p5}</div>`;
+  }
+  let finTok = null, finUse = null, finAt = 0, finHtml = ''; // the Finance card's readings (8 Nov 2026, Toki): /api/tokens is heavy, so at most every 90 s; /api/usage beside it
+  window.finRefresh = () => { finAt = 0; renderHierarchy(); };
+  function finCard() {
+    if (Date.now() - finAt > 90000 && !finCard.busy) {
+      finCard.busy = true;
+      Promise.all([api('/tokens').catch(() => null), fetch('/api/usage').then(r => r.json()).catch(() => null)]).then(([t, u]) => { finTok = t; finUse = u; finAt = Date.now(); finCard.busy = false;  if (view === 'fin') renderHierarchy(); });
+    }
+    const t = finTok; if (!t || !t.headline) return '<div class="hxo-tk"><div><div class="k">Tokens</div><span class="s">Reading this week…</span></div></div>';
+    const w = t.headline.d7 || {}, top = ((t.jobs && t.jobs.desk) || []).filter(x => x.key).sort((a, b) => b.total - a.total).slice(0, 3);
+    const note = S.tasks.filter(x => x.agent === 'toki').sort((a, b) => (b.doneAt || b.addedAt || 0) - (a.doneAt || a.addedAt || 0))[0];
+    const u = finUse && finUse.ok && finUse.session ? finUse : null, ow = finUse && finUse.ok && finUse.window, pc = v => v != null ? v + '%' : '—';
+    return `<div class="hxo-tk"><div><div class="k">Tokens this week</div><b class="big">${fmtTok(w.total)}</b><span class="s">Office ${fmtTok(w.office && w.office.total)} · Claude Code chats ${fmtTok(w.chats && w.chats.total)}</span></div>
+      <div><div class="k">Top desks · 30 days</div>${top.length ? top.map(x => `<div class="r"><span>${esc(x.key)}</span><span>${fmtTok(x.total)}</span></div>`).join('') : '<span class="s">None yet</span>'}</div>
+      <div><div class="k">Plan gauge</div>${u ? `<b class="big">${pc(u.session && u.session.percent)}</b><span class="s">session · week ${pc(u.week && u.week.percent)}${u.old ? ' (old reading)' : ''}</span>` : ow ? `<b class="big">—</b><span class="s">no reading now · office used ${fmtTok(ow.tokens)} this session</span>` : '<span class="s">Not available</span>'}</div>
+      <div><div class="k">Toki’s latest note</div>${note ? `<b>${esc(note.title)}</b><div class="s">${esc(ago(note.doneAt || note.addedAt))} · the full note is in For You</div>` : '<span class="s">No note yet · first at 06:30</span>'}</div></div>`;
+  }
   window.renderHierarchy = function renderHierarchy() {
     if (!el('hx')) return; pollChief();
     const peBusy = !!(window.AIOS_PE && window.AIOS_PE.busy);
@@ -4450,7 +4868,8 @@ loadTrackers(); setInterval(() => { if (!document.hidden && !Object.values(S.tkB
     if (S.cat === 'hierarchy' && S.agents.length && location.hash.slice(1) !== hxPath()) history.replaceState(history.state, '', '#' + hxPath()); // the address bar says where you landed
     const office = view === 'office';
     el('hxTrail').classList.toggle('hx-off', office);
-    const soOn = view === 'marketing'; el('socialSec').classList.toggle('hx-off', !soOn); // Social sits under Marketing's desks and trail
+    el('finSec').classList.toggle('hx-off', view !== 'fin'); el('budgetSec').classList.toggle('hx-off', !(view === 'fin' && S.budget && S.budget.configured)); const soOn = view === 'marketing'; el('socialSec').classList.toggle('hx-off', !soOn); // Social sits under Marketing's desks and trail
+    renderPlans(); // the Gantt fold-outs show on the Delivery page only
     if (soOn && !soSeen) { soSeen = true; soEnter(); loadSocial(); } else if (!soOn) soSeen = false; // read the content calendar each time Marketing opens
     el('oxStage').classList.toggle('map', office); // the office map fills the screen, ridges and flows behind it
     if (el('hxTheoDot')) el('hxTheoDot').className = peBusy ? 'work' : '';
@@ -4466,6 +4885,7 @@ loadTrackers(); setInterval(() => { if (!document.hidden && !Object.values(S.tkB
     const grid = ds.filter(x => !fold.includes(x)).map(x => deskCard(x.a, x.k, fyD)).join('') + (fold.length ? `<button type="button" class="hxo-fold" data-hxidle>${fold.length} idle desk${fold.length > 1 ? 's' : ''} · show</button>` : '');
     const crumb = `<div class="hxo-crumb"><button type="button" data-hxoffice><img src="/people/chief.png" alt="">Office · Nora</button><span class="sep">›</span><span class="here">${ld && ld.portrait ? `<img src="${esc(ld.portrait)}" alt="">` : ''}${esc(name)}${ld && ld.person ? ' · ' + esc(ld.person) : ''}</span><span class="esc">${sel ? 'Esc closes the desk' : 'Esc goes back to the office'}</span></div>`;
     oxHtml = ''; el('hx').innerHTML = crumb + `${band}<div class="hxo-dg">${grid}</div>`;
+    if (view === 'fin') { const fh = finCard() + (finTok && finTok.headline ? finViz(finTok, finUse) : ''); if (fh !== finHtml) { finHtml = fh; el('finSec').innerHTML = fh; } }
     fyPanel(fyD, `${esc(name)} only · ${fyAll.length} across the office`);
     flowSoon(); // clears the office map's flows
     renderTrail([b]);
@@ -4771,7 +5191,7 @@ function openReview(id) {
   if (shown && rv.has(shown)) rv.drop(shown);
   rv.push({ ...t, sid: t.id }, { auto: false }); shown = t.id; rv.open(x => x.sid === t.id);
 }
-document.addEventListener('click', e => { const b = e.target.closest('[data-review]'); if (!b) return; e.preventDefault(); openReview(b.dataset.review); });
+document.addEventListener('click', e => { const b = e.target.closest('[data-review]'); if (!b) return; e.preventDefault(); if (b.classList.contains('sent')) return; openReview(b.dataset.review); });
 setInterval(() => { if (shown && rv.has(shown) && !S.tasks.some(x => x.id === shown && x.state === 'waiting')) rv.drop(shown); }, 2000); // decided in the office or the chat meanwhile
 </script>
 </body>

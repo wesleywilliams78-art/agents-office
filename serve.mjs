@@ -62,6 +62,7 @@ import * as brainnotes from './brainnotes.mjs';
 import * as siteupdates from './siteupdates.mjs';
 import * as handoff from './handoff.mjs';
 import * as decisions from './decisions.mjs';
+import * as fersources from './fersources.mjs';
 import * as glance from './glance.mjs'; // the three lines at the top of the review card
 import * as salesData from './sales.mjs';
 import * as posData from './pos.mjs';
@@ -73,6 +74,8 @@ import * as ubereats from './ubereats.mjs'; // V3.12: Uber Eats Manager exports 
 import * as deliverect from './deliverect.mjs'; // V3.12: delivery orders from Deliverect exports, kept raw in data/deliverect/
 import * as reviews from './reviews.mjs'; // V3.13: Google reviews from a Business Profile Takeout, filed in data/reviews/
 import * as trackers from './trackers.mjs';
+import * as plans from './plans.mjs';
+import * as clientonb from './clientonboarding.mjs'; // 13 Nov 2026: Workstreams onboarding, answers in Brain 30-Customers/<id>-onboarding.md
 import { kickWorkers } from './kickworkers.mjs';
 import * as storage from './storage.mjs';
 import * as peMod from './promptengineer.mjs'; // 4 Nov 2026: the Prompt Engineer, in front of the Chief of Staff in the panel
@@ -119,7 +122,7 @@ for (const w of skills.problems) console.warn('skills:', w);
 // the roster's editable fields are re-read too (a brief written by the lead's interview, or by hand, lands without a restart)
 function reloadRoster() {
   const r = loadRoster(BRAIN);
-  for (const a of r.agents) { const cur = AGENTS.find(x => x.id === a.id); if (cur) Object.assign(cur, { name: a.name, role: a.role, does: a.does, tools: a.tools, brief: a.brief, person: a.person }); else if (a.added) AGENTS.push(a); } // a new AIOS desk (desks.mjs) joins without a restart; a removed one goes at the next restart
+  for (const a of r.agents) { const cur = AGENTS.find(x => x.id === a.id); if (cur) Object.assign(cur, { name: a.name, role: a.role, does: a.does, tools: a.tools, brief: a.brief, person: a.person, visits: a.visits }); else if (a.added) AGENTS.push(a); } // a new AIOS desk (desks.mjs) joins without a restart; a removed one goes at the next restart
   if (r.problems.join() !== roster.problems.join()) for (const w of r.problems) console.warn('agents:', w);
   Object.assign(roster, { problems: r.problems, customised: r.customised, briefed: r.briefed, files: r.files });
 }
@@ -439,7 +442,7 @@ function boxWho(req) {
 }
 const boxEnv = mcp.freshEnv(); delete boxEnv.CLAUDECODE;
 const box = claudeboxMod.create({ root: ROOT, data: process.env.CLAUDE_BOX_DATA || DATA, port: cfg.port, env: boxEnv, // npm run check gives its server a data folder of its own and a stand-in for claude
-  ...(process.env.CLAUDE_BOX_FAKE ? { bin: process.execPath, binArgs: [process.env.CLAUDE_BOX_FAKE] } : { bin: mcp.resolveBin() }), model: cfg.claudeBox?.model || '', effort: cfg.claudeBox?.effort || '', onDone: boxStepDone,
+  ...(process.env.CLAUDE_BOX_FAKE ? { bin: process.execPath, binArgs: [process.env.CLAUDE_BOX_FAKE] } : { bin: mcp.resolveBin() }), model: cfg.claudeBox?.model || '', effort: cfg.claudeBox?.effort || '', onDone: boxStepDone, onResult: j => spent({ kind: 'box', agent: 'grace', dept: '' }, tokens.fromResult(j, ranOn(j.modelUsage, cfg.claudeBox?.model || ''))), // Grace's runs reach data/tokens.jsonl (kind box); the first result of a message only
   prompt: claudeboxMod.PROMPT + ` Wesley's Brain (his notes) is the folder ${BRAIN}; his skills are in its "Agents Office/skills" folder. The repo's own brain/ folder is only a sample: never use it for his notes or skills.`,
   blocked: () => mcp.blockedTools(), // the same email block the desks get: send, reply and forward are refused at the CLI
   ctx: () => ({ repo: ROOT, brain: BRAIN, media: cfg.media?.root || '', scratch: path.join(DATA, 'claude-box', 'scratch'), mailServers: [...new Set(mcp.blockedTools().map(t => /^mcp__(.+?)__/.exec(t)?.[1]).filter(Boolean))] }) });
@@ -593,10 +596,10 @@ async function run(task, feedback, mode, asAnswer) { // asAnswer: the owner is a
     (feedback && mode !== 'approve' ? (/^From the design audit, round \d/.test(feedback)
       ? `\n\nThe graphics designer audited your visuals before the owner sees them and sent them back: "${feedback}"\nFix exactly those points (rebuild with the studio and look again), keep everything that was already right, never change a word or a figure, and do not mention the audit.\nPrevious version:\n${task.result}`
       : /^From the lead, round \d/.test(feedback)
-      ? `\n\nYour department lead read your previous version before it reaches the owner and sent it back: "${feedback}"\nFix exactly those points, keep everything that was already right, and do not mention the review.\nPrevious version:\n${task.result}`
+      ? `\n\nYour department lead read your previous version before it reaches the owner and sent it back: "${feedback}"\nFix exactly those points, keep everything that was already right, and do not mention the review.${teams.PATCH_RULE}\nPrevious version:\n${task.result}`
       : asAnswer
       ? `\n\nThe owner is NOT rejecting your previous version. He is giving you information you did not have: "${feedback}"\nTreat it as fact. Update the work using it, keep everything that was already right, and do not apologise or mention a rejection.\nPrevious version:\n${task.result}`
-      : `\n\nThe owner reviewed your previous version and asked for changes: "${feedback}"\nPrevious version:\n${task.result}`) : '');
+      : `\n\nThe owner reviewed your previous version and asked for changes: "${feedback}"${teams.PATCH_RULE}\nPrevious version:\n${task.result}`) : '');
   const { pick, eff } = pickFor(task, a);
   const { text, tools, modelId: ran } = await askX(system, user, { model: pick.model, effort: eff.effort, job: { task, kind: 'task', mode: passOf(mode, feedback, asAnswer) } });
   if (!text) throw new Error('Claude returned nothing');
@@ -777,7 +780,7 @@ function fireDecisions(task) { // only for a task the owner approved: a task for
     }
     if (list.some(x => x.agent === d.to && x.title === d.title && Date.now() - (x.addedAt || 0) < 12 * 3600 * 1000)) { d.fired = 'duplicate'; continue; }
     const text = `${d.text}\n\n(Wesley said yes to this on the review of "${task.title}" by ${agentName(task.agent)}: "${d.ask}". Do exactly this and nothing more, then report what you changed.)`;
-    const t = { id: nid(), dept: d.dept, agent: d.to, title: d.title, text, plan: [], eta: 10, why: `Wesley said yes on ${agentName(task.agent)}'s review`, state: 'doing', startedAt: Date.now(), addedAt: Date.now(), by: 'decision', handoffFrom: task.agent, decisionTask: task.id, ...(WRITES_EMAIL.test(d.title + ' ' + d.ask) ? { needsOk: true, channel: 'email' } : { needsOk: false, channel: 'none' }) }; // an email still comes back for its wording and only ever becomes a Gmail draft
+    const t = { id: nid(), dept: d.dept, agent: d.to, title: d.title, text, plan: [], eta: 10, why: `Wesley said yes on ${agentName(task.agent)}'s review`, state: 'doing', startedAt: Date.now(), addedAt: Date.now(), by: 'decision', handoffFrom: task.agent, decisionTask: task.id, ...(task.ferIssue ? { ferIssue: task.ferIssue } : {}), ...(WRITES_EMAIL.test(d.title + ' ' + d.ask) ? { needsOk: true, channel: 'email' } : { needsOk: false, channel: 'none' }) }; // an email still comes back for its wording and only ever becomes a Gmail draft
     list.push(t); made.push(t); d.fired = t.id;
   }
   for (const d of ds.filter(x => x.ok && !x.yes && x.skill && !x.fired)) { answerSkillDecision(d, false); d.fired = 'declined'; } // a no to a skill change is remembered, so it is not suggested again
@@ -884,9 +887,9 @@ async function runWithLeadReview(task, feedback, mode, answer, approve) {
   if (!lead) return out;
   const model = normModel(LEAD_REVIEW.model) || 'sonnet', effort = normEffort(LEAD_REVIEW.effort) || 'medium';
   const deskNow = () => AGENTS.find(a => a.id === task.agent) || desk; // a target rework may move the task to a better-placed seat
-  const review = async ({ out: cur, round, log }) => {
+  const review = async ({ out: cur, round, log, counts }) => {
     refreshSkills();
-    const p = leadreview.reviewPrompt({ task, draft: cur.result, desk: deskNow(), lead, round, max: LEAD_REVIEW.maxRounds, barMax: LEAD_REVIEW.barRounds, log, ownerFeedback: feedback && !/^From the (lead|design audit)/.test(feedback) ? feedback : '', skills: cur.skills || [] });
+    const p = leadreview.reviewPrompt({ task, draft: cur.result, desk: deskNow(), lead, round, max: LEAD_REVIEW.maxRounds, barMax: LEAD_REVIEW.barRounds, log, counts, ownerFeedback: feedback && !/^From the (lead|design audit)/.test(feedback) ? feedback : '', skills: cur.skills || [] });
     return ask(reviewSystem(lead, deskNow(), vaultIndex(), cur.read || [], p.extra), p.user, { maxTokens: 1600, timeout: 150000, model, effort, job: { task, kind: 'lead-review', agent: lead.id, mode: 'draft' } });
   };
   const rerun = async (fb, prev, to) => { // run() quotes task.result as "previous version"
@@ -894,7 +897,11 @@ async function runWithLeadReview(task, feedback, mode, answer, approve) {
     if (seat) { task.agent = seat.id; persist(task); console.log(`  ⚖ ${task.id} lead moved the rework to ${seat.name}`); }
     task.result = prev.result; return run(task, fb, mode, false);
   };
-  const r = await leadreview.runLoop({ task, out, review, rerun, max: LEAD_REVIEW.maxRounds, barMax: LEAD_REVIEW.barRounds, by: lead.id, onChange: persist });
+  const facts = async cur => { // a Franchise Entry Report issue: sources and words are counted from the saved list and the draft's text (fersources.mjs)
+    const f = fersources.check(ROOT, task, cur.result); if (f.kind !== 'none') task.ferIssue = f.ref.key; return f;
+  };
+  const r = await leadreview.runLoop({ task, out, review, rerun, facts, max: LEAD_REVIEW.maxRounds, barMax: LEAD_REVIEW.barRounds, by: lead.id, onChange: persist });
+  if (task.ferIssue) { try { fersources.notePass(ROOT, task.ferIssue, task.id, { sources: r.leadReview.facts?.sources ?? 0, words: r.leadReview.facts?.words }); } catch (e) { console.warn('source ledger:', e.message); } } // the pass cap counts reviewed passes per issue
   if (r.leadReview.exhausted) r.out.result = String(r.out.result || '') + leadreview.decisionBlock(r.leadReview, task.title); // the owner's yes/no on how to go on
   if (seen.length) r.leadReview.seen = seen;
   if (r.leadReview.proposed) { // the lead's lesson waits for the owner's yes; nothing is written here (leadlessons.mjs)
@@ -912,7 +919,7 @@ async function runServerTask(id, opts = {}) {
 }
 async function runServerTaskNow(id, { feedback, approve, answer } = {}) {
   let list = load(); const task = list.find(t => t.id === id); if (!task) return null;
-  task.state = 'doing'; task.startedAt = Date.now(); delete task.ask; task.steps = []; save(list); // each run keeps its own step log
+  task.state = 'doing'; task.startedAt = Date.now(); delete task.ask; delete task.queuedAt; task.steps = []; save(list); // each run keeps its own step log
   try {
     const out = await runWithLeadReview(task, feedback, approve ? 'approve' : task.needsOk ? 'draft' : 'routine', answer, approve);
     const hoText = out.result; if (handoff.parse(hoText).length) out.result = handoff.strip(hoText);
@@ -959,9 +966,13 @@ async function runServerTaskNow(id, { feedback, approve, answer } = {}) {
   autoFeed(task);
   return task;
 }
+let LAST_LATE = 0;
 function tickRoutines() {
   let list; try { list = loadRoutines(); } catch (e) { console.warn('routines:', e.message); return; }
-  for (const { routine, due, late } of routines.due(list, RSTATE)) fire(routine, { due, late });
+  for (const { routine, due, late } of routines.due(list, RSTATE)) { // catch-ups (office was off) start one per 3 minutes so they do not burst together; on-time routines fire at once
+    if (late) { if (Date.now() - LAST_LATE < 180000) continue; LAST_LATE = Date.now(); }
+    fire(routine, { due, late });
+  }
   tickScheduled();
 }
 function tickScheduled() { // V3.2.1: a task scheduled for a date fires on its minute — late (once) if the office was off
@@ -978,6 +989,7 @@ function tickScheduled() { // V3.2.1: a task scheduled for a date fires on its m
 // and no Doc yet becomes a task for Esme (elead); one starting within 15 minutes gets its Telegram message, once.
 function agendaSignals() { return { events: gcal.load(DATA).events || [], matrix: aios.load(DATA).items, tasks: load(), trackers: trackers.load(DATA) }; }
 function tickAgendas() {
+  if (cfg.agendas?.auto === false) return; // 9 Nov 2026 (Wesley): no agenda prep or Telegram reminders by themselves; he asks for an agenda before a meeting
   const now = Date.now(), events = gcal.load(DATA).events || [], st = agendas.loadState(DATA), { send, prep } = agendas.due(events, st, now);
   if (!send.length && !prep.length) return;
   const sig = agendaSignals();
@@ -1138,6 +1150,28 @@ async function trackersApi(req, res, url) {
   const all = trackers.load(DATA), now = new Date();
   for (const t of TRACKERS) if (!trackerSync.has(t.client) && (!all[t.client] || Date.now() - all[t.client].syncedAt > TRACKER_STALE)) syncTracker(t).catch(() => {});
   return json(res, 200, { configured: TRACKERS.length > 0, trackers: TRACKERS.map(t => ({ client: t.client, name: t.name, sheet: t.sheet, syncing: trackerSync.has(t.client), error: trackerError[t.client] || '', view: trackers.view(all[t.client], now) })) });
+}
+// Project plans for the Gantt under Delivery (office.config.local.json → aios.plans: [{ client, name, sheet, tab? }]): the Google Sheet stays the master,
+// Claude reads its Master Plan tab (read only) and plans.mjs works out overdue / next milestone for today. Same 6-hour cadence as the trackers.
+const PLANS = (Array.isArray(cfg.aios?.plans) ? cfg.aios.plans : []).filter(t => t && t.client && t.sheet).map(t => ({ client: String(t.client), name: String(t.name || t.client + ' project plan'), sheet: String(t.sheet), tab: t.tab || 'Master Plan' }));
+const planSync = new Map(), planError = {};
+function syncPlan(t) {
+  if (planSync.has(t.client)) return planSync.get(t.client);
+  const tp = plans.syncPrompt(t);
+  const pr = askX(tp.system, tp.user, { tools: true, maxTokens: 30000, timeout: 280000, model: 'sonnet', effort: 'low', job: { kind: 'plan' } })
+    .then(({ text }) => { const snap = plans.snapshot(t, parseJSON(text)); if (!snap.rows.length) throw new Error('the plan came back empty: ' + String(text).slice(0, 240).replace(/\s+/g, ' ')); const all = plans.load(DATA); all[t.client] = snap; plans.save(DATA, all); planError[t.client] = ''; console.log(`▤ plan ${t.client}: ${snap.rows.length} tasks`); return snap; })
+    .catch(e => { planError[t.client] = e.message; console.warn('plan:', t.client, e.message); throw e; })
+    .finally(() => { planSync.delete(t.client); });
+  planSync.set(t.client, pr); return pr;
+}
+async function plansApi(req, res, url) {
+  if (url.pathname === '/api/plans/sync' && req.method === 'POST') {
+    const want = String((await body(req)).client || ''); const list = PLANS.filter(t => !want || t.client === want);
+    const r = await Promise.allSettled(list.map(syncPlan)); return json(res, 200, { ok: true, synced: r.filter(x => x.status === 'fulfilled').length, failed: r.filter(x => x.status === 'rejected').map(x => x.reason.message) });
+  }
+  const all = plans.load(DATA), now = new Date();
+  for (const t of PLANS) if (!planSync.has(t.client) && (!all[t.client] || Date.now() - all[t.client].syncedAt > TRACKER_STALE)) syncPlan(t).catch(() => {});
+  return json(res, 200, { configured: PLANS.length > 0, plans: PLANS.map(t => ({ client: t.client, name: t.name, sheet: t.sheet, syncing: planSync.has(t.client), error: planError[t.client] || '', view: plans.view(all[t.client], now) })) });
 }
 // V3.11 (24 Oct): what stops the matrix filling itself (151 open, ~100 of them noise).
 // 1. Housekeeping does not feed it: a fix, a re-file, a check or a tidy-up is the follow-up, not a source of new ones.
@@ -1417,7 +1451,7 @@ const discovering = mcp.discover().then(l => { console.log(`  connectors: ${l.fi
 // a desk's portrait: assets/people/<id>.png (or .jpg / .webp), served at /people/<file>; none → ''
 const PEOPLE = path.join(ROOT, 'assets', 'people');
 const portraitOf = id => { const f = ['.png', '.jpg', '.webp'].map(x => id + x).find(x => fs.existsSync(path.join(PEOPLE, x))); return f ? '/people/' + f : ''; };
-const agentsOut = () => { const setup = setupMap(); return AGENTS.map(a => ({ id: a.id, name: a.name, person: a.person || '', portrait: portraitOf(a.id), role: a.role, does: a.does, tools: a.tools, brief: a.brief || '', model: a.model || '', effort: a.effort || '', skills: skills.names(a), lessons: learn.count(BRAIN, a.id), department: a.department, lead: a.lead,
+const agentsOut = () => { const setup = setupMap(); return AGENTS.map(a => ({ id: a.id, name: a.name, person: a.person || '', portrait: portraitOf(a.id), role: a.role, does: a.does, tools: a.tools, brief: a.brief || '', model: a.model || '', effort: a.effort || '', visits: a.visits || [], skills: skills.names(a), lessons: learn.count(BRAIN, a.id), department: a.department, lead: a.lead,
   interviewer: leadOf(a.department).id === a.id, setUp: setup[a.department] })); };
 /** Add a task to the board: the task bar, the Chief of Staff and the AIOS Social section all come through here. → [status, task | error] */
 async function addTask({ dept, text, model, effort, team, at, by, agent } = {}) {
@@ -1557,7 +1591,13 @@ const server = http.createServer(async (req, res) => {
     if (url.pathname.startsWith('/site/') && req.method === 'GET') return siteupdates.serve(SITE_ROOT, req, res, url); // the WRW website, read-only; ?src gives the exact source
     if ((url.pathname === '/site-preview' || url.pathname === '/site-preview/') && req.method === 'GET') return siteupdates.preview(SITE_ROOT, res, url); // a page in a phone-, tablet- or desktop-sized frame
     if (url.pathname === '/api/trackers' || url.pathname === '/api/trackers/sync') return trackersApi(req, res, url);
+    if (url.pathname === '/api/plans' || url.pathname === '/api/plans/sync') return plansApi(req, res, url);
     if (url.pathname === '/api/dashboards' && req.method === 'GET') return json(res, 200, { dashboards: dashboardsData() });
+    if (url.pathname === '/api/onboarding' && req.method === 'GET') return json(res, 200, { questions: clientonb.questions(BRAIN), kinds: clientonb.KINDS, access: clientonb.ACCESS, clients: clientonb.list(BRAIN) }); // 13 Nov: Workstreams onboarding, one Brain note per client
+    if (url.pathname === '/api/onboarding' && req.method === 'POST') { const r = clientonb.create(BRAIN, await body(req)); return json(res, r.error ? 400 : 200, r); }
+    const obM = /^\/api\/onboarding\/([a-z0-9-]+)$/.exec(url.pathname);
+    if (obM && req.method === 'GET') { const c = clientonb.read(BRAIN, obM[1]); return c ? json(res, 200, { client: c }) : json(res, 404, { error: 'no onboarding note for this client' }); }
+    if (obM && req.method === 'POST') { const r = clientonb.save(BRAIN, obM[1], await body(req)); return json(res, r.error ? 400 : 200, r); }
     if (url.pathname === '/api/agendas' && req.method === 'GET') { // meeting agendas, read-only: each meeting in the next two days, why it counts, and the message it would get
       const sig = agendaSignals(), now = Date.now(), st = agendas.loadState(DATA);
       return json(res, 200, { meetings: sig.events.filter(e => e.start > now && e.start < now + 2 * 86400000 && agendas.meetingWhy(e)).map(e => ({ title: e.title, start: e.start, why: agendas.meetingWhy(e), sent: !!st.sent[e.id], prep: st.prep[e.id] || null, message: agendas.message(e, agendas.collect(e, sig)) })) });
@@ -1781,6 +1821,7 @@ const server = http.createServer(async (req, res) => {
       const task = load().find(t => t.id === m[1]);
       if (!task) return json(res, 404, { error: 'no such task' });
       if (task.state !== 'waiting') return json(res, 400, { error: 'this task is not waiting for your OK' });
+      if (task.queuedAt) return json(res, 409, { error: 'already sent: it is queued behind another job and starts by itself' }); // 9 Nov 2026: a second click only queued a second run
       const { feedback, close, decisions: picks } = await body(req).catch(() => ({}));
       const note = m[2] === 'reject' ? String(feedback || '').trim() : '';
       if (m[2] === 'approve' && task.decisions?.length) {
@@ -1806,7 +1847,9 @@ const server = http.createServer(async (req, res) => {
         autoFeed(task);
         return json(res, 200, { ok: true, id: task.id, state: 'done', task });
       }
-      if (m[2] === 'reject') { task.revisions = (task.revisions || 0) + 1; task.rejectedAt = Date.now(); save(load().map(t => t.id === task.id ? task : t)); } // V3.8: a rejected draft is a real "sent back" too — persist before runServerTask reloads its own copy
+      task.queuedAt = Date.now(); // the card's REVIEW buttons grey out until the run starts
+      if (m[2] === 'reject') { task.revisions = (task.revisions || 0) + 1; task.rejectedAt = Date.now(); }
+      save(load().map(t => t.id === task.id ? task : t)); // V3.8: a rejected draft is a real "sent back" too — persist before runServerTask reloads its own copy
       console.log(`${m[2] === 'approve' ? '✅' : '↩'} ${task.id} ${m[2] === 'approve' ? 'approved — ' + agentName(task.agent) + ' is sending' : 'sent back: ' + note.slice(0, 80)}`);
       enqueue(() => runServerTask(task.id, m[2] === 'approve' ? { approve: true } : { feedback: note || 'Not this. Rework it.' }))
         .then(t => { if (m[2] === 'reject' && note && t && !t.error) { const a = AGENTS.find(x => x.id === t.agent); return learn.classify(askLesson, a, t, note).then(v => { const r = learn.record(BRAIN, a, t, note, v); console.log(`  ↳ ${a.name} ${r.standing ? 'learned a rule' : 'noted a one-off'}: ${r.line.slice(0, 100)}`); }).then(() => proposeFromRejection(t)); } })

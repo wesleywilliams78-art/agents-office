@@ -15,7 +15,7 @@ import { loadDesks, desksFile } from './desks.mjs';
 export const FILE = path.join(ROOT, 'office.agents.json');
 export const LOCAL = path.join(ROOT, 'office.agents.local.json');
 export const brainFile = brainPath => path.join(brainPath, 'Agents Office', 'agents.json');
-const EDITABLE = ['name', 'role', 'does', 'tools', 'brief', 'model', 'effort', 'person']; // person: the desk's first name, shown above its title (7 Nov 2026)
+const EDITABLE = ['name', 'role', 'does', 'tools', 'brief', 'model', 'effort', 'person', 'visits']; // person: the desk's first name, shown above its title (7 Nov 2026)
 const BRIEF_MAX = 2000;
 const MODELS = ['sonnet', 'opus', 'fable']; // V3.6: an agent's model, by name; empty = the office default
 const EFFORTS = ['low', 'medium', 'high', 'xhigh', 'max']; // V3.6.1: an agent's effort; empty = the office's, then the model's own
@@ -42,6 +42,10 @@ export function validate(doc, base = defaults()) {
     if (e.name !== undefined) { const n = String(e.name).trim(); if (!n) problems.push(`"${e.id}": empty name — kept "${a.name}"`); else a.name = n.slice(0, 32).toUpperCase(); }
     if (e.role !== undefined) a.role = String(e.role).trim().slice(0, 80);
     if (e.person !== undefined) a.person = String(e.person || '').trim().slice(0, 32);
+    if (e.visits !== undefined) { // a desk's audit visits per client (8 Nov 2026): [{client, title, url, source}], shown on its AIOS card
+      if (!Array.isArray(e.visits)) problems.push(`"${e.id}": visits must be a list — ignored`);
+      else a.visits = e.visits.filter(v => v && typeof v === 'object' && /^https?:\/\//.test(String(v.url || ''))).slice(0, 40).map(v => ({ client: String(v.client || '').trim().slice(0, 60), title: String(v.title || '').trim().slice(0, 120), url: String(v.url).trim().slice(0, 300), source: String(v.source || '').trim().slice(0, 200) }));
+    }
     if (e.does !== undefined) a.does = String(e.does).trim().slice(0, 400);
     if (e.tools !== undefined) { if (!Array.isArray(e.tools)) problems.push(`"${e.id}": tools must be a list — ignored`); else a.tools = e.tools.map(String).map(s => s.trim()).filter(Boolean).slice(0, 12); }
     if (e.model !== undefined) { // V3.6: sonnet · opus · fable, or empty for the office default

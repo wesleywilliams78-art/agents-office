@@ -234,7 +234,7 @@ export function report({ sessions = [], ledger = [], tasks = [], agents = [], de
         perApproved: approved.length ? cents(g.cost / approved.length) : null, hoursToOk: median(waits) };
     }).sort((a, b) => b.cost - a.cost || b.total - a.total);
   };
-  const KIND = { task: 'Desk work', piece: 'Team piece', lead: 'Team lead final', plan: 'Team plan', 'lead-review': 'Lead review', route: 'Routing a task', chat: 'Desk chat', chief: 'Chief of Staff', motion: 'Motion Director', critic: 'Motion critic',upload: 'Reading an upload', lesson: 'Learning from a correction', interview: 'Set-up interview', budget: 'Budget sync', tracker: 'Tracker sync', matrix: 'Matrix extraction', calendar: 'Calendar reminder', skill: 'Skill revision', fix: 'Dashboard fix', handover: 'Hand-over brief', other: 'Other' };
+  const KIND = { task: 'Desk work', piece: 'Team piece', lead: 'Team lead final', plan: 'Team plan', 'lead-review': 'Lead review', route: 'Routing a task', chat: 'Desk chat', chief: 'Chief of Staff', motion: 'Motion Director', critic: 'Motion critic',upload: 'Reading an upload', lesson: 'Learning from a correction', interview: 'Set-up interview', budget: 'Budget sync', tracker: 'Tracker sync', matrix: 'Matrix extraction', calendar: 'Calendar reminder', skill: 'Skill revision', fix: 'Dashboard fix', handover: 'Hand-over brief', box: 'Grace (Claude box)', other: 'Other' };
   const jobs = {
     desk: group(r => r.agent ? name(r.agent) : null),
     dept: group(r => r.dept ? (depts[r.dept]?.name || r.dept) : null),
@@ -269,10 +269,17 @@ export function report({ sessions = [], ledger = [], tasks = [], agents = [], de
   const lightBy = new Map(); for (const r of light) { const k = r.agent ? name(r.agent) : KIND[r.kind] || r.kind || 'Other', g = lightBy.get(k) || lightBy.set(k, { k, agent: r.agent || '', cost: 0, runs: 0 }).get(k); g.cost = cents(g.cost + (r.cost || 0)); g.runs++; }
   const modelFit = { opusCost: cents(opusRuns.reduce((n, r) => n + (r.cost || 0), 0)), opusRuns: opusRuns.length, lightCost: cents(light.reduce((n, r) => n + (r.cost || 0), 0)), lightRuns: light.length, lightBy: [...lightBy.values()].sort((a, b) => b.cost - a.cost).slice(0, 5) };
   const heavy = chatRows.filter(c => c.verdict.key !== 'ok');
+  // Finance visuals (8 Nov 2026, Toki): the last 7 days by department and by kind of run (the office's ledger), and each desk's 30 days by kind
+  const kindName = r => KIND[r.kind] || r.kind || 'Other', tot = r => (r.in || 0) + (r.out || 0) + (r.cr || 0) + (r.cw || 0), bump = (o, k, v) => { o[k] = (o[k] || 0) + v; };
+  const week7 = dayKeys.slice(-7).map(d => ({ d, depts: {}, kinds: {} })), deskKinds = {};
+  for (const r of ledger) {
+    const w = week7.find(x => x.d === dayOf(r.at)); if (w) { bump(w.depts, r.dept ? (depts[r.dept]?.name || r.dept) : 'No department', tot(r)); bump(w.kinds, kindName(r), tot(r)); }
+    if (r.at >= d30 && r.agent) bump(deskKinds[name(r.agent)] ||= {}, kindName(r), tot(r));
+  }
   return {
     at: now, since, window: WINDOW,
     headline: { today: win(1), d7: win(7), d30: win(30) },
-    days, chats: chatRows.filter((c, i) => i < 40 || c.last >= now - DAY), chatCount: chatRows.length, heavy: heavy.length, // every chat used in the last 24 hours, however small: the page lists those on top
+    week7, deskKinds, days, chats: chatRows.filter((c, i) => i < 40 || c.last >= now - DAY), chatCount: chatRows.length, heavy: heavy.length, // every chat used in the last 24 hours, however small: the page lists those on top
     jobs, roi: { perDeliverable, rework: rework.slice(0, 12), approval, modelFit },
     coach: coach({ chats: chatRows, rework, modelFit, now }),
     oldOffice: oldOffice.reduce((n, s) => n + s.calls, 0),

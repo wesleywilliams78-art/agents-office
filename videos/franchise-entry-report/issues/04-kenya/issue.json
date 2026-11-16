@@ -11,15 +11,15 @@
   "back": "#FFFFFF"
  },
  "cover": {
-  "verdict": "Open, with no franchise law found and a wage floor under £1 an hour. The catch: a small urban middle class and 14.4% borrowing. Chicken, coffee and forecourts are growing. Pick the partner before the category.",
+  "verdict": "Open, with no franchise law found and a wage floor under £1 an hour, but money costs 14.4% and the middle class is small. In Nairobi the wait costs more stars than the food: pick a partner who serves fast and answers every review.",
   "stats": [
    {
     "big": "257",
     "label": "Simbisa counters in Kenya, Jun 2026, the largest food network we found"
    },
    {
-    "big": "14.4%",
-    "label": "average bank lending rate, Sep 2026, against a policy rate of 8.75%"
+    "big": "40%",
+    "label": "of 1–2★ Google reviews at 10 Nairobi chains are about waiting, Nov 2026 (Harlyy) [S56]"
    },
    {
     "big": "£0.58",
@@ -28,8 +28,8 @@
   ]
  },
  "market": {
-  "headline": "A mobile-money market of 58 million, with its buyers in five cities",
-  "intro": "Kenya pays by phone, orders more by app every year, and keeps most of its buying power in Nairobi. Growth is in value and delivery, not in the bill per head.",
+  "headline": "A mobile-money market of 58 million, won on the repeat visit",
+  "intro": "Kenya pays by phone, orders more by app every year, and keeps most of its buying power in Nairobi. Growth is in visits, not in the bill per head, so the brand that brings guests back wins.",
   "tiles": [
    {
     "label": "Population",
@@ -119,7 +119,7 @@
     "src": "IEA via Business Daily, 2015 data [S14]"
    }
   ],
-  "sowhat": "Food prices rose 9.5% in a year and bank loans cost 14.4%, so the margin is squeezed from both sides. We found no published restaurant margin. The largest operator grew visits 14% by letting average spend fall 3%. Kenya rewards a lean, value-led unit in the five cities, paid for by phone and sold through delivery. [S9, S3, S5]"
+  "sowhat": "Food prices rose 9.5% in a year and bank loans cost 14.4%, so the margin is squeezed from both sides. The largest operator grew visits 14% by letting average spend fall 3%. In a value market the repeat visit is the margin. Harlyy’s read of Nairobi reviews (pages 4–5) shows what loses it: the wait, named in **40%** of 1–2★ reviews. [S9, S3, S5, S56]"
  },
  "rising": {
   "headline": "Chicken, coffee and forecourt food are growing. Burger, kebab and plant-based have no current count.",
@@ -198,10 +198,10 @@
    {
     "cat": "Fast casual",
     "dir": "Mixed",
-    "evidence": "Subway’s franchisee dropped the brand and runs the shops as Subz, with 10 branches listed in 2025 (blog, Thin). Famous Brands had 13 Kenyan franchise stores in 2014 and lost its master partner in 2021. Java’s grilled-chicken brand Kukito had 7 outlets in Aug 2022 and aimed for 30 through franchising.",
+    "evidence": "One blog reports that Subway’s Kenyan franchisee dropped the brand and trades as Subz, with 10 branches listed in 2025; we found no second source (Thin). Famous Brands had 13 Kenyan franchise stores in 2014 and lost its master partner in 2021. Java’s grilled-chicken brand Kukito had 7 outlets in Aug 2022 and aimed for 30 through franchising.",
     "src": "S31, S32, S21, S33",
     "window": "Apr 2014 → May 2025",
-    "conf": "Medium",
+    "conf": "Thin",
     "sat": "Medium",
     "entry": "Medium"
    },
@@ -264,14 +264,14 @@
   }
  },
  "white": {
-  "headline": "Four gaps, and the way in matters more than the category",
-  "intro": "A gap is a need with growing demand and no clear owner. The size of each one is our judgement of the prize for a new entrant: S, M or L.",
+  "headline": "Four gaps, and how fast you serve decides who wins them",
+  "intro": "A gap is a need with growing demand and no clear owner. Harlyy’s pages add a second test: can the format serve inside 15 minutes? 91% of Nairobi wait complaints name 15 minutes or more [S57]. Size is our judgement of the prize for a new entrant: S, M or L.",
   "gaps": [
    {
     "title": "Forecourt-first QSR",
     "gap": "Fuel retailers are turning stations into food stops, and we found few food brands on them. A fuel-retailer partner can bring the site, the lease and the traffic.",
     "evidence": "Vivo’s 350th Shell station opened in Jul 2026 as a convenience hub. KFC, Java and The Coffee Club all entered or grew through fuel retailers. [S34, S15, S35, S27]",
-    "suits": "Compact chicken, coffee and grab-and-go formats with a short menu.",
+    "suits": "Compact chicken, coffee and grab-and-go formats with a short menu that serves in under 15 minutes: 91% of Nairobi wait complaints name 15 minutes or more. [S57]",
     "route": "Master franchise held by a fuel retailer, or a joint venture.",
     "size": "L",
     "sizeText": "Large prize"
@@ -288,7 +288,7 @@
    {
     "title": "Value-led, delivery-ready menus",
     "gap": "The largest operator is growing visits by cutting the bill, and delivery is over a quarter of its sales.",
-    "evidence": "Simbisa: customers +14%, average spend −3%, delivery orders +59% and 27% of turnover in FY2026. Glovo lists 6,000+ merchants. [S5, S13]",
+    "evidence": "Simbisa: customers +14%, average spend −3%, delivery orders +59% and 27% of turnover in FY2026. At one QSR’s busiest Uber Eats store, box meals were liked 79% against 92% for core meals. [S5, S58]",
     "suits": "Brands with a low-price core menu that travels well.",
     "route": "Master franchise with an operator that already runs delivery.",
     "size": "M",
@@ -356,7 +356,7 @@
    "quote": "If I had a brand going into Kenya, I’d pick the partner before I picked the site.",
    "paras": [
     "The brands that scaled came in on someone else’s footprint: KFC on Vivo’s forecourts, Java with Rubis, The Coffee Club with a 14-station fuel retailer. Labour is cheap. Money and food are not: 14.4% to borrow and 9.5% food inflation.",
-    "Two partnerships ended badly. Famous Brands took its stores back from its franchisee of 23 years, and Subway’s franchisee kept the shops as Subz. I’d write credit checks, step-in rights and site assignment into the deal first, then choose the category."
+    "One partnership of 23 years ended in court: Famous Brands reclaimed its stores from its franchisee. I’d write credit checks, step-in rights and site assignment into the deal first. And I’d read the partner’s reviews as closely as its balance sheet, because in Nairobi the wait costs more stars than the food."
    ]
   }
  },
@@ -451,39 +451,39 @@
    "floor": "19,491",
    "floorNote": "A month, for waiters and cooks in Nairobi, Mombasa, Kisumu, Nakuru and Eldoret, from 1 May 2026. This is the press report of the Gazette order; we did not open the order itself. [S49, S50]",
    "allIn": "£0.58",
-   "allInNote": "**ESTIMATE** KES 20,953 a month ÷ 208 hours (48-hour week; statutory hours not found) ≈ KES 100.7 an hour, at £1 = KES 173.20 on 30 Oct 2026. [S3, S50]"
+   "allInNote": "**ESTIMATE** KES 19,491 floor + NSSF 6% + housing levy 1.5% + KES 50 NITA ≈ KES 21,003 a month ÷ 208 hours (48-hour week; statutory hours not found) ≈ KES 101.0 an hour, at £1 = KES 173.20 on 30 Oct 2026. [S3, S46, S47, S48, S50]"
   },
   "advice": "Confirm the position with a Kenyan adviser before signing."
  },
  "route": {
-  "headline": "Pick the partner first. Then price the risk.",
-  "intro": "Each route trades control against capital and speed. The examples show how brands came into Kenya, and how two partnerships ended.",
+  "headline": "Pick the partner first. Then check how its branches serve.",
+  "intro": "Each route trades control against capital and speed. The examples show how brands came into Kenya and how two partnerships ended. Whichever route you take, the partner runs the branch the guest reviews.",
   "routes": [
    {
     "name": "Master franchise, local operator",
-    "control": "Low",
-    "capital": "Low",
+    "control": 1,
+    "capital": 1,
     "speed": 2,
     "seen": "Eat’N’Go took two US master franchises in Apr 2021. Express Kitchen had 10 Papa John’s stores by Jan 2026. Famous Brands’ master partner from 1997 lost the licence in 2021. [S23, S25, S21, S32]"
    },
    {
     "name": "Fuel retailer, master or joint venture",
-    "control": "Medium",
-    "capital": "Medium",
+    "control": 2,
+    "capital": 2,
     "speed": 3,
     "seen": "KFC’s franchisee and Vivo Energy formed a 50:50 venture in 2019, and KFC went from 22 to 48 sites. The Coffee Club signed a USD 5m master deal with a fuel retailer in Nov 2024. [S15, S8, S27]"
    },
    {
     "name": "Home-grown franchising",
-    "control": "Medium",
-    "capital": "Low",
+    "control": 2,
+    "capital": 1,
     "speed": 2,
     "seen": "Java’s Kukito: 7 outlets in Aug 2022, aiming for 30 through franchising. Artcaffe grew by buying Dormans’ 7 shops instead. One planned example found. [S33, S29]"
    },
    {
     "name": "Company-owned, local subsidiary",
-    "control": "High",
-    "capital": "High",
+    "control": 3,
+    "capital": 3,
     "speed": 1,
     "seen": "Simbisa runs its Kenyan counters itself (252 to 257). Famous Brands has run its Kenyan stores itself since 2021. Java House has had four owners since 2012. [S16, S5, S21, S26]"
    }
@@ -497,7 +497,7 @@
    {
     "label": "Mid-size brand",
     "title": "A local master, credit-checked",
-    "body": "Proven in 2 countries. Check the partner’s balance sheet: Famous Brands’ master of 23 years owed banks over KES 67m when it lost the licence."
+    "body": "Proven in 2 countries. Check the balance sheet and the reviews: Famous Brands’ master of 23 years owed banks over KES 67m when it lost the licence, and reply rates to bad reviews run from 0% to 100% across ten Nairobi chains. [S21, S59]"
    },
    {
     "label": "Global brand",
@@ -508,14 +508,14 @@
   "riskTitle": "Price the risk before you price the franchise",
   "risks": [
    {
-    "label": "Currency and remittance",
-    "body": "The shilling has held near 130 to the dollar for about 18 months, but royalties are earned in KES. Kenya places no restrictions on transferring investment funds. The treaty withholds 15% on royalties.",
+    "label": "Currency and borrowing",
+    "body": "The shilling has held near 130 to the dollar for about 18 months, but royalties are earned in KES and fit-outs are funded at 14.4%, against a policy rate of 8.75%. The treaty withholds 15% on royalties, and Kenya places no restrictions on transfers.",
     "src": "S3, S4, S44, S53"
    },
    {
-    "label": "Cost of borrowing",
-    "body": "Bank loans averaged 14.4% in Sep 2026, against a policy rate of 8.75% after ten cuts. A franchisee’s fit-out is funded at the higher rate.",
-    "src": "S3, S4"
+    "label": "New-branch reviews",
+    "body": "Recent franchise entrants carry 12.9% of their Google reviews at 1–2★, against 5.1% for incumbents, on 55 reviews a branch against 1,655. One bad review moves a new branch 30 times more.",
+    "src": "S60"
    },
    {
     "label": "Food and supply",
@@ -524,13 +524,13 @@
    },
    {
     "label": "Partner credit",
-    "body": "Famous Brands’ master partner owed KES 6.1m in royalties and over KES 67m to banks before the licence was reclaimed. Subway’s franchisee kept the shops as Subz (blog, Thin).",
+    "body": "Press reported that Famous Brands’ master partner owed KES 6.1m in royalties and over KES 67m to banks before the licence was reclaimed. One blog reports that Subway’s franchisee now trades as Subz (Thin, single source).",
     "src": "S21, S31"
    },
    {
     "label": "Delivery economics",
-    "body": "Uber agreed to buy Delivery Hero, which would put Glovo and Uber Eats under one owner, subject to Competition Authority review, with completion expected in H2 2027. Jumia Food left in Dec 2023. Commission rates: not found.",
-    "src": "S51, S13"
+    "body": "Uber agreed to buy Delivery Hero, which would put Glovo and Uber Eats under one owner, subject to Competition Authority review. Store scores will not warn you: Glovo scores five brands within 1 point. Commission rates: not found.",
+    "src": "S51, S58"
    },
    {
     "label": "Protest, security and rent",
@@ -543,15 +543,15 @@
   "headline": "Ten moves, in order, before you sign anything",
   "moves": [
    "**File the trade mark** with KIPI, and record each franchisee as a registered user.",
-   "**Shortlist 3 to 5 partners** among fuel retailers and multi-brand operators.",
+   "**Shortlist 3 to 5 partners** among fuel retailers and multi-brand operators, and read each one’s Google reviews and reply rate.",
    "**Credit-check the partner** and write step-in rights, site assignment and a non-compete into the master agreement.",
+   "**Write service standards into the agreement:** order to table in under 15 minutes, and a reply to every 1–2★ review within 24 hours. [S57, S59]",
    "**Rebuild the unit P&L** on Kenyan costs: rent, 14.4% money and 9.5% food inflation, not only the wage floor.",
-   "**Model the royalty net of 15% withholding,** and get a ruling on how the initial fee is taxed.",
+   "**Model the royalty net of 15% withholding,** paid in KES, and get a ruling on how the initial fee is taxed.",
    "**Confirm VAT on restaurant meals** with the Kenya Revenue Authority before you price the menu.",
    "**Count the competition yourself:** dated locator counts for KFC, Simbisa’s brands and Java House, city by city.",
-   "**Price delivery at more than one commission rate,** and plan for one owner of Glovo and Uber Eats.",
-   "**Plan the licence path** for the first site: county permit, food hygiene and halal certification.",
-   "**Agree how royalties are paid** in KES and converted to sterling."
+   "**Price delivery at more than one commission rate,** plan for one owner of Glovo and Uber Eats, and read ratings by dish, not by store. [S58]",
+   "**Plan the opening:** county permit, food hygiene and halal certification, then ask every happy guest for a review from day one. Entrants carry 2.5 times the 1–2★ share. [S60]"
   ],
   "check": [
    "Mall QSR tenant counts at Two Rivers, Garden City, Sarit, The Hub and Village Market",
@@ -560,12 +560,12 @@
    "Simbisa’s counts by brand, and current Burger King and Artcaffe counts",
    "ARIPO and Madrid coverage, and delivery commission rates"
   ],
-  "method": "Public sources only, read 30 Oct to 3 Nov 2026. Every figure is dated and coded to the list below. Rise and fall calls need two independent signals; otherwise they are marked Thin. Estimates are labelled with their method. Not found is used only after a search, with the nearest proxy. Unit counts are company reports or press, except one Uber Eats listing count for bubble tea (3 Nov 2026). Not legal, tax or investment advice.",
+  "method": "Public sources only, read 30 Oct to 3 Nov 2026. Every figure is dated and coded to the list below. Rise and fall calls need two independent signals; otherwise they are marked Thin. Estimates carry their method. Not found is used only after a search, with the nearest proxy. Pages 4–5 are Harlyy’s, printed as supplied: its analysis of public Google and delivery-app reviews for 10 anonymised Nairobi chains, read 6–7 Nov 2026 [S56–S60]. We checked its arithmetic, not the reviews. Disclosure: Harlyy sells guest-experience software to restaurant chains, including in Kenya. Not legal, tax or investment advice.",
   "sources": [
    "S1 CEIC, Kenya population projection (KNBS series), read 30 Oct 2026",
    "S2 HapaKenya, Kenya’s economy hits Ksh 17.6 trillion (KNBS Economic Survey 2026), 3 May 2026",
    "S3 Central Bank of Kenya, MPC retains the CBR at 8.75 percent, 7 Oct 2026; daily rates and key rates posted 30 Oct 2026",
-   "S4 Khusoko, Kenya holds interest rate at 8.75%, 9 Apr 2026",
+   "S4 Khusoko, Kenya’s Central Bank cuts benchmark rate to 8.75%, 10 Feb 2026",
    "S5 Food Business Africa, Simbisa Brands revenue rises 20% in FY 2026, 1 Oct 2026",
    "S6 US International Trade Administration, Kenya Franchising, 2020",
    "S7 Business Daily, Java outlets hit 102 with new branches in Eldoret, Ruaka, 23 Dec 2025",
@@ -581,7 +581,7 @@
    "S17 Business Daily, Chicken Inn owner eyes 55 more Kenyan outlets, 24 Mar 2022",
    "S18 The Standard, Chicken Cottage adds ninth outlet (standfirst read; date approximate), early 2026",
    "S19 Business Daily, Burger King to invest Sh270m in expansion, 3 Jun 2019",
-   "S20 Khusoko, Java House expands with its 65th branch in Kenya, 5 Aug 2019",
+   "S20 Business Today, Java House opens 65th branch in Mbagathi, 29 Jul 2019",
    "S21 Kenyans.co.ke, Nairobi tycoon loses Debonairs and Steers eateries, 28 Jan 2021",
    "S22 Business Daily, Debonairs, Steers units record Sh5m loss in Kenya, 21 Jun 2020",
    "S23 The Star, Eat’N’Go enters Kenya with Domino’s, Cold Stone acquisition, 10 Apr 2021",
@@ -616,7 +616,19 @@
    "S52 Streamline (citing Capital FM), Sinaloa Club faces closure threat over KES 16.5M rent dispute, 4 Aug 2026",
    "S53 US Department of State, 2026 Investment Climate Statements: Kenya (foreign exchange and remittance policies), read 3 Nov 2026",
    "S54 Uber Eats Kenya, Bubble tea delivery near me (Nairobi listings), counted 3 Nov 2026",
-   "S55 KNBS, 2019 Kenya Population and Housing Census, Table 2.30: population by religious affiliation and county (census.ke), read 3 Nov 2026"
+   "S55 KNBS, 2019 Kenya Population and Housing Census, Table 2.30: population by religious affiliation and county (census.ke), read 3 Nov 2026",
+   "S56 Harlyy (contributor), what 246 coded 1–2★ Google reviews at 101 Nairobi branches of 10 anonymised chains are about, read 6–7 Nov 2026. Harlyy sells guest-experience software",
+   "S57 Harlyy (contributor), wait times named in 67 Nairobi wait complaints, read 6–7 Nov 2026",
+   "S58 Harlyy (contributor), Glovo store scores (5 chains) and Uber Eats store and item ratings (13 stores), read 6–7 Nov 2026",
+   "S59 Harlyy (contributor), reply rates on 117 1–2★ Google reviews from the last 12 months against average rating, 10 chains, read 6–7 Nov 2026",
+   "S60 Harlyy (contributor), chain-by-chain table: 101 branches, 144,738 Google reviews, incumbents against recent franchise entrants, read 6–7 Nov 2026"
   ]
+ },
+ "contributor": {
+  "name": "Zeeshan",
+  "role": "Founder & CEO",
+  "org": "Harlyy",
+  "quote": "In Nairobi, the wait costs more stars than the food. Entrants start in a hole: one 1★ review moves a 55-review branch 30× more than a 1,655-review one.",
+  "disclosure": "Harlyy sells guest-experience software to restaurant chains and says it is live with chains in Kenya. Pages 4–5 are its own analysis, printed as supplied."
  }
 }

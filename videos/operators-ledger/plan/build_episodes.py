@@ -170,6 +170,13 @@ BRAIN_NOTE = os.path.join("C:/Users/Wesley/Agents Office Brain", "40-Marketing",
 if os.path.isdir(os.path.dirname(BRAIN_NOTE)):
     head = "<!-- Generated from agents-office/videos/operators-ledger/plan/build_episodes.py. Edit there, not here. -->\n"
     note = intro.replace("`plan/build_episodes.py`", "`videos/operators-ledger/plan/build_episodes.py` in the agents-office repo")
-    open(BRAIN_NOTE, "w", encoding="utf-8").write(head + note + "\n".join(rows) + "\n")
+    # the brain caps a note at 20,000 characters: episodes 1-50 here, 51-100 in a second note
+    note = note.replace("\n\n", "\n\nEpisodes 51 to 100: [[operators-ledger-episodes-51-100]].\n\n", 1)
+    open(BRAIN_NOTE, "w", encoding="utf-8").write(head + note + "\n".join(rows[:50]) + "\n")
     print("wrote", BRAIN_NOTE)
+    BRAIN_NOTE2 = os.path.join(os.path.dirname(BRAIN_NOTE), "operators-ledger-episodes-51-100.md")
+    table_head = intro[intro.index("| # | Monday"):]
+    note2 = "[[operators-ledger-episodes]]\n\n" + table_head
+    open(BRAIN_NOTE2, "w", encoding="utf-8").write(head + note2 + "\n".join(rows[50:]) + "\n")
+    print("wrote", BRAIN_NOTE2)
 print("wrote", os.path.abspath(out), len(rows), "episodes; last:", rows[-1][:60])

@@ -37,12 +37,13 @@ export function applies({ cfg, task, desk, approve = false, answer = false, wait
 }
 
 /** The lead's instructions for one review: the system extra and the user message. */
-export function reviewPrompt({ task, draft, desk, lead, round = 0, max = 2, barMax = max, log = [], ownerFeedback = '', skills = [] }) {
+export function reviewPrompt({ task, draft, desk, lead, round = 0, max = 2, barMax = max, log = [], ownerFeedback = '', skills = [], counts = '' }) {
   const asked = [...new Set(log.flatMap(l => l.routes || []))];
   const extra = `LEAD REVIEW\nYou are the manager of ${desk.name}${desk.role ? ` (${desk.role})` : ''} and you are reviewing the draft below before the owner sees it. You review as a world-class practitioner of this craft, not as a proofreader. You do not rewrite the draft: you pass it, or you send it back with specific direction.\n` +
     'READ 0, THE TARGETS (first, every time). List each stated target: a number in the owner\'s request or in the desk\'s rules and skills (a source count, a word count, a number of items or categories), and anything the draft says about itself being short ("not at the bar", "do not build", "N of M"). A missed target is never a pass, and never something to send the owner to get it off the list: it goes back as rework. Fill "bar" with the target and what the draft reached. Fill "routes" with the concrete routes the desk has NOT yet tried that could close the gap, each new: the browser (the owner\'s Chrome) for script-driven pages, locators and tables that would not fetch; the Wayback Machine for earlier figures; annual reports and filings; official statistics; more and different searches; or a better-placed seat in the department ("to": its id, never you). Fill "tried" with every route the desk has tried so far and what each gave, read from the draft. ' +
     `Only when every route is truly spent and nothing more is possible, the verdict is "exhausted": "tried" complete, "why" says why nothing more is possible, and "decision" is one yes/no for the owner on how to go on (ask, your recommend, and the task to run on yes). Target misses get up to ${barMax} rounds of rework; this is rework round ${round} of ${barMax}.\n` +
     (asked.length ? `Routes already asked for in earlier rounds (do not ask for them again unless the draft shows they were not tried): ${asked.join('; ')}\n` : '') +
+    (counts ? `MACHINE COUNTS (settled, not yours to re-count): ${counts} The source and word bars are decided by these numbers and by the saved list, never by a figure the draft states about itself. Do not raise the source count or word count as a target miss and do not ask for a "go on" pass for it; judge the rest.\n` : '') +
     'Then two reads, in this order.\n' +
     'READ 1, THE RULES. Check the draft against: the owner\'s request and any acceptance checks in it; the standing instructions, skills and lessons the desk worked under (below, "RULES THE DESK WORKED UNDER"); and the house and brand rules in the company notes and the notes the desk read (brand names and structure, proof figures, formats, what is never said). A breach is a bounce.\n' +
     'READ 2, THE BAR. Ask: would this move the dial for the owner as a person and a business, or is it merely acceptable? World-class means a sharp hook, one clear point, specific rather than generic, a reason for the right reader to act, in the owner\'s voice. If it is flat, generic, or has no point of view, bounce it, and say exactly what is weak and what the stronger move is (a sharper line, a different angle, a cut).\n' +
@@ -87,7 +88,7 @@ export function parseVerdict(text) {
 /** Run the loop on a finished first draft. review({ out, round, log }) → the lead's reply text; rerun(feedback, out) → the desk's
  *  new run result. task.leadReview is kept current and onChange(task) fires at each step so the trail moves live.
  *  Resolves { out, leadReview } where out is the final draft's run result. */
-export async function runLoop({ task, out, review, rerun, max = 2, barMax = max, by = '', onChange = () => {}, now = Date.now }) {
+export async function runLoop({ task, out, review, rerun, facts = null, max = 2, barMax = max, by = '', onChange = () => {}, now = Date.now }) {
   barMax = Math.max(max, barMax);
   const lr = task.leadReview = { phase: 'review', round: 0, by, log: [], open: '' };
   const done = phase => { lr.phase = phase; onChange(task); return { out, leadReview: lr }; };
@@ -99,13 +100,26 @@ export async function runLoop({ task, out, review, rerun, max = 2, barMax = max,
   };
   for (;;) {
     lr.phase = 'review'; onChange(task);
-    let v; try { v = parseVerdict(await review({ out, round: lr.round, log: lr.log })); } catch { v = { verdict: 'pass', feedback: '', checks: [], unreadable: true }; } // fail open
+    // facts (Wesley, 8 Nov 2026): a bar that can be counted is counted by the office from the saved list (fersources.mjs), not read from the draft's prose
+    let fact = null; if (facts) { try { fact = await facts(out); } catch { fact = null; } if (fact && fact.kind === 'none') fact = null; }
+    if (fact) lr.facts = { sources: fact.sources, words: fact.words || null, need: fact.need, kind: fact.kind, passes: fact.passes };
+    const tooFar = fact && fact.kind === 'capped', listStill = fact && fact.kind === 'missing' && lr.log.some(l => l.ledger);
+    let v;
+    if (tooFar || listStill) { // no model read and no rework: one plain yes/no for the owner
+      const why = tooFar ? `${fact.passes + 1} research passes have been made on this issue (the cap is ${fact.maxPasses || 3}) and the saved list still falls short. Another full pass would repeat the last.` : 'The saved list was asked for once and is still not there, so another pass would only repeat that.';
+      v = { verdict: 'exhausted', feedback: why, dial: '', checks: [], unreadable: false, target: { bar: fact.bar, routes: [], tried: [], why, to: '', decision: fact.decide } };
+    } else if (fact && fact.kind === 'missing') { // first time: send back for the list only, with no model call
+      v = { verdict: 'bounce', feedback: fact.feedback, dial: '', checks: [{ check: 'a saved source list', met: false }], unreadable: false, target: { bar: fact.bar, routes: fact.routes, tried: [], why: '', to: '' } };
+    } else {
+      try { v = parseVerdict(await review({ out, round: lr.round, log: lr.log, counts: fact ? fact.line : '' })); } catch { v = { verdict: 'pass', feedback: '', checks: [], unreadable: true }; } // fail open
+      if (fact && fact.kind === 'short' && v.verdict === 'pass') v = { ...v, verdict: 'bounce', unreadable: false, feedback: `The office counted ${fact.bar}. Add real, new sources with franchise_sources_add until the saved list reaches ${fact.need}; the count comes from the list.`, target: { bar: fact.bar, routes: ['the ladder steps in depth.md not yet used for the gaps, saved with franchise_sources_add'], tried: [], why: '', to: '' } };
+    }
     const own = v.verdict === 'pass' ? selfMiss(out.result) : '';
     if (own) v = { ...v, verdict: 'bounce', unreadable: false, feedback: `Your draft says it is short of its target ("${own}"). It does not go to the owner below the bar: take the routes your draft lists as next or not yet tried, now, and report what each gave.`, target: { bar: own, routes: ['the routes the draft itself lists as next or not yet tried'], tried: [], why: '', to: '' } };
     const asked = new Set(lr.log.flatMap(l => l.routes || []).map(routeKey));
     const routes = v.target ? (v.target.routes.length ? v.target.routes : [v.feedback]) : [];
     const fresh = routes.filter(r => !asked.has(routeKey(r))), newSeat = v.target?.to && !lr.log.some(l => l.to === v.target.to) ? v.target.to : '';
-    lr.log.push({ round: lr.round, verdict: v.verdict, feedback: v.feedback, dial: v.dial || '', checks: v.checks, ...(v.unreadable ? { unreadable: true } : {}), ...(v.target ? { bar: v.target.bar, routes, ...(v.target.to ? { to: v.target.to } : {}) } : {}), at: now() });
+    lr.log.push({ round: lr.round, verdict: v.verdict, feedback: v.feedback, dial: v.dial || '', checks: v.checks, ...(v.unreadable ? { unreadable: true } : {}), ...(fact && fact.kind === 'missing' ? { ledger: true } : {}), ...(v.target ? { bar: v.target.bar, routes, ...(v.target.to ? { to: v.target.to } : {}) } : {}), at: now() });
     lr.dial = v.dial || ''; // the lead's latest read of whether this moves the dial, shown to the owner on the card
     if (v.lesson) lr.proposed = v.lesson; // one lesson per task: the latest the lead offered; serve.mjs vets it before the owner sees it
     if (v.verdict === 'pass') { lr.open = ''; if (v.unreadable) lr.unreadable = true; return done('signed'); }
@@ -126,12 +140,15 @@ export async function runLoop({ task, out, review, rerun, max = 2, barMax = max,
   }
 }
 
+/** The title a "go on" card starts a task under: an existing "Go on: " prefix is removed first, so it never stacks. */
+export const goOnBase = t => String(t || '').replace(/^(?:\s*go on:\s*)+/i, '').trim();
+
 /** The yes/no the owner gets with an exhausted target: the lead's own, or "go on with what was found". A DECISION block (decisions.mjs). */
 export function decisionBlock(lr, title = '') {
   const x = lr && lr.exhausted; if (!x) return '';
   const tried = x.tried.length ? x.tried.map((t, i) => `${i + 1}. ${t.route}: ${t.gave || 'nothing new'}`).join('\n') : '(see the result above)';
-  const d = x.decision || { ask: `Go on with what was found (${x.target}), every gap marked with the routes tried?`, recommend: 'yes', task: `Wesley accepted the shortfall on "${title}" (${x.target}) after every route was tried. Finish the deliverable from what you have, mark each gap with the routes tried, and hand it to the next step your task names.` };
-  return `\n\nDECISION\nask: ${d.ask}\nrecommend: ${d.recommend}\ntitle: ${('Go on: ' + title).slice(0, 80)}\n---\n${d.task}\n\nRoutes tried:\n${tried}\nEND DECISION`;
+  const d = x.decision || { ask: `Go on with what was found (${x.target}), every gap marked with the routes tried?`, recommend: 'yes', task: `Wesley accepted the shortfall on "${goOnBase(title)}" (${x.target}) after every route was tried. Finish the deliverable from what you have, mark each gap with the routes tried, and hand it to the next step your task names.` };
+  return `\n\nDECISION\nask: ${d.ask}\nrecommend: ${d.recommend}\ntitle: ${('Go on: ' + goOnBase(title)).slice(0, 80)}\n---\n${d.task}\n\nRoutes tried:\n${tried}\nEND DECISION`;
 }
 
 /** The line added to the review card's ask: who signed off, or what is still open. */

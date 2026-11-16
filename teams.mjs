@@ -155,6 +155,8 @@ export function parseMessages(text, ids = []) {
   return { body: keep.join('\n').replace(/\n{3,}/g, '\n\n').trim(), messages };
 }
 
+// a revise or rework pass is a patch (9 Nov 2026): start from the previous result, change only what the feedback names, no new research unless it asks for facts
+export const PATCH_RULE = `\nThis is a patch, not a rebuild: start from the previous version exactly as given, change only the section(s) or point(s) the feedback names, and leave every other line as it is. Do not re-research sources or re-run tools unless the feedback asks for new facts. Return the full corrected result.`;
 export function synthPrompt({ task, pieces, messages, nameOf, feedback, recipe }) {
   const parts = pieces.map(p => `--- ${nameOf(p.agent)} — ${p.title} ---\n${p.error ? '(could not complete: ' + (p.result || 'no result') + ')' : (p.result || '(empty)')}`).join('\n\n');
   const notes = (messages || []).length ? '\n\nNOTES THE TEAM LEFT\n' + messages.map(m => `- ${nameOf(m.from)} → ${m.to === 'lead' ? 'you' : nameOf(m.to)}: ${m.text}`).join('\n') : '';
@@ -165,7 +167,7 @@ export function synthPrompt({ task, pieces, messages, nameOf, feedback, recipe }
     `\n\nTHE PIECES\n${parts}${notes}` +
     (feedback ? (/^From the design audit, round \d/.test(feedback) // the graphics designer's send-back (designaudit.mjs), not the owner's
       ? `\n\nThe graphics designer audited the visuals in your previous version before the owner sees them and sent them back: "${feedback}"\nFix exactly those points (rebuild with the studio and look again), keep everything that was already right, never change a word or a figure, and do not mention the audit.`
-      : `\n\nThe owner reviewed your previous version and asked for changes: "${feedback}"`) + `\nPrevious version:\n${task.result}` : '');
+      : `\n\nThe owner reviewed your previous version and asked for changes: "${feedback}"` + PATCH_RULE) + `\nPrevious version:\n${task.result}` : '');
 }
 
 export function noteExtra(team, nameOf) {

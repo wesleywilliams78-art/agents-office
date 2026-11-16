@@ -12,7 +12,10 @@ import crypto from 'node:crypto';
 import { execFileSync } from 'node:child_process';
 import { buildPoster } from './poster.mjs';
 const require = createRequire(import.meta.url);
-const { BRANDS } = require('./brands.cjs');
+const { BRANDS: HOUSE } = require('./brands.cjs');
+// Qamaria (UK) has its own builder in ./qamaria: light bone page, QUK skeleton, gap register. It is a client of the same two servers, not a house style of build.cjs.
+const QAMARIA = { id: 'qamaria', name: 'Qamaria' };
+const BRANDS = { ...HOUSE, qamaria: QAMARIA };
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const OUT = path.join(HERE, '..', '..', 'output', 'sops');
 const SAMPLE = fs.readFileSync(path.join(HERE, 'content.sample.json'), 'utf8');
@@ -44,12 +47,13 @@ function toPdf(docx, outDir) {
 }
 
 const TOOLS = [
-  { name: 'sop_schema', description: 'The exact JSON skeleton an SOP is written in (every key, with bracketed placeholders), plus the limits. Call this first, copy the keys exactly, and replace every placeholder with real content or leave it in [brackets] when the source does not give the fact.', inputSchema: { type: 'object', properties: {} } },
+  { name: 'sop_schema', description: 'The exact JSON skeleton an SOP is written in (every key, with bracketed placeholders), plus the limits. Call this first, copy the keys exactly, and replace every placeholder with real content or leave it in [brackets] when the source does not give the fact.', inputSchema: { type: 'object', properties: { client: { type: 'string', enum: Object.keys(BRANDS), description: 'Pass qamaria to get the Qamaria UK content schema instead of the house-style skeleton.' } } } },
   { name: 'sop_build', description: 'Build the finished SOP files for Imran\'s Diner or Creamy from the content JSON: the full SOP (Word), the one-pager (Word) and, only when asked, the A3 wall poster (PDF). Returns the file names, download links and any placeholders still unfilled. It writes files only on this computer; nothing is sent.', inputSchema: { type: 'object', required: ['client', 'content'], properties: {
-    client: { type: 'string', enum: Object.keys(BRANDS), description: 'imrans-diner or creamy' },
+    client: { type: 'string', enum: Object.keys(BRANDS), description: 'imrans-diner, creamy or qamaria. qamaria: content is the QUK sopNN schema (call sop_schema with client qamaria); formats are ignored; the result lists open gaps; new_gaps registers new blanks.' },
     content: { type: 'object', description: 'The SOP content, shaped exactly like the sop_schema skeleton.' },
     formats: { type: 'array', items: { type: 'string', enum: ['full', 'onepager', 'poster'] }, description: 'Default: full and onepager. Add poster only when a poster was asked for or clearly earns its place.' },
     deliver_to_drive: { type: 'boolean', description: 'true for a finished or final-draft SOP: copies the Word and PDF files to the top level of Wesley\'s My Drive for his review. Never into a folder. Leave false for tests and drafts still being worked.' },
+    new_gaps: { type: 'object', description: 'qamaria only: new blanks used as {{key}} in the content but not yet in the register, as {key: {topic, label, q, note}}. They are written into the register with the next free G number.' },
     filename: { type: 'string', description: 'A short file name base, e.g. "5.5 Guest Journey". Defaults to the SOP title.' },
   } } },
   { name: 'sop_review', description: 'Quality-check a built SOP folder (default: the most recent). Returns the full text of each Word file, the page counts, the placeholders still open, numbers that appear in the one-pager but not in the full SOP, and forbidden words. Read the text against the SOP quality skill; this tool only does the mechanical part.', inputSchema: { type: 'object', properties: { folder: { type: 'string', description: 'Folder name or any part of it, from sop_list. Omit for the newest.' }, part: { type: 'string', enum: ['onepager', 'full', 'all'], description: 'Which documents to look at. Default all. Use onepager when only the one-pager is being checked.' } } } },
@@ -84,6 +88,7 @@ function check(c, formats) {
 }
 
 function build(a) {
+  if (a.client === 'qamaria') return buildQamaria(a);
   const brand = BRANDS[a.client]; if (!brand) return fail('client must be one of ' + Object.keys(BRANDS).join(', '));
   const c = a.content; if (!c || typeof c !== 'object') return fail('content must be the SOP JSON');
   const formats = (Array.isArray(a.formats) && a.formats.length ? a.formats : ['full', 'onepager']).filter(f => ['full', 'onepager', 'poster'].includes(f));
@@ -118,6 +123,50 @@ function build(a) {
     note: 'The PDFs read true in every viewer; the Word files are the editable source (Word\'s dark mode recolours them). Tell Wesley which placeholders are unfilled and send the gaps as questions, never inside the documents.' });
 }
 
+const QDIR = path.join(HERE, 'qamaria');
+function qamariaSchema() {
+  return { client: 'qamaria', skill: 'qamaria-sop', rules: 'Brain 30-Customers/qamaria-sop-rules and qamaria-sop-skeleton', limits: 'Fixed skeleton, 4 to 6 pages, section content as in the skeleton note. Unknown facts are {{key}} blanks from the register (qamaria-sop-gaps-register); new ones go in new_gaps.',
+    keys: { no: 'QUK-SOP-06', title: ['Line one', 'line two'], shortTitle: 'Sentence-case title', fileTitle: 'Title Case For Filename', issued: '3 November 2026', review: '3 May 2027', purpose: 'One sentence.', scope: 'Who and where. {{key}} allowed.',
+      when: [['Label', 'value']], need: { equipment: [], products: [], ppe: [] }, steps: [{ phase: 'A.  PHASE NAME' }, ['Do this.', 'Key point or {{gap}}']], standard: ['4 or 5'], problems: [['Problem', 'What to do', 'Tell']], safety: [['Lead.', 'Text']], signoff: 'Who initials, who countersigns.', related: ['QUK-SOP-01 Coffee machine', 'Allergen control*'],
+      checklist: { type: 'grid | log', title: ['Checklist', 'title'], reminderTag: 'Every day', reminder: 'One line.', rows: [{ phase: 'Group' }, 'Check line'], signRows: ['Done by (initials)', 'Time', 'Checked by (initials)'], rowHeight: 380 } } };
+}
+function buildQamaria(a) {
+  const c = a.content; if (!c || typeof c !== 'object') return fail('content must be the Qamaria SOP object. Call sop_schema with client qamaria.');
+  const errs = []; for (const k of ['no', 'title', 'shortTitle', 'fileTitle', 'issued', 'review', 'purpose', 'scope', 'when', 'need', 'steps', 'standard', 'problems', 'safety', 'signoff', 'related', 'checklist']) if (c[k] == null) errs.push(`missing "${k}"`);
+  if (!/^QUK-SOP-\d+$/.test(String(c.no || ''))) errs.push('no must look like QUK-SOP-06');
+  const bannedTxt = strings(c).join('\n'); if (/\b(WRW|YSF)\b/i.test(bannedTxt)) errs.push('WRW and YSF must not appear in a Qamaria document'); if (/square/i.test(bannedTxt)) errs.push('No step may depend on Square: write "the till" and use a gap');
+  if (errs.length) return fail('Not built. Fix these first:\n- ' + errs.join('\n- '));
+  const base = slug(a.filename || (c.no + ' ' + c.shortTitle)), dirName = new Date().toISOString().slice(0, 10) + ' qamaria ' + base, dir = path.join(OUT, dirName), work = path.join(dir, '_build');
+  const files = [], pages = [], warns = []; let open = '';
+  try {
+    const gp = path.join(QDIR, 'gaps.js'), added = [];
+    if (a.new_gaps && typeof a.new_gaps === 'object') { // fixed ids: a new blank takes the next free number and is written into the register at once
+      let g = fs.readFileSync(gp, 'utf8'); let max = Math.max(0, ...[...g.matchAll(/id:\s*"G(\d+)"/g)].map(m => +m[1]));
+      const have = k => new RegExp('^\\s*' + k + ':\\s*\\{', 'm').test(g);
+      for (const [k, v] of Object.entries(a.new_gaps)) { if (!/^\w+$/.test(k) || have(k)) continue; const id = 'G' + String(++max).padStart(2, '0'); const q = s => JSON.stringify(String(s || ''));
+        g = g.replace(/\n\};\s*$/, `\n  ${k}: { id: "${id}", topic: ${q(v.topic)}, label: ${q(v.label)}, q: ${q(v.q)}, note: ${q(v.note)}, answer: null },\n};\n`); added.push(k + ' = ' + id); }
+      if (added.length) fs.writeFileSync(gp, g);
+    }
+    fs.mkdirSync(path.join(work, 'sops'), { recursive: true });
+    for (const f of ['qlib.js', 'numbering.js', 'build_sop.js', 'gaps.js', 'motif_light.py']) fs.copyFileSync(path.join(QDIR, f), path.join(work, f));
+    fs.writeFileSync(path.join(work, 'sops', 'sop01.js'), 'module.exports = ' + JSON.stringify(c, null, 1) + ';\n');
+    const py = process.env.PYTHON || 'python', run = (cmd, args) => execFileSync(cmd, args, { cwd: work, timeout: 180000, encoding: 'utf8', env: { ...process.env, NODE_PATH: path.join(HERE, '..', '..', 'node_modules') } });
+    run(py, ['-I', 'motif_light.py', '.']);
+    run(process.execPath, ['build_sop.js', 'all', 'out']);
+    open = run(process.execPath, ['numbering.js']).trim();
+    for (const d of fs.readdirSync(path.join(work, 'out')).filter(f => /\.docx$/.test(f))) {
+      const dest = path.join(dir, d); fs.copyFileSync(path.join(work, 'out', d), dest); files.push(dest);
+      const pdf = SOFFICE ? toPdf(dest, dir) : null;
+      if (pdf) { files.push(pdf); const n = pdfPages(pdf); pages.push({ file: path.basename(pdf), pages: n }); if (n && !pagesOk(pdf, n)) warns.push(path.basename(pdf) + ' runs to ' + n + ' pages; it should be 4 to 6. Cut words, never tighten spacing, and build again.'); }
+      else warns.push('LibreOffice is not installed or the PDF failed, so page counts are not checked');
+    }
+    if (added.length) warns.push('New gaps registered: ' + added.join(', ') + '. Mirror them in Brain 30-Customers/qamaria-sop-gaps-register.');
+  } catch (e) { return fail('The build failed: ' + String(e.stderr || e.message || e).slice(0, 500)); } finally { try { fs.rmSync(work, { recursive: true, force: true }); } catch {} }
+  const link = f => '/files/sops/' + encodeURIComponent(dirName) + '/' + encodeURIComponent(path.basename(f));
+  return text({ built: files.map(f => ({ file: path.basename(f), kb: Math.round(fs.statSync(f).size / 1024), download: link(f) })), folder: dir, pageCounts: pages.length ? pages : undefined, gaps: open, warnings: warns.length ? warns : undefined,
+    note: 'Qamaria SOP built (Word and PDF). Open blanks print as [NEEDS QAMARIA Gnn: ...]; send the gap questions to Wesley, never inside the document. The gaps list and cover note for a whole set are built by Grace (connectors/sop-builder/qamaria/README.md).' });
+}
+
 function findFolder(q) {
   let all; try { all = fs.readdirSync(OUT).filter(d => fs.statSync(path.join(OUT, d)).isDirectory()).sort().reverse(); } catch { return null; }
   if (!q) return all.find(d => fs.readdirSync(path.join(OUT, d)).some(f => /\.docx$/.test(f))) || null; // newest build with Word files
@@ -127,7 +176,10 @@ function findFolder(q) {
   return hits.length === 1 ? hits[0] : hits.sort((a, b) => a.length - b.length)[0] || null; // otherwise the closest (shortest) match
 }
 const numbersIn = s => new Set((s.match(/\d+(?:[.,]\d+)?\s?(?:°C|°|kg|g|ml|l|%|min|mins|hours?|hrs?|h|cups?|days?)?/gi) || []).map(x => x.replace(/\s+/g, '').toLowerCase()));
-const partOk = (f, part) => part === 'onepager' ? /One Pager/i.test(f) : part === 'full' ? /Full SOP/i.test(f) : true;
+const isQ = f => /^QUK-SOP-\d+/.test(path.basename(f)) || /^\d{4}-\d{2}-\d{2} qamaria /.test(path.basename(f));
+const pagesOk = (f, n) => isQ(f) ? n >= 4 && n <= 6 : n === (/Full SOP/.test(f) ? 3 : 1);
+const pagesWant = f => isQ(f) ? '4 to 6' : /Full SOP/.test(f) ? 3 : 1;
+const partOk = (f, part) => isQ(f) ? true : part === 'onepager' ? /One Pager/i.test(f) : part === 'full' ? /Full SOP/i.test(f) : true;
 function review(a) {
   const folder = findFolder(a.folder); if (!folder) return fail('No SOP folder found' + (a.folder ? ' matching "' + a.folder + '"' : '') + '. Call sop_list.');
   const dir = path.join(OUT, folder), docs = fs.readdirSync(dir).filter(f => /\.docx$/i.test(f) && partOk(f, a.part)).sort();
@@ -135,12 +187,12 @@ function review(a) {
   const py = process.env.PYTHON || 'python', out = { folder, documents: [], checks: [] }; const texts = {};
   for (const d of docs) {
     let t = ''; try { t = execFileSync(py, ['-I', path.join(HERE, 'docx_text.py'), path.join(dir, d)], { encoding: 'utf8', timeout: 60000 }); } catch (e) { out.checks.push('could not read ' + d); continue; }
-    const pdf = path.join(dir, d.replace(/\.docx$/i, '.pdf')), want = /Full SOP/.test(d) ? 3 : 1, n = fs.existsSync(pdf) ? pdfPages(pdf) : null;
+    const pdf = path.join(dir, d.replace(/\.docx$/i, '.pdf')), want = pagesWant(d), n = fs.existsSync(pdf) ? pdfPages(pdf) : null;
     texts[/Full SOP/.test(d) ? 'full' : /One Pager/i.test(d) ? 'one' : d] = t;
     out.documents.push({ file: d, pages: n, shouldBe: want, text: t.slice(0, 14000) });
-    if (n && n !== want) out.checks.push('FAIL ' + d + ' is ' + n + ' pages; it should be ' + want);
+    if (n && !pagesOk(d, n)) out.checks.push('FAIL ' + d + ' is ' + n + ' pages; it should be ' + want);
     const ph = [...new Set(t.match(/\[[^\]]{2,}\]/g) || [])]; if (ph.length) out.checks.push(d + ': ' + ph.length + ' open placeholder(s): ' + ph.slice(0, 12).join(' ; '));
-    const bad = t.match(/\b(V2|version 2|readiness|gap analysis|TODO|lorem)\b/gi); if (bad) out.checks.push('FAIL ' + d + ' contains words that must not be in an SOP: ' + [...new Set(bad)].join(', '));
+    const bad = t.match(isQ(folder) ? /\b(V2|version 2|readiness|gap analysis|TODO|lorem|WRW|YSF|Square)\b|\{\{/gi : /\b(V2|version 2|readiness|gap analysis|TODO|lorem)\b/gi); if (bad) out.checks.push('FAIL ' + d + ' contains words that must not be in an SOP: ' + [...new Set(bad)].join(', '));
   }
   if (texts.full && texts.one) { const f = numbersIn(texts.full), extra = [...numbersIn(texts.one)].filter(x => !f.has(x) && /\d/.test(x) && x.length > 1); if (extra.length) out.checks.push('NUMBERS in the one-pager that are not in the full SOP (check they match): ' + extra.slice(0, 20).join(', ')); }
   if (!out.checks.length) out.checks.push('no mechanical problems found');
@@ -171,8 +223,8 @@ function fix(a) {
     for (const d of docs) {
       const file = path.join(dir, d);
       const counts = JSON.parse(execFileSync(py, ['-I', path.join(HERE, 'docx_replace.py'), file, spec], { encoding: 'utf8', timeout: 60000 }).trim().split(String.fromCharCode(10)).pop());
-      const pdf = toPdf(file, dir), n = pdf ? pdfPages(pdf) : null, want = /Full SOP/.test(d) ? 3 : 1;
-      result.push({ file: d, replaced: counts.filter(c => c.count).length, notFound: counts.filter(c => !c.count).map(c => c.op), pages: n, shouldBe: want, pageProblem: n && n !== want ? 'wrong page count: shorten the replacement text' : undefined });
+      const pdf = toPdf(file, dir), n = pdf ? pdfPages(pdf) : null, want = pagesWant(d);
+      result.push({ file: d, replaced: counts.filter(c => c.count).length, notFound: counts.filter(c => !c.count).map(c => c.op), pages: n, shouldBe: want, pageProblem: n && !pagesOk(d, n) ? 'wrong page count: shorten the replacement text' : undefined });
     }
   } catch (e) { return fail('Could not apply the fixes: ' + String(e.message || e).slice(0, 300)); } finally { try { fs.rmSync(spec); } catch {} }
   return text(result);
@@ -182,7 +234,7 @@ function deliverFolder(a) {
   const dir = path.join(OUT, folder), mark = path.join(dir, '.delivered');
   const m = folder.match(/^\d{4}-\d{2}-\d{2} (\S+) (.+)$/), brand = m && BRANDS[m[1]]; if (!brand) return fail('Cannot tell the client from the folder name ' + folder);
   const files = fs.readdirSync(dir).filter(f => /\.(docx|pdf)$/i.test(f) && partOk(f, a.part)).map(f => path.join(dir, f));
-  for (const f of files.filter(x => /\.pdf$/i.test(x))) { const n = pdfPages(f), want = /Full SOP/.test(f) ? 3 : /One Pager/i.test(f) ? 1 : 0; if (want && n !== want) return fail('Not delivered: ' + path.basename(f) + ' is ' + n + ' pages; it should be ' + want + '. Shorten the text with sop_fix.'); }
+  for (const f of files.filter(x => /\.pdf$/i.test(x))) { const n = pdfPages(f), want = isQ(f) ? 1 : /Full SOP/.test(f) ? 3 : /One Pager/i.test(f) ? 1 : 0; if (want && !pagesOk(f, n)) return fail('Not delivered: ' + path.basename(f) + ' is ' + n + ' pages; it should be ' + pagesWant(f) + '. Shorten the text with sop_fix.'); }
   let prev = []; try { prev = JSON.parse(fs.readFileSync(mark, 'utf8')); if (!Array.isArray(prev) || prev.some(p => typeof p === 'string')) prev = []; } catch {}
   const changed = files.filter(f => { const p = prev.find(x => x.local === path.basename(f)); return !p || p.hash !== sha(f); });
   if (prev.length && !changed.length) return text({ deliveredToMyDrive: 'Nothing has changed since this folder was delivered, so nothing was copied.' });
@@ -198,7 +250,7 @@ const tools = {
   sop_review: review,
   sop_fix: fix,
   sop_deliver: deliverFolder,
-  sop_schema() { return text({ clients: Object.keys(BRANDS), limits: { onepager: 'at most 5 standards, 4 roles rows, 6 steps, 4 metrics, one sentence per cell', posterA: 'standards 4, roles 4, metrics 3, core procedure 3, tool steps 4, resources 3', posterB: 'at most 8 stops, stage 1-3 words, standard under 60 characters' }, skeleton: JSON.parse(SAMPLE) }); },
+  sop_schema(a) { if (a?.client === 'qamaria') return text(qamariaSchema()); return text({ clients: Object.keys(BRANDS), limits: { onepager: 'at most 5 standards, 4 roles rows, 6 steps, 4 metrics, one sentence per cell', posterA: 'standards 4, roles 4, metrics 3, core procedure 3, tool steps 4, resources 3', posterB: 'at most 8 stops, stage 1-3 words, standard under 60 characters' }, skeleton: JSON.parse(SAMPLE) }); },
   sop_build: build,
   sop_list() {
     try { return text(fs.readdirSync(OUT).sort().reverse().slice(0, 10).map(d => ({ folder: d, files: fs.readdirSync(path.join(OUT, d)).map(f => ({ file: f, download: '/files/sops/' + encodeURIComponent(d) + '/' + encodeURIComponent(f) })) }))); } catch { return text([]); }

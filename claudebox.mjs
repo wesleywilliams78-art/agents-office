@@ -23,7 +23,7 @@ export const PROMPT = 'You are Claude Code in the Agents Office "Claude Code box
   'If a call is refused, do not try another way to do the same thing: say what you wanted to do and why, and stop. ' +
   'To restart the office run `node scripts/restart-office.mjs` (it checks no task is running first); never stop node processes yourself. Never send email: a Gmail draft at most. Never push unless he asks. Other Claude sessions share this folder: commit only your own changes, never stash, reset or switch branches.';
 
-export function create({ root, data, port, bin, binArgs = [], env, ctx, blocked = () => [], prompt = PROMPT, model, effort, onDone, log = console.log }) { // ctx and blocked are read at each run (the connectors are found after start)
+export function create({ root, data, port, bin, binArgs = [], env, ctx, blocked = () => [], prompt = PROMPT, model, effort, onDone, onResult, log = console.log }) { // ctx and blocked are read at each run (the connectors are found after start)
   const dir = path.join(data, 'claude-box'), file = path.join(data, 'claude-box.json');
   fs.mkdirSync(path.join(dir, 'scratch'), { recursive: true });
   let S = { sessionId: '', messages: [], queue: [], holds: [], run: null, seq: 0 };
@@ -85,7 +85,7 @@ export function create({ root, data, port, bin, binArgs = [], env, ctx, blocked 
       const t = m.tools.find(x => x.id === c.tool_use_id); if (!t) continue;
       t.done = Date.now(); if (c.is_error) { t.error = true; const e = typeof c.content === 'string' ? c.content : (c.content || []).map(x => x.text || '').join(' '); if (/hook error/i.test(e)) t.refused = e.replace(/^.*?hook error:\s*/i, '').slice(0, 200); }
     }
-    if (j.type === 'result') { if (j.session_id) S.sessionId = j.session_id; m.cost = j.total_cost_usd; m.error = !!j.is_error; if (j.result && !m.text.includes(j.result.trim())) m.text = (m.text ? m.text + '\n\n' : '') + j.result.trim(); m.result = true; }
+    if (j.type === 'result') { if (j.session_id) S.sessionId = j.session_id; m.cost = j.total_cost_usd; m.error = !!j.is_error; if (j.result && !m.text.includes(j.result.trim())) m.text = (m.text ? m.text + '\n\n' : '') + j.result.trim(); if (!m.result && onResult) { try { onResult(j); } catch (e) { log('claude box: ' + e.message); } } m.result = true; }
   }
   function finish(r) {
     if (r.buf) { event(r, r.buf); r.buf = ''; }

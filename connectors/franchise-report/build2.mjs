@@ -38,7 +38,7 @@ const p1 = `<section class="page cover" data-n="1"><div class="ctop"><span class
 <div class="ckick">FRANCHISE ENTRY REPORT</div><div class="ccountry">${esc(D.country)}</div><div class="csub">${esc(P1.subtitle || 'Where the opportunity is, what blocks it, and what to do in the first 90 days.')}</div>
 <div class="crule"></div><div class="cvl">THE VERDICT</div><div class="cverdict">${esc(P1.verdict)}</div>
 <div class="cstats">${P1.stats.map(s => `<div class="cs"><div class="csb">${esc(s.big)}</div><div class="csl">${esc(s.label)}</div></div>`).join('')}</div>
-${mount('cmount')}<div class="cfoot"><span>WRW Hospitality · Wesley Williams${D.contributor ? ` · With insight from ${esc(D.contributor.name)}, ${esc(D.contributor.org)}` : ''}</span><span>Issue ${N}</span></div></section>`;
+${mount('cmount')}<div class="cfoot"><span>WRW Hospitality · Wesley Williams · Franchise Entry Report${D.contributor ? ` · With insight from ${esc(D.contributor.name)}, ${esc(D.contributor.org)}` : ''}</span><span>Issue ${N}</span></div>${D.contributor && D.contributor.disclosure ? `<div class="cdisc">${esc(D.contributor.disclosure)}</div>` : ''}</section>`;
 
 /* contributor (optional, from Issue 04 Kenya): a named outside expert's own words, approved by them. { name, role, org, quote, disclosure } */
 const contribCard = c => `<div class="contrib"><div class="cbl">FROM THE GROUND</div><p class="cq">“${esc(c.quote)}”</p><div class="cwho"><b>${esc(c.name)}</b>, ${esc(c.role)}, ${esc(c.org)}</div>${c.disclosure ? `<div class="cdis">${esc(c.disclosure)}</div>` : ''}</div>`;
@@ -70,10 +70,58 @@ const p3 = `<section class="page" data-n="3">${head(3, 'WHAT’S RISING, WHAT’
 const P4 = D.white;
 const gap = (g, i) => `<div class="card gap"><div class="gh"><span class="gn">${i + 1}</span><h4>${esc(g.title)}</h4></div>${[['GAP', g.gap], ['EVIDENCE', g.evidence], ['SUITS', g.suits], ['ROUTE', g.route]].map(([k, v]) => `<div class="gr"><span>${k}</span><div>${rich(v)}</div></div>`).join('')}<div class="gf"><span class="sz ${g.size === 'L' ? 'L' : ''}">${esc(g.size)}</span>${g.window ? `<b>Window: </b>` : ''}${esc(g.sizeText || '')}${g.thin ? '<em class="pill p-lo">Thin evidence</em>' : ''}</div></div>`;
 const M = P4.matrix, mx = (x) => 30 + x * 2.4, my = (y) => 218 - y * 1.9;
+/* matrix labels: optional p.labelPos (right|left|above|below); overlapping labels are moved clear with a thin leader line. x/y never change. */
+const mxLayout = (pts) => {
+  const FS = 8, CW = 4.5, H = FS, PAD = 1.2;
+  const dots = pts.map(p => ({ cx: mx(p.x), cy: my(p.y), r: (p.hot ? 5 : 4.2) + 1 }));
+  const fixed = [[38, 18, 38 + 50, 28], [262 - 62, 18, 262, 28], [38, 202, 38 + 44, 212], [262 - 30, 202, 262, 212]]; // quadrant captions
+  const boxFor = (i, dir, d) => {
+    const p = pts[i], w = String(p.name).length * CW, { cx, cy, r } = dots[i], g = r + 3 + d;
+    if (dir === 'right') return { x: cx + g, y: cy - H / 2 + 0.5, w, a: 'start', tx: cx + g, ty: cy + 3.5 };
+    if (dir === 'left') return { x: cx - g - w, y: cy - H / 2 + 0.5, w, a: 'end', tx: cx - g, ty: cy + 3.5 };
+    if (dir === 'above') return { x: cx - w / 2, y: cy - g - H + 2, w, a: 'middle', tx: cx, ty: cy - g + 1 };
+    return { x: cx - w / 2, y: cy + g - 2, w, a: 'middle', tx: cx, ty: cy + g + H - 3 };
+  };
+  const rect = (b) => ({ x0: b.x - PAD, y0: b.y - PAD, x1: b.x + b.w + PAD, y1: b.y + H + PAD });
+  const hit = (a, b) => a.x0 < b.x1 && b.x0 < a.x1 && a.y0 < b.y1 && b.y0 < a.y1;
+  const clear = (i, b, placed) => {
+    const r = rect(b);
+    if (r.x0 < 26 || r.x1 > 296 || r.y0 < 6 || r.y1 > 222) return false;
+    if (fixed.some(q => hit(r, { x0: q[0], y0: q[1], x1: q[2], y1: q[3] }))) return false;
+    if (dots.some((d, j) => { const cx = Math.max(r.x0, Math.min(d.cx, r.x1)), cy = Math.max(r.y0, Math.min(d.cy, r.y1)); return (cx - d.cx) ** 2 + (cy - d.cy) ** 2 < d.r ** 2 + (j === i ? 0 : 0); })) return false;
+    return placed.every(o => !hit(r, rect(o)));
+  };
+  const out = [];
+  const order = pts.map((p, i) => i);
+  order.forEach(i => {
+    const want = ['right', 'left', 'above', 'below'].includes(pts[i].labelPos) ? pts[i].labelPos : (pts[i].x > 70 ? 'left' : 'right');
+    // labels of later points are not placed yet: also avoid their default spots by checking them once everything has its first choice
+    out[i] = boxFor(i, want, 0); out[i].want = want;
+  });
+  const others = (i) => out.filter((_, j) => j !== i);
+  order.forEach(i => {
+    if (clear(i, out[i], others(i))) return;
+    const dirs = [out[i].want, 'right', 'left', 'above', 'below'].filter((d, k, a) => a.indexOf(d) === k);
+    for (const d of [0, 4, 8, 12, 16, 22]) for (const dir of dirs) {
+      const b = boxFor(i, dir, d);
+      if (clear(i, b, others(i))) { out[i] = Object.assign(b, { want: dir, leader: d > 0 }); return; }
+    }
+  });
+  return out;
+};
+const mxPoints = (() => {
+  const L = mxLayout(M.points);
+  return M.points.map((p, i) => {
+    const b = L[i], cx = mx(p.x), cy = my(p.y), r = p.hot ? 5 : 4.2;
+    let ld = '';
+    if (b.leader) { const lx = Math.max(b.x, Math.min(cx, b.x + b.w)), ly = Math.max(b.y, Math.min(cy, b.y + 8)); const ang = Math.atan2(ly - cy, lx - cx); ld = `<line x1="${(cx + Math.cos(ang) * r).toFixed(1)}" y1="${(cy + Math.sin(ang) * r).toFixed(1)}" x2="${lx.toFixed(1)}" y2="${ly.toFixed(1)}" stroke="${INK}" stroke-width=".5"/>`; }
+    return `${ld}<circle cx="${cx}" cy="${cy}" r="${r}" fill="${p.hot ? C : INK}"/><text x="${b.tx.toFixed(1)}" y="${b.ty.toFixed(1)}" text-anchor="${b.a}" class="pt">${esc(p.name)}</text>`;
+  }).join('');
+})();
 const matrix = `<svg viewBox="0 0 300 250" class="mx"><rect x="30" y="10" width="120" height="104" rx="8" fill="${TINT}"/><rect x="154" y="10" width="116" height="104" rx="8" fill="#EFE8DC"/><rect x="30" y="118" width="120" height="100" rx="8" fill="#EFE8DC"/><rect x="154" y="118" width="116" height="100" rx="8" fill="#EFE8DC"/>
 <text x="38" y="26" class="ql hot">MOVE NOW</text><text x="262" y="26" text-anchor="end" class="ql">OUT-EXECUTE</text><text x="38" y="210" class="ql">TEST SMALL</text><text x="262" y="210" text-anchor="end" class="ql">AVOID</text>
 <text x="150" y="240" text-anchor="middle" class="ax">Saturation → higher</text><text x="14" y="120" transform="rotate(-90 14 120)" text-anchor="middle" class="ax">Opportunity → higher</text>
-${M.points.map(p => `<circle cx="${mx(p.x)}" cy="${my(p.y)}" r="${p.hot ? 5 : 4.2}" fill="${p.hot ? C : INK}"/><text x="${p.x > 70 ? mx(p.x) - 8 : mx(p.x) + 8}" y="${my(p.y) + 3.5}" text-anchor="${p.x > 70 ? 'end' : 'start'}" class="pt">${esc(p.name)}</text>`).join('')}</svg>`;
+${mxPoints}</svg>`;
 const p4 = `<section class="page" data-n="4">${head(4, 'WHITE-SPACE OPPORTUNITIES', P4.headline, P4.intro)}<div class="grid2">${P4.gaps.map(gap).join('')}</div>
 <div class="bottom4"><div class="card mxc"><h4>Opportunity vs saturation</h4><p class="cn">${esc(M.intro)}</p>${matrix}<p class="csrc">${esc(M.note)}</p></div>
 <div class="position"><div class="pl">IF I HAD A BRAND</div><div class="qm">“</div><div class="pq">${esc(P4.position.quote)}</div>${P4.position.paras.map(p => para(p, 'pp')).join('')}<div class="psig">Wesley Williams, WRW Hospitality</div></div></div>${footer(4)}</section>`;
@@ -107,7 +155,7 @@ const p7 = `<section class="page p7" data-n="7"><div class="top"><span class="nu
 <div class="grid2 cm"><div class="card"><div class="cml">WHAT WE’D CHECK NEXT</div><ul>${P7.check.map(c => `<li>${esc(c)}</li>`).join('')}</ul></div><div class="card"><div class="cml">METHOD</div><p>${esc(P7.method)}</p></div></div>
 <div class="sech"><h3>Sources</h3><span>${srcs.length} public sources · accessed ${esc(D.accessed)}</span></div>
 <div class="srcs">${srcs.map((s, i) => `<div><b>S${i + 1}</b> ${esc(String(s).replace(new RegExp('^S' + (i + 1) + '[\\s.:·-]+'), ''))}</div>`).join('')}</div>
-<div class="band"><div class="bh">Which country should we cover next?</div><div class="bs">WRW Hospitality · Wesley Williams</div><div class="bt2">Tell us in the comments. Follow WRW Hospitality for the next Franchise Entry Report, every Friday.</div><div class="bi">Issue ${N} · Page 7 of 7</div>${mount('bm')}</div>
+<div class="band"><div class="bh">Which country should we cover next?</div><div class="bs">WRW Hospitality · Wesley Williams · Franchise Entry Report</div><div class="bt2">Tell us in the comments. Follow WRW Hospitality for the next Franchise Entry Report, every Friday.</div><div class="bi">Issue ${N} · Page 7 of 7</div>${mount('bm')}</div>
 <div class="copy">© 2026 WRW Hospitality (Wesley Williams). Not to be resold, rebranded or redistributed.</div></section>`;
 
 const css = `@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap');
@@ -155,7 +203,7 @@ td.c1 b{font:700 calc(9.2pt*var(--s)) 'Playfair Display',serif;display:block}td.
 .ckick{position:absolute;left:13mm;top:61mm;font-size:6.6pt;letter-spacing:.22em;font-weight:700}.ccountry{position:absolute;left:12mm;top:66mm;font:800 72pt/1 'Playfair Display',serif}.csub{position:absolute;left:13mm;top:104mm;width:112mm;font:500 13pt/1.28 'Playfair Display',serif}
 .crule{position:absolute;left:13mm;right:13mm;top:127mm;border-top:1px solid ${ACC_RULE}}.cvl{position:absolute;left:13mm;top:134mm;font-size:5.8pt;letter-spacing:.2em}.cverdict{position:absolute;left:13mm;top:141mm;width:170mm;font:700 17pt/1.26 'Playfair Display',serif;color:#fff}
 .cstats{position:absolute;left:13mm;right:13mm;top:188mm;display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.cs{border-top:1px solid ${ACC_RULE};padding-top:8px}.csb{font:700 25pt/1 'Playfair Display',serif;margin-bottom:4px}.csl{font-size:6.4pt;line-height:1.4;max-width:46mm}
-.cmount{position:absolute;left:0;right:0;bottom:12mm;width:100%;height:70mm}.cfoot{position:absolute;left:13mm;right:13mm;bottom:6mm;display:flex;justify-content:space-between;font-size:6.4pt}`;
+.cmount{position:absolute;left:0;right:0;bottom:12mm;width:100%;height:70mm}.cfoot{position:absolute;left:13mm;right:13mm;bottom:6mm;display:flex;justify-content:space-between;font-size:6.4pt}.cdisc{position:absolute;left:13mm;right:13mm;bottom:2.4mm;font-size:5.4pt;color:#fff}`;
 const html = `<!doctype html><html><head><meta charset="utf-8"><title>Franchise Entry Report ${N} ${esc(D.country)}</title><style>${css}</style></head><body>${p1}${p2}${p3}${p4}${p5}${p6}${p7}</body></html>`;
 fs.writeFileSync(outFile.replace(/\.pdf$/i, '.html'), html);
 

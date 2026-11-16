@@ -1329,6 +1329,48 @@ await step('lead review: scope, verdicts, pass · bounce then pass · escalate a
   if (own.length !== 1 || r.leadReview.phase !== 'signed' || !/short of its target/.test(own[0])) throw new Error('a pass over the desk\'s own "not at the bar" must go back: ' + JSON.stringify(r.leadReview));
   return 'off by default · scope (8 cases) · verdict parsing · pass · bounce→pass · escalate at round 2 · failed or unreadable review passes · failed rework escalates · missed target: never passed, 3 rounds, new routes only, unchanged rework stops, better seat, exhausted with a yes/no, the desk\'s own "not at the bar"';
 });
+await step('franchise source ledger: the saved list drives the bar · a missing list fails once, precisely · "Go on:" never stacks · the pass cap asks one yes/no', async () => {
+  const F = await import('./fersources.mjs'), L = await import('./leadreview.mjs'), dec = await import('./decisions.mjs');
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'fer-ledger-')); fs.mkdirSync(path.join(root, 'videos', 'franchise-entry-report', 'issues'), { recursive: true });
+  const task = { id: 'tf', dept: 'marketing', agent: 'riley', title: 'Finland report: streams A and B', text: 'Franchise Entry Report Issue 06, Finland, for Fri 27 Nov 2026. Streams A and B.' };
+  const ref = F.issueRef(root, task); if (ref?.key !== '06-finland') throw new Error('issue ref: ' + JSON.stringify(ref));
+  if (F.issueRef(root, { title: 'Finland recap video', text: 'Franchise Entry Report Issue 06, Finland' })) throw new Error('a recap is not research');
+  const mk = n => Array.from({ length: n }, (_, i) => ({ name: 'Source ' + i, url: 'https://example.org/p' + i, claim: 'claim ' + i, stream: i % 2 ? 'A' : 'B', type: 'press' }));
+  const prose = { result: 'Sources: 68 claimed against 55. About 3,400 words.' };
+  const none = F.check(root, task, prose.result);
+  if (none.kind !== 'missing' || !/no saved source list/.test(none.bar) || !/franchise_sources_add/.test(none.feedback) || /go on/i.test(none.feedback)) throw new Error('missing list: ' + JSON.stringify(none));
+  // 12 sources in the ledger: the bar fails, whatever the prose says
+  let a = F.append(root, '06-finland', mk(12)); if (a.total !== 12) throw new Error('append: ' + JSON.stringify(a));
+  if (F.append(root, '06-finland', mk(12)).total !== 12) throw new Error('a duplicate url must not count twice');
+  if (F.append(root, '06-finland', [{ name: 'x' }]).added !== 0) throw new Error('an entry with no claim or url must be refused');
+  let c = F.check(root, task, prose.result); if (c.kind !== 'short' || c.sources !== 12 || !/12 of 55/.test(c.bar)) throw new Error('12 sources must fail: ' + JSON.stringify(c));
+  // 60: the bar is met
+  F.append(root, '06-finland', mk(60).map((e, i) => ({ ...e, url: 'https://example.org/q' + i }))); c = F.check(root, task, 'no numbers here');
+  if (c.kind !== 'met' || c.sources !== 72) throw new Error('60+ sources must pass: ' + JSON.stringify(c));
+  if (F.reportWords('x ISSUE JSON {"a":"one two three","b":["four five"]} END ISSUE JSON') !== 5) throw new Error('machine word count');
+  // the loop: a missing list goes back once, with no model call, and a second miss is a yes/no, not another pass
+  const root2 = fs.mkdtempSync(path.join(os.tmpdir(), 'fer-ledger-')); fs.mkdirSync(path.join(root2, 'videos', 'franchise-entry-report', 'issues'), { recursive: true });
+  const t2 = { ...task, id: 't2' }, reviews = [], reruns = [], facts = async o => F.check(root2, t2, o.result);
+  const run = async () => L.runLoop({ task: t2, out: { result: prose.result }, facts, review: async () => { reviews.push(1); return '{"verdict":"pass"}'; }, rerun: async fb => { reruns.push(fb); return { result: 'again' }; }, max: 2, barMax: 3, by: 'mlead' });
+  let r = await run();
+  if (r.leadReview.phase !== 'escalated' || reruns.length !== 1 || reviews.length) throw new Error('missing list: one save-the-list rework, no model read, then stop: ' + JSON.stringify(r.leadReview));
+  if (!/save the sources|franchise_sources_add/.test(reruns[0]) || /go on/i.test(reruns[0])) throw new Error('the fix route must be "save the list": ' + reruns[0]);
+  const dp = dec.parse(L.decisionBlock(r.leadReview, 'Go on: Go on: Finland routes'));
+  if (dp.length !== 1 || /^Go on: Go on:/i.test(dp[0].title) || !/Do NOT search/.test(dp[0].text)) throw new Error('missing-list decision: ' + JSON.stringify(dp));
+  if (L.goOnBase('Go on: Go on: Finland') !== 'Finland' || !/title: Go on: Finland routes\n/.test(L.decisionBlock({ exhausted: { target: 't', tried: [], why: 'w' } }, 'Go on: Go on: Finland routes'))) throw new Error('the Go on prefix stacks');
+  // a short list passes the model's "pass" no longer: it is a bounce; at the pass cap it is one yes/no, no rework
+  F.append(root2, '06-finland', mk(12)); let reruns2 = 0;
+  r = await L.runLoop({ task: { ...t2 }, out: { result: prose.result }, facts, review: async () => '{"verdict":"pass"}', rerun: async () => { reruns2++; return { result: 'more' }; }, max: 1, barMax: 1, by: 'mlead' });
+  if (reruns2 !== 1 || !r.leadReview.exhausted || !/12 of 55/.test(r.leadReview.target)) throw new Error('a lead pass over a short list must go back: ' + JSON.stringify(r.leadReview));
+  for (const id of ['p1', 'p2', 'p3']) F.notePass(root2, '06-finland', id, { sources: 12 });
+  reruns2 = 0; r = await L.runLoop({ task: { ...t2 }, out: { result: prose.result }, facts, review: async () => { throw new Error('no model read at the cap'); }, rerun: async () => { reruns2++; return { result: 'x' }; }, max: 2, barMax: 3, by: 'mlead' });
+  const cd = dec.parse(L.decisionBlock(r.leadReview, 'Finland'));
+  if (reruns2 || r.leadReview.phase !== 'escalated' || cd.length !== 1 || !/openly thin/.test(cd[0].ask) || /^Go on: Go on/.test(cd[0].title)) throw new Error('pass cap: ' + JSON.stringify(r.leadReview) + JSON.stringify(cd));
+  // a task born from that yes is not sent round again
+  if (F.check(root2, { ...t2, by: 'decision' }, prose.result).kind !== 'accepted') throw new Error('a decision-born task must be accepted');
+  fs.rmSync(root, { recursive: true, force: true }); fs.rmSync(root2, { recursive: true, force: true });
+  return 'issue ref · ledger count (12 fails, 72 passes) · duplicates and bare entries refused · missing list: one save-the-list rework, no model call · Go on does not stack · short list overrides a lead pass · cap of 3 → one yes/no';
+});
 await step('design audit: visuals found · scope · pass · send-back then pass · escalate · a blind or failed audit is marked · off changes nothing', async () => {
   const D = await import('./designaudit.mjs');
   if (D.settings({}).enabled) throw new Error('must ship switched off');
@@ -1673,6 +1715,24 @@ else {
       return '2 files read into one note · the unsupported .exe is named as skipped · macOS junk ignored';
     });
     await step('server: /api/dashboards lists the Clients sub-pages', async () => { const j = await (await fetch(base + '/api/dashboards')).json(); if (!Array.isArray(j.dashboards) || !j.dashboards.length || !j.dashboards[0].id || typeof j.dashboards[0].data?.available !== 'boolean') throw new Error('bad shape'); return j.dashboards.map(d => d.name + (d.data.available ? '' : ' (no data yet)')).join(', '); });
+    await step('server: /api/onboarding starts a client and keeps its answers in the Brain', async () => { // 13 Nov 2026: Workstreams onboarding
+      const post = (p, b) => fetch(base + '/api/onboarding' + p, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(b) });
+      const file = path.join((await import('./config.mjs')).loadConfig().brainPath, '30-Customers', 'check-cafe-onboarding.md'); fs.rmSync(file, { force: true });
+      try {
+        const c = await (await post('', { name: 'Check Café', kind: 'employment' })).json(); if (c.client?.id !== 'check-cafe' || c.client.kind !== 'employment') throw new Error('create: ' + JSON.stringify(c));
+        if ((await post('', { name: 'Check Cafe' })).status !== 400) throw new Error('a second note of the same name was allowed');
+        await post('/check-cafe', { answers: { legal: 'Check Cafe Ltd' } });
+        if ((await post('/check-cafe', { answers: { access: 'password: hunter22' } })).status !== 400) throw new Error('a password was filed');
+        const r = await (await fetch(base + '/api/onboarding/check-cafe')).json(), l = await (await fetch(base + '/api/onboarding')).json();
+        if (r.client?.answers?.legal !== 'Check Cafe Ltd' || r.client.answers.access) throw new Error('read back: ' + JSON.stringify(r));
+        if (!l.clients.some(x => x.id === 'check-cafe' && x.answered === 1) || !l.questions.length) throw new Error('list: ' + JSON.stringify(l.clients));
+        if (!fs.readFileSync(file, 'utf8').includes('<!-- q:legal -->\nCheck Cafe Ltd')) throw new Error('the Brain note does not hold the answer');
+        const t0 = l.clients.find(x => x.id === 'check-cafe').total; await post('/check-cafe', { sections: ['delivery', 'nonsense'], answers: { platforms: '- Uber Eats: ubereats.com/x — access: Requested' } });
+        const r2 = (await (await fetch(base + '/api/onboarding/check-cafe')).json()).client, t1 = (await (await fetch(base + '/api/onboarding')).json()).clients.find(x => x.id === 'check-cafe').total;
+        if (r2.sections.join() !== 'delivery' || t1 === t0 || !/— access: Requested/.test(r2.answers.platforms || '')) throw new Error('extra sections: ' + JSON.stringify({ s: r2.sections, t0, t1 }));
+        return `note 30-Customers/check-cafe-onboarding.md · 1 of ${l.clients.find(x => x.id === 'check-cafe').total} answered · duplicate and password refused`;
+      } finally { fs.rmSync(file, { force: true }); }
+    });
     await step('server: /api/brain has the live graph', async () => { const g = await (await fetch(base + '/api/brain')).json(); if (!g.nodes.length) throw new Error('empty'); return `${g.nodes.length} linked notes`; });
     await step('server: /api/mcp lists this machine\'s connectors', async () => {
       const m = await (await fetch(base + '/api/mcp')).json();

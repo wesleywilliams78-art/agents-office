@@ -8,6 +8,7 @@
 import fs from 'node:fs';
 import readline from 'node:readline';
 import { telegram, telegramFile, configured } from '../../notify.mjs';
+import { render as renderDigest } from './digest.mjs';
 
 const text = o => ({ content: [{ type: 'text', text: typeof o === 'string' ? o : JSON.stringify(o, null, 1) }] });
 const fail = m => ({ content: [{ type: 'text', text: m }], isError: true });
@@ -17,9 +18,11 @@ const TOOLS = [
     inputSchema: { type: 'object', properties: { text: { type: 'string', description: 'The message, exactly as Wesley should read it' } }, required: ['text'] } },
   { name: 'telegram_send_file', description: 'Send one file from this computer to Wesley on Telegram (his own allow-listed chat, no chat ID to pass), with a short caption: a video plays inline, audio gets a player, a picture shows, anything else arrives as a document. Up to 50 MB (pictures 10 MB). Use it only when the task asks you to send Wesley the file on Telegram.',
     inputSchema: { type: 'object', properties: { path: { type: 'string', description: 'Absolute path of the file' }, caption: { type: 'string', description: 'Short caption, up to 1,000 characters' } }, required: ['path'] } },
+  { name: 'tracker_digest_image', description: 'Draw the morning tracker digest as one picture (due today, overdue with days late, due tomorrow, from the office tracker and plan cards) and return its file path and the three counts. It sends nothing: pass the path to telegram_send_file.', inputSchema: { type: 'object', properties: {} } },
 ];
 
 const HANDLERS = {
+  async tracker_digest_image() { try { return text(await renderDigest()); } catch (e) { return fail('Could not draw the digest: ' + (e.message || e)); } },
   async telegram_send(a) {
     const t = String(a.text || '').trim(); if (!t) return fail('Say what to send.');
     if (t.length > 3500) return fail(`The message is ${t.length} characters; Telegram takes 3,500 here. Split it into more than one message.`);

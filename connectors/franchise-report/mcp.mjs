@@ -3,6 +3,8 @@
 // writes only into that issue's revisions/ folder: the delivered PDF is never replaced, and nothing is posted, copied to Drive or sent.
 //   franchise_report_read   the issue's issue.json (or one section of it), to see the data behind a page
 //   franchise_report_build  rebuild the PDF into revisions/<time>/ and return the page count plus images of the pages asked for
+//   franchise_sources_add   append sources to the issue's saved list (sources.json); the office counts the bar from this file, never from prose
+//   franchise_sources_read  the saved list and its own count
 //   franchise_report_edit   apply exact field edits to a copy of issue.json, check it, build it as revisions/<time>-edit/, and return a
 //                           REVISION READY line. The live issue is replaced only when Wesley approves the card (ferfile.promote, server side).
 import fs from 'node:fs';
@@ -30,6 +32,9 @@ function issueDir(ref) {
 }
 
 const ROOT = path.resolve(HERE, '..', '..');
+import * as fersources from '../../fersources.mjs';
+/** "06-finland" (a new issue is allowed: this is research, before issue.json exists). */
+function ledgerKey(ref) { const s = String(ref ?? '').trim().toLowerCase(); if (!/^\d{1,2}-[a-z][a-z-]*$/.test(s)) throw new Error('Give the issue as number and country, for example 06-finland.'); return String(parseInt(s, 10)).padStart(2, '0') + s.slice(s.indexOf('-')); }
 const rel = p => path.relative(ROOT, p).replace(/\\/g, '/');
 const stampNow = () => new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
 
@@ -106,9 +111,21 @@ const TOOLS = [
   { name: 'franchise_report_read', description: 'Read an issue\'s issue.json, the data every page of the Franchise Entry Report is built from. Pass section (for example "regulation", "route", "cover") to read one part; with no section you get the list of sections and their sizes. Read only.', inputSchema: { type: 'object', required: ['issue'], properties: { issue: { type: 'string', description: 'Issue number, e.g. 03 or 03-portugal.' }, section: { type: 'string' } } } },
   { name: 'franchise_report_edit', description: 'Correct a Franchise Entry Report: apply exact field edits to a copy of the issue\'s issue.json, check it, and rebuild the PDF as a revision you can look at. This is how a fix pass is made: never return a patch or a partial ISSUE JSON. Paths name one field, with list positions as numbers counting from 0: "cover.verdict", "white.gaps.0.gap", "rising.chart.items.0.star". Each edit is one of: { path, value } (replace; same kind of value as before), { path, find, replace } (change part of a text; find must match exactly once, or pass all: true), { path, remove: true } (delete a field or a list item), { path, append } (add an item to a list, e.g. a new source to days.sources). Read the section first with franchise_report_read. All edits apply together or none do. Call it again with from_revision to build on an earlier revision in the same task. The live issue and its PDF are untouched: when Wesley approves your card, the server replaces them with this revision. End your result with the REVISION READY line it returns, exactly.', inputSchema: { type: 'object', required: ['issue', 'edits', 'why'], properties: { issue: { type: 'string', description: 'Issue number, e.g. 04 or 04-kenya.' }, edits: { type: 'array', items: { type: 'object' }, description: 'The field edits, in order.' }, why: { type: 'string', description: 'One line: what this revision fixes.' }, from_revision: { type: 'string', description: 'Optional: the revision folder an earlier edit returned, to build on it.' }, pages: { type: 'array', items: { type: 'number' }, description: 'Page numbers (1 to 7) to return as images, at most 4.' } } } },
   { name: 'franchise_report_build', description: 'Rebuild an issue\'s 7-page PDF from its current issue.json with the standard builder, and look at it. The PDF is written to that issue\'s revisions/<time>/ folder (the delivered PDF is never replaced). Returns the page count and an image of each page in "pages" (up to 4 per call, default none). It only rebuilds what is on file: to correct the content, use franchise_report_edit, which edits and rebuilds in one step. It cannot change the layout code: a design change to the template goes to Claude Code as a written brief.', inputSchema: { type: 'object', required: ['issue'], properties: { issue: { type: 'string', description: 'Issue number, e.g. 03 or 03-portugal.' }, pages: { type: 'array', items: { type: 'number' }, description: 'Page numbers (1 to 7) to return as images, at most 4.' } } } },
+  { name: 'franchise_sources_add', description: 'Save sources to the source list of the issue (videos/franchise-entry-report/issues/<NN>-<country>/sources.json). EVERY research pass saves what it finds here, as it finds it. The office counts the bar (55 sources) from this list and never from a number you write in prose, so an unsaved source does not count. Each entry: name, url, accessed (date), claim (the one claim it supports), stream (A or B), type (official, company report, press, locator count, brand claim, estimate). Duplicates by URL are skipped. Returns the count of the list itself: end your result with it, and state no other count.', inputSchema: { type: 'object', required: ['issue', 'entries'], properties: { issue: { type: 'string', description: 'Issue and country, e.g. 06-finland.' }, entries: { type: 'array', items: { type: 'object', properties: { name: { type: 'string' }, url: { type: 'string' }, accessed: { type: 'string' }, claim: { type: 'string' }, stream: { type: 'string' }, type: { type: 'string' } } } } } } },
+  { name: 'franchise_sources_read', description: 'Read the saved source list of the issue and its count. Every research pass starts here: add only what is not in it, and work the gaps.', inputSchema: { type: 'object', required: ['issue'], properties: { issue: { type: 'string', description: 'Issue and country, e.g. 06-finland.' }, stream: { type: 'string', description: 'Optional: only entries of stream A or B.' } } } },
 ];
 
 const HANDLERS = {
+  async franchise_sources_add(a) {
+    const key = ledgerKey(a.issue), r = fersources.append(ROOT, key, a.entries, 'pass ' + stampNow());
+    return text({ issue: key, added: r.added, skipped: r.rejected, saved_total: r.total, bar: r.bar, file: `videos/franchise-entry-report/issues/${key}/sources.json`, note: 'This is the count. Use it in your result; write no other source count.' });
+  },
+  async franchise_sources_read(a) {
+    const key = ledgerKey(a.issue), led = fersources.read(ROOT, key);
+    if (!led) return text({ issue: key, saved_total: 0, bar: fersources.BAR.sources, entries: [], note: 'No list yet. Save sources with franchise_sources_add as you find them.' });
+    const entries = led.entries.filter(e => !a.stream || String(e.stream).toUpperCase() === String(a.stream).toUpperCase()).map(e => ({ n: e.n, name: e.name, url: e.url, claim: e.claim, stream: e.stream, type: e.type }));
+    return text({ issue: key, saved_total: fersources.count(led), bar: fersources.BAR.sources, entries });
+  },
   async franchise_report_read(a) {
     const dir = issueDir(a.issue), j = JSON.parse(fs.readFileSync(path.join(dir, 'issue.json'), 'utf8'));
     if (!a.section) return text({ issue: path.basename(dir), sections: Object.fromEntries(Object.entries(j).map(([k, v]) => [k, JSON.stringify(v).length + ' characters'])) });
