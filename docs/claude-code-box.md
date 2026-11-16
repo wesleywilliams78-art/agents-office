@@ -39,6 +39,8 @@ Cases are in `scripts/claude-box.test.mjs` (90). `npm run check` runs them, and 
 
 Tailscale Serve is tailnet only (`tailscale funnel status` shows no Funnel). Do not turn Funnel on for this port. The office itself listens on 127.0.0.1 only.
 
+The same check also lets the AIOS phone app (16 Nov 2026) use the Chief of Staff, the Prompt Engineer, the Motion Studio, token use and file downloads: `assistantAllowed` in `serve.mjs` passes whoever `boxWho` passes. Adding a login to `allowLogins` gives it both.
+
 A yes or no to a held step must come from the box on the page (a browser's fetch: `Sec-Fetch-Site: same-origin`), so another Claude session calling the API from this PC cannot answer for Wesley by accident. The same check guards approvals: a task whose card has a "Run with Grace" (`to: claude-code`, or `to: grace`) decision on Yes can only be approved by Wesley (this PC or his login).
 
 ## Desks feed it

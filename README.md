@@ -332,7 +332,9 @@ Open **http://localhost:4520/aios** beside the office. It has three parts and re
 at port 4520, open `https://<pc>.<tailnet>.ts.net/aios` in Chrome on Android, then menu → **Add to
 Home screen** → **Install**. It opens full screen on the AIOS. Nothing is cached on the phone
 (`src/aios-sw.js` only shows an *Office unreachable* page when the PC or Tailscale is off), so
-what you see is always live. The office still listens on 127.0.0.1 only.
+what you see is always live. The office still listens on 127.0.0.1 only. ASK THE OFFICE, the
+Motion Studio, token use and SAVE A COPY answer the phone only for the Tailscale logins in
+`claudeBox.allowLogins` (the Claude Code box's list); any other tailnet device is refused.
 
 
 - **Eisenhower matrix.** Paste what came out of a piece of work (call notes, an email thread, a

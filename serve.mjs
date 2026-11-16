@@ -423,7 +423,8 @@ async function motionTurn(text, onEvent) {
 }
 const LOCAL_HOST = /^(localhost|127\.0\.0\.1|\[::1\])(:\d+)?$/i;
 // the assistant can start work, so a web page you happen to have open must not be able to talk to it: same-machine pages only (or a host you list in office.config.json "assistant.allowHosts")
-const assistantAllowed = req => { const host = String(req.headers.host || ''), extra = Array.isArray(cfg.assistant?.allowHosts) ? cfg.assistant.allowHosts : []; if (!LOCAL_HOST.test(host) && !extra.includes(host)) return false; const o = req.headers.origin; if (!o) return true; try { const u = new URL(o); return LOCAL_HOST.test(u.host) || extra.includes(u.host); } catch { return false; } };
+// 16 Nov 2026: or Wesley on his phone through Tailscale Serve, by the same login check as the Claude Code box (boxWho, below); another tailnet login is still refused
+const assistantAllowed = req => { if (boxWho(req)) return true; const host = String(req.headers.host || ''), extra = Array.isArray(cfg.assistant?.allowHosts) ? cfg.assistant.allowHosts : []; if (!LOCAL_HOST.test(host) && !extra.includes(host)) return false; const o = req.headers.origin; if (!o) return true; try { const u = new URL(o); return LOCAL_HOST.test(u.host) || extra.includes(u.host); } catch { return false; } };
 // The Claude Code box (claudebox.mjs, 8 Nov 2026): Claude Code with file and shell tools, driven from the bottom of For You. Who may use it:
 // a page on this PC (localhost), or Wesley through Tailscale Serve, which adds Tailscale-User-Login to what it forwards; only the logins in
 // office.config(.local).json "claudeBox.allowLogins" pass. Another tailnet login, a tagged device or a stranger's page is refused.

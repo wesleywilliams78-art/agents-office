@@ -1755,14 +1755,19 @@ else {
       const open = m.items.find(i => i.state === 'open'); if (open && (await ans(open.id, '  ')).status !== 400) throw new Error('an empty answer was accepted');
       return `${m.items.filter(i => i.state === 'open').length} open actions · ${m.items.filter(i => i.state === 'open' && i.gap).length} gaps · /answer refuses an empty answer and a missing card`;
     });
-    await step('server: the assistant answers only to the office page on this computer', async () => {
+    await step('server: the assistant answers only to the office page on this computer, or Wesley\'s own Tailscale login', async () => {
       const evil = await fetch(base + '/api/assistant', { headers: { origin: 'https://evil.example.com' } });
       if (evil.status !== 403) throw new Error('a page from another site was not refused: ' + evil.status);
       const evil2 = await fetch(base + '/api/assistant', { method: 'POST', headers: { origin: 'http://localhost.evil.com', 'content-type': 'application/json' }, body: JSON.stringify({ text: 'hi' }) });
       if (evil2.status !== 403) throw new Error('a look-alike origin was not refused: ' + evil2.status);
       const ok = await fetch(base + '/api/assistant', { headers: { origin: base } });
       if (!ok.ok) throw new Error('the office page itself was refused: ' + ok.status);
-      return 'another site and a look-alike host are refused (403) · the office page is allowed';
+      const http = await import('node:http'), TS = 'wesgp.taild8765c.ts.net', mine = (cfg.claudeBox?.allowLogins || [])[0]; // 16 Nov 2026: the phone app reaches it through Tailscale Serve, by Wesley's login only
+      const st = h => new Promise((resolve, reject) => http.get({ host: '127.0.0.1', port, path: '/api/assistant', headers: h }, r => { r.resume(); resolve(r.statusCode); }).on('error', reject));
+      if (await st({ host: TS, 'tailscale-user-login': 'someone.else@example.com' }) !== 403) throw new Error('another tailnet login was let in');
+      if (await st({ host: TS }) !== 403) throw new Error('the tailnet name with no login was let in');
+      if (mine) { if (await st({ host: TS, 'tailscale-user-login': mine }) !== 200) throw new Error('Wesley through Tailscale was refused'); if (await st({ host: TS, 'tailscale-user-login': mine, origin: 'https://evil.example' }) !== 403) throw new Error('Wesley\'s login from a stranger\'s page was let in'); }
+      return 'another site, a look-alike host and another tailnet login are refused (403) · the office page is allowed' + (mine ? ' · so is ' + mine + ' through Tailscale' : ' · no allowLogins set, so the tailnet is refused');
     });
     await step('server: a task scheduled for a time that has passed is refused', async () => { // V3.2.1
       const r = await fetch(base + '/api/tasks', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ dept: 'sales', text: 'call the leads', at: Date.now() - 3600000 }) });
