@@ -133,7 +133,7 @@ function qamariaSchema() {
 function buildQamaria(a) {
   const c = a.content; if (!c || typeof c !== 'object') return fail('content must be the Qamaria SOP object. Call sop_schema with client qamaria.');
   const errs = []; for (const k of ['no', 'title', 'shortTitle', 'fileTitle', 'issued', 'review', 'purpose', 'scope', 'when', 'need', 'steps', 'standard', 'problems', 'safety', 'signoff', 'related', 'checklist']) if (c[k] == null) errs.push(`missing "${k}"`);
-  if (!/^QUK-SOP-\d+$/.test(String(c.no || ''))) errs.push('no must look like QUK-SOP-06');
+  if (!/^QU[KS]-SOP-\d+$/.test(String(c.no || ''))) errs.push('no must look like QUK-SOP-06 (UK) or QUS-SOP-06 (US)');
   const bannedTxt = strings(c).join('\n'); if (/\b(WRW|YSF)\b/i.test(bannedTxt)) errs.push('WRW and YSF must not appear in a Qamaria document'); if (/square/i.test(bannedTxt)) errs.push('No step may depend on Square: write "the till" and use a gap');
   if (errs.length) return fail('Not built. Fix these first:\n- ' + errs.join('\n- '));
   const base = slug(a.filename || (c.no + ' ' + c.shortTitle)), dirName = new Date().toISOString().slice(0, 10) + ' qamaria ' + base, dir = path.join(OUT, dirName), work = path.join(dir, '_build');
@@ -149,6 +149,7 @@ function buildQamaria(a) {
     }
     fs.mkdirSync(path.join(work, 'sops'), { recursive: true });
     for (const f of ['qlib.js', 'numbering.js', 'build_sop.js', 'gaps.js', 'motif_light.py']) fs.copyFileSync(path.join(QDIR, f), path.join(work, f));
+    const logo = path.join(QDIR, 'qamaria-logo-dark-green.png'); if (!fs.existsSync(logo)) return fail('The Qamaria logo file is missing (' + logo + '). Never draw or type a logo. Get "Qamaria logo dark green.png" from the Drive folder "Qamaria Brand Assets" and save it there as qamaria-logo-dark-green.png.'); fs.copyFileSync(logo, path.join(work, 'qamaria-logo-dark-green.png'));
     fs.writeFileSync(path.join(work, 'sops', 'sop01.js'), 'module.exports = ' + JSON.stringify(c, null, 1) + ';\n');
     const py = process.env.PYTHON || 'python', run = (cmd, args) => execFileSync(cmd, args, { cwd: work, timeout: 180000, encoding: 'utf8', env: { ...process.env, NODE_PATH: path.join(HERE, '..', '..', 'node_modules') } });
     run(py, ['-I', 'motif_light.py', '.']);
@@ -176,7 +177,7 @@ function findFolder(q) {
   return hits.length === 1 ? hits[0] : hits.sort((a, b) => a.length - b.length)[0] || null; // otherwise the closest (shortest) match
 }
 const numbersIn = s => new Set((s.match(/\d+(?:[.,]\d+)?\s?(?:°C|°|kg|g|ml|l|%|min|mins|hours?|hrs?|h|cups?|days?)?/gi) || []).map(x => x.replace(/\s+/g, '').toLowerCase()));
-const isQ = f => /^QUK-SOP-\d+/.test(path.basename(f)) || /^\d{4}-\d{2}-\d{2} qamaria /.test(path.basename(f));
+const isQ = f => /^QU[KS]-SOP-\d+/.test(path.basename(f)) || /^\d{4}-\d{2}-\d{2} qamaria /.test(path.basename(f));
 const pagesOk = (f, n) => isQ(f) ? n >= 4 && n <= 6 : n === (/Full SOP/.test(f) ? 3 : 1);
 const pagesWant = f => isQ(f) ? '4 to 6' : /Full SOP/.test(f) ? 3 : 1;
 const partOk = (f, part) => isQ(f) ? true : part === 'onepager' ? /One Pager/i.test(f) : part === 'full' ? /Full SOP/i.test(f) : true;

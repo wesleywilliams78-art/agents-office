@@ -57,7 +57,7 @@ export function classify(tool, input = {}, ctx = {}) {
     return allow('edits inside the office');
   }
   if (t === 'Bash' || t === 'PowerShell') return shell(String(input.command || ''), ctx, R);
-  if (t.startsWith('mcp__')) return mcpTool(t, ctx);
+  if (t.startsWith('mcp__')) return mcpTool(t, ctx, input);
   return ask(`Use the tool ${t}`, 'a tool the box does not know');
 }
 
@@ -66,9 +66,13 @@ export function classify(tool, input = {}, ctx = {}) {
 const MAIL_SEND = /(^|_)(send|reply|forward|reply_all)(_|$)/i;
 const READ_VERB = /^(get|list|search|read|fetch|find|describe|query|view|look|lookup|measure|summary|preview|count|inspect|show|browse|audit|guide|schema|status|whoami|doctor|download)$/i;
 const CHANGE_VERB = /^(create|update|delete|remove|send|post|reply|forward|resolve|set|add|move|trash|untrash|label|unlabel|mark|unmark|apply|upload|share|publish|schedule|unschedule|submit|edit|write|copy|merge|import|export|duplicate|cancel|respond|request|run|build|render|fix|deliver|launch|exec|save|autofill|generate|separate|comment|append|clear|insert|batch)$/i;
-function mcpTool(t, ctx) {
+// Wesley, 17 Nov 2026: finished Qamaria files go to the "Qamaria US" folder on Drive without a hold.
+// Only create_file, only into that one folder id, only a new file (a folder or share still asks).
+const AUTO_DRIVE_FOLDERS = new Set(['1hqXLUBlq-HWHytdFQGV6n3cupUqgpjRX']);
+function mcpTool(t, ctx, input = {}) {
   const m = /^mcp__(.+?)__(.+)$/.exec(t); if (!m) return ask(`Use ${t}`, 'an unknown connector tool');
   const [, server, name] = m, words = name.split(/[_-]+/);
+  if (name === 'create_file' && AUTO_DRIVE_FOLDERS.has(input.parentId) && input.contentMimeType !== 'application/vnd.google-apps.folder' && input.mimeType !== 'application/vnd.google-apps.folder') return allow('saves a file into the Qamaria US Drive folder (Wesley\'s standing yes)');
   const mail = /mail|outlook|inbox/i.test(server) || (ctx.mailServers || []).includes(server);
   if (MAIL_SEND.test(name) && mail) return deny('Email is never sent from the office. Make a Gmail draft; Wesley sends it from his inbox.');
   if (/telegram/i.test(server)) return ask(`Send a Telegram message (${name})`, 'sends a message');

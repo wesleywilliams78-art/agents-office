@@ -89,6 +89,10 @@ const cases = [
   [B('git log --output=C:/Users/Wesley/x.txt'), 'ask'],
   [['mcp__cb9fae0d-e5fa-49cd-a0a1-699900889a57__resolve_comment_thread', {}], 'ask'],
   [['mcp__cb9fae0d-e5fa-49cd-a0a1-699900889a57__read_file_content', {}], 'allow'],
+  [['mcp__cb9fae0d-e5fa-49cd-a0a1-699900889a57__create_file', { parentId: '1hqXLUBlq-HWHytdFQGV6n3cupUqgpjRX', title: 'x.docx' }], 'allow'], // Qamaria US folder
+  [['mcp__cb9fae0d-e5fa-49cd-a0a1-699900889a57__create_file', { parentId: '1hqXLUBlq-HWHytdFQGV6n3cupUqgpjRX', contentMimeType: 'application/vnd.google-apps.folder', title: 'x' }], 'ask'],
+  [['mcp__cb9fae0d-e5fa-49cd-a0a1-699900889a57__create_file', { parentId: '1hqXLUBlq-HWHytdFQGV6n3cupUqgpjRX2', title: 'x.docx' }], 'ask'],
+  [['mcp__cb9fae0d-e5fa-49cd-a0a1-699900889a57__create_file', { title: 'x.docx' }], 'ask'],
   [['mcp__7edf9d41-dce4-45e3-a370-907c549fcec3__list_events', {}], 'allow'],
   [['mcp__7edf9d41-dce4-45e3-a370-907c549fcec3__create_event', {}], 'ask'],
   [['mcp__9c3ce366-3e4f-4ff1-9ea2-d11336b4c06a__export-design', {}], 'ask'],

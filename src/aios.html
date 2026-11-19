@@ -723,6 +723,10 @@
   .fya-ok { margin-top: 6px; font-size: 12px; color: var(--grey); } .fya .why { display: block; margin-top: 6px; color: var(--bad); font-size: 11.5px; }
   @media (max-width: 480px) { .fya-f input { font-size: 16px; } }
   /* the Claude Code box (8 Nov 2026): at the bottom of For You. Type, and the office runs Claude Code in the repo; risky steps ask here first */
+  .fyd { margin-top: 26px; padding-top: 18px; border-top: 1px solid var(--ox-edge2); } .fyd:empty { display: none; }
+  .fyd h4 { margin: 0; display: flex; align-items: center; gap: 12px; font: 300 30px/1 var(--serif); }
+  .fyd-i { display: flex; justify-content: space-between; gap: 12px; padding: 10px 0; border-top: 1px solid var(--ox-edge); font-size: 13.5px; line-height: 1.35; }
+  .fyd-i:first-of-type { margin-top: 12px; } .fyd-i a { overflow-wrap: anywhere; font-weight: 600; } .fyd-i span { flex: none; color: var(--grey); font-size: 11.5px; }
   .ccb { margin-top: 26px; padding-top: 18px; border-top: 1px solid var(--ox-edge2); }
   .ccb-h { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; } .ccb-h h4 { margin: 0; font: 300 30px/1 var(--serif); }
   .ccb-who { display: flex; align-items: center; gap: 12px; min-width: 0; } .ccb-who img { width: 48px; height: 48px; border-radius: 50%; object-fit: cover; flex: none; border: 1px solid var(--ox-edge2); }
@@ -1715,7 +1719,7 @@
 <section class="ccb" id="gcBox" aria-label="Grace, Claude Code"><div class="ccb-h"><div class="ccb-who"><img src="/people/grace.png" alt="" onerror="this.remove()"><div><h4>Grace</h4><span class="ccb-role">Runs Claude Code in the office folder</span></div></div><span class="ccb-st" id="gcSt">Connecting…</span><button type="button" class="ccb-new" id="gcNew" title="Start a fresh conversation">NEW CONVERSATION</button></div>
 <div class="ccb-sub">Reading, editing, checks and commits just run; anything risky asks you here first.</div>
 <div class="ccb-log" id="gcLog" aria-live="polite"></div><div id="gcAsk"></div><div id="gcOff"></div>
-<form class="ccb-f" id="gcForm"><textarea id="gcIn" rows="1" placeholder="Ask Grace…" aria-label="Message for Grace"></textarea><button type="submit" class="primary" id="gcGo">SEND</button></form></section></aside>
+<form class="ccb-f" id="gcForm"><textarea id="gcIn" rows="1" placeholder="Ask Grace…" aria-label="Message for Grace"></textarea><button type="submit" class="primary" id="gcGo">SEND</button></form></section><section class="fyd" id="oxFyDone" aria-label="Completed work"></section></aside>
 <!-- Brain sheet (7 Nov 2026): the Brain map pulls up over the Office from a tab on its bottom-left edge (bottom-centre is under Wispr Flow's pill); Esc, ✕ or the dimmed Office closes it -->
 <button type="button" class="bmtab" id="bmTab" aria-controls="brainSec" aria-expanded="false"><span><em>Open the </em>Brain</span><i aria-hidden="true">↑</i></button>
 <button type="button" class="mxtab" id="mxTab" data-go="matrix"><span><em>Open the </em>Matrix</span><i aria-hidden="true">↑</i></button>
@@ -1978,7 +1982,7 @@ async function poll() {
     if (sa) S.skillAudit = sa;
     S.health = h; S.agents = h.agents || []; S.tasks = Array.isArray(t) ? t : []; S.routines = r.routines || []; S.matrix = m;
     $('live').classList.add('on'); $('liveTxt').textContent = $('livePill').title = `live · v${h.version} · ${MODEL[h.model] || h.model} by default`;
-    document.title = 'WRW Office · AIOS'; // the WRW logo and the word Office (Wesley, 7 Nov 2026), not the business name
+    if (window.aiosTitle) window.aiosTitle(); else document.title = 'WRW Office · AIOS'; // the WRW logo and the word Office (Wesley, 7 Nov 2026), not the business name
     render();
   } catch (e) { $('live').classList.remove('on'); $('liveTxt').textContent = $('livePill').title = location.protocol === 'file:' ? 'this is the file, not the office — open http://localhost:4520/aios' : 'office not reachable — is npm start running?'; }
 }
@@ -4098,6 +4102,33 @@ loadBudget(); setInterval(() => { if (!document.hidden && !S.bBusy) loadBudget()
 loadDash(); setInterval(() => { if (!document.hidden) loadDash(); }, 120000);
 loadGcal(); setInterval(() => { if (!document.hidden) loadGcal(); }, 60000);
 setInterval(() => { if (!document.hidden && S.cat === 'hierarchy' && window.AIOS_HX_VIEW === 'fin' && window.finRefresh) window.finRefresh(); }, 90000); // Tokens: only while it is open (the server re-reads only what the transcripts added)
+// ---- Waiting alert (17 Nov 2026): a chime and a tab title count when something waits on Wesley (a review card, or a step Grace is holding),
+// so a background tab is not missed. Its own poll runs hidden too (the browser slows it to about once a minute). It chimes for each new
+// item, again every 2 minutes while one is still waiting, and stays quiet on the first look after a load. Mute: localStorage aiosChime = 'off'.
+(function () {
+  const BASE = 'WRW Office · AIOS', seen = new Map(); let n = 0, grace = 0, first = true, ctx = null;
+  const on = () => { try { return localStorage.getItem('aiosChime') !== 'off'; } catch { return true; } };
+  const unlock = () => { try { ctx = ctx || new (window.AudioContext || window.webkitAudioContext)(); if (ctx.state === 'suspended') ctx.resume(); } catch {} };
+  ['pointerdown', 'keydown'].forEach(e => addEventListener(e, unlock, { passive: true }));
+  function chime() {
+    if (!on()) return; unlock(); if (!ctx || ctx.state !== 'running') return;
+    [[880, 0], [1175, 0.16]].forEach(([f, d]) => { const o = ctx.createOscillator(), g = ctx.createGain(), t = ctx.currentTime + d; o.type = 'sine'; o.frequency.value = f; g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(0.18, t + 0.02); g.gain.exponentialRampToValueAtTime(0.0001, t + 0.35); o.connect(g).connect(ctx.destination); o.start(t); o.stop(t + 0.4); });
+  }
+  window.aiosTitle = () => { document.title = n ? `(${n}) ${grace ? 'Grace is waiting' : 'Waiting on you'} · ${BASE}` : BASE; };
+  async function check() {
+    try {
+      const [t, b] = await Promise.all([fetch('/api/tasks', { cache: 'no-store' }).then(r => r.ok ? r.json() : []), fetch('/api/claude-box', { cache: 'no-store' }).then(r => r.ok ? r.json() : null).catch(() => null)]);
+      const items = [];
+      (Array.isArray(t) ? t : []).filter(x => x.state === 'waiting' && !x.queuedAt).forEach(x => items.push('t' + x.id));
+      const holds = ((b && b.holds) || []).filter(h => h.state === 'waiting'); holds.forEach(h => items.push('h' + h.id));
+      const now = Date.now(); let ring = false;
+      for (const k of [...seen.keys()]) if (!items.includes(k)) seen.delete(k);
+      for (const k of items) { if (!seen.has(k)) { seen.set(k, now); if (!first) ring = true; } else if (now - seen.get(k) >= 120000) { seen.set(k, now); ring = true; } }
+      n = items.length; grace = holds.length; first = false; window.aiosTitle(); if (ring) chime();
+    } catch {}
+  }
+  check(); setInterval(check, 10000);
+})();
 loadTrackers(); setInterval(() => { if (!document.hidden && !Object.values(S.tkBusy || {}).some(Boolean)) loadTrackers(); }, 60000);
 loadPlans(); setInterval(() => { if (!document.hidden && !Object.values(S.gtBusy || {}).some(Boolean)) loadPlans(); }, 60000);
 </script>
@@ -4458,7 +4489,35 @@ loadPlans(); setInterval(() => { if (!document.hidden && !Object.values(S.gtBusy
     const html = `<h3>For you${items.length ? ` <span class="hxo-badge">${items.length}</span>` : ''}</h3><div class="hxo-sc">${scope}</div>
       ${items.map(t => { const a = agentBy(t.agent); return `<div class="hxo-ri">${a ? fc(a, 'waiting', 'm') : '<span class="hxo-ini">·</span>'}<div><div class="hxo-rd">${esc(deptName(t.dept))}</div>${fyItem(t)}</div></div>`; }).join('') || '<div class="hxo-ri none">Nothing waiting on you here.</div>'}`;
     if (html !== fyHtml) { fyHtml = html; body.innerHTML = html; }
+    doneList();
   }
+  // ---- Completed work (19 Nov 2026): under Grace in For You. Newest finished task first, its title as a link to the file it made (Drive, a Doc/Sheet,
+  // or a path on this computer, opened through /api/open). Read from the task's result; a task with no link in it is left out. ----
+  let doneAll = false, doneHtml = '';
+  const DONE_SHOW = 25, DONE_EXT = 'mp4|mov|m4a|mp3|wav|pdf|docx?|xlsx?|pptx?|csv|png|jpe?g|gif|webp|svg|md|txt|html?|json|zip';
+  function doneLink(t) {
+    const r = String(t.result || ''), clean = s => s.replace(/[)\].,;:'"*>]+$/, '');
+    const web = (r.match(/https?:\/\/[^\s<>"'`)\]]+/g) || []).map(clean), drive = web.find(u => /(drive|docs)\.google\.com/.test(u));
+    if (drive) return { url: drive };
+    const loc = (r.match(new RegExp('[A-Za-z]:\\\\(?:[^\\\\\\n"\'`<>|*?]+\\\\)*[^\\\\\\n"\'`<>|*?]+?\\.(?:' + DONE_EXT + ')(?![A-Za-z0-9])', 'gi')) || [])[0];
+    if (loc) return { path: loc.trim() };
+    return web[0] ? { url: web[0] } : null;
+  }
+  function doneList() {
+    const box = el('oxFyDone'); if (!box) return;
+    const rows = S.tasks.filter(t => t.state === 'done' && t.doneAt).sort((a, b) => b.doneAt - a.doneAt).map(t => ({ t, l: doneLink(t) })).filter(x => x.l);
+    const list = doneAll ? rows : rows.slice(0, DONE_SHOW);
+    const html = rows.length ? `<h4>Completed work <span class="hxo-badge">${rows.length}</span></h4><div class="hxo-sc">Newest first · the title opens the finished file</div>`
+      + list.map(({ t, l }) => `<div class="fyd-i">${l.url ? `<a href="${esc(l.url)}" target="_blank" rel="noopener">${esc(t.title)}</a>` : `<a href="#" data-fydopen="${esc(l.path)}">${esc(t.title)}</a>`}<span>${esc(ago(t.doneAt))}</span></div>`).join('')
+      + (rows.length > DONE_SHOW ? `<button type="button" class="fya-more" data-fydmore>${doneAll ? 'SHOW FEWER' : `SHOW ALL ${rows.length} →`}</button>` : '') : '';
+    if (html !== doneHtml) { doneHtml = html; box.innerHTML = html; }
+  }
+  document.addEventListener('click', async e => {
+    if (e.target.closest('[data-fydmore]')) { doneAll = !doneAll; doneHtml = ''; doneList(); return; }
+    const a = e.target.closest('[data-fydopen]'); if (!a) return; e.preventDefault();
+    try { const r = await fetch('/api/open', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ path: a.dataset.fydopen }) }); const j = await r.json(); if (!r.ok || j.error) throw new Error(j.error || 'not opened'); }
+    catch (err) { a.title = 'Not opened: ' + err.message; a.style.color = 'var(--red)'; }
+  });
   // ---- Your answers (8 Nov 2026): the open matrix cards only Wesley can answer (dept "owner"), most pressing first. ANSWER closes the card
   // with his line as its outcome, which the server files in the Brain (writeAnswerNote, the same as DONE on the matrix); "Not now" hides one for a week ----
   const FYA_KEY = 'aiosFyaLater', FYA_SHOW = 5, FYA_RANK = { do: 0, plan: 1, delegate: 2, drop: 3 };
