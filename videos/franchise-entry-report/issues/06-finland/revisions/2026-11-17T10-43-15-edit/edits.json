@@ -1,0 +1,17 @@
+{
+ "issue": "06-finland",
+ "why": "Shorten the pay-floor label so it does not wrap; date moves to the note.",
+ "base": "videos/franchise-entry-report/issues/06-finland/revisions/2026-11-17T10-43-09-edit/issue.json",
+ "at": "2026-11-17T10:43:15.387Z",
+ "edits": [
+  {
+   "path": "regulation.wage.floorPre",
+   "value": "PAM pay floor"
+  },
+  {
+   "path": "regulation.wage.floorNote",
+   "find": "Evening supplement",
+   "replace": "From 1 Jun 2026. Evening supplement"
+  }
+ ]
+}

@@ -1,0 +1,29 @@
+<!doctype html><meta charset="utf-8"><style>
+@font-face{font-family:BM;src:url(bodoni.ttf);font-weight:100 900}
+@font-face{font-family:PF;src:url(playfair.ttf);font-weight:100 900}
+html,body{margin:0;background:#FF3131}
+#c{position:relative;width:1920px;height:1080px;background:#FF3131;color:#fff;overflow:hidden}
+.l{position:absolute;left:90px;width:600px;top:150px;text-align:center;font-family:BM}
+.ed{font-size:112px;font-weight:500;letter-spacing:6px;line-height:1}
+.n{font-size:400px;font-weight:700;line-height:1;margin-top:30px;letter-spacing:-8px}
+.rule{position:absolute;left:760px;top:150px;width:4px;height:560px;background:#fff}
+.h{position:absolute;left:860px;width:1000px;top:268px;font-family:BM;font-size:92px;line-height:1.1;font-weight:500;letter-spacing:-1px;text-align:left}
+.foot{position:absolute;left:0;right:0;top:830px;text-align:center;font-family:PF;font-weight:700;font-size:48px}
+canvas{position:absolute;left:0;bottom:0}
+</style><div id="c">
+<div class="l"><div class="ed">EDITION</div><div class="n">36</div></div>
+<div class="rule"></div>
+<div class="h">Fifty UK sites in three years: the number I’d question first</div>
+<div class="foot">Scaling Without Borders</div>
+<canvas id="m" width="1920" height="170"></canvas></div>
+<script>
+const cv=document.getElementById('m'),x=cv.getContext('2d');
+let s=7;function r(){s=(s*16807)%2147483647;return s/2147483647}
+const W=1920,H=170;
+const peaks=[[150,90],[380,150],[700,70],[980,100],[1250,150],[1500,80],[1760,110],[1920,130]];
+function ridge(px){let y=H;for(let i=0;i<peaks.length;i++){const[a,h]=peaks[i];const w=190;const d=Math.abs(px-a);if(d<w)y=Math.min(y,H-h*(1-d/w)**1.15)}return y+Math.sin(px*0.31)*2.5}
+x.fillStyle='#fff';
+for(let i=0;i<150000;i++){const px=r()*W,py=r()*H,top=ridge(px);if(py<top)continue;
+const depth=(py-top)/(H-top+1);if(r()<0.95-depth*0.7)x.fillRect(px,py,1.6,1.6)}
+document.fonts.ready.then(()=>document.title='ok');
+</script>

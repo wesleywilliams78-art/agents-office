@@ -1,0 +1,251 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>WRW Hospitality · Estate build (trial)</title>
+<meta name="description" content="Trial hero: scroll to build the estate from Site 1 to Site 10 to Site 100. motion-pages scroll-scrubbed process reveal, in WRW Hospitality colours.">
+<link rel="preload" href="assets/newsreader-latin-opsz-normal.woff2" as="font" type="font/woff2" crossorigin>
+<style>
+@font-face{font-family:"Newsreader";src:url("assets/newsreader-latin-opsz-normal.woff2") format("woff2");font-weight:200 800;font-style:normal;font-display:swap}
+@font-face{font-family:"Newsreader";src:url("assets/newsreader-latin-opsz-italic.woff2") format("woff2");font-weight:200 800;font-style:italic;font-display:swap}
+@font-face{font-family:"Archivo";src:url("assets/archivo-latin-wdth-normal.woff2") format("woff2");font-weight:100 900;font-stretch:62% 125%;font-style:normal;font-display:swap}
+:root{
+  --bone:#F7F2EA;--ink:#201A19;--ink-2:#2A2322;--muted:#4A4644;--line:#E4DCD0;--red:#FF3131;--red-deep:#B81F1F;--white:#fff;
+  --display:"Newsreader",Georgia,serif;--sans:"Archivo",system-ui,sans-serif;
+  /* easing grammar (motion-pages): curves carry meaning */
+  --e-out:cubic-bezier(.16,1,.3,1);   /* entering: fast, soft landing */
+  --e-in:cubic-bezier(.4,0,1,1);      /* leaving: accelerates away */
+  --e-io:cubic-bezier(.65,0,.35,1);   /* moving within the page */
+  --gutter:clamp(20px,4.4vw,72px);--nav-h:76px;
+}
+*,*::before,*::after{box-sizing:border-box}
+html{background:var(--bone)}
+body{margin:0;background:var(--bone);color:var(--ink);font:400 17px/1.6 var(--sans);overflow-x:clip;-webkit-font-smoothing:antialiased}
+:focus-visible{outline:2px solid var(--red-deep);outline-offset:3px}
+.label{font:560 11.5px/1.4 var(--sans);font-stretch:118%;text-transform:uppercase;letter-spacing:.16em}
+
+/* nav: same shape as the live site */
+.nav{position:fixed;top:0;left:0;right:0;z-index:10;height:var(--nav-h);background:var(--bone);border-bottom:1px solid var(--line);display:flex;align-items:center;gap:26px;padding:0 var(--gutter)}
+.nav img{height:26px;width:auto;display:block}
+.nav__logo{margin-right:auto;padding:10px 0}
+.nav__links{display:flex;gap:26px;list-style:none;margin:0;padding:0}
+.nav__links a{color:inherit;text-decoration:none;padding:17px 0;background:linear-gradient(var(--red),var(--red)) 0 calc(100% - 10px)/0 1px no-repeat;transition:background-size .5s var(--e-out)}
+.nav__links a:hover,.nav__links a:focus-visible{background-size:100% 1px}
+.btn{position:relative;display:inline-flex;align-items:center;justify-content:center;gap:12px;min-height:52px;padding:0 26px;font:560 12.5px/1 var(--sans);font-stretch:118%;text-transform:uppercase;letter-spacing:.14em;text-decoration:none;border:1px solid currentColor;color:inherit;white-space:nowrap;overflow:hidden;isolation:isolate;transition:color .5s var(--e-out),border-color .5s var(--e-out)}
+.btn::before{content:"";position:absolute;inset:0;z-index:-1;background:var(--ink);transform:translateY(101%);transition:transform .6s var(--e-out)}
+.btn--solid{background:var(--red-deep);border-color:var(--red-deep);color:var(--white)}
+.nav .btn{min-height:44px;padding:0 20px}
+@media (hover:hover) and (pointer:fine){.btn:hover::before{transform:none}.btn:hover{color:var(--bone);border-color:var(--ink)}}
+
+/* the scroll track: a tall box, a sticky stage inside it (sticky, never a pin) */
+#track{position:relative;height:420vh}
+#stage{position:sticky;top:0;height:100vh;height:100svh;padding-top:var(--nav-h);display:grid;grid-template-columns:minmax(0,58fr) minmax(0,42fr)}
+.copy{align-self:center;padding:0 clamp(24px,3vw,56px) 0 var(--gutter);max-width:1060px}
+.eyebrow{display:flex;align-items:center;gap:14px;margin:0 0 clamp(24px,3.4vw,48px)}
+.eyebrow::before{content:"";width:40px;height:1px;background:currentColor}
+h1{font:280 clamp(44px,min(5vw,10vh),76px)/1 var(--display);letter-spacing:-.035em;margin:0}
+h1 .ln{display:block;padding-block:.06em;transition:opacity .7s var(--e-io)}
+h1 em{font-style:italic;font-weight:260;color:var(--red)}
+body.lines h1 .ln{opacity:.22}
+body.lines h1 .ln.on{opacity:1}
+.foot{display:grid;gap:18px;margin-top:clamp(28px,3.4vw,52px);max-width:48rem}
+.lede{font:300 clamp(22px,2.1vw,34px)/1.25 var(--display);letter-spacing:-.01em;margin:0;max-width:none}
+.lede>span{display:block}
+.lede em{color:var(--red-deep)}
+.sub{margin:0;color:var(--muted);font-size:17px}
+.actions{display:flex;flex-wrap:wrap;gap:14px;margin-top:8px}
+
+/* the build panel: its own red ground; labels top and bottom, drawing in the middle, nothing overlaps */
+.panel{position:relative;background:var(--red);color:var(--bone);overflow:hidden;display:flex;flex-direction:column;justify-content:space-between;padding:clamp(24px,4vh,56px) clamp(24px,3.4vw,64px)}
+.panel canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+.panel__top,.panel__foot{position:relative;z-index:1}
+.panel__top{display:flex;justify-content:space-between;align-items:baseline}
+.count{font-variant-numeric:tabular-nums}
+.bar{position:relative;height:2px;background:rgba(247,242,234,.28);margin-bottom:14px}
+.bar i{position:absolute;inset:0;background:var(--bone);transform-origin:0 50%;transform:scaleX(var(--p,0))}
+.stops{display:flex;justify-content:space-between}
+.stops span{transition:opacity .5s var(--e-io)}
+.stops span:not(.on){opacity:.55}
+.hint{position:absolute;right:0;bottom:calc(100% + 18px);padding:10px 14px;background:var(--red-deep);transition:opacity .45s var(--e-in),translate .45s var(--e-in)}
+.hint.off{opacity:0;translate:0 8px}
+
+/* entrance: inner elements only, opacity + translate (the transform trap), wrappers carry the delay */
+.enter{opacity:0;translate:0 18px;transition:opacity .9s var(--e-out),translate .9s var(--e-out)}
+body.ready .enter{opacity:1;translate:0 0}
+.d1{transition-delay:.08s}.d2{transition-delay:.16s}.d3{transition-delay:.26s}.d4{transition-delay:.36s}
+body.still .enter{transition:none;opacity:1;translate:0 0}
+
+/* hand-off: the page carries on */
+.after{padding:clamp(88px,11vw,180px) var(--gutter);border-top:1px solid var(--line)}
+.after .eyebrow b{color:var(--red-deep);font-weight:560}
+.ledger{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(4,1fr);gap:var(--gutter)}
+.ledger strong{display:block;font:280 clamp(40px,4.6vw,80px)/1 var(--display);letter-spacing:-.03em}
+.ledger span{display:block;margin-top:12px;color:var(--muted);max-width:22ch}
+
+@media (max-width:1100px){.nav__links{display:none}}
+@media (max-width:740px){
+  :root{--nav-h:64px}
+  .nav img{height:24px}
+  #track{height:380vh}
+  #stage{grid-template-columns:1fr;grid-template-rows:auto minmax(0,1fr)}
+  .copy{padding:18px var(--gutter) 18px;align-self:start}
+  .eyebrow,.sub{display:none}
+  h1{font-size:clamp(30px,8.6vw,40px);line-height:1.04}
+  .foot{gap:12px;margin-top:16px}
+  .lede{font-size:18px}
+  .lede>span{display:inline}
+  .actions{flex-wrap:nowrap;gap:10px;margin-top:4px}
+  .actions .btn{flex:1 1 0;min-height:48px;padding:0 10px;font-size:11px;letter-spacing:.1em}
+  .actions .btn--solid::after{display:none}
+  .panel{padding:16px var(--gutter)}
+  .hint{display:none}
+  .ledger{grid-template-columns:1fr 1fr}
+}
+@media (prefers-reduced-motion:reduce){
+  .enter{transition:none;opacity:1;translate:0 0}
+  h1 .ln,.stops span,.hint{transition:none}
+}
+</style>
+</head>
+<body>
+<nav class="nav label" aria-label="Main">
+  <a class="nav__logo" href="#"><img src="assets/wrw-mark-red.svg" width="786" height="214" alt="WRW Hospitality, home"></a>
+  <ul class="nav__links"><li><a href="#">Services</a></li><li><a href="#">Case studies</a></li><li><a href="#">Works</a></li><li><a href="#">About</a></li><li><a href="#">Contact</a></li></ul>
+  <a class="btn btn--solid" href="#">Book a call</a>
+</nav>
+<div id="track"><div id="stage">
+  <header class="copy">
+    <p class="eyebrow label enter">WRW Hospitality · Operations for multi-site brands</p>
+    <h1 class="enter d1"><span class="ln">Site 1 made money.</span><span class="ln">Site 10 is the <em>litmus</em> test.</span><span class="ln">Site 100 is the <em>legacy</em> test.</span></h1>
+    <div class="foot">
+      <p class="lede enter d2"><span>Most brands are built to grow. Few are built to last.</span> I build systems that get you there, <em>and keep you there</em>.</p>
+      <p class="sub enter d3">Operations and finance for multi-site hospitality and franchise operators.</p>
+      <div class="enter d4"><div class="actions"><a class="btn btn--solid" href="#">Book a call</a><a class="btn" href="#">See the services</a></div></div>
+    </div>
+  </header>
+  <div class="panel label" aria-hidden="true">
+    <canvas id="scene"></canvas>
+    <div class="panel__top"><span>Site Nº <span class="count" id="count">001</span></span><span>One standard</span></div>
+    <div class="panel__foot">
+      <span class="hint" id="hint">Scroll · the estate builds as you go</span>
+      <div class="bar" id="bar"><i></i></div>
+      <div class="stops"><span>Site 1</span><span>Site 10</span><span>Site 100</span></div>
+    </div>
+  </div>
+</div></div>
+<main>
+  <section class="after">
+    <p class="eyebrow label"><b>01</b>In numbers</p>
+    <ol class="ledger"><li><strong>15+</strong><span>years in multi-site hospitality</span></li><li><strong>£40M</strong><span>estate run</span></li><li><strong>£1.7M–£2.1M</strong><span>additional revenue a year found</span></li><li><strong>10</strong><span>country strategies developed</span></li></ol>
+  </section>
+</main>
+<script>
+(()=>{
+const q=new URLSearchParams(location.search),RM=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const STILL=q.has('still'),PIN=STILL?.5:q.has('p')?Math.min(1,Math.max(0,+q.get('p')||0)):null;
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const track=$('#track'),panel=$('.panel'),cv=$('#scene'),cx=cv.getContext('2d'),bar=$('#bar'),hint=$('#hint'),countEl=$('#count'),lines=$$('h1 .ln'),stops=$$('.stops span');
+if(STILL)document.body.classList.add('still');
+if(PIN!==null){track.style.height='100svh';document.documentElement.style.overflow='hidden'}
+const clamp=(v,a=0,b=1)=>v<a?a:v>b?b:v,seg=(p,a,b)=>clamp((p-a)/(b-a));
+const eo=x=>1-Math.pow(1-x,3),eio=x=>x<.5?4*x*x*x:1-Math.pow(-2*x+2,3)/2;
+const hex=h=>[1,3,5].map(i=>parseInt(h.slice(i,i+2),16));
+const mix=(a,b,t)=>{const A=hex(a),B=hex(b);return`rgb(${A.map((v,i)=>Math.round(v+(B[i]-v)*t)).join(',')})`};
+const C={bone:'#F7F2EA',ink:'#201A19',ink2:'#2A2322',line:'#E4DCD0',red:'#FF3131',deep:'#B81F1F',lit:'#FFF1DA',off:'#8A817C',offWall:'#C9C0B6'};
+
+// the estate: a 10×10 grid of plots; Site 1 at (0,0), Sites 2–10 along row 0, Sites 11–100 fill the rest
+const G=1.2,U=.8,DRIFT=6; // unit 7 arrives off-standard and is brought back
+const units=[];for(let gy=0;gy<10;gy++)for(let gx=0;gx<10;gx++)units.push({gx,gy});
+const n=u=>u.gy===0?u.gx:10+(u.gy-1)*10+u.gx;                     // site number - 1
+const order=[...units].sort((a,b)=>(a.gx+a.gy)-(b.gx+b.gy)||a.gx-b.gx);   // back to front
+
+// three framings the camera eases between (world boxes, iso units at k=1)
+const box=(x0,x1,y0,y1,zh,m)=>{x0-=m;y0-=m;x1+=m;y1+=m;return{l:(x0-y1)*.866,r:(x1-y0)*.866,t:(x0+y0)*.5-zh,b:(x1+y1)*.5}};
+const SH=[box(0,U,0,U,.7,.55),box(0,9*G+U,0,U,.7,.5),box(0,9*G+U,0,9*G+U,.7,.3)];
+
+let W=0,H=0,inner={x:0,y:0,w:1,h:1};
+function size(){const dpr=Math.min(devicePixelRatio||1,2);W=panel.clientWidth;H=panel.clientHeight;cv.width=W*dpr;cv.height=H*dpr;cx.setTransform(dpr,0,0,dpr,0,0);
+  const pr=panel.getBoundingClientRect(),tp=$('.panel__top').getBoundingClientRect(),ft=$('.bar').getBoundingClientRect(),pad=Math.max(16,W*.06),gap=Math.max(20,H*.05);
+  inner={x:pad,y:tp.bottom-pr.top+gap,w:W-2*pad,h:(ft.top-pr.top-gap*1.6)-(tp.bottom-pr.top+gap)}}
+const fit=s=>{const k=Math.min(inner.w/(s.r-s.l),inner.h/(s.b-s.t));return{k,cx:(s.l+s.r)/2,cy:(s.t+s.b)/2}};
+
+function draw(p){
+  const c=cx,f=[fit(SH[0]),fit(SH[1]),fit(SH[2])];
+  const z1=eio(seg(p,.30,.40)),z2=eio(seg(p,.60,.70));
+  const lk=Math.log(f[0].k)+(Math.log(f[1].k)-Math.log(f[0].k))*z1+(Math.log(f[2].k)-Math.log(f[1].k))*z2,k=Math.exp(lk);
+  const ccx=f[0].cx+(f[1].cx-f[0].cx)*z1+(f[2].cx-f[1].cx)*z2,ccy=f[0].cy+(f[1].cy-f[0].cy)*z1+(f[2].cy-f[1].cy)*z2;
+  const ox=inner.x+inner.w/2-ccx*k,oy=inner.y+inner.h/2-ccy*k;
+  const P=(x,y,z)=>[ox+(x-y)*.866*k,oy+(x+y)*.5*k-z*k];
+  const poly=(pts,fill,a=1)=>{if(a<=0)return;c.beginPath();pts.forEach((q,i)=>{const s=P(...q);i?c.lineTo(...s):c.moveTo(...s)});c.closePath();c.globalAlpha=a;c.fillStyle=fill;c.fill();c.globalAlpha=1};
+  const dusk=seg(p,.86,.98);
+  c.fillStyle=mix(C.red,C.deep,dusk);c.fillRect(0,0,W,H);
+
+  // plots: the standard is set out before the sites exist (draw)
+  c.lineWidth=Math.max(1,k*.018);
+  for(const u of units){const i=n(u),x=u.gx*G,y=u.gy*G;
+    const a=i===0?seg(p,.03,.08):i<10?seg(p,.29+i*.006,.35+i*.006):seg(p,.62+(u.gx+u.gy)/18*.08,.66+(u.gx+u.gy)/18*.08);
+    if(a<=0)continue;const pts=[[x-.1,y-.1,0],[x+U+.1,y-.1,0],[x+U+.1,y+U+.1,0],[x-.1,y+U+.1,0]].map(q=>P(...q));
+    c.beginPath();pts.forEach((s,j)=>j?c.lineTo(...s):c.moveTo(...s));c.closePath();
+    if(i===0){const L=4*Math.hypot(pts[1][0]-pts[0][0],pts[1][1]-pts[0][1]);c.setLineDash([L*a,L]);c.globalAlpha=.9}else c.globalAlpha=.5*a;
+    c.strokeStyle=C.bone;c.stroke();c.setLineDash([]);c.globalAlpha=1}
+  // Site 1 slab
+  poly([[0,0,0],[U,0,0],[U,U,0],[0,U,0]],C.deep,seg(p,.07,.11)*(1-dusk*.5));
+
+  let placed=0;
+  for(const u of order){const i=n(u);let x=u.gx*G,y=u.gy*G,s;
+    if(i===0)s={wall:eo(seg(p,.10,.17)),roof:eo(seg(p,.16,.21)),fas:seg(p,.20,.24),open:seg(p,.23,.26),lit:seg(p,.26,.30),dz:0,a:1,off:0};
+    else{const a=i<10?.39+(i-1)*.02:.68+((u.gx+u.gy-1)/17)*.2,e=eo(seg(p,a,a+(i<10?.05:.04)));
+      if(e<=0)continue;
+      const lit=i<10?seg(e,.85,1):seg(p,.88+(u.gx+u.gy)/18*.08,.90+(u.gx+u.gy)/18*.08);
+      s={wall:1,roof:1,fas:1,open:1,lit,dz:(1-e)*1.6,a:e,off:0};
+      if(i===DRIFT){const back=eio(seg(p,.555,.60));s.off=1-back;x-=.1*s.off;y+=.62*s.off}}
+    if(i===0?s.roof>=.7:s.a>=.7)placed++;
+    unit(c,P,poly,x,y,s,k)}
+  return placed;
+}
+
+function unit(c,P,poly,x,y,s,k){
+  const h=.5*s.wall,z=s.dz,a=s.a,o=s.off;
+  if(h>0){
+    poly([[x,y+U,z],[x+U,y+U,z],[x+U,y+U,z+h],[x,y+U,z+h]],mix(C.bone,C.offWall,o),a);     // front-left wall
+    poly([[x+U,y,z],[x+U,y+U,z],[x+U,y+U,z+h],[x+U,y,z+h]],mix(C.line,C.off,o*.7),a);      // front-right wall
+  }
+  if(s.open>0){const lit=mix(C.ink2,C.lit,s.lit),A=a*s.open;
+    poly([[x+.08,y+U,z+.06],[x+.48,y+U,z+.06],[x+.48,y+U,z+.32],[x+.08,y+U,z+.32]],lit,A);   // shopfront
+    poly([[x+.56,y+U,z],[x+.70,y+U,z],[x+.70,y+U,z+.32],[x+.56,y+U,z+.32]],C.ink2,A);        // door
+    poly([[x+U,y+.14,z+.12],[x+U,y+.66,z+.12],[x+U,y+.66,z+.32],[x+U,y+.14,z+.32]],lit,A);   // side window
+    if(s.lit>0&&k>30){const [gx,gy]=P(x+.28,y+U,z+.19),r=.5*k,g=c.createRadialGradient(gx,gy,0,gx,gy,r);
+      g.addColorStop(0,`rgba(255,241,218,${.32*s.lit*a})`);g.addColorStop(1,'rgba(255,241,218,0)');c.fillStyle=g;c.fillRect(gx-r,gy-r,2*r,2*r)}}
+  if(s.fas>0){const f=s.fas,col=mix(C.deep,C.off,o);                                         // fascia: the red band, drawn along
+    poly([[x,y+U,z+.38],[x+U*f,y+U,z+.38],[x+U*f,y+U,z+.46],[x,y+U,z+.46]],col,a);
+    poly([[x+U,y,z+.38],[x+U,y+U*f,z+.38],[x+U,y+U*f,z+.46],[x+U,y,z+.46]],col,a)}
+  if(s.roof>0){const rz=z+.5+(1-s.roof)*1.4,ra=a*s.roof,X=x-.04,Y=y-.04,R=U+.08,T=.06;     // roof lands
+    poly([[X,Y+R,rz],[X+R,Y+R,rz],[X+R,Y+R,rz+T],[X,Y+R,rz+T]],C.ink2,ra);
+    poly([[X+R,Y,rz],[X+R,Y+R,rz],[X+R,Y+R,rz+T],[X+R,Y,rz+T]],C.ink,ra);
+    poly([[X,Y,rz+T],[X+R,Y,rz+T],[X+R,Y+R,rz+T],[X,Y+R,rz+T]],mix(C.ink,'#4A3F3D',o),ra)}
+}
+
+// drive it: scroll sets the target, p eases toward it so wheel notches read as a scrub
+let p=0,target=0,last=-1,lastIdx=-2,t0=0;const INTRO=2.2,S1=.30;
+function readScroll(){if(PIN!==null)return;const max=track.offsetHeight-innerHeight;target=clamp(max>0?scrollY/max:0)}
+addEventListener('scroll',readScroll,{passive:true});
+addEventListener('resize',()=>{size();last=-1},{passive:true});
+function frame(now){
+  p=RM?target:p+(target-p)*.1;if(Math.abs(target-p)<.0004)p=target;
+  const intro=STILL||RM?1:clamp((now-t0)/1000/INTRO),pe=PIN!==null?PIN:Math.max(S1*eio(intro),p>.0005?S1+(1-S1)*p:0);
+  if(pe!==last){const placed=draw(pe);last=pe;
+    countEl.textContent=String(Math.max(1,placed)).padStart(3,'0');
+    bar.style.setProperty('--p',pe.toFixed(4));
+    const idx=(PIN===null&&target<.015)||pe>.97?-1:pe<.32?0:pe<.62?1:2;
+    if(idx!==lastIdx){document.body.classList.toggle('lines',idx>=0);lines.forEach((l,i)=>l.classList.toggle('on',i===idx));
+      stops.forEach((s,i)=>s.classList.toggle('on',idx===-1?(pe>.97?i===2:i===0):i===idx));lastIdx=idx}
+    hint.classList.toggle('off',target>.02||pe>.32)}
+  if(!STILL)requestAnimationFrame(frame)}
+const start=()=>{size();readScroll();t0=performance.now();frame(t0);requestAnimationFrame(()=>setTimeout(()=>document.body.classList.add('ready'),STILL||RM?0:120))};
+(document.fonts?document.fonts.ready:Promise.resolve()).then(start);
+setTimeout(()=>document.body.classList.add('ready'),3000);
+})();
+</script>
+</body>
+</html>

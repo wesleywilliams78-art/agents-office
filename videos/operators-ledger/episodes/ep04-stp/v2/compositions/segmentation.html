@@ -1,0 +1,51 @@
+<template>
+  <style>
+    @font-face { font-family: "Newsreader"; font-weight: 300; src: url("assets/fonts/newsreader-latin-300-normal.woff2") format("woff2"); }
+    @font-face { font-family: "Archivo"; font-weight: 500; src: url("assets/fonts/Archivo-Medium.ttf") format("truetype"); }
+    @font-face { font-family: "Archivo"; font-weight: 400; src: url("assets/fonts/Archivo-Regular.ttf") format("truetype"); }
+    :root { --bone: #f3f2f2; --ink: #201e1d; --red: #ec3013; --deep: #b6240e; --sand: #e9d8bd; --grey: #736e6b; }
+    #root { position: absolute; inset: 0; background: var(--bone); color: var(--ink); overflow: hidden; font-variant-numeric: tabular-nums; }
+    .kick { position: absolute; left: 86px; font: 500 28px/1 "Archivo", sans-serif; letter-spacing: .22em; color: var(--deep); white-space: nowrap; }
+    .serif { position: absolute; font-family: "Newsreader", serif; font-weight: 300; letter-spacing: -0.01em; white-space: nowrap; }
+    .sans { position: absolute; font-family: "Archivo", sans-serif; font-weight: 500; white-space: nowrap; }
+    .foot { position: absolute; left: 86px; top: 1030px; font: 500 28px/1 "Archivo", sans-serif; letter-spacing: .18em; color: var(--grey); white-space: nowrap; }
+    .abs { position: absolute; }
+    .grey { color: var(--grey); }
+    
+    #ground { left: 86px; top: 830px; width: 908px; height: 5px; background: var(--ink); }
+    #sh1 { left: 86px; top: 848px; width: 112px; height: 150px; } #sh10 { left: 540px; top: 848px; width: 112px; height: 150px; }
+    .num { font-size: 64px; line-height: 1; } .lab { font-size: 30px; line-height: 1.1; }
+    #k { top: 150px; }
+    #b1, #b10 { }
+    .hi { position: absolute; left: 5px; width: 180px; background: var(--ink); bottom: 5px; }
+    #l1 { left: 298px; top: 627px; } #l10 { left: 752px; top: 695.64px; }
+    #l1 .lab, #l10 .lab { position: static; display: block; } #l1 .num, #l10 .num { position: static; display: block; margin-top: 8px; }
+  </style>
+  <div id="root" data-composition-id="segmentation" data-width="1080" data-height="1350">
+
+    <div id="k" class="kick">SEGMENTATION</div>
+    <div id="g" class="abs"></div>
+    <div id="b1" class="abs" style="left:86px;top:310px;width:190px;height:520px;border:5px solid #201e1d;box-sizing:border-box;background:#e9d8bd"><div class="hi" id="h1" style="height:281px"></div></div>
+    <div id="b10" class="abs" style="left:540px;top:492px;width:190px;height:338px;border:5px solid #201e1d;box-sizing:border-box;background:#e9d8bd"><div class="hi" id="h10" style="height:143.72px"></div></div>
+    <div id="ground" class="abs"></div>
+    <img id="sh1" class="abs" src="assets/shops/site-1.svg" alt="" /><img id="sh10" class="abs" src="assets/shops/site-10.svg" alt="" />
+    <div id="l1" class="abs"><span class="sans lab">7am commuters</span><span class="serif num" id="n1">£0</span></div>
+    <div id="l10" class="abs"><span class="sans lab">Saturday brunch</span><span class="serif num" id="n10">£0</span></div>
+    <div class="foot">ILLUSTRATIVE FIGURES, WEEKLY</div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    const pop = (sel, t, y = 12) => tl.fromTo(sel, { opacity: 0, y }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, t);
+    const rise = (sel, t, d = 0.9) => tl.fromTo(sel, { clipPath: "inset(100% 0 0 0)" }, { clipPath: "inset(0% 0 0 0)", duration: d, ease: "power3.out" }, t);
+    const count = (sel, to, t, fmt, d = 1.1) => { const o = { v: 0 }; tl.to(o, { v: to, duration: d, ease: "power3.out", onUpdate: () => { document.querySelector(sel).textContent = fmt(Math.round(o.v)); } }, t); };
+    const poses = (list, cur, t) => list.forEach((p) => tl.set(p, { opacity: p === cur ? 1 : 0 }, t));
+    const gbp = (n) => "£" + n.toLocaleString("en-GB");
+    
+    tl.fromTo("#k", { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, 0.1);
+    rise("#b1", 3.845, 1.0); rise("#b10", 4.095000000000001, 1.0);
+    rise("#h1", 13.234, 1.1); pop("#l1", 13.234); count("#n1", 11000, 13.434, gbp, 1.2);
+    rise("#h10", 17.364, 1.1); pop("#l10", 17.364); count("#n10", 5720, 17.564, gbp, 1.2);
+    tl.set({}, {}, 20.224);
+    window.__timelines["segmentation"] = tl;
+  </script>
+</template>

@@ -1,0 +1,36 @@
+<template>
+  <style>
+    @font-face { font-family: "Newsreader"; font-weight: 300; src: url("assets/fonts/newsreader-latin-300-normal.woff2") format("woff2"); }
+    @font-face { font-family: "Archivo"; font-weight: 500; src: url("assets/fonts/Archivo-Medium.ttf") format("truetype"); }
+    @font-face { font-family: "Archivo"; font-weight: 400; src: url("assets/fonts/Archivo-Regular.ttf") format("truetype"); }
+    :root { --bone: #f3f2f2; --ink: #201e1d; --red: #ec3013; --deep: #b6240e; --sand: #e9d8bd; --grey: #736e6b; }
+    #root { position: absolute; inset: 0; background: var(--bone); color: var(--ink); overflow: hidden; font-variant-numeric: tabular-nums; }
+    .kick { position: absolute; left: 86px; font: 500 28px/1 "Archivo", sans-serif; letter-spacing: .22em; color: var(--deep); white-space: nowrap; }
+    .serif { position: absolute; font-family: "Newsreader", serif; font-weight: 300; letter-spacing: -0.01em; white-space: nowrap; }
+    .sans { position: absolute; font-family: "Archivo", sans-serif; font-weight: 500; white-space: nowrap; }
+    .eye { position: absolute; left: 86px; top: 136px; font: 500 28px/1 "Archivo", sans-serif; letter-spacing: .13em; color: var(--deep); white-space: nowrap; }
+    .abs { position: absolute; }
+    .grey { color: var(--grey); }
+    
+    #root { background: transparent; }
+    #q { left: 86px; top: 250px; width: 908px; font-size: 124px; line-height: 1.07; color: var(--ink); white-space: normal; }
+    #q .l3 { color: var(--grey); } #q span { display: inline-block; margin-right: 0.2em; }
+  </style>
+  <div id="root" data-composition-id="question" data-width="1080" data-height="1350">
+
+    <div id="q" class="serif"><span>Which</span><span>customers</span><br /><span>bring</span><span>each</span><span>site</span><br /><div class="l3"><span>the</span><span>most</span><span>sales?</span></div></div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    const pop = (sel, t, y = 12) => tl.fromTo(sel, { opacity: 0, y }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, t);
+    const rise = (sel, t, d = 0.9) => tl.fromTo(sel, { clipPath: "inset(100% 0 0 0)" }, { clipPath: "inset(0% 0 0 0)", duration: d, ease: "power3.out" }, t);
+    const count = (sel, to, t, fmt, d = 1.1) => { const o = { v: 0 }; tl.to(o, { v: to, duration: d, ease: "power3.out", onUpdate: () => { document.querySelector(sel).textContent = fmt(Math.round(o.v)); } }, t); };
+    const poses = (list, cur, t) => list.forEach((p) => tl.set(p, { opacity: p === cur ? 1 : 0 }, t));
+    const gbp = (n) => "£" + n.toLocaleString("en-GB");
+    
+    const cues = [4.857,5.054,5.614,6.114,6.534,6.934,7.359,7.699];
+    document.querySelectorAll("#q span").forEach((el, i) => tl.fromTo(el, { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, cues[i] - 0.1));
+    tl.set({}, {}, 11.703);
+    window.__timelines["question"] = tl;
+  </script>
+</template>

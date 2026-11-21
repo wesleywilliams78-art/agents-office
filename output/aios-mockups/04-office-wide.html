@@ -1,0 +1,251 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Office · full width</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=Newsreader:opsz,wght@6..72,300;6..72,400&display=swap">
+<style>
+/* AIOS mock-up, 7 Nov 2026 (evening): the Office as a full-width centrepiece. Static data copied from the live office at 20:54.
+   Every colour is a token on :root, so a reskin changes only these lines. */
+:root {
+  --bg: #161413; --card: rgba(36,33,32,.86); --card-solid: #242120; --ink: #F3F2F2; --grey: #bdb7b3; --faint: #8a847f; --meta: #B79C8F;
+  --line: rgba(243,242,242,.10); --line2: rgba(243,242,242,.20); --soft: rgba(243,242,242,.05);
+  --accent: #EC3013; --accent-soft: rgba(236,48,19,.16); --ok: #7FB28F; --amber: #E0A84A; --idle: #6f6a66;
+  --ridge1: #3a1712; --ridge2: #5a1d14; --ridge3: #2a1f1c; --ridge4: #8a2414;
+  --serif: Newsreader, Georgia, serif; --ui: Archivo, "Segoe UI", sans-serif;
+  --r: 20px;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; background: var(--bg); color: var(--ink); font: 13px/1.45 var(--ui); overflow: hidden; }
+/* ---------- top bar: the tabs run across the top ---------- */
+.top { position: relative; z-index: 5; height: 64px; display: flex; align-items: center; gap: 22px; padding: 0 28px; border-bottom: 1px solid var(--line); background: rgba(22,20,19,.72); backdrop-filter: blur(10px); }
+.brand { display: flex; align-items: center; gap: 12px; flex: none; }
+.logo { width: 32px; height: 32px; border-radius: 8px; background: var(--accent); color: #fff; font: 700 9.5px/32px var(--ui); text-align: center; letter-spacing: .02em; }
+.brand h1 { margin: 0; font: 300 25px/1 var(--serif); white-space: nowrap; }
+.tabs { display: flex; align-items: center; gap: 2px; min-width: 0; }
+.tabs a { position: relative; padding: 9px 14px; border-radius: 99px; font-size: 11px; letter-spacing: .12em; font-weight: 600; text-transform: uppercase; color: var(--grey); white-space: nowrap; cursor: pointer; }
+.tabs a:hover { color: var(--ink); background: var(--soft); }
+.tabs a.on { background: var(--ink); color: #161413; }
+.tabs a sup { font-size: 9.5px; letter-spacing: 0; margin-left: 5px; color: var(--accent); font-weight: 600; top: -.5em; }
+.tabs a sup.n { color: var(--faint); }
+.tabs .sep { width: 1px; height: 18px; background: var(--line2); margin: 0 10px; }
+.top .right { margin-left: auto; display: flex; align-items: center; gap: 10px; color: var(--grey); font-size: 11.5px; flex: none; }
+.pill { display: inline-flex; align-items: center; gap: 8px; padding: 7px 13px; border: 1px solid var(--line2); border-radius: 99px; white-space: nowrap; }
+.pill i { width: 7px; height: 7px; border-radius: 50%; background: var(--ok); box-shadow: 0 0 0 3px rgba(127,178,143,.22); }
+.pill.b { font-weight: 600; letter-spacing: .12em; font-size: 10.5px; color: var(--ink); }
+/* ---------- the stage: the whole width, the ridges behind it ---------- */
+.stage { position: relative; height: calc(100vh - 64px); overflow: hidden; }
+.land { position: absolute; inset: 0; z-index: 0; pointer-events: none; }
+.dots { position: absolute; inset: 0; z-index: 0; background: radial-gradient(circle at 1px 1px, rgba(243,242,242,.07) 1px, transparent 0) 0 0 / 26px 26px; -webkit-mask: linear-gradient(#000 0 55%, transparent 85%); mask: linear-gradient(#000 0 55%, transparent 85%); }
+.flows { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; overflow: visible; }
+.map { position: relative; z-index: 2; height: 100%; display: grid; grid-template-columns: minmax(380px, 440px) 1fr minmax(380px, 440px); gap: 0 40px; padding: 26px 64px 26px 40px; }
+.colx { display: flex; flex-direction: column; gap: 18px; justify-content: center; }
+.mid { display: flex; flex-direction: column; align-items: center; justify-content: space-between; padding: 0 20px; }
+/* ---------- status: a dot and a word ---------- */
+.st { display: inline-flex; align-items: center; gap: 6px; font-size: 10.5px; letter-spacing: .1em; text-transform: uppercase; color: var(--grey); white-space: nowrap; }
+.st i { width: 7px; height: 7px; border-radius: 50%; background: var(--idle); flex: none; }
+.st.you { color: var(--accent); } .st.you i { background: var(--accent); }
+.st.ok i { background: var(--ok); } .st.ok { color: var(--ok); }
+.badge { min-width: 22px; height: 22px; border-radius: 99px; background: var(--accent); color: #fff; font-size: 11px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; padding: 0 6px; }
+/* faces */
+.f { position: relative; flex: none; width: 30px; height: 30px; }
+.f img, .f span { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; display: flex; align-items: center; justify-content: center; background: #34302e; color: var(--faint); font-size: 9.5px; font-weight: 600; letter-spacing: .04em; }
+.f b { position: absolute; right: -1px; bottom: -1px; width: 9px; height: 9px; border-radius: 50%; background: var(--idle); box-shadow: 0 0 0 2px var(--card-solid); }
+.f b.you { background: var(--accent); } .f b.ok { background: var(--ok); }
+.f.l { width: 40px; height: 40px; }
+/* ---------- a department ---------- */
+.dept { position: relative; background: var(--card); border: 1px solid var(--line); border-radius: var(--r); padding: 16px 18px 14px; backdrop-filter: blur(6px); cursor: pointer; transition: border-color .2s, transform .2s; }
+.dept:hover { border-color: var(--line2); transform: translateY(-2px); }
+.dept.on { border-color: rgba(243,242,242,.24); }
+.dept.need { border-color: rgba(236,48,19,.65); box-shadow: 0 0 0 1px rgba(236,48,19,.35), 0 18px 40px -22px rgba(236,48,19,.7); }
+.dept .hd { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+.dept h4 { margin: 0; font: 300 27px/1 var(--serif); }
+.dept .hd .tag { font-size: 9.5px; letter-spacing: .16em; text-transform: uppercase; color: var(--faint); border: 1px dashed var(--line2); border-radius: 99px; padding: 3px 9px; }
+.dept .hd .badge { margin-left: auto; }
+.dept .ld { display: flex; align-items: center; gap: 11px; }
+.dept .ld .n { font-weight: 600; font-size: 13px; } .dept .ld .r { color: var(--meta); font-size: 11.5px; }
+.dept .ld .st { margin-left: auto; }
+.dept .row { display: flex; align-items: center; gap: 7px; margin: 12px 0 10px; }
+.dept .now { font-size: 11.5px; color: var(--grey); display: flex; gap: 7px; align-items: baseline; }
+.dept .now i { width: 6px; height: 6px; border-radius: 50%; background: var(--idle); flex: none; transform: translateY(-1px); }
+.dept .cnt { display: grid; grid-template-columns: repeat(3, 1fr); margin-top: 12px; padding-top: 10px; border-top: 1px solid var(--line); }
+.dept .cnt div { font-size: 9.5px; letter-spacing: .12em; text-transform: uppercase; color: var(--faint); }
+.dept .cnt b { display: block; font: 300 24px/1.05 var(--serif); letter-spacing: 0; color: var(--ink); }
+.dept .cnt .y b { color: var(--accent); }
+.dept.off { background: rgba(28,25,24,.55); border-style: dashed; border-color: rgba(243,242,242,.16); }
+.dept.off h4 { color: var(--grey); }
+.dept.off .ld .n { color: var(--grey); font-weight: 500; }
+.dept.off .row { margin-bottom: 0; }
+/* ---------- Theo: everything enters here ---------- */
+.theo { width: min(760px, 100%); display: grid; grid-template-columns: auto 1fr auto; gap: 14px; align-items: center; background: var(--card); border: 1px solid var(--line2); border-radius: 99px; padding: 8px 8px 8px 10px; backdrop-filter: blur(8px); }
+.theo .who { display: flex; align-items: center; gap: 10px; padding-right: 6px; border-right: 1px solid var(--line); }
+.theo .who .n { font-weight: 600; font-size: 13px; line-height: 1.1; } .theo .who .r { color: var(--meta); font-size: 10.5px; letter-spacing: .1em; text-transform: uppercase; }
+.theo .ask { color: var(--faint); font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.btn { border: 0; border-radius: 99px; background: var(--ink); color: #161413; font: 600 10.5px/1 var(--ui); letter-spacing: .14em; padding: 13px 18px; text-transform: uppercase; cursor: pointer; white-space: nowrap; }
+.btn.red { background: var(--accent); color: #fff; }
+.k { font-size: 10px; letter-spacing: .2em; text-transform: uppercase; color: var(--meta); }
+/* ---------- Nora: the centre of the office ---------- */
+.nora { position: relative; width: min(470px, 100%); background: linear-gradient(180deg, rgba(48,41,38,.94), rgba(34,30,29,.94)); border: 1px solid rgba(236,48,19,.7); border-radius: 28px; padding: 24px 26px 22px; backdrop-filter: blur(8px);
+  box-shadow: 0 0 0 8px rgba(236,48,19,.07), 0 0 0 18px rgba(236,48,19,.035), 0 40px 90px -30px rgba(236,48,19,.55); }
+.nora .who { display: flex; align-items: center; gap: 18px; margin: 12px 0 18px; }
+.nora .who .f { width: 92px; height: 92px; } .nora .who .f b { width: 14px; height: 14px; right: 3px; bottom: 3px; }
+.nora .who .n { font: 300 50px/.95 var(--serif); } .nora .who .r { color: var(--grey); font-size: 13px; margin-top: 6px; }
+.nora .last { background: rgba(22,20,19,.7); border: 1px solid var(--line); border-radius: 14px; padding: 12px 14px; }
+.nora .last .t { font-size: 13.5px; margin-top: 6px; line-height: 1.4; } .nora .last .t em { font-style: normal; color: var(--grey); }
+.nora .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 16px; }
+.nora .stats div { background: var(--soft); border-radius: 14px; padding: 11px 13px; font-size: 9.5px; letter-spacing: .12em; text-transform: uppercase; color: var(--faint); }
+.nora .stats b { display: block; font: 300 34px/1 var(--serif); color: var(--ink); letter-spacing: 0; margin-bottom: 4px; }
+.nora .stats .y b { color: var(--accent); }
+/* ---------- you: where the work comes back ---------- */
+.back { display: inline-flex; align-items: center; gap: 14px; background: var(--accent); color: #fff; border-radius: 99px; padding: 8px 8px 8px 8px; box-shadow: 0 18px 40px -16px rgba(236,48,19,.85); }
+.back .me { width: 38px; height: 38px; border-radius: 50%; background: #fff; color: var(--accent); font: 700 10px/38px var(--ui); text-align: center; letter-spacing: .06em; }
+.back .t { font-size: 13px; font-weight: 600; } .back .t span { display: block; font-weight: 400; font-size: 11.5px; opacity: .85; }
+.back .btn { background: #fff; color: var(--accent); }
+/* flow labels */
+.fl { position: absolute; z-index: 3; font-size: 9.5px; letter-spacing: .16em; text-transform: uppercase; color: var(--meta); background: rgba(22,20,19,.85); border: 1px solid var(--line); border-radius: 99px; padding: 4px 10px; white-space: nowrap; transform: translate(-50%, -50%); }
+.fl.r { color: #ff9a85; border-color: rgba(236,48,19,.45); }
+/* ---------- For You: a pull-out tab on the right edge ---------- */
+.fytab { position: fixed; right: 0; top: 50%; transform: translateY(-50%); z-index: 8; background: var(--accent); color: #fff; border-radius: 16px 0 0 16px; padding: 18px 11px; display: flex; flex-direction: column; align-items: center; gap: 12px; cursor: pointer; box-shadow: -10px 0 30px -12px rgba(236,48,19,.7); }
+.fytab span { writing-mode: vertical-rl; transform: rotate(180deg); font-size: 11px; letter-spacing: .2em; font-weight: 700; text-transform: uppercase; }
+.fytab b { width: 24px; height: 24px; border-radius: 50%; background: #fff; color: var(--accent); font-size: 11.5px; display: flex; align-items: center; justify-content: center; }
+.fy { position: fixed; top: 64px; right: 0; bottom: 0; width: 440px; z-index: 9; background: rgba(30,27,26,.97); border-left: 1px solid var(--line2); box-shadow: -40px 0 80px -30px rgba(0,0,0,.8); padding: 24px 26px; transform: translateX(100%); transition: transform .3s cubic-bezier(.2,.8,.2,1); backdrop-filter: blur(12px); }
+body.fyopen .fy { transform: none; } body.fyopen .fytab { right: 440px; }
+.fy h3 { margin: 0; font: 300 34px/1 var(--serif); display: flex; align-items: center; gap: 12px; }
+.fy .sub { color: var(--grey); font-size: 12px; margin: 8px 0 18px; }
+.fy .it { display: grid; grid-template-columns: auto 1fr; gap: 12px; padding: 16px 0; border-top: 1px solid var(--line); }
+.fy .it .k { color: var(--meta); } .fy .it .t { font-size: 14px; font-weight: 600; margin: 4px 0; line-height: 1.35; } .fy .it .m { color: var(--grey); font-size: 11.5px; margin-bottom: 10px; }
+.fy .x { position: absolute; top: 22px; right: 22px; width: 36px; height: 36px; border-radius: 50%; border: 1px solid var(--line2); display: flex; align-items: center; justify-content: center; color: var(--grey); font-size: 16px; }
+</style></head>
+<body>
+<header class="top">
+  <div class="brand"><div class="logo">WRW</div><h1>Wes's Office</h1></div>
+  <nav class="tabs">
+    <a>Overview<sup>2</sup></a><a>Matrix<sup class="n">123</sup></a><span class="sep"></span>
+    <a>Clients</a><a>Budget</a><span class="sep"></span>
+    <a class="on">Office</a><a>Roles</a><a>Brain</a><a>Skills<sup>8</sup></a><a>Tokens</a><a>Social</a>
+  </nav>
+  <div class="right"><span class="pill"><i></i>Live · Sonnet by default</span><span class="pill">Open the 3D office</span><span class="pill b">AUTO</span></div>
+</header>
+
+<main class="stage" id="stage">
+  <svg class="land" viewBox="0 0 1600 760" preserveAspectRatio="none" aria-hidden="true">
+    <defs>
+      <linearGradient id="g1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7a2216" stop-opacity=".55"/><stop offset="1" stop-color="#2a1210" stop-opacity=".2"/></linearGradient>
+      <linearGradient id="g2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4a2a24" stop-opacity=".55"/><stop offset="1" stop-color="#161413" stop-opacity="0"/></linearGradient>
+      <linearGradient id="g3" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#b8301a" stop-opacity=".42"/><stop offset="1" stop-color="#3a1510" stop-opacity=".25"/></linearGradient>
+      <linearGradient id="g4" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2b2220" stop-opacity=".95"/><stop offset="1" stop-color="#161413" stop-opacity="1"/></linearGradient>
+      <radialGradient id="glow" cx=".5" cy=".46" r=".42"><stop offset="0" stop-color="#EC3013" stop-opacity=".16"/><stop offset="1" stop-color="#EC3013" stop-opacity="0"/></radialGradient>
+    </defs>
+    <rect width="1600" height="760" fill="url(#glow)"/>
+    <path d="M0 420 C 180 330, 330 360, 470 300 S 760 250, 900 330 S 1180 280, 1330 230 S 1520 260, 1600 220 L1600 760 L0 760 Z" fill="url(#g2)"/>
+    <path d="M0 520 C 140 470, 300 420, 420 450 S 640 520, 800 470 S 1060 380, 1220 430 S 1460 480, 1600 400 L1600 760 L0 760 Z" fill="url(#g1)"/>
+    <path d="M0 600 C 200 560, 340 600, 520 560 S 820 520, 980 580 S 1260 640, 1420 580 S 1560 560, 1600 570 L1600 760 L0 760 Z" fill="url(#g3)"/>
+    <path d="M0 680 C 220 650, 420 690, 640 660 S 1000 640, 1200 680 S 1480 700, 1600 670 L1600 760 L0 760 Z" fill="url(#g4)"/>
+  </svg>
+  <div class="dots"></div>
+  <svg class="flows" id="flows" aria-hidden="true"></svg>
+
+  <div class="map">
+    <section class="colx" id="L">
+      <article class="dept on need" data-d="marketing" data-n="1">
+        <div class="hd"><h4>Marketing</h4><span class="badge">1</span></div>
+        <div class="ld"><span class="f l"><img src="../../assets/people/mlead.png" alt=""><b class="you"></b></span><div><div class="n">Mara</div><div class="r">Head of Marketing</div></div><span class="st you"><i></i>Needs you</span></div>
+        <div class="row"><span class="f"><img src="../../assets/people/riley.png" alt=""><b></b></span><span class="f"><img src="../../assets/people/newt.png" alt=""><b></b></span><span class="f"><img src="../../assets/people/gfx.png" alt=""><b></b></span><span class="f"><img src="../../assets/people/ada.png" alt=""><b></b></span><span class="f"><img src="../../assets/people/iggy.png" alt=""><b></b></span><span class="f"><img src="../../assets/people/vid.png" alt=""><b></b></span><span class="f"><img src="../../assets/people/fer.png" alt=""><b></b></span><span class="f"><img src="../../assets/people/jeremy.png" alt=""><b></b></span></div>
+        <div class="now"><i></i>Nothing running · last task 53 min ago</div>
+        <div class="cnt"><div><b>0</b>Working</div><div><b>0</b>Lead review</div><div class="y"><b>1</b>For you</div></div>
+      </article>
+      <article class="dept off" data-d="emails">
+        <div class="hd"><h4>Emails</h4><span class="tag">Not in AIOS yet</span></div>
+        <div class="ld"><span class="f"><span>EA</span><b></b></span><div class="n">Executive Assistant</div><span class="st"><i></i>Idle</span></div>
+        <div class="row"><span class="f"><span>CE</span><b></b></span><span class="f"><span>IE</span><b></b></span><span class="f"><span>VE</span><b></b></span><span class="f"><span>CE</span><b></b></span><span class="now" style="margin-left:auto">last task 6 h ago</span></div>
+      </article>
+      <article class="dept off" data-d="ops">
+        <div class="hd"><h4>Operations</h4><span class="tag">Not in AIOS yet</span></div>
+        <div class="ld"><span class="f"><span>OL</span><b></b></span><div class="n">Operations Lead</div><span class="st"><i></i>Idle</span></div>
+        <div class="row"><span class="f"><span>I</span><b></b></span><span class="f"><span>LR</span><b></b></span><span class="f"><span>CC</span><b></b></span><span class="f"><span>PR</span><b></b></span><span class="f"><span>ID</span><b></b></span><span class="now" style="margin-left:auto">last task 11 h ago</span></div>
+      </article>
+    </section>
+
+    <section class="mid">
+      <div class="theo" id="theo"><div class="who"><span class="f l"><img src="../../assets/people/pe.png" alt=""><b class="ok"></b></span><div><div class="n">Theo</div><div class="r">Everything enters here</div></div></div>
+        <div class="ask">Say what you want done, e.g. plan next week’s Instagram and tell me what is waiting on me</div><button class="btn">Check and send</button></div>
+      <div class="nora" id="nora">
+        <div class="k">The centre of the office</div>
+        <div class="who"><span class="f"><img src="../../assets/people/chief.png" alt=""><b></b></span><div><div class="n">Nora</div><div class="r">Chief of Staff · hands every request to a department</div></div></div>
+        <div class="last"><span class="st"><i></i>Last sent</span><div class="t">Update and finish Scaling Without Borders Edition 36 draft <em>to Marketing, Mara · 3 h ago</em></div></div>
+        <div class="stats"><div><b>0</b>In flight</div><div class="y"><b>2</b>For you</div><div><b>28</b>Done today</div></div>
+      </div>
+      <div class="back" id="you"><span class="me">YOU</span><div class="t">2 waiting for your OK<span>Marketing 1 · Delivery 1</span></div><button class="btn">Review</button></div>
+    </section>
+
+    <section class="colx" id="R">
+      <article class="dept on need" data-d="delivery" data-n="1">
+        <div class="hd"><h4>Delivery</h4><span class="badge">1</span></div>
+        <div class="ld"><span class="f l"><span>DL</span><b class="you"></b></span><div><div class="n">Delivery Lead</div><div class="r">Head of Delivery</div></div><span class="st you"><i></i>Needs you</span></div>
+        <div class="row"><span class="f"><span>PC</span><b class="you"></b></span><span class="f"><span>QA</span><b></b></span><span class="f"><span>OM</span><b></b></span><span class="f"><span>CA</span><b></b></span><span class="f"><span>DA</span><b></b></span><span class="f"><span>O</span><b></b></span></div>
+        <div class="now"><i></i>Nothing running · last task 5 h ago</div>
+        <div class="cnt"><div><b>0</b>Working</div><div><b>0</b>Lead review</div><div class="y"><b>1</b>For you</div></div>
+      </article>
+      <article class="dept off" data-d="sales">
+        <div class="hd"><h4>Sales</h4><span class="tag">Not in AIOS yet</span></div>
+        <div class="ld"><span class="f"><span>SL</span><b></b></span><div class="n">Sales Lead</div><span class="st"><i></i>Idle</span></div>
+        <div class="row"><span class="f"><span>LE</span><b></b></span><span class="f"><span>IL</span><b></b></span><span class="f"><span>P</span><b></b></span><span class="f"><span>P</span><b></b></span><span class="f"><span>FU</span><b></b></span><span class="now" style="margin-left:auto">last task 3 d ago</span></div>
+      </article>
+      <article class="dept off" data-d="fin">
+        <div class="hd"><h4>Finance</h4><span class="tag">Not in AIOS yet</span></div>
+        <div class="ld"><span class="f"><span>FL</span><b></b></span><div class="n">Finance Lead</div><span class="st"><i></i>Idle</span></div>
+        <div class="row"><span class="f"><span>I</span><b></b></span><span class="f"><span>PB</span><b></b></span><span class="f"><span>MA</span><b></b></span><span class="now" style="margin-left:auto">last task 3 d ago</span></div>
+      </article>
+    </section>
+  </div>
+</main>
+
+<div class="fytab" id="fytab"><b>2</b><span>For you</span></div>
+<aside class="fy" id="fy">
+  <div class="x">✕</div>
+  <h3>For you <span class="badge">2</span></h3>
+  <div class="sub">Whole office · oldest first · nothing goes out without you</div>
+  <div class="it"><span class="f l"><img src="../../assets/people/mlead.png" alt=""><b class="you"></b></span><div><div class="k">Marketing</div><div class="t">Review design audit test still xmw6tt84es77 against its brief</div><div class="m">Marketing Lead · waiting for your OK</div><button class="btn red">Review</button></div></div>
+  <div class="it"><span class="f l"><span>PC</span><b class="you"></b></span><div><div class="k">Delivery</div><div class="t">Search Brain for Qamaria and list open items</div><div class="m">Project Co-Ordinator · waiting for your OK</div><button class="btn red">Review</button></div></div>
+</aside>
+
+<script>
+/* the flows: Theo → Nora (your ask), Nora → each department (work goes out), and from a department that waits on you back to You (red) */
+const NS = 'http://www.w3.org/2000/svg', S = document.getElementById('stage'), F = document.getElementById('flows');
+const box = el => { const r = el.getBoundingClientRect(), s = S.getBoundingClientRect(); return { x: r.left - s.left, y: r.top - s.top, w: r.width, h: r.height }; };
+const mk = (tag, a) => { const e = document.createElementNS(NS, tag); for (const k in a) e.setAttribute(k, a[k]); F.appendChild(e); return e; };
+function label(x, y, text, red) { const d = document.createElement('div'); d.className = 'fl' + (red ? ' r' : ''); d.style.left = x + 'px'; d.style.top = y + 'px'; d.textContent = text; S.appendChild(d); }
+function draw() {
+  F.innerHTML = ''; S.querySelectorAll('.fl').forEach(e => e.remove());
+  const defs = mk('defs', {}); defs.innerHTML = `<marker id="ah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#F3F2F2"/></marker>
+    <marker id="ahr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#EC3013"/></marker>
+    <marker id="ahf" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#6f6a66"/></marker>`;
+  const T = box(document.getElementById('theo')), N = box(document.getElementById('nora')), Y = box(document.getElementById('you'));
+  // Theo → Nora
+  const tx = T.x + T.w / 2;
+  mk('path', { d: `M${tx} ${T.y + T.h + 4} L${tx} ${N.y - 10}`, stroke: '#F3F2F2', 'stroke-width': 1.6, fill: 'none', 'marker-end': 'url(#ah)', 'stroke-dasharray': '2 7', 'stroke-linecap': 'round', class: 'run' });
+  label(tx + 70, (T.y + T.h + N.y) / 2, 'Your ask');
+  // Nora → departments, and back to You
+  const depts = [...document.querySelectorAll('.dept')];
+  const side = { L: depts.filter(d => d.closest('#L')), R: depts.filter(d => d.closest('#R')) };
+  for (const k of ['L', 'R']) side[k].forEach((d, i) => {
+    const D = box(d), left = k === 'L', on = d.classList.contains('on'), need = d.classList.contains('need');
+    const sx = left ? N.x : N.x + N.w, sy = N.y + N.h * (0.3 + i * 0.2);
+    const ex = left ? D.x + D.w + 4 : D.x - 4, ey = D.y + D.h * 0.38;
+    const mx = (sx + ex) / 2;
+    mk('path', { d: `M${sx} ${sy} C ${mx} ${sy}, ${mx} ${ey}, ${ex} ${ey}`, stroke: on ? '#F3F2F2' : '#6f6a66', 'stroke-opacity': on ? .85 : .55, 'stroke-width': on ? 1.6 : 1.2, fill: 'none',
+      'stroke-dasharray': on ? '' : '4 6', 'marker-end': on ? 'url(#ah)' : 'url(#ahf)' });
+    if (on) { const p = F.lastChild; const dot = mk('circle', { r: 3.5, fill: '#F3F2F2' }); dot.innerHTML = `<animateMotion dur="2.6s" repeatCount="indefinite" begin="${i * .4}s" path="${p.getAttribute('d')}"/>`; }
+    if (need) { // back to you: from the department's lower inner corner to the You pill
+      const rx = left ? D.x + D.w + 4 : D.x - 4, ry = D.y + D.h * 0.78, yx = left ? Y.x - 6 : Y.x + Y.w + 6, yy = Y.y + Y.h / 2;
+      const p = mk('path', { d: `M${rx} ${ry} C ${(rx + yx) / 2} ${ry}, ${(rx + yx) / 2 + (left ? -40 : 40)} ${yy}, ${yx} ${yy}`, stroke: '#EC3013', 'stroke-width': 1.8, fill: 'none', 'marker-end': 'url(#ahr)' });
+      const dot = mk('circle', { r: 4, fill: '#EC3013' }); dot.innerHTML = `<animateMotion dur="3s" repeatCount="indefinite" path="${p.getAttribute('d')}"/>`;
+      const L = p.getTotalLength(), q = p.getPointAtLength(L * 0.8); label(q.x + (left ? -64 : 64), q.y, `${d.dataset.n} back to you`, true); // on the curve's last stretch, clear of the grey arrows
+    }
+  });
+  label(N.x - 70, N.y + N.h * 0.16, 'Work goes out');
+}
+draw(); addEventListener('resize', draw); document.fonts && document.fonts.ready.then(draw);
+document.getElementById('fytab').onclick = () => document.body.classList.toggle('fyopen');
+document.querySelector('#fy .x').onclick = () => document.body.classList.remove('fyopen');
+if (location.hash === '#fy') document.body.classList.add('fyopen');
+</script>
+</body></html>

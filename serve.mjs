@@ -825,6 +825,38 @@ function loadRoutines() { // re-read from disk every time: a routine written by 
 }
 // upcoming: every run in the next eight days, so the AIOS week shows a daily routine on each day, not just its next run (7 Nov 2026)
 const routinesOut = () => { const now = Date.now(); const list = loadRoutines().map(r => r.paused ? r : { ...r, upcoming: [...new Set([r.nextAt, ...occurrences(r.when, now, now + 8 * 864e5, 40)].filter(Boolean))].sort((a, b) => a - b) }); return { routines: list, depts: routines.ALLOWED, path: rlist.path, problems: rlist.problems }; };
+// Health strip (21 Nov 2026): what the office leans on that can break quietly. Each problem says the cause and the fix in plain words;
+// level 'bad' stops work, 'warn' needs a look. Read-only: nothing here repairs anything.
+function vitals() {
+  const now = Date.now(), out = [], ago = ms => ms < 36e5 ? Math.round(ms / 6e4) + ' min' : Math.round(ms / 36e5) + ' h';
+  const add = (id, level, label, cause, fix) => out.push({ id, level, label, cause, fix });
+  const media = cfg.media?.root || 'D:\\Agents Office Media';
+  if (!fs.existsSync(media)) add('media', 'bad', 'Media drive missing', `${media} cannot be found, so renders, music and LTX output have nowhere to go.`, 'Plug in the SanDisk drive. Nothing gets written to C: in the meantime.');
+  try { // LTX: the most recent job. A 410 means the GPU dropped out (code 43)
+    const dir = path.join(ROOT, 'data', 'ltx', 'jobs');
+    const last = fs.readdirSync(dir).filter(f => f.endsWith('.json')).map(f => { try { return JSON.parse(fs.readFileSync(path.join(dir, f), 'utf8')); } catch { return null; } }).filter(Boolean).sort((a, b) => (b.finishedAt || b.createdAt) - (a.finishedAt || a.createdAt))[0];
+    if (last?.state === 'failed' && now - (last.finishedAt || last.createdAt) < 864e5) {
+      const gpu = /410|code 43/i.test(last.error || '');
+      add('ltx:' + last.id, gpu ? 'bad' : 'warn', gpu ? 'GPU down' : 'LTX job failed', `The last LTX video (${ago(now - (last.finishedAt || last.createdAt))} ago) failed: ${last.error || 'no reason given'}.`, gpu ? 'The RTX 5080 has dropped out (code 43). Restart the PC, then run the job again.' : 'Run it again. If it fails twice, the PC may have been asleep mid-job; restart LTX Desktop.');
+    }
+  } catch {}
+  try { // Telegram listener: its watchdog log. Down if the last line is an exit with no relaunch; flapping if it restarted 3+ times in the hour
+    const log = path.join(os.homedir(), '.claude', 'channels', 'telegram', 'watchdog.log');
+    const lines = fs.readFileSync(log, 'utf8').trim().split(/\r?\n/).slice(-60), at = l => Date.parse(l.slice(0, 19).replace(' ', 'T')) || 0;
+    const lastLine = lines[lines.length - 1] || '', exits = lines.filter(l => /claude exited/.test(l) && now - at(l) < 36e5).length;
+    if (/claude exited/.test(lastLine) && now - at(lastLine) > 60000) add('tg', 'bad', 'Telegram listener down', `It exited ${ago(now - at(lastLine))} ago and did not relaunch, so messages from your phone are not being read.`, 'Run the AgentsOffice-TelegramChannel scheduled task (Task Scheduler) or log off and on.');
+    else if (exits >= 3) add('tg', 'warn', 'Telegram listener restarting', `It restarted ${exits} times in the last hour.`, 'Usually a network drop or a Claude Code update; if it keeps going, close the listener window and let the scheduled task relaunch it.');
+  } catch { add('tg', 'warn', 'Telegram listener not found', 'There is no watchdog log, so the listener has not run on this machine.', 'Run the AgentsOffice-TelegramChannel scheduled task.'); }
+  const tasks = load();
+  for (const t of tasks) if ((t.state === 'doing' || t.state === 'running') && t.startedAt && now - t.startedAt > 90 * 6e4)
+    add('stuck:' + t.id, 'warn', 'Task stuck', `"${t.title}" (${agentName(t.agent)}) has been working for ${ago(now - t.startedAt)}. It also blocks restarts.`, 'Open it on the board and cancel it, or wait if it is a long render.');
+  let list = []; try { list = loadRoutines(); } catch {}
+  for (const p of rlist.problems || []) add('rprob:' + p.slice(0, 40), 'warn', 'Routine file problem', p, 'Ask Claude Code to fix routines.json, then run npm run check.');
+  for (const r of list) if (!r.paused && r.nextAt && now - r.nextAt > 10 * 6e4) add('rlate:' + r.id, 'warn', 'Routine overdue', `"${r.title}" was due ${ago(now - r.nextAt)} ago and has not fired.`, 'Press RUN NOW under SCHEDULED. If it keeps slipping, restart the office.');
+  const latest = new Map(); for (const t of tasks) if (t.routine && (t.addedAt || 0) >= (latest.get(t.routine)?.addedAt || 0)) latest.set(t.routine, t); // only the routine's latest run counts
+  for (const t of latest.values()) if (t.error && t.doneAt && now - t.doneAt < 48 * 36e5) add('rfail:' + t.id, 'warn', 'Routine failed', `"${t.title}" failed ${ago(now - t.doneAt)} ago.`, 'Open the task to read why, then press RUN NOW under SCHEDULED to try again.');
+  return { ok: !out.length, at: now, problems: out.sort((a, b) => (a.level === 'bad' ? 0 : 1) - (b.level === 'bad' ? 0 : 1)) };
+}
 const agentName = id => AGENTS.find(a => a.id === id)?.name || id;
 // routine-driven runs go one at a time, so a burst of catch-ups after a long sleep does not spawn five Claude processes at once
 let queue = Promise.resolve();
@@ -1650,6 +1682,7 @@ const server = http.createServer(async (req, res) => {
     if (url.pathname === '/api/brainmap') { // the Brain as a map of the five strands of work, the desks that serve them, and every note under them (brainmap.mjs); analysis: hubs, bridges, clusters, crossings (the AIOS Brain tab)
       try { if (!brainMapCache.at || Date.now() - brainMapCache.at > 20000) brainMapCache = { at: Date.now(), map: (m => ({ ...m, analysis: analyseBrainMap(m) }))(buildBrainMap({ vault: BRAIN, agents: AGENTS })) }; return json(res, 200, brainMapCache.map); } catch (e) { return json(res, 500, { error: e.message }); }
     }
+    if (url.pathname === '/api/vitals') return json(res, 200, vitals()); // the AIOS health strip (21 Nov 2026)
     if (url.pathname === '/api/usage') return json(res, 200, await getUsage(url.searchParams.get('refresh') === '1')); // V3.6: the plan's gauge (never a 500: unavailable is an answer)
     if (url.pathname === '/api/tokens' && req.method === 'GET') { // 3 Nov 2026: what the tokens go on (tokens.mjs) — the chats' transcripts and the office's own ledger. Pages on this computer only, like the Chief of Staff
       if (!assistantAllowed(req)) return json(res, 403, { error: 'Token use is shown on this computer only.' });

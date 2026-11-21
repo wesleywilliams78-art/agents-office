@@ -1,0 +1,596 @@
+{
+ "issue": "06-finland",
+ "entries": [
+  {
+   "n": 1,
+   "name": "Restel Oy, press release: Taco Bell opens in Seinäjoki, 21 restaurants soon (5 Aug 2026)",
+   "url": "https://www.sttinfo.fi/tiedote/72215355/suosittu-pikaruokaketju-taco-bell-avaa-ovensa-seinajoelle-syksylla-2026?lang=fi",
+   "accessed": "16 Nov 2026",
+   "claim": "Taco Bell in Finland since 2017; with Seinäjoki soon 21 restaurants. Restel runs about 200 restaurants, about 2,200 staff.",
+   "stream": "B",
+   "type": "company report",
+   "pass": "pass 2026-11-16T10-01-52"
+  },
+  {
+   "n": 2,
+   "name": "Nordic Bites Group Oy, press release: buys nine Subway restaurants in Finland (27 Mar 2026)",
+   "url": "https://www.sttinfo.fi/tiedote/71915579/nordic-bites-group-ostaa-yhdeksan-subway-ravintolaa-suomessa?lang=fi",
+   "accessed": "16 Nov 2026",
+   "claim": "NBG is Subway master franchisee for Finland, Sweden, Norway, Denmark; exclusive rights over 370+ restaurants; owns and runs 100+ from 1 Apr 2026; bought nine Finnish sites; minority investors Juuri Partners and Arvo.",
+   "stream": "B",
+   "type": "company report",
+   "pass": "pass 2026-11-16T10-01-52"
+  },
+  {
+   "n": 3,
+   "name": "Vero Skatt, Withholding tax at source on dividends, interest and royalties (guidance issued 4 Aug 2022)",
+   "url": "https://vero.fi/en/detailed-guidance/guidance/108027/withholding-tax-at-source-on-dividends-interest-and-royalties-and-the-payors-obligations/",
+   "accessed": "16 Nov 2026",
+   "claim": "Tax at source on royalties to non-residents is 20% to a corporate entity, 30% otherwise; treaty or EU-directive relief needs evidence per payment.",
+   "stream": "A",
+   "type": "official",
+   "pass": "pass 2026-11-16T10-01-52"
+  },
+  {
+   "n": 4,
+   "name": "Apollo Group OÜ, interim report Q4 and 12 months 2025/2026 (period to 30 Apr 2026)",
+   "url": "https://www.nasdaqbaltic.com/market/upload/reports/apo/2025_q4_en_con.pdf",
+   "accessed": "16 Nov 2026",
+   "claim": "3 KFC restaurants opened in Finland in the year, 8 in Finland at 30 Apr 2026, 30 in the Baltics; Finland and Estonia 'challenging'; 7% of 3,705 staff in Finland; EUR 50m bond at 7%.",
+   "stream": "B",
+   "type": "company report",
+   "pass": "pass 2026-11-16T10-01-52"
+  },
+  {
+   "n": 5,
+   "name": "Hesburger (Burger-In Oy), release 7 Oct 2026: Hesburger is more than a restaurant chain",
+   "url": "https://www.sttinfo.fi/tiedote/72383359/hampurilaissanky-liikenneasema-ja-oma-vaatemallisto-hesburger-on-paljon-enemman-kuin-ravintolaketju?lang=fi",
+   "accessed": "16 Nov 2026",
+   "claim": "About 6,000 staff in Finland; 2025 taxable sales in Finland about EUR 327m; five Doner HeseKebab & Gyros restaurants in Finland (three Turku, one Vantaa, Salo Kivihovi).",
+   "stream": "B",
+   "type": "company report",
+   "pass": "pass 2026-11-16T10-01-52"
+  },
+  {
+   "n": 6,
+   "name": "MTV Uutiset, 'KFC-ravintolaketju saapuu Suomeen' (10 Mar 2021)",
+   "url": "https://www.mtvuutiset.fi/makuja/artikkeli/nyt-se-todella-tapahtuu-kfc-ravintolaketju-saapuu-suomeen-ensimmainen-ravintola-avautuu-jo-tana-vuonna/8086602",
+   "accessed": "16 Nov 2026",
+   "claim": "KFC Finland rights went to Apollo Group in 2021. A 2018 plan for up to 50 restaurants stalled because no suitable franchisee was found.",
+   "stream": "B",
+   "type": "press",
+   "pass": "pass 2026-11-16T10-02-44"
+  },
+  {
+   "n": 7,
+   "name": "Varma, Social security contributions and limits 2026",
+   "url": "https://www.varma.fi/globalassets/tyonantaja/social-security-contributions-and-limits.pdf",
+   "accessed": "16 Nov 2026",
+   "claim": "2026: TyEL basic 24.85% (employee 7.30%), sickness insurance 1.91%, unemployment 0.31%, accident 0.51% average.",
+   "stream": "A",
+   "type": "official",
+   "pass": "pass 2026-11-16T10-02-44"
+  },
+  {
+   "n": 8,
+   "name": "Borenius, legal alert: corporate tax cut proposed (8 May 2026)",
+   "url": "https://www.borenius.com/legal-alerts/2026/05/08/finnish-government-proposes-corporate-tax-rate-cut-and-extended-loss-carry-forward-period/",
+   "accessed": "16 Nov 2026",
+   "claim": "Draft proposal of 28 Apr 2026 cuts corporate tax from 20% to 18% from tax year 2027; withholding on dividends, interest and royalties to non-residents to 18%; treaty rates still apply where lower.",
+   "stream": "A",
+   "type": "official",
+   "pass": "pass 2026-11-16T10-02-44"
+  },
+  {
+   "n": 9,
+   "name": "Finnish Government, Lupa- ja valvontaviraston maksut 2026 (11 Dec 2025)",
+   "url": "https://valtioneuvosto.fi/-/10623/valtioneuvosto-vahvisti-lupa-ja-valvontaviraston-maksut-vuodelle-2026",
+   "accessed": "16 Nov 2026",
+   "claim": "Licensing and Supervisory Agency fees for 2026 confirmed. Alcohol administration fees are not raised, with some exceptions; short pop-up serving licences fall.",
+   "stream": "A",
+   "type": "official",
+   "pass": "pass 2026-11-16T10-02-44"
+  },
+  {
+   "n": 10,
+   "name": "PAM, Matkailu-, ravintola- ja vapaa-ajan palveluiden työehdot (pay tables from 1 Jun 2026)",
+   "url": "https://www.pam.fi/wp-content/uploads/2026/06/Taskutes_MaRaVa_suomi.pdf",
+   "accessed": "16 Nov 2026",
+   "claim": "Pay group 2 (waiter, cashier, cook in fast-food and cafes), 0-2 years: EUR 1,942 a month, EUR 12.21 an hour from 1 Jun 2026. Evening supplement EUR 1.40, night EUR 2.37 an hour; double on Sundays and holidays.",
+   "stream": "A",
+   "type": "official",
+   "pass": "pass 2026-11-16T10-02-44"
+  },
+  {
+   "n": 11,
+   "name": "ECB, euro reference rate for pound sterling (rate 13 Nov 2026: 0.83559)",
+   "url": "https://www.ecb.europa.eu/stats/policy_and_exchange_rates/euro_reference_exchange_rates/html/eurofxref-graph-gbp.en.html",
+   "accessed": "16 Nov 2026",
+   "claim": "EUR/GBP reference rate 0.83559 on 13 Nov 2026 (0.83415 on 6 Nov).",
+   "stream": "A",
+   "type": "official",
+   "pass": "pass 2026-11-16T10-02-44"
+  },
+  {
+   "n": 12,
+   "name": "Eurostat, nama_10_pc: GDP per capita, current prices (API pull 16 Nov 2026)",
+   "url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/nama_10_pc?format=JSON&lang=en&geo=FI&geo=EU27_2020&geo=DK&geo=SE&na_item=B1GQ&unit=CP_EUR_HAB&time=2024&time=2025",
+   "accessed": "16 Nov 2026",
+   "claim": "GDP per head, EUR: Finland 49,130 (2024), 49,870 (2025); EU27 40,190 and 41,770; Denmark 66,970 and 69,550; Sweden 53,010 and 56,250.",
+   "stream": "A",
+   "type": "official",
+   "pass": "pass 2026-11-16T10-02-54"
+  },
+  {
+   "n": 13,
+   "name": "McDonald's Suomi, Taustatiedote 1 Sep 2026",
+   "url": "https://www.mcdonalds.com/content/dam/sites/fi/nfl/pdf/260901_McD_Taustatiedote.pdf",
+   "accessed": "16 Nov 2026",
+   "claim": "89 restaurants in 46 cities on 1 Sep 2026; 67 (75%) run by 12 franchisees; Finland sales EUR 341.2m in 2025 (+3%), 331.2m in 2024, 313.5m in 2023, 274.1m in 2022; about 4,300 staff; base pay EUR 11.87 an hour, average EUR 16.16 with supplements (2025).",
+   "stream": "B",
+   "type": "company report",
+   "pass": "pass 2026-11-16T10-03-26"
+  },
+  {
+   "n": 14,
+   "name": "Hesburger, release 10 Sep 2026: solar power at the Kaarina plant",
+   "url": "https://www.sttinfo.fi/tiedote/72308780/hesburger-laajentaa-aurinkovoimaansa-kaarinan-tuotantolaitokselle-lahes-2-000-uutta-paneelia",
+   "accessed": "16 Nov 2026",
+   "claim": "Hesburger states 258 restaurants in Finland (10 Sep 2026).",
+   "stream": "B",
+   "type": "company report",
+   "pass": "pass 2026-11-16T10-03-26"
+  },
+  {
+   "n": 15,
+   "name": "Hesburger, release 22 Sep 2026: Finnish family firm challenges American giants",
+   "url": "https://www.sttinfo.fi/tiedote/72342076/suomalainen-perheyritys-haastaa-amerikkalaisjatit-euroopassa-hesburger-on-myos-baltian-markkinajohtaja?lang=fi",
+   "accessed": "16 Nov 2026",
+   "claim": "179 restaurants in the Baltics (Lithuania 70, Estonia 54, Latvia 55); 240 abroad in total; Hesburger is market leader by restaurant count in Finland and the Baltics.",
+   "stream": "B",
+   "type": "company report",
+   "pass": "pass 2026-11-16T10-03-26"
+  },
+  {
+   "n": 16,
+   "name": "NoHo Partners Oyj, Vuosikertomus 2025 (annual report)",
+   "url": "https://storage.mfn.se/67a07def-de4b-4eae-81e1-e55dc33f5739/noho-partners-oyj-vuosikertomus-2025.pdf",
+   "accessed": "16 Nov 2026",
+   "claim": "Better Burger Society left the NoHo group from 1 Apr 2025 (BBS sales EUR 94m in 2025, up 17%). NoHo bought 75% of Jungle Juice Bar (40 units in Finland) on 1 Sep 2025 and a majority of Halifax Burgers (11 units, Denmark) on 1 May 2025.",
+   "stream": "B",
+   "type": "company report",
+   "pass": "pass 2026-11-16T10-03-26"
+  },
+  {
+   "n": 17,
+   "name": "KFC Finland, Ravintolat page (store locator and opening-hours table), counted 16 Nov 2026",
+   "url": "https://www.kfc.fi/ravintolat/",
+   "accessed": "16 Nov 2026",
+   "claim": "Hours table lists 9 restaurants: Itis, Sello, Iso Omena, Turku, Seinäjoki, Tripla, Kamppi, Redi, Kolme Seppä. Operator APL Fresh Food Oy (Apollo).",
+   "stream": "B",
+   "type": "locator count",
+   "pass": "pass 2026-11-16T10-03-55"
+  },
+  {
+   "n": 18,
+   "name": "Hesburger press release list (STT), including Doner HeseKebab opening 13 May 2026 and FoodStation Tallinn 6 Nov 2026",
+   "url": "https://www.sttinfo.fi/uutishuone/18695031/hesburger/r",
+   "accessed": "16 Nov 2026",
+   "claim": "Hesburger opened its tenth Doner HeseKebab & Gyros restaurant in Turku on 13 May 2026; first FoodStation (kebab, pizza, coffee under one roof) opened in Tallinn on 5 Nov 2026 with EUR 600,000 invested. The 7 Oct release says five in Finland: the two figures conflict and the lower is used.",
+   "stream": "B",
+   "type": "company report",
+   "pass": "pass 2026-11-16T10-03-55"
+  },
+  {
+   "n": 19,
+   "name": "Restel Oy newsroom (STT), release list to 3 Nov 2026",
+   "url": "https://www.sttinfo.fi/uutishuone/55320854/restel-oy/r",
+   "accessed": "16 Nov 2026",
+   "claim": "Restel runs Burger King, Taco Bell, Rax Pizzabuffet, Wanha Mestari, Classic Pizza, Makaronitehdas; Huili roadside break-stops opened at about one a week on Neste stations Nov 2025 to Feb 2026; Restel Taukopaikat change negotiations 27 Aug 2026; Burger King Ali-Kerava opened 7 Jan 2026.",
+   "stream": "B",
+   "type": "company report",
+   "pass": "pass 2026-11-16T10-04-05"
+  },
+  {
+   "n": 20,
+   "name": "Hesburger, release 1 Oct 2026: coffee sales and Kivihovi test",
+   "url": "https://www.sttinfo.fi/tiedote/72374579/suomi-on-suodatinkahvimaa-baltiassa-maistuu-americano-hesburger-myy-suomessa-yli-25-miljoonaa-kuppia-kahvia-vuodessa-ja-testaa-nyt-erikoiskahveja?lang=fi",
+   "accessed": "16 Nov 2026",
+   "claim": "Hesburger sold 2,522,118 cups of coffee in Finland from 1 Sep 2025 to 31 Aug 2026; filter coffee dominates; espresso drinks being tested at Salo Kivihovi.",
+   "stream": "B",
+   "type": "company report",
+   "pass": "pass 2026-11-16T10-04-05"
+  },
+  {
+   "n": 21,
+   "name": "Hesburger, release 6 Nov 2026: first FoodStation opens in Tallinn",
+   "url": "https://www.sttinfo.fi/tiedote/72482131/kebabia-pizzaa-ja-kahvia-saman-katon-alla-hesburger-avasi-tallinnaan-ketjun-ensimmaisen-foodstationin?lang=fi",
+   "accessed": "16 Nov 2026",
+   "claim": "FoodStation joins Doner HeseKebab & Gyros (five in Finland), Ahju Pizzeria (known in Finland as UUNI) and HeseCafe under one roof at a Neste station; EUR 600,000 investment; Estonia has 54 Hesburgers.",
+   "stream": "B",
+   "type": "company report",
+   "pass": "pass 2026-11-16T10-04-05"
+  },
+  {
+   "n": 22,
+   "name": "Kotipizza Group Oy newsroom (STT), release list to 3 Nov 2026",
+   "url": "https://www.sttinfo.fi/uutishuone/57487700/kotipizza-group-oy/r",
+   "accessed": "16 Nov 2026",
+   "claim": "Kotipizza states 'over 300' restaurants, all franchised; accessibility data published for 'over 300' on 29 Sep 2026; parent The European Pizza Company, part of Orkla; 'over 90' fuel stations.",
+   "stream": "B",
+   "type": "brand claim",
+   "pass": "pass 2026-11-16T10-04-36"
+  },
+  {
+   "n": 23,
+   "name": "Kotipizza Group, release 18 Mar 2026: sells Social Burgerjoint",
+   "url": "https://www.sttinfo.fi/tiedote/71890506/kotipizza-group-luopuu-social-burgerjoint-konseptista?lang=fi",
+   "accessed": "16 Nov 2026",
+   "claim": "Kotipizza Group sold the Social Burgerjoint concept (Helsinki Redi and Citycenter, Tampere) to Artisan Fast Food Oy, whose owner has been a franchisee since 2020.",
+   "stream": "B",
+   "type": "company report",
+   "pass": "pass 2026-11-16T10-04-36"
+  },
+  {
+   "n": 24,
+   "name": "Kotipizza Group, release 24 Mar 2026: more than ten new Kotipizza sites at Neste/Huili stations",
+   "url": "https://www.sttinfo.fi/tiedote/71906407/kotipizza-yhteistyohon-huili-konseptin-kanssa-uusia-ravintoloita-liikenneasemille?lang=fi",
+   "accessed": "16 Nov 2026",
+   "claim": "Kotipizza is present at over 90 fuel stations; more than ten new restaurants planned beside Huili rest stops from March 2026.",
+   "stream": "B",
+   "type": "company report",
+   "pass": "pass 2026-11-16T10-04-36"
+  },
+  {
+   "n": 25,
+   "name": "MTV Uutiset, kebab boom in Finland (6 Oct 2023)",
+   "url": "https://www.mtvuutiset.fi/makuja/artikkeli/yksi-pikaruoka-on-nyt-kaikkien-huulilla-suomessa-vallankumous/8793466",
+   "accessed": "16 Nov 2026",
+   "claim": "Premium kebab wave: S-Group launched Babista (first in Mikkeli, plan up to 20), DIF Doner, Hesburger's HeseKebab as a separate concept.",
+   "stream": "B",
+   "type": "press",
+   "pass": "pass 2026-11-16T10-04-36"
+  },
+  {
+   "n": 26,
+   "name": "Statistics Finland, Services turnover index June 2026 (31 Jul 2026)",
+   "url": "https://stat.fi/fi/julkaisu/cmg0kehor8llj07upgm0davog",
+   "accessed": "16 Nov 2026",
+   "claim": "Accommodation and food service turnover +2.4%, volume +1.1% in June 2026 against June 2025 (working-day adjusted).",
+   "stream": "A",
+   "type": "official",
+   "pass": "pass 2026-11-16T10-04-36"
+  },
+  {
+   "n": 27,
+   "name": "Finavia, Fazer Cafe to open at Helsinki Airport (9 Oct 2025)",
+   "url": "https://www.finavia.fi/en/newsroom/2025/fazer-cafe-will-open-helsinki-airport-early-2026-passengers-wishes-will-be-fulfilled",
+   "accessed": "16 Nov 2026",
+   "claim": "Fazer Cafe opens at Helsinki Airport in early 2026, operated by SSP Finland as partner: a licensed-operator route for a bakery-cafe brand.",
+   "stream": "B",
+   "type": "company report",
+   "pass": "pass 2026-11-16T10-04-36"
+  },
+  {
+   "n": 28,
+   "name": "PRH, Fees for trademark applications and registrations from 1 Jan 2026",
+   "url": "https://prh.fi/en/price-lists/trademark_fees/fees_for_trademark_applications.html",
+   "accessed": "16 Nov 2026",
+   "claim": "National trademark: EUR 250 online (one class), EUR 100 per extra class; renewal EUR 250; fees updated 20 May 2026.",
+   "stream": "A",
+   "type": "official",
+   "pass": "pass 2026-11-16T10-05-09"
+  },
+  {
+   "n": 29,
+   "name": "Ruokavirasto, Setting up a cafe or a restaurant",
+   "url": "https://www.ruokavirasto.fi/en/foodstuffs/food-sector/setting-up-a-food-business/instructions-for-setting-up-a-food-business-by-industry/setting-up-a-restaurant/",
+   "accessed": "16 Nov 2026",
+   "claim": "Food premises registration announcement due no later than 4 weeks before opening, via Ilppa; hygiene passports and an own-check plan required; registration and control are chargeable.",
+   "stream": "A",
+   "type": "official",
+   "pass": "pass 2026-11-16T10-05-09"
+  },
+  {
+   "n": 30,
+   "name": "Finnish Franchising Association, Franchising legislation (Properta, Feb 2024)",
+   "url": "https://franchising.fi/franchisingtietoa/in-english/franchising-legislation/",
+   "accessed": "16 Nov 2026",
+   "claim": "No franchise-specific law and no disclosure statute; general contract, competition and unfair-practice law apply; EU vertical block exemption 2022/720 applies; Competition Act bans minimum resale prices; arbitration clauses accepted (KKO:1996:27).",
+   "stream": "A",
+   "type": "official",
+   "pass": "pass 2026-11-16T10-05-09"
+  },
+  {
+   "n": 31,
+   "name": "Suomen Franchising-Yhdistys, Franchisingyrittajyys (Franchising Barometri 2025)",
+   "url": "https://franchising.fi/wp-content/uploads/2026/04/Franchisingyrittajyys.pdf",
+   "accessed": "16 Nov 2026",
+   "claim": "About 250-300 franchise chains in Finland, 31% in restaurants, cafes and fast food; 80% domestic; about 5,000 franchisees, 7,000 outlets, over EUR 7bn turnover (Barometri 2025).",
+   "stream": "A",
+   "type": "official",
+   "pass": "pass 2026-11-16T10-05-09"
+  },
+  {
+   "n": 32,
+   "name": "Vero, Rates of VAT (updated 1 Jan 2026)",
+   "url": "https://www.vero.fi/en/businesses-and-corporations/taxes-and-charges/vat/rates-of-vat/",
+   "accessed": "16 Nov 2026",
+   "claim": "Reduced VAT rate 13.5% from 1 Jan 2026 (14% before) on restaurant and meal services; general rate 25.5%; the reduced rate does not cover alcohol.",
+   "stream": "A",
+   "type": "official",
+   "pass": "pass 2026-11-16T10-05-09"
+  },
+  {
+   "n": 33,
+   "name": "Taloustaito, 'Yrittajaksi ison ketjun taustatuella' (24 Jul 2026)",
+   "url": "https://www.taloustaito.fi/tyo-elake/2026/yrittajaksi-ison-ketjun-taustatuella--uranvaihtajat-kiinnostuneita/",
+   "accessed": "16 Nov 2026",
+   "claim": "Typical Finnish franchise fees: joining fee a few thousand euro, service fee 5-10% of turnover, marketing fee 1-5%; about 6,000 franchise firms employ about 100,000 (association estimate).",
+   "stream": "A",
+   "type": "press",
+   "pass": "pass 2026-11-16T10-05-09"
+  },
+  {
+   "n": 34,
+   "name": "BURGER KING Suomi newsroom (STT), release list to 19 May 2026",
+   "url": "https://www.sttinfo.fi/uutishuone/52299912/burger-king-suomi/r",
+   "accessed": "16 Nov 2026",
+   "claim": "Kokkola (Aug 2023) was the chain's 64th Finnish restaurant; five more planned by end 2025 (11 Nov 2025); Ali-Kerava 7 Jan 2026, Ala-Tikkurila with Taco Bell 5 Mar 2026, Jyvaskyla Seppala autumn 2026. Burger King Finland run by Restel.",
+   "stream": "B",
+   "type": "company report",
+   "pass": "pass 2026-11-16T10-05-42"
+  },
+  {
+   "n": 35,
+   "name": "Jungle Juice Bar, About us (company site)",
+   "url": "https://www.junglejuicebar.com/en/yrityksesta/",
+   "accessed": "16 Nov 2026",
+   "claim": "Finland's first juice and smoothie bar (2011); company states 'over 50 bars now operating' (brand claim, not a count).",
+   "stream": "B",
+   "type": "brand claim",
+   "pass": "pass 2026-11-16T10-05-42"
+  },
+  {
+   "n": 36,
+   "name": "MTV Uutiset / STT, NoHo Partners buys Jungle Juice Bar majority (2 Sep 2025)",
+   "url": "https://www.mtvuutiset.fi/artikkeli/noho-partners-ostaa-jungle-juice-barin-enemmiston/9214644",
+   "accessed": "16 Nov 2026",
+   "claim": "NoHo bought 75% of Jungle Juice Bar, a chain of 41 bars in Finland; founders stay as minority owners; competition authority cleared the deal.",
+   "stream": "B",
+   "type": "press",
+   "pass": "pass 2026-11-16T10-05-42"
+  },
+  {
+   "n": 37,
+   "name": "Wolt Helsinki, Qitea brand page (listing check 16 Nov 2026)",
+   "url": "https://wolt.com/en/fin/helsinki/brand/qitea",
+   "accessed": "16 Nov 2026",
+   "claim": "Qitea bubble tea: two listed delivery venues (Kaivokatu, Tripla) shown on the Helsinki brand page; Wolt lists more areas; independent chain of a few shops.",
+   "stream": "B",
+   "type": "locator count",
+   "pass": "pass 2026-11-16T10-05-42"
+  },
+  {
+   "n": 38,
+   "name": "Wolt Helsinki, Better Kebab brand page (listing check 16 Nov 2026)",
+   "url": "https://wolt.com/fi/fin/helsinki/brand/better-kebab",
+   "accessed": "16 Nov 2026",
+   "claim": "Better Kebab lists five Helsinki outlets on Wolt: Kaartinkaupunki, Kamppi, Kluuvi, Toolo, Ullanlinna.",
+   "stream": "B",
+   "type": "locator count",
+   "pass": "pass 2026-11-16T10-05-42"
+  },
+  {
+   "n": 39,
+   "name": "Kaleva, 'Babista Oulu suljettiin' (25 Feb 2025)",
+   "url": "https://www.kaleva.fi/kebabiin-keskittynyt-babista-oulu-suljettiin-ravin/11531188",
+   "accessed": "16 Nov 2026",
+   "claim": "S-Group's kebab concept Babista closed its Oulu restaurant (Valkea) on 25 Feb 2025 because it did not do well enough: a kebab-chain exit signal.",
+   "stream": "B",
+   "type": "press",
+   "pass": "pass 2026-11-16T10-06-07"
+  },
+  {
+   "n": 40,
+   "name": "Statistics Finland, preliminary population statistics September 2026 (22 Oct 2026)",
+   "url": "https://stat.fi/en/publication/cmf2d8lm81hry08uk32sqofrw",
+   "accessed": "16 Nov 2026",
+   "claim": "Population 5,662,086 at end of September 2026; +9,205 in Jan-Sep, all from migration (births 36,323, deaths 43,990).",
+   "stream": "A",
+   "type": "official",
+   "pass": "pass 2026-11-16T10-06-07"
+  },
+  {
+   "n": 41,
+   "name": "SOK (S-Group), release 16 Jun 2026: Hesburger franchise renewed for 10 years",
+   "url": "https://www.sttinfo.fi/tiedote/72138316/pikaruoan-suosio-kasvaa-hesburger-ja-s-ryhma-laajentavat-yhteistyota-ympari-suomen?lang=fi",
+   "accessed": "16 Nov 2026",
+   "claim": "S-Group operates 106 Hesburger restaurants (mostly Prisma and ABC stations) under franchise since 1999; 10-year renewal signed; aim to grow the network.",
+   "stream": "B",
+   "type": "company report",
+   "pass": "pass 2026-11-16T10-06-07"
+  },
+  {
+   "n": 42,
+   "name": "Subway newsroom, master franchise agreement with Nordic Bites Group (20 May 2025)",
+   "url": "https://newsroom.subway.com/2025-05-20-Subway-Expands-Presence-in-the-Nordics-with-Nordic-Bites-Group-Oy",
+   "accessed": "16 Nov 2026",
+   "claim": "NBG gets exclusive rights over nearly 400 Subway restaurants in the Nordics; plans 250+ new by 2032 (to 600+); NBG subsidiaries own and run over 80 in Finland and Sweden; Juuri Partners minority since 2023.",
+   "stream": "B",
+   "type": "company report",
+   "pass": "pass 2026-11-16T10-06-07"
+  },
+  {
+   "n": 43,
+   "name": "Eurostat news (via NSI Bulgaria copy), price levels 2024: restaurants and hotels",
+   "url": "https://www.nsi.bg/en/file/29522/ECP_PLI-2024_en.pdf",
+   "accessed": "16 Nov 2026",
+   "claim": "Restaurants and hotels price level 2024 (EU=100): Denmark 148, Ireland 129, Finland 127. Source dataset prc_ppp_ind.",
+   "stream": "A",
+   "type": "official",
+   "pass": "pass 2026-11-16T10-06-07"
+  },
+  {
+   "n": 44,
+   "name": "Friends & Brgrs, release 28 Oct 2026: Lahti Laune opens, 39th restaurant",
+   "url": "https://www.sttinfo.fi/tiedote/72451965/friends-and-brgrs-avaa-lahden-toisen-ravintolansa-launeelle-autokaistalta-ruoka-kuudessa-minuutissa?lang=fi",
+   "accessed": "16 Nov 2026",
+   "claim": "Domestic burger chain states 39 restaurants (about 800 staff), four with drive-through; next sites Lohja Dec 2026 and Hameenlinna early 2027; target five new in 2027.",
+   "stream": "B",
+   "type": "company report",
+   "pass": "pass 2026-11-16T19-55-18"
+  },
+  {
+   "n": 45,
+   "name": "Friends & Brgrs, release 11 Jun 2026: 35 own bakeries",
+   "url": "https://www.sttinfo.fi/tiedote/72126165/harva-tietaa-taman-friends-and-brgrsilla-on-35-omaa-leipomoa-ympari-suomen?publisherId=69820907",
+   "accessed": "16 Nov 2026",
+   "claim": "35 restaurants on 11 Jun 2026, each baking its own buns. With 39 on 28 Oct 2026 the chain added four in under five months.",
+   "stream": "B",
+   "type": "company report",
+   "pass": "pass 2026-11-16T19-55-18"
+  },
+  {
+   "n": 46,
+   "name": "Asiakastieto, Friends & Brgrs Ab Oy company page (read 16 Nov 2026)",
+   "url": "https://www.asiakastieto.fi/yritykset/fi/friends-brgrs-ab-oy/25870109/tietovahti",
+   "accessed": "16 Nov 2026",
+   "claim": "2025 turnover EUR 37.3m (+17.1%), operating profit EUR 3.8m (9.9%), 728 staff.",
+   "stream": "B",
+   "type": "official",
+   "pass": "pass 2026-11-16T19-55-18"
+  },
+  {
+   "n": 47,
+   "name": "Statistics Finland, Palkkarakenne 2024 (release 8 Jun 2026)",
+   "url": "https://stat.fi/fi/julkaisu/cmfzekguk478y07uqsyc5xfpt",
+   "accessed": "16 Nov 2026",
+   "claim": "Median total monthly earnings of full-time employees EUR 3,615 in 2024; lowest in accommodation and food service at EUR 2,720 (lowest tenth up to EUR 2,107).",
+   "stream": "A",
+   "type": "official",
+   "pass": "pass 2026-11-16T19-55-18"
+  },
+  {
+   "n": 48,
+   "name": "Finavia, Fazer Cafe opened at Helsinki Airport (27 Feb 2026)",
+   "url": "https://www.finavia.fi/sv/node/7861",
+   "accessed": "16 Nov 2026",
+   "claim": "First Fazer Cafe in an airport opened 27 Feb 2026, run by SSP Finland, pastries baked at Fazer's Sornainen bakery.",
+   "stream": "B",
+   "type": "company report",
+   "pass": "pass 2026-11-16T19-55-18"
+  },
+  {
+   "n": 49,
+   "name": "Asiakastieto, Fazer Ravintolat Oy financials (read 16 Nov 2026)",
+   "url": "https://www.asiakastieto.fi/yritykset/fi/fazer-ravintolat-oy/23721556/taloustiedot",
+   "accessed": "16 Nov 2026",
+   "claim": "Fazer Cafe operator turnover EUR 25.3m (2021), 34.6m, 38.7m, 41.1m, 44.7m (2025); operating loss EUR 0.3m in 2025 (3.2m in 2021); staff 253 to 363.",
+   "stream": "B",
+   "type": "official",
+   "pass": "pass 2026-11-16T19-55-18"
+  },
+  {
+   "n": 50,
+   "name": "Asiakastieto, Espresso House Finland Oy (read 16 Nov 2026)",
+   "url": "https://www.asiakastieto.fi/yritykset/fi/espresso-house-finland-oy/26632962/rating-alfa",
+   "accessed": "16 Nov 2026",
+   "claim": "2025 turnover EUR 50.3m (+0.7%), operating profit EUR 503,000 (1.0%), 411 staff. No cafe count published; flat sales.",
+   "stream": "B",
+   "type": "official",
+   "pass": "pass 2026-11-16T19-55-18"
+  },
+  {
+   "n": 51,
+   "name": "McDonald's Suomi, release 26 Mar 2026: market leader sixth year",
+   "url": "https://www.mcdonalds.com/fi/fi-fi/mcdonalds/media/article/mcdonalds-suomen-markkinajohtajana-kuudetta-vuotta-perakkain-kampanjatuotteet-rikkoivat-ennatyksia.html",
+   "accessed": "16 Nov 2026",
+   "claim": "90 restaurants, 69 (about 77%) run by 12 local franchisees; 10 opened in 2025; sales EUR 341.2m (+3%); average restaurant about EUR 4m a year, about 60 staff.",
+   "stream": "B",
+   "type": "company report",
+   "pass": "pass 2026-11-16T19-55-18"
+  },
+  {
+   "n": 52,
+   "name": "Etela-Pohjanmaan Osuuskauppa (Eepee), half-year release 2026",
+   "url": "https://www.sttinfo.fi/tiedote/72235627/eepee-konsernin-liikevaihto-lahes-248-miljoonaan-euroon-investoinnit-vauhdittavat-eepeen-uudistumista?lang=fi",
+   "accessed": "16 Nov 2026",
+   "claim": "Restaurant revenue fell 5.6% in Jan-Jun 2026 on the year, partly from closing the Babista restaurant; Kivisto to get Rosso Pizza and Hesburger late 2026.",
+   "stream": "B",
+   "type": "company report",
+   "pass": "pass 2026-11-16T19-55-18"
+  },
+  {
+   "n": 53,
+   "name": "Food Chain magazine, issue 207 (Aug 2025), Kotipizza Group",
+   "url": "https://magazine.foodchainmagazine.com/food-chain-issue-207-august-2025/0964790001756370465/p133",
+   "accessed": "16 Nov 2026",
+   "claim": "Kotipizza Group described as running over 300 locations in Finland (trade press, a claim not a count).",
+   "stream": "B",
+   "type": "press",
+   "pass": "pass 2026-11-16T19-55-18"
+  },
+  {
+   "n": 54,
+   "name": "Verkkouutiset, Talsa list of Finland's largest restaurant chains",
+   "url": "https://www.verkkouutiset.fi/a/satoja-toimipisteita-talsa-nama-ovat-suomen-suurimmat-ravintolaketjut/",
+   "accessed": "16 Nov 2026",
+   "claim": "Kotipizza, Hesburger and Subway are the only restaurant chains with over 100 sites in Finland (date not shown on the page; used as context only).",
+   "stream": "B",
+   "type": "press",
+   "pass": "pass 2026-11-16T19-55-18"
+  },
+  {
+   "n": 55,
+   "name": "Taco Bell Finland, Ravintolat page (opened in owner's browser 16 Nov 2026)",
+   "url": "https://www.tacobell.fi/ravintolat",
+   "accessed": "16 Nov 2026",
+   "claim": "Locator list does not load without script: no count taken from it. Page says Taco Bell has traded in Finland since 2017. The count of 21 comes from the Restel release of 5 Aug 2026.",
+   "stream": "B",
+   "type": "locator count",
+   "pass": "pass 2026-11-16T19-55-18"
+  },
+  {
+   "n": 56,
+   "name": "Focus Taiwan, Taiwanese boba in Finland (28 Jan 2026)",
+   "url": "https://focustaiwan.tw/society/202601280018",
+   "accessed": "16 Nov 2026",
+   "claim": "A Taiwanese-Swiss founder is rebuilding Taiwanese boba in Finland after an earlier venture closed in 2015; bubble tea here is a small independent scene, not a chain market (single source, Thin).",
+   "stream": "B",
+   "type": "press",
+   "pass": "pass 2026-11-16T19-55-18"
+  },
+  {
+   "n": 57,
+   "name": "Minilex, Osakeyhtion perustaminen PRH:ssa (law-advice summary; fee date not confirmed)",
+   "url": "https://www.minilex.fi/a/osakeyhti%C3%B6n-perustaminen-prhssa",
+   "accessed": "16 Nov 2026",
+   "claim": "A private limited company (Oy) needs no minimum share capital; founding notice fee about EUR 240 online (EUR 380 on paper); notice due within three months of signing. Secondary source: check against PRH before use.",
+   "stream": "A",
+   "type": "press",
+   "pass": "pass 2026-11-16T19-57-00"
+  },
+  {
+   "n": 58,
+   "name": "PRH, Kaupparekisteriin tehtävien perustamisilmoitusten hinnat (Oy notice EUR 400; guided package EUR 300), updated 1 Jan 2026",
+   "url": "https://www.prh.fi/fi/hinnastot/kaupparekisterin-hinnastot/kaupparekisterin-kasittelymaksut/perustaminen.html",
+   "accessed": "17 Nov 2026",
+   "claim": "Trade Register processing fee for a private limited company founding notice is EUR 400, or EUR 300 for the guided package in YTJ, VAT 0%.",
+   "stream": "A",
+   "type": "official",
+   "pass": "pass 2026-11-17T10-43-01"
+  },
+  {
+   "n": 59,
+   "name": "PRH, Osakeyhtiön ohjattu perustamispaketti YTJ-palvelussa, updated 13 Aug 2026",
+   "url": "https://www.prh.fi/fi/yrityksetjayhteisot/yrityksenperustaminen/osakeyhtion-perustaminen-ja-perustamisilmoitus_1/ohjattu-paketti.html",
+   "accessed": "17 Nov 2026",
+   "claim": "Guided package costs EUR 300 and needs share capital of EUR 0 and a Finnish personal ID for every person involved.",
+   "stream": "A",
+   "type": "official",
+   "pass": "pass 2026-11-17T10-43-01"
+  }
+ ],
+ "passes": []
+}

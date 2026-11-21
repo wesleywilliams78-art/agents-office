@@ -1,0 +1,12 @@
+{
+ "issue": "06-finland",
+ "why": "Remove the doubled advice wording flagged by the check.",
+ "base": "videos/franchise-entry-report/issues/06-finland/revisions/2026-11-17T10-43-04-edit/issue.json",
+ "at": "2026-11-17T10:43:09.657Z",
+ "edits": [
+  {
+   "path": "regulation.advice",
+   "value": "Check the draft 2027 tax cut and any treaty rate with a Finnish adviser before signing."
+  }
+ ]
+}

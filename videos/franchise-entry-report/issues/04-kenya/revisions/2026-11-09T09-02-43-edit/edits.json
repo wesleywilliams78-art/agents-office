@@ -1,0 +1,106 @@
+{
+ "issue": "04-kenya",
+ "why": "Weave Harlyy's guest-review findings into pages 1, 2, 4, 6 and 7, add the contributor card with disclosure, add S56 to S60 (contributor-supplied).",
+ "base": "videos/franchise-entry-report/issues/04-kenya/issue.json",
+ "at": "2026-11-09T09:02:43.445Z",
+ "edits": [
+  {
+   "path": "contributor",
+   "value": {
+    "name": "Zeeshan",
+    "role": "Founder & CEO",
+    "org": "Harlyy",
+    "quote": "In Nairobi, the wait costs more stars than the food.",
+    "disclosure": "Harlyy sells guest-feedback software to restaurant chains in Kenya and supplied this analysis of public Google reviews."
+   }
+  },
+  {
+   "path": "cover.verdict",
+   "value": "Open, with no franchise law found and a wage floor under £1 an hour. The catch: a small urban middle class and 14.4% borrowing. Chicken, coffee and forecourts are growing. Pick the partner before the category: it brings the sites, the credit and the service guests judge you on."
+  },
+  {
+   "path": "market.sowhat",
+   "value": "Food prices rose 9.5% in a year and bank loans cost 14.4%, so the margin is squeezed from both sides. We found no published restaurant margin. The largest operator grew visits 14% by letting average spend fall 3%. Guests mark down the wait more than the food: across 144,738 Google reviews of 101 Nairobi branches, a coded sample of 246 one- and two-star reviews found 40% about waiting and 28% about food. Kenya rewards a lean, value-led, fast unit in the five cities, paid for by phone and sold through delivery. [S9, S3, S5, S56]"
+  },
+  {
+   "path": "white.intro",
+   "value": "A gap is a need with growing demand and no clear owner. The size of each one is our judgement of the prize for a new entrant: S, M or L. Whoever enters starts behind: in one study of 10 Nairobi chains, recent franchise entrants had 12.9% of Google reviews at one or two stars, against 5.1% for incumbents (one source, Thin). The partner’s operating record matters as much as the gap. [S59]"
+  },
+  {
+   "path": "white.gaps.2.evidence",
+   "value": "Simbisa: customers +14%, average spend −3%, delivery orders +59% and 27% of turnover in FY2026. Glovo lists 6,000+ merchants. App store scores sit at 97–98% and barely separate brands; at one busy store, box meals rate 13 points under the core range (one source, Thin). [S5, S13, S60]"
+  },
+  {
+   "path": "route.fits.1.body",
+   "value": "Proven in 2 countries. Check the partner’s balance sheet: Famous Brands’ master of 23 years owed banks over KES 67m when it lost the licence. Then read its public reviews: chains that answer most bad reviews average 4.49 stars, against 4.25. [S58]"
+  },
+  {
+   "path": "route.risks.0",
+   "value": {
+    "label": "Currency, money and remittance",
+    "body": "The shilling has held near 130 to the dollar for about 18 months, but royalties are earned in KES, and bank loans averaged 14.4% in Sep 2026 against a policy rate of 8.75%. Kenya places no restrictions on transferring investment funds. The treaty withholds 15% on royalties.",
+    "src": "S3, S4, S44, S53"
+   }
+  },
+  {
+   "path": "route.risks.1",
+   "value": {
+    "label": "Guest reputation",
+    "body": "Waiting drives 40% of one- and two-star Google reviews of Nairobi chains, and 41% of recent ones got no reply. An entrant’s branch has about 55 reviews against 1,655 for an incumbent, so one bad review weighs about 30 times as much (one source, Thin).",
+    "src": "S56, S58, S59"
+   }
+  },
+  {
+   "path": "days.headline",
+   "value": "Ten moves, in order: sign the right partner, then be fast from day one"
+  },
+  {
+   "path": "days.moves.4",
+   "value": "**Model the royalty net of 15% withholding,** paid in KES and converted to sterling, and get a ruling on how the initial fee is taxed."
+  },
+  {
+   "path": "days.moves.5",
+   "value": "**Count the competition yourself:** dated locator counts for KFC, Simbisa’s brands and Java House, city by city."
+  },
+  {
+   "path": "days.moves.6",
+   "value": "**Price delivery at more than one commission rate,** and plan for one owner of Glovo and Uber Eats."
+  },
+  {
+   "path": "days.moves.7",
+   "value": "**Plan the licence path and the VAT** for the first site: county permit, food hygiene, halal certification, and VAT on meals confirmed with the Kenya Revenue Authority."
+  },
+  {
+   "path": "days.moves.8",
+   "value": "**Staff for under 15 minutes from order to table.** Labour is the cheap line (about £0.58 an hour, Estimate). Of the wait complaints that name a time, 91% say 15 minutes or more, and the median is 25 minutes. [S57]"
+  },
+  {
+   "path": "days.moves.9",
+   "value": "**Reply to every one- or two-star review within 24 hours,** and ask every happy guest for a review. 41% of recent bad reviews in Nairobi got no reply, and an entrant’s branch has about 55 reviews to absorb them. [S58, S59]"
+  },
+  {
+   "path": "days.method",
+   "value": "Public sources only, read 30 Oct to 3 Nov 2026. Guest-review findings (S56 to S60) are Harlyy’s analysis of public Google reviews of 10 anonymised Nairobi chains, read 6–7 Nov 2026 and supplied by our contributor. We checked the arithmetic, not the coding, and treat them as one source. Harlyy sells guest-feedback software to restaurant chains in Kenya and supplied this analysis of public Google reviews. Every figure is dated and coded to the list below. Rise and fall calls need two independent signals; otherwise they are marked Thin. Estimates are labelled with their method. Not found is used only after a search, with the nearest proxy. Unit counts are company reports or press, except one Uber Eats listing count for bubble tea (3 Nov 2026). Not legal, tax or investment advice."
+  },
+  {
+   "path": "days.sources",
+   "append": "S56 Harlyy analysis of public Google reviews, read 6–7 Nov 2026: what went wrong in 246 coded one- and two-star reviews (101 Nairobi branches of 10 anonymised chains, 144,738 reviews). Contributor-supplied. Harlyy sells guest-feedback software to restaurant chains in Kenya and supplied this analysis of public Google reviews."
+  },
+  {
+   "path": "days.sources",
+   "append": "S57 Harlyy analysis of public Google reviews, read 6–7 Nov 2026: minutes waited, in 67 wait complaints that name a time. Contributor-supplied. Harlyy sells guest-feedback software to restaurant chains in Kenya and supplied this analysis of public Google reviews."
+  },
+  {
+   "path": "days.sources",
+   "append": "S58 Harlyy analysis of public Google reviews, read 6–7 Nov 2026: replies to 117 one- and two-star reviews from the last 12 months, and ratings by reply rate. Contributor-supplied. Harlyy sells guest-feedback software to restaurant chains in Kenya and supplied this analysis of public Google reviews."
+  },
+  {
+   "path": "days.sources",
+   "append": "S59 Harlyy analysis of public Google reviews, read 6–7 Nov 2026: reviews per branch and one- and two-star share, incumbents against recent franchise entrants. Contributor-supplied. Harlyy sells guest-feedback software to restaurant chains in Kenya and supplied this analysis of public Google reviews."
+  },
+  {
+   "path": "days.sources",
+   "append": "S60 Harlyy analysis of public Google reviews, read 6–7 Nov 2026: Glovo and Uber Eats store scores, and item-level ratings at one QSR store. Contributor-supplied. Harlyy sells guest-feedback software to restaurant chains in Kenya and supplied this analysis of public Google reviews."
+  }
+ ]
+}

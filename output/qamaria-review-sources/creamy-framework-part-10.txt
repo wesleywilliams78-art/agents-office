@@ -1,0 +1,312 @@
+Franchise Owner / Operator: Owns the working capital position; sets payment run schedule; manages the MVA holding account; reviews working capital monthly.
+Unit Manager: Controls stock ordering to maintain target inventory levels; ensures supplier invoices are processed promptly; reports unusual cost items.
+Head Office: Negotiates network-level supplier terms where applicable; provides working capital management guidance; benchmarks working capital performance across units.
+External Accountant (if retained): Advises on MVA reporting and tax-efficient cash management; assists with annual working capital planning.
+Measure Analyse Improve
+Track monthly: (a) inventory holding period in days (stock value ÷ daily COGS), (b) average payables days (total payables ÷ daily purchases), (c) card settlement lag (days from transaction to bank receipt), (d) MVA liability vs. MVA reserve balance. The goal is a negative working capital cycle (customers pay before suppliers are due) — normal for a QSR. If the cycle turns positive (you're paying out before cash comes in), investigate immediately.
+Tools & Resources
+Working capital dashboard (monthly — stock value, payables ageing, receivables in transit, MVA reserve). Payment run schedule (fixed day, weekly or bi-weekly). Supplier payment terms register (supplier name, agreed terms, actual average payment days). MVA holding account (separate bank account or ring-fenced within the main account). EPOS and stock management reports.
+
+Capex authorisation framework   [NEEDS ADNAN INPUT]
+Why this chapter matters
+The escalation matrix (Chapter 6.5) already has an unresolved placeholder for capex authorisation thresholds. This chapter pulls that out and defines it properly: who can approve what level of capital expenditure, what documentation is needed, and how it links to the cash flow forecast.
+What you need to provide
+Authorisation tiers: what spending thresholds require which level of approval? (e.g. Unit Manager up to NOK X, Franchise Owner up to NOK Y, Head Office approval above NOK Z).
+What documentation is required for a capex request (quote, business case, cash flow impact assessment, competitive quotes).
+Whether there is a minimum number of quotes required (e.g. 3 quotes for any spend above NOK X).
+Emergency capex: is there a different approval route for urgent equipment replacement (e.g. fridge compressor failure)? If so, what is the emergency threshold and who authorises it?
+Current capex commitments or planned expenditure for the next 12 months.
+Easiest way to get this done
+Think about the last few times you spent money on equipment or fit-out. What was the process? Now imagine a franchisee making that same decision — what would you want them to get approval for? Set the tiers based on what feels like the right level of control. Send a WhatsApp voice note with your thinking.
+A franchisee should be the on who controls every spending they do on new machine, but any machine costing more then 25.000 kr they should advise with the head office.
+They can bring in 1-2 quotes and head office will try to get them a better price.
+
+6.7  Franchisee performance remediation & exit
+
+Underperformance early-warning indicators   [YSF ADVISORY — DRAFTED, PENDING REVIEW]
+Introduction
+This chapter defines the financial and operational indicators that signal a unit is underperforming and may require formal intervention. Chapter 6.4 defines the criteria for growth; this chapter defines the mirror image — the criteria that trigger concern. Early-warning indicators are not punitive — they are diagnostic. The earlier a problem is identified, the more options exist to fix it. Left unaddressed, underperformance erodes franchisee viability, brand reputation, and network health.
+Minimum Operating Standards
+Financial early-warning indicators — any of the following triggers a formal review: (a) Revenue declining for [Adnan to confirm: e.g. 3]Right consecutive months on a like-for-like basis (adjusted for seasonality). (b) Net profit margin falling below [Adnan to confirm: e.g. the target set in KPI definitions, Chapter 6.1] for [Adnan to confirm: e.g. 2] consecutive months 3 months. (c) Food cost percentage exceeding target by more than [Adnan to confirm: e.g. 3 percentage points]5% for [Adnan to confirm: e.g. 2]3 months consecutive months. (d) Labour cost percentage exceeding target by more than [Adnan to confirm: e.g. 3 percentage points]5% for [Adnan to confirm: e.g. 2]3 months consecutive months. (e) Cash flow forecast projecting the cash balance falling below the minimum reserve (see Chapter 6.6) within the next 4 weeks.
+Operational early-warning indicators — any of the following triggers a formal review: (a) Operational audit score falling below [Adnan to confirm: e.g. 80%] or declining by more than [Adnan to confirm: e.g. 10 percentage points] between consecutive audits Right. (b) Customer complaint rate exceeding [Adnan to confirm: e.g. the target per 1,000 transactions] for [Adnan to confirm: e.g. 2] consecutive months Right. (c) Staff turnover exceeding [Adnan to confirm: e.g. the annualised target set in Chapter 6.1]under 20% yearly in any rolling 3-month period. (d) Food safety non-compliance identified during a Mattilsynet inspection or an internal audit (immediate trigger — no waiting period). (e) Google review score declining below [Adnan to confirm: e.g. 4.0] or declining by more than 0.3 points over a 3-month period. Needs to be above 4,3 at all time
+When any early-warning indicator is triggered, the following process must be initiated: (1) Head Office issues a formal Underperformance Notice to the Franchise Owner, specifying which indicator(s) triggered the notice and the data behind it. (2) A review meeting is scheduled within [Adnan to confirm: e.g. 10 working days] Right between the Franchise Owner, Unit Manager, and Head Office. (3) The review meeting must identify root causes, agree corrective actions, and set a remediation timeline. This feeds into the formal remediation process (see Chapter 6.7 — Formal remediation process & timeline).
+Indicators must be monitored using the reporting cadences set out in Chapter 6.1 (Financial reporting & KPIs). Head Office is responsible for monitoring network-wide; the Franchise Owner is responsible for self-monitoring at unit level.
+A single indicator triggering once may be explainable (a one-off event, a seasonal dip). The thresholds above are deliberately set at consecutive periods to filter out noise. However, a food safety non-compliance is always an immediate trigger regardless of pattern.
+Roles & Responsibilities
+Head Office: Monitors early-warning indicators across the network; issues Underperformance Notices; facilitates review meetings; tracks remediation.
+Franchise Owner / Operator: Self-monitors indicators at unit level; responds to Underperformance Notices; participates in review meetings; implements corrective actions.
+Unit Manager: Provides the operational data that feeds the indicators; participates in review meetings; executes corrective actions at unit level.
+Measure Analyse Improve
+Track: (a) number of Underperformance Notices issued per quarter, (b) time from indicator trigger to Notice issuance (target: within [Adnan to confirm: e.g. 5 working days] of the data becoming available), (c) percentage of triggered units that resolve indicators within the agreed remediation timeline, (d) repeat triggers — units that resolve and then re-trigger within [Adnan to confirm: e.g. 6 months] require deeper structural review.
+Tools & Resources
+Early-warning indicator dashboard (automated from EPOS, financial, and audit data where possible). Underperformance Notice template (formal letter: indicator triggered, supporting data, required actions, timeline). Review meeting agenda template. KPI definitions and targets (see Chapter 6.1). Audit scoring framework (see Chapter 6.5 — Field visit/audit cadence).
+
+Formal remediation process & timeline   [YSF ADVISORY — DRAFTED, PENDING REVIEW]
+Introduction
+This chapter defines the structured process for remediating underperformance at a Creamy unit once an early-warning indicator has been triggered and a review meeting has taken place. The remediation process is deliberately structured to mirror the readiness criteria in Chapter 6.4: just as expansion readiness is assessed against objective criteria with no partial credit, remediation is assessed against a formal improvement plan with defined milestones and a fixed timeline. The goal is always recovery — but the process must also create a clear, documented trail that supports escalation to franchise agreement default and termination if recovery does not materialise (see Chapter 6.7 — Franchise agreement default & termination conditions).
+Minimum Operating Standards
+Stage 1 — Improvement Plan (triggered by Underperformance Notice): Within [Adnan to confirm: e.g. 10 working days] Right of the review meeting, Head Office and the Franchise Owner must jointly agree a written Improvement Plan. The plan must specify: (a) the specific indicators that triggered the process, (b) root causes identified, (c) corrective actions (specific, measurable, with named owners), (d) interim milestones (e.g. monthly checkpoints), (e) success criteria (the indicator thresholds that must be met for the remediation to be considered successful), and (f) the review period (typically [Adnan to confirm: e.g. 3 months]).Right
+Stage 2 — Monitored Improvement: During the review period, performance is tracked against the Improvement Plan milestones at the agreed frequency (typically monthly). Head Office provides support as agreed in the plan (additional training, operational visits, marketing support, etc.). The Franchise Owner must provide requested data and implement agreed actions within the stated timelines.
+Stage 3 — Review: At the end of the review period, a formal assessment is conducted: (a) All indicators met — remediation successful; the unit exits the formal process. The case remains on file for [Adnan to confirm: e.g. 12 months] Right for monitoring purposes. (b) Partial improvement — indicators trending in the right direction but not yet met. Head Office may extend the review period by [Adnan to confirm: e.g. one further month] Right, maximum one extension. (c) No improvement or deterioration — escalation to Stage 4.
+Stage 4 — Final Notice: Head Office issues a Final Notice specifying: (a) which improvement criteria were not met, (b) what further action the Franchise Owner must take, (c) a final review date (typically [Adnan to confirm: e.g. 30 days]) Right, and (d) the consequences of continued non-improvement (which may include franchise agreement default proceedings as defined in Chapter 6.7 — Franchise agreement default & termination conditions).
+Documentation: every stage must be documented in writing, signed by both parties, and retained. This documentation is essential both for fairness (the franchisee must have clear notice of what is expected) and for legal enforceability if the process escalates to termination.
+Support: the remediation process is not adversarial. Head Office must provide genuine, practical support during the improvement period — not just monitoring. If the Franchise Owner identifies a barrier that requires Head Office action (e.g. a supplier issue, a system deficiency, a brand-level marketing gap), Head Office must address it or acknowledge it as a mitigating factor.
+Roles & Responsibilities
+Head Office: Drafts the Improvement Plan (jointly with the Franchise Owner); provides support during the monitored period; conducts interim and final reviews; issues Final Notices; maintains documentation.
+Franchise Owner / Operator: Participates in drafting the Improvement Plan; implements corrective actions; provides data and access for monitoring; escalates barriers to Head Office.
+Unit Manager: Executes day-to-day corrective actions; provides operational data; participates in interim reviews.
+Legal Advisor (if escalation to Stage 4): Reviews documentation trail; advises on franchise agreement implications; supports any formal dispute process.
+Measure Analyse Improve
+Track: (a) number of Improvement Plans initiated per year, (b) percentage resolved successfully at Stage 3 (target: majority — if most cases escalate to Stage 4, the support model may be inadequate), (c) average duration from Underperformance Notice to resolution, (d) number of cases escalated to Final Notice, (e) number of cases resulting in franchise agreement default proceedings. Review the remediation process itself annually — if it is not resulting in recoveries, the process or the support model needs adjustment.
+Tools & Resources
+Improvement Plan template (standardised format: indicators, root causes, corrective actions with owners and deadlines, milestones, success criteria, review dates). Interim review template (progress against each milestone). Final Notice template (formal letter). Case file (chronological documentation of all notices, meetings, plans, and reviews for each remediation case). Performance data (from EPOS, financial reports, audit scores, customer feedback — as per Chapter 6.1).
+
+Franchise agreement default & termination conditions   [NEEDS ADNAN INPUT]
+Why this chapter matters
+This chapter has direct legal consequence — it defines the conditions under which a franchise agreement can be terminated and must be aligned with the franchise agreement itself. It cannot be safely templated. This is the ultimate backstop of the remediation process (Chapter 6.7) and must be drafted with legal review.
+What you need to provide
+The current draft or final franchise agreement (if it exists) — specifically the termination and default clauses.
+What you consider to be terminable breaches (e.g. food safety violation, brand damage, financial insolvency, persistent non-compliance after remediation).
+Whether the franchise agreement includes a cure period (time for the franchisee to fix a breach before termination).
+Post-termination obligations: what happens to equipment, branding, lease, customer data, and staff?
+Whether you want a mutual termination right (franchisee can also exit) and under what conditions.
+Your Norwegian legal advisor's contact details — this chapter must be reviewed by a lawyer before it goes into the manual.
+Easiest way to get this done
+This is one for a proper sit-down conversation rather than a quick voice note — it has legal weight. If the franchise agreement already covers this, send it over and YSF Advisory will draft the manual chapter to mirror it. If it doesn't exist yet, this chapter and the franchise agreement should be drafted together with your legal advisor.
+YSF Advisory will draft the manual chapter structure, but the specific legal provisions must be reviewed and approved by a Norwegian franchise law specialist before publication. Flag for legal review alongside the franchise agreement drafting process.
+
+Changelog — YSF Advisory Draft v1.0
+This section lists all chapters drafted by YSF Advisory in this version, along with all assumptions and flagged items requiring confirmation from Adnan.
+Drafted Chapters (62 total)
+All chapters below have been drafted with a 5-heading SOP structure (Introduction, Minimum Operating Standards, Roles & Responsibilities, Measure Analyse Improve, Tools & Resources). They are now tagged [YSF ADVISORY — DRAFTED, PENDING REVIEW].
+Category 1 — Introduction
+Manual structure & navigation
+Update/version control process
+Who to contact with questions
+Network rollout & change adoption process
+Category 2 — New Business Setup & Support
+Lease/property evaluation checklist
+Sign-off & approval process
+Regulatory/licensing requirements (Norway-specific)
+Staffing & training lead time
+Soft-launch protocol
+Ordering & account setup process
+Grand opening protocol
+Category 3 — People
+Job descriptions by role
+Recruitment process & channels
+Onboarding checklist (day 1 / week 1)
+Probation review
+Escalation/reporting lines
+New starter training plan
+Ongoing/refresher training
+Competency sign-off/certification
+Rota-building process
+Code of conduct
+Disciplinary & grievance process
+Leave & absence policy
+Allergen management
+HACCP/food safety procedures
+H&S incident reporting
+Demand forecasting & capacity assessment
+Category 4 — Marketing & Promotion
+Local store marketing playbook
+Community engagement guidance
+Social media posting standards
+Content calendar guidance
+Review/reputation management
+Seasonal campaign calendar
+Category 5 — Day-to-Day Operating Requirements
+Opening checklist
+Closing checklist
+Cash handling & till reconciliation
+Stock rotation (FIFO)
+Waste tracking & reporting
+Order accuracy & speed standards
+Handling special requests/allergens at point of sale
+Daily/weekly/deep-clean schedules
+Equipment maintenance log
+Pest control protocol
+Complaint resolution process
+Escalation thresholds
+Equipment failure protocol (fridge/freezer/oven down)
+Systems outage procedure (EPOS/Tidsbanken/SmartMate down)
+Category 6 — Development, Growth & Profit
+Daily/weekly/monthly reporting templates
+Core KPI definitions
+Reporting cadence & ownership
+Pricing review process
+Weekly ops review
+Monthly business review
+Annual planning process
+Readiness criteria for site #2
+Territory/exclusivity policy
+Support model & SLAs
+Escalation matrix
+Cash flow forecasting & monitoring
+Working capital cycle management
+Underperformance early-warning indicators
+Formal remediation process & timeline
+
+Untouched Chapters
+[NEEDS ADNAN INPUT] — 39 chapters: Left exactly as per the framework. These require Adnan's real operational input before drafting.
+[TOOL-REFERENCED] — 9 chapters: Left exactly as per the framework. These depend on external tools or deliverables not yet built.
+
+Flagged Items Requiring Adnan's Confirmation
+The following items are marked [Adnan to confirm] within the drafted chapters. Each needs a specific decision or data point from Adnan before the chapter can be finalised.
+Category 1 — Introduction
+Preferred digital storage platform for the manual (e.g. shared drive, intranet, third-party system)
+Target remediation timeframe for audit gaps (e.g. 7 days)
+Target distribution window for manual updates (e.g. 5 working days)
+Version-controlled document repository platform
+Head Office contact details (phone, email, ticketing/support system)
+Target resolution time for unit-level queries (e.g. 48 hours)
+Whether an external HR advisor is retained
+Category 2 — New Business Setup & Support
+Minimum unit size (target sq. metres)
+Document retention period (e.g. 5 years beyond franchise agreement)
+Approval stage turnaround target (e.g. 10 working days)
+Mattilsynet registration lead time (14 days minimum, 4-6 weeks recommended)
+Whether any units will serve alcohol (skjenkebevilling requirement)
+Minimum insurance coverage levels and approved insurers
+Recommended recruitment lead time (e.g. 8-10 weeks before opening)
+Unit Manager hiring lead time (e.g. 6 weeks before opening)
+Minimum staffing levels for a new unit at opening
+Minimum training duration (e.g. 3-5 days for team members, 2 weeks for supervisors)
+Staffing readiness sign-off deadline (e.g. 2 weeks before opening)
+Soft-launch duration (e.g. 3-5 trading days)
+Supplier account setup lead time (e.g. 4 weeks before soft launch)
+Opening stock buffer percentage (e.g. 20%)
+Standard payment terms (e.g. 14 or 30 days net)
+Grand opening date confirmation lead time (e.g. 2 weeks)
+Grand opening staffing level (e.g. 150% of normal)
+Grand opening marketing budget
+Grand opening operating hours (extended or normal)
+Post-opening review timing (e.g. within 3 days)
+Category 3 — People
+Demand forecast preparation day (e.g. Thursday/Friday for the following week)
+Minimum EPOS history for data-based forecasting (e.g. 12 weeks)
+Forecast accuracy target (e.g. ±10% daily, ±5% weekly)
+Current estimated throughput capacity for existing unit
+Capacity threshold triggering a flag (e.g. 85% of documented capacity)
+Additional roles beyond core four (e.g. barista, delivery coordinator)
+Standard probation period (3 or 6 months)
+Employee referral bonus scheme (in place or desired)
+New starter training programme completion window (e.g. 2 weeks)
+Whether external training providers are used for leadership training
+Reassessment window for 'not yet competent' findings (e.g. 1 week)
+Target labour cost percentage of revenue
+Whether Creamy is part of the IA-avtalen (Inclusive Workplace Agreement)
+Leave request advance notice periods (1 week for single days, 4 weeks for longer)
+Absence notification method (phone, SMS, Tidsbanken)
+Bereavement leave entitlement (e.g. 3 days)
+Grievance acknowledgement timeline (e.g. 3 working days) and response timeline (e.g. 10 working days)
+Whether a verneombud (safety representative) is appointed (mandatory for 10+ employees)
+Traceability record retention period (recommended 2 years)
+Specific CCPs based on Creamy's actual menu and processes
+Standard use-within periods for Creamy prep items
+Category 4 — Marketing & Promotion
+Local paid advertising: at franchisee discretion or requires approval
+Mandatory minimum local marketing spend (% of revenue)
+Community engagement spend threshold requiring Head Office approval (e.g. NOK 5,000)
+Approved social media platforms
+Posting frequency target (e.g. 3-5 per week)
+Content mix ratio (e.g. 70/20/10)
+Social media response time target (e.g. 4 hours during business hours)
+Content preparation lead time (e.g. 1 week in advance)
+Mandatory content communication lead time from Head Office (e.g. 2 weeks)
+Review platforms Creamy is active on
+Review response time target (e.g. 48 hours)
+Target Google review score (e.g. 4.3+)
+Annual seasonal campaign calendar issue date (e.g. November)
+Post-campaign review timing (e.g. within 1 week)
+Category 5 — Day-to-Day Operating Requirements
+Complete list of critical equipment for current unit (equipment failure protocol)
+Post-repair temperature verification hold time (e.g. 2 hours)
+Tidsbanken manual time entry deadline after outage (e.g. 24 hours)
+SmartMate fallback procedure (depends on its specific role in operations)
+Systems outage escalation threshold (e.g. 1 hour)
+Opening lead arrival time before published opening (e.g. 30-45 minutes)
+Specific equipment list for start-up sequence
+Checklist retention period (e.g. 30 days)
+Close-down procedure start time (e.g. 15-30 minutes before close)
+Where end-of-day EPOS reports go
+Till float amount (e.g. NOK 2,000)
+Cash drop threshold (e.g. NOK 5,000)
+Cash variance investigation threshold (e.g. NOK 50)
+Banking frequency (e.g. twice per week)
+Cash handling record retention period (bokforingsloven: 5 years for accounting records)
+Minimum acceptable remaining shelf life for deliveries (e.g. 3 days for fresh items)
+Target waste percentage (e.g. below 3-5% of food cost)
+Order accuracy target (e.g. 98%+)
+Speed of service targets (dine-in/takeaway and delivery)
+How EPOS flags allergen orders (button, modifier, or note field)
+Whether Creamy's products are halal-certified
+Customer WC cleaning frequency (e.g. every 2 hours)
+Colour-coding scheme for cleaning equipment
+Equipment maintenance expenditure authority limit
+Current pest control provider (or need to appoint one)
+Written/online complaint acknowledgement and response timelines
+Refund/compensation authority thresholds by role
+Category 6 — Development, Growth & Profit
+Cash flow forecast variance investigation threshold (e.g. NOK 10,000 or 10%)
+Minimum cash reserve target (e.g. 4-8 weeks of fixed costs)
+Inventory holding period targets (perishables vs. dry goods)
+Card processor settlement terms (e.g. T+1 or T+2)
+Standard supplier payment terms (e.g. 14 or 30 days net)
+Underperformance indicator: consecutive months of revenue decline trigger (e.g. 3)
+Underperformance indicator: profit margin and cost percentage thresholds and durations
+Operational audit score trigger threshold (e.g. below 80%)
+Customer complaint rate trigger threshold
+Underperformance Notice issuance target (e.g. 5 working days)
+Improvement Plan agreement timeline (e.g. 10 working days)
+Standard remediation review period (e.g. 3 months)
+Successful remediation monitoring period (e.g. 12 months)
+Final Notice response period (e.g. 30 days)
+Network rollout change lead time (e.g. 2 weeks standard, 48 hours urgent)
+Implementation confirmation window (e.g. 5 working days)
+Daily report submission method (email, shared drive, reporting tool)
+Weekly report submission day (e.g. Monday COB)
+Monthly report submission deadline (e.g. 5th working day)
+Report retention period (aligned with bokforingsloven: 5 years)
+All KPI targets: ATV, labour cost %, food cost %, net profit margin, marketing spend % of revenue, order accuracy, speed of service, waste %, audit score, turnover rate, absence rate, complaint rate, repeat customer rate
+MVA classification for Creamy's products (25% served vs. 15% takeaway)
+Minimum margin during promotions
+Weekly ops review preferred day/time and duration
+MBR timing (e.g. within 10 working days of month end) and duration
+Annual planning cycle start month (e.g. October/November)
+Estimated capital requirement for Site #2
+Financial model: months of consecutive profitability required (e.g. 12)
+Path to profitability timeline for Site #2 (e.g. 12-18 months)
+Operational audit score and staff turnover targets for expansion readiness
+Territory definition method (postcode, radius, map-based)
+Whether territorial exclusivity extends to delivery zones/online
+Capex authorisation threshold requiring Head Office consultation
+Support SLA response times by category (emergency, urgent, standard, non-urgent)
+Support channels (phone, email, ticketing system)
+
+Regulatory Basis Notes
+The following Norwegian regulations and legal frameworks have been referenced throughout the drafted chapters. All references are based on current legislation as of mid-2025. Adnan and Wes should verify currency with a Norwegian legal advisor before finalising the manual.
+Matloven (Food Act) — framework for food safety regulation
+Naeringshygieneforskriften — implementing EU Regulation 852/2004 on food hygiene (via EEA Agreement)
+IK-mat (Internkontrollforskriften for naeringsmidler) — internal control system for food safety
+Matinformasjonsforskriften — implementing EU Regulation 1169/2011 on food information / allergen declaration (via EEA Agreement)
+Serveringsloven — food service licensing; requires serveringsbevilling and etablererproeven
+Arbeidsmiljoeloven (Working Environment Act) — employment law: contracts, working hours, dismissal, probation, droftelsesmoete, whistleblowing, H&S
+Ferieloven (Holiday Act) — annual leave entitlement (25 days), holiday pay (10.2%), hovedferieperioden
+Folketrygdloven — sick leave: egenmelding (3 days/4 times), arbeidsgiverperioden (16 days)
+Likestillings- og diskrimineringsloven (Equality and Anti-Discrimination Act) — recruitment and employment
+Markedsforingsloven (Marketing Control Act) — advertising standards, marketing to children
+Konkurranseloven (Competition Act) — territorial exclusivity, pricing arrangements in franchise agreements
+Personopplysningsloven / GDPR — data protection, staff consent for photos/social media
+Bokforingsloven — accounting record retention (5 years)
+Kassasystemforskriften — EPOS/cash register technical requirements
+TEK17 (Building regulations) — accessibility (universell utforming), physical premises requirements
+Husleieloven (Tenancy Act) — commercial lease terms
+Lotteriloven (Lottery Act) — competitions and giveaways
+Forskrift om brannforebygging — fire prevention regulations
+EU Regulation 178/2002 (via EEA) — food traceability requirements
+EU/EEA Vertical Block Exemption Regulation — franchise territorial provisions
+
+End of Changelog
+Document generated by YSF Advisory. All drafted content is pending review by Adnan Tasleem and Wesley Williams.

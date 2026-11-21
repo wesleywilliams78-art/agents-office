@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>WRW Hospitality · Direction B · The estate at night</title>
+<link rel="icon" href="../img/favicon.svg" type="image/svg+xml">
+<link rel="modulepreload" href="../vendor/three.module.min.js">
+<link rel="modulepreload" href="../vendor/three.core.min.js">
+<style>
+@font-face{font-family:"Newsreader";src:url("../fonts/newsreader-latin-opsz-italic.woff2") format("woff2");font-weight:200 800;font-style:italic;font-display:swap}
+@font-face{font-family:"Archivo";src:url("../fonts/archivo-latin-wdth-normal.woff2") format("woff2");font-weight:100 900;font-stretch:62% 125%;font-display:swap}
+:root{--bone:#F7F2EA;--ink:#201A19;--red:#FF3131;--red-deep:#B81F1F;--mut:rgba(247,242,234,.62);
+ --e-out:cubic-bezier(.22,1,.36,1);--e-in:cubic-bezier(.4,0,1,1);--e-inout:cubic-bezier(.45,0,.55,1)}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--ink);color:var(--bone);font:400 16px/1.5 "Archivo",system-ui,sans-serif}
+#track{position:relative;height:420vh}
+body.pinned #track{height:100vh}body.pinned{overflow:hidden}
+.stage{position:sticky;top:0;height:100vh;overflow:hidden}
+.atmo{position:absolute;inset:0;background:
+ radial-gradient(40% 50% at 76% 60%,rgba(255,49,49,.16),transparent 70%),
+ radial-gradient(50% 40% at 15% 20%,rgba(247,242,234,.05),transparent 70%),
+ linear-gradient(180deg,#171110 0%,#201A19 55%,#2a2120 100%)}
+canvas#gl{position:absolute;inset:0;width:100%;height:100%;display:block;-webkit-mask-image:linear-gradient(90deg,transparent 0,transparent 52%,#000 70%);mask-image:linear-gradient(90deg,transparent 0,transparent 52%,#000 70%)}
+.scrim{position:absolute;inset:0;pointer-events:none;background:
+ linear-gradient(90deg,rgba(23,17,16,.5) 0%,rgba(23,17,16,.2) 40%,transparent 55%),
+ linear-gradient(180deg,rgba(23,17,16,.7),transparent 18%,transparent 78%,rgba(23,17,16,.8))}
+.grain{position:absolute;inset:0;pointer-events:none;opacity:.07;mix-blend-mode:overlay;
+ background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E")}
+#ui{position:absolute;inset:0;pointer-events:none}
+#ui a{pointer-events:auto}
+nav{position:absolute;top:0;left:0;right:0;display:flex;align-items:center;justify-content:space-between;padding:26px 4vw}
+.logo img{height:28px;display:block}
+.links{display:flex;gap:6px;align-items:center;padding:6px;border-radius:999px;background:rgba(32,26,25,.5);backdrop-filter:blur(16px);border:1px solid rgba(247,242,234,.1)}
+.links a{color:var(--bone);text-decoration:none;font:500 12px/1 "Archivo";letter-spacing:.16em;text-transform:uppercase;padding:11px 16px;border-radius:999px;transition:background .4s var(--e-out)}
+.links a.l:hover{background:rgba(247,242,234,.1)}
+.cta{position:relative;overflow:hidden;display:inline-flex;align-items:center;gap:12px;padding:18px 30px;border-radius:999px;
+ background:linear-gradient(180deg,rgba(255,255,255,.18),transparent 45%,rgba(0,0,0,.2)),var(--red);color:#fff!important;text-decoration:none;
+ font:600 15px/1 "Archivo";letter-spacing:.04em;box-shadow:inset 0 1px 0 rgba(255,255,255,.3),0 0 0 1px rgba(255,49,49,.4),0 16px 44px -10px rgba(255,49,49,.75);transition:translate .45s var(--e-out),box-shadow .45s var(--e-out)}
+.cta::before{content:"";position:absolute;top:-30%;left:-45%;width:42%;height:160%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.5),transparent);rotate:14deg;filter:blur(5px);animation:sheen 5.5s linear infinite}
+.cta:hover{translate:0 -2px;box-shadow:inset 0 1px 0 rgba(255,255,255,.3),0 0 0 1px rgba(255,49,49,.6),0 20px 54px -8px rgba(255,49,49,.95)}
+.cta>*{position:relative}
+.links .cta{padding:11px 18px;font-size:12px;letter-spacing:.14em;text-transform:uppercase}
+@keyframes sheen{0%,55%{left:-45%}85%,100%{left:115%}}
+.ghost{display:inline-flex;align-items:center;padding:17px 26px;border-radius:999px;border:1px solid rgba(247,242,234,.35);color:var(--bone);text-decoration:none;font:600 15px/1 "Archivo";letter-spacing:.04em;backdrop-filter:blur(10px);transition:background .4s var(--e-out)}
+.ghost:hover{background:rgba(247,242,234,.12)}
+.hero{position:absolute;left:4vw;top:50%;translate:0 -46%;max-width:min(54vw,1040px)}
+.eyebrow{font:600 12px/1 "Archivo";letter-spacing:.26em;text-transform:uppercase;color:var(--red);display:flex;align-items:center;gap:12px;margin-bottom:26px}
+.eyebrow::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--red);box-shadow:0 0 12px var(--red)}
+h1{font:800 clamp(34px,4.3vw,96px)/.94 "Archivo";font-stretch:64%;text-transform:uppercase;letter-spacing:-.005em}
+h1 .ln{display:block;opacity:.26;transition:opacity .7s var(--e-out),translate .7s var(--e-out)}
+h1 .ln.on{opacity:1}
+h1 em{font:italic 500 1.02em/1 "Newsreader";text-transform:none;color:var(--red);letter-spacing:-.01em;padding-right:.04em}
+.sub{margin-top:30px;max-width:540px;font:400 19px/1.5 "Archivo";color:rgba(247,242,234,.86)}
+.sub em{font:italic 500 21px/1 "Newsreader";color:var(--bone)}
+.btns{display:flex;gap:14px;margin-top:30px}
+.meter{position:absolute;right:4vw;bottom:5vh;text-align:right}
+.meter .n{font:800 64px/1 "Archivo";font-stretch:62%;font-variant-numeric:tabular-nums;color:var(--bone)}
+.meter .n b{color:var(--red);font-weight:800}
+.meter .k{font:600 11px/1 "Archivo";letter-spacing:.24em;text-transform:uppercase;color:var(--mut);margin-top:8px}
+.bar{position:absolute;left:4vw;right:4vw;bottom:2.4vh;height:2px;background:rgba(247,242,234,.12)}
+.bar i{display:block;height:100%;background:var(--red);transform-origin:left;scale:var(--p,0) 1}
+.hint{position:absolute;left:50%;bottom:5vh;translate:-50% 0;font:500 11px/1 "Archivo";letter-spacing:.24em;text-transform:uppercase;color:var(--mut);transition:opacity .5s var(--e-in)}
+body.scrolled .hint{opacity:0}
+.after{min-height:60vh;background:var(--bone);color:var(--ink);padding:12vh 4vw;font:800 clamp(30px,4vw,80px)/1 "Archivo";font-stretch:64%;text-transform:uppercase}
+.enter{opacity:0;translate:0 18px;transition:opacity .9s var(--e-out),translate .9s var(--e-out)}
+body.ready .enter{opacity:1;translate:0 0}
+.d1{transition-delay:.05s}.d2{transition-delay:.2s}.d3{transition-delay:.35s}.d4{transition-delay:.5s}
+body.settled .enter{transition-delay:0s}
+body.still .enter,body.still h1 .ln{transition:none;opacity:1;translate:0 0}body.still h1 .ln:not(.on){opacity:.26}
+body.still .cta::before{animation:none}
+@media (prefers-reduced-motion:reduce){.enter{transition:none;opacity:1;translate:0 0}.cta::before{animation:none}}
+@media (max-width:740px){
+ nav{padding:16px 20px}.logo img{height:22px}.links{padding:0;background:none;border:0;backdrop-filter:none}.links a.l{display:none}
+ canvas#gl{-webkit-mask-image:linear-gradient(180deg,transparent 0,transparent 60%,#000 74%);mask-image:linear-gradient(180deg,transparent 0,transparent 60%,#000 74%)}
+ .scrim{background:linear-gradient(180deg,transparent 80%,rgba(23,17,16,.7))}
+ .hero{left:20px;right:20px;top:86px;translate:0 0;max-width:none}
+ .eyebrow{margin-bottom:16px;font-size:10.5px}
+ h1{font-size:clamp(28px,8.4vw,52px)}
+ .sub{font-size:16px;margin-top:18px}.sub em{font-size:18px}
+ .btns{flex-direction:column;gap:10px;margin-top:22px}
+ .btns a{justify-content:center}
+ .meter{right:20px;bottom:22px}.meter .n{font-size:36px}.meter .k{font-size:9.5px}
+ .hint{display:none}.bar{left:20px;right:20px}
+}
+</style>
+</head>
+<body>
+<div id="track">
+ <div class="stage">
+  <div class="atmo"></div>
+  <canvas id="gl" aria-hidden="true"></canvas>
+  <div class="scrim"></div><div class="grain"></div>
+  <div id="ui">
+   <nav class="enter d1">
+    <a class="logo" href="#" aria-label="WRW Hospitality, home"><img src="../img/wrw-mark-red.svg" alt="WRW Hospitality"></a>
+    <div class="links"><a class="l" href="#">Services</a><a class="l" href="#">Case studies</a><a class="l" href="#">Works</a><a class="l" href="#">About</a><a class="cta" href="#"><span>Book a call</span></a></div>
+   </nav>
+   <div class="hero">
+    <p class="eyebrow enter d2">Operations for multi-site brands</p>
+    <h1 class="enter d2"><span class="ln on">Site 1 made money.</span><span class="ln">Site 10 is the <em>litmus</em> test.</span><span class="ln">Site 100 is the <em>legacy</em> test.</span></h1>
+    <p class="sub enter d3">Most brands are built to grow. Few are built to last. I build systems that get you there, <em>and keep you there.</em></p>
+    <div class="btns enter d4"><a class="cta" href="#"><span>Book a call</span><span aria-hidden="true">→</span></a><a class="ghost" href="#">See the services</a></div>
+   </div>
+   <div class="meter enter d4" aria-hidden="true"><div class="n"><b id="lit">001</b> / 100</div><div class="k">Sites to one standard</div></div>
+   <p class="hint enter d4">Scroll · light the estate</p>
+   <div class="bar"><i></i></div>
+  </div>
+ </div>
+</div>
+<section class="after">01 · In numbers →</section>
+<script>setTimeout(()=>document.body.classList.add("ready","settled"),3200);</script>
+<script type="module">
+const qs=new URLSearchParams(location.search);
+const STILL=qs.has("still")||matchMedia("(prefers-reduced-motion: reduce)").matches;
+const PIN=qs.has("p")?Math.min(1,Math.max(0,+qs.get("p"))):null;
+if(STILL)document.body.classList.add("still","ready","settled");
+if(PIN!==null)document.body.classList.add("pinned");
+let THREE;
+try{THREE=await import("../vendor/three.module.min.js");}
+catch{THREE=await import("https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.min.js");}
+
+const WORLD=0x1d1716;
+const canvas=document.getElementById("gl");
+const renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:true});
+renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.05;
+const scene=new THREE.Scene();scene.fog=new THREE.Fog(WORLD,14,46);
+const camera=new THREE.PerspectiveCamera(38,1,.1,200);
+scene.add(new THREE.HemisphereLight(0xf7f2ea,0x120d0c,.55));
+const moon=new THREE.DirectionalLight(0xf7e6d8,.6);moon.position.set(-8,14,6);scene.add(moon);
+const redL=new THREE.PointLight(0xff3131,30,9,1.6);redL.position.set(0,1.6,0);scene.add(redL);
+
+function softTex(){const c=document.createElement("canvas");c.width=c.height=64;const x=c.getContext("2d"),g=x.createRadialGradient(32,32,0,32,32,32);
+ g.addColorStop(0,"rgba(255,255,255,1)");g.addColorStop(.3,"rgba(255,255,255,.5)");g.addColorStop(1,"rgba(255,255,255,0)");x.fillStyle=g;x.fillRect(0,0,64,64);return new THREE.CanvasTexture(c);}
+function haloTex(){const s=512,c=document.createElement("canvas");c.width=c.height=s;const x=c.getContext("2d"),g=x.createRadialGradient(s/2,s/2,0,s/2,s/2,s/2);
+ g.addColorStop(0,"rgba(255,49,49,.35)");g.addColorStop(.4,"rgba(255,49,49,.08)");g.addColorStop(.62,"rgba(255,49,49,.10)");g.addColorStop(.70,"rgba(255,120,110,.9)");g.addColorStop(.75,"rgba(255,49,49,.25)");g.addColorStop(1,"rgba(255,49,49,0)");
+ x.fillStyle=g;x.fillRect(0,0,s,s);return new THREE.CanvasTexture(c);}
+const SOFT=softTex(),HALO=haloTex();
+
+// ground
+const ground=new THREE.Mesh(new THREE.PlaneGeometry(300,300),new THREE.MeshStandardMaterial({color:0x221b1a,roughness:1}));
+ground.rotation.x=-Math.PI/2;scene.add(ground);
+const grid=new THREE.GridHelper(120,120,0x3a2f2d,0x2c2423);grid.position.y=.002;grid.material.transparent=true;grid.material.opacity=.55;scene.add(grid);
+
+// the estate: 100 sites in a phyllotaxis spread, Site 1 at the centre
+const N=100,GA=Math.PI*(3-Math.sqrt(5));let seed=7;const rnd=()=>(seed=(seed*16807)%2147483647)/2147483647;
+const sites=[];
+for(let i=0;i<N;i++){const r=i===0?0:1.75*Math.sqrt(i+.6);const a=i*GA;
+ sites.push({x:Math.cos(a)*r,z:Math.sin(a)*r,h:i===0?1.25:.45+rnd()*.9,w:.62+rnd()*.3,d:.62+rnd()*.3,lit:0});}
+// parents: nearest earlier site (how the standard travels)
+for(let i=1;i<N;i++){let b=0,bd=1e9;for(let j=0;j<i;j++){const d=(sites[i].x-sites[j].x)**2+(sites[i].z-sites[j].z)**2;if(d<bd){bd=d;b=j;}}sites[i].p=b;}
+const box=new THREE.BoxGeometry(1,1,1);box.translate(0,.5,0);
+const bodies=new THREE.InstancedMesh(box,new THREE.MeshStandardMaterial({color:0xffffff,roughness:.75,metalness:.05}),N);
+const roofs=new THREE.InstancedMesh(new THREE.BoxGeometry(1,.06,1),new THREE.MeshBasicMaterial({color:0xffffff,toneMapped:false}),N);
+const win=new THREE.InstancedMesh(new THREE.PlaneGeometry(1,1),new THREE.MeshBasicMaterial({color:0xffffff,toneMapped:false,side:THREE.DoubleSide}),N*2);
+const m=new THREE.Matrix4(),q=new THREE.Quaternion(),v=new THREE.Vector3(),s=new THREE.Vector3(),col=new THREE.Color();
+sites.forEach((st,i)=>{
+ m.compose(v.set(st.x,0,st.z),q.identity(),s.set(st.w,st.h,st.d));bodies.setMatrixAt(i,m);
+ m.compose(v.set(st.x,st.h+.03,st.z),q.identity(),s.set(st.w*1.02,1,st.d*1.02));roofs.setMatrixAt(i,m);
+ // a lit window band on two faces
+ m.compose(v.set(st.x,st.h*.55,st.z+st.d/2+.005),q.identity(),s.set(st.w*.7,st.h*.16,1));win.setMatrixAt(i*2,m);
+ m.compose(v.set(st.x+st.w/2+.005,st.h*.55,st.z),q.setFromAxisAngle(new THREE.Vector3(0,1,0),Math.PI/2),s.set(st.d*.7,st.h*.16,1));win.setMatrixAt(i*2+1,m);
+});
+scene.add(bodies,roofs,win);
+// ground glow per site (additive soft points, colour 0 = off)
+const gpos=new Float32Array(N*3),gcol=new Float32Array(N*3);
+sites.forEach((st,i)=>{gpos[i*3]=st.x;gpos[i*3+1]=st.h+.2;gpos[i*3+2]=st.z;});
+const ggeo=new THREE.BufferGeometry();ggeo.setAttribute("position",new THREE.BufferAttribute(gpos,3));ggeo.setAttribute("color",new THREE.BufferAttribute(gcol,3));
+const glow=new THREE.Points(ggeo,new THREE.PointsMaterial({size:3.6,opacity:.8,map:SOFT,vertexColors:true,transparent:true,blending:THREE.AdditiveBlending,depthWrite:false}));scene.add(glow);
+// roads: each site to its parent
+const rpos=new Float32Array((N-1)*6),rcol=new Float32Array((N-1)*6);
+for(let i=1;i<N;i++){const a=sites[i],b=sites[a.p];rpos.set([a.x,.01,a.z,b.x,.01,b.z],(i-1)*6);}
+const rgeo=new THREE.BufferGeometry();rgeo.setAttribute("position",new THREE.BufferAttribute(rpos,3));rgeo.setAttribute("color",new THREE.BufferAttribute(rcol,3));
+const roads=new THREE.LineSegments(rgeo,new THREE.LineBasicMaterial({vertexColors:true,transparent:true,blending:THREE.AdditiveBlending,depthWrite:false}));scene.add(roads);
+// pulses: the standard travelling along each lit road
+const ppos=new Float32Array((N-1)*3),pcol=new Float32Array((N-1)*3);
+const pgeo=new THREE.BufferGeometry();pgeo.setAttribute("position",new THREE.BufferAttribute(ppos,3));pgeo.setAttribute("color",new THREE.BufferAttribute(pcol,3));
+scene.add(new THREE.Points(pgeo,new THREE.PointsMaterial({size:.6,map:SOFT,vertexColors:true,transparent:true,blending:THREE.AdditiveBlending,depthWrite:false})));
+// Site 1 halo + sonar rings
+const halo=new THREE.Mesh(new THREE.PlaneGeometry(6,6),new THREE.MeshBasicMaterial({map:HALO,transparent:true,blending:THREE.AdditiveBlending,depthWrite:false}));
+halo.rotation.x=-Math.PI/2;halo.position.y=.02;scene.add(halo);
+const rings=[];for(let i=0;i<3;i++){const r=new THREE.Mesh(new THREE.RingGeometry(1.95,2,96),new THREE.MeshBasicMaterial({color:0xff3131,transparent:true,side:THREE.DoubleSide,blending:THREE.AdditiveBlending,depthWrite:false}));
+ r.rotation.x=-Math.PI/2;r.position.y=.03;r.userData.o=i/3;scene.add(r);rings.push(r);}
+// embers
+const EN=500,epos=new Float32Array(EN*3);for(let i=0;i<EN;i++){epos[i*3]=(rnd()-.5)*40;epos[i*3+1]=rnd()*9;epos[i*3+2]=(rnd()-.5)*40;}
+const egeo=new THREE.BufferGeometry();egeo.setAttribute("position",new THREE.BufferAttribute(epos,3));
+scene.add(new THREE.Points(egeo,new THREE.PointsMaterial({size:.07,map:SOFT,color:0xffb3a8,transparent:true,opacity:.55,blending:THREE.AdditiveBlending,depthWrite:false})));
+
+// camera rail: close on Site 1 → the ten → the whole estate
+const C={body:new THREE.Color(0x2b2322),bodyLit:new THREE.Color(0x3b2523),roof:new THREE.Color(0x2f2726),red:new THREE.Color(0xff3131),win:new THREE.Color(0x1c1716),winLit:new THREE.Color(0xffe0d2),winSide:new THREE.Color(0xff6a5a)};
+const sm=t=>t*t*(3-2*t),clamp=(x,a=0,b=1)=>Math.min(b,Math.max(a,x)),seg=(p,a,b)=>clamp((p-a)/(b-a));
+let phone=false;
+function camAt(p,out,look){
+ const k=sm(seg(p,0,.92));
+ const A=phone?[3.2,4.4,9.6]:[3.6,3.3,8.2], B=phone?[8,30,36]:[13,22,26];
+ out.set(A[0]+(B[0]-A[0])*k,A[1]+(B[1]-A[1])*k,A[2]+(B[2]-A[2])*k);
+ const LA=phone?[0,1.1,0]:[0,.9,0], LB=phone?[0,0,-2]:[-1.5,0,-1];
+ look.set(LA[0]+(LB[0]-LA[0])*k,LA[1]+(LB[1]-LA[1])*k,LA[2]+(LB[2]-LA[2])*k);
+}
+function litCount(p){if(p<.2)return 1;if(p<.5)return 1+Math.round(9*sm(seg(p,.2,.46)));return 10+Math.round(90*sm(seg(p,.52,.9)));}
+
+const pointer={x:0,y:0};let hasPointer=false;
+addEventListener("pointermove",e=>{if(e.pointerType!=="mouse")return;hasPointer=true;pointer.x=e.clientX/innerWidth*2-1;pointer.y=e.clientY/innerHeight*2-1;});
+// the estate owns the right of the screen (phone: the bottom); the text column stays empty
+function resize(){phone=innerWidth<=740;const W=innerWidth,H=innerHeight;renderer.setSize(W,H,false);
+ const dx=phone?0:Math.round(W*.27),dy=phone?Math.round(H*.33):0,fw=W+2*dx,fh=H+2*dy,fov=phone?50:38;
+ camera.aspect=fw/fh;camera.fov=2*Math.atan(Math.tan(fov*Math.PI/360)*fh/H)*180/Math.PI;
+ camera.setViewOffset(fw,fh,0,0,W,H);camera.updateProjectionMatrix();}
+addEventListener("resize",resize);resize();
+
+const lines=[...document.querySelectorAll("h1 .ln")],litEl=document.getElementById("lit"),bar=document.querySelector(".bar");
+const track=document.getElementById("track");
+let p=PIN??0,target=p;const lit=new Float32Array(N);
+addEventListener("scroll",()=>{document.body.classList.toggle("scrolled",scrollY>20);},{passive:true});
+const clock=new THREE.Timer(),cp=new THREE.Vector3(),lk=new THREE.Vector3();let first=false,shownLit=-1,shownLine=-1;
+function frame(){
+ requestAnimationFrame(frame);
+ clock.update();const t=STILL?2.2:clock.getElapsed();
+ if(PIN===null){const max=track.offsetHeight-innerHeight;target=max>0?clamp(scrollY/max):0;}
+ p+=(target-p)*(STILL||PIN!==null?1:.08);
+ const n=litCount(p);
+ const intro=STILL?1:sm(clamp((t-.1)/1.6));
+ for(let i=0;i<N;i++){const want=i<n?1:0;lit[i]+=(want-lit[i])*(STILL||PIN!==null?1:.12);
+  const L=lit[i]*intro;
+  bodies.setColorAt(i,col.copy(C.body).lerp(C.bodyLit,L));
+  roofs.setColorAt(i,col.copy(C.roof).lerp(C.red,L));
+  const fl=.8+.2*Math.sin(t*2.3+i*1.7);
+  win.setColorAt(i*2,col.copy(C.win).lerp(C.winLit,L*fl));win.setColorAt(i*2+1,col.copy(C.win).lerp(C.winSide,L*fl));
+  const g=L*(i===0?1:.75);gcol[i*3]=g;gcol[i*3+1]=g*.12;gcol[i*3+2]=g*.12;}
+ bodies.instanceColor.needsUpdate=roofs.instanceColor.needsUpdate=win.instanceColor.needsUpdate=true;ggeo.attributes.color.needsUpdate=true;
+ for(let i=1;i<N;i++){const a=sites[i],b=sites[a.p],L=Math.min(lit[i],lit[a.p])*intro,base=.05;
+  const r=base+.5*L,gg=base*.85+.06*L;rcol.set([r,gg,gg,r,gg,gg],(i-1)*6);
+  const u=((t*.45+i*.137)%1);ppos.set([b.x+(a.x-b.x)*u,.12,b.z+(a.z-b.z)*u],(i-1)*3);const pb=L*Math.sin(u*Math.PI);pcol.set([pb,pb*.35,pb*.3],(i-1)*3);}
+ rgeo.attributes.color.needsUpdate=true;pgeo.attributes.position.needsUpdate=pgeo.attributes.color.needsUpdate=true;
+ halo.material.opacity=intro*(.9-.4*seg(p,.5,1));halo.scale.setScalar(1+(STILL?0:Math.sin(t*1.2)*.04));
+ for(const r of rings){const ph=STILL?(.15+r.userData.o*.8):((t*.28+r.userData.o)%1);r.scale.setScalar(.6+ph*(2.2+6*seg(p,.2,.9)));r.material.opacity=(1-ph)**2*.55*intro;}
+ redL.intensity=30*intro;
+ const kz=sm(seg(p,0,.92));scene.fog.near=12+16*kz;scene.fog.far=40+44*kz;
+ camAt(p,cp,lk);
+ if(!hasPointer&&!STILL){pointer.x=Math.sin(t*.21)*.3;pointer.y=Math.cos(t*.17)*.18;}
+ cp.x+=pointer.x*.5*(STILL?0:1);cp.y+=-pointer.y*.3*(STILL?0:1);
+ if(STILL||PIN!==null)camera.position.copy(cp);else camera.position.lerp(cp,.08);
+ camera.lookAt(lk);
+ renderer.render(scene,camera);
+ const li=p<.2?0:p<.5?1:2;if(li!==shownLine){shownLine=li;lines.forEach((l,k)=>l.classList.toggle("on",k===li));}
+ if(n!==shownLit){shownLit=n;litEl.textContent=String(n).padStart(3,"0");}
+ bar.style.setProperty("--p",p.toFixed(4));
+ if(!first){first=true;setTimeout(()=>document.body.classList.add("ready"),STILL?0:500);setTimeout(()=>document.body.classList.add("settled"),STILL?0:2200);}
+}
+bodies.setColorAt(0,col);roofs.setColorAt(0,col);win.setColorAt(0,col);
+frame();
+</script>
+</body>
+</html>

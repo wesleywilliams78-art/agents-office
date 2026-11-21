@@ -1,5 +1,7 @@
 # The Operator's Ledger: series brief for motion
 
+> **LEGACY (19 Nov 2026).** This is the original Athena/shopfront look. Ledger episodes now use the `ledger-fresh` series (`../ledger-fresh/BRIEF.md`), as Episode 03 v3. Do not build new episodes from this brief.
+
 Read this before making any Operator's Ledger episode. It condenses the series bible (`videos/operators-ledger/DESIGN.md`) and the script skill (`operators-ledger-episode`), adapted to the Motion Studio. Where it disagrees with `motion.md`, **this wins** for this series. Ask `motion_series` with `episode: N` for that week's plan row.
 
 ## What it is

@@ -1,0 +1,66 @@
+{
+ "issue": "06-finland",
+ "why": "Replace S57 with the dated PRH fee page; refresh ECB rate to 16 Nov 2026 and update wage figures.",
+ "base": "videos/franchise-entry-report/issues/06-finland/issue.json",
+ "at": "2026-11-17T10:43:04.447Z",
+ "edits": [
+  {
+   "path": "regulation.rows.6.text",
+   "value": "A private limited company (Oy) needs no minimum share capital. The founding notice costs €400 at the Trade Register (€300 for the guided package, which needs a Finnish personal ID for every person involved), fees as updated 1 Jan 2026."
+  },
+  {
+   "path": "days.sources.56",
+   "value": "S57 PRH, Fees for founding notices to the Trade Register, updated 1 Jan 2026 (guided package page updated 13 Aug 2026), read 17 Nov 2026"
+  },
+  {
+   "path": "days.sources.10",
+   "value": "S11 ECB, euro reference rate for pound sterling, 16 Nov 2026"
+  },
+  {
+   "path": "regulation.wage.sub",
+   "find": "0.83559",
+   "replace": "0.83450"
+  },
+  {
+   "path": "regulation.wage.parts.0.value",
+   "value": 10.19
+  },
+  {
+   "path": "regulation.wage.total",
+   "value": "£12.26"
+  },
+  {
+   "path": "regulation.wage.allIn",
+   "value": "£12.26"
+  },
+  {
+   "path": "regulation.wage.method",
+   "find": "13 Nov 2026",
+   "replace": "16 Nov 2026"
+  },
+  {
+   "path": "regulation.wage.allInNote",
+   "find": "£16.24",
+   "replace": "£16.22"
+  },
+  {
+   "path": "cover.stats.2.big",
+   "value": "£12.26"
+  },
+  {
+   "path": "days.moves.3",
+   "find": "£12.27",
+   "replace": "£12.26"
+  },
+  {
+   "path": "days.moves.3",
+   "find": "£16.24",
+   "replace": "£16.22"
+  },
+  {
+   "path": "days.check.2",
+   "find": "£16.24",
+   "replace": "£16.22"
+  }
+ ]
+}

@@ -1,0 +1,16 @@
+{
+ "issue": "04-kenya",
+ "why": "Put one S-coded Harlyy figure on the cover (40% of bad reviews are about waiting, S56) in place of the 14.4% stat the verdict already carries.",
+ "base": "videos/franchise-entry-report/issues/04-kenya/revisions/2026-11-09T16-24-53-edit/issue.json",
+ "at": "2026-11-09T16:25:04.415Z",
+ "edits": [
+  {
+   "path": "cover.stats.1.big",
+   "value": "40%"
+  },
+  {
+   "path": "cover.stats.1.label",
+   "value": "of 1–2★ Google reviews at 10 Nairobi chains are about waiting, Nov 2026 [S56]"
+  }
+ ]
+}

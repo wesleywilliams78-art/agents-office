@@ -1,0 +1,43 @@
+<template>
+  <style>
+    @font-face { font-family: "Newsreader"; font-weight: 300; src: url("assets/fonts/newsreader-latin-300-normal.woff2") format("woff2"); }
+    @font-face { font-family: "Archivo"; font-weight: 500; src: url("assets/fonts/Archivo-Medium.ttf") format("truetype"); }
+    @font-face { font-family: "Archivo"; font-weight: 400; src: url("assets/fonts/Archivo-Regular.ttf") format("truetype"); }
+    :root { --bone: #f3f2f2; --ink: #201e1d; --red: #ec3013; --deep: #b6240e; --sand: #e9d8bd; --grey: #736e6b; }
+    #root { position: absolute; inset: 0; background: var(--bone); color: var(--ink); overflow: hidden; font-variant-numeric: tabular-nums; }
+    .kick { position: absolute; left: 86px; font: 500 28px/1 "Archivo", sans-serif; letter-spacing: .22em; color: var(--deep); white-space: nowrap; }
+    .serif { position: absolute; font-family: "Newsreader", serif; font-weight: 300; letter-spacing: -0.01em; white-space: nowrap; }
+    .sans { position: absolute; font-family: "Archivo", sans-serif; font-weight: 500; white-space: nowrap; }
+    .eye { position: absolute; left: 86px; top: 136px; font: 500 28px/1 "Archivo", sans-serif; letter-spacing: .13em; color: var(--deep); white-space: nowrap; }
+    .abs { position: absolute; }
+    .grey { color: var(--grey); }
+    
+    #gl { left: 86px; top: 730px; width: 394px; height: 5px; background: var(--ink); } #gr { left: 560px; top: 730px; width: 434px; height: 5px; background: var(--ink); }
+    #plat { left: 86px; top: 520px; width: 390px; height: 279px; }
+    #gu1 { left: 150px; top: 449px; width: 195px; height: 300px; }
+    #tab { left: 640px; top: 480px; width: 260px; height: 260px; }
+    #gu2 { left: 540px; top: 449px; width: 195px; height: 300px; } #gu3 { left: 800px; top: 449px; width: 195px; height: 300px; }
+    .card { border: 4px solid var(--ink); } #cl { left: 86px; top: 800px; width: 410px; height: 190px; } #cr { left: 560px; top: 800px; width: 434px; height: 190px; }
+    #pl { left: 118px; top: 836px; font-size: 56px; line-height: 1.08; } #pr { left: 592px; top: 836px; font-size: 56px; line-height: 1.08; }
+  </style>
+  <div id="root" data-composition-id="positioning" data-width="1080" data-height="1350">
+
+    <div id="k" class="eye">POSITIONING</div>
+    <div id="left"><img id="plat" class="abs" src="assets/props/station-platform.svg" alt="" /><img id="gu1" class="abs" src="assets/guests/guest-4.svg" alt="" /><div id="gl" class="abs"></div><div id="cl" class="abs card"></div><div id="pl" class="serif">Served before<br />the train</div></div>
+    <div id="right"><img id="gu2" class="abs" src="assets/guests/guest-3.svg" alt="" /><img id="gu3" class="abs" src="assets/guests/guest-6.svg" alt="" /><img id="tab" class="abs" src="assets/props/brunch-table.svg" alt="" /><div id="gr" class="abs"></div><div id="cr" class="abs card"></div><div id="pr" class="serif">Nobody<br />hurries you</div></div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    const pop = (sel, t, y = 12) => tl.fromTo(sel, { opacity: 0, y }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, t);
+    const rise = (sel, t, d = 0.9) => tl.fromTo(sel, { clipPath: "inset(100% 0 0 0)" }, { clipPath: "inset(0% 0 0 0)", duration: d, ease: "power3.out" }, t);
+    const count = (sel, to, t, fmt, d = 1.1) => { const o = { v: 0 }; tl.to(o, { v: to, duration: d, ease: "power3.out", onUpdate: () => { document.querySelector(sel).textContent = fmt(Math.round(o.v)); } }, t); };
+    const poses = (list, cur, t) => list.forEach((p) => tl.set(p, { opacity: p === cur ? 1 : 0 }, t));
+    const gbp = (n) => "£" + n.toLocaleString("en-GB");
+    
+    tl.fromTo("#k", { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, 0.1);
+    pop("#plat", 0.6, 16); pop("#gu1", 0.6, 16); pop("#gl", 0.6, 4); pop("#gu2", 0.8, 16); pop("#gu3", 0.8, 16); pop("#tab", 0.8, 16); pop("#gr", 0.8, 4); pop("#cl", 3.412, 14); pop("#pl", 3.412, 14); pop("#cr", 6.751, 14); pop("#pr", 6.751, 14);
+    
+    tl.set({}, {}, 12.299);
+    window.__timelines["positioning"] = tl;
+  </script>
+</template>

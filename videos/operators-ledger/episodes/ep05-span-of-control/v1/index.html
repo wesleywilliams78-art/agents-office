@@ -1,0 +1,410 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<title>Span of Control (v1)</title>
+<link rel="stylesheet" href="kit/brand.css">
+<script src="narration/words.js"></script>
+<script src="kit/motion-kit.js"></script>
+<script src="kit/sound-kit.js"></script>
+<style>
+#stage{background:#F3F2F2;overflow:hidden}
+#g3d,#fx{position:absolute;left:0;top:0;width:1080px;height:1350px}
+#g3d{z-index:1}
+.L{position:absolute;left:0;top:0;width:1080px;height:1350px}
+.eb{position:absolute;left:88px;top:136px;font:500 26px/1 var(--sans);letter-spacing:.22em;text-transform:uppercase;color:#B6240E;white-space:nowrap}
+.ill{position:absolute;right:88px;top:140px;font:500 20px/1 var(--sans);letter-spacing:.2em;text-transform:uppercase;color:#7D7A78;white-space:nowrap}
+.hl{position:absolute;left:88px;font-family:var(--serif);font-weight:300;line-height:1.06;letter-spacing:-.015em;white-space:nowrap;font-variant-numeric:lining-nums}
+.tag{position:absolute;left:0;top:0;font:500 26px/1 var(--sans);letter-spacing:.2em;text-transform:uppercase;white-space:nowrap}
+#cap{position:absolute;left:0;width:1080px;bottom:150px;display:flex;justify-content:center;z-index:100}
+#capP{max-width:900px;padding:0;background:none;font:500 48px/1.16 var(--sans);letter-spacing:-.012em;text-align:center}
+#capP span{display:inline-block;white-space:pre}
+#tile{position:absolute;left:88px;top:270px;width:160px;height:160px}
+#tile img{width:100%;height:100%;display:block}
+</style></head>
+<body><div id="stage"><canvas id="g3d" width="1080" height="1350"></canvas><canvas id="fx" width="1080" height="1350"></canvas><div id="cap"><div id="capP"></div></div></div>
+<script>
+// Episode 05, Span of control. The hero is the manager's week: 45 one-hour cubes on a stepped stand of five nine-hour days.
+const W=1080,H=1350,B=0.6,HB=B/2;
+const BONE='#F3F2F2',INK='#201E1D',RED='#EC3013',DRED='#B6240E',WG='#4A4644',GREY='#A7A4A3',GRB='#7D7A78',RULE='#D6D2CF';
+// ---- the clock, built once from the voice: each line starts on a half beat after the last word of the line before (and after its clip ends)
+const NR=window.NARRATION||{};const DUR=k=>(NR[k]&&NR[k].duration)||4;const EW=k=>{const L=NR[k];return L&&L.words.length?L.words[L.words.length-1].end:DUR(k);};
+const onHalf=x=>Math.ceil(x/HB-1e-6)*HB;
+const SC={},AT={};
+SC.s1=B;AT.s1=SC.s1;
+{ let prev='s1';for(const[k,gap,lead]of [['s2',.25,0],['s3',.25,0],['s4',.3,0],['s5',.3,0],['s6',.3,0],['s7',.3,.35],['s8',.85,.2]]){ /* s8 waits so the verdict's last figure (8 sites) holds before the wipe */SC[k]=onHalf(Math.max(AT[prev]+EW(prev)+gap,AT[prev]+DUR(prev)-0.04));AT[k]=SC[k]+lead;prev=k;} }
+AT.s9=Math.max(AT.s8+EW('s8')+0.55,AT.s8+DUR('s8')-0.04); // the sign-off over the Monday card, after a breath
+SC.J=onHalf(AT.s9+EW('s9')-0.2);
+const END=Math.max(SC.J+2.5,AT.s9+DUR('s9')+0.1);
+const WIPE1=[SC.s7-1.2,SC.s7],WIPE2=[SC.s8-0.75,SC.s8+0.6],TIDE=[SC.J-1.8,SC.J];
+const VOICE=Object.keys(AT).map(k=>({line:k,at:AT[k]}));
+function at(l,w,n,fb){n=n||1;const L=NR[l];if(L&&w){let c=0;for(const x of L.words)if(x.text.toLowerCase().replace(/[^a-z0-9£'−-]/g,'').startsWith(w)&&++c===n)return AT[l]+x.start;}return AT[l]+(fb||0);}
+const C={
+ six1:at('s1','six',1,1.2),holds1:at('s1','holds',1,3.6),el1:at('s1','eleven',1,3.9),doesnt1:at('s1','doesn',1,5.6),where1:at('s1','where',1,6.1),line1:at('s1','line',1,7.2),
+ cross2:at('s2','cross',1,0),the2:at('s2','the',1,0.76),nobody2:at('s2','nobody',1,1.2),visits2:at('s2','visits',1,1.6),slips2:at('s2','slips',1,2.1),first2:at('s2','first',1,2.6),you2:at('s2','you',1,3.5),pl2:at('s2','p',1,5),
+ called3:at('s3','called',1,0.1),span3:at('s3','span',1,0.3),of3:at('s3','of',1,0.5),control3:at('s3','control',1,0.8),how3:at('s3','how',1,1.6),sites3:at('s3','sites',1,2.3),one3:at('s3','one',1,2.7),manager3:at('s3','manager',1,3),run3:at('s3','run',1,4.1),
+ no3:at('s3','no',1,5.6),magic3:at('s3','magic',1,5.8),number3:at('s3','number',1,6.2),there3:at('s3','there',2,7.3),is3:at('s3','is',2,7.8),a3:at('s3','a',1,7.9),week3:at('s3','week',1,8),
+ start4:at('s4','start',1,0),hours4:at('s4','hours',1,0.6),ff4:at('s4','forty',1,1.7),week4:at('s4','week',1,2.8),twelve4:at('s4','twelve',1,3.3),reports4:at('s4','reports',1,4.8),meet4:at('s4','meetings',1,5.6),that4:at('s4','that',1,6.6),tt4:at('s4','thirty',1,7.5),
+ each5:at('s5','each',1,0),site5:at('s5','site',1,0.55),four5:at('s5','four',1,1.5),hours5:at('s5','hours',1,1.85),three5:at('s5','three',1,2.4),site5b:at('s5','site',2,3.25),one5:at('s5','one',1,3.75),road5:at('s5','road',1,4.65),
+ six5:at('s5','six',1,5.4),sites5:at('s5','sites',1,5.8),tf5:at('s5','twenty',1,6.8),nine5:at('s5','nine',1,9),spare5:at('s5','spare',1,9.4),el5:at('s5','eleven',1,10.8),sites5b:at('s5','sites',2,11.2),ff5:at('s5','forty',1,12.2),el5b:at('s5','eleven',2,13),short5:at('s5','short',1,13.9),
+ now6:at('s6','now',1,0),one6:at('s6','one',1,0.2),site6:at('s6','site',1,0.4),wrong6:at('s6','wrong',1,0.9),eats6:at('s6','eats',1,2.3),eight6:at('s6','eight',1,2.6),hours6:at('s6','hours',1,2.9),six6:at('s6','six',1,3.7),absorb6:at('s6','absorb',1,4.6),one6b:at('s6','one',2,6),spare6:at('s6','spare',1,6.4),el6:at('s6','eleven',1,7),cant6:at('s6','can',1,7.6),five6:at('s6','five',1,8.6),unv6:at('s6','unvisited',1,9.9),
+ so7:at('s7','so',1,0),isnt7:at('s7','isn',1,1),a7:at('s7','a',1,1.5),number7:at('s7','number',1,1.6),of7:at('s7','of',1,1.9),sites7:at('s7','sites',1,2.1),the7:at('s7','the',2,3.5),hours7:at('s7','hours',1,3.5),left7:at('s7','left',1,3.9),trouble7:at('s7','trouble',1,5),
+ one7:at('s7','one',1,5.9),in7:at('s7','in',1,6.7),trouble7b:at('s7','trouble',2,6.9),six7:at('s7','six',1,7.3),limit7b:at('s7','limit',2,8.8),two7:at('s7','two',1,9.9),four7:at('s7','four',1,10.4),cut7:at('s7','cut',1,11.8),visit7:at('s7','visit',1,12.5),three7:at('s7','three',1,13.2),hours7b:at('s7','hours',2,13.5),eight7:at('s7','eight',1,14.6),
+ hire8:at('s8','hire',1,0),second8:at('s8','second',1,0.42),at8:at('s8','at',1,1.5),site8:at('s8','site',1,2),seven8:at('s8','seven',1,2.3),your8:at('s8','your',1,3),monday8:at('s8','monday',1,3.9),how8:at('s8','how',1,5.1)
+};
+const clamp=(x,a,b)=>Math.max(a,Math.min(b,x));
+const half=x=>Math.round(x/HB)*HB;
+const $=id=>document.getElementById(id);
+function hx(h){const n=parseInt(h.slice(1),16);return[(n>>16)&255,(n>>8)&255,n&255];}
+function mix(a,b,k){k=clamp(k,0,1);const A=hx(a),Z=hx(b);return'#'+A.map((v,i)=>Math.round(v+(Z[i]-v)*k).toString(16).padStart(2,'0')).join('');}
+const mixL=(a,b,k)=>k<=0?a:k>=1?b:a.map((c,i)=>mix(c,b[i],k));
+const hh=i=>{const x=Math.sin(i*127.1+311.7)*43758.5453;return x-Math.floor(x);};
+const sm=(t,a,d)=>M.p(t,a,d,'sine.inOut');
+// ---- the week: five nine-hour days on a stepped stand (Mon at the back, Fri at the front). 45 slots, one cube an hour.
+const CS=44,PT=50,NC=9;
+const RY=r=>230-38*r,ZR=r=>-72*r,XC=c=>-200+PT*c;
+const DAYS=['Mon','Tue','Wed','Thu','Fri'];
+const sxyz=(s,ox)=>[XC(s%NC)+(ox||0),RY(Math.floor(s/NC)),ZR(Math.floor(s/NC))];
+// looks: [top, front/back, sides]
+const LK={hour:['#E2DFDC','#CBC6C2','#B8B2AE'],admin:['#8F8A87','#7D7A78','#6F6B69'],site:['#3A3735','#201E1D','#2A2826'],road:['#B8B2AE','#A7A4A3','#99948F'],red:['#EC3013','#C92A10','#B6240E'],
+ step:['#E2DFDC','#D6D2CF','#C4BFBB'],rail:['#3A3735','#201E1D','#2A2826'],cafe:['#E2DFDC','#CBC6C2','#B8B2AE'],cafeRoof:['#CBC6C2','#BDB7B2','#AEA8A3'],ink:['#3A3735','#201E1D','#2A2826']};
+const LV={admin:['#A7A4A3','#8F8A87','#7D7A78'],site:['#F3F2F2','#DCD8D5','#C4BFBB'],road:['#7D7A78','#6F6B69','#5A5552'],red:LK.red,step:['#3A3735','#2E2B2A','#2A2826'],rail:['#5A5552','#4A4644','#3A3735']};
+const cam={tx:0,ty:0,tz:0,yaw:0,pitch:0,roll:0,dist:1000,f:1250,cx:540,cy:720};
+let ctx,fctx,fxEl,capP,capW,LY,faces=[],qV=null;
+const items=[],lines=[],tags=[],A={};
+function cs(x,y,z){const dx=x-cam.tx,dy=y-cam.ty,dz=z-cam.tz;const c=Math.cos(cam.yaw),s=Math.sin(cam.yaw);const x1=dx*c-dz*s,z1=dx*s+dz*c;const cp=Math.cos(cam.pitch),sp=Math.sin(cam.pitch);return[x1,dy*cp+z1*sp,-dy*sp+z1*cp+cam.dist];}
+function P(x,y,z){const q=cs(x,y,z);const zc=Math.max(q[2],30);const s=cam.f/zc;let X=cam.cx+q[0]*s,Y=cam.cy-q[1]*s;if(cam.roll){const dx=X-540,dy=Y-720,c=Math.cos(cam.roll),n=Math.sin(cam.roll);X=540+dx*c-dy*n;Y=720+dx*n+dy*c;}return[X,Y,zc];}
+function nr(x,y,z){const c=Math.cos(cam.yaw),s=Math.sin(cam.yaw);const x1=x*c-z*s,z1=x*s+z*c;const cp=Math.cos(cam.pitch),sp=Math.sin(cam.pitch);return[x1,y*cp+z1*sp,-y*sp+z1*cp];}
+// a block: centre x, base y, centre z; o = { w, h, d, rz (tip about z), fog, bg, bias, lab (top label), flab (front label), labCol }
+const FACES=[[[-1,1,-1],[1,1,-1],[1,1,1],[-1,1,1],[0,1,0],0,'top'],[[-1,-1,1],[1,-1,1],[1,-1,-1],[-1,-1,-1],[0,-1,0],2],[[-1,-1,-1],[1,-1,-1],[1,1,-1],[-1,1,-1],[0,0,-1],1,'front'],[[1,-1,1],[-1,-1,1],[-1,1,1],[1,1,1],[0,0,1],1],[[-1,-1,1],[-1,-1,-1],[-1,1,-1],[-1,1,1],[-1,0,0],2],[[1,-1,-1],[1,-1,1],[1,1,1],[1,1,-1],[1,0,0],2]];
+function blk(x,y,z,m,o){o=o||{};const w=(o.w||CS)/2,h=o.h==null?CS:o.h,d=(o.d||CS)/2,rz=o.rz||0,fog=o.fog||0,bg=o.bg||BONE;if(h<=0.4||fog>=0.995)return;
+ const hh_=h/2,cy=y+hh_,c=Math.cos(rz),s=Math.sin(rz);
+ for(const f of FACES){if(f[6]==null&&rz===0&&f[4][1]<0)continue;
+  const vs=[0,1,2,3].map(i=>{const a=f[i][0]*w,b=f[i][1]*hh_,e=f[i][2]*d;return[x+a*c-b*s,cy+a*s+b*c,z+e];});
+  const m0=[(vs[0][0]+vs[2][0])/2,(vs[0][1]+vs[2][1])/2,(vs[0][2]+vs[2][2])/2],cc=cs(...m0);if(cc[2]<40)continue;
+  const n=nr(f[4][0]*c-f[4][1]*s,f[4][0]*s+f[4][1]*c,f[4][2]);if(n[0]*cc[0]+n[1]*cc[1]+n[2]*cc[2]>=0)continue;
+  const face={p:vs.map(v=>P(...v)),z:cc[2]-(o.bias||0),c:mix(m[f[5]],bg,fog)};
+  if(f[6]==='top'&&o.lab)face.lab={t:o.lab,col:o.labCol||BONE,w:2*w,h:2*d,al:(1-fog)*(o.labA==null?1:o.labA),fs:o.labFs};
+  if(f[6]==='front'&&o.flab)face.lab={t:o.flab,col:o.labCol||WG,w:2*w,h,al:(1-fog)*(o.labA==null?1:o.labA),fs:o.labFs,left:o.labLeft};
+  faces.push(face);}
+}
+function outline(x,y,z,col,lw,al,bias){if(al<=0.01)return;const w=CS/2-3,d=CS/2-3;faces.push({p:[P(x-w,y+0.6,z-d),P(x+w,y+0.6,z-d),P(x+w,y+0.6,z+d),P(x-w,y+0.6,z+d)],z:cs(x,y,z)[2]-(bias||-0.5),c:null,ln:col,lw,al});}
+function faceText(f){const L=f.lab;if(L.al<=0.02)return;const o=f.p[3],X=f.p[2],Y=f.p[0];ctx.save();ctx.setTransform((X[0]-o[0])/L.w,(X[1]-o[1])/L.w,(Y[0]-o[0])/L.h,(Y[1]-o[1])/L.h,o[0],o[1]);ctx.globalAlpha=L.al;ctx.fillStyle=L.col;ctx.textAlign=L.left?'left':'center';ctx.textBaseline='middle';const fs=L.fs||Math.min(L.h,L.w)*0.52;ctx.font='500 '+fs+'px Archivo';if(ctx.letterSpacing!==undefined)ctx.letterSpacing=(fs*0.12).toFixed(1)+'px';ctx.fillText(L.t,L.left?L.w*0.06:L.w/2,L.h/2+fs*0.04);if(ctx.letterSpacing!==undefined)ctx.letterSpacing='0px';ctx.restore();ctx.setTransform(1,0,0,1,0,0);ctx.globalAlpha=1;}
+function flush(){faces.sort((a,b)=>b.z-a.z);ctx.lineJoin='round';for(const f of faces){ctx.beginPath();ctx.moveTo(f.p[0][0],f.p[0][1]);for(let i=1;i<4;i++)ctx.lineTo(f.p[i][0],f.p[i][1]);ctx.closePath();
+  if(f.c){ctx.fillStyle=f.c;ctx.fill();ctx.strokeStyle=mix(f.c,INK,0.3);ctx.lineWidth=1.25;ctx.stroke();}
+  else{ctx.globalAlpha=f.al==null?1:f.al;ctx.strokeStyle=f.ln;ctx.lineWidth=f.lw||2;ctx.stroke();ctx.globalAlpha=1;}
+  if(f.lab)faceText(f);}faces=[];}
+function quadLine(pts,col,lw,al){if(al<=0)return;const q=pts.map(v=>P(...v));ctx.globalAlpha=al;ctx.strokeStyle=col;ctx.lineWidth=lw;ctx.lineJoin='miter';ctx.beginPath();q.forEach((p,i)=>i?ctx.lineTo(p[0],p[1]):ctx.moveTo(p[0],p[1]));ctx.closePath();ctx.stroke();ctx.globalAlpha=1;}
+// the stand: five steps, an ink rail on each, the day printed on each step's face; every slot has a hairline outline
+function stand(ox,ink,fog,bg,ol){const L=ink?LV:LK;
+ for(let r=0;r<5;r++){const top=RY(r)-10;blk(ox,0,ZR(r),L.step,{w:468,h:top,d:72,fog,bg,bias:-2});blk(ox,top,ZR(r),L.rail,{w:464,h:10,d:60,fog,bg,bias:-1});
+  const lo=r<4?RY(r+1)-10:0;blk(ox-176,lo,ZR(r)-36.4,L.step,{w:96,h:top-lo,d:0.6,fog,bg,bias:-1.5,flab:DAYS[r],labCol:ink?GRB:WG,labFs:Math.min(22,(top-lo)*0.55)});}
+ for(let s=0;s<45;s++){const[x,y,z]=sxyz(s,ox);const o=ol?ol(s):null;outline(x,y,z,o?o.col:(ink?'#7D7A78':'#7D7A78'),o?o.lw:1.5,(o?o.al:0.55)*(1-fog));}}
+// a site block (the Ep 03 café, small): plinth, body, roof, awning, window, door
+function cafe(ox,oz,s,fog,bg,k,red,sink){if(k<=0.01)return;const y=-(1-k)*60*s-(sink||0);const body=red?mixL(LK.cafe,LK.red,red):LK.cafe;const fg=clamp(fog+(1-k),0,1);
+ blk(ox,y-14*s,oz,LK.step,{w:280*s,h:14*s,d:220*s,fog:fg,bg});blk(ox,y,oz,body,{w:210*s,h:150*s,d:160*s,fog:fg,bg});blk(ox,y+150*s,oz,LK.cafeRoof,{w:218*s,h:8*s,d:168*s,fog:fg,bg});
+ blk(ox,y+104*s,oz-90*s,LK.ink,{w:224*s,h:5*s,d:20*s,fog:fg,bg,bias:30});blk(ox-39*s,y+18*s,oz-81*s,LK.ink,{w:102*s,h:72*s,d:2*s,fog:fg,bg,bias:30});blk(ox+55*s,y,oz-81*s,LK.ink,{w:46*s,h:83*s,d:2*s,fog:fg,bg,bias:30});}
+const CAF=[];for(let i=0;i<11;i++)CAF.push({x:470+(i%2)*30,z:580-i*70}); // site 1 at the back, site 11 at the front: the one that slips is close
+// ---- the hour cubes of the hook and clue 1: slot i holds hour i. They are site pieces in the hook, then the numeral 45, then the week.
+const HP=[];for(let p=0;p<11;p++)HP.push(p<6?C.six1-0.05+0.13*p:C.el1-0.05+0.13*(p-6));
+const DROP=150,G=2600;
+const dropY=(t,ta)=>Math.max(-2,M.spring(t,ta,DROP,0,{stiffness:240,damping:19}));
+const landT=ta=>ta+0.14;
+// the numeral 45 in cubes, 12 x 8, read top to bottom, left to right
+const N4=['...XX.','..XXX.','.X.XX.','X..XX.','XXXXXX','...XX.','...XX.','...XX.'],N5=['XXXXX','XX...','XX...','XXXX.','...XX','...XX','...XX','.XXX.'];
+const CELLS=[];for(let r=0;r<8;r++){for(let c=0;c<6;c++)if(N4[r][c]==='X')CELLS.push([c,r]);for(let c=0;c<5;c++)if(N5[r][c]==='X')CELLS.push([c+7,r]);}
+const NYAW=-0.3,NA=[40,170,-230];
+const cellPos=k=>{const[gx,gy]=CELLS[k],u=(gx-5.5)*PT*0.92,v=(7-gy)*PT*0.92;return[NA[0]+u*Math.cos(NYAW),NA[1]+v,NA[2]-u*Math.sin(NYAW)];};
+const UP3=i=>C.there3-0.15+0.014*i,DN4=i=>C.hours4-0.2+0.04*i;
+const CONS=C.called3-0.1;
+function hourCube(i,t,fog){
+ if(t>=C.tt4+1.2&&i>=12)return;
+ let[x,y,z]=sxyz(i),look,h=CS,al=1,lab=null;
+ // hook: admin (0–11) or a site piece's cube
+ if(i<12)look=LK.admin;else{const p=(i-12)>>2,j=(i-12)&3;const ta=HP[p];if(t<ta-0.05&&t<CONS)return;if(t<CONS){y+=dropY(t,ta);al=sm(t,ta-0.05,0.12);}look=j<3?LK.site:LK.road;if(j===3)h=16;if(j===0)lab=String(p+1);}
+ // the start of clue 0: every cube becomes a plain hour
+ const ck=sm(t,CONS+0.012*i,0.5);if(ck>0){look=mixL(look,LK.hour,ck);h=h+(CS-h)*ck;if(lab&&ck>0.3)lab=null;}
+ // up into the numeral, then down into the week
+ const ku=t>=UP3(i)?M.spring(t,UP3(i),0,1,{stiffness:110,damping:15}):0,kd=t>=DN4(i)?M.spring(t,DN4(i),0,1,{stiffness:150,damping:17}):0;
+ if(ku>0){const N=cellPos(i),S=sxyz(i);const k=ku*(1-kd);x=S[0]+(N[0]-S[0])*k;y=S[1]+(N[1]-S[1])*k+Math.sin(Math.PI*clamp(k,0,1))*60*(kd>0?0.5:1);z=S[2]+(N[2]-S[2])*k;}
+ // twelve go on reports and meetings: they turn warm grey; thirty-three stay open
+ if(i<12&&t>=C.twelve4-0.05)look=mixL(look,LK.admin,sm(t,C.twelve4-0.05+0.035*i,0.3));
+ if(i>=12&&t>=C.tt4-0.15){const k=sm(t,C.tt4-0.15+0.012*(i-12),0.45);h*=1-k;al*=1-k;}
+ blk(x,y,z,look,{h,fog:clamp(fog+(1-al),0,1),lab,labFs:20});}
+// ---- falling hours: a cube with no rail under it drops to the floor (the series' first gravity move)
+function fallCube(t,ta,x0,z0,xf,zf,look,h,seed,fog,rowFade){if(t<ta-0.05)return;const y0=RY(4)+DROP,ul=Math.sqrt(2*y0/G),u=t-ta;let x,y,z,rz;const spin=(hh(seed)-0.5)*7;
+ if(u<ul){const k=u/ul;x=x0+(xf-x0)*k;z=z0+(zf-z0)*k;y=y0-0.5*G*Math.max(0,u)*Math.max(0,u);rz=spin*Math.max(0,u);}
+ else{x=xf;z=zf;y=0;const r0=spin*ul,tg=Math.round(r0/(Math.PI/2))*(Math.PI/2);rz=M.spring(t,ta+ul,r0,tg,{stiffness:260,damping:16});}
+ const red=sm(t,ta+0.05,0.25);blk(x,Math.max(0,y),z,mixL(look,LK.red,red),{h,rz,fog:clamp(fog+(rowFade||0)+(1-sm(t,ta-0.05,0.1)),0,1)});}
+// where the fallen land: rows of four in front of Friday's end, one row a site
+const pile=(row,j)=>[290+52*j+(hh(row*7+j)-0.5)*14,ZR(4)-70-48*row+(hh(row*3+j*5)-0.5)*12];
+function spillPiece(t,ta,row,jFrom,fog,fade,lab){for(let j=jFrom;j<4;j++){const[xf,zf]=pile(row,j);fallCube(t,ta,XC(8)+60+j*36,ZR(4),xf,zf,j<3?LK.site:LK.road,j===3?16:CS,row*4+j+ta*3,fog,fade);}}
+// a site piece resting on the stand: three hours on site, one on the road; its number on its first cube
+function piece(t,q,s0,ta,o){o=o||{};const ink=!!o.ink,L=ink?LV:LK;const n=o.n||4;
+ for(let j=0;j<n;j++){const s=s0+j;if(s>44)continue;let[x,y,z]=sxyz(s,o.ox);if(ta!=null){if(t<ta-0.05)return;y+=dropY(t,ta);}
+  const road=j===n-1&&!o.noRoad;let look=road?L.road:L.site;if(o.red)look=mixL(look,LK.red,o.red);
+  const al=(ta!=null?sm(t,ta-0.05,0.12):1)*(o.al==null?1:o.al);y+=o.lift||0;
+  blk(x,y,z,look,{h:road?16:CS,fog:clamp((o.fog||0)+(1-al),0,1),bg:o.bg,lab:j===0&&o.lab!==false?(o.lab||String(q+1)):null,labCol:ink?INK:BONE,labFs:20});}}
+// ---- the camera: poses blended by springs; whips use a loose spring and kick the roll
+const WH={stiffness:80,damping:10};
+function pose(t,list){let cur=null,roll=0;for(const p of list){const e=Math.max(0,t-p.t);const tgt={tx:p.tx,ty:p.ty==null?100:p.ty,tz:p.tz||0,dist:p.dist-(p.push||0)*e,pitch:p.pitch,yaw:p.yaw+(p.rate||0)*e,cy:p.cy||700,f:p.f||1250};if(!cur){cur=tgt;continue;}if(t<p.t)break;const k=M.spring(t,p.t,0,1,p.cfg||'calm');for(const key in tgt)cur[key]+=(tgt[key]-cur[key])*k;if(p.kick){const u=t-p.t;roll=p.kick*Math.exp(-u*3.2)*Math.sin(Math.min(u,0.12)/0.12*Math.PI/2);}}
+ Object.assign(cam,{tx:cur.tx,ty:cur.ty,tz:cur.tz,dist:cur.dist,pitch:cur.pitch,yaw:cur.yaw,cy:cur.cy,cx:540,f:cur.f,roll});}
+const WIDE={tx:110,ty:100,tz:-80,dist:1250,pitch:0.5,yaw:-0.32,cy:760,rate:0.002,push:5};
+const END4={tx:280,ty:70,tz:-260,dist:1150,pitch:0.44,yaw:-0.5,cy:820,rate:0.004,push:8};
+const LOW={tx:400,ty:30,tz:-400,dist:760,pitch:0.2,yaw:-0.78,cy:880,f:1100,push:8};
+const CAFES={tx:540,ty:60,tz:-40,dist:900,pitch:0.42,yaw:-0.62,cy:780,rate:0.005,push:10};
+const NUM={tx:40,ty:250,tz:-230,dist:1350,pitch:0.32,yaw:NYAW,cy:740,push:10};
+const ADM={tx:-70,ty:200,tz:-40,dist:960,pitch:0.58,yaw:-0.24,cy:720,rate:0.012,push:14};
+const TOP={tx:40,ty:150,tz:-150,dist:1150,pitch:1.1,yaw:-0.14,cy:760,push:6};
+const TOPC={tx:-30,ty:200,tz:-70,dist:900,pitch:1.05,yaw:-0.2,cy:720,rate:0.006,push:10};
+const FRI={tx:40,ty:80,tz:-280,dist:1150,pitch:0.6,yaw:-0.36,cy:830,rate:0.012,push:14};
+const POSES=[
+ Object.assign({t:0.6},WIDE),
+ Object.assign({t:C.el1-0.3,cfg:WH,kick:0.05},END4),
+ Object.assign({t:C.where1-0.3},WIDE,{dist:1300}),
+ Object.assign({t:SC.s2-0.25,cfg:WH,kick:-0.05},LOW),
+ Object.assign({t:C.nobody2-0.4,cfg:WH,kick:0.05},CAFES),
+ Object.assign({t:C.you2-0.3},WIDE),
+ Object.assign({t:C.how3-0.3},WIDE,{dist:1500,tx:200,tz:0,yaw:-0.42,rate:0.003}),
+ Object.assign({t:C.there3-0.5,cfg:{stiffness:50,damping:12}},NUM),
+ Object.assign({t:C.hours4-0.25},WIDE,{dist:1250}),            // the dolly rides on top of this (see mainWorld)
+ Object.assign({t:C.twelve4-0.3,cfg:WH,kick:-0.05},ADM),
+ Object.assign({t:C.tt4-0.3,cfg:WH,kick:0.04},WIDE),
+ Object.assign({t:C.each5-0.25,cfg:WH,kick:-0.05},TOPC),
+ Object.assign({t:C.six5-0.35,cfg:{stiffness:50,damping:12}},TOP),
+ Object.assign({t:C.ff5-0.3,cfg:WH,kick:0.06},LOW),
+ Object.assign({t:SC.s6-0.3,cfg:WH,kick:-0.04},WIDE),
+ Object.assign({t:C.eats6-0.3,cfg:WH,kick:0.05},FRI),
+ Object.assign({t:C.cant6-0.3,cfg:WH,kick:-0.06},LOW,{dist:760}),
+ Object.assign({t:C.five6+0.1,cfg:{stiffness:45,damping:12}},WIDE,{dist:1650,tx:250,tz:-140,yaw:-0.45,cy:690})
+];
+// ---- the main (bone) world, the hook to clue 3
+function mainWorld(t){
+ pose(t,POSES);
+ // clue 1: the dolly rides the wave of cubes as they land, Monday to Friday
+ { const a=C.hours4-0.2,b=DN4(44)+0.4,w=sm(t,a-0.3,0.4)*(1-sm(t,b,0.6));if(w>0){const k=M.p(t,a,b-a,'sine.inOut'),r=4*k;const tx=-70+140*k,ty=RY(0)-38*r+20,tz=ZR(0)-72*r; /* one smooth glide down the week, Mon to Fri */cam.tx+=(tx-cam.tx)*w;cam.ty+=(ty-cam.ty)*w;cam.tz+=(tz-cam.tz)*w;cam.dist+=(820-cam.dist)*w;cam.pitch+=(0.48-cam.pitch)*w;} }
+ { const k=M.p(t,WIPE1[0]-0.3,WIPE1[1]-WIPE1[0]+0.3,'power2.in');cam.dist*=1-0.30*k;cam.pitch+=0.06*k; }
+ // the sites: they rise as their pieces land; the unvisited one slips; trouble flashes; the unvisited turn red
+ const cfog=sm(t,C.called3,0.5)*0.35*(1-sm(t,SC.s5-0.4,0.6))+sm(t,SC.s4-0.4,0.6)*0.45*(1-sm(t,SC.s6-0.3,0.5));
+ for(let i=0;i<11;i++){const ta=HP[i]+0.12;let k=t>=ta?M.spring(t,ta,0,1,{stiffness:180,damping:16}):0;
+  let red=0,sink=0;if(i===10){red=sm(t,C.slips2,0.35)*(1-sm(t,CONS,0.5));sink=M.spring(t,C.slips2,0,1,{stiffness:120,damping:11})*(t>=C.slips2?1:0)*(1-sm(t,CONS,0.5))*16;}
+  if(i===3){const u=t-C.wrong6;if(u>0)red=Math.max(red,Math.exp(-u*1.4)*(0.6+0.4*Math.cos(u*16)));}
+  if(i>=6)red=Math.max(red,sm(t,C.five6+0.1*(i-6),0.3));
+  cafe(CAF[i].x,CAF[i].z,0.3,cfog,BONE,k,red,sink);}
+ const ol=s=>{ // spare hours light up on the word
+  if(t>=C.nine5-0.1&&t<SC.s6-0.3&&s>=36){const k=sm(t,C.nine5-0.1+0.04*(s-36),0.25)*(1-sm(t,C.el5-0.2,0.3));return{col:mix('#7D7A78',INK,k),lw:1.5+2.5*k,al:0.55+0.45*k};}
+  if(t>=C.one6b-0.2&&s===44){const k=sm(t,C.one6b-0.2,0.25);return{col:mix('#7D7A78',INK,k),lw:1.5+2.5*k,al:0.55+0.45*k};}
+  return null;};
+ stand(0,false,0,BONE,ol);
+ // hours 0–44 (hook, numeral, clue 1); the admin stays for clues 2 and 3
+ for(let i=0;i<45;i++)hourCube(i,t,0);
+ // the hook's overflow: piece 9 keeps one hour, three fall; pieces 10 and 11 fall whole. They sink away when the week is cleared.
+ if(t<CONS+0.8){const fade=sm(t,CONS,0.5);spillPiece(t,HP[8],0,1,0,fade);spillPiece(t,HP[9],1,0,0,fade);spillPiece(t,HP[10],2,0,0,fade);}
+ // where is the line: a red post at Friday's edge
+ { const k=t>=C.where1-0.1?M.spring(t,C.where1-0.1,0,1,{stiffness:150,damping:13}):0,al=1-sm(t,CONS,0.4);if(k>0.01&&al>0.01)blk(XC(8)+34,RY(4),ZR(4),LK.red,{w:6,h:150*k,d:6,fog:1-al}); }
+ // clue 2: one piece, close; then six; then eleven, and the overflow
+ if(t>=SC.s5-0.6&&t<WIPE1[1]){
+  const TD=q=>q===0?C.each5+0.1:q<6?C.six5-0.1+0.13*(q-1):C.el5-0.1+0.14*(q-6);
+  const out6=sm(t,SC.s6-0.35,0.5);
+  for(let q=0;q<11;q++){const ta=TD(q);if(t<ta-0.05)continue;
+   if(q>=6&&out6>=1)continue;
+   const s0=12+4*q;const red=q===3&&t>=C.wrong6-0.1?(()=>{const u=t-C.wrong6+0.1;return clamp(Math.max(Math.exp(-u*1.2)*(0.55+0.45*Math.cos(u*16)),0.75*sm(t,C.wrong6+0.3,0.3)),0,1);})():0;
+   const lift=q===0&&t<C.six5?M.spring(t,C.three5-0.1,0,1,'snap')*(t>=C.three5-0.1?1:0)*0:0;
+   piece(t,q,s0,ta,{red,lift:(q>=6?-out6*0:0)+lift+(q>=6?out6*120:0),fog:q>=6?out6:0});
+   if(q===8)spillPiece(t,ta,0,1,0,out6);else if(q>8)spillPiece(t,ta,q-8,0,0,out6);}
+  // three on site, one on the road: the first piece's cubes lift on their words
+  // clue 3: the trouble is an eight-hour slab; it lands in the spare hours
+  if(t>=C.eats6-0.2){const ta=C.eight6-0.12,y=t>=ta?Math.max(-3,M.spring(t,ta,DROP*1.3,0,{stiffness:200,damping:14})):DROP*1.3,al=sm(t,ta-0.12,0.12);const[x0,y0,z0]=sxyz(36);blk(x0+3.5*PT,y0+y,z0,LK.red,{w:8*PT-6,fog:1-al});}
+  // eleven can't: five pieces arrive at Friday's end and fall
+  for(let q=6;q<11;q++){const ta=C.el6-0.05+0.15*(q-6);if(t>=ta-0.05)spillPiece(t,ta,q-6,0,0,0);}
+ }
+ flush();
+ tags.forEach(g=>{if(g.wk==='m'&&g.w)g.p=P(...g.w(t));});
+}
+// ---- the verdict, on ink: the same stand, slow orbit; one slab, then two, then three-hour visits
+function verdictWorld(t){
+ const en=sm(t,SC.s7-0.4,0.8),fog=1-en,u=t-SC.s7;
+ Object.assign(cam,{tx:40,ty:110,tz:-120,pitch:0.56,yaw:-0.52+0.016*u,dist:1260-5*u,cx:540,cy:790,f:1250,roll:0});
+ const ol=s=>s===44?{col:BONE,lw:3,al:0.9}:null;
+ stand(0,true,fog,INK,ol);
+ for(let i=0;i<12;i++){const[x,y,z]=sxyz(i);blk(x,y,z,LV.admin,{fog,bg:INK});}
+ // slab one (Friday, 36–43) stays; slab two lands on Thursday (28–35) for "two"
+ { const[x0,y0,z0]=sxyz(36);blk(x0+3.5*PT,y0,z0,LV.red,{w:8*PT-6,fog,bg:INK}); }
+ const t2a=C.two7+0.1,t2b=C.cut7-0.1;
+ if(t>=t2a-0.1&&t<t2b+0.8){const y=t>=t2a?Math.max(-3,M.spring(t,t2a,DROP*1.3,0,{stiffness:200,damping:14})):DROP*1.3,al=sm(t,t2a-0.1,0.12)*(1-sm(t,t2b,0.4));const[x0,y0,z0]=sxyz(28);blk(x0+3.5*PT,y0+y+M.spring(t,t2b,0,1,'snap')*(t>=t2b?140:0),z0,LV.red,{w:8*PT-6,fog:clamp(fog+(1-al),0,1),bg:INK});}
+ // four-hour pieces: six, then four (two lift away), gone for the three-hour visits
+ const outAll=sm(t,C.cut7-0.1,0.4);
+ for(let q=0;q<6;q++){const away=q>=4?sm(t,C.two7-0.05+0.1*(q-4),0.4):0;const lift=(q>=4?away*140:0)+outAll*120;
+  piece(t,q,12+4*q,null,{ink:true,bg:INK,fog:clamp(fog+Math.max(away,outAll),0,1),lift});}
+ // three-hour visits: eight pieces of three
+ for(let q=0;q<8;q++){const ta=C.three7-0.1+0.11*q;if(t<ta-0.05)continue;piece(t,q,12+3*q,ta,{ink:true,bg:INK,n:3,noRoad:false,fog});}
+ flush();
+ const[a0,a1,a2]=sxyz(36);const qx=a0-CS/2,qx1=a0+3.5*PT*2+CS/2;qV=[P(qx,a1+CS,a2-CS/2),P(qx1,a1+CS,a2-CS/2),P(qx1,a1+CS,a2+CS/2),P(qx,a1+CS,a2+CS/2)];
+ tags.forEach(g=>{if(g.wk==='v'&&g.w)g.p=P(...g.w(t));});
+}
+// ---- the lesson, on bone: the unhired week overflows inside a red frame; a second stand slides in and the eleven split six and five
+const OXA=-300,OXB=330;
+function lessonWorld(t){
+ const u=t-SC.s8,sl=t>=C.hire8+0.3?M.spring(t,C.hire8+0.3,1,0,{stiffness:60,damping:13}):1;
+ const pull=sm(t,C.hire8+0.1,1.2);
+ Object.assign(cam,{tx:OXA*0.25+(40-OXA*0.25)*pull*0.95,ty:110,tz:-170,pitch:0.55,yaw:-0.3+0.004*u,dist:1700+300*pull-4*u,cx:540,cy:740+30*pull,f:1250,roll:0});
+ if(t>=C.your8)cam.cy+=60*sm(t,C.your8-0.3,0.9);
+ const qa=sm(t,C.how8-0.4,0.6); // the Monday question: everything but one site settles back
+ stand(OXA,false,0,BONE,null);
+ for(let i=0;i<12;i++){const[x,y,z]=sxyz(i,OXA);blk(x,y,z,LK.admin,{fog:qa*0.55});}
+ for(let q=0;q<6;q++)piece(t,q,12+4*q,null,{ox:OXA,fog:q===0?0:qa*0.6,lab:q===0&&qa>0.5?'?':null,labCol:BONE});
+ // the five who did not fit: red on the floor until the hire, then up onto the second stand
+ const gox=OXB+sl*1100;
+ if(gox<1500){stand(gox,false,qa*0.55,BONE,null);for(let i=0;i<12;i++){const[x,y,z]=sxyz(i,gox);blk(x,y,z,LK.admin,{fog:qa*0.55});}}
+ for(let q=6;q<11;q++){const ta=C.seven8-0.25+0.12*(q-6),k=t>=ta?M.spring(t,ta,0,1,{stiffness:110,damping:15}):0;
+  for(let j=0;j<4;j++){const[px,pz]=pile(q-6,j),Sx=sxyz(12+4*(q-6)+j,OXB);const x=OXA+px+(Sx[0]-OXA-px)*k,z=pz+(Sx[2]-pz)*k,y=Sx[1]*k+Math.sin(Math.PI*k)*120;
+   blk(x,y,z,mixL(j<3?LK.site:LK.road,LK.red,1-k),{h:j===3?16:CS,fog:qa*0.55,lab:j===0&&k>0.9?String(q+1):null,labFs:20});}}
+ flush();
+ // the red frame on the unhired week (stand A and its overflow) until the hire
+ const fr=sm(t,SC.s8+0.3,0.3)*(1-sm(t,C.seven8-0.3,0.3));
+ if(fr>0.01){const x0=OXA-250,x1=OXA+520,z0=ZR(4)-330,z1=ZR(0)+50;quadLine([[x0,0,z0],[x1,0,z0],[x1,0,z1],[x0,0,z1]],RED,4,fr);}
+ // site seven gets a red frame on the second stand
+ const f7=sm(t,C.seven8+0.3,0.3)*(1-sm(t,C.your8-0.2,0.3));if(f7>0.01){const S=sxyz(12,OXB),E=sxyz(15,OXB);quadLine([[S[0]-27,S[1]+1,S[2]-27],[E[0]+27,E[1]+1,E[2]-27],[E[0]+27,E[1]+1,E[2]+27],[S[0]-27,S[1]+1,S[2]+27]],RED,4,f7);}
+ tags.forEach(g=>{if(g.wk==='l'&&g.w)g.p=P(...g.w(t));});
+}
+function wipe(t,w,q,cA,cB,z){if(t<w[0]||t>=w[1]||!q)return;const k=M.p(t,w[0],w[1]-w[0],'sine.inOut');const T=[[-8,H+8],[W+8,H+8],[W+8,-8],[-8,-8]];fctx.fillStyle=mix(cA,cB,k);fctx.beginPath();for(let i=0;i<4;i++){const x=q[i][0]+(T[i][0]-q[i][0])*k,y=q[i][1]+(T[i][1]-q[i][1])*k;i?fctx.lineTo(x,y):fctx.moveTo(x,y);}fctx.closePath();fctx.fill();fxEl.style.zIndex=z;}
+function ridgeFill(g,topY,amp,seed,ph,col,al){g.globalAlpha=al==null?1:al;g.fillStyle=col;g.beginPath();g.moveTo(-10,H+20);for(let x=-10;x<=W+10;x+=12){const u=x/W;const y=topY+amp*(0.55*Math.sin(u*8.2+seed+ph)+0.45*Math.sin(u*17.0+seed*1.7-ph*0.6));g.lineTo(x,y);}g.lineTo(W+10,H+20);g.closePath();g.fill();g.globalAlpha=1;}
+function tide(t,w,z){if(t<w[0]||t>=w[1])return;const k=M.p(t,w[0],w[1]-w[0],'sine.inOut');fxEl.style.zIndex=z||25;
+ [[mix(INK,BONE,0.55),0,11],[INK,0.12,5]].forEach(([col,lag,seed])=>{const kk=clamp((k-lag)/(1-lag),0,1);ridgeFill(fctx,(H+90)-kk*(H+210),90,seed,t*0.6,col,1);});}
+function groundDark(){let px=fctx.getImageData(540,1170,1,1).data;if(px[3]<128)px=ctx.getImageData(540,1170,1,1).data;return px[0]*.3+px[1]*.59+px[2]*.11<110;}
+function caption(t,dark){
+ const cp=M.caption(t,6);if(!cp||!cp.words||!cp.words.length){capW.style.visibility='hidden';return;}
+ const base=dark?BONE:INK;let act=-1;cp.words.forEach((w,i)=>{if(w.spoken)act=i;});
+ capP.innerHTML=cp.words.map((w,i)=>{const sp=w.spoken,y=sp?M.spring(t,w.at,10,0,'snap'):4,op=sp?1:0.26,col=i===act?RED:base;
+  return '<span style="color:'+col+';opacity:'+op+';transform:translateY('+y.toFixed(1)+'px)">'+w.text+'</span>';}).join(' ');
+ capW.style.visibility='visible';
+}
+function mk(p,tag,cls,html,css){const e=document.createElement(tag);if(cls)e.className=cls;if(html!=null)e.innerHTML=html;if(css)Object.assign(e.style,css);p.appendChild(e);return e;}
+function item(e,a,b,o){items.push(Object.assign({el:e,a,b},o||{}));return e;}
+function line(p,txt,y,col,a,b,o){o=o||{};const e=mk(p,'div','hl',txt,{top:y+'px',color:col,fontSize:(o.size||96)+'px'});if(o.x!=null)e.style.left=o.x+'px';lines.push({el:e,a,b,size:o.size||96,drift:o.drift||0,wt:o.wt||null,after:o.after||null});return e;}
+function said(l,ws,fb){return ws.map((w,i)=>{const[word,n]=Array.isArray(w)?w:[w,1];return at(l,word,n,fb+i*0.3)-0.08;});}
+function drawItem(it,t){const dy=it.dy==null?24:it.dy,a=it.a,b=it.b;const op=M.p(t,a,0.14,'sine.inOut')*(b==null?1:1-M.p(t,b-0.16,0.15,'sine.inOut'));let y=M.spring(t,a,dy,0,'snap');if(b!=null)y+=M.spring(t,b-0.16,0,-dy*0.25,'snap');if(it.drift)y-=it.drift*Math.max(0,t-Math.max(a,0.3));M.set(it.el,{y,opacity:op,visible:op>0.003});}
+function drawLine(L,t){const a=L.a,b=L.b,s=L.size;const outK=b==null?0:M.p(t,b,0.22,'sine.inOut');const vis=t>=a-0.05&&outK<1;M.set(L.el,{visible:vis,opacity:1-outK,y:(b==null?0:M.spring(t,b,0,-s*0.06,'snap'))-L.drift*Math.max(0,t-Math.max(a,0.3))});L.words.forEach((w,i)=>M.set(w,{y:M.spring(t,L.wt&&L.wt[i]!=null?L.wt[i]:a+i*0.1,s*1.15,0,'snap')}));}
+function tag(p,txt,col,a,b,wk,w,dx,dy,al){const e=mk(p,'div','tag',txt,{color:col});const g={el:e,a,b,wk,w,dx:dx||0,dy:dy||0,p:null,al};tags.push(g);return g;}
+function drawTag(g,t){const op=M.p(t,g.a,0.2,'sine.inOut')*(g.b==null?1:1-M.p(t,g.b-0.2,0.2,'sine.inOut'));if(op<=0.003||!g.p){M.set(g.el,{visible:false});return;}
+ const w=g.el.offsetWidth;const x=clamp(g.al==='r'?g.p[0]+g.dx-w:g.al==='l'?g.p[0]+g.dx:g.p[0]+g.dx-w/2,88,992-w);g.el.style.left=x.toFixed(1)+'px';g.el.style.top=(g.p[1]+g.dy).toFixed(1)+'px';M.set(g.el,{visible:true,opacity:op,y:M.spring(t,g.a,10,0,'snap')});}
+M.scene({
+ width:W,height:H,fps:30,duration:END,bpm:100,
+ cuts:[SC.s2,SC.s3,SC.s4,SC.s5,SC.s6,SC.s7,SC.s8,SC.J].map(x=>Math.round(x/HB)/2),
+ voice:VOICE,
+ setup(){
+  const st=$('stage');
+  ctx=$('g3d').getContext('2d');fxEl=$('fx');fctx=fxEl.getContext('2d');capP=$('capP');capW=$('cap');
+  LY={};[['w',8],['a',10],['b',12],['c',14],['d',18],['e',20],['f',22],['g',24],['h',26]].forEach(([k,z])=>{LY[k]=mk(st,'div','L','',{zIndex:z});});
+  // world labels
+  tag(LY.w,'Reports · meetings',DRED,C.reports4-0.1,C.tt4-0.3,'m',()=>{const s=sxyz(4);return[s[0],s[1]+CS+60,s[2]];},0,-10);
+  tag(LY.w,'1 spare',DRED,C.spare6-0.1,C.el6-0.2,'m',()=>{const s=sxyz(44);return[s[0]+40,s[1]+CS,s[2]];},0,-40,'l');
+  tag(LY.w,'Manager 2',DRED,C.second8+0.4,C.your8-0.3,'l',()=>{const s=sxyz(4,OXB);return[s[0],s[1]+CS+60,s[2]];},0,-40);
+  // frame 0 is this card, finished (the thumbnail)
+  item(mk(LY.a,'div','eb','The Operator’s Ledger · Span of control'),-10,SC.s2-0.3);
+  line(LY.a,'One manager.',196,INK,-10,SC.s2-0.55,{size:88});line(LY.a,'6 sites, fine.',292,INK,-10,SC.s2-0.5,{size:88});line(LY.a,'11, chaos.',388,RED,-10,SC.s2-0.45,{size:88});
+  // the stakes
+  item(mk(LY.b,'div','eb','The stakes'),SC.s2-0.15,SC.s3-0.3);
+  line(LY.b,'The unvisited site',200,INK,C.the2-0.1,SC.s3-0.55,{wt:[C.the2-0.08,C.nobody2-0.08,C.visits2-0.08]});line(LY.b,'slips first.',306,GRB,C.slips2-0.1,SC.s3-0.55,{wt:said('s2',['slips','first'],2.1)});
+  // the tool
+  item(mk(LY.c,'div','eb','The tool'),SC.s3-0.15,SC.s4-0.3);
+  line(LY.c,'Span of control.',200,INK,C.span3-0.2,C.no3-0.3,{wt:said('s3',['span','of','control'],0.3)});line(LY.c,'Sites per manager.',306,GRB,C.sites3-0.1,C.no3-0.3,{wt:[C.sites3-0.08,C.one3-0.08,C.manager3-0.08]});
+  line(LY.c,'No magic number.',200,INK,C.no3-0.1,SC.s4-0.55,{wt:said('s3',['no','magic','number'],5.6)});line(LY.c,'There is a week.',306,GRB,C.there3-0.1,SC.s4-0.55,{wt:[C.there3-0.08,C.is3-0.08,C.a3-0.08,C.week3-0.08]});
+  // clue 1: the hours
+  item(mk(LY.d,'div','eb','Clue 1 · The hours'),SC.s4-0.15,SC.s5-0.3);item(mk(LY.d,'div','ill','Illustrative figures, weekly'),SC.s4-0.1,SC.s7-0.6);
+  A.h4a=line(LY.d,'45 − 12 =',200,INK,C.ff4-0.1,SC.s5-0.55,{wt:[C.ff4-0.08,C.twelve4-0.2,C.twelve4-0.08,C.that4-0.08]});A.h4b=line(LY.d,'33 hours',200,GRB,C.tt4-0.1,SC.s5-0.55,{wt:[C.tt4-0.08,C.tt4+0.3]});
+  // clue 2: the sites
+  item(mk(LY.e,'div','eb','Clue 2 · The sites'),SC.s5-0.15,SC.s6-0.3);
+  line(LY.e,'Each site: 4 hours.',200,INK,C.each5-0.1,C.six5-0.45,{wt:[C.each5-0.08,C.site5-0.08,C.four5-0.08,C.hours5-0.08]});line(LY.e,'3 on site, 1 road.',306,GRB,C.three5-0.1,C.six5-0.45,{wt:[C.three5-0.08,C.three5+0.2,C.site5b-0.08,C.one5-0.08,C.road5-0.08]});
+  line(LY.e,'6 sites: 9 spare.',200,INK,C.six5-0.1,SC.s6-0.55,{wt:[C.six5-0.08,C.sites5-0.08,C.nine5-0.08,C.spare5-0.08]});
+  A.h5a=line(LY.e,'11 sites:',306,GRB,C.el5-0.1,SC.s6-0.55,{wt:[C.el5-0.08,C.sites5b-0.08]});A.h5b=line(LY.e,'11 short.',306,RED,C.el5b-0.1,SC.s6-0.55,{wt:[C.el5b-0.08,C.el5b+0.6]});
+  // clue 3: the trouble
+  item(mk(LY.f,'div','eb','Clue 3 · The trouble'),SC.s6-0.15,WIPE1[0]+0.2);
+  line(LY.f,'1 site in trouble:',200,INK,C.one6-0.1,WIPE1[0]+0.3,{wt:[C.one6-0.08,C.site6-0.08,C.wrong6-0.08,C.wrong6+0.1]});line(LY.f,'−8 hours',306,RED,C.eight6-0.1,WIPE1[0]+0.3,{wt:[C.eight6-0.08,C.hours6-0.08]});
+  // the verdict (ink)
+  item(mk(LY.g,'div','eb','The verdict',{color:RED}),SC.s7+0.05,SC.s8-0.6);
+  line(LY.g,'Not a number of sites.',200,BONE,C.isnt7-0.1,C.one7-0.35,{wt:[C.isnt7-0.08,C.a7-0.08,C.number7-0.08,C.of7-0.08,C.sites7-0.08]});line(LY.g,'The hours left.',306,GREY,C.the7-0.1,C.one7-0.35,{wt:[C.the7-0.08,C.hours7-0.08,C.left7-0.08]});
+  line(LY.g,'1 in trouble:',200,BONE,C.one7-0.1,C.two7-0.3,{wt:[C.one7-0.08,C.in7-0.08,C.trouble7b-0.08]});line(LY.g,'6 sites.',306,GREY,C.six7-0.1,C.two7-0.3,{wt:[C.six7-0.08,C.limit7b-0.08]});
+  line(LY.g,'2 in trouble:',200,BONE,C.two7-0.1,C.cut7-0.3,{wt:[C.two7-0.08,C.two7+0.08,C.two7+0.2]});line(LY.g,'4 sites.',306,GREY,C.four7-0.1,C.cut7-0.3,{wt:[C.four7-0.08,C.four7+0.15]});
+  line(LY.g,'3-hour visits:',200,BONE,C.cut7-0.1,SC.s8-0.45,{wt:[C.cut7-0.08,C.visit7-0.08]});line(LY.g,'8 sites.',306,GREY,C.eight7-0.1,SC.s8-0.45,{wt:[C.eight7-0.08,C.eight7+0.15]});
+  // the lesson and the Monday card: it holds through the sign-off to the end card
+  item(mk(LY.h,'div','eb','The lesson'),SC.s8-0.15,C.your8-0.4);item(mk(LY.h,'div','eb','For Monday'),C.your8-0.1,SC.J-0.1);
+  line(LY.h,'6 sites a manager.',200,INK,C.hire8-0.1,C.your8-0.45,{wt:[C.hire8-0.08,C.hire8+0.05,C.hire8+0.2,C.hire8+0.3]});line(LY.h,'Hire at site 7.',306,GRB,C.hire8+0.3,C.your8-0.42,{wt:[C.hire8+0.3,C.at8-0.08,C.site8-0.08,C.seven8-0.08]});
+  const q8=(w,n,fb)=>at('s8',w,n||1,fb)-0.08;
+  line(LY.h,'How many hours',200,INK,q8('how',1,5.1)-0.05,SC.J-0.3,{size:84,wt:[q8('how',1,5.1),q8('many',1,5.4),q8('hours',1,5.6)]});
+  line(LY.h,'a week does each',296,INK,q8('a',3,5.9)-0.05,SC.J-0.3,{size:84,wt:[q8('a',3,5.9),q8('week',1,6.06),q8('does',1,6.3),q8('each',1,6.68)]});
+  line(LY.h,'site really cost',392,INK,q8('site',2,7.04)-0.05,SC.J-0.3,{size:84,wt:[q8('site',2,7.04),q8('really',1,7.44),q8('cost',1,7.98)]});
+  line(LY.h,'your ops manager?',488,GRB,q8('your',2,8.5)-0.05,SC.J-0.3,{size:84,wt:[q8('your',2,8.5),q8('ops',1,8.96),q8('manager',2,9.26)]});
+  // end card, on ink
+  const tl=mk(LY.h,'div','','<img src="kit/series/ledger-fresh/assets/brand/WRW-logo-white-on-red.svg" alt="">');tl.id='tile';item(tl,SC.J+0.05,null);
+  item(mk(LY.h,'div','','The Operator’s Ledger',{position:'absolute',left:'88px',top:'470px',font:'500 40px/1 var(--sans)',letterSpacing:'.22em',textTransform:'uppercase',color:BONE,whiteSpace:'nowrap'}),SC.J+0.1,null,{drift:3});
+  item(mk(LY.h,'div','','Episode 05 · Span of control',{position:'absolute',left:'88px',top:'534px',font:'500 32px/1 var(--sans)',letterSpacing:'.2em',textTransform:'uppercase',color:GREY,whiteSpace:'nowrap'}),SC.J+0.15,null,{drift:3});
+  line(LY.h,'Count the hours.',600,BONE,SC.J+0.2,null,{drift:3});line(LY.h,'Then the sites.',706,GREY,SC.J+0.35,null,{drift:3});
+  item(mk(LY.h,'div','','WRW Hospitality',{position:'absolute',left:'88px',top:'880px',font:'500 32px/1 var(--sans)',letterSpacing:'.2em',textTransform:'uppercase',color:GREY}),SC.J+0.8,null,{drift:3});
+  item(mk(LY.h,'div','','Wesley Williams',{position:'absolute',left:'88px',top:'928px',font:'400 40px/1.2 var(--sans)',color:BONE}),SC.J+0.9,null,{drift:3});
+  lines.forEach(L=>{L.words=M.split(L.el,'words');});
+  // two-tone figures on one line: the payoff sits after the statement
+  const after=(a,b)=>{b.style.left=(88+a.offsetWidth+26)+'px';};after(A.h4a,A.h4b);after(A.h5a,A.h5b);
+ },
+ render(t){
+  const ink=t>=WIPE1[1]&&t<WIPE2[1]||t>=SC.J;
+  ctx.globalAlpha=1;ctx.fillStyle=t<WIPE1[1]?BONE:t<WIPE2[1]?INK:t<SC.J?BONE:INK;ctx.fillRect(0,0,W,H);fctx.clearRect(0,0,W,H);faces=[];
+  if(t<WIPE1[1])mainWorld(t);else if(t<WIPE2[1])verdictWorld(t);else if(t<SC.J)lessonWorld(t);
+  if(t>=SC.J){const fa=M.p(t,SC.J,0.8,'sine.inOut');ridgeFill(ctx,H-230,46,21,(t-SC.J)*0.35,BONE,0.07*fa);ridgeFill(ctx,H-140,34,23,-(t-SC.J)*0.25,BONE,0.12*fa);}
+  items.forEach(it=>drawItem(it,t));lines.forEach(L=>drawLine(L,t));tags.forEach(g=>drawTag(g,t));
+  tide(t,WIPE1,16);
+  wipe(t,WIPE2,qV,BONE,BONE,21);
+  tide(t,TIDE,25);
+  if(t<SC.J)caption(t,ink||groundDark());else capW.style.visibility='hidden';
+ },
+ score(S){
+  const b=n=>n*B;
+  const NN=['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
+  const mi=n=>{const m=/^([A-G]#?)(-?\d)$/.exec(n);return NN.indexOf(m[1])+12*(+m[2]+1);};const nm=m=>NN[((m%12)+12)%12]+(Math.floor(m/12)-1);
+  const CH={Dm9:{v:['F3','A3','C4','E4'],w:['D2','F2','A2','C3']},G13:{v:['F3','B3','E4','A4'],w:['G1','B1','D2','F2']},Cmaj9:{v:['E3','G3','B3','D4'],w:['C2','E2','G2','B2']},A7:{v:['G3','C#4','F#4','B4'],w:['A1','C#2','E2','G2']},Em7:{v:['G3','B3','D4','F#4'],w:['E2','G2','B2','D3']},Fmaj9:{v:['A3','C4','E4','G4'],w:['F1','A1','C2','E2']},Am9:{v:['G3','B3','C4','E4'],w:['A1','C2','E2','G2']},D9:{v:['F#3','A3','C4','E4'],w:['D2','F#2','A2','C3']},E7:{v:['D3','G#3','C#4','F#4'],w:['E2','G#2','B2','D3']}};
+  const PROG={e:['Cmaj9','A7','Dm9','G13'],s1:['Dm9','G13','Cmaj9','A7'],s2:['Fmaj9','Em7','A7','Dm9'],s3:['Dm9','G13','Em7','A7'],s4:['Fmaj9','G13','Em7','A7'],s5:['Dm9','G13','Cmaj9','E7'],s6:['Am9','D9','Fmaj9','E7'],s7:['Am9','D9','Dm9','G13'],s8:['Dm9','G13','Cmaj9','A7'],J:['Cmaj9']};
+  const starts=[['e',0],['s1',SC.s1],['s2',SC.s2],['s3',SC.s3],['s4',SC.s4],['s5',SC.s5],['s6',SC.s6],['s7',SC.s7],['s8',SC.s8],['J',SC.J]];
+  const chart=[];starts.forEach(([k,t0],i)=>{const b0=Math.round(t0/B),b1=i<starts.length-1?Math.round(starts[i+1][1]/B):Math.round(END/B);let bt=b0,j=0;while(bt<b1){const n=Math.min(4,b1-bt);chart.push([bt,PROG[k][j%PROG[k].length],n]);bt+=n;j++;}});
+  const quietA=Math.round(SC.s7/B),quietB=Math.round(SC.s8/B);
+  chart.forEach((r,ix)=>{const[sb,sym,n]=r;const nx=chart[ix+1];const w=CH[sym].w;
+   for(let k=0;k<n;k++){let note=w[[0,1,2,3][k%4]];if(k===n-1&&nx)note=nm(mi(CH[nx[1]].w[0])-1);S.upright(b(sb+k),note,B*0.92,{gain:sb<4?.0:.85});}
+   const quiet=sb>=quietA&&sb<quietB;
+   if(!quiet&&sb<Math.round(SC.J/B)){S.keys(b(sb),CH[sym].v,B*Math.min(n,4)*0.55,{gain:.34,verb:.25});if(n>=4){S.keys(b(sb+1.6),CH[sym].v,B*0.45,{gain:.2,verb:.25});S.keys(b(sb+3.6),CH[sym].v,B*0.35,{gain:.14,verb:.25});}}
+  });
+  const GR={ride:'x.xxx.xx',chick:'..x...x.',brush:'..o...o.'};
+  const bars=x=>Math.floor(x/(4*B));
+  S.groove(1,bars(SC.s7)-1,GR,{swing:.6,gain:.6});
+  for(let k=quietA;k<quietB;k++){S.brush(b(k),{gain:.5});S.brush(b(k+0.6),{gain:.28});}
+  S.groove(Math.ceil(SC.s8/(4*B)),bars(SC.J)-Math.ceil(SC.s8/(4*B)),GR,{swing:.6,gain:.6});
+  const up=v=>v.map(n=>nm(mi(n)+12));const chordAt=t=>{let s=chart[0];for(const r of chart)if(r[0]*B<=t+1e-6)s=r;return s[1];};
+  const stab=x=>{x=half(x);const v=up(CH[chordAt(x)].v);S.keys(x,[v[1],v[2],v[3]],0.45,{gain:.24,verb:.3});S.ride(x,{gain:.4});};
+  [C.el1,C.week3,C.ff4,C.tt4,C.nine5,C.short5,C.eight6,C.six7].forEach(stab);
+  // a soft tick for every hour that lands; pieces tick once; the count up the week climbs in pitch
+  HP.forEach((x,p)=>{if(p<9)S.tick(landT(x),{pitch:1700+p*40,gain:.09});});
+  for(let i=0;i<45;i++)S.tick(DN4(i)+0.12,{pitch:1500+i*22,gain:.05});
+  for(let i=0;i<45;i++)if(i%3===0)S.tick(UP3(i)+0.05,{pitch:2600-i*15,gain:.025});
+  for(let i=0;i<12;i++)S.tick(C.twelve4+0.035*i,{pitch:1100,gain:.04});
+  [C.each5+0.1,...[1,2,3,4,5].map(q=>C.six5-0.1+0.13*(q-1)),C.el5-0.1,C.el5+0.04,C.el5+0.18].forEach((x,i)=>S.tick(landT(x),{pitch:1650+i*30,gain:.09}));
+  for(let q=8;q<11;q++)S.tick(landT(C.el5-0.1+0.14*(q-6)),{pitch:1900,gain:.06});
+  [C.three7-0.1].forEach(x0=>{for(let q=0;q<8;q++)S.tick(landT(x0+0.11*q),{pitch:1700+q*50,gain:.08});});
+  // the fallen hours hit the floor: a soft thud each
+  const ul=Math.sqrt(2*(RY(4)+DROP)/G);
+  const thuds=(ta,n)=>{for(let j=0;j<n;j++)S.felt(ta+ul+j*0.012,{gain:.28});S.tick(ta+ul,{pitch:700,gain:.07});};
+  thuds(HP[8],3);thuds(HP[9],4);thuds(HP[10],4);
+  for(let q=8;q<11;q++)thuds(C.el5-0.1+0.14*(q-6),q===8?3:4);
+  for(let q=6;q<11;q++)thuds(C.el6-0.05+0.15*(q-6),4);
+  // the trouble: a phone buzz, twice, then the slab lands heavy
+  const buzz=t0=>{for(const off of [0,0.42])for(let k=0;k<10;k++){const tt=t0+off+k*0.03,o=S._osc('sawtooth',162,tt,0.022),lp=S._filter('lowpass',900,1.5),g=S._gain(tt,.32,.002,.02);o.connect(lp);lp.connect(g);S._bus(g,{gain:.55});}};
+  buzz(C.wrong6-0.05);
+  S.impact(C.eight6+0.06,{gain:.35});S.drop(C.eight6+0.06,{gain:.3});
+  S.impact(C.two7+0.26,{gain:.3});S.drop(C.two7+0.26,{gain:.25});
+  // camera whips, scene cuts, the tide and the wipe
+  [C.el1-0.3,SC.s2-0.25,C.nobody2-0.4,C.twelve4-0.3,C.tt4-0.3,C.each5-0.25,C.ff5-0.3,SC.s6-0.3,C.eats6-0.3,C.cant6-0.3].forEach(x=>S.whoosh(x+0.15,0.6,{gain:.14}));
+  [SC.s3,SC.s4,SC.s5].forEach(x=>S.whoosh(x,0.7,{gain:.12}));
+  S.whoosh(C.there3+0.6,1.0,{gain:.16});S.whoosh(C.hours4+0.3,0.9,{gain:.14});
+  S.whoosh(WIPE1[1],1.2,{gain:.28});S.whoosh(WIPE2[1],1.2,{gain:.28});S.whoosh(TIDE[1],1.6,{gain:.3});
+  S.whoosh(C.hire8+0.9,1.0,{gain:.2});
+  S.tick(C.where1+0.05,{pitch:1300,gain:.2});S.brush(C.span3,{gain:.7});
+  S.keys(b(0),CH.Cmaj9.v,B*2.2,{gain:.3,verb:.28});
+  S.keys(b(Math.round(SC.J/B)),['E3','G3','B3','D4','G4'],3.0,{gain:.42,verb:.4});S.upright(b(Math.round(SC.J/B)),'C2',2.8,{gain:.9});S.ride(b(Math.round(SC.J/B)),{gain:.7});
+ }
+});
+</script></body></html>

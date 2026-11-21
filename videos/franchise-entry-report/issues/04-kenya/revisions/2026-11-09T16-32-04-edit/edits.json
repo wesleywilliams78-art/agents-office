@@ -1,0 +1,20 @@
+{
+ "issue": "04-kenya",
+ "why": "Restore S5 overwritten by mistake, correct S4 title, fix delivery risk sources; rewrite around Harlyy's spread.",
+ "base": "videos/franchise-entry-report/issues/04-kenya/revisions/2026-11-09T16-31-52-edit/issue.json",
+ "at": "2026-11-09T16:32:04.774Z",
+ "edits": [
+  {
+   "path": "days.sources.3",
+   "value": "S4 Khusoko, Kenya’s Central Bank cuts benchmark rate to 8.75%, 10 Feb 2026"
+  },
+  {
+   "path": "days.sources.4",
+   "value": "S5 Food Business Africa, Simbisa Brands revenue rises 20% in FY 2026, 1 Oct 2026"
+  },
+  {
+   "path": "route.risks.4.src",
+   "value": "S51, S58"
+  }
+ ]
+}

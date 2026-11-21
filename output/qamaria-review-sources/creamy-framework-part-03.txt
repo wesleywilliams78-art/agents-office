@@ -1,0 +1,341 @@
+Status: Excluded — with one defined exception pathway.
+Creamy does not operate in standard shopping centre units. This exclusion is based on the founder's direct experience (a shopping centre unit opened in 2018 was sold at a loss within approximately one year — see Chapter 1.1) and on structural factors that apply across the Norwegian market.
+Reasons for exclusion:
+(a) High rents and additional costs. Shopping centre leases in Norway typically carry higher base rents than equivalent high street positions, plus additional charges: common area maintenance (felleskostnader), marketing levies, and in many cases turnover-linked rent that penalises strong trading. For a dessert bar with Creamy's product mix and average transaction value, this cost structure erodes unit-level profitability to an unacceptable degree.
+(b) No control over opening hours. Shopping centre tenants are required to operate during the centre's standard opening hours, which in Norway are typically short by international standards — often closing at 20:00 on weekdays and 18:00 on Saturdays. Critically, most Norwegian shopping centres are closed on Sundays (with limited exceptions around the Christmas trading period under helligdagsfredloven). Creamy's peak trading is evenings and weekends. A location that is closed when Creamy's customers are most likely to visit is fundamentally misaligned with the business model.
+(c) Brand positioning conflict. Creamy's positioning as a dessert destination — a place customers deliberately choose to visit (see Chapter 1.3 — Positioning vs. Category) — is undermined by a shopping centre context where the visit is incidental to a broader shopping trip. The brand experience is different when a customer has come specifically to Creamy versus when they pass it on the way to H&M.
+Exception — independent street entrance:
+A shopping centre location may be considered if, and only if, all of the following conditions are met:
+The unit has its own independent entrance directly from the street, separate from the shopping centre's internal access
+The lease terms permit Creamy to set its own opening hours using the independent entrance, including evening hours beyond the centre's closing time and Sunday trading
+The independent entrance provides adequate visibility and frontage (minimum two large windows — see Chapter 2.2)
+The rent and cost structure, including all centre charges, delivers acceptable unit economics as assessed by Head Office
+If all four conditions are confirmed in writing (in the lease heads of terms, not verbally), the site may proceed to the standard evaluation process. If any condition is not met, the site is excluded — there is no partial compliance pathway for this exception.
+
+EXCLUSION 2 — FOOD COURTS
+Status: Not excluded, but requires a bespoke operating model.
+Food courts are not categorically excluded from Creamy's franchise model. However, a food court unit operates so differently from a standard Creamy unit that it cannot simply adopt the standard operating model and menu. A food court location requires Head Office to develop and approve a modified operating framework before the franchise agreement is signed.
+Why food courts are different:
+(a) Service format. Food court customers expect counter service with takeaway packaging. Creamy's standard model is a sit-down dessert bar experience with plated service. A food court unit must serve in disposable boxes and containers, which changes product presentation, portion logistics, and the customer's perception of the brand.
+(b) Menu scope. The full Creamy menu may not be operationally viable in a food court format — limited kitchen space, different equipment configuration, and faster expected service times may require a reduced or adapted menu. Head Office must define which products are included in the food court menu and how they are adapted for the format.
+(c) Brand experience. The Creamy "happy place" experience (see Chapter 1.4 — Core Values) is harder to deliver in a shared food court environment where Creamy does not control the seating, music, lighting, or overall atmosphere. The brand expression must shift from environment to product and direct customer interaction at the counter.
+(d) Operating economics. Food court units typically have lower average transaction values than sit-down units but may compensate through higher volume. The business case for a food court unit must be modelled separately — standard Creamy P&L assumptions do not apply.
+What Head Office must develop before a food court unit is approved:
+Adapted menu for food court format (reduced menu, food court-suitable products, disposable packaging specifications)
+Modified product presentation standards (how Creamy's quality and generosity values translate to disposable boxes rather than plated service)
+Food court-specific operational procedures (prep workflow, service speed targets, packaging and labelling for takeaway)
+Food court-specific unit economics model (revenue, cost, and margin assumptions distinct from the standard model)
+Brand guidelines for food court units (signage, counter design, uniform — how the Creamy brand is expressed in a shared environment)
+Franchise agreement addendum covering the food court-specific terms and operating model
+Until these materials are developed and approved by Head Office, no food court franchise agreement should be signed. A prospective franchisee who proposes a food court location should be informed that the format is possible in principle, but that Head Office must complete the food court adaptation work before the site can proceed.
+[Adnan to confirm: whether food court adaptation is a current priority or a future workstream. If future, this chapter should state the timeframe or condition that triggers the development work — e.g. "food court adaptation will be scoped once the standard franchise model is proven across [X] locations."]
+
+EXCLUSION 3 — OTHER EXCLUDED OR RESTRICTED SITE TYPES
+The following site types are excluded or restricted for the reasons stated. These may be updated as the brand evolves and new site types are tested.
+(a) Dark kitchens / delivery-only locations. [Adnan to confirm: whether delivery-only operations are excluded, permitted, or under consideration. If Creamy operates on delivery platforms (Foodora, Wolt) from its existing units, the question is whether a unit with no walk-in customer facility would ever be approved.]
+(b) Kiosk or pop-up formats. [Adnan to confirm: whether temporary or reduced-footprint formats (festival stalls, market stands, seasonal kiosks) are permitted as brand-building activities under Head Office control, or excluded entirely.]
+(c) Co-located or shared-brand premises. A Creamy unit must not share its premises, branding, or customer-facing identity with another food brand or business. A unit that appears to be "Creamy and [something else]" dilutes the brand and confuses the positioning. Shared kitchen facilities with separate customer-facing identities may be considered on a case-by-case basis but require Head Office approval.
+
+Roles & Responsibilities
+Founder / Creamy Head Office: Owns and enforces all site type exclusions. Has sole authority to approve an exception-pathway site (shopping centre with independent entrance) or a food court adaptation. Develops the food court operating model if and when a food court site is approved in principle. Updates this chapter as new site types are tested or market conditions change.
+Franchise Owner / Operator (prospective): Must disclose the exact site type during the site proposal process. Must not sign a lease for any excluded site type without written Head Office approval. Must provide full lease terms and site specifications so Head Office can assess whether an exception pathway applies.
+Franchise Owner / Operator (existing): Must not sublease, reconfigure, or repurpose their unit in a way that changes its site type (e.g. converting part of a sit-down unit into a delivery-only kitchen) without Head Office approval.
+
+Measure, Analyse, Improve
+(a) Exception-pathway site monitoring. Any site approved under an exception pathway (e.g. shopping centre with independent entrance, food court) should be monitored more closely than a standard site during its first 12 months. Track trading patterns, customer demographic, evening and weekend performance, and unit economics against the assumptions made during approval. If the exception site underperforms the assumptions, determine whether the issue is site-specific or whether the exception criteria need tightening.
+(b) Exclusion review. Review the exclusion list annually. Market conditions change — a site type that is excluded today may become viable if the brand evolves, if Norwegian retail patterns shift (e.g. extended Sunday trading legislation), or if Creamy develops formats that suit different environments. Any change to the exclusion list must be documented and communicated to the franchise network.
+(c) Franchisee proposal tracking. Track the site types proposed by prospective franchisees. If a significant number of proposals involve excluded site types, this may indicate that the franchise recruitment materials are not communicating the site criteria clearly enough — or that the market is signalling demand for a format Creamy has not yet developed.
+
+Tools & Resources
+Site type classification guide (quick reference: which site types are approved, excluded, or exception-pathway).
+Shopping centre exception checklist (the four conditions that must all be met for a shopping centre site to proceed).
+Food court adaptation brief (scope of work for Head Office to develop the food court operating model — when triggered).
+Site proposal form (includes mandatory site type disclosure and lease term summary).
+Chapter 2.2 — Site Selection & Target Demographics (positive site criteria).
+Chapter 1.1 — Origin Story & Founder Journey (the shopping centre lesson — context for the primary exclusion).
+I would Shopping centeres because they have high rents and other costs, you dont get to decide the opening hours, and mostly shopping centeres are close early in Norway and are closed on sundays. However a shopping center could workout if they can let you have your own entrance that can be used in the evenings and on sundays. 
+Food courts can be possible but then we have to make changes for that franchisee to make it work in a food court with serving in disposable boxes and making a smaller menu, and make the changes to make possible to have a Creamy in a food court. 
+
+Lease/property evaluation checklist   [YSF ADVISORY — DRAFTED, PENDING REVIEW]
+Introduction
+This chapter provides a structured checklist for evaluating prospective lease and property opportunities for new Creamy units. A thorough property evaluation protects the franchisee from signing a lease that is commercially unviable or operationally unsuitable. This checklist should be completed in full before any lease is signed or heads of terms are agreed.
+Minimum Operating Standards
+Every prospective site must be evaluated against a standardised checklist before a lease commitment is made. No lease may be signed without Head Office sign-off (see Sign-off & approval process chapter).
+Physical requirements: minimum unit size of 150 sq meters - to confirm very small, adequate ventilation/extraction capacity for kitchen operations, access to appropriate water supply and drainage, sufficient electrical capacity for commercial kitchen equipment, and customer-accessible WC facilities compliant with TEK17 (Norwegian building regulations).
+Lease terms to evaluate: lease duration and break clauses, rent review mechanism (typically every 3-5 years in Norway; CPI-linked increases are common), responsibility for fit-out costs, landlord contributions, dilapidations obligations, permitted-use clause (must allow food service/restaurant use), exclusivity clauses (restricting competing food tenants), and any restrictions on signage or external branding.
+Site type exclusions: shopping centre locations are excluded per Creamy's stated site strategy. High-street, standalone, and neighbourhood parade locations are preferred.
+Accessibility: the unit should comply with Norwegian accessibility requirements (TEK17 Chapter 12 — universell utforming) covering wheelchair access, accessible WC provision, and accessible counter height. Very important- Complete
+Planning and licensing: confirm the property has or can obtain the necessary permissions for food service use (reguleringsplan/kommuneplan zoning), and that there are no restrictions that would prevent obtaining a serveringsbevilling (food service licence).
+Environmental: check for any known contamination, asbestos (common in pre-1980 Norwegian buildings), noise restrictions, or waste disposal limitations.
+A completed checklist must be submitted to Head Office as part of the site approval pack.
+Roles & Responsibilities
+Franchisee (prospective): Identifies and shortlists potential sites; completes the evaluation checklist with support from their property advisor.
+Head Office / Site Approval Committee: Reviews completed checklists; conducts a site visit where required; issues formal approval or rejection.
+Property Advisor / Agent: Provides lease and property data; supports the franchisee in negotiating terms.
+Legal Advisor: Reviews lease terms before signing (Norwegian commercial leases are typically governed by husleieloven — the Tenancy Act — for commercial premises, though many terms are freely negotiable).
+Measure Analyse Improve
+Track: (a) number of sites evaluated vs. approved, (b) time from initial identification to lease signing, (c) any post-opening issues attributable to site evaluation gaps. Review the checklist annually against operational experience and update criteria as needed.
+Tools & Resources
+Site evaluation checklist (standardised form issued by Head Office). Site visit report template. Lease summary template (key commercial terms extracted for Head Office review).
+
+Sign-off & approval process   [YSF ADVISORY — DRAFTED, PENDING REVIEW]
+Introduction
+This chapter defines the formal sign-off and approval process for new Creamy site openings. No new unit may proceed to fit-out, lease signing, or trading without completing the approval stages set out here. This process protects both the franchisee and the brand by ensuring every new site meets Creamy's commercial, operational, and regulatory requirements before capital is committed.
+Minimum Operating Standards
+The approval process has four stages: (1) Site Evaluation — completed checklist submitted to Head Office, (2) Commercial Review — Head Office assesses financial viability including projected revenue, rent-to-revenue ratio, and fit-out costs, (3) Conditional Approval — Head Office issues conditional approval subject to lease terms, planning, and licensing, (4) Final Approval — issued once the lease is agreed, licences are confirmed, and the fit-out plan is signed off.
+Each stage must be formally documented. Head Office must issue a written decision (approval, conditional approval, or rejection with reasons) within 14 days of receiving a complete submission.14 days - done
+No fit-out works may commence before Final Approval is issued.
+The franchisee must not enter into any binding lease, contractor, or supplier commitment before receiving at least Conditional Approval from Head Office.
+If the franchisee proceeds without approval, this constitutes a breach of the franchise agreement and may result in termination of the agreement.
+All approval documentation must be retained by both Head Office and the franchisee for the duration of the franchise agreement plus 5 years. Right - Done
+Roles & Responsibilities
+Franchisee: Prepares and submits site evaluation pack; responds to Head Office queries; does not commit to lease or works without approval.
+Head Office / Site Approval Committee: Reviews submissions; conducts site visits; issues formal decisions at each stage.
+Finance / Commercial Lead: Assesses financial projections and viability as part of Stage 2.
+Legal Advisor: Reviews lease and franchise agreement implications.
+Measure Analyse Improve
+Track: (a) turnaround time at each approval stage vs. target, (b) number of sites rejected and reasons, (c) any instances of franchisees proceeding without approval. Review the process annually for efficiency and adjust stage requirements as the brand scales.
+Tools & Resources
+Site approval pack template (compiled submission for Head Office). Stage gate tracker (spreadsheet or project management tool tracking each site through the four stages). Approval/rejection letter templates.
+
+2.2  Fit-out & equipment spec
+
+Kitchen equipment list & specs   [YSF ADVISORY — DRAFTED, PENDING REVIEW]
+Introduction
+This chapter defines the standard kitchen equipment required for every Creamy unit. The equipment list is a minimum specification — every item listed must be present and operational before the unit opens and throughout its trading life.
+Equipment is foundational to product quality, food safety compliance, and operational efficiency. A unit that opens without the correct equipment, or that allows equipment to degrade without replacement, will fail to meet Creamy's product standards (see Chapter 2.3 — Non-Negotiable Operating Standards: "Equipment must be operational") and will likely fail Mattilsynet inspections.
+This chapter provides the generic equipment categories and types. Specific makes, models, and approved suppliers are maintained separately by Head Office and will be provided to franchisees during the fit-out planning stage. Franchisees must not purchase equipment without confirming the specification with Head Office — the wrong capacity, the wrong type, or a non-approved model can create operational problems that are expensive to correct after installation.
+[Adnan to confirm: whether a separate approved equipment and supplier list document should be maintained by Head Office, with model numbers, capacities, and preferred suppliers — referenced from this chapter but updated independently as specifications evolve.]
+
+Minimum Operating Standards
+The following equipment must be present in every standard Creamy unit. Equipment is grouped by function. Quantities and specific capacities will vary by unit size and expected volume — Head Office will specify the exact requirements during the site fit-out process.
+DESSERT PREPARATION EQUIPMENT
+Equipment | Purpose | Notes
+Waffle machine(s) | Core menu item — golden waffles | Quantity depends on unit volume. Must produce consistent results to recipe standard.
+Crepe machine(s) | Core menu item — crepes | Flat-top or rotating, as specified by Head Office.
+Milkshake blender(s) | Milkshakes and blended drinks | Commercial grade — domestic blenders are not acceptable.
+Chocolate warmer(s) | Melted chocolate for dessert service | Must maintain consistent temperature without scorching.
+Microwave | Warming and preparation support | Commercial grade.
+COLD STORAGE AND DISPLAY
+Equipment | Purpose | Notes
+Bar refrigerator(s) | Front-of-house ingredient storage and prep access | Positioned for efficient service flow.
+Ice cream display unit | Customer-facing ice cream presentation | Must maintain correct serving temperature and be visually appealing — this is a brand touchpoint.
+Ice cube machine | Ice production for drinks service | Output capacity must match peak service demand.
+Freezer bench(es) | Kitchen-side frozen storage and prep surface | Combined storage and workspace — commercial grade.
+Refrigerator bench(es) | Kitchen-side chilled storage and prep surface | Combined storage and workspace — commercial grade.
+SINKS AND HYGIENE
+Norwegian food safety regulations (IK-mat forskriften, Mattilsynet requirements) mandate specific sink provisions. The following are non-negotiable:
+Equipment | Purpose | Regulatory note
+Handwash sink | Dedicated hand washing — staff hygiene | Must be separate from all other sinks. Must have hot and cold running water, soap, and disposable paper towels. Mattilsynet requirement.
+Deep sink (plate washing) | Manual washing of plates, utensils, and equipment | Separate from food preparation sinks.
+Fruit/vegetable washing sink | Washing fresh produce before preparation | Must not be used for any other purpose. Mattilsynet expects separation of produce washing from equipment washing.
+Commercial dishwasher | High-temperature machine washing of serviceware | Must reach sanitising temperatures per food safety requirements.
+Note on sink separation: Mattilsynet inspectors specifically check that handwash facilities are separate and accessible, and that food washing is not done in the same sink as equipment washing. Combining sink functions is a common reason for a non-smile inspection result. Plan the kitchen layout to ensure clear physical separation.
+VENTILATION
+Equipment | Purpose | Notes
+Food ventilation / extraction system | Kitchen air quality, heat and grease extraction | Must comply with Norwegian building regulations (TEK17) and any local ventilation requirements. Specification depends on kitchen size and cooking methods. Professional assessment recommended during fit-out.
+STORAGE AND ORGANISATION
+Equipment | Purpose | Notes
+Wall-mounted shelving | Storage of dry goods, containers, and equipment | Must be cleanable, non-absorbent material (stainless steel preferred). Shelving must allow cleaning behind and beneath — no dead spaces.
+Garbage station | Waste separation and collection | Must accommodate Norwegian waste separation requirements (restavfall, plastics, food waste at minimum). Positioned for easy access during service without creating hygiene risk.
+SMALLWARES AND UTENSILS
+The following items are required as part of the kitchen setup. They are lower cost individually but operationally essential — a unit that opens without adequate smallwares will struggle from day one.
+Item | Notes
+Knives (set) | Commercial kitchen knives. Must be maintained sharp and stored safely (magnetic rack or knife block).
+Cutting boards | Colour-coded per food safety best practice (different colours for different food groups to prevent cross-contamination).
+Measuring spoons | Accurate portioning of ingredients per recipe specifications.
+Syrup bottle stand | Organised, accessible syrup station for efficient service.
+Water bottles | Service water containers — [Adnan to confirm: for customer table service or kitchen use].
+Spoons for chocolate warmers | Dedicated utensils for chocolate service — not shared with other prep tasks.
+
+EQUIPMENT STANDARDS AND REQUIREMENTS
+Beyond the list itself, the following standards apply to all equipment:
+(a) Commercial grade only. All equipment must be commercial / professional grade. Domestic appliances (household blenders, domestic fridges, home microwaves) are not permitted. They are not built for the volume, duty cycle, or hygiene requirements of a commercial food operation, and their use may void insurance and fail Mattilsynet inspection.
+(b) CE / EU compliance. All electrical equipment must carry appropriate CE marking and comply with Norwegian electrical safety standards (NEK regulations). Installation of fixed equipment must be carried out by qualified professionals.
+(c) Pre-opening equipment check. All equipment must be installed, tested, and confirmed operational before the unit opens. Head Office will conduct an equipment check as part of the pre-opening sign-off process (see Chapter 2.6 — Pre-opening checklist).
+(d) Maintenance and replacement. Equipment must be maintained according to manufacturer recommendations. Preventive maintenance schedules should be established for all major equipment (refrigeration, dishwasher, ventilation). When equipment fails, repair or replacement must be treated as urgent — a unit operating with broken equipment risks product quality failures and food safety breaches. (See Chapter 5.7 — Equipment failure and contingency.)
+(e) Secondhand equipment. [Adnan to confirm: whether secondhand/used equipment is permitted for franchisee fit-outs, or whether only new equipment from approved suppliers is acceptable. The founder's first unit was fitted entirely with secondhand equipment, but the brand standard may now require new equipment for franchise locations — particularly for units representing the brand in new cities.]
+
+Roles & Responsibilities
+Creamy Head Office: Maintains the approved equipment list with specific makes, models, capacities, and approved suppliers. Provides equipment specifications to franchisees during the fit-out planning stage. Conducts or supervises the pre-opening equipment check. Updates specifications as the menu evolves or better equipment becomes available.
+Franchise Owner / Operator: Responsible for purchasing, installing, and maintaining all equipment to the specifications provided by Head Office. Must not purchase equipment without Head Office confirmation of the specification. Bears the cost of equipment purchase, installation, and ongoing maintenance as part of the franchise investment. Must report equipment failures promptly and arrange repair or replacement without delay.
+Unit Manager: Conducts daily equipment checks as part of the opening checklist (see Chapter 5.1) Reports any equipment issues to the franchisee immediately. Ensures team members use equipment correctly and report faults.
+Team Members: Use equipment as trained and per manufacturer instructions. Report any equipment malfunction, unusual noise, temperature issue, or performance problem to the Unit Manager immediately. Do not attempt to repair equipment — report it.
+
+Measure, Analyse, Improve
+(a) Equipment compliance audit. During operational audits, check that all required equipment is present, operational, and maintained. Note any missing items, non-approved substitutions, or equipment in poor condition. Non-compliance is flagged for immediate corrective action.
+(b) Equipment downtime tracking. Track equipment failures by unit: what failed, when, how long it was out of service, and the impact on operations. Patterns (e.g. the same equipment type failing across multiple units) may indicate a specification issue that Head Office should address.
+(c) Maintenance compliance. Check that preventive maintenance is being carried out per schedule. Units with poor maintenance records will experience more breakdowns and higher replacement costs — this is a leading indicator of operational risk.
+(d) Fit-out cost benchmarking. As more units open, benchmark equipment costs across franchisees. Negotiate volume pricing with approved suppliers where possible to reduce the initial franchise investment cost.
+
+Tools & Resources
+Approved equipment list (Head Office document — specific makes, models, capacities, and approved suppliers). [Adnan to confirm: format and distribution method.]
+Kitchen layout planning guide (recommended equipment placement for workflow efficiency and food safety compliance).
+Pre-opening equipment checklist (part of the pre-opening sign-off process — see Chapter 2.6.
+Equipment maintenance schedule template (preventive maintenance intervals for each major equipment category).
+Equipment failure log (date, equipment, fault, downtime, resolution, cost).
+Daily opening checklist — equipment check section (see Chapter 5.1).
+
+
+Bar refrigerators, Ice creamy display, Coffee machine, ice cube machine. Milkshake blenders.waffle machines, Crepe machine, Chocolate warmers, Food ventilation.Handwash sink, A deep sink for washing the plates, a sink for washing the fruits, commercial dish washer machine. Wall mounted shelfs. Freezer bench, refrigerator bench, garbage station.Knifes, cutting boards, micro wave, sirup bottle stand, water bottles, measuring spoons, spoons for chocolate warmers, 
+
+Front-of-house layout standards   [NEEDS ADNAN INPUT]
+Why this chapter matters
+Customers should recognise a Creamy the moment they walk in. This chapter defines the look, feel, and flow of the customer-facing area.
+What you need to provide
+A description or sketch of the ideal front-of-house layout (counter position, seating arrangement, display areas).
+Mandatory design elements (menu board style, lighting, colours, furniture type).
+Customer flow — how should people move from entrance to order to collection to seating?
+Easiest way to get this done
+Photos of your current unit are the best starting point. Annotate what works, what you'd change, and what's non-negotiable.
+All the creamy signs should be ordered thru head office, we can not use any other colors other then black and pink. The furniture has to be pink. The menus are only located digitally in the 992 systems or and on the qr codes located on each table. 
+For how the location should look we will show the photos of creamy strømmen. 
+Lets shape this up with a video walkthrough of the strommen location.
+
+Signage & branding installation   [NEEDS ADNAN INPUT]
+Why this chapter matters
+Consistent external signage makes every Creamy recognisable and builds brand value. It also has planning permission implications in Norway.
+What you need to provide
+Approved external signage types (illuminated, non-illuminated, window vinyl, A-board, etc.).
+Signage specifications (size, materials, approved suppliers if any).
+Internal branding requirements (wall graphics, menu boards, branded packaging display).
+Any planning/kommune requirements you've encountered for signage.
+Easiest way to get this done
+Share photos of your current signage and note what you'd want replicated. If you have a signage supplier, include their details.
+The signage should be ordered thru the head office to make sure it is done right. 
+Lets shape this up with a video walkthrough of the strommen location.
+
+Approved suppliers/contractors   [NEEDS ADNAN INPUT]
+Why this chapter matters
+New franchisees need a vetted list of fit-out contractors, equipment suppliers, and service providers so they don't have to start from scratch.
+What you need to provide
+Suppliers you currently use for fit-out, equipment, furniture, signage, and any other setup items.
+For each: company name, contact, what they supply, and whether they're mandatory or recommended.
+Any suppliers to avoid and why.
+Easiest way to get this done
+List your current suppliers. Mark which ones are 'must use' vs. 'we recommend'. This can be a simple table — YSF Advisory will format it.
+Fit out, equipment and furniture can all be done by Tur-nor impex.
+Signage can be done by the head office.
+
+2.3  Pre-opening checklist
+
+Regulatory/licensing requirements (Norway-specific)   [YSF ADVISORY — DRAFTED, PENDING REVIEW]
+Introduction
+This chapter sets out the regulatory and licensing requirements that must be satisfied before a new Creamy unit can legally commence trading in Norway. Norway has specific requirements for food service businesses covering food safety registration, establishment licences, and operator qualifications. Failure to obtain the correct registrations and licences before opening is a criminal offence and will result in enforcement action from Mattilsynet (the Norwegian Food Safety Authority) or the relevant municipality.
+Minimum Operating Standards
+Mattilsynet registration: Every food business in Norway must be registered with Mattilsynet before commencing operations (Matloven §§6-7). Registration is done via the Mattilsynet online portal (skjema.mattilsynet.no) and must be submitted at least 4 weeks before the planned opening date. This is a registration, not an approval — Mattilsynet does not issue a 'permit' but must be notified and may inspect. Right - Done - WW
+IK-mat (internkontrollforskriften for næringsmidler): An internal control system for food safety must be established and documented before opening. This is a legal requirement under the IK-mat regulations (forskrift om internkontroll for å oppfylle næringsmiddellovgivningen). The system must cover HACCP principles, allergen management, cleaning routines, temperature control, traceability, and staff training. See Chapter 3.6 for detailed HACCP procedures. Right - done WW
+Serveringsbevilling (food service licence): Required for any establishment that serves food or drink to the public (serveringsloven §3). Applied for from the relevant kommune (municipality). The applicant (or a designated daglig leder — daily manager) must have passed the etablererprøven (establishment test) before the licence can be granted. Right - Done WW
+Etablererprøven: The establishment test covers food hygiene regulations, basic business law, and relevant sections of serveringsloven. It is administered by the kommune and must be passed by the person responsible for daily operations. This is non-negotiable — the kommune will not issue a serveringsbevilling without it. Right - Done WW
+Næringsregisteret (business registration): The franchise entity must be registered in the Brønnøysund Register Centre (Brønnøysundregistrene) as a Norwegian business entity, with a valid organisasjonsnummer. Right - Done WW
+Arbeidstilsynet (Labour Inspection Authority): If employing staff, the employer must comply with registration and reporting obligations under the Working Environment Act (arbeidsmiljøloven). No separate licence is needed, but the employer must have documented HMS (helse, miljø og sikkerhet — health, environment and safety) internkontroll in place. Right - Done WW
+Fire safety: A fire risk assessment must be completed and documented before opening, and the unit must comply with forskrift om brannforebygging (fire prevention regulations). Contact the local brannvesen (fire service) if a pre-opening inspection is required. Right - Done WW
+Insurance: Appropriate business insurance must be in place before trading, covering at a minimum: public liability, employer's liability (yrkesskadeforsikring — mandatory in Norway), property/contents, and business interruption. Right - Done WW
+Roles & Responsibilities
+Franchisee: Responsible for obtaining all registrations and licences before opening; passing the etablererprøven; establishing the IK-mat system.
+Head Office: Provides guidance and templates (e.g. IK-mat template, HACCP plan template); verifies that all requirements are met before issuing Final Approval.
+Legal / Compliance Advisor: Supports with applications and regulatory interpretation where needed.
+Daglig leder (daily manager): Must be the named person on the serveringsbevilling; must hold the etablererprøven.
+Measure Analyse Improve
+Pre-opening audit: Head Office must verify all licences and registrations are in place before the unit is authorised to trade. Maintain a licence register for each unit listing: licence type, date obtained, renewal date (if applicable), and responsible person. Flag: Mattilsynet registration confirmation, serveringsbevilling copy, etablererprøven certificate, IK-mat documentation, fire risk assessment, and insurance certificates must all be on file before opening day.
+Tools & Resources
+Pre-opening regulatory checklist (Head Office template). Licence register (per-unit spreadsheet). IK-mat template (see Chapter 3.6). Mattilsynet online portal: skjema.mattilsynet.no. Kommune application forms for serveringsbevilling.
+
+Insurance & risk transfer requirements    [YSF ADVISORY — DRAFTED, PENDING REVIEW]
+Introduction
+This chapter defines the insurance requirements for every Creamy franchise unit. Insurance is not optional and it is not a box-ticking exercise — it is the financial safety net that protects the franchisee, their employees, their customers, and the Creamy brand from the consequences of incidents that will, statistically, happen across a growing franchise network.
+Norwegian law mandates certain insurance coverage for all employers. Beyond the legal minimums, Creamy requires additional coverage to protect the business and the brand. This chapter specifies both.
+Creamy has an established relationship with Tryg Forsikring, and all franchise insurance should be placed through Tryg. Creamy holds a negotiated group discount with Tryg, which reduces the cost to individual franchisees compared to arranging cover independently. Franchisees must contact Tryg through the Creamy franchise arrangement — details will be provided by Head Office during the onboarding process.
+
+Minimum Operating Standards
+MANDATORY INSURANCE POLICIES
+Every Creamy franchise unit must hold the following insurance policies, all placed through Tryg Forsikring via the Creamy group arrangement:
+
+1. Yrkesskadeforsikring (Occupational Injury Insurance)
+Status: Legally mandatory.
+Under yrkesskadeforsikringsloven (the Occupational Injury Insurance Act), every Norwegian employer is legally required to hold occupational injury insurance covering all employees. This is not discretionary — operating without yrkesskadeforsikring is a criminal offence.
+This insurance covers employees who suffer injury or illness as a result of an occupational accident or harmful exposure during work. It provides compensation for medical expenses, loss of income, and permanent disability arising from workplace incidents.
+Key requirements:
+Coverage must be in place from the first day any employee starts work — there is no grace period
+All employees must be covered, including part-time and temporary staff
+The employer (franchisee) bears the full cost of the premium — it cannot be deducted from employee wages
+Arbeidstilsynet (the Labour Inspection Authority) can request proof of coverage during inspections
+Failure to hold yrkesskadeforsikring means the franchisee is personally liable for all compensation that the insurance would have covered, in addition to facing regulatory sanctions. This is a non-negotiable compliance requirement (see Chapter 2.3 — Non-Negotiable Operating Standards).
+
+2. Alminnelig ansvarsforsikring (General Liability Insurance)
+Status: Not legally mandatory, but required by Creamy.
+General liability insurance covers the business against claims from third parties (primarily customers) for bodily injury or property damage arising from the business's operations. In a food service environment, the most common scenarios include: a customer slipping on a wet floor, an allergic reaction to an undisclosed ingredient, injury from faulty furniture or equipment, or damage to a customer's property.
+Key requirements:
+Coverage must be sufficient to cover realistic claim scenarios in a customer-facing food service environment — [Adnan to confirm: whether a minimum sum insured is specified, e.g. NOK 10 million per claim]
+The policy must cover the premises, products served, and any events or activities conducted by the unit (e.g. community events, sampling — see Chapter 4.1 and 4.2)
+Product liability should be included or confirmed as part of this policy — if a customer becomes ill from a Creamy product, the claim falls under liability insurance
+
+3. Fritidsulykkesforsikring (Leisure/Off-Duty Accident Insurance)
+Status: Not legally mandatory, but required by Creamy.
+This insurance covers employees for accidental injury that occurs outside of working hours — during their leisure time. Yrkesskadeforsikring only covers injuries at work; fritidsulykkesforsikring extends accident coverage to the employee's private life.
+This is an employee benefit, not a legal requirement. Creamy requires it for two reasons: it is a meaningful staff benefit that supports recruitment and retention (particularly important in the competitive Norwegian hospitality labour market), and it demonstrates that Creamy takes a genuine interest in employee wellbeing beyond the minimum legal obligation — consistent with the "Create Happiness" value (see Chapter 1.4), which applies to the team as well as customers.
+Key requirements:
+All employees must be covered, including part-time staff
+The employer (franchisee) bears the cost
+Coverage terms to be as per the Tryg Forsikring group arrangement
+
+4. Næringsforsikring (Business/Commercial Insurance)
+Status: Not legally mandatory in full, but required by Creamy.
+Næringsforsikring is a bundled commercial insurance product that typically covers a range of business risks under a single policy. Through Tryg, the Creamy næringsforsikring package should include (as a minimum):
+Brannforsikring (fire insurance): Coverage for fire, explosion, and related damage to the premises, equipment, and stock. If the franchisee leases the premises, the lease will almost certainly require proof of fire insurance — and the landlord's building insurance does not cover the tenant's fit-out, equipment, or stock.
+Vannskade (water damage): Coverage for flooding, pipe bursts, and water damage to equipment and stock.
+Innbrudd og tyveri (burglary and theft): Coverage for break-in damage, theft of equipment, stock, and cash.
+Driftsavbrudd (business interruption): Coverage for lost revenue during a period when the unit cannot trade due to an insured event (fire, flood, major equipment damage). This is critical — a unit that suffers a fire and has no business interruption cover faces a double loss: the physical damage plus weeks or months of zero revenue while repairs are completed.
+Maskinforsikring (machinery/equipment insurance): Coverage for breakdown, damage, or failure of commercial kitchen equipment. Given the cost of commercial equipment (see Chapter 2.5 — Kitchen Equipment Requirements), an uninsured equipment loss can be financially devastating for a single-unit franchisee.
+[Adnan to confirm: whether the Tryg næringsforsikring package includes all of the above, or whether any components need to be added separately. Also confirm whether there is a minimum equipment value that must be declared, and how stock value should be estimated for coverage purposes.]
+
+ADDITIONAL INSURANCE CONSIDERATIONS
+The following are not currently mandated by Creamy but should be considered by franchisees and may become requirements as the franchise network grows:
+(a) Styreansvarsforsikring (directors and officers liability): Relevant if the franchisee operates through an AS (aksjeselskap). Protects the board members and officers against personal liability for decisions made in their capacity as directors. [Adnan to confirm: whether franchisees will be required to operate as AS, and whether D&O cover should be mandated.]
+(b) Cyberforsikring (cyber insurance): Increasingly relevant as Creamy uses digital systems (EPOS, Tidsbanken, SmartMate, online ordering platforms). A data breach or system compromise could result in GDPR-related fines and customer data exposure. Not yet mandated, but Head Office should review this as the digital footprint grows.
+(c) Rettshjelpsforsikring (legal expenses insurance): Covers legal costs in the event of employment disputes, landlord-tenant disputes, or supplier claims. Useful for franchisees who may not have the resources to fund legal representation independently.
+
+INSURANCE ADMINISTRATION
+(a) Placement through Tryg Forsikring. All required insurance must be placed through Tryg Forsikring using the Creamy group arrangement. This ensures consistent coverage terms across the network, access to the negotiated group discount, and allows Head Office to verify compliance centrally. Franchisees must not arrange their own insurance independently without Head Office approval — an independently arranged policy may have different terms, exclusions, or limits that create coverage gaps.
+(b) Proof of insurance. Franchisees must provide Head Office with proof of insurance (policy schedule or certificate of insurance) before the unit opens and annually upon renewal. A unit must not open or continue to trade without valid insurance in place.
+(c) Policy review. Insurance coverage should be reviewed annually at renewal to ensure: sums insured remain adequate (particularly equipment value, which depreciates, and stock value, which may increase with menu expansion), the business description on the policy accurately reflects current operations, and any changes to the business (new activities, additional premises, increased headcount) are notified to Tryg.
+(d) Claims reporting. Any incident that may give rise to an insurance claim must be reported to Tryg promptly and to Head Office simultaneously. Late reporting can jeopardise coverage. The Unit Manager should document the incident immediately (photographs, witness details, written account) even before a claim decision is made.
+
+Roles & Responsibilities
+Creamy Head Office: Maintains the Tryg Forsikring group arrangement. Provides franchisees with contact details and instructions for placing insurance during onboarding. Verifies proof of insurance before unit opening and at annual renewal. Reviews the insurance requirements annually and updates this chapter as needed.
+Franchise Owner / Operator: Bears the cost of all required insurance. Arranges insurance through Tryg using the Creamy group arrangement. Provides proof of insurance to Head Office. Ensures coverage is maintained without lapse. Reports incidents that may give rise to claims. Reviews coverage annually at renewal.
+Unit Manager: Ensures the unit's certificate of insurance is available on-site. Reports any incident that could become a claim (customer injury, equipment damage, break-in, fire, flood) to the franchisee and Head Office immediately. Maintains an incident log.
+Team Members: Report any incident (customer injury, property damage, theft, equipment failure, slip, fall) to the Unit Manager immediately. Do not admit liability or make promises to customers about compensation — direct them to the Unit Manager.
+
+Measure, Analyse, Improve
+(a) Insurance compliance rate. Track the percentage of franchise units with valid, verified insurance across all four required policies. Target: 100% at all times. Non-compliance is a serious risk to the franchisee and to the brand.
+(b) Claims history. Track claims across the network by type (liability, property, equipment, business interruption). Claims data reveals operational risks — a high frequency of slip-and-fall claims may indicate a cleaning or floor maintenance issue; repeated equipment claims may indicate a specification or maintenance problem.
+(c) Cost benchmarking. Monitor insurance premiums across franchisees annually. The group arrangement should deliver cost benefits — if premiums are rising significantly, review whether claims history is the driver and whether operational improvements could reduce the risk profile.
+(d) Coverage adequacy review. At least annually, assess whether the required coverage levels remain adequate. As menu and equipment specifications evolve, the insured values should keep pace.
+
+Tools & Resources
+Tryg Forsikring — Creamy group arrangement contact details (provided by Head Office during onboarding).
+Insurance requirement summary card (one-page checklist of all required policies — for franchisee onboarding pack).
+Proof of insurance tracker (Head Office document tracking policy status across all franchise units).
+Incident report form (standardised form for documenting any incident that may give rise to a claim).
+Annual insurance review checklist (prompts for reviewing coverage adequacy at renewal).
+Arbeidstilsynet guidance on yrkesskadeforsikring: Occupational Injury Insurance
+Altinn guidance on obligatory and voluntary insurance: Obligatory and Voluntary Insurance
+Sources:
+Arbeidstilsynet — Occupational Injury Insurance
+Altinn — Obligatory and Voluntary Insurance
+Aider Legal — Employers' Occupational Injury Insurance in Norway
+Tryg Forsikring — Næringsforsikring
+Tryg Forsikring — Fritidsulykkesforsikring
+
+All the insurance should be done with Tryg Forsikring, Creamy has a discount there.
+Alminnelig ansvarsforsikringFritidsulykkeYrkesskadeNæringslivsforsikring
+
+Staffing & training lead time   [YSF ADVISORY — DRAFTED, PENDING REVIEW]
+Introduction
+This chapter establishes the minimum lead times for recruiting, hiring, and training the team required to open a new Creamy unit. Insufficient staffing lead time is one of the most common causes of chaotic openings. The timelines here are calibrated to Norwegian labour market norms, notice periods, and the training requirements set out in Chapter 3.3.
+Minimum Operating Standards
+Recruitment should begin no later than 10 weeks before the planned opening date. 10 weeks - done WW
+The Unit Manager / daglig leder should be hired first — at least 6 weeks before opening, where the franchisee is the daglig leder they must free themselves from obligations from 6 weeks out until opening — to participate in fit-out oversight, system setup, and to lead team recruitment.
+The Unit Manager must hold the etablererprøven before the serveringsbevilling can be granted (see Regulatory/licensing requirements chapter). Allow at least 4 weeks for exam preparation and scheduling.
+Minimum staffing for a new unit at opening: 1 Unit Manager, 2 Supervisor’s and 7 full time equivalent team. 

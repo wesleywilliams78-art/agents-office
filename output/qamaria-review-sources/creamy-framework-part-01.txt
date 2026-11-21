@@ -1,0 +1,354 @@
+CREAMY
+Franchise Operations Manual
+
+Client: Adnan Tasleem, Creamy AS
+Prepared by: Wesley Williams
+DRAFT — 62 of 110 chapters drafted by YSF Advisory. Pending Adnan/Wes review.
+
+Delivery Legend
+Every chapter below is tagged by how it should be drafted, so nothing gets generated that should have come from Adnan first.
+YSF ADVISORY  (62 chapters) — template/compliance-safe. YSF Advisory drafts a first pass from best practice; Adnan/Wes review and tailor. Chapters that have been drafted in this version are tagged [YSF ADVISORY — DRAFTED, PENDING REVIEW].
+NEEDS ADNAN INPUT  (39 chapters) — real operational IP. Adnan's raw input (written or via WhatsApp voice note) comes first; YSF Advisory formats and enforces voice second, never drafts from scratch.
+TOOL-REFERENCED  (9 chapters) — content lives in a separate tool or deliverable (e.g. the labour model, EPOS, Tidsbanken, SmartMate, YSF Advisory's franchisee selection framework, Canva templates). The SOP chapter documents how to use that tool once it exists — it does not contain the tool's content itself.
+
+Chapters Awaiting Adnan's Input
+The 39 chapters listed below are tagged [NEEDS ADNAN INPUT]. These contain real operational IP that only Adnan can provide — recipes, brand decisions, supplier choices, org structure, and service standards. They cannot be drafted generically.
+Each chapter in this manual includes specific guidance on what to provide, how to provide it (voice note, bullet points, photos, or documents), and what YSF Advisory will do with the input once received. The fastest approach for most chapters is a short WhatsApp voice note talking through the topic, sent into the group chat — YSF Advisory will then format it into the standard SOP structure.
+1. Introduction
+Origin story & founder journey
+Vision & long-term ambition
+Positioning vs. category
+Core values statement
+Values in action — behavioural examples
+Logo & visual identity summary
+Non-negotiables at a glance
+2. New Business Setup & Support
+Demographic & footfall requirements
+Site type exclusions (no shopping centres)
+Kitchen equipment list & specs
+Front-of-house layout standards
+Signage & branding installation
+Approved suppliers/contractors
+Insurance & risk transfer requirements
+Approved supplier list
+Supplier risk & contingency
+Quality/spec standards for ingredients
+Local launch plan
+Initial customer acquisition tactics
+3. People
+Org chart
+Role-by-role responsibility breakdown
+Peak/off-peak staffing rules
+4. Marketing & Promotion
+Logo usage rules
+Colour palette & typography
+Tone of voice
+Photography/imagery standards
+Approved promotion types
+Loyalty programme mechanics
+5. Day-to-Day Operating Requirements
+Core recipe book (by product line)
+Portioning & waste standards
+Prep schedules
+Ordering cycle & par levels
+Data governance & systems integration
+Service standards & scripts
+Refund/comp authority levels
+Supply disruption contingency
+6. Development, Growth & Profit
+Margin targets by product
+Capex authorisation framework
+Franchise agreement default & termination conditions
+
+Tool-Dependent Chapters (9 total)
+These chapters reference external tools or deliverables that need to exist before the SOP can be written. Some are blocked by specific tracker items; others just need screenshots or access to the tool.
+2. New Business Setup & Support
+Systems setup — EPOS, Tidsbanken, SmartMate
+3. People
+Labour-to-sales model (Wes's tool — tracker #5)
+4. Marketing & Promotion
+Approved templates — Canva
+5. Day-to-Day Operating Requirements
+EPOS operating procedures
+Tidsbanken usage guide
+SmartMate usage guide
+6. Development, Growth & Profit
+COGS & recipe costing (blocked — EPOS margin fix, tracker #3/#4)
+Franchisee selection criteria (co-work with YSF Advisory)
+Field visit/audit cadence (co-work with YSF Advisory)
+
+1. Introduction
+
+1.1  Brand story & vision
+
+Origin story & founder journey  [YSF ADVISORY — FINAL DRAFT – SUBJECT TO ADNAN SIGN-OFF]
+
+Introduction
+Every franchise system begins with a founding story — the original insight, the early risks, and the lessons that shaped the brand before it became a replicable model. This chapter documents Creamy's origin so that every franchisee, manager, and team member understands where the brand came from, what it survived, and why it operates the way it does today.
+This is not decorative history. The founding story carries operational weight: it explains the reasoning behind standards that might otherwise seem arbitrary (why Creamy avoids shopping centres, why portion sizes are non-negotiable, why product originality is a brand principle). A franchisee who understands the origin is better equipped to make decisions that are consistent with the brand — even in situations the manual does not explicitly cover.
+
+Minimum Operating Standards
+The following founding narrative must be communicated to every franchisee during onboarding and made available to all team members. It is not optional brand storytelling — it is the operational context behind the standards in this manual.
+The idea (2010–2014). Creamy began with a question. Between 2010 and 2012, Adnan Tasleem visited London regularly and noticed a category of restaurant that did not exist in Norway: dedicated dessert restaurants where people went specifically to sit down and enjoy desserts as the main event, not as an afterthought to a savoury meal. The thought was simple — "Why don't we have this in Norway?"
+The original plan was to franchise an established UK dessert brand. Around 2014, Adnan approached a UK-based dessert chain about bringing their concept to Norway. The franchise fee was unaffordable at the time. Rather than abandoning the idea, Adnan decided to build his own concept from scratch — no franchise playbook, no industry background, no restaurant experience.
+Self-taught foundations. Adnan had no formal training in food preparation, hospitality, or business management. Core skills — including how to make crepes — were learned from YouTube tutorials and personal experimentation. This self-taught approach is relevant context: the systems and standards documented in this manual exist precisely because the founder learned first-hand what happens when you operate without them.
+Opening (2016). Creamy opened its first location in Greenland, Oslo, in 2016. The premises were a commercial property owned by Adnan's father, who also provided the initial loan to fund the business. Every piece of equipment — fridges, freezers, the coffee machine — was purchased secondhand. The interior was fitted out in what became Creamy's signature aesthetic: pink walls, black chairs and tables.
+For the first year, the operation consisted of Adnan and one part-time employee. Adnan worked every day with no days off.
+The survival test (Winter 2016/17). In its first winter, Creamy experienced a near-total drop in sales. Dessert demand in Norway is heavily seasonal, and the winter months tested whether the concept was viable at all. Adnan seriously considered closing the business and told his father he wanted to quit. His father's response — "Hold out. It will turn" — kept the operation alive through the low season.
+The turning point (Spring 2017). In March or April 2017, Adnan changed the waffle recipe to a golden waffle mix. The product improvement coincided with the seasonal upturn and sales recovered. The golden waffle remains a core menu item today. This episode established a principle that now runs through Creamy's operations: when sales are down, improve the product — do not discount it.
+Brand recognition. By approximately 2017, Creamy had become a recognised local landmark. A defining moment: a customer on the phone told the person they were meeting, "I'm at Creamy, just come here" — no address needed. The brand had become a navigation point. This is the level of local embeddedness every Creamy location should aim for.
+The shopping centre lesson (2018). In 2018, Creamy opened a second unit inside a shopping centre. It was, in Adnan's words, "a disaster." The location was sold after approximately one year at a financial loss. The experience produced a firm operational rule: Creamy does not operate in shopping centres. This is not a preference — it is a tested conclusion based on direct experience, and it is reflected in the site selection criteria elsewhere in this manual (see Chapter 2.2 — Site evaluation criteria).
+Rebuilding and growth (2019–present). After closing the shopping centre unit, Adnan refocused entirely on the original Greenland location. In 2020, a second Greenland location was opened and remains operational. In 2023, the search began for a third site. In summer 2025, the Stranden location was identified. It opened in March 2026 and represents the current benchmark for how a Creamy unit should look and operate — purpose-built to the brand's evolved standards, fitted with professional-grade equipment, and designed from the ground up rather than adapted from secondhand parts.
+What the founder wants every franchisee to know. These principles emerged from lived experience, not theory. They are embedded throughout this manual, but their origin is here:
+Quality over margin. "What we serve is something we would like to be served." Portion sizes are generous by design. The instinct to reduce portions to protect margin runs against Creamy's identity.
+Originality as brand discipline. "If somebody else is doing it, I don't believe we should do it." Creamy positions itself as a first-mover in the Norwegian dessert market. Copying competitor products or trends is a brand violation, not a shortcut.
+The "happy place" standard. Creamy should feel like a place where people treat themselves — "giving yourself a luxury in an everyday normal life." This applies to environment, service, and product presentation alike.
+Family roots. Creamy was built with family support — a father's property, a father's loan, a father's advice at the lowest point. The brand values reflect that: warmth, generosity, loyalty.
+
+Roles & Responsibilities
+Franchise Owner / Operator: Must ensure that every team member has been introduced to the founding story during onboarding. The origin story should be referenced when explaining brand standards that stem from it (e.g. portion policy, site selection, product originality).
+Unit Manager: Reinforces founding principles in day-to-day operations. When correcting a team member on a brand standard, connecting the correction to the "why" from the origin story is more effective than citing the rule alone.
+Team Members: Expected to understand the brand's origin at a level sufficient to answer a customer who asks, "How did Creamy start?" A team member who can tell the story authentically is a brand asset.
+Creamy Head Office: Maintains the authoritative version of the founding narrative. Any public-facing use of the origin story (press, social media, franchise recruitment materials) must be consistent with this chapter.
+
+Measure, Analyse, Improve
+The origin story is a cultural asset, not a metric. It is not measured in the same way as operational KPIs. However, the following should be assessed:
+(a) Onboarding coverage: Every new starter should be able to summarise Creamy's founding story within their first week. This can be assessed informally during onboarding check-ins (see Chapter 3.1 — Onboarding checklist).
+(b) Brand consistency in communication: Monitor external communications (social media, press, franchise recruitment materials) for consistency with the origin narrative as documented here. Any embellishment, factual error, or deviation should be corrected at source.
+(c) Team alignment: During periodic team meetings or reviews, the Unit Manager should assess whether team members understand why key brand standards exist (e.g. "Why doesn't Creamy open in shopping centres?" "Why are portions the size they are?"). Inability to connect standards to their origin may indicate the story is not being communicated effectively during onboarding.
+
+
+
+Tools & Resources
+Onboarding checklist — origin story module (see Chapter 3.1).
+Founding timeline summary (one-page visual timeline suitable for back-of-house display — [Adnan to confirm: whether this should be produced as a branded asset]).
+Approved brand story for external use (social media, press enquiries, franchise marketing) — to be maintained by Head Office.
+This chapter as reference text for any franchisee or team member seeking the full narrative.
+
+
+
+Vision & long-term ambition  [YSF ADVISORY — DRAFTED, PENDING REVIEW - COMPLETED FROM VOICE NOTE]
+
+Introduction
+A franchise system without a clearly articulated vision is a collection of units without direction. This chapter documents Creamy's long-term ambition as defined by the founder, so that every franchisee, manager, and team member understands where the brand is heading and what their individual unit contributes to that trajectory.
+Vision in a franchise context is not aspirational marketing copy — it is the strategic frame that governs site selection priorities, franchise recruitment pace, brand investment decisions, and the operational standards required to support growth without diluting quality. A franchisee who understands the growth horizon can plan their own business accordingly; a team member who understands the brand ambition can represent it with conviction.
+This chapter should be read alongside Chapter 1.1 (Origin Story & Founder Journey), which explains where Creamy came from, and Chapter 1.3 (Positioning vs. category), which defines what Creamy is in the market.
+
+Minimum Operating Standards
+The following vision statement and growth plan represent the founder's stated ambition for Creamy. They must be communicated to every franchisee at the point of franchise agreement and referenced during annual business planning.
+Brand vision. Creamy will be recognised as Norway's leading modern, high-quality dessert brand — a brand that is always one step ahead of competitors, never following. This is not a tagline; it is an operational commitment that shapes product development, store design, and market positioning across every location.
+The vision extends beyond Norway. Creamy's long-term ambition is to become a Scandinavian brand, beginning with full coverage of the Norwegian market and expanding into Sweden.
+Growth roadmap. The founder has set the following growth targets:
+3-year horizon (to approximately 2029):
+1 additional company-owned location (opened and operated by the founder/Creamy Head Office)
+Approximately 4 franchisee-operated locations
+Total estate: approximately 8 locations (3 existing + 5 new)
+Geographic focus: major Norwegian cities first
+
+5-year horizon (to approximately 2031):
+Approximately 10 franchisee-operated locations
+Total estate: approximately 13 locations
+Geographic focus: major cities covered, expansion into mid-sized cities
+10-year horizon (to approximately 2036):
+Comprehensive coverage of the Norwegian market — presence in major and smaller cities
+First locations in Sweden
+Creamy established as a recognised Scandinavian dessert brand
+What this means operationally. The growth roadmap has direct implications for the standards in this manual:
+Franchise recruitment pace: The target implies recruiting and onboarding approximately 1–2 franchisees per year in the first three years, accelerating thereafter. The franchise recruitment and selection process (see Chapter 2.1 — Franchise application process) must be robust enough to maintain quality at this pace without compromising on franchisee calibre.
+Operational scalability: Every SOP in this manual must be written and maintained to a standard that works at 13+ locations, not just 3. Processes that rely on the founder's personal involvement or institutional memory will not scale. This is why documentation, training systems, and audit frameworks exist.
+Brand consistency across distance: As units open in cities where the founder is not physically present, the manual becomes the primary mechanism for brand consistency. Franchisees in Bergen, Trondheim, or Stavanger will operate without daily founder oversight — the standards in this manual are what ensures a customer in Tromsø receives the same Creamy experience as a customer in Oslo.
+Sweden preparation: International expansion introduces new regulatory requirements (Swedish food safety legislation, employment law, corporate registration). These are not addressed in this manual's current scope but should be anticipated in Head Office planning from year 5 onwards. [Adnan to confirm: whether Swedish expansion planning should be scoped as a separate workstream or incorporated into a future manual revision.]
+The "one step ahead" principle. The founder's stated ambition is for Creamy to be the brand that leads rather than follows in the Norwegian dessert market. This principle — first articulated in the origin story (see Chapter 1.1) as "if somebody else is doing it, I don't believe we should do it" — has operational consequences:
+Product development must prioritise originality. New menu items should not be copies or close variants of what competitors are already selling. (See Chapter 5.5 — New product development)
+Store design and customer experience should set the standard for the category, not match it. The Stranden location (opened March 2026) represents the current benchmark.
+Marketing and social media content should position Creamy as a trendsetter. (See Chapter 4.3 — Social media posting standards.)
+This is a brand discipline, not a suggestion. Franchisees who propose products, promotions, or store modifications that imitate competitors are misaligned with the brand vision and should be redirected.
+
+Roles & Responsibilities
+Founder / Creamy Head Office: Owns and communicates the vision. Responsible for strategic planning against the growth roadmap, including site pipeline development, franchise recruitment targets, and the decision on when to begin Sweden market entry. Updates the growth roadmap annually and communicates any changes to the franchise network.
+Franchise Owner / Operator: Understands the growth roadmap and their unit's role within it. Aligns their own business planning (investment, staffing, local marketing) with the brand's trajectory. Represents the vision to their team and to customers.
+Unit Manager: Communicates the brand vision to team members in practical terms — what it means for standards, product quality, and customer experience at their unit.
+Team Members: Understand Creamy's ambition at a level sufficient to represent the brand with pride. A team member who knows the brand is building toward national and Scandinavian coverage carries themselves differently from one who thinks they work at a single local shop.
+
+Measure, Analyse, Improve
+Vision is measured by progress against the growth roadmap and by whether operational reality matches the brand ambition:
+(a) Growth tracking: Annually measure actual estate size against the roadmap targets (3-year, 5-year, 10-year). Report at the annual franchise network meeting. If growth is ahead of plan, assess whether operational infrastructure (training, supply chain, audit capacity) is keeping pace. If behind, diagnose whether the constraint is site availability, franchise recruitment, or operational readiness.
+(b) Brand perception: Track whether customers and the market perceive Creamy as the founder intends — modern, high-quality, ahead of competitors. Indicators include: Google review scores and sentiment (see Chapter 4.3 — Review/reputation management), social media engagement and brand mentions, press coverage, and direct customer feedback. [Adnan to confirm: whether formal brand perception research (e.g. customer surveys, mystery dining) should be introduced as the estate grows.]
+(c) "One step ahead" audit: At least annually, Head Office should conduct a competitive landscape review — what are competitors doing, and is Creamy still leading? If a competitor has launched a product or concept that Creamy has not, that is not necessarily a failure, but it should be assessed: is this a trend Creamy should have anticipated, or a direction that does not align with the brand?
+(d) Franchisee alignment: During franchisee business reviews (see Chapter 6.3 — Monthly Business Review), assess whether the franchisee's plans and investment decisions are consistent with the brand vision. A franchisee who is not investing in their unit, or who is cutting quality to protect margin, is working against the growth trajectory.
+
+Tools & Resources
+Growth roadmap summary (one-page visual showing the 3/5/10-year targets — suitable for inclusion in franchise recruitment materials and display at franchise network meetings).
+Annual strategic plan (Head Office document setting out the year's priorities against the growth roadmap).
+Competitive landscape review template (annual review of the Norwegian dessert market and Creamy's position within it).
+Franchise recruitment pipeline tracker (see Chapter 2.1.)
+Brand perception tracking — method to be confirmed as the estate scales. [Adnan to confirm: preferred approach.]
+
+I would like Creamy to be a brand well known all over Norway, i would like to see Creamy open a branch in every big city first of all, but also in the smaller cities. In the next 3 years i would like to have 1 more location opende by myself, and about 4 locations with franchisees, in 5 years be 10 locations with franchisees, and in 10 years covered Norway and also have locations in Sweden. 
+I want Creamy to be know as modern, high quality dessert brand, a brand that is always one step head of other brands. 
+
+
+Positioning vs. category  [YSF ADVISORY — DRAFTED, PENDING REVIEW - COMPLETED FROM VOICE NOTE]
+
+Introduction
+This chapter defines what Creamy is in the market — the category it operates in, how it is positioned relative to competitors, and the deliberate strategic choices that distinguish it from other brands. Positioning is not a marketing exercise alone; it determines pricing logic, product development boundaries, store design standards, recruitment messaging, and how every team member describes Creamy to a customer.
+For a franchise system, positioning clarity is particularly critical. Without it, individual franchisees will default to their own interpretation of what the brand is, leading to inconsistency across locations. This chapter provides the authoritative answer.
+
+Minimum Operating Standards
+Category definition. Creamy operates in the Dessert Bar category. It is not a café that happens to serve desserts, not a bakery, not an ice cream parlour, and not a restaurant with a dessert menu. It is a dedicated dessert destination — a place customers visit specifically to sit down and enjoy high-quality desserts as the primary experience.
+This category definition must be used consistently in all franchise documentation, marketing materials, press communications, and any context where Creamy is asked to describe what it is.
+Market position. Creamy holds a strong market position in Norway: it is the only dessert brand operating multiple locations in the Norwegian market. There is currently no direct domestic competitor with a comparable multi-unit dessert bar model. This first-mover position is a strategic asset that the growth roadmap (see Chapter 1.2 — Vision & Long-Term Ambition) is designed to consolidate before competitors enter the space.
+The absence of direct multi-unit competition does not mean there is no competitive landscape. Creamy competes for customer spend with cafés, bakeries, ice cream chains, and QSR brands that offer desserts as part of a broader menu. The distinction — and Creamy's advantage — is specialism: a dedicated dessert bar offers a depth of product, an environment, and an experience that generalist competitors cannot match as a sideline.
+Differentiation from international dessert brands. Creamy's original concept was inspired by the UK dessert restaurant category, which Adnan observed during visits to London between 2010 and 2012 (see Chapter 1.1 — Origin Story). However, from the point of opening in 2016, Creamy deliberately ceased following any specific international brand and began building its own identity. This was a conscious strategic decision, not a gradual drift.
+The founder's rationale: Creamy must not be perceived as a look-alike of any existing international dessert brand. Being seen as a copy — even an unofficial one — would undermine the brand's credibility, its "one step ahead" positioning (see Chapter 1.2), and its ability to command customer loyalty on its own merits.
+In practice, this means:
+Product inspiration is drawn globally, not from a single source. Creamy looks to dessert concepts and ingredients from around the world to develop its menu. It does not track or replicate the menu of any single competitor or international brand.
+No brand association with international dessert chains. Creamy must never be described as "the Norwegian version of [X]" or "like [X] but in Norway" in any official communication — marketing materials, press responses, franchise recruitment, social media, or team member descriptions to customers. If a customer or journalist makes the comparison, the response should acknowledge the broader dessert bar category without accepting the specific brand association. Suggested framing: "There are dessert brands in other countries, but Creamy is a Norwegian-built concept — we've developed our own menu and identity from the ground up."
+Visual and operational distinctiveness. Store design, branding, menu format, and product presentation must be demonstrably Creamy's own. Any proposed product, design element, or marketing approach that closely resembles a specific international competitor should be rejected or reworked to ensure clear differentiation. This applies to franchisees proposing new ideas as much as to Head Office development.
+The originality principle. The positioning decision reinforces the originality principle stated in Chapter 1.1 and Chapter 1.2: Creamy leads, it does not follow. This applies not only to international brands but to domestic competitors. If another operator in the Norwegian market launches a product or concept, Creamy's response is not to copy it but to assess whether it represents a trend worth leading on with Creamy's own interpretation, or a direction that does not fit the brand.
+Franchisees must understand this as a non-negotiable brand discipline. Proposing a product "because [competitor] is doing well with it" is not a valid rationale within Creamy's operating model.
+Positioning summary for consistent use:
+Element | Creamy's Position
+Category | Dessert Bar
+Market position | Norway's only multi-location dessert brand
+Target experience | A dedicated dessert destination — modern, high-quality, a treat in everyday life
+Competitive stance | Category leader and first mover; originality over imitation
+Product philosophy | Global inspiration, Norwegian execution; never a copy of another brand
+Price positioning | [Adnan to confirm: premium, mid-market, or value — and the rationale. This feeds directly into Chapter 6.2 — Pricing review framework.]
+
+Roles & Responsibilities
+Founder / Creamy Head Office: Owns the positioning. Any change to category definition, competitive stance, or differentiation strategy is a Head Office decision, not a franchisee-level choice. Ensures all franchise recruitment, marketing, and public communications are consistent with this chapter. Monitors the competitive landscape for emerging threats to the first-mover position.
+Franchise Owner / Operator: Operates within the positioning as defined. Does not reposition the brand locally (e.g. by describing the unit as a "café" or "restaurant" rather than a dessert bar). Ensures that local marketing and customer communications use the approved category and positioning language. Flags any local competitive developments to Head Office.
+Unit Manager: Ensures team members can describe what Creamy is and how it differs from competitors. Corrects any team member language that undermines the positioning (e.g. referring to Creamy as a café, or comparing it to a specific international brand).
+Team Members: Use the approved category description ("dessert bar") when describing Creamy to customers, delivery partners, or anyone who asks. Do not make comparisons to other brands. If a customer makes a comparison, respond naturally without confirming or reinforcing it.
+
+Measure, Analyse, Improve
+(a) Positioning consistency audit: During operational audits and franchisee reviews, check that the unit's local marketing, in-store signage, and team language are consistent with the positioning defined in this chapter. Any instance of the brand being described as a café, restaurant, or as a variant of another brand should be corrected immediately.
+(b) Competitive landscape monitoring: Head Office should conduct a quarterly scan of the Norwegian dessert market. Key questions: Has a new multi-unit dessert concept entered the market? Are existing competitors (cafés, bakeries, QSR) increasing their dessert focus in a way that encroaches on Creamy's positioning? Is any brand explicitly copying Creamy's concept or products?
+(c) Customer perception check: As the estate grows, include a positioning question in any customer feedback mechanism: "How would you describe Creamy to a friend?" Responses that align with "dessert bar," "dessert place," or "treat/luxury" indicate healthy positioning. Responses that name a competitor or describe Creamy as a café indicate a perception gap.
+(d) Brand trajectory indicator: Track the Google review score trend over a rolling 6-month period (see Chapter 6.1 — KPI dashboard design and Chapter 4.3 — Review/reputation management). A consistently high and improving score, combined with review language that reflects the intended positioning, confirms the brand is landing as intended.
+
+Tools & Resources
+Positioning summary card (one-page reference for franchisee onboarding and team training — derived from the table above).
+Approved language guide — standard descriptions of Creamy for use in marketing, press, franchise recruitment, and customer-facing communication. Includes suggested responses to competitor comparisons.
+Competitive landscape tracker (quarterly update maintained by Head Office).
+Customer perception feedback mechanism — [Adnan to confirm: method and frequency as estate scales].
+
+Creamy is in strong market position, we are the only dessertbrand that has multiple locations. I would put us in the category of Dessert Bar.
+Creamy is different from Creams in every way now, because after opening in 2016, we didnt follow them anymore, we startet our own journey and looking for dessert from other places in world to get the ideas. 
+I have made this decision by choice because we dont want to be considered a lokk a like of creams. 
+
+1.2  Values
+
+Core values statement   [YSF ADVISORY — DRAFTED, PENDING REVIEW - COMPLETED FROM VOICE NOTE]
+
+Introduction
+This chapter defines Creamy's core values — the non-negotiable principles that govern how every person in the organisation works, makes decisions, and represents the brand. Values in a franchise system are not motivational wall art. They are decision-making tools: when a team member faces a choice the manual does not explicitly cover, the values tell them which way to lean.
+Creamy's values were not designed by a branding agency. They emerged from the founder's lived experience building the business from a single unit with secondhand equipment and no days off (see Chapter 1.1 — Origin Story & Founder Journey). That origin gives them weight — they are tested principles, not corporate aspirations.
+This chapter states the values and what each one means operationally. Chapter 1.5 (Values in Action) translates them into observable daily behaviours across every role.
+
+Minimum Operating Standards
+Creamy operates by four core values. They are listed in the order the founder articulated them, and that order is intentional — quality comes first because everything else depends on it.
+1. Quality Always First
+The product wins when the quality is high. This is Creamy's foundational belief: if the product is excellent, customers come back; if it is not, nothing else — not marketing, not location, not pricing — compensates.
+What this means in practice:
+Product quality is never traded off against speed, cost, or convenience. If a product cannot be served to the required standard, it is not served. A short-term saving that reduces product quality is not a saving — it is brand damage.
+Ingredients, preparation methods, and presentation standards exist for a reason. Deviating from them to save time or reduce waste is a values violation, not an operational shortcut.
+"Quality" applies beyond the product itself — to the cleanliness of the unit, the state of the equipment, the presentation of the serving area, and the appearance of the team. A high-quality dessert served in a low-quality environment undermines the value.
+When something goes wrong with a product (a bad batch, a supply issue, an equipment failure), the default response is to stop serving that product until the quality can be restored — not to serve a compromised version.
+This value connects directly to operational standards throughout the manual: recipe adherence (Chapter 5.5), food safety (Chapter 3.6), and the "one step ahead" positioning principle (Chapter 1.3 — Positioning vs. Category).
+2. Generous Portions
+Customers appreciate being filled up with their favourite dessert. Generous portions are not a promotional tactic or a temporary differentiator — they are a permanent brand commitment.
+What this means in practice:
+Portion sizes are defined in the recipe and product specifications. They are minimums, not targets. A portion that looks small relative to the specification must be corrected.
+The instinct to reduce portions to protect food cost percentage is understood but rejected as a strategy. Creamy's commercial model is built around the margin that generous portions at the right price point deliver — not around portion control as a cost lever. (See Chapter 6.2 — Pricing review framework for how pricing should absorb food cost rather than portion reduction.)
+Team members should never feel they need to be stingy with product. If food cost is running high, the issue is waste, purchasing, or pricing — not the amount of product reaching the customer.
+"Generous" does not mean "uncontrolled." Portions must be consistent — a customer should receive the same amount on their tenth visit as their first. Consistency is part of generosity; it means the customer can trust what they are getting.
+3. Never Give Up
+The founder built Creamy through a winter with near-zero sales, a failed shopping centre location, and years of working every day without a break. The business exists because he did not quit. That resilience is a value the brand passes on to every person who works in it.
+What this means in practice:
+Problems have solutions. The default mindset at every level — from team member to franchisee — is that obstacles are worked through, not accepted as permanent. A quiet Tuesday, a bad review, a staffing shortage, a failed product trial: these are situations to solve, not reasons to lower standards.
+Leadership at Creamy is built on encouragement, not pressure. The founder's own leadership style — going around the business praising employees for their work — sets the tone. Managers and franchisees should be the people in the unit who recognise effort, celebrate progress, and remind the team that everything has a solution.
+This value is not about refusing to acknowledge when something is genuinely wrong. It is about the response: diagnose the problem, find the fix, execute it. The origin story (Chapter 1.1) is the proof that this approach works — the product improvement that turned the first winter around was a solution found under pressure, not a lucky break.
+For franchisees specifically: building a new Creamy location is hard. The first months will test resolve. This value means Creamy Head Office supports franchisees through difficult early trading — but it also means franchisees are expected to bring the same persistence the founder demonstrated, not to look for an exit at the first downturn.
+4. Create Happiness
+Customers come to Creamy not because they have to, but because they have made a choice to give themselves something extra special that day. Creamy's job is to make sure that choice is rewarded.
+What this means in practice:
+Every customer interaction starts from the recognition that this visit is a treat, not a routine errand. The customer has chosen to do something nice for themselves — or for the people they are with. The team's role is to make that moment land.
+"Happiness" is created through the combination of product, environment, and service. A great dessert served by an indifferent team member in a messy unit does not create happiness. All three elements must be present.
+The standard is not "adequate service" — it is warmth. Customers should feel welcomed, not processed. This does not require scripts or forced enthusiasm; it requires team members who understand that they are part of someone's good moment and act accordingly.
+This value applies to how the team treats each other, not only customers. A team that enjoys working together creates a better atmosphere than one that merely functions. Managers should actively foster a positive working environment — not because it is a nice idea, but because customers can tell the difference.
+Values hierarchy. In situations where values appear to conflict, the ordering applies. Quality comes first — a unit should never compromise product quality in pursuit of speed, even if a customer is waiting. Generous portions come second — do not reduce a portion to make a product look more "refined." Never give up and create happiness guide behaviour and attitude, and in practice they reinforce each other: a team that believes problems can be solved is a team that creates a better customer experience.
+
+Roles & Responsibilities
+Founder / Creamy Head Office: Owns the values. Ensures they are embedded in franchise agreements, training programmes, marketing, and operational standards. Models the values in all interactions with the franchise network. Does not dilute, rebrand, or add to the values without careful consideration — four values are manageable; ten are wallpaper.
+Franchise Owner / Operator: Lives the values visibly. A franchisee who talks about quality but cuts portions, or who preaches "never give up" but blames the team when things go wrong, undermines the entire framework. The franchisee is the local embodiment of the values — their behaviour sets the standard for their unit.
+Unit Manager: Translates values into daily management. Praises team members (never give up / create happiness). Holds the line on product and portion standards (quality always first / generous portions). Addresses values misalignment promptly — a team member who is not creating happiness for customers needs coaching, not just a performance note.
+Team Members: Understand and apply the values in every shift. Can articulate what the values are if asked. Recognise that the values are not abstract principles — they are the reason Creamy exists and the reason customers come back.
+
+Measure, Analyse, Improve
+Values are measured through behaviour, not declarations. The following indicators assess whether the values are being lived:
+(a) Quality always first: Product consistency scores during audits; customer complaints related to product quality; instances of substandard product being served (tracked through waste logs and customer feedback). A unit with high quality scores is living this value. A unit with recurring quality complaints is not, regardless of what the manager says in meetings.
+(b) Generous portions: Portion compliance during audits (are portions meeting specifications?); customer feedback mentioning portion size (positive mentions confirm the value is landing; complaints suggest drift). Food cost percentage should be monitored but interpreted in context — a rising food cost that correlates with strong sales and positive portion feedback may be the value working as intended.
+(c) Never give up: Staff retention and morale indicators; how the unit responds to operational setbacks (does the team problem-solve or disengage?); franchisee engagement during difficult trading periods. This is harder to quantify — the best measure is whether the unit's culture visibly embodies resilience and encouragement.
+(d) Create happiness: Customer review sentiment (see Chapter 4.3 — Review/reputation management); mystery diner or informal observation of team-customer interactions; team satisfaction (a happy team is a leading indicator of happy customers). Look for language in reviews that reflects the value: "welcoming," "made our day," "felt special," "great atmosphere."
+
+Tools & Resources
+Core values card (pocket-sized or laminated for back-of-house display — the four values with a one-line summary of each).
+Values onboarding module (see Chapter 3.1 — Onboarding checklist) — every new starter must be introduced to the values with examples in their first week.
+Values alignment checklist for operational audits (does the unit demonstrate each value in observable ways?).
+Chapter 1.5 — Values in Action (translates these values into specific daily behaviours by role).
+In the values, i would say Quality always first, Generous portions, never give up, create happiness. 
+With quality first, i always say that we will when the quality of the product is high. 
+People like generous portions, they appreciate get filled up with their favourite dessert. 
+Never give up, i always tell my employes that i love being the one in the company who goes around and praise employes for their work and that everything has a solution. 
+Its our job to make people happy, they come to Creamy not because they have to but it a choice they have med to give themself something extra special that day so then we have to make sure we make it special for them.
+
+Values in action — behavioural examples   [YSF ADVISORY — DRAFTED, PENDING REVIEW - COMPLETED FROM VOICE NOTE]
+Introduction
+Chapter 1.4 defines Creamy's four core values: Quality Always First, Generous Portions, Never Give Up, and Create Happiness. This chapter translates those values into observable, daily behaviours — what living the values actually looks like on shift, in a management meeting, and across the franchise relationship.
+Values that remain abstract are values that get ignored. A team member who knows the value is "Quality Always First" but has never been shown what that means when a dessert comes out wrong, when a customer complains, or when a shortcut is available will default to their own judgement in the moment. This chapter removes that ambiguity by providing concrete behavioural standards for every role.
+This chapter should be used during onboarding (see Chapter 3.1 — Onboarding checklist), referenced in team briefings, and applied during performance reviews and operational audits.
+
+Minimum Operating Standards
+The following behavioural standards describe how Creamy's four core values are demonstrated in practice. They are grouped by value, with specific expectations for each role level.
+
+Quality Always First — in action
+The founding principle: "We will win when the quality of the product is high."
+Team Members:
+Check every dessert against the product specification before it leaves the kitchen. If it does not meet the standard — presentation, portion, temperature, freshness — remake it. Do not serve a product you would not want to be served yourself.
+When a customer complains about a product, remake the dessert. Do not argue, do not offer a partial fix, do not seek manager approval first. The cost of remaking one dessert is less than the cost of a bad review. This is a standing instruction from the founder.
+Report any ingredient that looks, smells, or performs differently from normal — even if it is within its use-by date. Quality problems start in the prep, not at the pass.
+Keep your station clean throughout service, not just at close. A clean station produces better product and catches problems earlier.
+Unit Manager:
+Conduct a visual quality check at least once per service period — walk the pass and assess what is going out. If standards are slipping, intervene immediately rather than noting it for later.
+When you see a team member remake a substandard product without being told, recognise it. That behaviour is exactly what this value requires and reinforcing it is how it becomes culture.
+Track remakes and complaints not as failures but as quality data. A rising remake count may indicate a training gap, a supplier issue, or an equipment problem — diagnose the cause rather than pressuring the team to stop remaking.
+Never instruct or imply that a team member should serve a product they have flagged as below standard. Overriding a quality call to protect speed or waste targets directly contradicts this value.
+Franchise Owner / Operator:
+Invest in equipment, ingredients, and training that support product quality. Cutting supplier quality to improve food cost percentage is a short-term gain that erodes the brand's foundational value.
+Review quality-related customer feedback monthly (see Chapter 4.3 — Review/reputation management). Persistent quality complaints at your unit are a values failure, not just an operational one.
+Apply the founder's standing rule without exception: a remade dessert costs less than a bad review. If your unit is not remaking products when they fall short, your team either does not know the rule or does not believe you support it. Both are fixable.
+
+Generous Portions — in action
+The founding principle: "People appreciate getting filled up with their favourite dessert."
+Team Members:
+Follow the portion specification for every product. The specification is the minimum — do not portion below it. Consistency matters: a customer who receives a visibly smaller portion than last time notices, and it damages trust.
+If you are unsure whether a portion looks right, ask. It is better to check than to send out something that looks mean on the plate.
+Do not adjust portions based on how busy the shift is or how much stock is left. If stock is running low on an item, communicate it to the manager so a decision can be made about availability — do not silently reduce portions to stretch supply.
+Unit Manager:
+Spot-check portions during service. Use a scale if product specifications include weights. Visual checks are acceptable for items where presentation defines the portion, but weigh-checks should be periodic.
+If food cost is above target, investigate waste, prep efficiency, and purchasing before looking at portion sizes. Portions are not the cost lever in Creamy's model — they are the value proposition. (See Chapter 6.2 — Pricing review framework.)
+Brief the team on what "generous" looks like for each product, ideally with a visual reference. A photo of the correct portion for each menu item, displayed in the kitchen, is more effective than a number on a spec sheet.
+Franchise Owner / Operator:
+Understand that generous portions are a brand commitment, not a variable you control locally. A franchisee who reduces portions to improve unit-level margin is working against the brand and will be identified through audit and customer feedback.
+Price to accommodate generous portions, not the other way around. If margin is under pressure, the pricing conversation comes before the portion conversation — always.
+
+Never Give Up — in action
+The founding principle: "Everything has a solution."
+Team Members:
+Making a mistake in the kitchen is never a problem. What matters is what happens next: be brave enough to own the mistake, tell your manager, and help fix it. This is a direct instruction from the founder. A mistake that is admitted is a mistake that gets solved quickly. A mistake that is hidden wastes everyone's time — the manager's time investigating, the team's time compensating, and potentially the customer's experience.
+When a shift is difficult — understaffed, unexpectedly busy, equipment playing up — the expectation is not that you handle it perfectly. The expectation is that you keep going, communicate what is happening, and ask for help when you need it.
+If you see a problem that you do not know how to fix, say so. "I don't know how to fix this but it needs fixing" is a valuable contribution, not an admission of failure.
+Unit Manager:
+Your primary leadership tool is encouragement, not correction. The founder's own approach — going around the business praising employees for their work — is the model. Catch people doing things right and say so. This is not soft management; it is how you build a team that stays, improves, and takes ownership.

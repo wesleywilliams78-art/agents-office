@@ -1,0 +1,640 @@
+{
+  "issue": 6,
+  "country": "Finland",
+  "dateLong": "11 DEC 2026",
+  "colour": "#002F6C",
+  "verified": "NOV 2026",
+  "accessed": "16 Nov 2026",
+  "cover": {
+    "verdict": "**Finland is open, but the sites sit with a few operators.** McDonald's has 12 franchisees, S-Group runs 106 Hesburgers, and KFC has nine restaurants after five years. The window is a second quick-service brand with a local operator who already holds roadside and mall sites: choose that partner before the category.",
+    "stats": [
+      {
+        "big": "12",
+        "label": "franchisees run 69 of McDonald's 90 Finnish restaurants (26 Mar 2026, S51)"
+      },
+      {
+        "big": "9",
+        "label": "KFC restaurants in Finland, counted on kfc.fi on 16 Nov 2026 (S17)"
+      },
+      {
+        "big": "£12.27",
+        "label": "all-in hourly cost of an entry-level worker, Estimate (S10, S7, S11)"
+      }
+    ]
+  },
+  "market": {
+    "headline": "A small, rich market with flat volumes: a new brand has to take share, not ride the tide",
+    "intro": "Finland has 5.66 million people and a GDP per head 19% above the EU average. Restaurant prices are high and demand is cautious. The market rewards brands that arrive with a local operator, not brands that arrive alone.",
+    "tiles": [
+      {
+        "label": "Population",
+        "big": "5.66m",
+        "body": "5,662,086 at the end of Sep 2026. It grew by 9,205 in Jan to Sep, all from migration: 36,323 births against 43,990 deaths.",
+        "src": "S40"
+      },
+      {
+        "label": "GDP per head",
+        "big": "€49,870",
+        "body": "2025, current prices. EU27 is €41,770, Sweden €56,250 and Denmark €69,550. At the ECB rate of 13 Nov 2026 that is about £41,670 (Estimate).",
+        "src": "S12, S11"
+      },
+      {
+        "label": "Food-service spend",
+        "pre": "Proxy",
+        "big": "+2.4%",
+        "body": "Accommodation and food service turnover in Jun 2026 against Jun 2025, with volume up 1.1%. A national euro total was not found: we searched Statistics Finland, the Finnish hospitality association and Eurostat. Nearest proxy: McDonald's alone sold €341.2m in 2025, up 3%.",
+        "src": "S26, S13"
+      },
+      {
+        "label": "Franchise count",
+        "big": "7,000",
+        "body": "Outlets in about 250 to 300 chains, with over €7bn turnover and about 5,000 franchisees (Franchising Barometri 2025). 31% of chains are restaurants, cafes or fast food and 80% are domestic. These are association figures, not an official count.",
+        "src": "S31"
+      },
+      {
+        "label": "Consumer spending",
+        "pre": "Proxy",
+        "big": "127",
+        "body": "Restaurant and hotel price level in 2024, EU = 100. Denmark is 148. Demand is soft: a regional co-op's restaurant revenue fell 5.6% in Jan to Jun 2026. We found no national household restaurant spend table to open.",
+        "src": "S43, S52"
+      },
+      {
+        "label": "Currency",
+        "big": "€1 = £0.836",
+        "body": "ECB euro reference rate for sterling on 13 Nov 2026 (0.83559). Finland uses the euro, so a euro-zone brand carries no currency risk on rent or wages.",
+        "src": "S11"
+      }
+    ],
+    "eatsTitle": "How the sites are held",
+    "eatsNote": "Finnish quick service is run by a handful of multi-site operators. Their site counts and franchise shares are the clearest picture of how people eat out, and who holds the doors.",
+    "eats": [
+      {
+        "label": "Sites by chain",
+        "big": "258",
+        "body": "Hesburger states 258 Finnish restaurants (10 Sep 2026). Kotipizza says over 300, all franchised. McDonald's has 89 on its own count of 1 Sep 2026 and 90 on 26 Mar 2026: we use the lower. Friends & Brgrs has 39. KFC has 9.",
+        "bars": [
+          {
+            "label": "Kotipizza (claim)",
+            "value": 300,
+            "show": "300+"
+          },
+          {
+            "label": "Hesburger",
+            "value": 258,
+            "show": "258"
+          },
+          {
+            "label": "McDonald's",
+            "value": 89,
+            "show": "89"
+          },
+          {
+            "label": "Friends & Brgrs",
+            "value": 39,
+            "show": "39",
+            "alt": true
+          },
+          {
+            "label": "KFC",
+            "value": 9,
+            "show": "9",
+            "alt": true
+          }
+        ],
+        "src": "S14, S22, S13, S44, S17"
+      },
+      {
+        "label": "Who runs them",
+        "big": "77%",
+        "body": "69 of McDonald's 90 restaurants are run by 12 local franchisees. S-Group runs 106 Hesburgers under a franchise held since 1999, renewed for 10 years on 16 Jun 2026. Restel runs Burger King and Taco Bell. The operator is the market.",
+        "src": "S51, S41, S19"
+      },
+      {
+        "label": "Coffee habit",
+        "big": "2.5m",
+        "body": "Hesburger sold 2,522,118 cups of coffee in Finland from 1 Sep 2025 to 31 Aug 2026. Filter coffee dominates, and espresso drinks are only now on test at one site.",
+        "src": "S20"
+      }
+    ],
+    "sowhat": "So what: Finland is a market of doors, not demand. The doors are held by McDonald's franchisees, S-Group, Restel, Kotipizza and a few funded domestic brands. A new brand wins by getting one of those operators, or an operator like them, to carry it. Growth in demand will not do it: volume rose about 1% in Jun 2026 and restaurant prices already sit 27% above the EU average."
+  },
+  "rising": {
+    "headline": "Growth sits at the edges: one slow chicken brand, a fast domestic burger chain and fuel-station sites, while pizza and burger leaders hold",
+    "intro": "Ten categories, one fixed order. A rise or fall needs two independent signals, otherwise the row reads Thin. Counts are dated and say how they were made. A brand's own 'over 300' is a claim, not a count.",
+    "rows": [
+      {
+        "cat": "Chicken",
+        "dir": "Rising",
+        "evidence": "KFC opened three restaurants in the year to 30 Apr 2026 and had 8 on that date, so about 5 a year earlier (Estimate, no closures assumed). Counted 9 on kfc.fi on 16 Nov 2026. A 2018 plan for up to 50 stalled for want of a franchisee. The operator calls Finland and Estonia challenging.",
+        "src": "S4, S17, S6",
+        "window": "2027 to 2028",
+        "conf": "Medium",
+        "sat": "Low",
+        "entry": "Medium"
+      },
+      {
+        "cat": "Burger",
+        "dir": "Mixed",
+        "evidence": "McDonald's opened 10 in 2025 and holds 89 to 90. Friends & Brgrs grew from 35 (11 Jun 2026) to 39 (28 Oct 2026) and plans five more in 2027. Hesburger states 258. Burger King had 64 in Aug 2023 and has opened three since (Ali-Kerava, Ala-Tikkurila, Seppala due). New entrants face four strong players.",
+        "src": "S51, S45, S44, S14, S34",
+        "window": "Closed to newcomers",
+        "conf": "High",
+        "sat": "High",
+        "entry": "Low"
+      },
+      {
+        "cat": "Pizza",
+        "dir": "Flat",
+        "evidence": "Kotipizza says over 300 restaurants in Mar 2026 and the same in trade press in Aug 2025, all franchised, with over 90 at fuel stations and more than ten planned beside Huili stops. Both are claims, not counts, and we have no earlier count.",
+        "src": "S22, S24, S53",
+        "window": "Closed to newcomers",
+        "conf": "Thin",
+        "sat": "High",
+        "entry": "Thin"
+      },
+      {
+        "cat": "Kebab / grill",
+        "dir": "Mixed",
+        "evidence": "Hesburger runs Doner HeseKebab & Gyros: 5 in Finland by its 7 Oct release (a 13 May release says a tenth opened; we use the lower). Better Kebab lists 5 Helsinki outlets on Wolt. Against that, S-Group's Babista closed Oulu (25 Feb 2025) and Seinajoki (Mar 2026).",
+        "src": "S5, S18, S38, S39, S52",
+        "window": "Unclear",
+        "conf": "Medium",
+        "sat": "Low",
+        "entry": "Medium"
+      },
+      {
+        "cat": "Coffee",
+        "dir": "Mixed",
+        "evidence": "Espresso House Finland sold €50.3m in 2025, up 0.7%, on a 1.0% margin. Hesburger sells 2.5m cups a year. No country-wide cafe count was published. Searched: company pages, Asiakastieto, Wolt, store directories. Nearest proxy: flat sales mean no network growth.",
+        "src": "S50, S20",
+        "window": "None seen",
+        "conf": "Medium",
+        "sat": "Medium",
+        "entry": "Low"
+      },
+      {
+        "cat": "Bakery / dessert",
+        "dir": "Rising",
+        "evidence": "Fazer Ravintolat, which runs Fazer Cafe, grew sales from €25.3m (2021) to €44.7m (2025) and staff from 253 to 363, still at a €0.3m operating loss. Fazer Cafe opened at Helsinki Airport on 27 Feb 2026 through a licensed operator. No unit count was found.",
+        "src": "S49, S48, S27",
+        "window": "2027",
+        "conf": "Medium",
+        "sat": "Medium",
+        "entry": "Medium"
+      },
+      {
+        "cat": "Bubble tea",
+        "dir": "Not found",
+        "evidence": "Not found as a chain market. Searched: Wolt Helsinki brand pages (Qitea shows 2 venues), Finnish press, trade lists, and searches for Chatime, Gong cha and Tiger Sugar in Finland (no Finnish results). Nearest proxy: Jungle Juice Bar, a drinks chain of 41 bars in Sep 2025, bought 75% by NoHo Partners. It shows investors back drinks formats.",
+        "src": "S37, S56, S35, S36, S16",
+        "window": "Unclear",
+        "conf": "Thin",
+        "sat": "Low",
+        "entry": "Thin"
+      },
+      {
+        "cat": "Fast casual",
+        "dir": "Mixed",
+        "evidence": "Taco Bell reached 21 restaurants in Aug 2026. Subway's master franchisee bought nine Finnish restaurants on 27 Mar 2026 and plans 250+ new sites by 2032 across the Nordics. Kotipizza Group sold Social Burgerjoint on 18 Mar 2026.",
+        "src": "S1, S2, S42, S23",
+        "window": "2027",
+        "conf": "Medium",
+        "sat": "Medium",
+        "entry": "Medium"
+      },
+      {
+        "cat": "Plant-based",
+        "dir": "Flat",
+        "evidence": "No plant-based chain was found. Searched: Wolt Helsinki, trade press, Barometri, company releases. Nearest proxy: McDonald's launched fully vegan Veggie Nuggets in 2025 and Burger King the Rebel Whopper in 2019. The category lives inside big menus, not as its own brand.",
+        "src": "S51, S34",
+        "window": "None seen",
+        "conf": "Thin",
+        "sat": "Low",
+        "entry": "Thin"
+      },
+      {
+        "cat": "Roadside and fuel-station QSR",
+        "sub": "Local category",
+        "dir": "Rising",
+        "evidence": "Kotipizza is at over 90 fuel stations and planned over ten more beside Huili stops from Mar 2026. Restel opened Huili break-stops at about one a week on Neste stations from Nov 2025 to Feb 2026. Friends & Brgrs now has four drive-through sites, two on Neste land.",
+        "src": "S24, S19, S44",
+        "window": "2027 to 2028",
+        "conf": "Medium",
+        "sat": "Medium",
+        "entry": "High"
+      }
+    ],
+    "chart": {
+      "title": "Who is adding sites, and who is not",
+      "note": "Start to end counts from dated company statements. KFC's start is Estimate (8 less 3 opened). Fazer is sales, not units.",
+      "items": [
+        {
+          "label": "KFC",
+          "sub": "5 to 9 restaurants, Apr 2025 to Nov 2026",
+          "delta": "+80%",
+          "star": true
+        },
+        {
+          "label": "Fazer Ravintolat",
+          "sub": "€25.3m to €44.7m sales, 2021 to 2025",
+          "delta": "+77%"
+        },
+        {
+          "label": "Friends & Brgrs",
+          "sub": "35 to 39 restaurants, Jun to Oct 2026",
+          "delta": "+11%"
+        },
+        {
+          "label": "McDonald's",
+          "sub": "10 opened in 2025, 89 to 90 now",
+          "delta": "+12%"
+        },
+        {
+          "label": "Espresso House Finland",
+          "sub": "€49.9m to €50.3m sales, 2024 to 2025",
+          "delta": "+1%"
+        }
+      ],
+      "source": "S17, S4, S49, S45, S44, S51, S50"
+    },
+    "reading": {
+      "title": "What it means",
+      "paras": [
+        "The rows that grow are not the biggest categories. Burger and pizza are large and held. The growth is at the edges: KFC's slow climb, a domestic burger brand with drive-through lanes, and quick service at fuel stations. That points to sites and operators, not tastes.",
+        "Two rows lean on one source type: pizza is only claims, and bubble tea and plant-based are searched and thin. We call no rise or fall on them. Coffee is flat in value, and the Fazer rise is in sales, not in a counted network.",
+        "The pattern repeats the Nordic lesson. Whatever the format, the brands that grew had an operator behind them: Apollo for KFC, Restel for Burger King and Taco Bell, S-Group for Hesburger, and a funded owner for Friends & Brgrs. Find that partner first."
+      ]
+    }
+  },
+  "white": {
+    "headline": "The gap is a partner with the sites: four openings, and none of them works without an operator who holds the doors",
+    "intro": "Four gaps, each tied to dated evidence. Three are Thin on unit counts and say so. Chicken is one of them, not the headline.",
+    "gaps": [
+      {
+        "title": "Roadside and fuel-station quick service",
+        "gap": "Fuel stations are where the newest sites are being signed, and each operator has only a few formats.",
+        "evidence": "Kotipizza is at over 90 stations (S24). Restel opened Huili break-stops at about one a week on Neste land from Nov 2025 to Feb 2026 (S19). Friends & Brgrs opened Lahti Laune on 29 Oct 2026, its fourth drive-through, on Neste land (S44).",
+        "suits": "A simple-kitchen brand with a drive-through or grab-and-go format.",
+        "route": "Licensed operator inside a fuel or retail group.",
+        "size": "L",
+        "sizeText": "Large: dozens of sites over several years (Estimate).",
+        "window": "2027 to 2028"
+      },
+      {
+        "title": "A second chicken brand with a strong operator",
+        "gap": "KFC has nine restaurants after five years. The demand is there, the network is not.",
+        "evidence": "Apollo reports 8 KFC restaurants on 30 Apr 2026, three opened in the year, and calls Finland challenging (S4). A 2018 plan for up to 50 sites stalled because no franchisee was found (S6). Counted 9 on kfc.fi on 16 Nov 2026 (S17).",
+        "suits": "A chicken brand that can bring its own funded operator.",
+        "route": "Master franchise with a Finnish multi-brand operator.",
+        "size": "M",
+        "sizeText": "Medium: 10 to 20 restaurants in five years is the proven pace (Estimate).",
+        "window": "2027 to 2028"
+      },
+      {
+        "title": "Bakery-cafe with owner-operators",
+        "gap": "The one bakery-cafe brand with scale still loses money on its own operation.",
+        "evidence": "Fazer Ravintolat grew sales 77% from 2021 to 2025 and still lost €0.3m (S49). It opened an airport cafe through a licensed operator on 27 Feb 2026 (S48). Espresso House Finland is flat at €50.3m (S50).",
+        "suits": "A bakery-cafe brand with a franchise unit model and a baking hub.",
+        "route": "Direct franchise with area rights.",
+        "size": "M",
+        "sizeText": "Medium: city-centre and station sites first (Estimate).",
+        "thin": true
+      },
+      {
+        "title": "Premium kebab and grill that survives",
+        "gap": "Kebab concepts are tried by big groups, then closed or scaled depending on the owner.",
+        "evidence": "Hesburger runs 5 Doner HeseKebab sites by its 7 Oct release and opened a FoodStation in Tallinn on 5 Nov 2026 (S5, S21). Babista closed in Oulu in Feb 2025 and in Seinajoki in Mar 2026 (S39, S52). Better Kebab lists 5 Helsinki outlets on Wolt (S38).",
+        "suits": "A grill brand with a proven kitchen and a funded local owner.",
+        "route": "Joint venture with a retail or food group.",
+        "size": "S",
+        "sizeText": "Small: a handful of city sites, then proof (Estimate).",
+        "thin": true
+      }
+    ],
+    "matrix": {
+      "intro": "Saturation across, opportunity up. Placement is our judgement from the rows on page 3, not a measured score.",
+      "note": "Pizza and burger are crowded. Roadside quick service and chicken sit highest for a newcomer who brings a partner.",
+      "points": [
+        {
+          "name": "Burger",
+          "x": 90,
+          "y": 18
+        },
+        {
+          "name": "Pizza",
+          "x": 88,
+          "y": 14
+        },
+        {
+          "name": "Coffee",
+          "x": 62,
+          "y": 30
+        },
+        {
+          "name": "Fast casual",
+          "x": 55,
+          "y": 38
+        },
+        {
+          "name": "Bakery / dessert",
+          "x": 45,
+          "y": 52
+        },
+        {
+          "name": "Kebab / grill",
+          "x": 30,
+          "y": 55
+        },
+        {
+          "name": "Chicken",
+          "x": 20,
+          "y": 66
+        },
+        {
+          "name": "Roadside QSR",
+          "x": 42,
+          "y": 78,
+          "hot": true
+        },
+        {
+          "name": "Bubble tea",
+          "x": 12,
+          "y": 30
+        },
+        {
+          "name": "Plant-based",
+          "x": 15,
+          "y": 20
+        }
+      ]
+    },
+    "position": {
+      "quote": "DRAFT for Wesley's words. If I had a brand, I would not start with a category. I would find the operator who already holds the fuel-station and mall sites, and sign with them first.",
+      "paras": [
+        "DRAFT for Wesley's words. In Finland, KFC has nine restaurants after five years, while McDonald's franchisees and S-Group keep adding sites. The brand was never the gap. The operator was. Everything else comes after that.",
+        "DRAFT for Wesley's words. Chicken still looks like the opening, and I would still look at it. But I would look at the partner list before the menu. If I could not name the operator, I would wait."
+      ]
+    }
+  },
+  "regulation": {
+    "headline": "No franchise law, a 20% company tax that may fall to 18%, and pay set by collective agreement: cheap to set up, steady to run",
+    "intro": "Finland has no franchise-specific law and no disclosure statute. Costs are set by tax, payroll and a collective pay table, not by licences. This page is information, not legal, tax or investment advice.",
+    "rows": [
+      {
+        "area": "Franchise law",
+        "text": "No franchise-specific law and no disclosure statute. General contract, competition and unfair-practice law apply. The EU vertical block exemption 2022/720 applies and minimum resale prices are banned. Arbitration clauses are accepted.",
+        "src": "S30"
+      },
+      {
+        "area": "Trade mark",
+        "text": "National filing is €250 online for one class and €100 for each extra class. Renewal is €250. Fees were updated on 20 May 2026. An EU trade mark also covers Finland.",
+        "src": "S28"
+      },
+      {
+        "area": "Food safety",
+        "text": "Register the food premises with the Finnish Food Authority through Ilppa no later than four weeks before opening. Hygiene passports and an own-check plan are required. Registration and inspection are chargeable.",
+        "src": "S29"
+      },
+      {
+        "area": "Alcohol",
+        "text": "Licences come from the Licensing and Supervisory Agency. Its administration fees for 2026 were confirmed on 11 Dec 2025 and are not raised, with some exceptions. Pop-up serving licences became cheaper.",
+        "src": "S9"
+      },
+      {
+        "area": "Employment and pay",
+        "text": "No statutory minimum wage was found on the sources opened: pay floors come from collective agreements. PAM group 2 (cashier, cook, waiter) is €12.21 an hour from 1 Jun 2026. Employer pension is 17.55% (24.85% less the 7.30% employee share), sickness insurance 1.91%, unemployment 0.31%, accident cover 0.51%.",
+        "src": "S10, S7"
+      },
+      {
+        "area": "Tax",
+        "text": "VAT on restaurant and meal services is 13.5% from 1 Jan 2026 (14% before). The general rate is 25.5%. Corporate tax is 20%. A draft of 28 Apr 2026 cuts it to 18% from tax year 2027. It is not law. Tax at source on royalties to a foreign company is 20% (30% to others), cut by treaty only with evidence for each payment.",
+        "src": "S32, S8, S3"
+      },
+      {
+        "area": "Company set-up",
+        "text": "A private limited company (Oy) needs no minimum share capital. The founding notice costs about €240 online and is due within three months of signing. Secondary source: confirm with the Trade Register before filing.",
+        "src": "S57"
+      }
+    ],
+    "tiles": [
+      {
+        "label": "Corporate tax",
+        "big": "20%",
+        "body": "Rate for 2026. A draft of 28 Apr 2026 proposes 18% from tax year 2027. Withholding on royalties to non-residents would also fall to 18%, where no lower treaty rate applies.",
+        "src": "S8"
+      },
+      {
+        "label": "Restaurant VAT",
+        "big": "13.5%",
+        "body": "On restaurant and meal services from 1 Jan 2026. The general rate is 25.5%. No separate takeaway rate was found on the page opened.",
+        "src": "S32"
+      },
+      {
+        "label": "Trade mark",
+        "big": "€250",
+        "body": "One class, filed online at the Finnish Patent and Registration Office. Each extra class costs €100.",
+        "src": "S28"
+      }
+    ],
+    "wage": {
+      "title": "The wage engine",
+      "sub": "All-in hourly cost of an entry-level worker, in sterling at €1 = £0.83559",
+      "parts": [
+        {
+          "label": "Base pay, PAM group 2",
+          "value": 10.2,
+          "short": "Base"
+        },
+        {
+          "label": "Employer pension share",
+          "value": 1.79,
+          "short": "Pension"
+        },
+        {
+          "label": "Sickness insurance",
+          "value": 0.2,
+          "short": "Sickness"
+        },
+        {
+          "label": "Unemployment and accident cover",
+          "value": 0.08,
+          "short": "Other"
+        }
+      ],
+      "total": "£12.27",
+      "method": "Method: PAM group 2 rate of €12.21 an hour, plus employer contributions of 20.28% (pension 17.55%, sickness 1.91%, unemployment 0.31%, accident 0.51%), converted at the ECB rate of 13 Nov 2026. Holiday pay and evening, night and Sunday supplements are not in the total.",
+      "floorPre": "Pay floor (PAM, from 1 Jun 2026)",
+      "floor": "€12.21 an hour",
+      "floorNote": "Evening supplement €1.40 and night €2.37 an hour. Sundays and holidays pay double.",
+      "allIn": "£12.27",
+      "allInNote": "McDonald's reports base pay of €11.87 and an average of €16.16 with supplements (2025). On the same on-costs that average is about £16.24 an hour (Estimate). Plan on the higher figure."
+    },
+    "advice": "Not legal, tax or investment advice. Check the draft 2027 tax cut and any treaty rate with a Finnish adviser before signing."
+  },
+  "route": {
+    "headline": "The proven routes run through a local operator: master franchise, a retail or fuel group, or direct franchise, with company stores the slowest",
+    "intro": "Four routes, scored 1 to 3. For control and capital, 3 is the most control kept and the most capital put in. For speed, 3 is fastest.",
+    "routes": [
+      {
+        "name": "Master franchise with a Finnish operator",
+        "control": 1,
+        "capital": 1,
+        "speed": 2,
+        "seen": "Subway through Nordic Bites Group, which bought nine Finnish restaurants on 27 Mar 2026. KFC through Apollo, at 8 to 9 restaurants. Burger King and Taco Bell through Restel (S2, S4, S19)."
+      },
+      {
+        "name": "Licensed operator inside a retail or fuel group",
+        "control": 2,
+        "capital": 1,
+        "speed": 3,
+        "seen": "S-Group runs 106 Hesburgers, renewed 16 Jun 2026. Kotipizza is at over 90 fuel stations. Fazer Cafe opened at the airport through SSP on 27 Feb 2026 (S41, S24, S48)."
+      },
+      {
+        "name": "Direct franchising, unit by unit",
+        "control": 2,
+        "capital": 2,
+        "speed": 1,
+        "seen": "McDonald's has 12 franchisees on 69 sites. Kotipizza is all franchised. Typical fees: joining a few thousand euro, service 5 to 10% of turnover, marketing 1 to 5% (S51, S22, S33)."
+      },
+      {
+        "name": "Company-owned flagship",
+        "control": 3,
+        "capital": 3,
+        "speed": 1,
+        "seen": "Fazer Ravintolat runs its own cafes and lost €0.3m on €44.7m sales in 2025. Hesburger's FoodStation is a company test (S49, S21)."
+      }
+    ],
+    "fits": [
+      {
+        "label": "Fit 1",
+        "title": "A chicken or grill brand with a drive-through",
+        "body": "Take the licensed-operator route with a fuel or retail group. It fits the sites being signed now, and it avoids KFC's one-chain pace."
+      },
+      {
+        "label": "Fit 2",
+        "title": "A bakery-cafe brand",
+        "body": "Start with a licensed flagship in a station or airport, then offer area rights. Fazer's loss shows that owned cafes alone do not pay."
+      },
+      {
+        "label": "Fit 3",
+        "title": "A premium kebab or fast casual brand",
+        "body": "Use a joint venture with a food group. Babista closed two sites in 13 months, while funded groups kept testing."
+      }
+    ],
+    "riskTitle": "Six risks",
+    "risks": [
+      {
+        "label": "Partner failure",
+        "body": "KFC reached 9 sites in about five years, and a 2018 plan for 50 sites stalled for want of a franchisee. The wrong partner costs years.",
+        "src": "S4, S6, S17"
+      },
+      {
+        "label": "Franchisee exit",
+        "body": "Subway's master franchisee bought nine Finnish restaurants in Mar 2026. The buyer's release gives no reason the sellers left, so we draw no conclusion.",
+        "src": "S2"
+      },
+      {
+        "label": "Cautious demand",
+        "body": "Restaurant demand was subdued in 2026. Eepee's restaurant revenue fell 5.6% in Jan to Jun, partly from the Babista closure.",
+        "src": "S52, S26"
+      },
+      {
+        "label": "Dear to run",
+        "body": "Restaurant prices are 27% above the EU average, and pay is set by the PAM table with on-costs of about 20%.",
+        "src": "S43, S10, S7"
+      },
+      {
+        "label": "Tax change",
+        "body": "The 18% corporate rate from 2027 is a draft. Plan on 20% until it passes.",
+        "src": "S8"
+      },
+      {
+        "label": "Thin data",
+        "body": "No official franchise count, no bubble tea chain count and no total food-service spend in euros. Our unit counts come from company statements and our own locator reads.",
+        "src": "S31, S37"
+      }
+    ]
+  },
+  "days": {
+    "headline": "Ninety days to a signed operator: spend the first 30 on the partner list, not on the menu",
+    "moves": [
+      "Days 1 to 7: write the partner list. Start with Restel, S-Group, Apollo, Nordic Bites Group, NoHo Partners and the Kotipizza and McDonald's franchisees (S19, S41, S4, S2, S16, S51).",
+      "Days 1 to 14: count your own sites in Finland by hand from the locators and apps. Record the date and method for each count.",
+      "Days 7 to 21: file the national trade mark at €250 for one class, and check EU coverage (S28).",
+      "Days 14 to 30: build the unit model on the all-in wage of £12.27 an hour, then test it at about £16.24 with supplements (S10, S7, S51).",
+      "Days 21 to 35: take the draft 18% corporate rate out of the base case and run both 20% and 18% (S8).",
+      "Days 30 to 45: meet three operators and ask each for its open sites at fuel stations and malls (S24, S19, S44).",
+      "Days 40 to 55: check each operator's own record. Ask how long its last new brand took to reach 20 sites, as KFC's 9 sites in about five years suggests it can be slow (S17).",
+      "Days 50 to 65: set the royalty and withholding position with a Finnish adviser, treaty first (S3).",
+      "Days 60 to 80: agree heads of terms with one operator, with a site list and a pace per year.",
+      "Days 80 to 90: register the food premises four weeks ahead for the first site and start hiring on the PAM table (S29, S10)."
+    ],
+    "check": [
+      "Does the operator already hold fuel-station or mall sites for your format?",
+      "Can you name three openings in the past 12 months that the operator delivered?",
+      "Does your unit model still work at £16.24 an hour all-in?",
+      "Does it still work at 20% corporate tax and a 20% royalty withholding?",
+      "Do you have a plan if the operator reaches only nine sites in five years?"
+    ],
+    "method": "Method. Public sources only, each dated and coded. Unit counts are dated and say how they were made. Where two sources disagreed, we used the lower figure and said so: Hesburger Doner HeseKebab (5 against 10) and McDonald's (89 against 90). The all-in wage and the KFC start count are Estimates. A rise or fall needs two independent signals, otherwise the row reads Thin. The Burger King and Taco Bell locators did not load in the browser, and Wayback snapshots did not open, so those counts come from company releases. This report is not legal, tax or investment advice. Which country should we cover next? © 2026 WRW Hospitality (Wesley Williams). Not to be resold, rebranded or redistributed.",
+    "sources": [
+      "S1 Restel Oy, press release: Taco Bell opens in Seinajoki, 21 restaurants soon, 5 Aug 2026",
+      "S2 Nordic Bites Group Oy, press release: buys nine Subway restaurants in Finland, 27 Mar 2026",
+      "S3 Vero Skatt, Withholding tax at source on dividends, interest and royalties, guidance 4 Aug 2022",
+      "S4 Apollo Group OU, interim report Q4 and 12 months 2025/2026, period to 30 Apr 2026",
+      "S5 Hesburger (Burger-In Oy), release: Hesburger is more than a restaurant chain, 7 Oct 2026",
+      "S6 MTV Uutiset, KFC-ravintolaketju saapuu Suomeen, 10 Mar 2021",
+      "S7 Varma, Social security contributions and limits 2026",
+      "S8 Borenius, legal alert: corporate tax cut proposed, 8 May 2026",
+      "S9 Finnish Government, Lupa- ja valvontaviraston maksut 2026, 11 Dec 2025",
+      "S10 PAM, Matkailu-, ravintola- ja vapaa-ajan palveluiden tyoehdot, pay tables from 1 Jun 2026",
+      "S11 ECB, euro reference rate for pound sterling, 13 Nov 2026",
+      "S12 Eurostat, nama_10_pc GDP per capita, API pull 16 Nov 2026",
+      "S13 McDonald's Suomi, Taustatiedote, 1 Sep 2026",
+      "S14 Hesburger, release: solar power at the Kaarina plant, 10 Sep 2026",
+      "S15 Hesburger, release: Finnish family firm challenges American giants, 22 Sep 2026",
+      "S16 NoHo Partners Oyj, Vuosikertomus 2025",
+      "S17 KFC Finland, Ravintolat page, counted 16 Nov 2026",
+      "S18 Hesburger press release list (STT), Doner HeseKebab 13 May 2026 and FoodStation 6 Nov 2026",
+      "S19 Restel Oy newsroom (STT), release list to 3 Nov 2026",
+      "S20 Hesburger, release: coffee sales and Kivihovi test, 1 Oct 2026",
+      "S21 Hesburger, release: first FoodStation opens in Tallinn, 6 Nov 2026",
+      "S22 Kotipizza Group Oy newsroom (STT), release list to 3 Nov 2026",
+      "S23 Kotipizza Group, release: sells Social Burgerjoint, 18 Mar 2026",
+      "S24 Kotipizza Group, release: new Kotipizza sites at Neste and Huili stations, 24 Mar 2026",
+      "S25 MTV Uutiset, kebab boom in Finland, 6 Oct 2023",
+      "S26 Statistics Finland, Services turnover index June 2026, 31 Jul 2026",
+      "S27 Finavia, Fazer Cafe to open at Helsinki Airport, 9 Oct 2025",
+      "S28 PRH, Fees for trademark applications and registrations, updated 20 May 2026",
+      "S29 Ruokavirasto, Setting up a cafe or a restaurant, read 2026",
+      "S30 Finnish Franchising Association, Franchising legislation (Properta), Feb 2024",
+      "S31 Suomen Franchising-Yhdistys, Franchisingyrittajyys (Franchising Barometri 2025), 2026",
+      "S32 Vero, Rates of VAT, updated 1 Jan 2026",
+      "S33 Taloustaito, Yrittajaksi ison ketjun taustatuella, 24 Jul 2026",
+      "S34 BURGER KING Suomi newsroom (STT), release list to 19 May 2026",
+      "S35 Jungle Juice Bar, About us (company site), read 2026",
+      "S36 MTV Uutiset / STT, NoHo Partners buys Jungle Juice Bar majority, 2 Sep 2025",
+      "S37 Wolt Helsinki, Qitea brand page, listing check 16 Nov 2026",
+      "S38 Wolt Helsinki, Better Kebab brand page, listing check 16 Nov 2026",
+      "S39 Kaleva, Babista Oulu suljettiin, 25 Feb 2025",
+      "S40 Statistics Finland, preliminary population statistics September 2026, 22 Oct 2026",
+      "S41 SOK (S-Group), release: Hesburger franchise renewed for 10 years, 16 Jun 2026",
+      "S42 Subway newsroom, master franchise agreement with Nordic Bites Group, 20 May 2025",
+      "S43 Eurostat news (NSI Bulgaria copy), price levels 2024: restaurants and hotels",
+      "S44 Friends & Brgrs, release: Lahti Laune opens, 39th restaurant, 28 Oct 2026",
+      "S45 Friends & Brgrs, release: 35 own bakeries, 11 Jun 2026",
+      "S46 Asiakastieto, Friends & Brgrs Ab Oy company page, read 16 Nov 2026",
+      "S47 Statistics Finland, Palkkarakenne 2024, release 8 Jun 2026",
+      "S48 Finavia, Fazer Cafe opened at Helsinki Airport, 27 Feb 2026",
+      "S49 Asiakastieto, Fazer Ravintolat Oy financials, read 16 Nov 2026",
+      "S50 Asiakastieto, Espresso House Finland Oy, read 16 Nov 2026",
+      "S51 McDonald's Suomi, release: market leader sixth year, 26 Mar 2026",
+      "S52 Etela-Pohjanmaan Osuuskauppa (Eepee), half-year release 2026",
+      "S53 Food Chain magazine, issue 207, Kotipizza Group, Aug 2025",
+      "S54 Verkkouutiset, Talsa list of Finland's largest restaurant chains (undated)",
+      "S55 Taco Bell Finland, Ravintolat page, opened 16 Nov 2026",
+      "S56 Focus Taiwan, Taiwanese boba in Finland, 28 Jan 2026",
+      "S57 Minilex, Osakeyhtion perustaminen PRH:ssa (fee date not confirmed)"
+    ]
+  }
+}

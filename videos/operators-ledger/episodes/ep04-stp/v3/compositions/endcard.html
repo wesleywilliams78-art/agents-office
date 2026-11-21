@@ -1,0 +1,37 @@
+<template>
+  <style>
+    @font-face { font-family: "Newsreader"; font-weight: 300; src: url("assets/fonts/newsreader-latin-300-normal.woff2") format("woff2"); }
+    @font-face { font-family: "Archivo"; font-weight: 500; src: url("assets/fonts/Archivo-Medium.ttf") format("truetype"); }
+    @font-face { font-family: "Archivo"; font-weight: 400; src: url("assets/fonts/Archivo-Regular.ttf") format("truetype"); }
+    #root { position: absolute; inset: 0; background: transparent; color: #f3f2f2; overflow: hidden; }
+    .wv { position: absolute; left: 0; top: 0; width: 1080px; height: 1700px; }
+    #ec-mtn { position: absolute; left: -200px; top: 990px; width: 1480px; height: 370px; }
+    #ec-logo { position: absolute; left: 88px; top: 270px; width: 160px; height: 160px; }
+    #ec-kick { position: absolute; left: 88px; top: 466px; font: 500 38px/1 "Archivo", sans-serif; letter-spacing: .2em; white-space: nowrap; }
+    #ec-ep { position: absolute; left: 88px; top: 528px; font: 500 28px/1 "Archivo", sans-serif; letter-spacing: .2em; color: #a8a5a4; white-space: nowrap; }
+    #ec-brand { position: absolute; left: 88px; top: 628px; font: 500 28px/1 "Archivo", sans-serif; letter-spacing: .22em; color: #a8a5a4; }
+    #ec-name { position: absolute; left: 88px; top: 678px; font: 400 32px/1.2 "Archivo", sans-serif; }
+  </style>
+  <div id="root" data-composition-id="endcard" data-width="1080" data-height="1350">
+    <svg id="w-grey" class="wv" viewBox="0 0 1080 1700"><path d="M0,90 C180,10 360,170 540,90 C720,10 900,170 1080,90 L1080,1700 L0,1700 Z" fill="#8f8d8c"/></svg>
+    <svg id="w-ink" class="wv" viewBox="0 0 1080 1700"><path d="M0,120 C180,40 360,200 540,120 C720,40 900,200 1080,120 L1080,1700 L0,1700 Z" fill="#201e1d"/></svg>
+    <img id="ec-mtn" src="assets/brand/mountains-bone-on-ink.svg" alt="" />
+    <img id="ec-logo" src="assets/brand/WRW-logo-white-on-red.svg" alt="" />
+    <div id="ec-kick">THE OPERATOR’S LEDGER</div>
+    <div id="ec-ep">EPISODE 4 · STP</div>
+    <div id="ec-brand">WRW HOSPITALITY</div>
+    <div id="ec-name">Wesley Williams</div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    // the ledger's ground changes by an ink wave rising out of the bottom, on the sign-off, not a bang
+    tl.fromTo("#w-grey", { y: 1360 }, { y: -190, duration: 1.0, ease: "power3.inOut" }, 0);
+    tl.fromTo("#w-ink", { y: 1360 }, { y: -190, duration: 1.0, ease: "power3.inOut" }, 0.14);
+    tl.fromTo("#ec-mtn", { y: 90, opacity: 0 }, { y: 0, opacity: 1, duration: 0.8, ease: "power3.out" }, 1);
+    // the one allowed overshoot: the WRW logo stamps on
+    tl.fromTo("#ec-logo", { opacity: 0, scale: 1.15, rotation: 3 }, { opacity: 1, scale: 1, rotation: 0, duration: 0.45, ease: "power3.out" }, 0.9);
+    tl.fromTo(["#ec-kick", "#ec-ep", "#ec-brand", "#ec-name"], { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out", stagger: 0.1 }, 1);
+    tl.set({}, {}, 4.3);
+    window.__timelines["endcard"] = tl;
+  </script>
+</template>

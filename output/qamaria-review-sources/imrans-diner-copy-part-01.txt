@@ -1,0 +1,277 @@
+
+
+
+
+
+
+
+
+IMRAN’S DINER
+
+Franchise Operations Manual
+
+Client: Tawheed, Imran’s Diner Ltd
+Prepared by: Wesley Williams
+Working draft — September 2026. Pending review by Tawheed.
+Head Office Contact Details
+Completed by Head Office before this manual is issued to a unit, and reissued whenever the details change. Wherever this manual says “contact Head Office”, it means the contacts below.
+
+Head Office contact name:
+Role:
+Email (standard route for all queries):
+Phone (business hours):
+Emergency / out-of-hours phone:
+Support or ticketing route, if in use:
+Manual platform assistant:
+Issued to (unit):
+Date issued / manual version:
+
+About this draft
+This is a working draft of the Imran’s Diner Franchise Operations Manual, prepared by YSF Advisory for review by Tawheed. It describes how Imran’s Diner operates today and sets the standards every unit works to.
+Reading this draft
+Highlighted text marks information still to be confirmed or provided by Tawheed, for example [Tawheed to confirm: …]. Each highlighted item needs a decision or a figure before that chapter is final.
+Roles. Where the manual refers to a Unit Manager, that role is currently carried out by the Owner; where it refers to a Shift Supervisor, that role is currently carried out by a Team Leader (see Chapter 3.2 — Org chart). “Head Office” means the Imran’s Diner franchisor function, which is currently the Owner.
+Chapters still awaiting Tawheed’s input
+These chapters set out what information is needed but have no content yet.
+2.4 — Quality/spec standards for ingredients
+2.5 — Local launch plan
+2.5 — Initial customer acquisition tactics
+5.2 — Core recipe book (by product line)
+6.6 — Capex authorisation framework
+6.7 — Franchise agreement default & termination conditions
+Chapters that depend on a separate tool
+These chapters will explain how to use a tool or deliverable that is being built separately (for example the EPOS, rota system or labour-to-sales model).
+2.3 — Systems setup — EPOS, the rota/scheduling system, due diligence system
+3.4 — Labour-to-sales model
+4.2 — Approved templates (flyers, signage)
+5.4 — EPOS operating procedures
+5.4 — Rota/scheduling system usage guide
+5.4 — Due diligence system usage guide
+6.2 — COGS & recipe costing
+6.4 — Franchisee selection criteria
+6.5 — Field visit/audit cadence
+1. Introduction
+1.1 Brand story & vision
+Origin story & founder journey
+Where this brand has come from
+Imran's opened its doors in Sheffield in 1995, selling Southern Fried Chicken from a single site. There was no national brand behind it, no marketing department, no playbook — just a product and a road. Thirty years on, that matters more than it might first read. Most independent takeaways in this country don't make it past year five; a very small number make it to year fifteen; almost none are still trading, under the same name, on the same road, thirty years later. Imran's is.
+In that time the business has traded through three separate recessions, the entire delivery-app upheaval that reshaped how this country orders food, and the arrival of every national chicken chain looking to take a share of the same customers. None of it moved the business off its spot. It survived because the product kept people coming back, week after week, for three decades.
+Why the menu looks the way it does
+Most QSR brands pick one lane and stay in it — easier to run a kitchen with one core protein, one training standard. The cost is that a group ordering together has to compromise, or split across two shops. Imran's made a different call: Southern Fried Chicken, peri peri, doner, burgers and pizza, all under one roof, all to one standard. The Imran's Special settles the argument at the table before it starts — Nando's can't feed that group, KFC can't, the kebab shop down the road can't do fried chicken properly. Every partner running this menu is running a structural advantage, not a marketing angle.
+What partners are actually running
+Nobody orders "a takeaway" from Imran's. They order the wedges, the fillet burger, the Special box, by name — the way people ask for a specific answer, not a category. That kind of item-level recognition is one of the hardest assets to build in this industry, and every partner inherits it on day one — opening the doors on dishes customers already know by name and already know to ask for.
+Proof the brand travels beyond its own customers
+Featured by The Food Review Club, the UK's largest food reviewer. Selected by Sytner, the UK's leading automotive retailer, to cater their flagship Sheffield showroom. That decision came out of a national corporate procurement process — for a partner anywhere in the network, that's evidence the brand holds its own against corporate scrutiny wherever it's tested, and it's exactly what opens doors with local schools, offices and corporate clients in any territory. It's also where the catering and events revenue line came from — full-margin, no delivery-platform commission, and something every site can build on regardless of location.
+The starting point for everyone in this network
+Every partner is joining a thirty-year-old brand with a recognised signature product, a menu engineered to win the whole table, and two revenue lines already proven in the real market. That's the base this manual, and every operating standard in it, is built from.
+Vision & long-term ambition
+The starting number that explains everything else
+A healthy QSR in the UK trades at around £1.2m a year — decades of marketing spend, national supply chains, site selection teams most independents never get. Imran's single site is already trading at roughly double that. Not despite lacking those resources — because of it. The benchmark this brand is building from isn't "can an independent compete with a national chain." That's already answered. The question is what happens when that per-site performance gets systemised and repeated.
+Three years: proving it travels
+3–4 sites trading, the first ventures out of Sheffield, each above £1.2m. Franchise systems built and pressure-tested for real, on real sites. System sales target: £6–8m. This is the phase every partner reading this manual is part of — the standards in it aren't theoretical, they're being built in real time so the next partner doesn't relearn the same lessons from scratch.
+Five years: a proper regional network
+12–15 sites across Yorkshire and the East Midlands, franchise-led rather than founder-led. System sales target: £25–30m. This is the point Imran's stops being "a very good independent with a few sites" and becomes a regional operator with real network density.
+Ten years: franchisor, not operator
+50+ units nationally, £100m system sales, run as a franchisor rather than an operator. Deliberate, not aspirational — owning that estate outright would need capital and a management structure the business doesn't have. Franchising scales through partners' capital and local focus while Imran's protects the standard.
+What this means for the partner reading this
+None of these numbers are boardroom abstractions — they're why this manual exists now, and why every partner hitting the £1.2m benchmark and running the standards properly directly moves the business toward this plan.
+Positioning vs. category
+Where Imran’s Diner sits
+Imran’s Diner is a multi-menu QSR takeaway. It is not a single-product chicken, pizza or kebab shop, and it is not a full-service restaurant. It is the one counter where a whole group gets what each of them wants — Southern Fried Chicken, peri peri, doner, burgers and pizza — cooked to one standard, under one name. In franchise and trade materials, Imran's Diner is described as a multi-menu QSR takeaway. In customer-facing materials the category is not named — the menu does the work: chicken, peri peri, doner, burgers and pizza, one kitchen, one standard.
+What sets it apart today
+One order for the whole group. Most takeaway operators build around one core product. Imran’s Diner runs five product lines to one standard, so a group ordering together does not have to compromise or split its order. The Imran’s Special exists to settle that choice at the table.
+Products known by name. Customers order the wedges, the fillet burger and the Special box by name. That item-level recognition has been built over thirty years on one site in Sheffield.
+Proven trading strength. The Sheffield site trades at roughly double the c.£1.2m a year that a healthy UK QSR site turns over, and has done so through recessions and the shift to delivery apps.
+Evening and late-night demand. The site trades from 12pm to midnight (1am at weekends). Demand builds from 5pm, peaks between 7pm and 9pm and holds through to close.
+Price integrity. Imran’s Diner does not deep-discount, use voucher sites or match local competitors on price. Promotions are currently limited to offers co-funded by delivery platforms.
+Corporate credibility. Selected through a national procurement process to cater Sytner’s flagship Sheffield showroom, giving the brand a catering and events revenue line alongside takeaway and delivery.
+Strengths to hold
+Every site protects the same four things: the full menu delivered to one standard; the signature items customers already ask for by name; the no-discount pricing stance; and catering as a second, commission-free revenue line. A site that drops any of these is no longer running the Imran’s Diner proposition.
+Where the work continues
+Brand identity. Several iterations of the logo and signage are live in store. One approved identity still needs to be agreed and locked down (Chapters 1.4 and 4.1).
+Written standards. Food quality checks and trainee progress currently run on Team Leader experience rather than documented specs. That works at one site where the owner can catch anything that slips; at two or three sites it becomes the main risk (Chapter 3.2).
+Customer data and loyalty. The current EPOS loyalty tool is not fit for purpose, and there is no direct customer marketing base yet. This is to be resolved before Site #2 (Chapter 4.4).
+Service consistency. Greeting, order updates and helping undecided customers choose are acknowledged as areas still being worked on (Chapter 5.5).
+Margin visibility. Product-level margin targets are not yet set and depend on recipe costing being completed (Chapter 6.2).
+How partners describe the brand
+Partners describe Imran’s Diner by what it does, not by comparison with named national brands. No signage, menus, social content or local marketing may reference, imitate or imply an association with another diner or QSR trade name. The wording in this chapter is subject to legal review before publication.
+1.2 Values
+Core values statement
+Picture the moment these values actually get tested. It's not a quiet Tuesday afternoon — it's 11pm on a Saturday, every till has a queue, the kitchen printer hasn't stopped, and three delivery drivers are stood at the counter at the same time as a table of six walk in wanting the Special. That moment is where a set of values on a page either means something or doesn't. Everything below was written with that exact moment in mind, not the quiet Tuesday.
+That's also, not by coincidence, the same moment this brand has been surviving for thirty years. The origin story earlier in this manual talks about a product people never stopped ordering, through recessions and disruption and every national chain arriving on the high street. These four values are the mechanism behind that survival, translated into what actually has to happen on a shift for that reputation to still be true tomorrow. Get these four right, night after night, and the brand's next thirty years look like its first thirty. Let any one of them slip under pressure, and the story changes — however good it's been up to now.
+1. Do it to standard, every time.
+Orders match the receipt, prep follows the spec, and nothing leaves the kitchen unchecked. That's the entire standard, and it doesn't move depending on how busy the shift is. Back to that Saturday night: the fifth Special box built in the last four minutes has to be exactly as right as the first one at opening. The customer holding it doesn't know it's ticket forty, and doesn't care — they know what an Imran's Special is supposed to look like, because someone else already told them. That's the whole asset described in the chapters above: a menu people order by name, built over thirty years. It only stays an asset if what arrives in the box matches what's expected, at ticket four and at ticket forty. The moment a site starts treating "busy" as a licence to cut corners, it isn't running the Imran's Diner brand anymore — it's running its own version of it, and thirty years of reputation don't survive being quietly rewritten one rushed shift at a time.
+2. Food safety is not negotiable.
+Temperatures get recorded. FIFO gets followed. Stock is stored and covered in its designated place, not wherever there's a gap on the shelf when the fridge is full. Anything past its window is thrown, never served. This is the value with zero room for a judgement call, because the cost of getting it wrong isn't a bad review or a quiet complaint — it's someone's health, and then the licence to trade at all. Every other value on this list can recover from a bad night. This one can end the business. That's precisely why it doesn't flex for volume, for a short-staffed shift, or for a manager under pressure to keep the queue moving — the standard is the same at 2pm on a dead Monday as it is at midnight on the busiest Saturday of the year.
+3. Run a clean house.
+The kitchen, the floor and the customer area are kept to a standard the team would be happy to have inspected unannounced — because on any given day, that's exactly what happens. Sometimes it's Environmental Health at the door. More often, dozens of times a week, it's a customer walking past the window, glancing in, and deciding in about two seconds whether this is somewhere they trust to feed their family. Nobody sees the temperature log or the FIFO rota through that window. They see the counter, the floor, and whether the place looks like it's run by people who care. A clean house is where value two becomes visible to a customer who will never read a food safety chart — it's the proof, in plain sight, that the standards behind the counter are as serious as the ones in front of it.
+4. Get on with each other.
+Rudeness, friction and disruption in the kitchen aren't treated as performance problems to be coached through patiently over a few weeks — they're treated as exit problems, dealt with directly. Go back to that Saturday night one more time: three drivers waiting, a table of six just walked in, and the printer's still going. That shift does not survive one person in the kitchen who's difficult to work alongside. It survives a team that can absorb pressure together without turning on each other. One person creating friction under load doesn't just have a bad shift themselves — they put values one, two and three at risk for everyone else on that section at the same time, because a distracted, frustrated kitchen is exactly where a wrong order or a missed temperature check happens. Protecting how the team works together isn't a soft add-on sitting underneath the operational standards above it. On the worst nights, it's the thing that makes hitting them possible at all.
+Why these four, together
+Each value on its own sounds obvious. Together, on that Saturday night at 11pm, they describe something much more specific: a business that holds its standard exactly when it's hardest to, not only when it's easy. Standard, safety, cleanliness and teamwork are the four places pressure lands first on a bad shift — and the four places this brand has decided, explicitly and without exception, that pressure is never allowed to win. Every partner reading this manual is now responsible for making sure that stays true on their own site, on their own worst Saturday night, for however many years they run it.
+Values in action — behavioural examples
+Values only mean something once someone can point at a moment on a shift and say "that, right there, is what we mean." This chapter takes each of the four values from the previous chapter and puts them on the shop floor — what living each one looks like when it happens, and what it looks like when it slips.
+1. Do it to standard, every time.
+Living it: It's ninety minutes into a Saturday rush. A team member building an Imran's Special notices the doner's run low on one side of the tray and pulls a fresh batch through rather than scraping the last of a thin, uneven portion into the box. Nobody told them to — they did it because the box has to look the same as the one that went out an hour ago. That's the standard holding under load, not just when it's quiet.
+Living it: A driver hands back an order at the pass because the receipt says extra sauce and the box doesn't have it. The kitchen adds it before it goes out the door, even though it costs thirty seconds on a night when thirty seconds matters. The item-level reputation this brand has built over thirty years is made of exactly these thirty-second decisions, repeated thousands of times.
+Slipping: A manager tells the team to "just get them out" during a rush, and fillet sizes start drifting, wedges get skimped, and boxes go out that wouldn't pass if the same manager checked them on a quiet Tuesday. That's the standard being quietly renegotiated under pressure — exactly what value one exists to prevent.
+2. Food safety is not negotiable.
+Living it: A fridge has been slightly warmer than usual all morning. Instead of assuming it's fine and carrying on, whoever notices logs it immediately and flags it up the chain before it becomes a bigger problem, even though the shift is already short-staffed and it's one more thing to deal with.
+Living it: Stock that's a day past its use-by sits at the front of a busy chiller. It gets binned without a second thought or a discussion about whether it "should still be okay" — because that discussion is exactly the one this value exists to make unnecessary.
+Slipping: A shift running behind decides to skip a temperature check "just this once" because the queue's out the door. That's the one value on this list with no "just this once." A skipped check that goes unnoticed today is the one that doesn't get caught before something worse happens.
+3. Run a clean house.
+Living it: Between rushes, rather than taking the breather that's been earned, someone on shift does a lap of the customer area — wiping tables, straightening chairs, checking the floor — without being asked, because the next customer walking past the window is judging the whole business in the two seconds before they decide to come in.
+Living it: A spill in the kitchen gets cleaned immediately, not "when there's a gap," even mid-rush, because a wet floor is a hazard and a mess is a mess regardless of how many tickets are queued.
+Slipping: The bins are overflowing at the end of a long shift and the closing team leaves it for the morning crew "because it's nearly time to go home." A clean house that only exists at the start of a shift and unravels by the end isn't the standard — it's a standard with a curfew.
+4. Get on with each other.
+Living it: Mid-Saturday-rush, two team members clash over who was meant to restock a station. Instead of it turning into a stand-off in front of customers, one of them steps back, sorts it after service, and both of them get on with the job in the meantime — because the rush doesn't stop for an argument, and the team knows it.
+Living it: A newer team member is visibly struggling to keep pace during a busy spell. Rather than getting frustrated at them, someone more experienced quietly takes over the harder part of the station and talks them through it as they go, so the shift holds together instead of falling apart around one person's bad night.
+Slipping: Someone on shift is short with the rest of the team, snapping at colleagues and creating a tense atmosphere in the kitchen. It doesn't get treated as "just how they are" or coached along for weeks — because a kitchen that tolerates that atmosphere is a kitchen where the other three values start slipping too, and this is the value that catches the problem before that happens.
+Reading these together
+None of these moments are dramatic on their own. That's exactly the point — these four values aren't tested in a crisis, they're tested in the hundred small decisions on an ordinary busy shift that nobody else will ever see or ask about. The brand's next thirty years are built out of exactly these moments, repeated correctly, site after site, shift after shift.
+1.3 How to use this manual
+Manual structure & navigation
+Introduction
+This chapter explains how the Imran’s Diner Franchise Operations Manual is organised and how franchisees, managers, and team members should navigate it. The manual is the single authoritative source for every standard operating procedure, policy, and compliance requirement across all Imran’s Diner locations. It is structured into six categories, each covering a distinct operational domain, and every chapter follows the same five-heading SOP format to ensure consistency and ease of reference.
+Minimum Operating Standards
+The manual is divided into six categories: (1) Introduction, (2) New Business Setup & Support, (3) People, (4) Marketing & Promotion, (5) Day-to-Day Operating Requirements, and (6) Development, Growth & Profit.
+Each category contains numbered sections (e.g. 3.2 Roles & Responsibilities), and each section contains individually titled chapters.
+Every chapter follows a standardised five-heading structure: Introduction, Minimum Operating Standards, Roles & Responsibilities, Measure Analyse Improve, and Tools & Resources.
+Highlighted text marks information still awaiting confirmation from the Owner. A chapter must not be treated as complete until every highlighted item has been confirmed and approved.
+Chapters tagged [TOOL-REFERENCED] describe how to use an external tool or deliverable; they do not contain the tool's own content.
+All team members must be able to locate and reference relevant chapters within this manual. A printed quick-reference guide summarising chapter locations should be displayed in the back-of-house area of every unit.
+The manual must be held as a single controlled master copy in one digital location, with view-only access for sites and edit rights held by Head Office only (see Update/version control process). No printed or locally saved copies may be treated as current.
+Roles & Responsibilities
+Franchise Owner / Operator: Ensures the manual is available, current, and that all staff are trained on relevant chapters.
+Unit Manager (currently Owner): Acts as the first point of reference for staff questions about manual content; ensures day-to-day compliance with SOPs.
+Team Members: Responsible for reading, understanding, and following the chapters relevant to their role.
+Imran’s Diner Head Office (franchisor): Issues updates, version-controlled amendments, and new chapters as the brand evolves.
+Measure Analyse Improve
+Compliance with manual navigation standards should be assessed during onboarding (every new starter must complete a manual orientation within their first week) and during periodic operational audits. Audit criteria should include: (a) manual is accessible and up to date at the unit, (b) staff can locate key chapters when asked, and (c) quick-reference guide is displayed. Any gaps identified should be addressed within 24 hours of the audit.
+Tools & Resources
+Quick-reference guide (printed summary of chapter locations for back-of-house display). Controlled digital master copy of the manual, hosted and administered by Head Office. Onboarding checklist (see Chapter 3.1 — Onboarding checklist).
+Update/version control process
+Introduction
+This chapter sets out the process for updating, amending, and version-controlling the Imran’s Diner Franchise Operations Manual. A franchise manual is a living document; as regulations change, the brand evolves, and operational learnings accumulate, the manual must be kept current. Without a disciplined version control process, franchisees risk operating against outdated procedures, creating compliance exposure and brand inconsistency.
+Minimum Operating Standards
+All updates to the manual must be issued by Imran’s Diner Head Office. Franchisees must not alter, annotate, or create local versions of any chapter.
+Each update must carry a version number (format: v[major].[minor], e.g. v1.3), an effective date, and a brief change summary.
+A master changelog must be maintained at the end of the manual (or as a separate controlled document) listing every version, what changed, and who approved it.
+When an updated chapter is issued, the previous version must be archived (not deleted) and the new version must be distributed to all franchisees immediately. A change is never distributed after it takes effect: the effective date must allow at least the lead time set out in Network rollout and change adoption (5 working days for standard changes, 48 hours for urgent or regulatory changes). Franchisees must acknowledge receipt before the effective date.
+Franchisees must acknowledge receipt of each update in writing (digital signature or email confirmation is acceptable).
+The manual should be reviewed in full at least once per year, with the annual review date recorded in the changelog.
+Emergency amendments (e.g. regulatory changes with immediate effect) may be issued outside the normal cycle but must follow the same version-numbering and distribution process.
+Roles & Responsibilities
+Imran’s Diner Head Office: Owns the master document; drafts, approves, and distributes all updates; maintains the changelog and archive.
+Franchise Owner / Operator: Acknowledges receipt of updates; ensures the current version is the only version accessible to staff; flags any content that may need revision based on operational experience.
+Unit Manager (currently Owner): Communicates relevant changes to the team; updates any printed quick-reference materials.
+Measure Analyse Improve
+Track the following: (a) percentage of franchisees who have acknowledged the latest version within the target distribution window, (b) number of updates issued per year, (c) time between identification of a required change and distribution of the updated chapter. During operational audits, verify that the unit is operating from the current version. Any unit found using an outdated version must update immediately and record a corrective action.
+Tools & Resources
+Master changelog (maintained by Head Office). Version-controlled document repository administered by Head Office. Franchisee acknowledgement tracker (spreadsheet or digital form).
+Who to contact with questions
+Introduction
+This chapter provides a clear contact framework so that franchisees, managers, and team members know exactly who to approach for different categories of question or issue. In a franchise operation, misdirected queries waste time and delay resolution. A defined contact structure ensures the right person handles the right issue at the right level.
+Minimum Operating Standards
+Every Imran’s Diner unit must have a visible contact sheet displayed in the back-of-house area listing key contacts for: day-to-day operations, HR/people issues, food safety/compliance, marketing, IT/systems, and Head Office escalation.
+Day-to-day operational questions (product, service, scheduling) should be directed to the Unit Manager (currently Owner) as first point of contact.
+HR and employment matters (contracts, leave, absence, disciplinary, grievance, dismissal) are the franchisee’s responsibility as the employer. The franchisee must take their own independent HR advice; Head Office can offer general guidance only and does not provide accredited HR or employment-law advice. The first port of call is always Acas (acas.org.uk; helpline 0300 123 1100, Monday to Friday, 8am to 6pm). Franchise partners with persistent or complex HR issues should consider keeping an HR advisory company on retainer. Head Office must be made aware of any formal disciplinary, grievance, dismissal or employment tribunal matter.
+Food safety and regulatory compliance questions should be directed to the designated food safety lead within the unit (see Chapter 3.6 — HACCP/food safety procedures).
+Marketing requests and brand usage queries should be directed to Imran’s Diner Head Office marketing contact.
+IT, EPOS, the rota/scheduling system, or due diligence system technical issues should be reported to the relevant system provider's support channel, with the Unit Manager coordinating.
+Any question that cannot be resolved at unit level must be escalated to Head Office using the support categories and response times set out in Chapter 6.5 (Support model & SLAs). Food safety, allergen and health & safety emergencies are escalated immediately. All other unresolved questions are escalated within one business day of it becoming clear they cannot be resolved locally.
+“Head Office” in this manual means the Imran’s Diner franchisor function. Until a dedicated franchise support team is in place, this is the Owner (Tawheed). Head Office contact details are set out on the Head Office Contact Details page at the front of this manual. Email is the standard route for all non-emergency queries. Food safety, allergen and health & safety emergencies are raised by phone using the emergency number on that page. Basic questions about this manual are answered in the first instance by the manual platform's built-in assistant.
+
+Roles & Responsibilities
+Team Members: Direct questions to the Unit Manager first; use the contact sheet for specialist queries.
+Unit Manager: First point of contact for all operational queries; triages and escalates where necessary.
+Franchise Owner / Operator: Acts as the employer on all HR matters and takes independent HR advice (Acas first); informs Head Office of formal HR matters; acts as the link between the unit and Head Office.
+Imran’s Diner Head Office: Provides support on brand, compliance, marketing, and strategic matters; offers general, non-accredited guidance on HR matters; maintains and updates the contact sheet template.
+Measure Analyse Improve
+Monitor escalation volume and resolution times quarterly. A high volume of queries reaching Head Office that should have been resolved at unit level may indicate a training gap. During audits, check that the contact sheet is displayed and current. Update the contact sheet whenever personnel or provider details change.
+Tools & Resources
+Back-of-house contact sheet (template issued by Head Office). Escalation log (simple spreadsheet or notebook tracking queries escalated beyond unit level, with date, subject, and resolution). System provider support contacts (EPOS, the rota/scheduling system, due diligence system). Acas helpline and website (acas.org.uk, 0300 123 1100). HR advisory company on retainer, where the franchisee has chosen to use one.
+Network rollout & change adoption process
+Introduction
+This chapter defines how new or updated procedures are rolled out across the Imran’s Diner network and how adoption is verified. Version-controlling the manual (see Update/version control process) ensures the document is accurate; this chapter ensures the people actually change what they do. The distinction matters: a franchisee can acknowledge receipt of an update and still not implement it. This process becomes operationally critical once the network extends beyond a single owner-operated unit, but defining it now means the mechanism is ready before it is needed.
+Minimum Operating Standards
+Every procedural change issued by Head Office must follow a four-step rollout cycle: (1) Communicate — notify all affected franchisees and unit managers of the change, its rationale, and its effective date, with a minimum lead time of 5 working days for standard changes, and 48 hours for urgent or regulatory changes. (2) Train — provide the training or briefing materials needed to implement the change (written guidance, video walkthrough, or in-person briefing depending on complexity). (3) Implement — the change takes effect on the stated date; franchisees confirm implementation. (4) Verify — Head Office confirms adoption through the next scheduled operational audit, a targeted spot-check, or a remote compliance check.
+Changes must be classified by impact level: Minor (wording update, no behavioural change required — communicate only), Moderate (new procedure or amended standard — communicate + train), Major (significant operational shift, new system, or regulatory-driven change — full four-step cycle with dedicated training and verification).
+Franchisees must confirm implementation of Moderate and Major changes in writing within 5 working days of the effective date. Non-confirmation triggers a follow-up from Head Office.
+Resistance or non-adoption identified during verification must be escalated to the Franchisee Support function (see Chapter 6.5 — Support model & SLAs). Persistent non-adoption is a performance issue and should be addressed through the remediation process.
+A rollout log must be maintained by Head Office recording: change reference, classification, communication date, training delivered, effective date, confirmation received (by unit), and verification outcome.
+For multi-unit rollouts, Head Office may designate a pilot unit to test the change before full network deployment. Pilot feedback must be incorporated before the wider rollout proceeds.
+Roles & Responsibilities
+Head Office: Owns the rollout cycle; classifies changes; prepares communication and training materials; tracks confirmation and verification.
+Franchise Owner / Operator: Receives and acknowledges changes; ensures implementation at unit level; confirms adoption in writing; escalates practical barriers.
+Unit Manager (currently Owner): Briefs the team on changes; adjusts daily operations as required; provides feedback on implementation challenges.
+Measure Analyse Improve
+Track: (a) percentage of franchisees confirming implementation within the target window, (b) number of changes classified as Major vs. Moderate vs. Minor per quarter, (c) verification pass rate (percentage of units confirmed as adopted at next audit), (d) average time from communication to confirmed adoption. A low verification pass rate or high resistance rate may indicate that changes are being pushed too frequently, communicated poorly, or not adequately supported with training.
+Tools & Resources
+Rollout log (Head Office — spreadsheet or project management tool). Change communication template (standard format: what changed, why, what to do, effective date, who to contact). Training materials (per change — written guide, video, or briefing deck as appropriate). Implementation confirmation form (digital — email reply or form submission).
+1.4 Brand standards overview
+Logo & visual identity summary
+Current status (interim — until brand alignment is signed off)
+No single approved Imran’s Diner identity has been signed off yet. Several iterations of the logo and signage are currently live in store. YSF Advisory is leading a separate brand alignment piece with Tawheed to agree one approved identity, which will then be documented in full in Category 4 (Brand guidelines). A copy of the current signage artwork has been requested from Imperial Signs so it is held on file.
+Until the approved identity is issued, no signage may be ordered, no material printed and no branded asset (menus, flyers, packaging, social media graphics) produced unless it uses artwork supplied and approved in writing by Head Office. This applies the “Brand control” non-negotiable in Chapter 1.4 (Non-negotiables at a glance).
+Non-negotiables at a glance
+Every Imran's Diner unit. Every day. No exceptions.
+This page is designed to be pinned to a wall, not filed in a folder. If a surprise visit happened right now, these are the thirteen things checked first — and the thirteen things a unit can be shut down over if they're not being done.
+Cleanliness and hygiene. The premises and the staff are clean, every shift. All staff have completed a health and safety food hygiene course before they work.
+Temperature and food safety records. Fridge, freezer, hot hold and probe checks logged daily. Date labelling and stock rotation followed. Allergen information given correctly every time — never guessed.
+Minimum hygiene rating. Units must hold a 5 and never operate below a 4.
+SOPs followed exactly. Recipes and processes as written, using the correct measuring tools. No shortcuts, no personal adjustments.
+Menu integrity. No items added, removed or altered. No portion changes. Nothing goes on the menu without head office approval.
+Approved suppliers only. Every ingredient comes from an approved supplier. No local substitutions, whatever the reason.
+Customer greeting and service. Every customer greeted correctly and dealt with properly. No exceptions on busy days.
+Uniform. Uniform on point at all times. Staff are representing the brand.
+Cross-training and teamwork. Staff are cross-trained so they can assist other team members. The unit works as a team, not as individuals in fixed roles.
+Every sale through the till. No off-till cash. Ever.
+Reporting on time. Weekly sales figures and payments submitted by the set day.
+Brand control. No own signage, leaflets, social media accounts or promotions without head office sign-off.
+Right to work and training. Right-to-work checks completed and recorded before anyone starts. No one works unsupervised until training is signed off.
+These thirteen aren't a summary of the manual — they're the floor underneath it. Everything else in this document explains how to hit these standards well. This page exists so nobody ever has an excuse for not knowing what "well" means at a minimum.
+2. New Business Setup & Support
+2.1 Site selection criteria
+Demographic & footfall requirements
+Most franchise manuals open this chapter with a minimum footfall figure — "X thousand passers-by a day" — because it's an easy line to write and an easy box to tick. Imran's Diner deliberately doesn't work that way, because that number doesn't actually predict whether a site performs. Plenty of high-traffic locations underperform once you look at who's actually walking past and whether they're the kind of customer this menu is built for. A single target figure would screen out sites that would work and wave through sites that won't — so instead of a threshold, every site gets tested against the catchment itself.
+The count: what actually gets measured
+Every candidate site is manually counted across three windows: a weekday, a weekend, and an evening. That's not a box-ticking exercise — it's there because a site's traffic pattern tells you almost as much as its volume. A site that's busy at weekday lunch and dead by 8pm is a very different proposition to one that holds steady into the evening, and QSR takeaway trade leans heavily on evenings and weekends. The count gets read against the local catchment — who's actually there, what they're doing, and whether that matches the kind of order Imran's is built to win — rather than compared to a fixed number pulled from a different site in a different town.
+Target customer: broad, not narrow
+Imran's isn't chasing a specific age band or income bracket. The customer is value-led and broad-based by design, which means the fit-out and price point are the things that flex to match whatever the local catchment already looks like — not the other way round. A site isn't filtered out because the surrounding area skews older, younger, more affluent or less affluent than some assumed "ideal" customer.
+Proximity: genuine anchors, not passive footfall
+The proximity test isn't "is this near something." It's whether the site sits next to a genuine footfall anchor — a transport hub, a retail park, a supermarket — somewhere people are already going for another reason, rather than an isolated unit relying entirely on its own pull.
+The school exclusion zone: a planning check, not a selection criterion
+One thing gets screened on every site, but it isn't a target — it's a legal check. Several UK councils, including Leeds, Manchester and Bristol, operate 400-metre exclusion zones around schools that block new takeaways from opening within them. This has to be checked against the relevant local authority's planning policy before any site is shortlisted, because a site that fails this check is dead on arrival regardless of how strong the footfall or catchment fit is.
+The decision rule: what a pass looks like
+Who decides. The franchisee (or prospective franchisee) completes the three-window count and the catchment read and submits them with the site proposal. Head Office (currently the Owner) reviews the submission and issues the written decision set out in Chapter 2.1 (Sign-off & approval process). No site is committed to — no heads of terms, no deposit — before that decision is issued.
+What it is judged against. A site must pass all five gates below. Failing any one gate means the site is rejected, however strong it looks on the others.
+Gate 1 — Planning. The school exclusion zone and local takeaway planning policy check is clear. - Define the school exclusion zone.
+Gate 2 — Anchor. The site sits within a short walk of a genuine footfall anchor: close enough that people arriving at the anchor pass the unit without deviating. Head Office judges this on a site visit at trading hours, not on a map. The anchor must generate footfall in the trading window; a supermarket that closes at 6pm is not an evening anchor.
+Gate 3 — Trading pattern. The site trades evening and weekend-led. Evening footfall (after 6pm) is at least equal to the weekday daytime count, and Saturday footfall is at least 1.5 times a typical weekday. A site where footfall collapses after 6pm fails this gate regardless of its daytime numbers. The site should be in city or town centre proximity, but it does not have to be on the high street: a strong secondary parade or a leisure cluster with evening trade is acceptable, and often cheaper.
+Gate 4 — Occupancy cost. Total occupancy costs (rent, business rates and service charge) are at or below 8% of projected sales. A site between 6% and 8% is viable; below 6% is strong. Anything above 8% fails this gate and is rejected, unless it is the designated flagship.
+Gate 5 — Sales potential. Projected annual sales, based on the count, catchment read and comparable trading data, support the £1.2m site benchmark set out in Chapter 1.1 (Vision & long-term ambition). For a first site in a new city outside Sheffield, where there is no local brand awareness to trade on, the benchmark is £1.0m in year one, rising to the full £1.2m from year two. This allowance applies once per city, to the first unit only.
+Borderline sites. Where a site passes every gate but only narrowly on one or more, Head Office may still approve it, but must record in writing which gate was marginal and why the site is being approved.
+Site type policy (no outright exclusions)
+No site type is excluded outright
+Imran’s Diner does not rule out any type of location. High street, shopping centre, retail park, service station and shopping mall sites are all eligible. What decides a site is whether the numbers work.
+The test. Total occupancy costs — rent, business rates and service charge — must stay at or below 8% of projected sales. A site between 6% and 8% is viable; below 6% is strong. Anything above 8% fails and is rejected, unless it is the designated flagship. This is Gate 4 of the site decision rule in Chapter 2.1 (Demographic & footfall requirements). A site that fails this test is rejected whatever its type, unless it is the designated flagship below.
+The one deliberate exception: the flagship
+One designated flagship site is chosen for visibility and brand statement as much as for return. It is the site the brand gets judged by, so it may take a stronger location at a higher occupancy cost than the standard test would allow. The flagship designation is made by Head Office only and applies to one site at a time. No flagship site is designated at present. Head Office will designate one when the network has the density and support infrastructure to carry a site that trades below the standard occupancy test; this is not expected before the regional network described in Chapter 1.1 is in place. Until a flagship is designated, every site is assessed against the full five-gate rule with no exemption.
+The standing rule: fit in with the street
+In lower-income areas, the shopfront and fit-out must match the character of the businesses already there. Imran’s Diner does not try to look upmarket or out of place next to its neighbours — that is how a site loses the trust of the people walking past. The core brand elements stay fixed; the level of finish flexes to the street. See Chapter 2.2 (Front-of-house layout standards and Signage & branding installation).
+Why franchisees are told this
+Franchisees will ask why a site type was or was not approved. The answer is always the same: the occupancy cost test and the site decision rule, not the category of location.
+Lease/property evaluation checklist
+Introduction
+This chapter provides a structured checklist for evaluating prospective lease and property opportunities for new Imran’s Diner units. A thorough property evaluation protects the franchisee from signing a lease that is commercially unviable or operationally unsuitable. This checklist should be completed in full before any lease is signed or heads of terms are agreed.
+Minimum Operating Standards
+Every prospective site must be evaluated against a standardised checklist before a lease commitment is made. No lease may be signed without Head Office sign-off (see Sign-off & approval process chapter).
+Physical requirements: the unit must be large enough to accommodate the approved kitchen equipment list and front-of-house layout (Chapter 2.2) without compromising service flow. Head Office issues the reference floor area (total, kitchen and front of house), measured from the Sheffield unit, and provides it to every franchisee before site search begins. No lease is signed, and no heads of terms agreed, on a unit whose measured areas fall short of the reference without written Head Office approval. The definitive layout and equipment fit is confirmed on site during the menu engineering process, but that process confirms a workable unit; it does not rescue one that is too small. Also required: adequate ventilation/extraction capacity for kitchen operations, access to appropriate water supply and drainage, sufficient electrical capacity for commercial kitchen equipment, and customer-accessible WC facilities compliant with Building Regulations Approved Document M (access to and use of buildings).
+Lease terms to evaluate: lease duration and break clauses, rent review mechanism (typically every 3-5 years in the UK on a full-repairing-and-insuring, or FRI, basis; upward-only rent reviews are common), responsibility for fit-out costs, landlord contributions, dilapidations obligations, permitted-use clause (planning use class must allow the intended food/takeaway use — see below), security of tenure under the Landlord and Tenant Act 1954 (or a contracted-out lease), exclusivity clauses (restricting competing food tenants), and any restrictions on signage or external branding.
+Site type: no location type is excluded outright (see Chapter 2.1 — Site type policy). Every site, including shopping centre and mall units, must pass the occupancy cost test of 8% of projected sales, with only the designated flagship exempt.
+Accessibility: the unit should comply with UK accessibility requirements (Building Regulations Approved Document M) and the Equality Act 2010 duty to make reasonable adjustments for disabled customers, covering wheelchair access, accessible WC provision, and accessible counter height.
+Planning and licensing: confirm the property has, or can obtain, planning permission for the intended use. A hot food takeaway is classed as 'sui generis' (not part of Class E) under the Town and Country Planning (Use Classes) Order 1987, so a specific change-of-use planning application is almost always required — check for local 'hot food takeaway exclusion zone' policies (commonly applied within 400m of schools) before committing to a site. If the unit will trade between 11pm and 5am, a Late Night Refreshment authorisation under the Licensing Act 2003 is also required.
+Environmental: check for any known contamination, asbestos (common in UK buildings built before 2000), noise restrictions, or waste disposal limitations.
+A completed checklist must be submitted to Head Office as part of the site approval pack.
+Roles & Responsibilities

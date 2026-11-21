@@ -1,0 +1,13 @@
+{
+ "issue": "04-kenya",
+ "why": "Source the 15-minute service test under the white-space headline to Harlyy's wait analysis [S57].",
+ "base": "videos/franchise-entry-report/issues/04-kenya/revisions/2026-11-09T16-32-29-edit/issue.json",
+ "at": "2026-11-09T16:34:19.428Z",
+ "edits": [
+  {
+   "path": "white.intro",
+   "find": "serve inside 15 minutes?",
+   "replace": "serve inside 15 minutes? 91% of Nairobi wait complaints name 15 minutes or more [S57]."
+  }
+ ]
+}

@@ -1,0 +1,50 @@
+<template>
+  <style>
+    @font-face { font-family: "Newsreader"; font-weight: 300; src: url("assets/fonts/newsreader-latin-300-normal.woff2") format("woff2"); }
+    @font-face { font-family: "Archivo"; font-weight: 500; src: url("assets/fonts/Archivo-Medium.ttf") format("truetype"); }
+    @font-face { font-family: "Archivo"; font-weight: 400; src: url("assets/fonts/Archivo-Regular.ttf") format("truetype"); }
+    :root { --bone: #f3f2f2; --ink: #201e1d; --red: #ec3013; --deep: #b6240e; --sand: #e9d8bd; --grey: #736e6b; }
+    #root { position: absolute; inset: 0; background: var(--bone); color: var(--ink); overflow: hidden; font-variant-numeric: tabular-nums; }
+    .kick { position: absolute; left: 86px; font: 500 28px/1 "Archivo", sans-serif; letter-spacing: .22em; color: var(--deep); white-space: nowrap; }
+    .serif { position: absolute; font-family: "Newsreader", serif; font-weight: 300; letter-spacing: -0.01em; white-space: nowrap; }
+    .sans { position: absolute; font-family: "Archivo", sans-serif; font-weight: 500; white-space: nowrap; }
+    .foot { position: absolute; left: 86px; top: 1030px; font: 500 28px/1 "Archivo", sans-serif; letter-spacing: .18em; color: var(--grey); white-space: nowrap; }
+    .abs { position: absolute; }
+    .grey { color: var(--grey); }
+    
+    #ground { left: 86px; top: 830px; width: 908px; height: 5px; background: var(--ink); }
+    #sh1 { left: 86px; top: 848px; width: 112px; height: 150px; } #sh10 { left: 540px; top: 848px; width: 112px; height: 150px; }
+    .num { font-size: 64px; line-height: 1; } .lab { font-size: 30px; line-height: 1.1; }
+    #k { top: 150px; }
+    #l1 { left: 298px; top: 554px; } #l10 { left: 752px; top: 671.28px; }
+    #l1 .pct, #l10 .pct { position: static; display: block; font-size: 84px; line-height: 1; } #l1 .of, #l10 .of { position: static; display: block; font-size: 30px; margin-top: 8px; }
+  </style>
+  <div id="root" data-composition-id="targeting" data-width="1080" data-height="1350">
+
+    <div id="k" class="kick">TARGETING</div>
+    <div id="b1" class="abs" style="left:86px;top:310px;width:190px;height:520px;border:5px solid #201e1d;box-sizing:border-box;overflow:hidden"><div class="seg" data-i="0" style="left:0;width:190px;top:234px;height:286px;background:#201e1d;"></div><div class="seg" data-i="1" style="left:0;width:190px;top:130px;height:104px;background:#e9d8bd;border-top:3px solid #f3f2f2;"></div><div class="seg" data-i="2" style="left:0;width:190px;top:78px;height:52px;background:#e9d8bd;border-top:3px solid #f3f2f2;"></div><div class="seg" data-i="3" style="left:0;width:190px;top:0px;height:78px;background:#e9d8bd;border-top:3px solid #f3f2f2;"></div></div><div id="b10" class="abs" style="left:540px;top:492px;width:190px;height:338px;border:5px solid #201e1d;box-sizing:border-box;overflow:hidden"><div class="seg" data-i="0" style="left:0;width:190px;top:189.27999999999997px;height:148.72px;background:#201e1d;"></div><div class="seg" data-i="1" style="left:0;width:190px;top:121.67999999999995px;height:67.6px;background:#e9d8bd;border-top:3px solid #f3f2f2;"></div><div class="seg" data-i="2" style="left:0;width:190px;top:67.59999999999991px;height:54.08px;background:#e9d8bd;border-top:3px solid #f3f2f2;"></div><div class="seg" data-i="3" style="left:0;width:190px;top:33.799999999999955px;height:33.8px;background:#e9d8bd;border-top:3px solid #f3f2f2;"></div><div class="seg" data-i="4" style="left:0;width:190px;top:-5.684341886080802e-14px;height:33.8px;background:#e9d8bd;border-top:3px solid #f3f2f2;"></div></div>
+    <div id="ground" class="abs"></div>
+    <img id="sh1" class="abs" src="assets/shops/site-1.svg" alt="" /><img id="sh10" class="abs" src="assets/shops/site-10.svg" alt="" />
+    <div id="l1" class="abs"><span class="serif pct" id="p1">0%</span><span class="sans of">of £20,000</span></div>
+    <div id="l10" class="abs"><span class="serif pct" id="p10">0%</span><span class="sans of">of £13,000</span></div>
+    <div class="foot">ILLUSTRATIVE FIGURES, WEEKLY</div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    const pop = (sel, t, y = 12) => tl.fromTo(sel, { opacity: 0, y }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, t);
+    const rise = (sel, t, d = 0.9) => tl.fromTo(sel, { clipPath: "inset(100% 0 0 0)" }, { clipPath: "inset(0% 0 0 0)", duration: d, ease: "power3.out" }, t);
+    const count = (sel, to, t, fmt, d = 1.1) => { const o = { v: 0 }; tl.to(o, { v: to, duration: d, ease: "power3.out", onUpdate: () => { document.querySelector(sel).textContent = fmt(Math.round(o.v)); } }, t); };
+    const poses = (list, cur, t) => list.forEach((p) => tl.set(p, { opacity: p === cur ? 1 : 0 }, t));
+    const gbp = (n) => "£" + n.toLocaleString("en-GB");
+    
+    tl.fromTo("#k", { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, 0.1);
+    rise("#b1", 0.1, 0.8); rise("#b10", 0.2, 0.8);
+    pop("#l1", 4.815); count("#p1", 55, 4.815, (n) => n + "%", 1.0);
+    pop("#l10", 8.22); count("#p10", 44, 8.22, (n) => n + "%", 1.0);
+    // the target stands out: the other groups step back
+    tl.to("#b1 .seg:not([data-i='0'])", { opacity: 0.55, duration: 0.5, ease: "power3.out" }, 5.415);
+    tl.to("#b10 .seg:not([data-i='0'])", { opacity: 0.55, duration: 0.5, ease: "power3.out" }, 8.82);
+    tl.set({}, {}, 13.658);
+    window.__timelines["targeting"] = tl;
+  </script>
+</template>

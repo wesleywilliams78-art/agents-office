@@ -1,0 +1,645 @@
+{
+  "issue": 5,
+  "country": "Denmark",
+  "dateLong": "20 NOV 2026",
+  "colour": "#FF3131",
+  "verified": "OCT 2026",
+  "accessed": "30 Oct 2026",
+  "cover": {
+    "verdict": "Open on paper, costly in practice. Burger, chicken and a second bakery-café all have room, but the partner decides who wins: KFC lost every Danish site when its one franchisee failed.",
+    "stats": [
+      {
+        "big": "6.04m",
+        "label": "people, a third of them in the Capital Region"
+      },
+      {
+        "big": "+42%",
+        "label": "restaurant and hotel prices above the EU average, 2025"
+      },
+      {
+        "big": "25%",
+        "label": "VAT on eating in and takeaway alike"
+      }
+    ]
+  },
+  "market": {
+    "headline": "Rich and eating out, but restaurant prices sit 42% above the EU",
+    "intro": "Denmark is rich and small. Spending on eating out is still rising, but consumer confidence fell sharply in October.",
+    "tiles": [
+      {
+        "label": "Population",
+        "big": "6.04m",
+        "body": "6,038,638 on 1 Sep 2026, up 0.45% in a year (Estimate). The Capital Region holds 32.3% (Estimate), so entry means Copenhagen first.",
+        "src": "Statistics Denmark [S1]"
+      },
+      {
+        "label": "GDP per head",
+        "big": "€69,550",
+        "body": "2025, about 167% of the EU27 average of €41,770 (Estimate: simple division). About £58,200 at 23 Oct 2026 rates (Estimate).",
+        "src": "Eurostat [S2] · Nationalbanken [S3]"
+      },
+      {
+        "label": "Food-service spend",
+        "big": "DKK 85.7bn",
+        "body": "Household spend on restaurants and hotels, 2025. Up 6.6% in value and 2.8% in volume (Estimate). About £9.6bn. Restaurants alone turned over DKK 60.7bn in 2024.",
+        "src": "Statistics Denmark [S4, S5]"
+      },
+      {
+        "label": "Franchise count",
+        "big": "Not found",
+        "body": "There is no official count. The franchise association publishes no system or outlet total we could find.",
+        "src": "Searched: Dansk Franchise Forening; Chambers 2025 [S6]"
+      },
+      {
+        "label": "Consumer spending",
+        "big": "+2.7%",
+        "body": "Real household consumption, Q2 2026 on a year earlier (Estimate). Confidence fell to −17.2 in October, from −13.7. Restaurant and hotel prices rose 5.2% in the year to September, against 2.2% overall.",
+        "src": "Statistics Denmark [S7, S8, S9]"
+      },
+      {
+        "label": "Currency",
+        "big": "£1 = DKK 8.93",
+        "body": "€1 = DKK 7.47 on 23 Oct 2026. The policy rate has been 2.10% since 11 Sep and was unchanged on 29 Oct. It moves with the ECB, so check it before you borrow.",
+        "src": "Nationalbanken [S3, S10, S77] · ECB [S11]"
+      }
+    ],
+    "eatsTitle": "How Denmark eats out",
+    "eatsNote": "HORESTA's 2023 survey is the newest edition found.",
+    "eats": [
+      {
+        "label": "Visits a year",
+        "big": "88",
+        "body": "per person in 2023, about 1.7 a week, down from 90. People in their 20s go 143 times; over-65s 39. In Nov 2025, 70% had eaten out in the past month.",
+        "src": "HORESTA with Kantar Gallup [S12] · Voxmeter for L&F [S13]"
+      },
+      {
+        "label": "Price level, EU = 100",
+        "big": "142",
+        "body": "Restaurant and hotel prices, 2025, down from 153.6 in 2023. About 15% above Sweden (Estimate: ratio of the indices).",
+        "bars": [
+          {
+            "label": "Denmark",
+            "value": 142,
+            "show": "142"
+          },
+          {
+            "label": "Norway",
+            "value": 139.7,
+            "show": "140"
+          },
+          {
+            "label": "Sweden",
+            "value": 123.4,
+            "show": "123"
+          }
+        ],
+        "src": "Eurostat prc_ppp_ind_1, 9 Jul 2026 [S14]"
+      },
+      {
+        "label": "Capital Region",
+        "big": "49.9%",
+        "body": "of restaurant turnover in 2023, against 32.3% of residents. Copenhageners eat out 126 times a year.",
+        "src": "HORESTA [S12] · Statistics Denmark [S1]"
+      }
+    ],
+    "sowhat": "Margins are thin. Restaurants kept 5.9% operating profit in 2024 (Estimate) and spent 37% of turnover on staff. Only 6% of people who ate dinner the day before had a takeaway. A lean, high-volume model fits; a labour-heavy seated one does not. [S5, S15, S12]"
+  },
+  "rising": {
+    "headline": "Burgers are growing, pizza chains have gone, and chicken is starting again",
+    "intro": "Ten categories, from company reports, press and official data. Counts are company or press figures, not our own locator counts.",
+    "rows": [
+      {
+        "cat": "Chicken",
+        "dir": "Mixed",
+        "evidence": "KFC had 11 sites when its franchisee went bankrupt in Jul 2025, all closed after a DR hygiene exposé. Nordic Service Partners announced a return on 9 Apr 2026 and reopened Field's in late May. A second site was reported in Aug (Thin). No Popeyes or Wingstop found.",
+        "src": "S16, S17, S18, S19",
+        "window": "Jul 2025 → Aug 2026",
+        "conf": "Medium",
+        "sat": "Low",
+        "entry": "Medium"
+      },
+      {
+        "cat": "Burger",
+        "dir": "Rising",
+        "evidence": "McDonald's: 107 (Estimate) to 113 sites at end 2024 and 121 at end 2025. Burger King: 58 planned by end 2022, 60th site in May 2025. MAX: 5 to 6. Five Guys opened 2 Copenhagen sites in 2026. Sunset Boulevard claims 47 (brand claim).",
+        "src": "S20, S21, S22, S23, S24, S25, S26, S27, S28, S29",
+        "window": "2022 → 2026",
+        "conf": "High",
+        "sat": "High",
+        "entry": "High"
+      },
+      {
+        "cat": "Pizza",
+        "dir": "Falling",
+        "evidence": "Domino's closed all 27 stores from Jun 2023, citing a small market that had not improved. Pizza Hut returned in 2024 and went bankrupt on 27 Nov 2025, closing 13 restaurants. No international pizza chain found trading now.",
+        "src": "S30, S31, S32, S33",
+        "window": "Jun 2023 → Nov 2025",
+        "conf": "High",
+        "sat": "Low",
+        "entry": "High"
+      },
+      {
+        "cat": "Kebab / grill",
+        "dir": "Not found",
+        "evidence": "No national chain with a published count. Roll 'n Eat lists 2 sites on Wolt, a listing, not a count. No German Doner Kebab found.",
+        "src": "S34",
+        "window": "Oct 2026",
+        "conf": "Thin",
+        "sat": "Not found",
+        "entry": "Thin"
+      },
+      {
+        "cat": "Coffee",
+        "dir": "Flat",
+        "evidence": "Espresso House: 61 company shops at end 2023; 61 plus 11 franchised at end 2024. Danish staff fell from 995 (2022) to 735 (2024). Starbucks had 17 stores under Salling Group (the source also says 18) before Berjaya took the licence in Aug 2024.",
+        "src": "S35, S36, S37",
+        "window": "2022 → 2024",
+        "conf": "Thin",
+        "sat": "High",
+        "entry": "High"
+      },
+      {
+        "cat": "Bakery / dessert",
+        "dir": "Rising",
+        "evidence": "Lagkagehuset had 108 Danish bakery-cafés in May 2025, 25 inside Meny. 2025 revenue rose 8.2% on six new stores, but it lost DKK 76.8m. Up to 10 openings planned for 2026. Dessert chains: Not found.",
+        "src": "S38, S39, S40",
+        "window": "May 2025 → Jun 2026",
+        "conf": "Medium",
+        "sat": "High",
+        "entry": "Medium"
+      },
+      {
+        "cat": "Bubble tea",
+        "dir": "Not found",
+        "evidence": "We searched for Gong Cha, Mixue, Chatime and Bubbleology. No international chain and no dated count. Independents only.",
+        "src": "Searched 28 Oct 2026",
+        "window": "Oct 2026",
+        "conf": "Thin",
+        "sat": "Low",
+        "entry": "Thin"
+      },
+      {
+        "cat": "Fast casual",
+        "dir": "Rising",
+        "evidence": "Taco Bell's first site is due at Fisketorvet in autumn 2026, and a job posting points to more in 2027. Joe & The Juice claims more than 70 Danish stores (undated brand claim) and targets 1,000 worldwide by 2028. One brand's signals only.",
+        "src": "S41, S42, S43, S44",
+        "window": "2026 → 2027",
+        "conf": "Thin",
+        "sat": "Medium",
+        "entry": "Medium"
+      },
+      {
+        "cat": "Plant-based",
+        "dir": "Not found",
+        "evidence": "No plant-based chain found. The only dated signal is McDonald's McPlant test in 14 restaurants in 2021, too old to read a direction.",
+        "src": "S45",
+        "window": "2021",
+        "conf": "Thin",
+        "sat": "Not found",
+        "entry": "Thin"
+      },
+      {
+        "cat": "Sushi",
+        "sub": "local category",
+        "dir": "Falling",
+        "evidence": "Sticks'n'Sushi had 12 Danish sites in Jan 2024 and 12 in Jul 2026; its growth is abroad. Letz Sushi closed on 6 Feb 2024 after years of losses, affecting 223 staff. Karma Sushi and Vaca went bankrupt in 2020.",
+        "src": "S46, S47, S48, S49",
+        "window": "Jan 2024 → Jul 2026",
+        "conf": "Medium",
+        "sat": "Medium",
+        "entry": "Medium"
+      }
+    ],
+    "chart": {
+      "title": "Units in Denmark, then and now",
+      "note": "Change in units from the first count to the latest. Company reports and press, not our own locator counts. McDonald's 2023 figure is an Estimate.",
+      "items": [
+        {
+          "label": "MAX",
+          "sub": "5 → 6 · 2022–25",
+          "delta": 1
+        },
+        {
+          "label": "McDonald's",
+          "sub": "107 → 121 · 2023–25",
+          "delta": 14,
+          "star": true
+        },
+        {
+          "label": "Burger King",
+          "sub": "58 → 60 · 2022–25",
+          "delta": 2
+        },
+        {
+          "label": "Espresso House (own)",
+          "sub": "61 → 61 · 2023–24",
+          "delta": 0
+        },
+        {
+          "label": "KFC",
+          "sub": "11 → 1 · Jul 25–May 26",
+          "delta": -10
+        },
+        {
+          "label": "Pizza Hut",
+          "sub": "13 → 0 · 2024–Nov 25",
+          "delta": -13
+        },
+        {
+          "label": "Domino's",
+          "sub": "27 → 0 · 2019–Jun 23",
+          "delta": -27
+        }
+      ],
+      "source": "Sources: MAX [S24, S25]; McDonald's [S20, S21]; Burger King [S22, S23]; Espresso House [S35, S36]; KFC [S16, S18]; Pizza Hut [S32, S33]; Domino's [S30, S31]."
+    },
+    "reading": {
+      "title": "What it means",
+      "paras": [
+        "Burgers are the one category clearly growing. McDonald's added **14 sites in two years**, and Five Guys arrived in 2026. [S20, S21, S26]",
+        "International pizza has **failed twice since 2023**. Domino's left, then Pizza Hut went bankrupt. [S30, S33]",
+        "Chicken is **starting again from almost zero**. KFC lost all 11 sites in 2025 and is back through the operator that runs 24 KFCs in Sweden. [S16, S17]"
+      ]
+    }
+  },
+  "white": {
+    "headline": "Burger, chicken and bakery are open. The partner decides who wins",
+    "intro": "Three gaps the evidence supports, and one marked Thin. Size is our judgement. In every one, the partner matters more than the gap.",
+    "gaps": [
+      {
+        "title": "Chicken, while KFC restarts",
+        "gap": "KFC went from 11 sites to none in 2025 and is rebuilding from one or two. No Popeyes or Wingstop found.",
+        "evidence": "Exit Jul 2025; return through Nordic Service Partners, 3 sites planned for 2026. [S16, S17, S18]",
+        "suits": "A proven chicken brand",
+        "route": "Master franchise to a Nordic multi-unit operator",
+        "size": "M",
+        "sizeText": "a window of one to two years while KFC rebuilds (judgement)",
+        "window": "2026–27"
+      },
+      {
+        "title": "Value burger in Copenhagen",
+        "gap": "Burgers are growing at high prices, and confidence is falling. A sharply priced burger has room.",
+        "evidence": "McDonald's 113 → 121; Five Guys entry 2026; price level 142; confidence −17.2. [S20, S21, S14, S8]",
+        "suits": "Brands with a lean, high-volume model",
+        "route": "Master or area franchise",
+        "size": "L",
+        "sizeText": "the largest growing category, and the most crowded"
+      },
+      {
+        "title": "A second bakery-café",
+        "gap": "Lagkagehuset is growing but still loses money. No second chain was found.",
+        "evidence": "108 Danish sites; revenue +8.2%; net loss DKK 76.8m in 2025. [S38, S39, S40]",
+        "suits": "Bakery-cafés with a tight cost model",
+        "route": "Master franchise or a retail partnership",
+        "size": "M",
+        "sizeText": "faces a 108-site leader"
+      },
+      {
+        "title": "Bubble tea",
+        "gap": "No international bubble tea chain found.",
+        "evidence": "Searches for four chains found none. Demand data: Not found.",
+        "suits": "A small-format brand willing to test",
+        "route": "One test site",
+        "size": "S",
+        "sizeText": "demand untested",
+        "thin": true
+      }
+    ],
+    "matrix": {
+      "intro": "Our reading of the page 3 evidence. Position is judgement, not measurement.",
+      "note": "Kebab and plant-based are left off: no data to place them. Source: WRW Hospitality analysis.",
+      "points": [
+        {
+          "name": "Chicken",
+          "x": 25,
+          "y": 75,
+          "hot": true
+        },
+        {
+          "name": "Burger",
+          "x": 80,
+          "y": 70
+        },
+        {
+          "name": "Bakery",
+          "x": 70,
+          "y": 55
+        },
+        {
+          "name": "Fast casual",
+          "x": 45,
+          "y": 55
+        },
+        {
+          "name": "Bubble tea",
+          "x": 15,
+          "y": 40
+        },
+        {
+          "name": "Sushi",
+          "x": 55,
+          "y": 30
+        },
+        {
+          "name": "Pizza",
+          "x": 35,
+          "y": 20
+        },
+        {
+          "name": "Coffee",
+          "x": 80,
+          "y": 25
+        }
+      ]
+    },
+    "position": {
+      "quote": "If I had a brand, whatever the format and wherever the gap, I would start with the right franchise partner. Everything else comes after that.",
+      "paras": [
+        "Three Nordic markets, one lesson. In Denmark, KFC lost all 11 sites in 2025 when its one franchisee failed, and is coming back through an operator that already runs KFCs in Sweden. Pizza Hut’s Danish business went bankrupt in Nov 2025, a year after it returned. Norway and Sweden told the same story. [S16, S17, S32, S33]",
+        "So chase any gap on this page only with a partner who already runs a global brand in the Nordics, can carry 25% VAT and about DKK 206 an hour all-in, and will hold your standard. Write hygiene audits into the deal from day one."
+      ]
+    }
+  },
+  "regulation": {
+    "headline": "Easy to set up, costly to staff, and no takeaway VAT break",
+    "intro": "Denmark is quick to enter and expensive to run. This page is not legal, tax or investment advice.",
+    "rows": [
+      {
+        "area": "Franchise law",
+        "text": "**No disclosure law.** No statute forces a franchisor to disclose before or after signing. Good faith still applies, and misrepresentation can void the deal.",
+        "src": "S6"
+      },
+      {
+        "area": "Trade mark",
+        "text": "DKPTO: DKK 2,400 including one class, DKK 240 for the first extra class, DKK 720 for each further one. A decision usually takes 4 to 6 weeks. **An EU trade mark covers Denmark;** a UK mark does not.",
+        "src": "S50, S51, S52"
+      },
+      {
+        "area": "Food safety",
+        "text": "Register with Fødevarestyrelsen before opening. **The smiley at the door shows the last 3 inspections.** Each site pays an annual campaign fee from DKK 583, indexed.",
+        "src": "S53, S54, S55"
+      },
+      {
+        "area": "Alcohol",
+        "text": "Licence from the municipal board, applied for through the police, for up to 8 years. **Restaurants close 24:00 to 05:00** without an extended-hours permit. Fees: Not found.",
+        "src": "S56"
+      },
+      {
+        "area": "Halal",
+        "text": "**Stunning is compulsory.** Ritual slaughter is allowed only with prior stunning, in a slaughterhouse. Rules on importing meat from unstunned slaughter: Not found.",
+        "src": "S57"
+      },
+      {
+        "area": "Tax",
+        "text": "**VAT is 25% on eating in and takeaway alike.** Corporate tax is 22%. Royalty withholding is 22%, or 0% to a UK beneficial owner under the treaty.",
+        "src": "S58, S59, S60, S61"
+      },
+      {
+        "area": "Company set-up",
+        "text": "An ApS needs DKK 20,000 capital (DKK 40,000 before 27 Feb 2025) and a DKK 670 fee. No nationality or residence rule for founders.",
+        "src": "S62, S63, S64"
+      }
+    ],
+    "tiles": [
+      {
+        "label": "VAT",
+        "big": "25%",
+        "body": "One rate for eating in and takeaway. No reduced rate for food.",
+        "src": "S58, S59"
+      },
+      {
+        "label": "Royalty withholding",
+        "big": "0%",
+        "body": "To a UK franchisor under the treaty, against 22% without it.",
+        "src": "S60"
+      },
+      {
+        "label": "Company capital",
+        "pre": "DKK",
+        "big": "20,000",
+        "body": "ApS share capital, plus a DKK 670 registration fee.",
+        "src": "S62, S63"
+      }
+    ],
+    "wage": {
+      "title": "The wage engine",
+      "sub": "What every DKK 100 of pay costs the employer",
+      "parts": [
+        {
+          "label": "Pay 100.00",
+          "value": 100,
+          "short": "Pay"
+        },
+        {
+          "label": "Holiday pay and supplement 22.35",
+          "value": 22.35,
+          "short": "Holiday"
+        },
+        {
+          "label": "Employer pension 11.00 (Thin)",
+          "value": 11,
+          "short": "Pension"
+        },
+        {
+          "label": "Statutory costs 5.60",
+          "value": 5.6,
+          "short": "Statutory"
+        }
+      ],
+      "total": "≈ DKK 138.95 (Estimate)",
+      "method": "Holiday pay 12.5% (Ferieloven) and special pay supplement 9.85% from 1 Mar 2026. Employer pension 11%, from a secondary source only (Thin). Statutory costs of about DKK 16,000 a year per full-time employee, or 5.6% of the floor's annual pay. All on base pay; adult day shifts; no evening, weekend, overtime or sick pay. Without the pension, about DKK 127.95. [S65, S66, S67, S68, S59, S69]",
+      "floorPre": "DKK",
+      "floor": "148.49",
+      "floorNote": "Per hour, adult assistant (medhjælper), from 1 Mar 2026, HORESTA and 3F agreement. Rises DKK 3.50 on 1 Mar 2027. From a secondary page (Medium). The café agreement floor is DKK 160.93; under-18s DKK 88.96. [S70, S71, S66, S68]",
+      "allIn": "£23.11",
+      "allInNote": "**ESTIMATE** DKK 148.49 × 1.3895 ≈ DKK 206.33 an hour, at £1 = DKK 8.9275 on 23 Oct 2026. The floor alone is £16.63. [S3, S70]"
+    },
+    "advice": "Not legal, tax or investment advice. Take local advice before you sign."
+  },
+  "route": {
+    "headline": "Enter through one strong Nordic operator, not one local franchisee",
+    "intro": "Brands that came in through regional partners lasted. KFC, with one local franchisee, lost every site. Area-developer examples: Not found.",
+    "routes": [
+      {
+        "name": "Regional master franchise",
+        "control": 1,
+        "capital": 1,
+        "speed": 3,
+        "seen": "Subway named Nordic Bites master franchisee for four Nordic countries on 20 May 2025. KFC returned through Nordic Service Partners. Burger King runs through master franchisee King Food Danmark (60th site, May 2025). [S72, S17, S23]"
+      },
+      {
+        "name": "Licence through a retailer",
+        "control": 1,
+        "capital": 1,
+        "speed": 2,
+        "seen": "Starbucks ran 17 stores through Salling Group, then moved the licence to Berjaya in Aug 2024. [S37]"
+      },
+      {
+        "name": "Country franchisees",
+        "control": 2,
+        "capital": 1,
+        "speed": 2,
+        "seen": "McDonald's runs 112 of 113 sites through 24 franchisees. KFC's only franchisee ran 11 sites and went bankrupt in Jul 2025. [S20, S16]"
+      },
+      {
+        "name": "Company-owned",
+        "control": 3,
+        "capital": 3,
+        "speed": 1,
+        "seen": "Domino's bought 27 stores from receivership in 2019 for €2.5m and began closing them in Jun 2023. MAX owns all its sites and grew from 5 to 6. [S31, S24, S25]"
+      }
+    ],
+    "fits": [
+      {
+        "label": "UNDER 25 UNITS",
+        "title": "A Nordic master partner",
+        "body": "Choose an operator already running a global brand in the region. KFC's return and Subway's 2025 deal both went this way."
+      },
+      {
+        "label": "PROVEN IN 2+ COUNTRIES",
+        "title": "Several country franchisees",
+        "body": "Spread the risk. McDonald's uses 24 franchisees; KFC lost everything when its one franchisee failed."
+      },
+      {
+        "label": "CAPITAL TO SPARE",
+        "title": "Own the first sites",
+        "body": "Only with deep pockets. Domino's owned 27 stores and began closing them four years later."
+      }
+    ],
+    "riskTitle": "Six risks",
+    "risks": [
+      {
+        "label": "Hygiene",
+        "body": "One DR documentary led to four sour smileys and closed all 11 KFC sites. Domino's earlier went into receivership after a TV exposé.",
+        "src": "S16, S17, S31"
+      },
+      {
+        "label": "Demand",
+        "body": "Confidence fell to −17.2 in October, and people expect unemployment to rise. Domino's left citing a small market.",
+        "src": "S8, S31"
+      },
+      {
+        "label": "Margins",
+        "body": "Restaurants made 5.9% operating profit in 2024 (Estimate). Lagkagehuset grew sales 8.2% and still lost DKK 76.8m.",
+        "src": "S5, S39, S40"
+      },
+      {
+        "label": "Failures",
+        "body": "Restaurant bankruptcies more than doubled in H1 2023, then fell 26% in Jan–Apr 2026. Restaurants were 11% of active-company bankruptcies in Jan–Sep 2025 but 5% of bankrupt turnover. October data out 5 Nov.",
+        "src": "S73, S74, S75, S76"
+      },
+      {
+        "label": "Wages and hours",
+        "body": "A floor of DKK 148.49 an hour plus about 39% on top (Estimate; 28% without the Thin pension). Restaurants close at midnight without a permit.",
+        "src": "S70, S67, S56"
+      },
+      {
+        "label": "Same malls",
+        "body": "Five Guys, KFC and Taco Bell all chose Field's or Fisketorvet. Our reading, not a measured fact.",
+        "src": "S26, S17, S41"
+      }
+    ]
+  },
+  "days": {
+    "headline": "The first 90 days: find the partner, then the site",
+    "moves": [
+      "**Pick the category** from page 3: burger and chicken have the evidence.",
+      "**Rebuild the unit P&L** at Danish wages, with about 39% on top of pay.",
+      "**Price at 25% VAT** for eating in and takeaway alike.",
+      "**Shortlist 3 to 5 Nordic multi-brand operators** as master partners.",
+      "**File an EU trade mark:** a UK mark does not cover Denmark.",
+      "**Walk Field's and Fisketorvet** before taking a site beside every 2026 entrant.",
+      "**Write hygiene audits into the agreement:** one smiley story can close a brand.",
+      "**Check closing hours** and whether your sites need an extended-hours permit.",
+      "**Check halal supply:** stunning is compulsory.",
+      "**Diary 1 Mar 2027:** the wage floor steps up again."
+    ],
+    "check": [
+      "Does your partner already run a global brand in the Nordics?",
+      "Does the P&L work at about DKK 206 an hour all-in?",
+      "Does the price work at 25% VAT?",
+      "Is your trade mark filed at EU level?",
+      "Could every site pass a smiley inspection on day one?"
+    ],
+    "method": "Public sources only, read 28 Oct 2026. Every figure is dated and coded to the list below. A rise or fall needs two independent signals; otherwise it is marked Thin. Estimates show their method. Missing data reads Not found. Unit counts are company reports, press or brand claims, not our own locator counts. One rate throughout: £1 = DKK 8.9275, 23 Oct 2026. Not legal, tax or investment advice.",
+    "sources": [
+      "S1 Statistics Denmark, FOLK1AM, population on the first day of the month, updated 9 Oct 2026",
+      "S2 Eurostat, GDP per inhabitant (nama_10_pc), updated 22 Oct 2026",
+      "S3 Danmarks Nationalbank, reference exchange rates via Statistics Denmark (DNVALD), 23 Oct 2026",
+      "S4 Statistics Denmark, NAHC021, household consumption by purpose, annual to 2025",
+      "S5 Statistics Denmark, REGN10, accounts statistics, restaurants, 2022–2024",
+      "S6 Chambers and Partners, Franchising 2025: Denmark (Bech-Bruun), 2025",
+      "S7 Statistics Denmark, NKHC021, household consumption by purpose, quarterly to Q2 2026",
+      "S8 Statistics Denmark, Forbrugerforventninger oktober 2026 (Nyt nr. 270), 22 Oct 2026",
+      "S9 Statistics Denmark, Forbruger- og nettoprisindeks september 2026 (Nyt nr. 264), 12 Oct 2026",
+      "S10 Danmarks Nationalbank, Interest rate increase, 10 Sep 2026",
+      "S11 European Central Bank, Governing Council meeting calendar, read 28 Oct 2026",
+      "S12 HORESTA with Kantar Gallup, Danskernes udespisevaner i 2023",
+      "S13 Landbrug & Fødevarer, Danskernes udespisning (Voxmeter, Nov 2025)",
+      "S14 Eurostat, Price level indices (prc_ppp_ind_1), updated 9 Jul 2026",
+      "S15 Landbrug & Fødevarer, Restauranter mærker en øget prisbevidsthed hos forbrugerne (Voxmeter 2024), Jun 2025",
+      "S16 The Local Denmark, Denmark's KFC restaurant operator files for bankruptcy, 24 Jul 2025",
+      "S17 Ritzau via Frederiksborg Amts Avis, KFC vil genåbne i Danmark med ny samarbejdspartner, 9 Apr 2026",
+      "S18 Se og Hør, Uden fanfare og fest: KFC er genåbnet i Danmark, 1 Jun 2026",
+      "S19 KøbenhavnLiv, KFC opens another Copenhagen restaurant (headline only, Thin), 4 Aug 2026",
+      "S20 Food Folk Danmark ApS, Annual Report 2024",
+      "S21 FødevareWatch via HORESTA, McDonald's Danmark planlægger flere butikker i 2026, 30 Apr 2026",
+      "S22 Burger King Danmark, Nu får Danmark fire nye konger på én gang, 1 Nov 2022",
+      "S23 Burger King Danmark, Burger King åbner på Trøjborg, 26 May 2025",
+      "S24 MAX Burgers, Sustainability Report 2022",
+      "S25 MAX Burgers, Sustainability Report 2025",
+      "S26 Steen & Strøm, Five Guys at Field's (press release), 21 May 2026",
+      "S27 TV 2 Kosmopol, Populær amerikansk burgerkæde er åbnet i København, 2026 (day not shown)",
+      "S28 TV 2 Kosmopol, Amerikansk burgerkæde åbner sin anden restaurant i København, 2026 (day not shown)",
+      "S29 Sunset Boulevard, Ritzau press room boilerplate (brand claim), read 28 Oct 2026",
+      "S30 DR, Pizzakæden Domino's lukker alle butikker i Danmark, 13 Jun 2023",
+      "S31 Inside Retail, Domino's to shut stores and exit Denmark, 13 Jun 2023",
+      "S32 TV 2, Verdens største pizzakæde vender tilbage til København, 26 Jul 2024",
+      "S33 DR, Pizza Hut går konkurs og lukker 13 danske restauranter, 27 Nov 2025",
+      "S34 Wolt, Roll 'n Eat Slagelse listing (Thin), read 28 Oct 2026",
+      "S35 Espresso House, Sustainability Report 2023",
+      "S36 Espresso House, Sustainability Report 2024",
+      "S37 World Coffee Portal, Berjaya Food to open licensed Starbucks stores in three Nordic markets, 5 Aug 2024",
+      "S38 World Coffee Portal, Lagkagehuset expands partnership with Meny, 9 May 2025",
+      "S39 Lagkagehuset via Ritzau, 2025 results press release, 30 Jun 2026",
+      "S40 Ritzau via Sjællandske Medier, Lagkagehuset mindsker millionunderskud, 30 Jun 2026",
+      "S41 TV 2 Kosmopol, Taco Bell åbner første restaurant i Danmark, 2026",
+      "S42 The Local Denmark, Today in Denmark (Taco Bell job posting), 31 Jul 2026",
+      "S43 Ældre Sagen, Joe & The Juice partner page (undated brand claim)",
+      "S44 World Coffee Portal, Joe & The Juice's global rollout gathers pace, 5 Oct 2026",
+      "S45 LandbrugsAvisen, Burgerkæde tester planteburger 14 steder, 2021",
+      "S46 Restaurant Online, McWin buys Sticks'n'Sushi, 31 Jan 2024",
+      "S47 Restaurant Online, Sticks'n'Sushi surpasses £100m sales mark, 7 Jul 2026",
+      "S48 Lars Larsen Group, Letz Sushi closes down, 6 Feb 2024",
+      "S49 Salmon Business, Danish sushi chain declares bankruptcy, 5 Nov 2020",
+      "S50 DKPTO, Priser og gebyrer, read 28 Oct 2026",
+      "S51 DKPTO, Varemærke trin for trin, read 28 Oct 2026",
+      "S52 EUIPO, FAQ: EU trade mark enlargement and Brexit",
+      "S53 Fødevarestyrelsen, Autorisation og registrering",
+      "S54 Fødevarestyrelsen, Nyt smileymærke, 2 Oct 2023",
+      "S55 Fødevareloven § 45 (DanskeLove)",
+      "S56 Frederiksberg Kommune, Bevillingsnævnet årsberetning 2025",
+      "S57 Fødevarestyrelsen, Rituel slagtning",
+      "S58 Skattestyrelsen, Get started on VAT",
+      "S59 PwC Worldwide Tax Summaries, Denmark: Other taxes, reviewed 31 Jul 2026",
+      "S60 PwC Worldwide Tax Summaries, Denmark: Withholding taxes, reviewed 31 Jul 2026",
+      "S61 PwC Worldwide Tax Summaries, Denmark: Taxes on corporate income",
+      "S62 Dansk Erhverv, Nu bliver det billigere at oprette et anpartsselskab, 4 Mar 2025",
+      "S63 Erhvervsstyrelsen, Gebyrer og takster, updated 15 Oct 2026",
+      "S64 Erhvervsstyrelsen, Stiftelse af ApS og A/S",
+      "S65 Ferieloven § 16 (DanskeLove)",
+      "S66 HORESTA, Hovedoverenskomsten wage sheet, under-18s, 1 Apr 2025",
+      "S67 Expert Zoom, Pension in the hotel and restaurant agreement 2025–2028 (secondary, Thin)",
+      "S68 Dansk Erhverv, Fornyelse af overenskomster med 3F, hotel og restauration, 7 Mar 2025",
+      "S69 borger.dk, ATP rates for private employers 2026",
+      "S70 Expert Zoom, Hoteloverenskomsten 2025–2028 calculator (secondary)",
+      "S71 HORESTA, Cafeoverenskomsten satsregulering 2025–2027",
+      "S72 Subway newsroom, Subway expands presence in the Nordics with Nordic Bites Group Oy, 20 May 2025",
+      "S73 Danmarks Statistik, Konkurser juni 2023, 7 Jul 2023",
+      "S74 Danmarks Statistik, Konkurser september 2025 (publication day not shown, Oct 2025)",
+      "S75 Danmarks Statistik, Konkurser april 2026",
+      "S76 Danmarks Statistik, Konkurser september 2026, 6 Oct 2026",
+      "S77 Danmarks Nationalbank, official rates (current-account rate) via Statistics Denmark (DNRENTD), read 30 Oct 2026"
+    ]
+  }
+}

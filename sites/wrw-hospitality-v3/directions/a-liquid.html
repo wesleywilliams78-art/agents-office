@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>WRW Hospitality · Direction A · Liquid ink</title>
+<link rel="icon" href="../img/favicon.svg" type="image/svg+xml">
+<link rel="preload" href="../fonts/newsreader-latin-opsz-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="../fonts/newsreader-latin-opsz-italic.woff2" as="font" type="font/woff2" crossorigin>
+<style>
+@font-face{font-family:"Newsreader";src:url("../fonts/newsreader-latin-opsz-normal.woff2") format("woff2");font-weight:200 800;font-style:normal;font-display:block}
+@font-face{font-family:"Newsreader";src:url("../fonts/newsreader-latin-opsz-italic.woff2") format("woff2");font-weight:200 800;font-style:italic;font-display:block}
+@font-face{font-family:"Archivo";src:url("../fonts/archivo-latin-wdth-normal.woff2") format("woff2");font-weight:100 900;font-stretch:62% 125%;font-display:swap}
+:root{--bone:#F7F2EA;--ink:#201A19;--muted:#5a5350;--red:#FF3131;--red-deep:#B81F1F;
+ --e-out:cubic-bezier(.22,1,.36,1);--e-in:cubic-bezier(.4,0,1,1);--e-inout:cubic-bezier(.45,0,.55,1);--e-hero:cubic-bezier(.34,1.56,.64,1)}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{background:var(--bone);color:var(--ink);overflow:hidden;font:400 16px/1.5 "Archivo",system-ui,sans-serif}
+canvas#gl{position:fixed;inset:0;z-index:0;display:block;width:100%;height:100%}
+.grain{position:fixed;inset:0;z-index:1;pointer-events:none;opacity:.06;mix-blend-mode:multiply;
+ background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E")}
+#ui{position:fixed;inset:0;z-index:2;pointer-events:none}
+#ui a,#ui button{pointer-events:auto}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+nav{position:absolute;top:0;left:0;right:0;display:flex;align-items:center;justify-content:space-between;padding:26px 4vw}
+.logo img{height:30px;display:block}
+.links{display:flex;gap:34px;align-items:center}
+.links a{color:var(--ink);text-decoration:none;font:500 13px/1 "Archivo";letter-spacing:.14em;text-transform:uppercase;position:relative}
+.links a.l::after{content:"";position:absolute;left:0;right:0;bottom:-6px;height:1.5px;background:var(--red);scale:0 1;transform-origin:right;transition:scale .45s var(--e-out)}
+.links a.l:hover::after{scale:1 1;transform-origin:left}
+.cta{position:relative;overflow:hidden;display:inline-flex;align-items:center;gap:12px;padding:17px 30px;border-radius:999px;
+ background:linear-gradient(180deg,rgba(255,255,255,.18),transparent 45%,rgba(0,0,0,.18)),var(--red);color:#fff;text-decoration:none;
+ font:600 15px/1 "Archivo";letter-spacing:.04em;box-shadow:inset 0 1px 0 rgba(255,255,255,.3),0 14px 34px -12px rgba(255,49,49,.7);
+ transition:translate .45s var(--e-out),box-shadow .45s var(--e-out)}
+.cta::before{content:"";position:absolute;top:-30%;left:-45%;width:42%;height:160%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.55),transparent);rotate:14deg;filter:blur(5px);animation:sheen 5.5s linear infinite}
+.cta::after{content:"";position:absolute;inset:0;background:radial-gradient(120px circle at var(--mx,50%) var(--my,50%),rgba(255,255,255,.35),transparent 60%),radial-gradient(115% 95% at 50% 132%,rgba(255,190,160,.6),transparent 58%);opacity:0;transition:opacity .4s var(--e-out)}
+.cta:hover{translate:0 -2px;box-shadow:inset 0 1px 0 rgba(255,255,255,.3),0 18px 40px -10px rgba(255,49,49,.85)}
+.cta:hover::after{opacity:1}
+.cta>*{position:relative;z-index:2}
+.cta.sm{padding:13px 22px;font-size:13px}
+@keyframes sheen{0%,55%{left:-45%}85%,100%{left:115%}}
+.ghost{display:inline-flex;align-items:center;gap:10px;padding:16px 26px;border-radius:999px;border:1.5px solid var(--ink);color:var(--ink);text-decoration:none;font:600 15px/1 "Archivo";letter-spacing:.04em;transition:background .4s var(--e-out),color .4s var(--e-out)}
+.ghost:hover{background:var(--ink);color:var(--bone)}
+.eyebrow{position:absolute;left:4vw;top:calc(var(--top,15%) - 34px);font:600 12px/1 "Archivo";letter-spacing:.24em;text-transform:uppercase;color:var(--red-deep)}
+.foot{position:absolute;left:4vw;right:4vw;bottom:5.5vh;display:flex;align-items:flex-end;justify-content:space-between;gap:40px}
+.sub{max-width:560px;font:400 20px/1.45 "Archivo";color:var(--ink)}
+.sub em{font:italic 500 22px/1 "Newsreader";color:var(--red-deep)}
+.sub small{display:block;margin-top:10px;font-size:14px;color:var(--muted);letter-spacing:.02em}
+.btns{display:flex;gap:14px;align-items:center}
+.hint{position:absolute;left:50%;translate:-50% 0;bottom:5.5vh;font:500 11px/1 "Archivo";letter-spacing:.22em;text-transform:uppercase;color:var(--muted)}
+.enter{opacity:0;translate:0 16px;transition:opacity .9s var(--e-out),translate .9s var(--e-out)}
+body.ready .enter{opacity:1;translate:0 0}
+body.ready .hint.enter{translate:-50% 0}
+.d1{transition-delay:.05s}.d2{transition-delay:.2s}.d3{transition-delay:.35s}
+body.settled .enter{transition-delay:0s}
+body.still .enter{transition:none;opacity:1;translate:0 0}
+body.still .cta::before{animation:none;left:-45%}
+@media (prefers-reduced-motion:reduce){.enter{transition:none;opacity:1;translate:0 0}.cta::before{animation:none}}
+@media (max-width:740px){
+ nav{padding:18px 20px}.logo img{height:22px}.links a.l{display:none}
+ .eyebrow{left:20px;font-size:10.5px}.hint{display:none}
+ .foot{left:20px;right:20px;bottom:24px;flex-direction:column;align-items:stretch;gap:20px}
+ .sub{font-size:16px}.sub em{font-size:18px}.sub small{font-size:13px}
+ .btns{flex-direction:column;align-items:stretch}.btns a{justify-content:center}
+}
+</style>
+</head>
+<body>
+<canvas id="gl" aria-hidden="true"></canvas>
+<div class="grain" aria-hidden="true"></div>
+<div id="ui">
+  <nav class="enter d1">
+    <a class="logo" href="#" aria-label="WRW Hospitality, home"><img src="../img/wrw-mark-red.svg" alt="WRW Hospitality"></a>
+    <div class="links">
+      <a class="l" href="#">Services</a><a class="l" href="#">Case studies</a><a class="l" href="#">Works</a><a class="l" href="#">About</a>
+      <a class="cta sm" href="#"><span>Book a call</span></a>
+    </div>
+  </nav>
+  <p class="eyebrow enter d2">Operations for multi-site brands</p>
+  <p class="hint enter d3">Move the cursor · the page is liquid</p>
+  <h1 class="sr">Site 1 made money. Site 10 is the litmus test. Site 100 is the legacy test.</h1>
+  <div class="foot enter d3">
+    <p class="sub">Most brands are built to grow. Few are built to last. I build systems that get you there, <em>and keep you there.</em>
+      <small>Operations and finance for multi-site hospitality and franchise operators.</small></p>
+    <div class="btns"><a class="cta" href="#"><span>Book a call</span><span aria-hidden="true">→</span></a><a class="ghost" href="#">See the services</a></div>
+  </div>
+</div>
+<script>setTimeout(()=>document.body.classList.add("ready","settled"),3000);</script>
+<script>
+const qs=new URLSearchParams(location.search);
+const STILL=qs.has("still")||matchMedia("(prefers-reduced-motion: reduce)").matches;
+if(STILL)document.body.classList.add("still","ready","settled");
+const BONE="#F7F2EA",INK="#201A19",RED="#FF3131",DEEP="#B81F1F";
+const src=document.createElement("canvas");
+let layout={top:.15};
+
+// paint the editorial page on a 2D canvas: this is what the water distorts
+function paint(W,H,dpr){
+  src.width=W;src.height=H;const x=src.getContext("2d");
+  x.fillStyle=BONE;x.fillRect(0,0,W,H);
+  const phone=W/dpr<=740;
+  // warm light blooms
+  for(const [cx,cy,r,c] of [[.78,.28,.55,"rgba(255,49,49,.10)"],[.18,.85,.6,"rgba(184,31,31,.06)"],[.5,.5,.9,"rgba(255,236,214,.55)"]]){
+    const g=x.createRadialGradient(W*cx,H*cy,0,W*cx,H*cy,Math.max(W,H)*r);g.addColorStop(0,c);g.addColorStop(1,"rgba(247,242,234,0)");x.fillStyle=g;x.fillRect(0,0,W,H);}
+  // headline lines: [text runs] runs = [str, italicRed]
+  const L=phone?[
+    [["Site 1 made",0]],[["money.",0]],[["Site 10 is the",0]],[["litmus",1],[" test.",0]],[["Site 100 is the",0]],[["legacy",1],[" test.",0]]
+  ]:[
+    [["Site 1 made money.",0]],[["Site 10 is the ",0],["litmus",1],[" test.",0]],[["Site 100 is the ",0],["legacy",1],[" test.",0]]
+  ];
+  const padX=(phone?20:W/dpr*.04)*dpr;
+  const top=H*(phone?.15:.17), bottom=H*(phone?.58:.70);
+  const lh=phone?1.0:1.02;
+  const fontFor=(s,it)=>`${it?"italic 400":"300"} ${s}px Newsreader`;
+  const widthAt=s=>Math.max(...L.map(l=>l.reduce((w,[t,it])=>{x.font=fontFor(s,it);return w+x.measureText(t).width},0)));
+  let F=200*dpr;const avail=W-padX*2;
+  F=Math.min(F*avail/widthAt(F),(bottom-top)/(L.length*lh));
+  const blockH=L.length*F*lh;
+  // the red drop: a liquid sun behind line one's tail
+  const dx=phone?W*.78:W*.80, dy=phone?top+F*.45:top+F*.55, dr=phone?F*.95:F*1.15;
+  let g=x.createRadialGradient(dx-dr*.35,dy-dr*.4,dr*.05,dx,dy,dr);
+  g.addColorStop(0,"#ff7a6a");g.addColorStop(.5,RED);g.addColorStop(1,DEEP);
+  x.fillStyle=g;x.beginPath();x.arc(dx,dy,dr,0,7);x.fill();
+  g=x.createRadialGradient(dx-dr*.42,dy-dr*.46,0,dx-dr*.42,dy-dr*.46,dr*.45);
+  g.addColorStop(0,"rgba(255,255,255,.75)");g.addColorStop(1,"rgba(255,255,255,0)");x.fillStyle=g;x.beginPath();x.arc(dx,dy,dr,0,7);x.fill();
+  // concentric hairlines around the drop (the ripple it already made)
+  x.strokeStyle="rgba(184,31,31,.16)";x.lineWidth=1.2*dpr;
+  for(let i=1;i<7;i++){x.beginPath();x.arc(dx,dy,dr+i*i*7*dpr+i*22*dpr,0,7);x.stroke();}
+  // type
+  x.textBaseline="alphabetic";
+  let y=top+F*.86;
+  for(const line of L){
+    let xx=padX;
+    for(const [t,it] of line){x.font=fontFor(F,it);x.fillStyle=it?DEEP:INK;
+      if(it){x.fillStyle=RED;} x.fillText(t,xx,y);xx+=x.measureText(t).width;}
+    y+=F*lh;
+  }
+  layout={top:top/H,bottom:(top+blockH)/H};
+  document.documentElement.style.setProperty("--top",(layout.top*100)+"%");
+}
+
+const canvas=document.getElementById("gl");
+const gl=canvas.getContext("webgl",{antialias:false,premultipliedAlpha:false});
+const MAXR=24;
+(async()=>{
+  await Promise.all([document.fonts.load('300 100px Newsreader'),document.fonts.load('italic 400 100px Newsreader')]).catch(()=>{});
+  if(!gl){const d=Math.min(devicePixelRatio,2);paint(innerWidth*d,innerHeight*d,d);canvas.replaceWith(src);src.style.cssText="position:fixed;inset:0;width:100%;height:100%";document.body.classList.add("ready");return;}
+  const vs=`attribute vec2 p;varying vec2 vUv;void main(){vUv=p*.5+.5;vUv.y=1.-vUv.y;gl_Position=vec4(p,0.,1.);}`;
+  const fs=`precision highp float;varying vec2 vUv;uniform sampler2D tex;uniform vec2 res;uniform vec2 mouse;uniform float time;uniform float lensR;
+  uniform vec3 ripples[${MAXR}];
+  void main(){
+    vec2 uv=vUv;float aspect=res.x/res.y;vec2 auv=vec2(uv.x*aspect,uv.y);
+    vec2 disp=vec2(0.);float crest=0.;
+    for(int i=0;i<${MAXR};i++){vec3 r=ripples[i];if(r.z<0.)continue;
+      vec2 d=auv-vec2(r.x*aspect,r.y);float len=length(d)+1e-4;float band=len-r.z*.32;
+      float w=sin(band*40.)*exp(-band*band*220.)*exp(-r.z*1.4);disp+=normalize(d)*w*.016;crest+=w;}
+    vec2 md=auv-vec2(mouse.x*aspect,mouse.y);float ml=length(md);
+    float inl=smoothstep(lensR,0.,ml);vec2 lp=-md*inl*.42;lp.x/=aspect;disp+=lp;
+    disp+=vec2(sin(uv.y*7.+time*.55),cos(uv.x*6.-time*.45))*.0018;
+    vec3 col;col.r=texture2D(tex,uv+disp*1.08).r;col.g=texture2D(tex,uv+disp).g;col.b=texture2D(tex,uv+disp*.92).b;
+    col+=vec3(1.,.97,.93)*clamp(crest,0.,1.)*.22;
+    col-=vec3(.10,.12,.12)*clamp(-crest,0.,1.)*.5;
+    float rim=smoothstep(.016,0.,abs(ml-lensR));col+=vec3(1.)*rim*.28;col-=vec3(.06)*smoothstep(.03,0.,abs(ml-lensR-.018));
+    col+=vec3(1.)*pow(inl,3.)*.05;
+    float vg=smoothstep(1.2,.4,distance(uv,vec2(.5)));col*=mix(.93,1.,vg);
+    gl_FragColor=vec4(col,1.);}`;
+  const sh=(t,s)=>{const o=gl.createShader(t);gl.shaderSource(o,s);gl.compileShader(o);if(!gl.getShaderParameter(o,gl.COMPILE_STATUS))console.error(gl.getShaderInfoLog(o));return o;};
+  const prog=gl.createProgram();gl.attachShader(prog,sh(gl.VERTEX_SHADER,vs));gl.attachShader(prog,sh(gl.FRAGMENT_SHADER,fs));gl.linkProgram(prog);gl.useProgram(prog);
+  gl.bindBuffer(gl.ARRAY_BUFFER,gl.createBuffer());gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1,3,-1,-1,3]),gl.STATIC_DRAW);
+  const lp=gl.getAttribLocation(prog,"p");gl.enableVertexAttribArray(lp);gl.vertexAttribPointer(lp,2,gl.FLOAT,false,0,0);
+  const tex=gl.createTexture();gl.bindTexture(gl.TEXTURE_2D,tex);
+  gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.LINEAR);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.LINEAR);
+  gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,gl.CLAMP_TO_EDGE);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE);
+  const U=n=>gl.getUniformLocation(prog,n);const uRes=U("res"),uMouse=U("mouse"),uTime=U("time"),uRip=U("ripples"),uLens=U("lensR");
+  function resize(){const d=Math.min(devicePixelRatio,2);canvas.width=innerWidth*d;canvas.height=innerHeight*d;gl.viewport(0,0,canvas.width,canvas.height);
+    paint(canvas.width,canvas.height,d);gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,gl.RGBA,gl.UNSIGNED_BYTE,src);}
+  addEventListener("resize",resize);resize();
+  const rip=new Float32Array(MAXR*3).fill(-1);let head=0,last=0;
+  const spawn=(x,y)=>{rip[head*3]=x;rip[head*3+1]=y;rip[head*3+2]=0;head=(head+1)%MAXR;};
+  const mouse={x:.5,y:.4};let hasPointer=false;
+  addEventListener("pointermove",e=>{if(e.pointerType!=="mouse")return;hasPointer=true;mouse.x=e.clientX/innerWidth;mouse.y=e.clientY/innerHeight;
+    const now=performance.now();if(now-last>70){spawn(mouse.x,mouse.y);last=now;}
+    for(const el of document.querySelectorAll(".cta")){const r=el.getBoundingClientRect();el.style.setProperty("--mx",(e.clientX-r.left)+"px");el.style.setProperty("--my",(e.clientY-r.top)+"px");}
+  },{passive:true});
+  addEventListener("pointerdown",e=>{for(let k=0;k<3;k++)spawn(e.clientX/innerWidth+(Math.random()-.5)*.02,e.clientY/innerHeight+(Math.random()-.5)*.02);});
+  if(STILL){const ph=innerWidth<=740;mouse.x=ph?.3:.5;mouse.y=ph?.36:.4;
+    [[.24,.30,.42],[.62,.55,.75],[.80,.26,.22],[.40,.62,1.05],[.15,.5,.6]].forEach((p,i)=>{rip[i*3]=p[0];rip[i*3+1]=p[1];rip[i*3+2]=p[2];});}
+  const t0=performance.now();let first=false;
+  (function frame(){requestAnimationFrame(frame);const t=(performance.now()-t0)/1000;
+    if(!STILL){for(let i=0;i<MAXR;i++)if(rip[i*3+2]>=0){rip[i*3+2]+=1/60;if(rip[i*3+2]>3.2)rip[i*3+2]=-1;}
+      if(!hasPointer){mouse.x=.5+Math.sin(t*.37)*.3;mouse.y=.4+Math.cos(t*.29)*.14;if(performance.now()-last>900){spawn(mouse.x,mouse.y);last=performance.now();}}}
+    gl.uniform2f(uRes,canvas.width,canvas.height);gl.uniform2f(uMouse,mouse.x,mouse.y);gl.uniform1f(uTime,STILL?1.7:t);
+    gl.uniform1f(uLens,innerWidth<=740?.13:.15);gl.uniform3fv(uRip,rip);gl.drawArrays(gl.TRIANGLES,0,3);
+    if(!first){first=true;setTimeout(()=>document.body.classList.add("ready"),STILL?0:350);setTimeout(()=>document.body.classList.add("settled"),STILL?0:1900);}
+  })();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,566 @@
+{
+ "issue": "04-kenya",
+ "entries": [
+  {
+   "n": 1,
+   "name": "Harlyy analysis of public Google reviews (S56): what went wrong in 246 coded 1-2 star reviews; 101 Nairobi branches of 10 anonymised chains, 144,738 reviews. Contributor-supplied.",
+   "url": "brain://Agents Office/Upload - harlyy-kenya-spread - mw90zww7#p1-what-sinks-a-review",
+   "accessed": "6-7 Nov 2026 (read by Harlyy); received 8 Nov 2026",
+   "claim": "Waiting is named in 40% and food in 28% of 246 coded 1-2 star reviews; in cafes waiting is behind 57-62%.",
+   "stream": "B",
+   "type": "contributor analysis",
+   "pass": "pass 2026-11-09T09-03-26"
+  },
+  {
+   "n": 2,
+   "name": "S1 CEIC, Kenya population projection (KNBS series)",
+   "url": "https://ceicdata.com/en/kenya/population-projection-kenya-national-bureau-of-statistics",
+   "accessed": "30 Oct 2026; URL re-checked 9 Nov 2026",
+   "claim": "Kenya's population projection series from KNBS, used for the population tile.",
+   "stream": "A",
+   "type": "official",
+   "pass": "pass 2026-11-09T09-09-01"
+  },
+  {
+   "n": 3,
+   "name": "S2 HapaKenya, Kenya's economy hits Ksh 17.6 trillion (KNBS Economic Survey 2026), 3 May 2026",
+   "url": "https://hapakenya.com/2026/05/03/kenyas-economy-hits-ksh-17-6-trillion-amidst-global-headwinds/",
+   "accessed": "30 Oct 2026; URL re-checked 9 Nov 2026",
+   "claim": "GDP at market prices KSh 17.6 trillion in 2025; GDP per head $2,549; real growth 4.6%.",
+   "stream": "A",
+   "type": "press",
+   "pass": "pass 2026-11-09T09-09-01"
+  },
+  {
+   "n": 4,
+   "name": "S3 Central Bank of Kenya, MPC retains the CBR at 8.75 percent, 7 Oct 2026",
+   "url": "https://www.centralbank.go.ke/2026/10/07/mpc-retains-the-cbr-at-8-75-percent-3/",
+   "accessed": "30 Oct 2026; URL re-checked 9 Nov 2026",
+   "claim": "Central Bank Rate held at 8.75% on 7 Oct 2026; CBK daily rates for the currency tile.",
+   "stream": "A",
+   "type": "official",
+   "pass": "pass 2026-11-09T09-09-01"
+  },
+  {
+   "n": 5,
+   "name": "S4 Khusoko, Kenya holds interest rate at 8.75%, 9 Apr 2026",
+   "url": "https://khusoko.com/2026/02/10/kenyas-central-bank-cuts-benchmark-rate-to-8-75/",
+   "accessed": "30 Oct 2026; URL re-checked 9 Nov 2026",
+   "claim": "Rate path: CBR cut to 8.75% in Feb 2026 and held since (Khusoko CBR coverage; nearest live Khusoko page found).",
+   "stream": "A",
+   "type": "press",
+   "pass": "pass 2026-11-09T09-09-01"
+  },
+  {
+   "n": 6,
+   "name": "S5 Food Business Africa, Simbisa Brands revenue rises 20% in FY 2026, 1 Oct 2026",
+   "url": "https://www.foodbusinessmea.com/simbisa-brands-revenue-rises-20-in-fy-2026/",
+   "accessed": "30 Oct 2026; URL re-checked 9 Nov 2026",
+   "claim": "Simbisa (Chicken Inn, Pizza Inn, Creamy Inn, Galito's) group revenue up 20% in the year to 30 Jun 2026.",
+   "stream": "B",
+   "type": "press",
+   "pass": "pass 2026-11-09T09-09-01"
+  },
+  {
+   "n": 7,
+   "name": "S6 US International Trade Administration, Kenya Franchising, 2020",
+   "url": "https://trade.gov/market-intelligence/kenya-franchising",
+   "accessed": "30 Oct 2026; URL re-checked 9 Nov 2026",
+   "claim": "No official franchise count; franchising steadily growing, hospitality the strongest sector.",
+   "stream": "A",
+   "type": "official",
+   "pass": "pass 2026-11-09T09-09-01"
+  },
+  {
+   "n": 8,
+   "name": "S7 Business Daily, Java outlets hit 102 with new branches in Eldoret, Ruaka, 23 Dec 2025",
+   "url": "https://www.businessdailyafrica.com/bd/corporate/companies/java-outlets-hit-102-with-new-branches-in-eldoret-ruaka-5306644",
+   "accessed": "31 Oct 2026; URL re-checked 9 Nov 2026",
+   "claim": "Java House at 102 outlets in East Africa, 95 of them in Kenya; Ruaka branch on a Shell forecourt.",
+   "stream": "B",
+   "type": "press",
+   "pass": "pass 2026-11-09T09-09-01"
+  },
+  {
+   "n": 9,
+   "name": "S8 Capital FM (via allAfrica), KFC's Kentucky Town lands in Kenya, 12 Oct 2026",
+   "url": "https://capitalfm.africa/kfcs-kentucky-town-lands-in-kenya-with-a-local-twist-on-food-fashion-and-culture/",
+   "accessed": "31 Oct 2026; URL re-checked 9 Nov 2026",
+   "claim": "KFC Kenya is the brand's second-largest African market, with 48 franchise-owned restaurants (Kuku Foods).",
+   "stream": "B",
+   "type": "press",
+   "pass": "pass 2026-11-09T09-09-01"
+  },
+  {
+   "n": 10,
+   "name": "S9 Nairametrics, Kenya's inflation rises to 6.8% in September (KNBS), 30 Sep 2026",
+   "url": "https://nairametrics.com/2026/09/30/kenyas-inflation-rises-to-6-8-in-september-highest-in-one-year/",
+   "accessed": "30 Oct 2026; URL re-checked 9 Nov 2026",
+   "claim": "CPI inflation 6.8% in September 2026, up from 6.6% in August.",
+   "stream": "A",
+   "type": "press",
+   "pass": "pass 2026-11-09T09-09-01"
+  },
+  {
+   "n": 11,
+   "name": "S10 The Standard, Inflation increases for second month in a row, KNBS says, Sep 2026",
+   "url": "https://www.standardmedia.co.ke/business/article/2001556661/inflation-hit-66pc-in-august-knbs-says",
+   "accessed": "30 Oct 2026; URL re-checked 9 Nov 2026",
+   "claim": "Inflation rose for a second month to 6.6% in August 2026 (KNBS); food price detail.",
+   "stream": "A",
+   "type": "press",
+   "pass": "pass 2026-11-09T09-09-01"
+  },
+  {
+   "n": 12,
+   "name": "S11 Central Bank of Kenya, MPC Market Perceptions Survey, September 2026",
+   "url": "https://www.centralbank.go.ke/uploads/market_perception_surveys/264125534_Market%20Perceptions%20Survey%20-%20September%202026.pdf",
+   "accessed": "31 Oct 2026; URL re-checked 9 Nov 2026",
+   "claim": "Firms' outlook and cost expectations, sample including 96 hotels; used for the consumer-spending tile.",
+   "stream": "A",
+   "type": "official",
+   "pass": "pass 2026-11-09T09-09-01"
+  },
+  {
+   "n": 13,
+   "name": "S12 TechTrendsKE, M-PESA handled KSh41.68 trillion in FY2026, 28 Oct 2026",
+   "url": "https://techtrendske.co.ke/2026/10/28/mpesa-merchant-network-fy2026/",
+   "accessed": "31 Oct 2026; URL re-checked 9 Nov 2026",
+   "claim": "M-PESA processed 46.4 billion transactions worth KSh41.68 trillion in FY2026; 3.13 million merchants.",
+   "stream": "A",
+   "type": "press",
+   "pass": "pass 2026-11-09T09-09-01"
+  },
+  {
+   "n": 14,
+   "name": "S13 Business Radar, Food delivery companies in Nairobi, updated 18 Oct 2026",
+   "url": "https://businessradar.co.ke/?p=10478",
+   "accessed": "31 Oct 2026; URL re-checked 9 Nov 2026",
+   "claim": "Nairobi delivery runs mainly on Glovo, Uber Eats and Bolt Food; Jumia Food closed end-2023.",
+   "stream": "A",
+   "type": "press",
+   "pass": "pass 2026-11-09T09-09-01"
+  },
+  {
+   "n": 15,
+   "name": "S14 Business Daily, Nairobi hosts a third of the fast-growing middle class (IEA, 2015 data), 15 Dec 2016",
+   "url": "https://www.businessdailyafrica.com/bd/markets/nairobi-hosts-a-third-of-the-fast-growing-middle-class-2134146",
+   "accessed": "31 Oct 2026; URL re-checked 9 Nov 2026",
+   "claim": "Nairobi holds about a third of Kenya's middle class; Mombasa 11.1%, Kisumu 3.1% (IEA, 2015 data).",
+   "stream": "A",
+   "type": "press",
+   "pass": "pass 2026-11-09T09-09-01"
+  },
+  {
+   "n": 16,
+   "name": "S15 Sagaci Research, KFC franchisee Kuku Foods partners with Vivo Energy, 27 Jun 2019",
+   "url": "https://sagaciresearch.com/kfc-franchisee-kuku-foods-partners-with-vivo-energy/",
+   "accessed": "31 Oct 2026; URL re-checked 9 Nov 2026",
+   "claim": "Vivo Energy (Shell) and Kuku Foods formed a 50:50 JV to roll out KFC in Kenya, Uganda and Rwanda.",
+   "stream": "B",
+   "type": "press",
+   "pass": "pass 2026-11-09T09-09-01"
+  },
+  {
+   "n": 17,
+   "name": "S16 Simbisa Brands, 2025 Annual Report (year to 30 Jun 2025)",
+   "url": "https://ir.simbisabrands.com/simbisa-brands-limited-2025-annual-report/",
+   "accessed": "31 Oct 2026; URL re-checked 9 Nov 2026",
+   "claim": "Simbisa's Kenya store counts by brand at 30 Jun 2025 (company-owned estate).",
+   "stream": "B",
+   "type": "company report",
+   "pass": "pass 2026-11-09T09-09-35"
+  },
+  {
+   "n": 18,
+   "name": "S17 Business Daily, Chicken Inn owner eyes 55 more Kenyan outlets, 24 Mar 2022",
+   "url": "https://www.businessdailyafrica.com/bd/corporate/companies/chicken-inn-owner-eyes-55-more-kenyan-outlets-3759334",
+   "accessed": "31 Oct 2026; URL re-checked 9 Nov 2026",
+   "claim": "Earlier comparable: Simbisa targeted 55 new Kenyan stores in FY2022.",
+   "stream": "B",
+   "type": "press",
+   "pass": "pass 2026-11-09T09-09-35"
+  },
+  {
+   "n": 19,
+   "name": "S18 The Standard, Chicken Cottage adds ninth outlet, early 2026",
+   "url": "https://www.standardmedia.co.ke/business/enterprise/article/2001539905/kenyas-fast-food-sector-leans-on-convenience-as-chicken-cottage-adds-ninth-outlet",
+   "accessed": "31 Oct 2026; URL re-checked 9 Nov 2026",
+   "claim": "Chicken Cottage opened its ninth Kenyan outlet, on a fuel forecourt; chains moving onto forecourts.",
+   "stream": "B",
+   "type": "press",
+   "pass": "pass 2026-11-09T09-09-35"
+  },
+  {
+   "n": 20,
+   "name": "S19 Business Daily, Burger King to invest Sh270m in expansion, 3 Jun 2019",
+   "url": "https://www.businessdailyafrica.com/bd/corporate/companies/burger-king-to-invest-sh270m-in-expansion-2252568",
+   "accessed": "31 Oct 2026; URL re-checked 9 Nov 2026",
+   "claim": "Burger King Kenya had five outlets in 2019 and planned two to three a year.",
+   "stream": "B",
+   "type": "press",
+   "pass": "pass 2026-11-09T09-09-35"
+  },
+  {
+   "n": 21,
+   "name": "S20 Business Today, Java House opens 65th branch in Mbagathi, 29 Jul 2019",
+   "url": "https://businesstoday.co.ke/java-house-opens-65th-branch-in-mbagathi/",
+   "accessed": "9 Nov 2026",
+   "claim": "Earlier comparable count: Java House opened its 65th branch (Mbagathi Way) in July 2019.",
+   "stream": "B",
+   "type": "press",
+   "pass": "pass 2026-11-09T09-09-35"
+  },
+  {
+   "n": 22,
+   "name": "S21 Kenyans.co.ke, Nairobi tycoon loses Debonairs and Steers eateries, 28 Jan 2021",
+   "url": "https://www.kenyans.co.ke/news/61576-nairobi-tycoon-loses-debonairs-steers-eateries",
+   "accessed": "1 Nov 2026; URL re-checked 9 Nov 2026",
+   "claim": "Famous Brands took back Debonairs and Steers from its Kenyan franchisee after a court ruling.",
+   "stream": "B",
+   "type": "press",
+   "pass": "pass 2026-11-09T09-09-35"
+  },
+  {
+   "n": 23,
+   "name": "S22 Business Daily, Debonairs, Steers units record Sh5m loss in Kenya, 21 Jun 2020",
+   "url": "https://www.businessdailyafrica.com/bd/corporate/companies/debonair-s-steers-units-record-sh5m-loss-in-kenya-2293506",
+   "accessed": "1 Nov 2026; URL re-checked 9 Nov 2026",
+   "claim": "The Debonairs and Steers Kenya units recorded a Sh5m loss before the franchise split.",
+   "stream": "B",
+   "type": "press",
+   "pass": "pass 2026-11-09T09-09-35"
+  },
+  {
+   "n": 24,
+   "name": "S23 The Star, Eat'N'Go enters Kenya with Domino's, Cold Stone acquisition, 10 Apr 2021",
+   "url": "https://www.the-star.co.ke/business/kenya/2021-04-10-eatngo-enters-kenya-with-dominos-cold-stone-acquisition/",
+   "accessed": "1 Nov 2026; URL re-checked 9 Nov 2026",
+   "claim": "Eat'N'Go bought the Kenyan Domino's and Cold Stone franchisee in April 2021.",
+   "stream": "B",
+   "type": "press",
+   "pass": "pass 2026-11-09T09-09-35"
+  },
+  {
+   "n": 25,
+   "name": "S24 Khusoko, Eat N' Go makes aggressive expansion plans in East Africa, 28 Mar 2022",
+   "url": "https://khusoko.com/2022/03/28/eat-n-go-makes-aggressive-expansion-plans-in-east-africa/",
+   "accessed": "1 Nov 2026; URL re-checked 9 Nov 2026",
+   "claim": "Eat'N'Go had 18 Kenyan stores in 2022 and planned new towns.",
+   "stream": "B",
+   "type": "press",
+   "pass": "pass 2026-11-09T09-09-35"
+  },
+  {
+   "n": 26,
+   "name": "S25 Khusoko, Papa John's Kenya expands Nairobi footprint, 30 Jan 2026",
+   "url": "https://khusoko.com/2026/01/30/papa-johns-kenya-expands-nairobi-outlets-boosts-growth/",
+   "accessed": "1 Nov 2026; URL re-checked 9 Nov 2026",
+   "claim": "Papa John's Kenya (Express Kitchen) at 10 stores, eight more planned in 2026, on Shell forecourts.",
+   "stream": "B",
+   "type": "press",
+   "pass": "pass 2026-11-09T09-09-35"
+  },
+  {
+   "n": 27,
+   "name": "S26 Food Business Africa, Java House acquired by Alterra Capital, Phatisa Group, 29 Jan 2025",
+   "url": "https://www.foodbusinessmea.com/kenyas-java-house-acquired-by-alterra-capital-phatisa-group/",
+   "accessed": "1 Nov 2026; URL re-checked 9 Nov 2026",
+   "claim": "Actis sold Java House to Alterra Capital and Phatisa in January 2025.",
+   "stream": "B",
+   "type": "press",
+   "pass": "pass 2026-11-09T09-09-35"
+  },
+  {
+   "n": 28,
+   "name": "S27 World Coffee Portal, The Coffee Club partners with Luqman Petroleum for 2025 Kenya debut, 9 Nov 2024",
+   "url": "https://www.worldcoffeeportal.com/news/australias-the-coffee-club-partners-with-luqman-petroleum-for-2025-kenya-debut",
+   "accessed": "1 Nov 2026; URL re-checked 9 Nov 2026",
+   "claim": "The Coffee Club entered Kenya through a fuel retailer, Luqman Petroleum.",
+   "stream": "B",
+   "type": "press",
+   "pass": "pass 2026-11-09T09-09-35"
+  },
+  {
+   "n": 29,
+   "name": "S28 Business Daily, Artcaffe to open four outlets as competition heats up, 12 Apr 2021",
+   "url": "https://www.businessdailyafrica.com/bd/corporate/companies/artcaffe-four-outlets-as-competition-heats-up-3359830",
+   "accessed": "1 Nov 2026; URL re-checked 9 Nov 2026",
+   "claim": "Artcaffe planned four more Nairobi outlets, including Shell forecourts.",
+   "stream": "B",
+   "type": "press",
+   "pass": "pass 2026-11-09T09-09-35"
+  },
+  {
+   "n": 30,
+   "name": "S29 Business Daily, Artcaffe acquires Dormans to cement Nairobi presence, 26 Jan 2014",
+   "url": "https://www.businessdailyafrica.com/bd/corporate/companies/artcaffe-acquires-dormans-to-cement-nairobi-presence-2050516",
+   "accessed": "1 Nov 2026; URL re-checked 9 Nov 2026",
+   "claim": "Earlier comparable: Artcaffe went from four to 11 outlets by buying seven Dormans cafes in 2014.",
+   "stream": "B",
+   "type": "press",
+   "pass": "pass 2026-11-09T09-09-35"
+  },
+  {
+   "n": 31,
+   "name": "S30 Business Daily, Ketepa tea houses raise competition for local coffee chains, 24 Jun 2018",
+   "url": "https://www.businessdailyafrica.com/bd/corporate/companies/ketepa-tea-houses-raise-competition-for-local-coffee-chains-2207998",
+   "accessed": "1 Nov 2026; URL re-checked 9 Nov 2026",
+   "claim": "Ketepa opened specialty tea houses to compete with coffee chains.",
+   "stream": "B",
+   "type": "press",
+   "pass": "pass 2026-11-09T09-09-35"
+  },
+  {
+   "n": 32,
+   "name": "S31 ToasterDing (blog), Did Subway rebrand to Subz?, updated 17 May 2025 (Thin)",
+   "url": "https://toasterding.com/subway-kinda-left-kenya-but-still-exists-as-subz/",
+   "accessed": "1 Nov 2026; URL re-checked 9 Nov 2026",
+   "claim": "Thin, single blog: former Subway franchisees in Kenya trade as Subz.",
+   "stream": "B",
+   "type": "press (Thin)",
+   "pass": "pass 2026-11-09T09-09-35"
+  },
+  {
+   "n": 33,
+   "name": "S32 How we made it in Africa, Famous Brands expands across East Africa, 15 Apr 2014",
+   "url": "https://www.howwemadeitinafrica.com/takeaways-big-business-as-famous-brands-expands-across-east-africa/37967/",
+   "accessed": "1 Nov 2026; URL re-checked 9 Nov 2026",
+   "claim": "Earlier comparable: Famous Brands had 13 franchise stores in Kenya in 2014.",
+   "stream": "B",
+   "type": "press",
+   "pass": "pass 2026-11-09T09-09-35"
+  },
+  {
+   "n": 34,
+   "name": "S33 Food Business Africa, Java House to expand Kukito through franchising, 12 Aug 2022",
+   "url": "https://www.foodbusinessmea.com/kenyas-java-house-to-expand-kukito-brand-through-franchising-model-amid-high-chicken-demand/",
+   "accessed": "1 Nov 2026; URL re-checked 9 Nov 2026",
+   "claim": "Java House sought franchisees for its Kukito chicken brand (seven outlets in 2022).",
+   "stream": "B",
+   "type": "press",
+   "pass": "pass 2026-11-09T09-09-35"
+  },
+  {
+   "n": 35,
+   "name": "S34 Citizen Digital, Vivo Energy opens 350th Shell service station in Kenya, 13 Jul 2026",
+   "url": "https://citizen.digital/article/vivo-energy-opens-350th-shell-service-station-in-kenya-n386396",
+   "accessed": "2 Nov 2026; URL re-checked 9 Nov 2026",
+   "claim": "Vivo Energy runs 350 Shell stations in Kenya, the forecourt base for QSR partners.",
+   "stream": "B",
+   "type": "press",
+   "pass": "pass 2026-11-09T09-09-35"
+  },
+  {
+   "n": 36,
+   "name": "S35 HapaKenya, Java House opens two new outlets with Rubis Energy, 20 Feb 2024",
+   "url": "https://hapakenya.com/2024/02/20/java-house-opens-two-new-outlets-in-nairobi-in-partnership-with-rubis-energy",
+   "accessed": "2 Nov 2026; URL re-checked 9 Nov 2026",
+   "claim": "Java House opened two forecourt outlets with Rubis Energy; 87 locations then.",
+   "stream": "B",
+   "type": "press",
+   "pass": "pass 2026-11-09T09-09-35"
+  },
+  {
+   "n": 37,
+   "name": "S36 Khusoko, Kenya tourism arrivals hit 2.76 million, 24 Aug 2026",
+   "url": "https://khusoko.com/2026/08/24/kenya-tourism-arrivals-earnings-2025-26/",
+   "accessed": "2 Nov 2026; URL re-checked 9 Nov 2026",
+   "claim": "International arrivals 2.76 million in 2025/26, up 9.8%.",
+   "stream": "A",
+   "type": "press",
+   "pass": "pass 2026-11-09T09-10-04"
+  },
+  {
+   "n": 38,
+   "name": "S37 The Standard, Tourism revenue climbs to Sh564 billion, 14 Aug 2026",
+   "url": "https://www.standardmedia.co.ke/business/article/2001555364/tourism-revenue-climbs-to-sh564-billion-as-visitor-numbers-surge",
+   "accessed": "2 Nov 2026; URL re-checked 9 Nov 2026",
+   "claim": "Tourism earnings Sh564 billion in 2025/26.",
+   "stream": "A",
+   "type": "press",
+   "pass": "pass 2026-11-09T09-10-04"
+  },
+  {
+   "n": 39,
+   "name": "S38 Kenya Industrial Property Institute, Trade Mark Rules, First Schedule: fees, local and foreign",
+   "url": "https://www.kipi.go.ke/sites/default/files/KIPI/Acts%20and%20Regulations/trade%20mark%20fees%20local%20and%20foreign.pdf",
+   "accessed": "2 Nov 2026; URL re-checked 9 Nov 2026",
+   "claim": "KIPI trade mark fees: first class KSh 4,000 local or US$200 foreign; each further class KSh 3,000 or US$150.",
+   "stream": "A",
+   "type": "official",
+   "pass": "pass 2026-11-09T09-10-04"
+  },
+  {
+   "n": 40,
+   "name": "S39 Oraro & Company, The 30% local ownership rule for foreign companies, 13 Aug 2018",
+   "url": "https://www.oraro.co.ke/?p=6062",
+   "accessed": "2 Nov 2026; URL re-checked 9 Nov 2026",
+   "claim": "The 30% local shareholding rule for foreign branch registrations and its repeal.",
+   "stream": "A",
+   "type": "law-firm note",
+   "pass": "pass 2026-11-09T09-10-04"
+  },
+  {
+   "n": 41,
+   "name": "S40 Salaam Gateway, Kenya's halal food industry expands, 15 Nov 2021",
+   "url": "https://salaamgateway.com/story/kenyas-halal-food-industry-is-growing-but-expansion-could-be-made-more-sustainable",
+   "accessed": "2 Nov 2026; URL re-checked 9 Nov 2026",
+   "claim": "Halal certification in Kenya: KEBS standard for meat and poultry; demand recovering after Covid.",
+   "stream": "A",
+   "type": "press",
+   "pass": "pass 2026-11-09T09-10-04"
+  },
+  {
+   "n": 42,
+   "name": "S41 PwC Worldwide Tax Summaries, Kenya: taxes on corporate income, reviewed 17 Jul 2026",
+   "url": "https://taxsummaries.pwc.com/kenya/corporate/taxes-on-corporate-income",
+   "accessed": "2 Nov 2026; URL re-checked 9 Nov 2026",
+   "claim": "Corporate income tax 30% for resident companies.",
+   "stream": "A",
+   "type": "professional tax summary",
+   "pass": "pass 2026-11-09T09-10-04"
+  },
+  {
+   "n": 43,
+   "name": "S42 PwC Worldwide Tax Summaries, Kenya: other taxes (VAT), reviewed 17 Jul 2026",
+   "url": "https://taxsummaries.pwc.com/kenya/corporate/other-taxes",
+   "accessed": "2 Nov 2026; URL re-checked 9 Nov 2026",
+   "claim": "VAT standard rate 16%; excise and other indirect taxes.",
+   "stream": "A",
+   "type": "professional tax summary",
+   "pass": "pass 2026-11-09T09-10-04"
+  },
+  {
+   "n": 44,
+   "name": "S43 Kenya Revenue Authority, Understanding VAT for businesses, Oct 2024",
+   "url": "https://www.kra.go.ke/images/publications/Value-Added-Tax-VAT-Brochure-151024.pdf",
+   "accessed": "2 Nov 2026; URL re-checked 9 Nov 2026",
+   "claim": "KRA VAT guide: registration above KES 5 million turnover; eTIMS invoicing.",
+   "stream": "A",
+   "type": "official",
+   "pass": "pass 2026-11-09T09-10-04"
+  },
+  {
+   "n": 45,
+   "name": "S44 PwC Worldwide Tax Summaries, Kenya: withholding taxes, reviewed 17 Jul 2026",
+   "url": "https://taxsummaries.pwc.com/kenya/corporate/withholding-taxes",
+   "accessed": "2 Nov 2026; URL re-checked 9 Nov 2026",
+   "claim": "Withholding tax on royalties paid to non-residents: 20%; reduced treaty rate where a treaty applies (UK treaty 15%).",
+   "stream": "A",
+   "type": "professional tax summary",
+   "pass": "pass 2026-11-09T09-10-04"
+  },
+  {
+   "n": 46,
+   "name": "S45 KPMG East Africa, EAC customs and duty changes for FY 2026/2027, Jul 2026",
+   "url": "https://kpmg.com/ke/en/insights/2026/07/east-african-community-customs-and-duty-changes-for-FY-26-2027.html",
+   "accessed": "2 Nov 2026; URL re-checked 9 Nov 2026",
+   "claim": "EAC customs and duty changes effective 1 Jul 2026, valid one year.",
+   "stream": "A",
+   "type": "professional tax summary",
+   "pass": "pass 2026-11-09T09-10-04"
+  },
+  {
+   "n": 47,
+   "name": "S46 NSSF, Notice to employers: Year 4 (2026) contribution rates, Feb 2026",
+   "url": "https://www.nssf.or.ke/notice-to-employers-year-4-2026-nssf-contribution-rates",
+   "accessed": "2 Nov 2026; URL re-checked 9 Nov 2026",
+   "claim": "NSSF Year 4 from Feb 2026: 6% employer match, upper earnings limit KES 108,000, max KES 6,480 each side.",
+   "stream": "A",
+   "type": "official",
+   "pass": "pass 2026-11-09T09-10-04"
+  },
+  {
+   "n": 48,
+   "name": "S47 Kenya Revenue Authority, Collection of the Affordable Housing Levy, 21 Mar 2024",
+   "url": "https://www.kra.go.ke/news-center/public-notices/2099-collection-of-the-affordable-housing-levy-by-kenya-revenue-authority-2",
+   "accessed": "2 Nov 2026; URL re-checked 9 Nov 2026",
+   "claim": "Affordable Housing Levy: 1.5% employee plus 1.5% employer of gross pay.",
+   "stream": "A",
+   "type": "official",
+   "pass": "pass 2026-11-09T09-10-04"
+  },
+  {
+   "n": 49,
+   "name": "S48 PwC Kenya, National Industrial Training Authority levy alert, Sep 2012",
+   "url": "https://www.pwc.com/ke/en/pdf/national-industrial-training-authority-kenya.pdf",
+   "accessed": "2 Nov 2026; URL re-checked 9 Nov 2026",
+   "claim": "NITA training levy rules; hotel and restaurant employers registered under Cap 494 exempt (2012).",
+   "stream": "A",
+   "type": "professional tax summary",
+   "pass": "pass 2026-11-09T09-10-04"
+  },
+  {
+   "n": 50,
+   "name": "S49 Grant Thornton Kenya, Revised statutory minimum wages effective 1 May 2026, 9 Jun 2026",
+   "url": "https://www.grantthornton.co.ke/insights/kenya-minimum-wage-guide-2026/",
+   "accessed": "2 Nov 2026; URL re-checked 9 Nov 2026",
+   "claim": "Revised statutory minimum wages effective 1 May 2026, used for the wage floor.",
+   "stream": "A",
+   "type": "professional tax summary",
+   "pass": "pass 2026-11-09T09-10-04"
+  },
+  {
+   "n": 51,
+   "name": "S50 Daily Nation, The 12pc minimum wage bombshell, 6 Jul 2026",
+   "url": "https://nation.africa/kenya/news/the-12pc-minimum-wage-bombshell--5519274",
+   "accessed": "2 Nov 2026; URL re-checked 9 Nov 2026",
+   "claim": "12% general minimum-wage rise from 1 May 2026, gazetted late with arrears.",
+   "stream": "A",
+   "type": "press",
+   "pass": "pass 2026-11-09T09-10-04"
+  },
+  {
+   "n": 52,
+   "name": "S51 Techweez, Uber buys out Glovo, its biggest rival in Kenya's delivery market, 17 Jul 2026",
+   "url": "https://techweez.com/2026/07/17/uber-buys-out-glovo-its-biggest-rival-in-kenyas-delivery-market/",
+   "accessed": "3 Nov 2026; URL re-checked 9 Nov 2026",
+   "claim": "Uber agreed to buy Glovo Kenya, putting Glovo and Uber Eats under one owner; close expected 2027.",
+   "stream": "B",
+   "type": "press",
+   "pass": "pass 2026-11-09T09-10-04"
+  },
+  {
+   "n": 53,
+   "name": "S52 Streamline (citing Capital FM), Sinaloa Club faces closure threat over KES 16.5M rent dispute, 4 Aug 2026",
+   "url": "https://streamlinefeed.co.ke/news/sinaloa-club-faces-court-battle-over-sh16-5-million-rent-dispute",
+   "accessed": "3 Nov 2026; URL re-checked 9 Nov 2026",
+   "claim": "A Nairobi restaurant faced eviction over KES 16.5m of rent: rent risk signal.",
+   "stream": "B",
+   "type": "press",
+   "pass": "pass 2026-11-09T09-10-04"
+  },
+  {
+   "n": 54,
+   "name": "S53 US Department of State, 2026 Investment Climate Statements: Kenya (foreign exchange and remittance policies)",
+   "url": "https://www.state.gov/reports/2026-investment-climate-statements/kenya/",
+   "accessed": "3 Nov 2026; URL re-checked 9 Nov 2026",
+   "claim": "No restrictions on converting or transferring investment funds; repatriation protected by the Foreign Investment Protection Act.",
+   "stream": "A",
+   "type": "official",
+   "pass": "pass 2026-11-09T09-10-04"
+  },
+  {
+   "n": 55,
+   "name": "S54 Uber Eats Kenya, Bubble tea delivery near me (Nairobi listings), counted 3 Nov 2026",
+   "url": "https://www.ubereats.com/ke/near-me/bubble-tea",
+   "accessed": "3 Nov 2026",
+   "claim": "Bubble tea in Nairobi: only small local sellers listed, no international chain (count made 3 Nov 2026).",
+   "stream": "B",
+   "type": "locator count",
+   "pass": "pass 2026-11-09T09-10-04"
+  },
+  {
+   "n": 56,
+   "name": "S55 KNBS, 2019 Kenya Population and Housing Census, Table 2.30: population by religious affiliation and county",
+   "url": "https://census.ke/@census-ke/table-2-30-distribution-of-population-by-religious-affiliation-and-county",
+   "accessed": "3 Nov 2026; URL re-checked 9 Nov 2026",
+   "claim": "Muslim population by county (5.15 million nationally, 2019), the halal demand base.",
+   "stream": "A",
+   "type": "official",
+   "pass": "pass 2026-11-09T09-10-04"
+  }
+ ],
+ "passes": []
+}

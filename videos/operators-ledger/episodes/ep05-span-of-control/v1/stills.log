@@ -1,0 +1,172 @@
+· opening the composition
+· taking stills on the beat grid
+· checking every quarter second for overlapping text
+· synthesising the score
+· laying out the contact sheets
+{
+ "errors": [
+  "overlapping text: \"Hire\" over \"a\" at 75.50–77.27 s. No two pieces of text may sit over each other: move one, or clear the first before the second arrives."
+ ],
+ "warnings": [],
+ "checks": [
+  "24 stills taken on the beat grid",
+  "frame 0 is a finished, held picture",
+  "the page paints the same picture for the same moment",
+  "narration: Wesley (VoiceStudio voxcpm2, profile ca7acc09)",
+  "score synthesised: peak -2.3 dB, mean -13.7 dB"
+ ],
+ "dead": [],
+ "offBeatCuts": [],
+ "hardColourCuts": [],
+ "sheets": [
+  "C:\\Users\\Wesley\\agents-office\\output\\motion\\ledger05v1stills\\contact-sheet-1.jpg",
+  "C:\\Users\\Wesley\\agents-office\\output\\motion\\ledger05v1stills\\contact-sheet-2.jpg"
+ ],
+ "stills": [
+  {
+   "n": 1,
+   "t": 0,
+   "beat": 0,
+   "file": "C:\\Users\\Wesley\\agents-office\\output\\motion\\ledger05v1stills\\still-01-0.00s.png"
+  },
+  {
+   "n": 2,
+   "t": 0.3,
+   "beat": 0.5,
+   "file": "C:\\Users\\Wesley\\agents-office\\output\\motion\\ledger05v1stills\\still-02-0.30s.png"
+  },
+  {
+   "n": 3,
+   "t": 8.1,
+   "beat": 13.5,
+   "file": "C:\\Users\\Wesley\\agents-office\\output\\motion\\ledger05v1stills\\still-03-8.10s.png"
+  },
+  {
+   "n": 4,
+   "t": 8.4,
+   "beat": 14,
+   "file": "C:\\Users\\Wesley\\agents-office\\output\\motion\\ledger05v1stills\\still-04-8.40s.png"
+  },
+  {
+   "n": 5,
+   "t": 8.7,
+   "beat": 14.5,
+   "file": "C:\\Users\\Wesley\\agents-office\\output\\motion\\ledger05v1stills\\still-05-8.70s.png"
+  },
+  {
+   "n": 6,
+   "t": 9,
+   "beat": 15,
+   "file": "C:\\Users\\Wesley\\agents-office\\output\\motion\\ledger05v1stills\\still-06-9.00s.png"
+  },
+  {
+   "n": 7,
+   "t": 14.1,
+   "beat": 23.5,
+   "file": "C:\\Users\\Wesley\\agents-office\\output\\motion\\ledger05v1stills\\still-07-14.10s.png"
+  },
+  {
+   "n": 8,
+   "t": 14.4,
+   "beat": 24,
+   "file": "C:\\Users\\Wesley\\agents-office\\output\\motion\\ledger05v1stills\\still-08-14.40s.png"
+  },
+  {
+   "n": 9,
+   "t": 14.7,
+   "beat": 24.5,
+   "file": "C:\\Users\\Wesley\\agents-office\\output\\motion\\ledger05v1stills\\still-09-14.70s.png"
+  },
+  {
+   "n": 10,
+   "t": 18,
+   "beat": 30,
+   "file": "C:\\Users\\Wesley\\agents-office\\output\\motion\\ledger05v1stills\\still-10-18.00s.png"
+  },
+  {
+   "n": 11,
+   "t": 22.8,
+   "beat": 38,
+   "file": "C:\\Users\\Wesley\\agents-office\\output\\motion\\ledger05v1stills\\still-11-22.80s.png"
+  },
+  {
+   "n": 12,
+   "t": 23.1,
+   "beat": 38.5,
+   "file": "C:\\Users\\Wesley\\agents-office\\output\\motion\\ledger05v1stills\\still-12-23.10s.png"
+  },
+  {
+   "n": 13,
+   "t": 23.4,
+   "beat": 39,
+   "file": "C:\\Users\\Wesley\\agents-office\\output\\motion\\ledger05v1stills\\still-13-23.40s.png"
+  },
+  {
+   "n": 14,
+   "t": 26.7,
+   "beat": 44.5,
+   "file": "C:\\Users\\Wesley\\agents-office\\output\\motion\\ledger05v1stills\\still-14-26.70s.png"
+  },
+  {
+   "n": 15,
+   "t": 32.1,
+   "beat": 53.5,
+   "file": "C:\\Users\\Wesley\\agents-office\\output\\motion\\ledger05v1stills\\still-15-32.10s.png"
+  },
+  {
+   "n": 16,
+   "t": 32.4,
+   "beat": 54,
+   "file": "C:\\Users\\Wesley\\agents-office\\output\\motion\\ledger05v1stills\\still-16-32.40s.png"
+  },
+  {
+   "n": 17,
+   "t": 32.7,
+   "beat": 54.5,
+   "file": "C:\\Users\\Wesley\\agents-office\\output\\motion\\ledger05v1stills\\still-17-32.70s.png"
+  },
+  {
+   "n": 18,
+   "t": 35.7,
+   "beat": 59.5,
+   "file": "C:\\Users\\Wesley\\agents-office\\output\\motion\\ledger05v1stills\\still-18-35.70s.png"
+  },
+  {
+   "n": 19,
+   "t": 44.7,
+   "beat": 74.5,
+   "file": "C:\\Users\\Wesley\\agents-office\\output\\motion\\ledger05v1stills\\still-19-44.70s.png"
+  },
+  {
+   "n": 20,
+   "t": 53.4,
+   "beat": 89,
+   "file": "C:\\Users\\Wesley\\agents-office\\output\\motion\\ledger05v1stills\\still-20-53.40s.png"
+  },
+  {
+   "n": 21,
+   "t": 62.4,
+   "beat": 104,
+   "file": "C:\\Users\\Wesley\\agents-office\\output\\motion\\ledger05v1stills\\still-21-62.40s.png"
+  },
+  {
+   "n": 22,
+   "t": 71.1,
+   "beat": 118.5,
+   "file": "C:\\Users\\Wesley\\agents-office\\output\\motion\\ledger05v1stills\\still-22-71.10s.png"
+  },
+  {
+   "n": 23,
+   "t": 80.1,
+   "beat": 133.5,
+   "file": "C:\\Users\\Wesley\\agents-office\\output\\motion\\ledger05v1stills\\still-23-80.10s.png"
+  },
+  {
+   "n": 24,
+   "t": 88.86666666666666,
+   "beat": 148.11,
+   "file": "C:\\Users\\Wesley\\agents-office\\output\\motion\\ledger05v1stills\\still-24-88.87s.png"
+  }
+ ],
+ "seconds": 56
+}

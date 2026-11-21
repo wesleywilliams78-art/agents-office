@@ -1,0 +1,12 @@
+{
+ "issue": "04-kenya",
+ "why": "Page 4 matrix: Kebab / grill label overlapped the Burger point.",
+ "base": "videos/franchise-entry-report/issues/04-kenya/revisions/2026-11-09T09-03-05-edit/issue.json",
+ "at": "2026-11-09T09:03:18.390Z",
+ "edits": [
+  {
+   "path": "white.matrix.points.5.y",
+   "value": 34
+  }
+ ]
+}

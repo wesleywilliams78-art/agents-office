@@ -1,0 +1,13 @@
+{
+ "issue": "04-kenya",
+ "why": "Gap 3: separate the anonymised guest data from the named Simbisa figures so no rating reads as Simbisa's.",
+ "base": "videos/franchise-entry-report/issues/04-kenya/revisions/2026-11-09T09-03-18-edit/issue.json",
+ "at": "2026-11-09T09:03:48.079Z",
+ "edits": [
+  {
+   "path": "white.gaps.2.evidence",
+   "find": "App store scores sit at 97–98% and barely separate brands; at one busy store, box meals rate 13 points under the core range (one source, Thin).",
+   "replace": "Guest data on 10 anonymised Nairobi chains: app store scores sit at 97–98% and barely separate brands, but at one store box meals rate 13 points under the core range (one source, Thin)."
+  }
+ ]
+}

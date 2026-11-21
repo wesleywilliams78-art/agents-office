@@ -1,0 +1,12 @@
+{
+ "issue": "04-kenya",
+ "why": "Page 2 headline tied to the Harlyy thread: the market is won on the repeat visit.",
+ "base": "videos/franchise-entry-report/issues/04-kenya/revisions/2026-11-09T16-32-22-edit/issue.json",
+ "at": "2026-11-09T16:32:29.855Z",
+ "edits": [
+  {
+   "path": "market.headline",
+   "value": "A mobile-money market of 58 million, won on the repeat visit"
+  }
+ ]
+}

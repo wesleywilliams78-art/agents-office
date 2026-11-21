@@ -1,0 +1,26 @@
+{
+ "issue": "05-denmark",
+ "entries": [
+  {
+   "n": 1,
+   "name": "Ekstra Bladet via HORESTA press clips, Taco Bell åbner sin første restaurant i Danmark, 13 Oct 2026",
+   "url": "https://www.horesta.dk/presseklip/2026/oktober/taco-bell-aabner-sin-foerste-restaurant-i-danmark-1/",
+   "accessed": "20 Nov 2026",
+   "claim": "Taco Bell's first Danish restaurant, Kajen Food Hall at Fisketorvet, expected to open autumn 2026; agreement signed, date not announced",
+   "stream": "B",
+   "type": "press",
+   "pass": "pass 2026-11-20T09-33-35"
+  },
+  {
+   "n": 2,
+   "name": "Hospitality & Catering News, Zambrero signs 14 Franchise Partners in first year of UK programme, 22 Jul 2026",
+   "url": "https://www.hospitalityandcateringnews.com/2026/07/zambrero-signs-14-franchise-partners-in-first-year-of-uk-programme/",
+   "accessed": "20 Nov 2026",
+   "claim": "Zambrero: more than 350 restaurants in Australia, Ireland, New Zealand, the USA and the UK; 14 UK franchise partners signed in the programme's first year; 16 UK restaurants. No Denmark.",
+   "stream": "B",
+   "type": "press",
+   "pass": "pass 2026-11-20T09-33-35"
+  }
+ ],
+ "passes": []
+}

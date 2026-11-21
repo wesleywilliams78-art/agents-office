@@ -1,0 +1,12 @@
+{
+ "issue": "04-kenya",
+ "why": "Same Harlyy revision; set verified to NOV 2026 (sources now read to 8 Nov) and check pages 3, 5 and 6.",
+ "base": "videos/franchise-entry-report/issues/04-kenya/revisions/2026-11-09T16-23-12-edit/issue.json",
+ "at": "2026-11-09T16:23:25.534Z",
+ "edits": [
+  {
+   "path": "verified",
+   "value": "NOV 2026"
+  }
+ ]
+}

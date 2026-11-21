@@ -1,0 +1,421 @@
+Dependency note: Content in this chapter uses interim defaults pending resolution of 1.1 — Positioning vs. category. Re-review on positioning sign-off.This chapter defines the standards for social media posting across Creamy's channels. Social media is a primary customer-facing communication channel and every post represents the brand. Consistency in tone, visual quality, and content type builds brand recognition and trust.
+Minimum Operating Standards
+Approved platforms: Instagram, Facebook, TikTok. The Unit Manager or designated social media lead is responsible for local accounts. Right
+Posting frequency: minimum 3-5 posts per week across active platforms. Right
+Content mix: a balanced mix of product photography, behind-the-scenes content, customer testimonials/reposts (with permission), team spotlights, promotional announcements, and community engagement content. Avoid posting only promotions — aim for a 70/20/10 split (70% engaging/entertaining content, 20% informational/educational, 10% promotional). Right 
+Visual standards: all product photography must meet the standards set out in Chapter 4.1 — Photography/imagery standards. For brand based initiatives this will be outsourced to a professional photography studio - locations must no use there own photography for guest facing communications and POS.
+Tone of voice: must align with Creamy's defined tone of voice (see Chapter 4.1 — Tone of voice)
+Response times: all comments and direct messages must be responded to within 24 hours maximum. Negative comments must be handled per the review/reputation management chapter (Chapter 4.3). 24hrs maximum
+Norwegian language considerations: posts should primarily be in Norwegian (bokmaal) unless targeting a specifically English-speaking audience. Bilingual posts (Norwegian + English) are acceptable.
+Legal: all posts must comply with markedsforingsloven. Influencer collaborations and sponsored content must be clearly marked as 'annonse' (advertisement) per Forbrukertilsynet guidance. Competitions and giveaways must comply with lotteriloven (Lottery Act) — skill-based competitions are generally fine; pure lottery/chance-based draws require registration.
+Staff social media: team members should not post about Creamy on personal accounts in a way that could be interpreted as official communication. Any content featuring identifiable team members requires their consent (personopplysningsloven / GDPR).
+Roles & Responsibilities
+Unit Manager / Social Media Lead: Plans and publishes content; monitors engagement; responds to comments and messages.
+Franchisee: Approves content strategy; manages paid social media spend.
+Head Office: Provides brand assets, content templates, and campaign content; monitors brand consistency across franchise accounts.
+Team Members: May create content with approval; must not post as official Creamy representatives on personal accounts.
+Measure Analyse Improve
+Track monthly: (a) follower growth, (b) engagement rate (likes, comments, shares as % of reach), (c) response time to messages/comments, (d) content mix vs. target. Review quarterly and adjust content strategy based on performance data.
+Tools & Resources
+Content calendar template (see Chapter 4.3 — Content calendar guidance). Brand asset library (provided by Head Office). Scheduling tool [Adnan to confirm: e.g. Meta Business Suite, Later, or Hootsuite]. Social media analytics (platform-native or third-party).
+
+Content calendar guidance   [YSF ADVISORY — DRAFTED, PENDING REVIEW]
+Introduction
+Dependency note: Content in this chapter uses interim defaults pending resolution of 1.1 — Positioning vs. category. Re-review on positioning sign-off.This chapter provides guidance on planning and maintaining a social media and marketing content calendar. A content calendar ensures consistent posting, avoids last-minute scrambling, and allows the unit to align local content with central brand campaigns, seasonal events, and promotional periods.
+Minimum Operating Standards
+Each unit must maintain a rolling content calendar covering at least the next 4 weeks. The calendar should be planned monthly and reviewed weekly. 
+The content calendar must include: post date, platform, content type (product, behind-the-scenes, promo, community, etc.), visual asset required (photo, video, graphic), copy/caption, and any hashtags or tags.
+The calendar should incorporate: Norwegian public holidays and cultural events (e.g. 17. mai / Syttende Mai, jul, paaske, Eid, Diwali where relevant to the local community), seasonal product launches or limited-time offers, local community events, and any central brand campaigns communicated by Head Office.
+Content should be prepared (photography shot, copy written, graphics created) at least 1 week in advance of the posting date. Reactive content (responding to trends or current events) may be prepared in real time but must still meet brand standards. Right
+Head Office may issue mandatory content (e.g. brand campaign posts, new product announcements) that must be published on specified dates. These will be communicated at least 1-2 weeks in advance. 1-2 weeks
+The content calendar is a planning tool — it should be flexible enough to accommodate spontaneous content opportunities without abandoning the structure.
+Roles & Responsibilities
+Unit Manager / Social Media Lead: Creates and maintains the content calendar; produces or commissions content; publishes on schedule.
+Franchisee: Reviews the calendar monthly; approves any significant spend (e.g. paid promotion of specific posts).
+Head Office: Provides central campaign content and calendar integration dates; reviews local calendars for brand consistency where requested.
+Measure Analyse Improve
+Track: (a) percentage of planned posts published on schedule, (b) content mix adherence vs. targets, (c) engagement rates for different content types (to inform future calendar planning). Review monthly.
+Tools & Resources
+Content calendar template (spreadsheet or planning tool). Brand asset library. Scheduling tool (see Social media posting standards chapter). Head Office campaign calendar (shared centrally).
+
+Review/reputation management   [YSF ADVISORY — DRAFTED, PENDING REVIEW]
+Introduction
+This chapter covers the management of online reviews and the unit's digital reputation. Online reviews on platforms like Google, TripAdvisor, Facebook, and delivery apps directly influence customer acquisition. A proactive, professional approach to reviews — both positive and negative — is essential.
+Minimum Operating Standards
+All review platforms where the unit is listed must be monitored at least daily. Key platforms in the Norwegian market include: Google Business Profile (highest priority), TripAdvisor, Facebook, and any delivery platform reviews (Foodora, Wolt) Google,FB,Instagram, tik-tok, foodora, Wolt
+All reviews must receive a response within  48 hours. Right Positive reviews: a brief, genuine thank-you acknowledging the specific feedback. Negative reviews: acknowledge the concern, apologise where appropriate, offer to resolve the issue offline (provide a contact email or phone number), and never argue or become defensive publicly.
+Response tone: consistent with Creamy's brand voice — warm, professional, and solution-oriented. Do not use copy-paste template responses for every review; personalise the response to the specific feedback.
+Encouraging reviews: team members may politely encourage satisfied customers to leave a review, but must never offer incentives for reviews (this violates most platform terms and can breach markedsforingsloven if the incentive is not disclosed). A discreet counter card or receipt prompt is acceptable.
+Negative review escalation: any review that (a) alleges a food safety issue, (b) alleges discrimination or harassment, (c) threatens legal action, or (d) goes viral / attracts media attention, must be escalated to the Franchisee and Head Office immediately before responding.
+Review data should be analysed monthly to identify recurring themes (positive and negative) and inform operational improvements.
+Fake or malicious reviews: do not respond publicly. Report to the platform for removal using the platform's dispute process. Document the report.
+Roles & Responsibilities
+Unit Manager: Monitors and responds to reviews daily; escalates serious reviews; reports monthly trends.
+Franchisee: Handles escalated reviews; approves responses to high-sensitivity reviews; acts on recurring feedback themes.
+Head Office: Provides response guidelines and templates; monitors brand reputation across all franchise locations; manages any PR/media issues arising from reviews.
+Measure Analyse Improve
+Track monthly: (a) average rating on each platform, (b) total number of reviews (growth trend), (c) response rate and average response time, (d) sentiment analysis (ratio of positive to negative reviews), (e) recurring themes from negative reviews and actions taken. Target: [Adnan to confirm: e.g. minimum 4.3/5 average on Google].
+Tools & Resources
+Review monitoring dashboard [Adnan to confirm: whether a tool like Google Alerts, ReviewTrackers, or manual monitoring is used]. Not used - mark as an action to implement Response template library (starting points, not copy-paste). Monthly review summary template. Escalation log.
+
+4.4  Promotions & loyalty
+
+Approved promotion types   Reviewed
+1. Introduction
+Promotions drive footfall, but the wrong promotion damages the brand. Creamy is a premium dessert bar — every promotional mechanic must reinforce that positioning, not undermine it. This chapter defines which promotion types are approved, which are explicitly prohibited, and the principle that governs all promotional decision-making: quality costs money, and Creamy will never compete on price.
+A franchise partner does not need to invent their own promotional strategy. Head Office has tested what works and what doesn't across existing locations. This chapter captures that knowledge so every new location starts with proven tactics and avoids costly mistakes.
+
+2. Minimum Operating Standards
+2.1 Approved Promotion Types
+The following mechanics are proven to drive revenue without eroding Creamy's brand positioning:
+Combo Deals Bundling products at a combined price (e.g. a dessert plus a drink). Effective because they increase average transaction value while giving the customer a sense of added value — the brand isn't discounting a single product, it's encouraging a bigger order.
+All combo pricing must maintain an acceptable margin. The franchise partner should calculate the combined cost of goods before setting the combo price and confirm with Head Office if unsure.
+Combo deals must be presented as a curated experience ("The Creamy Combo"), not a discount.
+Happy Hour A defined time window — typically during off-peak hours — with a promotional offer. Effective because it shifts demand into quieter periods without cheapening the peak experience.
+Happy hour must not overlap with peak trading (18:00 onwards). The purpose is to build off-peak traffic, not discount the busiest period.
+The offer can be a reduced price on selected items, a smaller free add-on, or a combo-style bundle. It should not be a blanket percentage off the menu.
+Student Discounts A percentage or fixed-amount discount on presentation of a valid student ID. Effective because the 15–35 target demographic includes a large student population, and students who discover Creamy during their studies become long-term customers.
+The discount rate should be set by Head Office to ensure consistency across locations. [Adnan to confirm: standard student discount rate.]
+Valid only on presentation of a recognised student ID — not self-declared.
+Buy One Get One Free (BOGOF) A tactical mechanic for specific campaigns — typically time-limited and tied to a launch, a seasonal push, or a social media activation. Effective when used sparingly to generate buzz and trial.
+BOGOF must be pre-approved by Head Office on a campaign-by-campaign basis. It is not a standing offer.
+The franchise partner must not run BOGOF independently without Head Office sign-off — overuse turns a tactical tool into a margin drain.
+2.2 Prohibited Promotion Types
+Groupon (and equivalent deal platforms) Explicitly does not work for Creamy. Deal platforms attract price-driven one-time visitors who rarely return at full price. They train customers to expect deep discounts, attract the wrong demographic, and damage perceived brand value. No franchise partner may list Creamy on Groupon or any equivalent discount deal platform.
+Price Wars Creamy will never enter a price war with a competitor. If a nearby business undercuts on price, the response is not to match or beat — the response is to hold the line. The operating phrase across the network is: quality costs money. Any franchise partner who feels pressure to compete on price should contact Head Office for guidance rather than acting independently.
+2.3 The Governing Principle
+Every promotional decision passes through one filter: does this reinforce or erode Creamy's positioning as a premium dessert bar?
+If a promotion makes the brand feel cheaper → don't do it.
+If a promotion makes the customer feel they're getting something special → consider it.
+If in doubt → ask Head Office. They can always guide the franchise partner on what to do and what to avoid. That guidance line exists precisely so franchise partners don't have to guess.
+
+3. Roles & Responsibilities
+Role | Responsibility
+Head Office | Sets approved promotion types and standard terms (discount rates, combo margins, happy hour windows). Approves or rejects any BOGOF campaign. Provides guidance to franchise partners on promotional decisions. Has final authority on all pricing and promotion matters.
+Franchise Partner | Executes approved promotions within the parameters set by Head Office. Does not create new promotion types or run unapproved mechanics independently. Escalates to Head Office when feeling competitive pressure on pricing.
+Operations Manager | Ensures in-store team is briefed on active promotions — what's running, what the terms are, and how to communicate it to customers in line with the brand tone of voice (Chapter 5.1).
+All Staff | Applies promotions correctly at the point of sale. Does not offer ad-hoc discounts, freebies, or price adjustments outside the approved framework.
+
+4. Measure, Analyse, Improve
+Metric | Source | Frequency | Action Trigger
+Promotion redemption rate | EPOS | Per campaign | Low uptake on an approved mechanic — review timing, communication, or relevance before repeating
+Average transaction value during promotions vs. non-promotional periods | EPOS | Monthly | If ATV drops during promotional periods without a corresponding increase in transaction volume, the promotion may be cannibalising margin — review with Head Office
+Repeat visit rate from promotion-acquired customers | EPOS (where trackable) | Quarterly | If promotional customers don't return at full price, the mechanic may be attracting the wrong audience
+Unauthorised promotions | Head Office audits / mystery customer | Ongoing | Any franchise partner running unapproved promotions — immediate corrective conversation and documented warning
+
+5. Tools & Resources
+EPOS system — promotion tracking, redemption reporting, ATV analysis
+Chapter 5.1 — Brand Tone of Voice — how promotions are communicated must align with the five pillars (particularly Premium and Confident)
+Chapter 1.3 — Market Positioning — the competitive context that underpins the "no price wars" principle
+Head Office promotional calendar — [Adnan to confirm: will Head Office issue a seasonal/annual promotional calendar, or are campaigns agreed ad hoc?]
+
+Combo deals works
+Happy hour works
+Student discounts works
+Buy one get one free works
+Groupon does not work
+Getting into price war with competitors is something we will never do, we always use the phrase that quality cost money.
+Head office can always guide the franchisee about wich way to do or not to do.
+
+Loyalty programme mechanics   [YSF ADVISORY — DRAFTED, REVIEWED]
+1. Introduction
+Repeat customers are the foundation of a profitable dessert bar. Acquiring a new customer costs time and marketing spend; keeping an existing one costs almost nothing beyond delivering a consistently good experience. Creamy's loyalty programme turns that principle into a system — rewarding returning customers automatically, building a customer database, and giving the franchise partner data to make smarter commercial decisions.
+The programme is already proven: at the time of writing, over 6,000 customers are registered across Creamy's existing locations. Every new franchise location must activate the loyalty programme from day one.
+
+2. Minimum Operating Standards
+2.1 Programme Mechanics
+Creamy operates a 10% kickback loyalty programme. Every registered customer earns 10% of their spend back as credit, which they can redeem against their next visit.
+The programme is managed entirely through the EPOS system — there is no separate app, no physical stamp card, no third-party platform. The EPOS collects, stores, and applies loyalty credit at the point of sale.
+Customers register once, in-store, during any transaction. Registration captures [Adnan to confirm: name, phone number, email — which fields are collected at registration?]. Their loyalty balance is then linked to their profile and available at any Creamy location.
+2.2 Registration Standards
+Every customer must be offered the opportunity to register for the loyalty programme during their first visit. This is not optional — it is part of the standard service sequence.
+The team member should explain the benefit in one sentence: "Would you like to sign up for our loyalty programme? You'll get 10% back on everything you spend to use on your next visit."
+Registration must be quick — if the process takes more than 30 seconds at the till, it will slow service during peak and staff will stop offering it. The Operations Manager should ensure the EPOS registration flow is streamlined and that all team members have practised it.
+Staff must never pressure a customer to register, and must accept a "no" without comment.
+2.3 Redemption Rules
+Loyalty credit can be redeemed in full or in part against any menu item on any visit.
+[Adnan to confirm: is there an expiry period on accumulated credit? Is there a minimum spend to redeem? Can credit be used alongside other promotions (combos, happy hour, student discount)?]
+2.4 Data & Privacy
+All customer data collected through the loyalty programme is subject to Norwegian data protection law (personopplysningsloven / GDPR). The franchise partner must ensure:
+A clear privacy notice is available at the point of registration, explaining what data is collected, why, and how it is stored
+Customer data is stored only within the EPOS system — it must not be exported to personal devices, spreadsheets, or unsecured platforms
+Customers can request deletion of their data at any time, and the franchise partner must action this without delay
+Head Office is the data controller for the loyalty programme. The franchise partner processes data on behalf of Head Office under the terms of the franchise agreement. [Adnan to confirm: is there a formal data processing agreement in the franchise contract?]
+
+3. Roles & Responsibilities
+Role | Responsibility
+Head Office | Owns the loyalty programme design, sets the kickback rate, and maintains the EPOS loyalty module. Monitors registration numbers across the network. Acts as data controller under GDPR.
+Franchise Partner | Ensures all staff are trained on registration and redemption. Monitors local registration rate. Ensures GDPR compliance at their location. Does not modify the kickback rate or programme terms without Head Office approval.
+Operations Manager | Checks that the loyalty offer is being made consistently — not just during quiet periods. Reviews registration numbers weekly. Troubleshoots any EPOS loyalty issues or escalates to the provider.
+Shift Leader | Reinforces the registration habit on shift. Leads by example — if a Shift Leader isn't offering it, team members won't either.
+Team Members | Offers loyalty registration to every unregistered customer. Processes redemptions correctly. Never shares or discusses customer data.
+
+4. Measure, Analyse, Improve
+Metric | Source | Frequency | Action Trigger
+New loyalty registrations | EPOS | Weekly | If registrations plateau or decline — observe whether staff are consistently offering; retrain if needed
+Total registered customers (per location) | EPOS | Monthly | Benchmark against 6,000+ across existing network. A new location should aim for [Adnan to confirm] registered customers within the first 6 months
+Redemption rate (% of registered customers who redeem credit) | EPOS | Monthly | Low redemption may indicate customers don't know they have credit, or the credit isn't meaningful enough — review communication at point of sale
+Loyalty vs. non-loyalty average transaction value | EPOS | Quarterly | Loyalty customers should show a higher ATV over time — if not, review whether the programme is attracting the right behaviour
+GDPR data requests | Operations Manager log | Ongoing | Any data deletion or access request must be actioned within 30 days (GDPR requirement) — track and confirm completion
+
+5. Tools & Resources
+EPOS system — loyalty registration, credit accrual, redemption, and customer data storage
+Chapter 5.2 — Approved Promotion Types — rules on whether loyalty credit stacks with other promotions [Adnan to confirm]
+Chapter 6.3 — Data Protection & GDPR — detailed GDPR compliance requirements for all customer data handling
+Chapter 2.11 — Initial Customer Acquisition Tactics — loyalty registration is a natural extension of the acquisition phase; every new customer acquired in the first 90 days should be offered registration
+
+We use a loyalty kickback program for all registered costumer, the get 10% kick back that they can spend on their next visit. His made and used thru epos system who collects and saves data. Pr today we have above 6000 costumer registered.
+
+Seasonal campaign calendar   [YSF ADVISORY — DRAFTED, PENDING REVIEW]
+Introduction
+Dependency note: Content in this chapter uses interim defaults pending resolution of 1.1 — Positioning vs. category. Re-review on positioning sign-off.This chapter provides the framework for planning and executing seasonal marketing campaigns. Seasonal campaigns drive incremental sales by aligning offers, products, and messaging with calendar events, holidays, and cultural moments that resonate with customers. For a dessert/QSR brand, seasonality significantly impacts product demand and footfall.
+Minimum Operating Standards
+Head Office will issue an annual seasonal campaign calendar by November for the following year, covering mandatory and optional campaign windows. Right
+Key seasonal windows for the Norwegian market include: Vinterferie (winter half-term, Week 8-9 — varies by region), Paske (Easter — strong confectionery/dessert season), 17. mai (Constitution Day — national celebration, high footfall in most areas), summer season (June-August — tourist footfall depending on location), Back-to-school (mid-August), Halloween (growing in popularity in Norway), Black Friday/Week (late November — relevant if Creamy runs any promotional pricing), Advent/Jul (December — major dessert season), and Nyttarsaften (New Year's Eve).
+Each seasonal campaign must have: a defined objective (e.g. drive trial of seasonal product, increase average transaction value), a start and end date, approved promotional mechanics (see Chapter 4.4 — Approved promotion types), supporting marketing assets (social media content, in-store POS), and a post-campaign review. Any campaigns of this nature must be approved by Head Office.
+Seasonal products or limited-time offers must be operationally tested (recipe, prep process, allergen profile, costing) before the campaign launches. Do not launch a product that has not been through the standard recipe development and approval process.
+Local customisation: franchisees may propose additional seasonal campaigns relevant to their local market (e.g. local festival, university freshers' week), subject to Head Office approval of messaging and branding.
+Campaign execution: all in-store POS (point of sale materials), menu changes, and team briefings must be completed before the campaign start date. Late or incomplete execution undermines campaign effectiveness.
+Roles & Responsibilities
+Head Office: Issues the annual campaign calendar; provides campaign briefs, assets, and approved mechanics; conducts post-campaign analysis across the network.
+Franchisee / Unit Manager: Executes campaigns at unit level; ensures operational readiness (stock, staff training, POS); submits local campaign proposals; participates in post-campaign reviews.
+Team Members: Understand and promote current campaigns to customers; execute any in-store campaign mechanics (e.g. upselling seasonal products).
+Measure Analyse Improve
+Track per campaign: (a) sales of seasonal/promoted products vs. target, (b) overall sales uplift during campaign period vs. comparable non-campaign period, (c) campaign cost vs. incremental revenue, (d) customer engagement (social media reach, in-store feedback). Conduct a post-campaign review within [Adnan to confirm: e.g. 1 week] of campaign end.
+Tools & Resources
+Annual seasonal campaign calendar (Head Office issued). Campaign brief template. Campaign execution checklist (stock, POS, staff briefing, social media). Post-campaign review template.
+
+5. Day-to-Day Operating Requirements
+Heaviest category — highest volume of undocumented IP
+
+Opening Checklist
+1. Introduction
+This chapter provides the standard opening checklist for Creamy locations. A disciplined opening routine ensures the unit is clean, safe, fully stocked, and ready to serve before the first customer walks in. Every shift that starts poorly cascades through the day — missed prep, late temperature checks, and a rushed team set the tone for everything that follows.
+The opening lead arrives alone (refer to Chapter 3.2 — Peak & Off-Peak Staffing for lone-opening time allowances) and must use that window to complete every item on this checklist methodically, without shortcuts.
+
+2. Minimum Operating Standards
+The opening team member (Shift Leader or Operations Manager) must arrive at least 30 minutes before the unit's published opening time.
+The checklist must be completed in the following sequence:
+Step 1 — Secure Entry Check the exterior for any signs of break-in, damage, or anything unusual before entering. If anything is suspicious, do not enter — contact the Operations Manager / franchise partner immediately and wait for guidance.
+Step 2 — Alarm & Clock-In Deactivate the alarm system. Change into uniform, then log in to clock yourself in for the shift.
+Step 3 — Lights & HVAC Turn on all lighting, heating/cooling, and ventilation/extraction systems. Allow extraction to run before firing up any cooking equipment.
+Step 4 — Temperature Checks Record fridge and freezer temperatures on the daily log:
+Fridges: 0–4°C
+Freezers: −18°C or below
+If any reading is outside the critical limit, report immediately to the Operations Manager and follow the HACCP corrective action procedure (refer to Chapter 4.X — HACCP & Food Safety). Do not use product from a unit that has breached temperature limits until the corrective action has been completed and documented.
+Step 5 — Equipment Power-On Switch on all equipment in the following order:
+EPOS system
+Coffee machine
+Bain-marie — fill with water before switching on (running a bain-marie dry will damage the unit)
+Waffle machines
+Crepe machines
+Blenders
+Display fridges / ice cream display
+Any other equipment per the location's specific equipment list
+Allow equipment to reach operating temperature before use.
+Step 6 — Visual Cleanliness Check Walk through the entire front of house: customer seating, counter, menu boards, windows, entrance, and any outdoor seating. Everything must be clean and presentable before the doors open. If the closing team has left anything below standard, address it now and log it for the Operations Manager.
+Step 7 — Restock Check and replenish all front-of-house and kitchen supplies: napkins, cups, lids, straws, retail display items, and any consumables that run low during service. The aim is zero interruptions during the first trading period.
+Step 8 — Prep Complete the following daily prep tasks:
+Melt chocolate in the bain-marie
+Make the waffle mix and crepe mix
+Cut strawberries for the day's use
+Roll cutlery (fork and knife) in napkins
+Any additional prep required for the day's menu or expected volume should follow the location's prep schedule. If prep cannot be completed before opening, prioritise the items needed for the first hour of trading and continue prep alongside early service.
+Step 9 — Cash Float Verify the till float matches the expected amount. Count it, log the count on the daily cash sheet, and sign. If the float is short or over, document the discrepancy and notify the Operations Manager before opening. Do not adjust the float without authorisation.
+Step 10 — Staff Check Confirm all scheduled team members have arrived and are in correct uniform. If anyone is missing or late, contact them and notify the Operations Manager if the shift is at risk of falling below minimum staffing levels (refer to Chapter 3.2).
+Step 11 — Final Walk-Through The opening lead walks the entire unit, front to back, one final time. This is the quality gate — if anything from Steps 1–10 has been missed or isn't right, this is the last chance to catch it before customers arrive.
+Step 12 — Open Doors Open at the published time. Not early, not late.
+
+3. Roles & Responsibilities
+Role | Responsibility
+Opening Lead (Shift Leader or Operations Manager) | Completes the full checklist in sequence. Signs off on completion. Escalates any critical issue before opening. Owns the readiness of the unit.
+Team Members | Assist with restocking, cleaning, and prep tasks as directed by the opening lead once they arrive on site.
+Operations Manager / Franchise Partner | Available by phone during the opening window. Addresses any escalated issues (equipment failure, staffing shortfall, temperature breaches). Reviews completed checklists weekly.
+
+4. Measure, Analyse, Improve
+Metric | Source | Frequency | Action Trigger
+Checklist completion rate | Signed daily checklists | Weekly | Any day without a fully completed, signed checklist — investigate why and address with the opening lead
+Late openings | Operations Manager log / EPOS first-transaction time | Weekly | Any opening after the published time — root-cause review (late arrival, equipment issue, prep overrun)
+Issues logged at opening | Checklist notes / escalation log | Weekly | Recurring issues (e.g. cleaning standards from previous close, equipment faults, float discrepancies) — address root cause, not just the symptom
+Temperature breaches at opening | Daily temperature log | Daily | Any breach triggers immediate HACCP corrective action; recurring breaches in the same unit — equipment inspection
+
+5. Tools & Resources
+Printed opening checklist — one per day, per location; completed and signed by the opening lead, retained for [Adnan to confirm: retention period, e.g. 30 days]
+Daily temperature log — fridge and freezer readings recorded at opening
+Daily cash sheet — float verification and count
+Chapter 3.2 — Peak & Off-Peak Staffing — lone-opening rules and minimum staffing
+Chapter 4.X — HACCP & Food Safety — corrective action procedures for temperature breaches
+Chapter 4.X — Cash Handling — float procedures and discrepancy reporting
+
+Prepared by YSF Advisory. Final review and operational sign-off required from Adnan Tasleem (Creamy Drift AS).
+
+That's now a clean rewrite with all of Adnan's specifics built in — the bain-marie water warning, the prep tasks, the 30-minute arrival, and the clock-in sequence. Ready for the next one.
+
+
+Closing Checklist
+1. Introduction
+This chapter provides the standard closing checklist for Creamy locations. A thorough closing routine ensures food safety standards are maintained overnight, the unit is secure, cash is reconciled, and the opening team inherits a clean and ready environment the next morning. A poor close is the opening team's problem — and by extension, the first customers' problem.
+The closing team must work through this checklist methodically. No team member leaves until the closing lead has completed the final walk-through and dismissed the team.
+
+2. Minimum Operating Standards
+The closing team must begin close-down procedures at an appropriate time before the published closing time, without turning away any customer who arrives during published hours. Closing prep happens around the customer, never instead of serving them.
+The checklist must be completed in the following sequence:
+Step 1 — Last Customer Served & Premises Cleared Serve any remaining customers. Do not rush them. Once the last customer has left, lock the entrance to prevent new walk-ins after closing time.
+Step 2 — Front of House Wipe down all surfaces, counters, and menu boards. Clean customer seating and tables. Sweep and mop all front-of-house floors. Empty all bins. Clean windows and glass if needed. The standard is simple: would this be acceptable if a customer walked in right now?
+Step 3 — Kitchen & Prep Area
+Clean all equipment — waffle machines, crepe machines, bain-marie (drain and clean once cooled), blenders, coffee machine (follow the machine's cleaning cycle)
+Sanitise all preparation surfaces
+Cover and date-label any open ingredients for storage
+Check use-by dates on all perishable stock and discard any expired items — do not leave this for the opening team
+Sweep and mop the kitchen floor
+Empty the bain-marie water — do not leave water sitting overnight
+Step 4 — Stock & Cold Storage Move all perishable items to appropriate cold storage (fridges 0–4°C, freezers −18°C or below). Check and record fridge and freezer temperatures on the daily log. Secure dry stores. Any stock that has been left out at ambient temperature beyond safe limits must be discarded and logged (refer to Chapter 4.X — HACCP & Food Safety).
+Step 5 — Cash Reconciliation Complete the till reconciliation per the cash handling procedure:
+Count all cash in the till
+Reconcile the count to the EPOS end-of-day figures
+Document any discrepancy on the daily cash sheet — over or under, no matter how small
+Prepare banking if applicable
+Secure all cash in the safe
+If there is a significant discrepancy, notify the Operations Manager before leaving the premises.
+Step 6 — EPOS End-of-Day Run the end-of-day report from the EPOS system. File or submit to the Operations Manager. [Adnan to confirm: is the report emailed automatically, saved digitally, or printed and filed on site?]
+Step 7 — Equipment Shut-Down Switch off all non-essential equipment:
+EPOS terminals
+Coffee machine
+Waffle machines
+Crepe machines
+Bain-marie (already drained and cleaned at Step 3)
+Blenders
+Display lighting
+Leave running overnight: all fridges, freezers, and any equipment that requires continuous power. If in doubt about a specific piece of equipment, refer to the manufacturer's guidance or ask the Operations Manager.
+Step 8 — Waste Bag all waste and remove it to the designated waste area. Separate recyclables per local kommune requirements — sorting rules vary by municipality, and the franchise partner is responsible for confirming and communicating the local requirements to the team. No waste bags should remain inside the unit overnight.
+Step 9 — Security
+Check all windows are closed and locked
+Check all doors (front, back, fire exits) are secured
+Arm the alarm system
+The closing lead is the last person out and confirms the premises are secure
+Step 10 — Final Sign-Off The closing lead completes and signs the closing checklist. No team member leaves until the closing lead has done a final walk-through of the entire unit (front to back) and confirmed everything is done. The closing lead then dismisses the team — everyone leaves together.
+
+3. Roles & Responsibilities
+Role | Responsibility
+Closing Lead (Shift Leader or Operations Manager) | Completes the full checklist in sequence. Owns the cash reconciliation. Conducts the final walk-through. Signs off on completion. Ensures the unit is fully secure before leaving. Last person out.
+Team Members | Carry out cleaning, restocking, and close-down tasks as directed by the closing lead. Do not leave until dismissed.
+Operations Manager / Franchise Partner | Reviews completed closing checklists periodically. Addresses any recurring issues flagged by the opening team. Available by phone if a significant issue arises at close (cash discrepancy, security concern, equipment failure).
+
+4. Measure, Analyse, Improve
+Metric | Source | Frequency | Action Trigger
+Checklist completion rate | Signed daily checklists | Weekly | Any day without a fully completed, signed closing checklist — investigate and address with the closing lead
+Issues found at opening that should have been caught at close | Opening checklist notes / Operations Manager log | Weekly | Recurring close-to-open issues (e.g. surfaces not cleaned, stock not stored, prep area left dirty) — performance conversation with the closing lead responsible
+Cash discrepancies at close | Daily cash sheets / EPOS reconciliation | Daily | Any discrepancy — documented and reviewed by Operations Manager. Repeated discrepancies on the same closing lead's shifts — escalate
+Waste separation compliance | Operations Manager spot checks | Monthly | Non-compliance with kommune sorting requirements risks fines — retrain team and review waste signage
+
+5. Tools & Resources
+Printed closing checklist — one per day, per location; completed and signed by the closing lead, retained for [Adnan to confirm: retention period]
+Daily temperature log — fridge and freezer readings recorded at close
+Daily cash sheet — till reconciliation and float record
+EPOS end-of-day report — sales, transactions, and reconciliation data
+Chapter 4.1 — Opening Checklist — the opening team is the quality check on the previous night's close
+Chapter 4.X — HACCP & Food Safety — corrective actions for temperature breaches or unsafe stock
+Chapter 4.X — Cash Handling — full cash reconciliation and discrepancy procedures
+Kommune waste guide — location-specific; franchise partner to source and display in the waste area
+
+
+
+Cash handling & till reconciliation   [YSF ADVISORY — DRAFTED, PENDING REVIEW]
+Introduction
+This chapter defines Creamy's cash handling and till reconciliation procedures. Rigorous cash handling protects the business from theft, fraud, and accounting errors, and ensures accurate financial reporting. Norway is increasingly cashless, but many QSR operations still handle meaningful volumes of cash. Note: Norwegian tax law (bokforingsloven and kassasystemforskriften) requires that EPOS/cash register systems meet specific technical requirements and that daily sales data is retained.
+Minimum Operating Standards
+The till float (vekslepenger) must be a fixed, agreed amount: NOK 2,000]. The float must be counted and verified at the start of every trading day (opening checklist) and at the end of every trading day (closing checklist).
+All sales must be rung through the EPOS system. No sales may be conducted off-register. Under kassasystemforskriften, every sale must produce a customer receipt (kvittering).
+Voids and refunds on the EPOS must be authorised by the Shift Supervisor or Unit Manager and logged with a reason. Excessive voids or refunds must be investigated.
+Cash drops: if the till accumulates cash above a threshold of [Adnan to confirm: e.g. NOK 5,000], excess cash must be removed and placed in the safe (a 'cash drop'). Cash drops must be recorded on the daily cash sheet.
+End-of-day reconciliation: count the physical cash in the till, subtract the opening float, and compare the result to the EPOS cash sales total. Any variance (over or short) must be recorded. Variances above NOK 50] must be investigated and reported to the Franchisee.
+Banking: cash must be banked at least twice per week. Banking should be varied in timing and route for security. Two people should handle banking where possible.
+No personal money (IOUs, personal change) may be taken from or added to the till. No staff purchases may be processed outside normal EPOS procedures.
+Card payment reconciliation: card terminal settlement reports must be reconciled against EPOS card sales daily.
+All cash handling records (daily cash sheets, banking records, variance logs) must be retained for 5 years for accounting documentation.
+Roles & Responsibilities
+Opening Lead: Counts and verifies the opening float.
+Shift Supervisor: Authorises voids and refunds; conducts cash drops; monitors till activity.
+Closing Lead: Conducts end-of-day reconciliation; secures cash; completes daily cash sheet.
+Unit Manager / Franchisee: Reviews daily cash sheets; investigates variances; arranges banking.
+Measure Analyse Improve
+Track: (a) daily cash variance (over/short), (b) number and value of voids/refunds, (c) banking frequency vs. target. Persistent variances or unusual void patterns must trigger an investigation. Review weekly.
+Tools & Resources
+Daily cash sheet (template). EPOS end-of-day cash report. Void/refund log. Banking log. Safe log (recording cash in/out of the safe).
+
+5.2  Product prep & recipes
+
+Core recipe book (by product line)   [NEEDS ADNAN INPUT]
+Why this chapter matters
+This is the heart of the operation. Every product must taste the same in every unit. The recipe book is how you guarantee that.
+What you need to provide
+Every recipe currently on the Creamy menu, with exact ingredients, quantities, and step-by-step method.
+Product photography for each item (what the finished product should look like).
+Allergen information for each recipe.
+Any variations (e.g. sizing options, customisation builds).
+Easiest way to get this done
+This is the biggest single piece of work. Start with your best-selling products and work through the menu methodically. If recipes live in someone's head, send a WhatsApp voice note while making each product. YSF Advisory will format them into standardised recipe cards.
+
+Portioning & waste standards   [NEEDS ADNAN INPUT]
+Why this chapter matters
+Inconsistent portioning means inconsistent customer experience and unpredictable food costs. This chapter sets exact portion sizes.
+What you need to provide
+Portion sizes for every product/ingredient (in grams, ml, scoops, or whatever measure you use).
+Acceptable tolerance (e.g. ±5g).
+Portioning tools in use (scoops, scales, measures, portion cups).
+Current waste targets if you have them.
+Easiest way to get this done
+Go through each product and write down the exact portion. If you use scoops, specify the scoop size. If you weigh, specify the weight. Precision matters here.
+
+Prep schedules   [NEEDS ADNAN INPUT]
+Why this chapter matters
+Tells the kitchen team what to prepare, how much, and when — so products are always fresh and prep time isn't wasted.
+What you need to provide
+What gets prepped in advance vs. made to order.
+Prep quantities by day of week (more for Friday/Saturday, less for Monday, etc.).
+Prep timing — when during the day each item should be prepared.
+Shelf life of prepped items (how long after prep before they must be discarded).
+Easiest way to get this done
+Document a typical prep day from start to finish. What gets done first? How much? When does the next batch go? A WhatsApp voice note recorded while you're actually prepping would be ideal.
+
+5.3  Stock & inventory
+
+Ordering cycle & par levels   [NEEDS ADNAN INPUT]
+Why this chapter matters
+Running out of a key ingredient means lost sales and unhappy customers. This chapter sets minimum stock levels and reorder triggers.
+What you need to provide
+Your current ordering schedule (which suppliers on which days).
+Par levels for each key ingredient — the minimum quantity you want in stock before reordering.
+Lead times for each supplier (how long between placing an order and receiving it).
+Any seasonal adjustments to ordering volumes.
+Easiest way to get this done
+List your ingredients, how often you order each one, and the minimum you'd want on the shelf before the next delivery arrives. That's the par level.
+
+Stock rotation (FIFO)   [YSF ADVISORY — DRAFTED, PENDING REVIEW]
+Introduction
+This chapter defines Creamy's stock rotation procedures based on the FIFO (First In, First Out) principle. Proper stock rotation is a fundamental food safety requirement, minimises waste, and ensures customers always receive product made with the freshest ingredients. FIFO compliance is a standard Mattilsynet inspection point.
+Minimum Operating Standards
+All stock must be rotated on a FIFO basis: the oldest stock (earliest delivery date or earliest production/prep date) must always be used first.
+When new deliveries are received, existing stock must be moved to the front/top and new stock placed at the back/bottom of shelves and storage areas.
+All items in cold storage, dry storage, and prep areas must be clearly date-labelled. For items transferred from original packaging, the label must include: product name, date of transfer/opening, and use-by date.
+Use-by dates (holdbarhetsdato) must never be extended or altered. 'Best before' (best for) dates are advisory but Creamy policy is to follow them unless Head Office guidance states otherwise for specific products.
+Daily checks: as part of the opening procedure, a designated team member must check all cold and dry storage areas for items past their use-by date. Expired items must be removed, logged on the waste sheet, and disposed of.
+Deliveries: upon goods receiving, check that delivered items have sufficient remaining shelf life for expected usage. Reject any delivery where items are damaged, at incorrect temperature (chilled goods above 4°C, frozen goods above -18°C), or have insufficient shelf life [Adnan to confirm: minimum acceptable remaining shelf life, e.g. at least 3 days for fresh items].
+Prep items (anything made in-house): must be labelled with the prep date and a use-within period defined by the HACCP plan [Adnan to confirm: standard use-within periods for Creamy prep items]. Prep items past their use-within date must be discarded.
+Roles & Responsibilities
+All Team Members: Apply FIFO when accessing and restocking products; date-label items correctly; report any stock concerns.
+Shift Supervisor: Conducts daily date checks; manages deliveries and goods receiving; ensures FIFO compliance during the shift.
+Unit Manager: Monitors waste logs; investigates FIFO failures; includes FIFO compliance in training and performance management.
+Measure Analyse Improve
+Track: (a) waste due to expired stock (weight or cost per week), (b) FIFO compliance observed during audits (spot-check: are oldest items at the front?), (c) delivery rejections due to short shelf life or temperature issues. Excessive waste may indicate over-ordering or poor rotation discipline.
+Tools & Resources
+Date labels and label gun (or adhesive labels). Waste log/waste sheet. Delivery goods-receiving checklist. Temperature probe (for delivery checks).
+
+Waste tracking & reporting   [YSF ADVISORY — DRAFTED, PENDING REVIEW]
+Introduction
+This chapter defines Creamy's waste tracking and reporting procedures. Food waste is a direct cost to the business, an environmental concern, and a potential indicator of operational issues (over-ordering, poor stock rotation, inaccurate prep planning). Tracking waste systematically enables data-driven decisions to reduce it.
+Minimum Operating Standards
+All waste must be recorded on the daily waste log at the point of disposal. The log must capture: date, item, quantity (weight or units), reason for waste (expired, over-production, dropped/damaged, customer return, quality issue), and the team member recording it.
+Waste categories: (1) Date-related waste (expired or past use-within), (2) Prep waste (over-production, trimmings, prep errors), (3) Service waste (customer returns, incorrect orders), (4) Quality waste (items not meeting standard on inspection), (5) Damaged/spillage.
+Waste cost must be calculated and reported weekly, expressed as a percentage of food purchases (cost of waste / cost of food purchased). Target waste percentage: [Adnan to confirm: e.g. below 3-5% of food cost].
+Weekly waste review: the Unit Manager must review the waste log weekly to identify patterns and take corrective action. Common patterns include: specific products consistently wasted (adjust order quantities or prep volumes), waste concentrated at specific times (adjust prep schedules), and waste concentrated around specific team members (training issue).

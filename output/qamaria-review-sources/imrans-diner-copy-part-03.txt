@@ -1,0 +1,273 @@
+A right to work check must be completed for every individual before their first shift, using either original documents verified in the person's presence or the Home Office online checking service. Evidence must be retained for the duration of engagement plus two years, and a follow-up check must be completed before any time-limited permission expires. This applies to employed team members and to any individual engaged under a worker's contract or as a subcontractor, including delivery drivers.
+Roles & Responsibilities
+Unit Manager (currently Owner): Leads recruitment for team-level roles; conducts interviews; makes hiring recommendations.
+Franchisee: Approves hires; signs employment contracts; recruits for Unit Manager and Shift Supervisor (currently Team Leader) roles.
+Head Office: Provides recruitment templates, interview guides, and channel guidance; may support recruitment for senior roles.
+Measure Analyse Improve
+Track: (a) time-to-hire (vacancy posted to start date), (b) source of hire (which channel), (c) quality of hire (90-day retention rate, probation pass rate). Review recruitment channels quarterly for cost-effectiveness and quality.
+Tools & Resources
+Job advertisement templates. Structured interview question sets (by role). Candidate tracker spreadsheet. Reference check template. Offer letter and contract templates.
+Onboarding checklist (day 1 / week 1)
+Introduction
+This chapter provides the standard onboarding checklist for new starters at Imran’s Diner. A structured onboarding process ensures every new team member receives consistent information, understands their responsibilities, and is set up for success from their first day. Under UK law, the written statement of employment particulars must be provided on or before the first day of work (Employment Rights Act 1996).
+Minimum Operating Standards
+Day 1 must include: welcome and introduction to the team, tour of the unit (front of house, kitchen, back of house, fire exits, first aid), issue of uniform and any equipment, review and signing of employment contract (if not already signed), review of job description, introduction to the operations manual and how to navigate it, health and safety briefing (fire evacuation, first aid, incident reporting), food safety and hygiene briefing (handwashing, allergen awareness), the rota/scheduling system setup (employee profile, clock-in/out process), and assignment of a buddy or mentor for the first week.
+Week 1 must include: commencement of the new starter training programme (see Chapter 3.3 — New starter training plan), with Module 1 (Food Safety & Hygiene) and Module 2 (Health & Safety) completed and signed off before the end of Week 1 and the remaining modules completed by the end of Week 2, shadowing experienced team members across key stations, introduction to EPOS (basic transaction processing), introduction to opening and closing procedures, allergen management training, completion of all mandatory paperwork (HMRC starter checklist / P45 if not already done, bank details for payroll, emergency contact form, any health/dietary information relevant to food handling). 
+The onboarding checklist must be signed off by both the new starter and the Unit Manager (currently Owner) at the end of Week 1.
+All mandatory training must be completed before the new starter works unsupervised.
+Any identified gaps or concerns must be flagged to the Franchisee by the end of Week 1.
+Roles & Responsibilities
+Unit Manager: Owns the onboarding process; ensures all checklist items are completed and signed off.
+Buddy / Mentor: Supports the new starter during their first week; answers questions; provides informal feedback.
+New Starter: Completes all required training and paperwork; raises any concerns or questions.
+Franchisee: Reviews completed onboarding checklists; addresses any flagged issues.
+Measure Analyse Improve
+Track: (a) percentage of onboarding checklists completed in full by end of Week 1, (b) new starter feedback (simple survey or informal check-in at end of Week 1), (c) 90-day retention rate as an indicator of onboarding quality. Flag any onboarding items consistently missed for process improvement.
+Tools & Resources
+Day 1 onboarding checklist (printed, one per new starter). Week 1 training log. Emergency contact form. Uniform issue log. Rota/scheduling system setup guide.
+Probation review
+Introduction
+This chapter sets out the process for managing and reviewing employee probation periods at Imran’s Diner. There is no statutory maximum probation period in UK law (unlike some other jurisdictions); the length of the probationary period, and any shortened notice period during probation (e.g. 1 week), are set by the contract rather than by statute. Imran's Diner sets both deliberately short, for the reason given in the standards below. Probation is a two-way evaluation: the employer assesses suitability and the employee assesses whether the role meets their expectations.
+Minimum Operating Standards
+All new employees are subject to a probation period as stated in their employment contract. The standard Imran’s Diner probation period is 4 months. This is deliberately set below six months: from 1 January 2027 the qualifying period for an ordinary unfair dismissal claim falls from two years to six months, so a six-month probation would end at the exact point statutory protection begins.
+Probation reviews must be conducted at: (a) the midpoint of the probation period, and (b) a final review held with enough time for any notice to expire before the employee reaches six months' continuous service. Where notice is paid in lieu rather than worked, statutory notice is added to the termination date when continuous service is calculated, so the final review is held earlier rather than later. On a 4-month probation period the final review takes place at month 3.
+Reviews must assess: attendance and punctuality, adherence to food safety and hygiene standards, customer service quality, teamwork and attitude, competency progression against the training plan, and any conduct issues.
+The review must be documented using the standard probation review form and signed by both the employee and the reviewing manager.
+Outcomes: (a) Pass — confirmed in role, (b) Extend — probation extended with specific improvement targets and timeline (note: extending beyond the contractual probation end date requires the employee's agreement and a contract amendment), (c) Fail — employment terminated during probation with the contractual notice period. Termination during probation should still be based on objective, documented grounds (performance, conduct, or suitability for the role) — from 1 January 2027 an employee can bring an ordinary unfair dismissal claim after six months' continuous service, reduced from two years, so the protection now sits close behind the probation period and a fair, documented process is essential rather than advisable.
+If termination during probation is being considered, a short meeting to discuss the decision should be held before it is finalised. Best practice (and the ACAS Code, where the process is treated as disciplinary in nature) gives the employee the right to be accompanied by a trade union representative or colleague.
+All probation documentation must be retained in the employee's personnel file.
+Roles & Responsibilities
+Unit Manager (currently Owner): Conducts probation reviews; documents performance; recommends outcome.
+Franchisee: Approves probation outcomes (especially extensions or terminations); attends the probation-outcome meeting if required.
+Employee: Participates in reviews; raises any concerns about the role or working conditions.
+Measure Analyse Improve
+Track: (a) probation pass rate, (b) number of probation extensions and outcomes, (c) any probation-related disputes or claims. A consistently low pass rate may indicate recruitment or training issues rather than employee quality.
+Tools & Resources
+Probation review form (midpoint and end-of-probation versions). Probation-outcome meeting invitation template. Probation outcome letter templates (pass, extend, fail). Personnel file checklist.
+3.2 Roles & responsibilities
+Org chart
+Current structure (single unit)
+Owner. Runs the unit directly. There is no Unit Manager layer yet, so the Owner is the direct point of contact for both Team Leaders and holds all decisions above Team Leader level.
+Team Leader — People & Stock. Reports to the Owner. Covers staff rotas and cover for sickness and absence, onboarding new starters and assigning them to a station with an experienced team member to train them, the stock list, and checking that the front-of-house, packing and back-of-house checklists are completed at each station.
+Team Leader — Kitchen Quality. Reports to the Owner. Covers back-of-house food quality during service — checking that dishes are cooked and prepared correctly.
+Team Members. All floor and kitchen staff report to one of the two Team Leaders.
+Job titles. Imran’s Diner uses “Team Leader”, not Shift Supervisor or Assistant Manager. Where this manual refers to a Shift Supervisor, that role is currently carried out by a Team Leader; where it refers to a Unit Manager, that role is currently carried out by the Owner.
+Current post-holders. Team Leader — People & Stock: Zane. Team Leader — Kitchen Quality: Suleman. 
+Structure at 2–3 units
+Each unit has its own team under a Unit Manager who is accountable for that unit's performance, including its unit economics, and who reports to the Owner. In a franchised unit the Unit Manager reports to the Franchisee, who reports into Head Office under the franchise agreement. The existing Team Leader roles remain unit-level roles and are not extended across several sites. This is deliberate. Both Team Leader roles currently run on experience rather than written standards, so extending them across sites would spread undocumented practice rather than transfer a standard, and it would leave no single person accountable for one unit's numbers. A multi-site functional structure is only reconsidered once Chapter 3.3 (Training programme) and Chapter 5.2 (Product prep and recipes) are complete and a Team Leader's work can be audited against a written specification.
+Known gap
+Both Team Leader roles currently run on experience rather than written standards. There are no training cards tracking a trainee’s progress and no documented recipe or prep standards for food quality to be checked against. That works at one unit where the Owner can personally catch anything that slips. At two or three units it becomes the main risk: quality would depend on whichever Team Leader is on shift. Closing this gap depends on Chapter 3.3 (Training programme) and Chapter 5.2 (Product prep & recipes).
+Role-by-role responsibility breakdown
+Owner
+There is no Unit Manager layer at present, so these responsibilities sit with the Owner.
+Daily: available for anything either Team Leader escalates; carries out spot-checks; handles customer complaints received on the store complaints phone.
+Weekly: reviews rota, stock and checklist issues as they come up.
+Monthly: financial oversight, supplier relationships and bigger business decisions.
+Team Leader — People & Stock
+Daily: builds and covers the rota, including sickness cover; assigns new trainees to a station with an experienced team member to train them; checks the stock list; confirms the front-of-house, packing and back-of-house checklists are completed.
+Weekly: places stock orders; reviews checklist completion across the week.
+Monthly: reviews each team member's training progress against the training plan and flags anyone falling behind to the Owner; reviews stock accuracy and waste across the month and raises any recurring loss.
+Team Leader — Kitchen Quality
+Daily: checks that food is being cooked and prepared to standard at back of house during service.
+Weekly: carries out a documented food-quality review across a sample of core dishes, checked against the product specification, and records any corrective action taken.
+Monthly: reviews the weekly findings across the month to identify recurring quality issues rather than one-off errors; identifies the training needs arising from them and raises them with the Team Leader — People & Stock; reports the pattern and any unresolved issues to the Owner.
+Team Member
+Daily: prepares and cooks to standard; serves customers; completes the checklist items for their station; follows food safety and allergen procedures; keeps their station clean during the shift.
+Weekly and monthly: not applicable at this level.
+Decision authority
+Refunds, replacement meals and discounts on a future order (for example, a meal that is not to standard): Team Leaders and the Owner. The remedy depends on the issue. See Chapter 5.7 (Refund/comp authority levels). Team Leaders may authorise up to £20 on any single transaction. Anything above £20, and any case where the same customer has been compensated more than once, requires the Owner. Team Leader authorisations are reviewed weekly in aggregate — a pattern of small refunds is the thing worth seeing, not any one of them.
+Voids and discounts on the till: EPOS admin access is held by the Owner and one Team Leader only. Two triggers apply, both automatic: any single void or discount above £20, and any shift where voids and discounts together exceed 1% of that shift's sales. Both are reported to the Owner. See Chapter 5.4 (Data governance & systems integration). Because the Team Leader holding EPOS admin access can both raise and approve a void, the Owner reviews that Team Leader's own voids; they are not self-reviewed.
+Reducing the menu or closing temporarily (for example, a critical ingredient is unavailable): Owner only. See Chapter 5.8 (Supply disruption contingency).
+Everything else: Team Leaders may decide, without asking the Owner: shift swaps within the approved rota, sending a team member home early where trade does not support the cover, stock top-ups within the approved supplier list, and emergency repairs up to £150. Anything that changes the rota's total hours, commits spend above £150, or involves a conduct issue goes to the Owner.
+Escalation/reporting lines
+Introduction
+This chapter defines the escalation and reporting line structure for Imran’s Diner units. Clear escalation paths ensure issues are resolved at the appropriate level, prevent bottlenecks, and protect the Franchisee's time for strategic rather than operational matters. As Imran’s Diner scales to multiple units, consistent escalation protocols become essential.
+Minimum Operating Standards
+The standard reporting hierarchy is: Team Member > Shift Supervisor (currently Team Leader) > Unit Manager (currently Owner) > Franchisee / Franchise Owner > Head Office.
+Day-to-day operational issues (e.g. equipment faults, minor customer complaints, scheduling queries) should be resolved at Unit Manager level or below.
+Issues requiring Franchisee involvement include: HR matters (disciplinary, grievance, termination), financial decisions above the Unit Manager's authority, supplier disputes, and any issue with potential legal or regulatory implications.
+Issues requiring Head Office involvement include: brand standards breaches, serious food safety incidents, any contact from regulatory authorities (Environmental Health, the HSE), franchise agreement queries, and any matter with potential media or reputational impact.
+Emergency escalation: in the event of a serious incident (injury, fire, food safety emergency, criminal activity), the Unit Manager must immediately notify the Franchisee and Head Office in addition to contacting emergency services (999, or 112).
+All escalations above Unit Manager level must be logged with: date, issue description, who was notified, and resolution.
+Whistleblowing: the Public Interest Disclosure Act 1998 (as incorporated into the Employment Rights Act 1996) protects employees who make a 'protected disclosure' about illegal or unethical conduct from detriment or dismissal. Imran’s Diner must have a documented whistleblowing channel accessible to all staff. Retaliation against a whistleblower is unlawful.
+Roles & Responsibilities
+Team Members: Report issues to the Shift Supervisor or Unit Manager.
+Shift Supervisor: Resolves minor issues; escalates to Unit Manager where required.
+Unit Manager: First management-level escalation point; resolves operational issues; escalates HR, financial, legal, and brand matters.
+Franchisee: Handles HR and financial escalations; liaises with Head Office.
+Head Office: Final escalation point for brand, compliance, and strategic matters.
+Measure Analyse Improve
+Track escalation volume and type monthly. A high volume of escalations reaching Franchisee or Head Office for issues that should be resolved at unit level indicates a capability gap. Review escalation data quarterly and address patterns through training or process changes.
+Tools & Resources
+Escalation flowchart (printed, displayed back of house). Escalation log (spreadsheet or notebook). Whistleblowing policy document. Emergency contact list.
+3.3 Training programme
+New starter training plan
+Introduction
+This chapter defines the training programme for all new starters at Imran’s Diner. Every team member must complete this programme before working unsupervised. The training plan covers food safety, customer service, operational procedures, and brand standards, and is designed to bring new starters to a consistent baseline regardless of prior experience.
+Minimum Operating Standards
+The new starter training programme must be completed within the first 2 weeks, and no new starter may work unsupervised until the programme is completed and signed off. How it is delivered depends on how the person joins. (a) Opening a new unit: the team completes the programme together during the two weeks before the unit opens, so the whole team is trained and signed off before trading begins. (b) Joining a unit that is already trading: the new starter completes the programme during their first two weeks in the business, works supervised throughout that period, and is signed off before working unsupervised on any station.
+The programme is structured into modules: (1) Food Safety & Hygiene (allergens, HACCP basics, handwashing, temperature control, cross-contamination prevention), (2) Health & Safety (fire safety, first aid locations, manual handling, slip/trip/fall prevention, incident reporting), (3) Customer Service (Imran’s Diner service standards, handling complaints, allergen communication at point of sale), (4) Product Knowledge (menu items, ingredients, preparation methods, portioning), (5) Systems (EPOS basics, the rota/scheduling system clock-in/out, due diligence system where applicable), (6) Opening & Closing Procedures, (7) Cleaning & Hygiene Routines.
+Training is delivered through a combination of: structured briefings (delivered by the Unit Manager (currently Owner) or Shift Supervisor), on-the-job shadowing, practical assessments, and self-study materials where available.
+Each module must be signed off by the trainer and the trainee upon completion.
+All food handlers must hold Level 2 Food Safety and Hygiene for Catering (or equivalent) before working unsupervised, and the Unit Manager must hold Level 3 (see Regulatory/licensing requirements chapter). Training must be documented and demonstrable during any Environmental Health inspection.
+New starters with prior food service experience still complete the full programme — no exemptions. Prior experience may shorten the time needed but does not waive the requirement.
+Roles & Responsibilities
+Unit Manager: Owns the training programme; ensures delivery and sign-off; adapts delivery schedule to operational needs without compromising content.
+Shift Supervisor (currently Team Leader) / Trainer: Delivers on-the-job training modules; conducts practical assessments.
+New Starter: Completes all modules; asks questions; signs off upon completion.
+Head Office: Provides training materials, module outlines, and sign-off templates; audits training compliance.
+Measure Analyse Improve
+Track: (a) average time to complete the programme, (b) module pass rates, (c) correlation between training completion and early performance/retention. Audit training records during operational visits — every team member should have a completed training record on file.
+Tools & Resources
+New starter training plan template (module checklist with sign-off). Training materials pack (per module). Practical assessment sheets. Training record file (per employee, retained in personnel file).
+Ongoing/refresher training
+Introduction
+This chapter covers ongoing and refresher training requirements for all Imran’s Diner team members. Initial training establishes the baseline; ongoing training maintains standards, addresses skill gaps, incorporates new procedures, and fulfils regulatory obligations. UK food safety regulations require documented, ongoing, role-appropriate training for food handlers.
+Minimum Operating Standards
+All team members must complete refresher training on food safety and allergen management at least annually. This is a regulatory expectation under Regulation (EC) 852/2004 (retained in UK law).
+Health and safety refresher training (fire evacuation drill, first aid awareness, manual handling) must be conducted at least annually.
+When the menu changes, new products are introduced, or recipes are modified, all relevant team members must receive product training before the change goes live.
+When new equipment or systems are introduced (or existing ones are updated), targeted training must be delivered before the change is implemented.
+Shift Supervisors and Unit Managers should receive leadership and people management training at least annually.
+Cross-training: team members should be trained across multiple stations (front of house and kitchen/prep) to provide operational flexibility. A skills matrix should be maintained showing each team member's competencies.
+All ongoing training must be documented with dates, content covered, trainer, and attendees. Training records must be available for inspection.
+Roles & Responsibilities
+Unit Manager (currently Owner): Plans and schedules ongoing training; maintains the skills matrix; ensures regulatory training deadlines are met.
+Shift Supervisor (currently Team Leader): Delivers on-the-job refresher training; identifies skill gaps during day-to-day operations.
+Team Members: Attend and engage with training; flag areas where they feel additional training is needed.
+Head Office: Provides updated training materials; sets the annual training calendar; audits compliance.
+Measure Analyse Improve
+Track: (a) percentage of team members with current (within 12 months) food safety refresher training, (b) skills matrix coverage (percentage of team cross-trained on 2+ stations), (c) training hours per employee per quarter. Flag any team member overdue for mandatory refresher training.
+Tools & Resources
+Annual training calendar (Head Office issued, adapted locally). Skills matrix template. Training attendance log. Refresher training materials (food safety, H&S, allergens).
+Competency sign-off/certification
+Introduction
+This chapter defines the competency sign-off and certification process for Imran’s Diner team members. Competency sign-off confirms that a team member can perform a specific task or set of tasks to the required standard, unsupervised. It is distinct from training attendance — attending training does not automatically mean the individual is competent.
+Minimum Operating Standards
+Every team member must be signed off as competent on each station or task area before working unsupervised in that area.
+Competency is assessed through practical observation by the Unit Manager (currently Owner) or Shift Supervisor (currently Team Leader) using a standardised competency checklist.
+Core competency areas: (1) Food safety and hygiene practices, (2) Allergen management and communication, (3) EPOS operation (order entry, payment processing, void/refund), (4) Product preparation (per station), (5) Customer service delivery, (6) Opening and closing procedures, (7) Cleaning routines.
+Competency sign-off must be recorded with: date, competency area, assessor name, and result (competent / not yet competent).
+If a team member is assessed as 'not yet competent', additional targeted training must be provided and a reassessment scheduled within 1 week. Where a team member is assessed as not yet competent on the same area twice, the Unit Manager must raise it with the Franchisee and record it against the probation review (see Chapter 3.4 — Probation review). Repeated failure to reach competence on a core area is a performance matter, not a training matter.
+Competency sign-offs should be reviewed and refreshed at least annually, or sooner if performance issues are observed.
+For regulatory-sensitive competencies (food safety, allergen management), the sign-off record forms part of the SFBB/HACCP documentation and must be available for Environmental Health inspection.
+Roles & Responsibilities
+Unit Manager: Oversees the competency sign-off programme; ensures all team members are assessed; maintains records.
+Shift Supervisor: Conducts practical assessments; provides feedback and additional coaching where needed.
+Team Members: Demonstrate competence; engage with feedback; request additional training if needed.
+Head Office: Provides competency checklists and assessment criteria; audits sign-off records.
+Measure Analyse Improve
+Track: (a) percentage of team members with current sign-offs across all required competency areas, (b) time from training completion to competency sign-off, (c) reassessment rates (high rates may indicate training quality issues). Include competency sign-off status in operational audit checks.
+Tools & Resources
+Competency checklist templates (per station/area). Competency tracker (matrix showing team members vs. competency areas, with dates). Reassessment action plan template.
+3.4 Rotas & labour model
+Demand forecasting & capacity assessment
+Introduction
+This chapter defines how Imran’s Diner forecasts customer demand and assesses the physical capacity of each unit. The labour model (see Chapter 3.4 — Labour-to-sales model) converts a sales forecast into staffing requirements, but that forecast has to come from somewhere. Without a disciplined demand forecast, the labour model either over-staffs (destroying margin) or under-staffs (destroying service). Capacity assessment answers a different but related question: can the kitchen and front-of-house physically handle the forecasted volume? This chapter also feeds directly into the expansion readiness criteria in Chapter 6.4 — if Site #1 is consistently capacity-constrained, that supports the case for Site #2; if it is demand-constrained, the answer is marketing or pricing, not a second unit.
+Minimum Operating Standards
+A weekly sales forecast must be prepared by the Unit Manager (currently Owner) each Thursday for the following week. The forecast must be broken down by day and by trading period (e.g. lunch, afternoon, evening) using the trading-period definitions established for the unit.
+The forecast must be built from: (a) historical sales data from EPOS (same week prior year, same week prior month, trailing 4-week average), (b) known events or factors (local events, school holidays, weather forecast, planned promotions), and (c) trend adjustment (growth or decline trend over the trailing 12 weeks).
+Until sufficient EPOS history is available (minimum 12 weeks of trading data), forecasts should be built using the initial business plan projections, adjusted weekly based on actual performance. The transition from projection-based to data-based forecasting must be documented. During those first 12 weeks the forecast is reviewed against actual trading every week by the Unit Manager with Head Office, and the plan-based projection is re-based whenever cumulative variance exceeds 15%. Soft-launch and opening-week actuals form the first data points.
+Forecast accuracy must be measured weekly: actual revenue vs. forecast, expressed as a percentage variance. Target accuracy: within ±10% at daily level and ±5% at weekly level. Daily variance is expected to be wider than weekly, because day-level swings partly offset across the week; a unit that cannot hold ±5% weekly has a forecasting problem rather than a trading problem. Persistent over- or under-forecasting must be investigated and the forecasting method recalibrated.
+Capacity assessment: each unit must have a documented maximum throughput capacity covering (a) kitchen output — maximum orders per hour the kitchen can produce without quality degradation, (b) front-of-house — maximum covers or counter transactions per hour based on available space, and (c) equipment bottlenecks — any single piece of equipment that constrains total output. Each unit's throughput capacity is documented by Head Office before opening and reviewed quarterly. The reference figures are measured at the Sheffield unit and issued as the baseline every new unit is assessed against.
+When the demand forecast exceeds 85% of documented capacity for any trading period, the Unit Manager must flag this to the Franchise Owner and review mitigation options (adjusted prep schedule, additional staffing, menu simplification for peak, or extended trading hours to redistribute demand). 85% is a flag threshold, not an operating target: peaks within a trading period run materially above the period average, so a period forecast at 85% means the busiest part of it is at or beyond capacity. A unit that regularly forecasts above 80% for the same trading period has a structural capacity issue rather than a staffing one, and that belongs in the expansion assessment at Chapter 6.4.
+Seasonal trading patterns must be documented once a full year of data is available. The seasonal profile feeds into annual budgeting (Chapter 6.3 — Annual planning process), recruitment planning, and stock ordering.
+Roles & Responsibilities
+Unit Manager: Prepares the weekly demand forecast; monitors forecast accuracy; documents capacity constraints; flags capacity threshold breaches.
+Franchise Owner / Operator: Reviews weekly forecasts; approves mitigation actions when capacity thresholds are breached; uses forecast data for strategic planning and expansion assessment.
+Head Office: Provides forecasting templates and methodology guidance; benchmarks forecast accuracy across units; uses aggregate demand data for network-level planning.
+Measure Analyse Improve
+Track weekly: (a) forecast accuracy — actual vs. predicted revenue by day and by week, (b) number of trading periods where demand exceeded the capacity threshold, (c) correlation between forecast and actual labour deployment (are rotas being built from the forecast or from habit?). Monthly: review forecast accuracy trend — improving accuracy indicates the model is learning; persistent inaccuracy indicates a methodology problem or an external factor not being captured. Quarterly: reassess documented capacity limits based on any changes to equipment, layout, or menu.
+Tools & Resources
+Weekly demand forecast template (spreadsheet — day × trading period matrix with prior-year, trailing-average, and adjustment columns). EPOS sales reports (historical data by day/hour). Capacity assessment worksheet (kitchen throughput, front-of-house limits, equipment constraints). Forecast accuracy tracker (weekly variance log).
+Blocked: depends on the labour model template, not yet received
+Labour-to-sales model
+Why this chapter matters
+This tool will translate sales forecasts into staffing requirements. The SOP will teach managers how to use it for rota planning.
+What's needed to write this SOP
+The finished labour model tool (Wes is building this — tracker item #5).
+Instructions on how to read the outputs and what inputs the tool needs.
+Any business rules built into the model (e.g. minimum staffing floors, break calculations).
+How to get this done
+This chapter is blocked until Wes completes the labour model. Once the tool exists, YSF Advisory will write the user guide. No action needed from Tawheed at this stage.
+Currently blocked by: the labour model template, not yet received.
+Rota-building process
+Introduction
+This chapter defines the process for building staff rotas at Imran’s Diner units. Effective rota management balances customer demand, labour cost control, legal compliance, and team wellbeing. All rotas are managed through the rota/scheduling system, Imran’s Diner's chosen scheduling and time-tracking tool [Tawheed to confirm: which system is adopted as the network standard. Head Office specifies it; units do not choose their own, because rota and hours data has to be comparable across the network].
+Minimum Operating Standards
+Rotas must be published at least 2 weeks in advance as a matter of company policy. There is no general statutory notice period for rotas under current UK law. The Employment Rights Act 2025 introduces a right to reasonable notice of shifts, and compensation for shifts cancelled or curtailed at short notice, for workers on zero-hours and low-hours contracts and for agency workers. Those provisions are expected during 2027; the commencement date and the detailed rules — what counts as reasonable notice, and the level of compensation — are set by regulations not yet made. Head Office will confirm the requirements and update this chapter before they take effect. The two-week publication standard is set deliberately above what is likely to be required.
+Maximum working hours: the Working Time Regulations 1998 cap average weekly working time at 48 hours (averaged over 17 weeks), though employees can opt out of this limit in writing. There is no statutory overtime premium in UK law — any enhanced rate for overtime is set by the contract, not by statute — but average pay for all hours worked must still meet the National Minimum Wage / National Living Wage.
+Rest periods: minimum 11 consecutive hours off between shifts, a 20-minute break if working more than 6 hours in a day, and a minimum of 24 hours off per 7-day period (or 48 hours per 14-day period), per the Working Time Regulations 1998.
+Rotas should be built based on projected sales and footfall data, aligned with the labour model (see Chapter 3.4 — Labour-to-sales model [TOOL-REFERENCED]). The goal is to match staffing levels to demand while staying within the target labour cost percentage [To be set from the labour model: target labour cost as a percentage of revenue, stated twice — before employer costs (wages only) and after employer costs (including employer's National Insurance, pension contributions and holiday pay accrual). Both figures are required. A wages-only target understates the true cost of labour, and a unit managed to it will miss its margin.].
+Employee availability and preferences should be collected and considered, though operational needs take priority.
+Shift swaps between team members are permitted with Unit Manager (currently Owner) approval and must be recorded in the rota/scheduling system.
+The Unit Manager is responsible for building and publishing the rota. Rotas must be entered into the rota/scheduling system and made visible to all affected staff.
+Under-18 workers are subject to additional restrictions under the Working Time Regulations 1998 and the Children and Young Persons Act 1933 (e.g. generally no work between 10pm and 6am, maximum 8 hours per day / 40 hours per week, and additional restrictions on school-day and school-term hours for under-16s).
+Roles & Responsibilities
+Unit Manager: Builds and publishes the rota; manages shift swaps and absence cover; ensures legal compliance.
+Shift Supervisor (currently Team Leader): Supports rota planning; manages in-shift adjustments.
+Team Members: Communicate availability; request shift swaps through the approved process; check the rota/scheduling system for their schedule.
+Franchisee: Reviews labour cost vs. target; approves overtime where necessary.
+Measure Analyse Improve
+Track: (a) labour cost as a percentage of revenue (weekly), (b) overtime hours (weekly, against legal limits), (c) rota compliance (actual hours worked vs. scheduled), (d) staff complaints or feedback related to scheduling. Review weekly and adjust the rota-building approach as needed.
+Tools & Resources
+the rota/scheduling system (primary scheduling and time-tracking system). Labour model / sales forecast data (see Chapter 3.4). Employee availability forms. Overtime authorisation log.
+Peak/off-peak staffing rules
+Current trading pattern
+Opening hours: 12pm to midnight Monday to Thursday, and 12pm to 1am Friday, Saturday and Sunday. Friday, Saturday and Sunday are treated as the weekend throughout this chapter, because Sunday trades at close to Saturday volume.
+The quiet period is 12pm to 4pm, flat across all seven days. Demand builds from 5pm, peaks between 7pm and 9pm, and stays high through to close. Friday, Saturday and Sunday run around 30–40% higher volume than Monday to Thursday, with Sunday nearly matching Saturday.
+Minimum staffing (12pm–4pm, every day)
+Five people: one each on customer service/counter, assembly, peri grill, flat grill and prep. The unit never trades with fewer than five.
+Build-up to peak
+Second shift arrives: 5pm Monday to Thursday; 4pm Friday, Saturday and Sunday, because weekend volume builds earlier and the prep has to be ahead of it.
+5pm: protein prep starts, feeding stock to the stations; the fryer position opens.
+6pm: full peak coverage in place.
+Peak staffing (7pm to close, every day; heavier Friday to Sunday)
+The five minimum positions (counter, assembly, peri grill, flat grill and prep) remain covered throughout, with the fryer position opened from 5pm and additional cover added to counter and assembly as volume builds. Total headcount at peak is set by the labour model against the weekly forecast for each daypart, and issued by Head Office as part of the pre-opening pack. It is not a fixed number across sites, because trading hours and volume differ by format. [To be completed once the labour model is issued: the Monday–Thursday and Friday–Sunday peak headcount for this unit.]
+Closing crew
+Current rule: demand does not drop meaningfully before close, so the closing crew is the same size as the 8pm crew, not a reduced skeleton crew. To be validated: this rule should be checked against hourly sales data from EPOS and the labour-to-sales model (Chapter 3.4) before it is issued as a standard for other units, because it carries a significant labour cost.
+Seasonal variations
+[Tawheed to confirm, for each period, how the trading shape changes rather than simply whether it is busier: Ramadan (the daily pattern inverts — daytime trade falls away and the day's volume compresses into the period after sunset and again late, so the standard rota will be materially wrong for the month), Eid, school holidays, summer, winter, Christmas and New Year. State the affected opening hours, the revised shift start times, and whether the minimum five positions change.]
+3.5 HR policies & conduct
+Code of conduct
+Introduction
+This chapter sets out the Imran’s Diner Code of Conduct, which defines the behavioural expectations for all team members, supervisors, managers, and franchise owners. The Code of Conduct underpins Imran’s Diner's culture and brand values, and provides the basis for the disciplinary process (see Chapter 3.5 — Disciplinary & grievance process).
+Minimum Operating Standards
+All Imran’s Diner team members are expected to: treat customers, colleagues, and suppliers with respect and courtesy; maintain high standards of personal hygiene and appearance (clean uniform, hair tied back, no excessive jewellery in food handling areas per food safety requirements); arrive on time for scheduled shifts and be ready to work at the start of the shift; follow all SOPs set out in this manual; handle company property, equipment, and stock with care; maintain confidentiality regarding business information, recipes, financial data, and customer information.
+The following are examples of misconduct that may result in disciplinary action: repeated lateness or unauthorised absence, failure to follow food safety or hygiene procedures, rudeness or poor attitude towards customers or colleagues, use of mobile phones during working hours except during designated breaks, unauthorised use or removal of company property or stock, breach of data protection obligations (UK GDPR / Data Protection Act 2018).
+The following are examples of gross misconduct that may result in summary dismissal without notice: theft or fraud, deliberate damage to property, being under the influence of alcohol or illegal substances at work, violent or threatening behaviour, serious breach of food safety procedures putting customers at risk, harassment or discrimination (in breach of the Equality Act 2010).
+All team members must sign an acknowledgement that they have read and understood the Code of Conduct as part of their onboarding.
+The Code of Conduct applies equally to all staff regardless of position or tenure.
+Roles & Responsibilities
+All Staff: Adhere to the Code of Conduct at all times while on Imran’s Diner premises or representing the brand.
+Unit Manager (currently Owner): Models expected behaviour; addresses breaches promptly and consistently; ensures all team members have signed the acknowledgement.
+Franchisee: Ensures the Code is enforced fairly; handles escalated conduct issues.
+Head Office: Maintains and updates the Code; provides guidance on interpretation.
+Measure Analyse Improve
+Track: (a) number of Code of Conduct breaches logged per quarter, (b) nature and severity of breaches, (c) consistency of enforcement (same breach type should receive the same response regardless of who commits it). Review the Code annually and update as needed.
+Tools & Resources
+Code of Conduct acknowledgement form (signed during onboarding). Disciplinary process (see Chapter 3.5). Incident report form.
+Disciplinary & grievance process
+Introduction
+This chapter defines the disciplinary and grievance procedures for Imran’s Diner. These processes must comply with the ACAS Code of Practice on Disciplinary and Grievance Procedures and the Employment Rights Act 1996, and provide a fair, documented framework for addressing both employer-initiated concerns (disciplinary) and employee-initiated concerns (grievance). Getting this wrong exposes the business to unfair dismissal and constructive dismissal claims at Employment Tribunal, and a failure to follow the ACAS Code can increase any award by up to 25%.
+Minimum Operating Standards
+Disciplinary process — stages (following the ACAS Code): (1) Informal conversation (minor first-time issues — documented in a file note), (2) Formal verbal warning (documented, employee informed it is a warning), (3) Written warning (formal letter setting out the issue, expected improvement, timeline, and consequences of failure to improve), (4) Final written warning, (5) Dismissal (must be for a fair reason under s.98 Employment Rights Act 1996 and follow a fair process) or summary dismissal (without notice — only for gross misconduct).
+Before any dismissal, a formal disciplinary hearing must be held. The employee must be given reasonable notice of the meeting, informed in writing of the matters to be discussed and the evidence, and offered the statutory right to be accompanied by a trade union representative or colleague (Employment Relations Act 1999, s.10). The meeting must be a genuine hearing, not a rubber stamp.
+Dismissal notices must be in writing, delivered personally or by recorded post, and must inform the employee of their right to appeal and, where applicable, their right to bring an Employment Tribunal claim. Since 1 October 2026 the time limit for most Employment Tribunal claims has been 6 months, increased from 3 months by the Employment Rights Act 2025. The statutory minimum notice period is 1 week per complete year of service, up to 12 weeks (Employment Rights Act 1996, s.86), though the contract may specify a longer period.
+Grievance process: any employee may raise a grievance about their working conditions, treatment, or any other workplace concern. Grievances should be raised with the Unit Manager (currently Owner) in the first instance; if the grievance concerns the Unit Manager, it should be raised with the Franchisee. The grievance must be acknowledged in writing within 5 working days, a grievance meeting held within 10 working days of receipt, and a written outcome provided within 5 working days of that meeting. Where any of these cannot be met, the employee must be told in writing before the deadline passes, with the reason and a revised date. A missed internal deadline is itself evidence of an unfair process.
+All disciplinary and grievance records must be retained confidentially in the employee's personnel file. Access is restricted to the Franchisee and anyone the Franchisee has appointed to advise on the case (e.g. a retained HR advisory company).
+Legal note: the Franchisee is the employer and is responsible for taking their own independent HR advice. Head Office can offer general guidance but does not provide accredited HR or employment-law advice. The first port of call is always Acas (acas.org.uk; helpline 0300 123 1100). Franchisees with persistent or complex HR issues should consider keeping an HR advisory company on retainer. UK employees build up increasing statutory protections with length of service, most notably unfair dismissal protection. The probation period is set at 4 months for this reason (see Chapter 3.4 — Probation review). If in any doubt about the lawfulness of a proposed dismissal, take legal advice before proceeding. The cost of an unfair dismissal finding can be substantial, including reinstatement, re-engagement, and compensation. Head Office must be informed of any formal disciplinary, grievance, dismissal or Employment Tribunal matter. From 1 January 2027, employees can claim unfair dismissal after 6 months’ service, reduced from 2 years (Employment Rights Act 2025).
+Roles & Responsibilities
+Unit Manager: Handles informal conversations and Stage 1-2 disciplinary matters; investigates and responds to grievances at unit level.
+Franchisee: Handles Stage 3+ disciplinary matters and dismissals; chairs the disciplinary hearing; handles grievances escalated beyond Unit Manager.
+Employee: Engages with the process in good faith; may be accompanied by a trade union representative or colleague at formal meetings.
+Head Office: Is informed of formal disciplinary, grievance, dismissal and Employment Tribunal matters; offers general, non-accredited guidance and promotes consistency across franchise locations. Independent HR advice (Acas first, or a retained HR advisory company) is the Franchisee's responsibility.
+Measure Analyse Improve
+Track: (a) number of disciplinary cases by stage, (b) number of grievances raised and outcomes, (c) time to resolution, (d) any cases that result in legal claims. A high volume of disciplinary cases in one unit may indicate a management or culture issue rather than an employee issue.
+Tools & Resources
+Disciplinary letter templates (verbal warning, written warning, final written warning, dismissal). Disciplinary/grievance hearing invitation template. Grievance form. Investigation record template. Personnel file checklist. ACAS Code of Practice (reference copy). Acas helpline and website (acas.org.uk, 0300 123 1100).
+Leave & absence policy
+Introduction
+This chapter sets out Imran’s Diner's leave and absence policies, covering annual leave, sick leave, and other statutory and discretionary leave types. These policies must comply with UK law, primarily the Working Time Regulations 1998 and the Employment Rights Act 1996.
+Minimum Operating Standards
+Annual leave: all employees are entitled to a statutory minimum of 5.6 weeks' paid annual leave per year (28 days for a standard 5-day week, capped at 28 days by statute) under the Working Time Regulations 1998; this can include bank holidays. The statutory minimum is the network standard. A franchisee may offer more than the statutory minimum at their own cost, but may not offer less. For staff with irregular hours or working part of the year, rolled-up holiday pay of 12.07% of pay may be used for leave years starting on or after 1 April 2024; staff with fixed regular hours should accrue leave in the standard way.

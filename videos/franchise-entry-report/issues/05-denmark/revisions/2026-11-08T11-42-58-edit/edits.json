@@ -1,0 +1,12 @@
+{
+ "issue": "05-denmark",
+ "why": "Confirm Issue 05, 20 NOV 2026 on file; build a revision to check the cover and footer.",
+ "base": "videos/franchise-entry-report/issues/05-denmark/issue.json",
+ "at": "2026-11-08T11:42:58.066Z",
+ "edits": [
+  {
+   "path": "dateLong",
+   "value": "20 NOV 2026"
+  }
+ ]
+}

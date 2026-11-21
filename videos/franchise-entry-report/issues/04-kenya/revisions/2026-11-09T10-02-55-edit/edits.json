@@ -1,0 +1,36 @@
+{
+ "issue": "04-kenya",
+ "why": "Reword single-source Subz claim as reported and Thin; correct wage arithmetic (NITA included); mark single-press partner-credit figures as reported.",
+ "base": "videos/franchise-entry-report/issues/04-kenya/issue.json",
+ "at": "2026-11-09T10:02:55.440Z",
+ "edits": [
+  {
+   "path": "rising.rows.7.evidence",
+   "value": "One blog reports that Subway’s Kenyan franchisee dropped the brand and trades as Subz, with 10 branches listed in 2025; we found no second source (Thin). Famous Brands had 13 Kenyan franchise stores in 2014 and lost its master partner in 2021. Java’s grilled-chicken brand Kukito had 7 outlets in Aug 2022 and aimed for 30 through franchising."
+  },
+  {
+   "path": "rising.rows.7.conf",
+   "value": "Thin"
+  },
+  {
+   "path": "white.position.paras.1",
+   "value": "Two partnerships ended badly. Famous Brands reclaimed its stores from its franchisee of 23 years, and one blog reports that Subway’s franchisee now trades as Subz (not confirmed elsewhere). I’d write credit checks, step-in rights and site assignment into the deal first, then choose the category."
+  },
+  {
+   "path": "route.fits.1.body",
+   "value": "Proven in 2 countries. Check the partner’s balance sheet: press reported that Famous Brands’ master of 23 years owed banks over KES 67m when it lost the licence."
+  },
+  {
+   "path": "route.risks.3.body",
+   "value": "Press reported that Famous Brands’ master partner owed KES 6.1m in royalties and over KES 67m to banks before the licence was reclaimed. One blog reports that Subway’s franchisee now trades as Subz (Thin, single source)."
+  },
+  {
+   "path": "regulation.wage.method",
+   "value": "NSSF employer 6% of pay up to KES 108,000 (Year 4 rates, Feb 2026), the Affordable Housing Levy employer share of 1.5%, and NITA at KES 50 a month at the floor wage (it may not apply to restaurants). We found no employer share for SHIF, the health levy deducted from staff. Overtime, leave and service pay are excluded. [S46, S47, S48]"
+  },
+  {
+   "path": "regulation.wage.allInNote",
+   "value": "**ESTIMATE** KES 19,491 floor + NSSF 6% + housing levy 1.5% + KES 50 NITA ≈ KES 21,003 a month ÷ 208 hours (48-hour week; statutory hours not found) ≈ KES 101.0 an hour, at £1 = KES 173.20 on 30 Oct 2026. [S3, S46, S47, S48, S50]"
+  }
+ ]
+}

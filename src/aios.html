@@ -1425,6 +1425,15 @@
   .uspill .usv { text-align: right; letter-spacing: 0; font-size: 10.5px; font-weight: 600; color: var(--ink); font-variant-numeric: tabular-nums; }
   .uspill .hot i { background: var(--red); } .uspill .usv.hot { color: var(--red); }
   .uspill.old { opacity: .6; }
+  /* Health strip (21 Nov 2026): a row under the bar, shown only when something the office leans on is down */
+  header.top .hstrip { --hsw: #E0A526; flex-basis: 100%; display: flex; flex-wrap: wrap; align-items: center; gap: 6px; padding: 0 0 12px; }
+  header.top .hstrip[hidden] { display: none; }
+  .hstrip .hsc { display: inline-flex; align-items: center; gap: 7px; padding: 5px 6px 5px 11px; border-radius: 99px; border: 1px solid color-mix(in srgb, var(--hsw) 50%, transparent); background: color-mix(in srgb, var(--hsw) 10%, transparent); color: var(--ink); font-size: 11px; font-weight: 600; cursor: pointer; }
+  .hstrip .hsc.bad { border-color: color-mix(in srgb, var(--bad) 60%, transparent); background: color-mix(in srgb, var(--bad) 13%, transparent); }
+  .hstrip .hsc i { width: 7px; height: 7px; border-radius: 50%; background: var(--hsw); flex: none; } .hstrip .hsc.bad i { background: var(--bad); }
+  .hstrip .hsc .hsx { border: 0; background: none; padding: 0 5px; color: var(--faint); font-size: 12px; line-height: 1; cursor: pointer; } .hstrip .hsc .hsx:hover { color: var(--ink); }
+  .hstrip .hsd { flex-basis: 100%; padding: 8px 12px; border-left: 3px solid var(--hsw); background: var(--soft); border-radius: 0 10px 10px 0; font-size: 12px; line-height: 1.5; color: var(--grey); }
+  .hstrip .hsd.bad { border-left-color: var(--bad); } .hstrip .hsd b { color: var(--ink); font-weight: 600; }
   .uspill.off { font-size: 9.5px; font-weight: 700; letter-spacing: .12em; opacity: .75; }
   @media (max-width: 1480px) { .uspill { padding: 0 12px; } .uspill .usg { grid-template-columns: auto 40px 4ch; gap: 2px 6px; } }
   @keyframes ccspin { to { transform: rotate(360deg); } }
@@ -1565,6 +1574,7 @@
   </nav>
     <div class="right"><div class="uspill" id="usPill" role="status" hidden></div><div class="ccpill" id="ccPill"><button type="button" class="ccopen" id="ccBtn" aria-expanded="false" aria-controls="ccBox" title="Consultants’ Corner: open the player"><span class="ccart" id="ccArt" aria-hidden="true"></span><span class="cctx"><b id="ccTitle">Consultants’ Corner</b><small id="ccSub">Press play</small></span><span class="cceq" aria-hidden="true"><i></i><i></i><i></i><i></i></span></button><button type="button" class="ccplay" id="ccPlay" aria-label="Play Consultants’ Corner"><svg viewBox="0 0 24 24" aria-hidden="true"><path class="pl" d="M8 5.5v13l11-6.5z"/><path class="pa" d="M6.5 5h3.8v14H6.5zM13.7 5h3.8v14h-3.8z"/></svg></button><span class="ccprog" aria-hidden="true"><i id="ccProg"></i></span></div><button id="themeBtn" class="tpill" type="button" title="Switch between automatic, light and dark">Auto</button></div>
     <div class="subnav" id="navDash" aria-label="Workstreams"></div>
+    <div class="hstrip" id="hStrip" role="status" aria-live="polite" hidden></div>
 </header>
 <span class="livebar" id="livePill"><span class="live" id="live"></span><span id="liveTxt">connecting…</span></span>
 <div class="ccbox" id="ccBox" role="dialog" aria-label="Consultants’ Corner" aria-hidden="true">
@@ -2280,6 +2290,33 @@ setInterval(() => { if (!document.hidden && S.cat === 'hierarchy' && window.AIOS
   }
   async function load() { try { draw(await fetch('/api/usage').then(r => r.json())); } catch { draw(null); } }
   load(); setInterval(() => { if (!document.hidden) load(); }, EVERY);
+  document.addEventListener('visibilitychange', () => { if (!document.hidden) load(); });
+})();
+
+// Health strip (21 Nov 2026): /api/vitals every minute. Hidden while all is well; each problem is a chip, a click opens the cause and the fix,
+// ✕ hides that one problem in this browser until it changes (a new failure has a new id).
+(() => {
+  const el = $('hStrip'); if (!el) return;
+  const KEY = 'aios.hsHidden', esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  let hid = []; try { hid = JSON.parse(localStorage.getItem(KEY) || '[]'); } catch {}
+  let open = '', last = [];
+  function draw(list) {
+    last = list; const show = list.filter(p => !hid.includes(p.id));
+    el.hidden = !show.length; if (!show.length) { el.innerHTML = ''; return; }
+    const cur = show.find(p => p.id === open);
+    el.innerHTML = show.map(p => `<span class="hsc ${p.level}" data-id="${esc(p.id)}" title="${esc(p.cause)}"><i></i>${esc(p.label)}<button type="button" class="hsx" data-x="${esc(p.id)}" aria-label="Hide ${esc(p.label)}">✕</button></span>`).join('')
+      + (cur ? `<div class="hsd ${cur.level}">${esc(cur.cause)}<br><b>Fix:</b> ${esc(cur.fix)}</div>` : '');
+  }
+  el.addEventListener('click', e => {
+    const x = e.target.closest('[data-x]');
+    if (x) { hid = [...hid.slice(-50), x.dataset.x]; try { localStorage.setItem(KEY, JSON.stringify(hid)); } catch {} return draw(last); }
+    const c = e.target.closest('.hsc'); if (c) { open = open === c.dataset.id ? '' : c.dataset.id; draw(last); }
+  });
+  async function load() {
+    try { const v = await fetch('/api/vitals', { cache: 'no-store' }).then(r => r.json()); draw(v.problems || []); }
+    catch { draw([{ id: 'office', level: 'bad', label: 'Office not answering', cause: 'The page cannot reach the office server on port 4520.', fix: 'Ask Claude Code to restart the office; it keeps the logs in data/office.err.log.' }]); }
+  }
+  load(); setInterval(() => { if (!document.hidden) load(); }, 60000);
   document.addEventListener('visibilitychange', () => { if (!document.hidden) load(); });
 })();
 
@@ -4493,7 +4530,7 @@ loadPlans(); setInterval(() => { if (!document.hidden && !Object.values(S.gtBusy
   }
   // ---- Completed work (19 Nov 2026): under Grace in For You. Newest finished task first, its title as a link to the file it made (Drive, a Doc/Sheet,
   // or a path on this computer, opened through /api/open). Read from the task's result; a task with no link in it is left out. ----
-  let doneAll = false, doneHtml = '';
+  let doneAll = false, doneHtml = '', gcMsgs = [];
   const DONE_SHOW = 25, DONE_EXT = 'mp4|mov|m4a|mp3|wav|pdf|docx?|xlsx?|pptx?|csv|png|jpe?g|gif|webp|svg|md|txt|html?|json|zip';
   function doneLink(t) {
     const r = String(t.result || ''), clean = s => s.replace(/[)\].,;:'"*>]+$/, '');
@@ -4505,15 +4542,21 @@ loadPlans(); setInterval(() => { if (!document.hidden && !Object.values(S.gtBusy
   }
   function doneList() {
     const box = el('oxFyDone'); if (!box) return;
-    const rows = S.tasks.filter(t => t.state === 'done' && t.doneAt).sort((a, b) => b.doneAt - a.doneAt).map(t => ({ t, l: doneLink(t) })).filter(x => x.l);
+    // Grace's finished replies (her chat, not the task board) join the list: one that ran steps and did not fail, titled by the message that asked for it.
+    // Desk steps she ran (m.source) are left out: they already sit on their own task.
+    const gm = (gcMsgs || []).filter(m => m.who === 'claude' && !m.partial && !m.error && !m.source && (m.tools || []).length);
+    const gRows = gm.map(m => { const q = gcMsgs.find(x => x.who === 'you' && x.item === m.item), title = String((q && q.text) || 'Asked Grace').replace(/\s+/g, ' ').trim().slice(0, 90);
+      return { t: { title, doneAt: m.at + (m.ms || 0) }, l: doneLink({ result: m.text }) || { none: true } }; });
+    const rows = S.tasks.filter(t => t.state === 'done' && t.doneAt).map(t => ({ t, l: doneLink(t) })).filter(x => x.l).concat(gRows).sort((a, b) => b.t.doneAt - a.t.doneAt);
     const list = doneAll ? rows : rows.slice(0, DONE_SHOW);
     const html = rows.length ? `<h4>Completed work <span class="hxo-badge">${rows.length}</span></h4><div class="hxo-sc">Newest first · the title opens the finished file</div>`
-      + list.map(({ t, l }) => `<div class="fyd-i">${l.url ? `<a href="${esc(l.url)}" target="_blank" rel="noopener">${esc(t.title)}</a>` : `<a href="#" data-fydopen="${esc(l.path)}">${esc(t.title)}</a>`}<span>${esc(ago(t.doneAt))}</span></div>`).join('')
+      + list.map(({ t, l }) => `<div class="fyd-i">${l.none ? `<a href="#" data-fydgrace title="Grace's reply is in her chat above">${esc(t.title)}</a>` : l.url ? `<a href="${esc(l.url)}" target="_blank" rel="noopener">${esc(t.title)}</a>` : `<a href="#" data-fydopen="${esc(l.path)}">${esc(t.title)}</a>`}<span>${esc(ago(t.doneAt))}</span></div>`).join('')
       + (rows.length > DONE_SHOW ? `<button type="button" class="fya-more" data-fydmore>${doneAll ? 'SHOW FEWER' : `SHOW ALL ${rows.length} →`}</button>` : '') : '';
     if (html !== doneHtml) { doneHtml = html; box.innerHTML = html; }
   }
   document.addEventListener('click', async e => {
     if (e.target.closest('[data-fydmore]')) { doneAll = !doneAll; doneHtml = ''; doneList(); return; }
+    if (e.target.closest('[data-fydgrace]')) { e.preventDefault(); el('gcBox')?.scrollIntoView({ behavior: 'smooth', block: 'start' }); return; }
     const a = e.target.closest('[data-fydopen]'); if (!a) return; e.preventDefault();
     try { const r = await fetch('/api/open', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ path: a.dataset.fydopen }) }); const j = await r.json(); if (!r.ok || j.error) throw new Error(j.error || 'not opened'); }
     catch (err) { a.title = 'Not opened: ' + err.message; a.style.color = 'var(--red)'; }
@@ -4625,6 +4668,7 @@ loadPlans(); setInterval(() => { if (!document.hidden && !Object.values(S.gtBusy
       const hs = hk ? s.holds.map(h => ({ ...h, dept: deptOfHold(s, h) })) : [], hd = hk + hs.map(h => h.dept).join(','); // the department too: the roster can land after Grace's first poll
       if (hd !== gcKey) { gcKey = hd; gcHolds = hs; if (S.cat === 'hierarchy' && S.agents.length && window.renderHierarchy) window.renderHierarchy(); }
       gcLeft();
+      { const mm = s ? s.messages : []; if (mm.length !== gcMsgs.length || (mm.length && mm[mm.length - 1].partial !== gcMsgs[gcMsgs.length - 1]?.partial)) { gcMsgs = mm; doneList(); } }
       if (!s) return;
       const html = (s.messages.length ? s.messages.map(msgHtml).join('') : '<div class="ccb-m sys">Nothing yet. Try: “run npm run check and tell me the result”.</div>') + (s.busy ? `<div class="ccb-m sys"><button type="button" class="ccb-new" data-ccstop>STOP</button></div>` : '');
       if (html !== lastLog) { const end = !lastLog || log.scrollHeight - log.scrollTop - log.clientHeight < 60; lastLog = html; log.innerHTML = html; if (end) log.scrollTop = log.scrollHeight; }

@@ -1,0 +1,306 @@
+This chapter defines the reporting cadences and template structures for financial and operational reporting at Creamy. Consistent reporting gives the Franchisee and Head Office visibility into unit performance, enables early identification of issues, and supports data-driven decision-making. Reporting is not bureaucracy — it is the mechanism through which the business stays in control.
+Minimum Operating Standards
+Daily report: completed by the Closing Lead or Unit Manager at end of day. Contents: total revenue (cash and card split), transaction count, average transaction value, labour hours worked, any significant variances (cash discrepancy, waste event, customer complaint), and a brief operational note (e.g. equipment issue, staffing change). Submitted by [Adnan to confirm: method — email, shared drive, or reporting tool] before the next trading day. This can be in the epos system, if the head office has admin user that can see all the branches under it. 
+Weekly report: completed by the Unit Manager, submitted to the Franchisee by [Adnan to confirm: e.g. Monday COB for the prior week]Right. Contents: total revenue vs. budget/forecast, labour cost as % of revenue, food cost as % of revenue (once EPOS margin data is available — currently blocked per tracker #3/#4), waste cost as % of food cost, customer complaint summary, staffing changes (new starters, leavers, absences), and top 3 operational priorities for the coming week.
+Monthly report: completed by the Unit Manager with Franchisee input, submitted to Head Office by [Adnan to confirm: e.g. 5th working day of the following month]Right. Contents: full P&L summary (revenue, COGS, labour, overheads, net profit), KPI dashboard (see Chapter 6.1 — Core KPI definitions), year-to-date performance vs. budget, marketing activity summary, training and compliance status, maintenance and capex summary, and a narrative section covering key achievements, challenges, and plans.
+All reports must use the standardised templates provided by Head Office to ensure consistency across franchise locations.
+Reports must be retained for a minimum of [Adnan to confirm: e.g. 3 years, aligned with bokforingsloven retention requirements — accounting records must be kept for 5 years].Right, it is stored with the accountant
+Roles & Responsibilities
+Closing Lead: Completes the daily report.
+Unit Manager: Completes weekly and monthly reports; ensures daily reports are submitted.
+Franchisee: Reviews weekly and monthly reports; takes action on variances; contributes to monthly narrative.
+Head Office: Provides report templates; reviews monthly reports; benchmarks performance across locations; raises concerns.
+Measure Analyse Improve
+Track: (a) report submission rate (% submitted on time), (b) data quality (completeness and accuracy), (c) action items arising from report reviews and their completion rate. Late or incomplete reporting is an early warning sign of operational drift.
+Tools & Resources
+Daily report template. Weekly report template. Monthly report template (including P&L and KPI dashboard). Shared reporting repository or tool [Adnan to confirm].
+
+Core KPI definitions   [YSF ADVISORY — DRAFTED, PENDING REVIEW]
+Introduction
+This chapter defines the core Key Performance Indicators (KPIs) for Creamy units. KPIs are the vital signs of the business — a small set of metrics that, tracked consistently, give a clear picture of financial health, operational quality, and customer satisfaction. Every KPI must have a clear definition, a data source, a target, and an owner.
+Minimum Operating Standards
+Financial KPIs: (a) Revenue — total sales (ex. VAT), tracked daily/weekly/monthly against budget. (b) Average Transaction Value (ATV) — revenue divided by transaction count; indicates upselling effectiveness and product mix. Target: [Adnan to confirm]Right. (c) Labour Cost % — total labour cost (gross wages + employer social costs) as a percentage of revenue. Target: [Adnan to confirm: typical QSR range is 25-35%]Right. (d) Food Cost % — total cost of goods sold as a percentage of revenue. Target: [Adnan to confirm: typical QSR range is 25-35%; currently blocked until EPOS margin data is configured]Right. (e) Net Profit Margin — net profit as a percentage of revenue after all costs. Target: [Adnan to confirm]. (f) Marketing Spend % of Revenue — total marketing expenditure (LSM + any central marketing fund contribution) as a percentage of net revenue, tracked monthly. Target: [Adnan to confirm: e.g. 1-3% — resolve the mandatory minimum LSM spend in Chapter 4.2 before Site #2]. (g) Customer Acquisition Cost (CAC) by Channel — where trackable via EPOS, loyalty data, or campaign-specific codes: marketing spend divided by new customers acquired, broken out by channel (social media, delivery apps, local activity). Track monthly where data permits; note limitations where attribution is approximate.
+Operational KPIs: (a) Order Accuracy Rate — percentage of orders delivered correctly (see Chapter 5.5). Target: [Adnan to confirm: e.g. 98%+]Right. (b) Speed of Service — average time from order to delivery (see Chapter 5.5). Target: [Adnan to confirm]. (c) Waste % — cost of waste as a percentage of food purchases (see Chapter 5.3). Target: [Adnan to confirm: e.g. below 3-5%]Right. (d) Cleaning/Compliance Audit Score — score from internal operational audits. Target: [Adnan to confirm: e.g. 90%+].Right
+People KPIs: (a) Staff Turnover Rate — number of leavers in the period divided by average headcount, annualised.25-35% Target: [Adnan to confirm: QSR industry average in Norway is high, but target should be below it]. (b) Absence Rate — days lost to absence as a percentage of total working days.under 5% Target: [Adnan to confirm]. (c) Training Compliance — percentage of team members with current, completed training records. Target: 100%.
+Customer KPIs: (a) Google Review Score — average rating. Target: [Adnan to confirm: e.g. 4.3+]Right. (b) Complaint Rate — complaints per 1,000 transactions. Under 2%Target: [Adnan to confirm]. (c) Repeat Customer Rate — percentage of transactions from returning customers (requires loyalty or EPOS data). Target: [Adnan to confirm]Not sure. Note: this metric requires a functioning loyalty programme or EPOS-based customer identification to measure. The mechanism for driving repeat visits is defined in Chapter 4.4 — Loyalty programme mechanics [NEEDS ADNAN INPUT]The epos can give all these numbers. Resolve 4.4 as a priority so the metric and the lever are linked, not just adjacent. (d) Brand Trajectory Indicator — Google review score trend over a rolling 6-month period (direction and rate of change, not just the point-in-time score). Data source: Google Business Profile analytics, already partially tracked in Chapter 4.3 — Review/reputation management. This indicator feeds the brand readiness assessment in Chapter 6.4 — Readiness criteria for site #2. No new data collection infrastructure required — cross-reference what 4.3 already collects.
+All KPIs must be reviewed at the weekly ops review (Chapter 6.3) and reported in the monthly report (Chapter 6.1). Targets should be reviewed and recalibrated annually as part of the annual planning process (Chapter 6.3).
+Roles & Responsibilities
+Unit Manager: Tracks and reports KPIs; takes corrective action when targets are missed; owns operational and people KPIs.
+Franchisee: Reviews KPIs weekly and monthly; owns financial KPIs; agrees targets with Head Office.
+Head Office: Defines KPI framework; sets target ranges; benchmarks across locations; supports improvement where KPIs are consistently off-target.
+Measure Analyse Improve
+This chapter IS the measurement framework. The meta-measure is: are KPIs being tracked, reviewed, and acted upon? If KPIs exist but no action follows when they miss target, the system is not working.
+Tools & Resources
+KPI dashboard template (part of the monthly report). EPOS data exports. Tidsbanken labour reports. Complaint register. Training records. Google Business Profile analytics.
+
+Reporting cadence & ownership   [YSF ADVISORY — DRAFTED, PENDING REVIEW]
+Introduction
+This chapter formalises the reporting cadence and ownership structure for Creamy. While the templates and KPIs are defined in preceding chapters, this chapter specifies who produces what, when, and who reviews it. Clarity on cadence and ownership eliminates ambiguity and prevents reports from being produced but never read.
+Minimum Operating Standards
+Daily: Daily report produced by Closing Lead, reviewed by Unit Manager the following morning. Action: Unit Manager addresses any flagged issues before the next trading day.
+Weekly: Weekly report produced by Unit Manager by [Adnan to confirm: e.g. Monday COB]Right. Reviewed at the weekly ops review meeting (see Chapter 6.3 — Weekly ops review). Action: Franchisee and Unit Manager agree priorities and corrective actions for the coming week.
+Monthly: Monthly report produced by Unit Manager with Franchisee input, submitted to Head Office by [Adnan to confirm: e.g. 5th working day of the following month]Right. Reviewed at the monthly business review (see Chapter 6.3 — Monthly business review). Action: Head Office provides feedback; strategic adjustments agreed.
+Quarterly: Head Office produces a cross-network performance summary benchmarking all franchise locations (relevant once the network has multiple units). Reviewed at a quarterly franchise meeting or call.
+Annually: Annual performance review and business plan produced by the Franchisee with Head Office support (see Chapter 6.3 — Annual planning process). Submitted by [Adnan to confirm: e.g. November] for the following year.Right
+Ownership principle: the person who produces the report is responsible for its accuracy. The person who reviews it is responsible for acting on it. Both are accountable.
+Late or missing reports must be escalated. If a daily report is missed, the Unit Manager follows up. If a weekly or monthly report is missed, the Franchisee follows up. If monthly reports are consistently late or incomplete from a franchise location, Head Office may invoke the support and escalation procedures (see Chapter 6.5).
+Roles & Responsibilities
+Closing Lead: Daily report production.
+Unit Manager: Weekly and monthly report production; daily report review.
+Franchisee: Weekly and monthly report review; annual plan production.
+Head Office: Monthly report review; quarterly benchmark production; annual plan review.
+Measure Analyse Improve
+Track: (a) on-time submission rate for each report type, (b) review completion (did the reviewer acknowledge and act?), (c) quality of action items arising. Review the cadence itself annually — if a report type is consistently produced but never generates action, consider whether it adds value or needs redesigning.
+Tools & Resources
+Reporting calendar (shared calendar or planner showing all report deadlines). Report submission tracker. Review meeting agenda templates (see Chapter 6.3).
+
+6.2  Unit economics & margin management
+Blocked — EPOS currently shows 100% margin, recipes/cost data not configured; tracker #3/#4
+
+COGS & recipe costing — depends on EPOS margin fix   [TOOL-REFERENCED]
+Why this chapter matters
+Accurate cost-of-goods-sold data is the foundation of pricing, margin management, and profitability. Currently blocked because the EPOS shows 100% margin — the recipe/cost data isn't configured.
+What's needed to write this SOP
+Recipe costs for each product (ingredient cost per portion).
+Packaging costs per product.
+Current EPOS configuration for cost tracking (once the margin fix is done).
+How to get this done
+This chapter is blocked until the EPOS margin data is fixed (tracker items #3 and #4). Once ingredient costs are loaded into the EPOS, YSF Advisory will write the SOP for running and interpreting COGS reports.
+Currently blocked by: Tracker #3/#4 — EPOS currently shows 100% margin; recipes/cost data not configured.
+
+Margin targets by product   [NEEDS ADNAN INPUT]
+Why this chapter matters
+Not every product needs the same margin, but you need to know which ones make money and which ones are loss-leaders. This drives menu engineering and pricing.
+What you need to provide
+Target gross margin for each product category (or for key individual products).
+Any products you know are high-margin vs. low-margin.
+Minimum acceptable margin below which a product should be removed or repriced.
+Easiest way to get this done
+This depends on having accurate recipe costing (see the COGS chapter). If you don't have that yet, note your target overall food cost percentage and come back to this once recipe costing is done.
+
+Pricing review process   [YSF ADVISORY — DRAFTED, PENDING REVIEW]
+Introduction
+This chapter defines the process for reviewing and adjusting menu pricing at Creamy. Pricing directly impacts revenue, margin, customer perception, and competitive positioning. Pricing changes must be data-driven, approved through the correct channels, and implemented consistently. Ad hoc or unauthorised price changes undermine the brand and the financial model.
+Minimum Operating Standards
+Menu pricing must be reviewed formally at least [Adnan to confirm: e.g. twice per year — typically aligned with seasonal menu changes or the annual planning process].Right
+Pricing reviews must consider: (a) Current food cost % and margin by product (once EPOS data is correctly configured — currently blocked per tracker #3/#4), (b) Competitor pricing (local market benchmarking), (c) Customer price sensitivity (observed demand elasticity, customer feedback), (d) Inflation and input cost changes (ingredient costs, energy, rent), (e) Brand positioning (Creamy should price consistently with its quality positioning — not the cheapest, not the most expensive). Pending 1.1 — apply price-architecture logic once positioning is confirmed, not just a margin-target check. Flag this chapter for a second pass once 1.1 (Positioning vs. category) and 4.1 (Tone of voice / positioning) are finalised.
+Pricing decisions must be approved by the Franchisee and Head Office. A franchisee may not unilaterally change menu prices without Head Office approval. This ensures pricing consistency across the franchise network.
+When prices change: update the EPOS, update all menus and price displays (in-store, online, delivery platforms), notify the team (so they can communicate confidently to customers), and update the allergen matrix if price-linked promotions affect product composition.
+Norwegian VAT note: the standard MVA rate for food service (served food and drink) is 25%. Takeaway food may attract a reduced rate of 15% depending on classification. [Adnan to confirm: how Creamy's products are classified for MVA purposes and whether the EPOS is configured correctly].dining in25%-takeaway 15% Pricing must be displayed inclusive of MVA (this is the norm and expectation in Norway).
+Promotional pricing (temporary price reductions, combo deals, happy hour): see Chapter 4.4 — Approved promotion types [NEEDS ADNAN INPUT]yes. Promotional pricing must have a defined start and end date and must not erode margin below a floor set by [Adnan to confirm: minimum acceptable margin during promotions].Never go over a promotion that is higher den 20% if it is not a really special occasion as new opening or something like that.
+Konkurranseloven (Competition Act): franchisors in Norway may set recommended prices but binding resale price maintenance (minimum or fixed prices imposed on franchisees) can raise competition law concerns under §10 (prohibiting anti-competitive agreements). Price setting arrangements should be reviewed with legal advice to ensure compliance.
+Roles & Responsibilities
+Unit Manager: Provides input data (sales mix, customer feedback, competitor observations); implements approved price changes in-store.
+Franchisee: Proposes pricing changes; participates in pricing reviews; approves changes jointly with Head Office.
+Head Office: Sets the pricing framework and review cadence; benchmarks pricing across the network; ensures legal compliance; approves all pricing changes.
+Measure Analyse Improve
+Track: (a) margin by product before and after price changes, (b) sales volume changes following price adjustments (to detect demand elasticity), (c) customer feedback or complaints related to pricing. Review pricing impact within [Adnan to confirm: e.g. 4-6 weeks] of any change.
+Tools & Resources
+Pricing review template (product-by-product analysis: current price, cost, margin, competitor comparison, proposed price). EPOS sales mix report. Competitor pricing survey template.
+
+6.3  Performance review cadence
+
+Weekly ops review   [YSF ADVISORY — DRAFTED, PENDING REVIEW]
+Introduction
+This chapter defines the format and purpose of the weekly operational review meeting. The weekly ops review is the primary rhythm of operational management — it ensures the Franchisee and Unit Manager are aligned on performance, priorities, and issues every week. Without a disciplined weekly cadence, problems compound and opportunities are missed.
+Minimum Operating Standards
+The weekly ops review must take place every week, at a fixed day and time agreed by the Franchisee and Unit Manager. [Adnan to confirm: preferred day/time]Mondays. Duration: [Adnan to confirm: e.g. 30-45 minutes].Not more then 30min
+The meeting must not be cancelled without rescheduling within the same week. Consistency is the point.
+Standing agenda: (1) Review of last week's action items (completed / not completed / carried forward), (2) KPI review — revenue, labour %, food cost %, waste %, order accuracy, speed of service, complaint count (from the weekly report), (3) People update — staffing levels, absence, recruitment, any HR matters, (4) Customer feedback — complaints, reviews, any notable positive or negative feedback, (5) Operational issues — equipment, suppliers, stock, cleaning, compliance, (6) This week's priorities — top 3 actions for the coming week, each with an owner and deadline, (7) Any other business.
+The meeting must produce a brief written record: date, attendees, key discussion points, and the action list. Actions must be specific, owned, and time-bound.
+The weekly ops review is not a forum for lengthy strategic discussion — keep it focused on the last 7 days and the next 7 days. Strategic matters belong in the monthly business review.
+Roles & Responsibilities
+Unit Manager: Prepares the weekly report and KPI data; presents at the meeting; owns the majority of actions.
+Franchisee: Chairs the meeting; reviews KPIs; provides direction on priorities; owns strategic and financial actions.
+Measure Analyse Improve
+Track: (a) meeting adherence (did it happen every week?), (b) action completion rate (percentage of actions completed by the agreed deadline), (c) KPI trajectory (are KPIs improving, stable, or declining week-on-week?). If the meeting consistently fails to generate completed actions, the format needs adjusting.
+Tools & Resources
+Weekly ops review agenda template. Action tracker (simple spreadsheet: action, owner, deadline, status). Weekly report (see Chapter 6.1).
+
+Monthly business review   [YSF ADVISORY — DRAFTED, PENDING REVIEW]
+Introduction
+This chapter defines the format and purpose of the monthly business review (MBR). The MBR takes a broader view than the weekly ops review — it covers the full month's financial performance, strategic progress, and forward planning. The MBR is the mechanism through which the Franchisee and Head Office stay aligned on the unit's trajectory.
+Minimum Operating Standards
+The MBR must take place within [Adnan to confirm: e.g. 10 working days] of the month end, once monthly financial data is available.Right 
+Attendees: Franchisee and Unit Manager (mandatory). Head Office representative (mandatory once the franchise network includes multiple units; recommended for a single unit during the early operating period).
+Standing agenda: (1) Financial review — P&L walkthrough (revenue, COGS, labour, overheads, net profit vs. budget and vs. prior month/year), (2) KPI dashboard review — all core KPIs with trend data and commentary on misses, (3) Marketing review — activities executed, total marketing spend vs. budget (LSM + any central fund contribution), marketing spend as % of revenue, campaign ROI where measurable, CAC by channel where trackable, and plan for next month (not just narrative — the numbers must be on the table), (4) People review — headcount, turnover, training compliance, any HR cases, (5) Compliance and audit — food safety, H&S, Mattilsynet or Arbeidstilsynet interactions, audit scores, (6) Customer review — complaint trends, review scores, notable feedback, (7) Strategic items — any decisions or plans beyond day-to-day ops (e.g. menu changes, refurbishment, expansion considerations), (8) Actions — specific, owned, time-bound.
+The MBR must produce a written summary shared with all attendees within [Adnan to confirm: e.g. 3 working days].Right
+Duration: [Adnan to confirm: e.g. 60-90 minutes].Right
+Roles & Responsibilities
+Unit Manager: Prepares the monthly report and MBR pack; presents operational and people data.
+Franchisee: Presents financial data; chairs the meeting; owns strategic actions.
+Head Office: Reviews performance; provides benchmarking data; provides guidance and support; owns brand and compliance actions.
+Measure Analyse Improve
+Track: (a) MBR adherence (did it happen every month?), (b) action completion rate, (c) financial performance trajectory month-on-month. The MBR should surface issues before they become crises.
+Tools & Resources
+MBR agenda template. Monthly report and KPI dashboard (see Chapter 6.1). P&L template. Action tracker.
+
+Annual planning process   [YSF ADVISORY — DRAFTED, PENDING REVIEW]
+Introduction
+This chapter defines the annual planning process for Creamy franchise units. Annual planning sets the strategic direction, financial targets, and operational priorities for the year ahead. It translates long-term brand ambition into concrete, measurable plans at the unit level.
+Minimum Operating Standards
+The annual planning cycle should begin in [Adnan to confirm: e.g. October/November] for the following calendar year.Right
+The annual plan must include: (a) Financial budget — revenue forecast (monthly, broken into weeks where possible), cost budgets (COGS, labour, overheads, marketing, maintenance, capex), and profit target. (b) Operational priorities — top 3-5 operational improvement goals for the year (e.g. reduce waste by X%, improve order accuracy to Y%, achieve Z audit score). (c) People plan — headcount plan, recruitment needs, training programme, succession planning (if applicable). (d) Marketing plan — annual campaign calendar, LSM plan, budget allocation. (e) Capital expenditure plan — any planned equipment purchases, refurbishment, or fit-out works. (f) Risk register — key risks identified and mitigation plans.
+The annual plan must be reviewed and approved by Head Office before the start of the plan year.
+The plan should be a living document — reviewed formally at MBRs and adjusted at mid-year if material circumstances change (e.g. significant cost inflation, unexpected footfall changes, new competitor entry).
+Financial budgets should be built bottom-up from historical data and known changes (rent reviews, wage increases, planned menu changes), not top-down from aspirational targets disconnected from reality.
+Roles & Responsibilities
+Franchisee: Leads the annual planning process; produces the plan with Unit Manager input; submits to Head Office for approval; owns delivery.
+Unit Manager: Provides operational input (historical data, capacity assessment, team capabilities); owns operational priorities.
+Head Office: Sets the planning framework and timeline; provides benchmarks and targets; reviews and approves plans; supports where needed.
+Measure Analyse Improve
+Track: (a) plan submitted on time, (b) actual performance vs. plan (monthly and year-to-date at every MBR), (c) mid-year review completed. A plan that is never referenced after approval is wasted effort.
+Tools & Resources
+Annual plan template (Head Office issued). Budget template (monthly P&L forecast). Operational priorities tracker. Risk register template. Prior year actuals (for benchmarking).
+
+6.4  Multi-site/franchise expansion criteria
+
+Readiness criteria for site #2   [YSF ADVISORY — DRAFTED, PENDING REVIEW]
+Introduction
+This chapter defines the criteria that must be met before Creamy expands from a single unit to a second site. Premature expansion is one of the most common causes of small business failure — opening a second unit before the first is stable, profitable, and systematised stretches management attention, capital, and operational capability. These criteria are designed to ensure expansion is a strategic choice, not a leap of faith.
+Minimum Operating Standards
+Financial readiness: (a) Site #1 must have been consistently profitable (net profit positive) for at least [Adnan to confirm: e.g. 12 consecutive months].Right (b) Revenue must be stable or growing — declining revenue at Site #1 is a disqualifier. (c) Sufficient capital must be available (or secured) to fund the full fit-out, pre-opening, and working capital requirements of Site #2 without jeopardising Site #1's cash position. [Adnan to confirm: estimated capital requirement for Site #2]1,5 Million kroner. (d) The financial model for Site #2 must demonstrate a credible path to profitability within [Adnan to confirm: e.g. 12-18 months].Right
+Operational readiness: (a) All chapters of this operations manual must be complete, reviewed, and actively in use — the manual is the system that allows someone other than the Franchisee to run a unit. (b) Site #1's operational audit scores must be consistently at or above target for at least [Adnan to confirm: e.g. 6 months]Right. (c) Food safety (IK-mat) and regulatory compliance must be fully documented and current. (d) All key systems (EPOS, Tidsbanken, SmartMate) must be functioning and producing reliable data.
+People readiness: (a) Site #1 must have a capable Unit Manager who can run the unit independently (Hersey-Blanchard S4 — delegating level). (b) A pipeline for the Site #2 Unit Manager must be identified — either an internal promotion or an external hire with sufficient lead time. (c) Staff turnover at Site #1 must be at or below target for the preceding [Adnan to confirm: e.g. 6 months]Right. (d) The Franchisee must have sufficient management bandwidth to oversee two units without becoming the operational bottleneck at either.
+Brand readiness: (a) Brand guidelines, tone of voice, and visual identity must be fully defined and documented (see Category 4). (b) The franchise agreement or equivalent legal framework must be in place to govern the relationship between the franchisor entity and any second unit (whether company-owned or franchised). (c) Head Office must formally approve the expansion. (d) Brand trajectory indicator — the Google review score trend over the preceding 6 months (see Chapter 6.1 — Customer KPIs, Brand Trajectory Indicator) must show a stable or positive trajectory. A declining review score trend is a disqualifier — it indicates the existing unit's brand is losing ground locally, and expansion would compound the problem. Data source: Chapter 4.3 — Review/reputation management already tracks this; no new infrastructure required.
+Readiness assessment: a formal readiness assessment against all the above criteria must be completed and submitted to Head Office before any commitment (lease, recruitment, marketing) for Site #2.
+Roles & Responsibilities
+Franchisee: Self-assesses against the criteria; completes the readiness assessment; makes the expansion case.
+Unit Manager (Site #1): Demonstrates operational independence; supports the readiness assessment with operational data.
+Head Office: Defines and maintains the readiness criteria; reviews the assessment; issues formal approval or rejection with specific gaps to address.
+Measure Analyse Improve
+The readiness criteria ARE the measure. Each criterion is either met or not met. There is no partial credit — all criteria must be met before expansion proceeds. Post-expansion, track Site #2 performance against plan and any issues attributable to premature expansion.
+Tools & Resources
+Readiness assessment template (checklist against all criteria above). Financial model template for Site #2. Operational audit history. People readiness review template.
+
+Franchisee selection criteria — co-work with YSF Advisory   [TOOL-REFERENCED]
+Why this chapter matters
+Choosing the wrong franchisee is the most expensive mistake a franchisor can make. This chapter adapts YSF Advisory's proven selection framework for Creamy.
+What's needed to write this SOP
+Access to YSF Advisory's existing franchisee selection framework.
+Any Creamy-specific criteria Adnan wants to add (e.g. local market knowledge, family-business experience, financial thresholds).
+Deal-breakers — what would automatically disqualify a franchisee candidate?
+How to get this done
+This chapter is a co-work deliverable with YSF Advisory. Share the YSF Advisory framework document and note anything you'd add or change for Creamy specifically. YSF Advisory will adapt and format the combined criteria into a Creamy-branded selection SOP.
+Hands on involvement, they need to working on the floor with the team for the first 12 months.
+Leadership qualities- ability to follow the Creamy system - Working capital -  Long term mindset.
+Rejection
+Unverified funds.
+Expecting guaranteed sales or profit.
+Being a passive investor.
+Refusing training or Creamy’s operating standards.
+Wanting to change the concept.
+Providing false or incomplete information.
+Serious financial, legal or tax problems.
+A criminal background that may harm the brand.
+Undisclosed involvement in a competing business.
+Poor communication or repeatedly missed deadlines.
+Signing a lease without Creamy’s approval.
+Values that do not fit the Creamy brand.
+
+
+Territory/exclusivity policy   [YSF ADVISORY — DRAFTED, PENDING REVIEW]
+Introduction
+This chapter defines Creamy's territory and exclusivity policy for franchise locations. Territory rights are one of the most important elements of a franchise agreement — they determine where a franchisee can and cannot operate, and whether the franchisor can place another unit nearby. Getting this wrong creates conflict, cannibalisation, and legal disputes.
+Minimum Operating Standards
+Each franchise location will be assigned a defined territory. The territory defines the geographic area within which: (a) the franchisee has the exclusive right to operate a Creamy unit, and (b) the franchisor will not open or grant another franchise within that area during the term of the agreement.
+Territory definition method:citys, and no location should be inside 30km of the other one [Adnan to confirm: how territories will be defined — e.g. postcode areas, a radius from the unit (common: 1-3 km in urban areas, larger in suburban/rural), or a custom map-based boundary].
+Exclusivity scope: the territory right protects against another physical Creamy unit within the defined area. It [Adnan to confirm: does / does not] extend to delivery zones, online sales, or other non-physical channels. Best practice is to address delivery overlap explicitly in the franchise agreement.Delivery should not overlap another location
+Territory encroachment: if the franchisor wishes to open a unit that would overlap with an existing franchisee's territory, the existing franchisee must be given first right of refusal for the new location. If the franchisee declines, the franchisor may proceed, subject to the terms of the franchise agreement.
+Norwegian competition law note: Konkurranseloven §10 prohibits agreements that restrict competition. Territorial exclusivity clauses in franchise agreements are generally permissible under the EU/EEA Vertical Block Exemption Regulation (as applied in Norway via the EEA Agreement), provided the market share threshold is not exceeded and the clauses do not constitute hardcore restrictions. Legal review of the franchise agreement's territorial provisions is strongly recommended.
+Territory review: territories may be reviewed and adjusted at franchise agreement renewal, by mutual agreement, if market conditions change materially (e.g. major residential or commercial development within the territory).
+Roles & Responsibilities
+Franchisor (Head Office): Defines territory boundaries; maintains the territory map; manages first-right-of-refusal processes; ensures competition law compliance.
+Franchisee: Operates within the assigned territory; requests territory adjustments through the agreed process.
+Legal Advisor: Reviews territorial provisions for competition law compliance.
+Measure Analyse Improve
+Track: (a) any territory disputes or complaints, (b) cannibalisation indicators (if two units are close, monitor whether one unit's sales decline when the other opens), (c) territory coverage vs. market opportunity (are there unserved areas?). Review territories as part of the annual planning process.
+Tools & Resources
+Territory map (visual map showing all franchise territories). Franchise agreement (territorial clauses). First-right-of-refusal process document. Competition law compliance checklist.
+
+6.5  Franchisee support & escalation
+
+Support model & SLAs   [YSF ADVISORY — DRAFTED, PENDING REVIEW]
+Introduction
+This chapter defines the support model and service level agreements (SLAs) that Head Office provides to franchisees. As Creamy grows from a single owner-operated unit to a franchise network, the support function becomes critical — franchisees need to know what support is available, how to access it, and what response times to expect. Clear SLAs set expectations and hold both parties accountable.
+Minimum Operating Standards
+Support categories and SLAs: (a) Emergency (food safety incident, serious H&S event, regulatory authority contact, security incident) — response within [Adnan to confirm: e.g. 1 hour]Right during business hours, [Adnan to confirm: e.g. 4 hours] outside business hours Right. (b) Urgent (equipment breakdown affecting trading, staffing crisis, significant customer complaint escalation) — response within [Adnan to confirm: e.g. 4 business hours] Right. (c) Standard (operational queries, marketing requests, training support, reporting queries) — response within [Adnan to confirm: e.g. 2 business days]Right. (d) Non-urgent (policy questions, process improvement suggestions, future planning) — response within [Adnan to confirm: e.g. 5 business days]Right.
+Support channels: [Adnan to confirm: phone, email, ticketing system, or a combination]. Emergency support must have a phone-accessible channel — email-only is not acceptable for emergencies.
+Head Office support scope includes: brand and marketing guidance, operational best practice, training materials and support, food safety and compliance guidance, financial reporting support, franchise agreement queries, and new unit setup support.
+Head Office support does NOT include: day-to-day management of the unit (this is the franchisee's responsibility), HR case management (though guidance is available), legal advice (franchisees should retain their own legal advisor for unit-specific matters), and accounting/bookkeeping services.
+Support request tracking: all support requests must be logged (by Head Office) with: request date, franchisee, category, description, response date, and resolution. This data is used to track SLA compliance and identify common support needs.
+Franchisee obligations: to receive effective support, franchisees must provide timely and accurate information, follow up on recommendations, and maintain the systems and reporting required for Head Office to have visibility.
+Roles & Responsibilities
+Franchisee: Submits support requests through the correct channel; provides necessary information; follows up on advice.
+Head Office Support Team: Receives and triages requests; responds within SLA; tracks and reports on support activity.
+Head Office Leadership: Reviews SLA performance; adjusts support resources and processes as the network scales.
+Measure Analyse Improve
+Track: (a) SLA compliance rate (% of requests responded to within the agreed timeframe, by category), (b) support request volume and trends (by category and franchisee), (c) franchisee satisfaction with support (periodic survey). SLA performance should be reviewed at MBRs and reported in the quarterly franchise network summary.
+Tools & Resources
+Support request form / ticketing system [Adnan to confirm]. SLA tracker. Support request log. Franchisee satisfaction survey template.
+
+Escalation matrix   [YSF ADVISORY — DRAFTED, PENDING REVIEW]
+Introduction
+This chapter provides the franchisee-to-Head Office escalation matrix — a structured framework for determining when and how issues should be escalated from the franchise unit to Head Office. This complements the internal unit escalation thresholds (Chapter 5.7) by defining the escalation path beyond the Franchisee.
+Minimum Operating Standards
+The escalation matrix operates on four levels: Level A (Unit-level resolution — Franchisee resolves without Head Office involvement): day-to-day operational issues, routine HR matters (within legal compliance), local marketing execution, minor equipment repairs, standard customer complaints.
+Level B (Head Office informed — Franchisee resolves, Head Office is notified for awareness): staff turnover above target levels, customer complaints trending upward, minor non-compliance findings on internal audit, local competitor activity with potential brand impact, planned menu or pricing deviations from standard.
+Level C (Head Office consulted — Franchisee seeks guidance before acting): dismissal or serious disciplinary action, any contact from regulatory authorities (Mattilsynet, Arbeidstilsynet, Forbrukertilsynet, Skatteetaten), customer complaint alleging food safety failure, lease renegotiation or property issues, any proposed change to unit layout, signage, or brand presentation, and any spend above [Adnan to confirm: capex authorisation threshold]under 25000 kr.
+Level D (Head Office leads — Head Office takes the lead in resolution): media enquiries or negative press/social media crisis, legal claims or threats of litigation, franchise agreement disputes, food safety incidents requiring product recall or public communication, serious H&S incidents (Arbeidstilsynet-reportable), and any matter affecting the brand across multiple locations.
+Response expectations: Level B notifications — Head Office acknowledges within 1 business day. Level C consultations — Head Office responds with guidance within the SLA for the relevant support category (see Support model & SLAs chapter). Level D matters — Head Office takes immediate ownership and communicates an action plan within [Adnan to confirm: e.g. 24 hours]Right.
+Documentation: all Level C and D escalations must be documented with the same rigour as internal escalations (date, issue, who was notified, actions taken, outcome).
+Roles & Responsibilities
+Franchisee: Classifies issues against the matrix; notifies or consults Head Office as required; retains responsibility for unit-level matters.
+Unit Manager: Provides information and supports the Franchisee in escalation; does not escalate directly to Head Office (routes through Franchisee).
+Head Office: Responds within SLA; leads on Level D matters; provides guidance on Level C; monitors Level B notifications for patterns.
+Measure Analyse Improve
+Track: (a) escalation volume by level, (b) appropriateness of classification (was the right level selected?), (c) Head Office response times vs. SLA, (d) outcomes and resolution effectiveness. Review quarterly; adjust the matrix as the franchise network matures.
+Tools & Resources
+Escalation matrix reference document (one-page summary for Franchisee reference). Escalation log. Support request tracking system (shared with the Support model & SLAs chapter). Level C/D escalation report template.
+
+Field visit/audit cadence — co-work with YSF Advisory   [TOOL-REFERENCED]
+Why this chapter matters
+Regular field visits keep standards high and build the franchisor-franchisee relationship. This SOP will define visit frequency, what gets audited, and how results are reported.
+What's needed to write this SOP
+Access to the YSF Advisory audit framework (tracker item #9).
+Preferred visit frequency (e.g. monthly for new units, quarterly for established ones).
+Who conducts field visits (Adnan, a designated operations manager, third party).
+What happens after a poor audit (improvement plan, follow-up timeline, consequences).
+How to get this done
+This chapter is a co-work deliverable with YSF Advisory, building on their audit framework (tracker #9). Once the framework is ready, YSF Advisory will write the visit cadence SOP around it. In the meantime, note your preferences for frequency and follow-up process.
+Currently blocked by: Tracker #9 — YSF Advisory audit framework.
+
+6.6  Cash flow & capital governance
+
+Cash flow forecasting & monitoring   [YSF ADVISORY — DRAFTED, PENDING REVIEW]
+Introduction
+This chapter defines the standard process for forecasting, monitoring, and managing cash flow at unit and entity level. A profitable unit can still fail if it runs out of cash — profit is an accounting concept; cash is what pays the bills. This is the foundation that Chapter 6.4 (Readiness criteria for site #2) assumes exists: the requirement that expansion capital be secured 'without jeopardising Site #1's cash position' is meaningless without a disciplined cash flow forecast and monitoring cadence.
+Minimum Operating Standards
+A rolling 13-week cash flow forecast must be maintained by the Franchise Owner (or their finance lead) and updated weekly. The 13-week horizon covers one full quarter and is the standard minimum for operational cash management in SMEs.
+The forecast must be structured as a weekly cash-in / cash-out matrix covering at minimum: (a) Cash in — daily/weekly sales receipts (from EPOS), other income (e.g. catering, events). (b) Cash out — supplier payments (by supplier, by due date), payroll and employer costs (including Arbeidsgiveravgift — employer's social security contribution), rent, utilities, loan/lease repayments, MVA (VAT) payments, tax instalments (forskuddsskatt), insurance premiums, marketing spend, maintenance/repairs, and any one-off capex. (c) Net cash flow per week and cumulative cash balance.
+The forecast must be reconciled against the actual bank balance weekly. Any variance exceeding [Adnan to confirm: e.g. NOK 10,000 or 10%]Right of forecast must be investigated and the forecast adjusted.
+A minimum cash reserve — the lowest acceptable bank balance — must be defined and maintained. [Adnan to confirm: target minimum cash reserve — industry norm for a single-unit QSR is typically 4-8 weeks of fixed costs]3 month. If the forecast projects the cash balance falling below the minimum reserve at any point in the 13-week horizon, the Franchise Owner must take corrective action immediately (defer discretionary spend, accelerate receivables, draw on credit facility if available).
+Cash flow reporting: a cash flow summary must be included in the monthly business review (see Chapter 6.3 — Monthly business review) covering: opening balance, total receipts, total payments, closing balance, and variance vs. forecast.
+Before any capital expenditure commitment (see Chapter 6.6 — Capex authorisation framework), the Franchise Owner must demonstrate via the cash flow forecast that the expenditure can be absorbed without breaching the minimum cash reserve for the following 13 weeks.
+Seasonal cash flow planning: once a full year of trading data is available, the forecast must incorporate known seasonal patterns (e.g. lower revenue in January, higher costs in December, annual insurance premium, MVA quarter-end payments). Head Office should provide a seasonal cash flow adjustment template based on network-wide patterns.
+Roles & Responsibilities
+Franchise Owner / Operator: Owns the cash flow forecast; updates it weekly; takes corrective action when the reserve threshold is threatened; presents cash flow position at the monthly business review.
+Unit Manager: Provides the revenue and operational cost data that feeds the forecast (daily sales, supplier invoices received, maintenance costs incurred).
+Head Office: Provides the forecasting template; reviews cash flow position as part of the monthly business review; flags network-wide cash flow risks (e.g. supplier price increases, regulatory cost changes).
+External Accountant (if retained): Assists with tax instalment calculations, MVA timing, and annual cash flow planning.
+Measure Analyse Improve
+Track: (a) forecast accuracy — actual vs. predicted cash balance, weekly and monthly, (b) number of weeks the cash balance fell below the minimum reserve, (c) average days' cash on hand (closing balance ÷ average daily operating cost), (d) variance between forecast and actual on each major cost line. A forecast that is consistently inaccurate in one direction (e.g. always overestimates receipts) indicates a systematic bias that must be corrected.
+Tools & Resources
+13-week rolling cash flow forecast template (spreadsheet — weekly columns, categorised rows, auto-calculated net and cumulative balance). Bank reconciliation report (weekly). Monthly cash flow summary (for MBR). EPOS revenue reports (daily/weekly). Supplier payment schedule (from accounts payable). Norwegian tax calendar (MVA deadlines, forskuddsskatt instalments, Arbeidsgiveravgift due dates).
+
+Working capital cycle management   [YSF ADVISORY — DRAFTED, PENDING REVIEW]
+Introduction
+This chapter defines how Creamy manages its working capital cycle — the time and cash tied up between paying suppliers and receiving payment from customers. In a QSR operation where most sales are cash or immediate card settlement, the working capital cycle is typically short and favourable: customers pay instantly, but suppliers grant credit terms. The risk is not the cycle itself — it is losing control of it: paying suppliers early, holding too much stock, or failing to enforce agreed credit terms. This chapter provides the framework for keeping cash circulating efficiently.
+Minimum Operating Standards
+The working capital cycle for each unit must be understood and documented: (a) Inventory holding period — average days from receiving stock to selling it (target: [Adnan to confirm: e.g. 3-7 days for perishables, 14-30 days for dry goods and packaging])Right. (b) Receivables period — for a QSR with predominantly cash/card sales, this is effectively zero (same-day settlement from card processor, minus any processing delay). [Adnan to confirm: card processor settlement terms — typically T+1 or T+2 in Norway]3 days. (c) Payables period — average days from receiving a supplier invoice to paying it (target: use the full agreed credit terms, typically [Adnan to confirm: e.g. 14 or 30 days net])Asko 10 days, Tingstad 30 days, coca cola 14 days, solberg og hansen 30 days.
+Payment discipline: supplier invoices must be paid on the due date — not before (which gives away free credit) and not after (which damages supplier relationships and may incur late-payment fees or loss of credit terms). A payment run schedule must be established (e.g. weekly on a fixed day) and adhered to.
+Stock levels must be managed to minimise cash tied up in inventory without risking stock-outs. Par levels (see Chapter 5.3 — Ordering cycle & par levels) should be calibrated to the demand forecast (see Chapter 3.4 — Demand forecasting). Over-ordering ties up cash; under-ordering loses sales.
+Card processor terms: verify and document the settlement terms with the card payment provider. If the processor holds funds for more than T+2, evaluate whether a better settlement arrangement is available. Even a one-day improvement in settlement terms can improve cash flow materially over a year.
+MVA (VAT) management: Norwegian food service businesses charge different MVA rates (25% for dine-in, 15% for takeaway). The MVA collected belongs to the state and must be remitted per the termin (reporting period — typically bi-monthly for small businesses). It must not be treated as available cash. Best practice: transfer the estimated MVA liability to a separate holding account after each MVA period to avoid a cash crunch at the payment deadline.
+Working capital monitoring: the Franchise Owner must review the working capital position monthly as part of the monthly business review, covering: current stock value, outstanding supplier payables (total and ageing), card processor receivables in transit, and MVA liability accrued.
+Roles & Responsibilities

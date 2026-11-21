@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ravi call agenda, 4 Nov</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@500;600;700&family=Geist:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  /* Manual Magic AI palette: navy ground for headers, orange for the one accent, sky for links and step badges */
+  --navy: #042549;
+  --orange: #c9620f;
+  --orange-soft: #fdeedf;
+  --sky: #2a8fc1;
+  --ink: #1b2530;
+  --muted: #5a6876;
+  --paper: #ffffff;
+  --wash: #f3f6f9;
+  --line: #dde4ea;
+  --note-bg: #fff8e6;
+  --note-line: #e9b949;
+  --ok: #1f7a4d; --ok-bg: #e3f4ea;
+  --warn: #8a5a00; --warn-bg: #fdf0d2;
+  --no: #a23a2a; --no-bg: #fbe4df;
+  --ask: #3d4fa8; --ask-bg: #e6e9f8;
+  --display: "Jost", "Futura", "Century Gothic", system-ui, sans-serif;
+  --body: "Geist", "Segoe UI", system-ui, sans-serif;
+  /* Layout: one 760px reading column; a navy masthead; agenda blocks as numbered rows with a time rail */
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --navy: #0b2f57; --orange: #f5842c; --orange-soft: #3a2715; --sky: #6bc7ed;
+    --ink: #e6ecf2; --muted: #9fb0c0; --paper: #0e1824; --wash: #142233; --line: #24364a;
+    --note-bg: #2c2512; --note-line: #b88a2a;
+    --ok: #7fd3a5; --ok-bg: #133524; --warn: #f0c46a; --warn-bg: #33270e;
+    --no: #f19a8a; --no-bg: #3a1a14; --ask: #a9b5f2; --ask-bg: #1d2448;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --navy: #0b2f57; --orange: #f5842c; --orange-soft: #3a2715; --sky: #6bc7ed;
+  --ink: #e6ecf2; --muted: #9fb0c0; --paper: #0e1824; --wash: #142233; --line: #24364a;
+  --note-bg: #2c2512; --note-line: #b88a2a;
+  --ok: #7fd3a5; --ok-bg: #133524; --warn: #f0c46a; --warn-bg: #33270e;
+  --no: #f19a8a; --no-bg: #3a1a14; --ask: #a9b5f2; --ask-bg: #1d2448;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body { background: var(--paper); color: var(--ink); font: 16px/1.6 var(--body); }
+.wrap { max-width: 800px; margin: 0 auto; padding: 0 20px 64px; }
+header.mast { background: #042549; color: #fff; padding: 36px 0 28px; }
+header.mast .wrap { padding-bottom: 0; }
+.eyebrow { font: 600 12px/1 var(--display); letter-spacing: .16em; text-transform: uppercase; color: #6bc7ed; }
+h1 { font: 700 34px/1.15 var(--display); margin: 10px 0 8px; text-wrap: balance; }
+.mast p { margin: 0; color: #c9d6e3; max-width: 62ch; }
+.meta { display: flex; flex-wrap: wrap; gap: 8px 18px; margin-top: 16px; font-size: 14px; color: #e6eef5; }
+.meta b { color: #f5842c; font-weight: 600; }
+.toolbar { position: sticky; top: 0; z-index: 5; background: var(--paper); border-bottom: 1px solid var(--line); }
+.toolbar .wrap { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: space-between; padding-top: 10px; padding-bottom: 10px; }
+.toolbar nav { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: 14px; }
+.toolbar a { color: var(--sky); text-decoration: none; }
+.toolbar a:hover { text-decoration: underline; }
+button.toggle { font: 500 14px var(--body); padding: 7px 14px; border-radius: 6px; border: 1px solid var(--navy); background: var(--navy); color: #fff; cursor: pointer; }
+:root[data-theme="dark"] button.toggle, :root:not([data-theme="light"]) button.toggle { border-color: var(--sky); }
+button.toggle:focus-visible, a:focus-visible { outline: 3px solid var(--orange); outline-offset: 2px; }
+h2 { font: 700 24px/1.25 var(--display); margin: 48px 0 6px; color: var(--ink); text-wrap: balance; }
+h2 .num { color: var(--orange); margin-right: 8px; }
+h3 { font: 600 18px/1.3 var(--display); margin: 26px 0 6px; text-wrap: balance; }
+.lede { color: var(--muted); margin: 0 0 16px; max-width: 65ch; }
+p, li { max-width: 68ch; }
+ul, ol { padding-left: 22px; }
+li + li { margin-top: 4px; }
+.note { background: var(--note-bg); border-left: 4px solid var(--note-line); padding: 12px 16px; margin: 16px 0; border-radius: 0 6px 6px 0; }
+.note .tag { font: 600 11px/1 var(--display); letter-spacing: .14em; text-transform: uppercase; color: var(--warn); display: block; margin-bottom: 6px; }
+.note p, .note ul { margin: 6px 0; }
+body.screen-share .note, body.screen-share .wes-only { display: none; }
+body.screen-share .share-banner { display: block; }
+.share-banner { display: none; background: var(--ask-bg); color: var(--ask); font-size: 14px; padding: 8px 16px; border-radius: 6px; margin-top: 16px; }
+/* agenda */
+.agenda { display: grid; gap: 0; border-top: 1px solid var(--line); margin-top: 12px; }
+.agenda .row { display: grid; grid-template-columns: 96px 1fr; gap: 16px; padding: 12px 0; border-bottom: 1px solid var(--line); }
+.agenda .t { font: 600 15px var(--display); color: var(--orange); font-variant-numeric: tabular-nums; }
+.agenda .t small { display: block; font: 400 13px var(--body); color: var(--muted); }
+.agenda .what b { font-family: var(--display); font-weight: 600; font-size: 17px; }
+.agenda .what span { display: block; color: var(--muted); font-size: 15px; }
+/* demo steps */
+ol.beats { list-style: none; padding: 0; counter-reset: b; display: grid; gap: 10px; }
+ol.beats li { counter-increment: b; display: grid; grid-template-columns: 34px 1fr; gap: 12px; max-width: none; margin: 0; }
+ol.beats li::before { content: counter(b); width: 28px; height: 28px; border-radius: 50%; background: var(--navy); color: #fff; font: 600 14px/28px var(--display); text-align: center; }
+:root[data-theme="dark"] ol.beats li::before { background: var(--sky); color: #042549; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) ol.beats li::before { background: var(--sky); color: #042549; } }
+ol.beats .say { color: var(--muted); font-style: italic; display: block; }
+/* white glove phases */
+.phases { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin: 12px 0; }
+.phase { border: 1px solid var(--line); border-top: 4px solid var(--orange); border-radius: 6px; padding: 12px 14px; background: var(--wash); }
+.phase .h { font: 600 12px/1 var(--display); letter-spacing: .12em; text-transform: uppercase; color: var(--orange); }
+.phase b { display: block; font: 600 16px/1.3 var(--display); margin: 6px 0 4px; }
+.phase p { margin: 0; font-size: 14px; color: var(--muted); }
+table { width: 100%; border-collapse: collapse; font-size: 15px; }
+.tablebox { overflow-x: auto; margin: 12px 0; }
+th, td { text-align: left; vertical-align: top; padding: 8px 10px; border-bottom: 1px solid var(--line); }
+th { font: 600 13px var(--display); letter-spacing: .04em; color: var(--muted); background: var(--wash); }
+td.n { font-variant-numeric: tabular-nums; white-space: nowrap; }
+/* Q&A */
+.qa { border: 1px solid var(--line); border-radius: 8px; padding: 16px 18px; margin: 14px 0; }
+.qa .qhead { display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: baseline; justify-content: space-between; }
+.qa .q { font: 600 17px/1.35 var(--display); margin: 0; max-width: 56ch; }
+.qa .q .qn { color: var(--orange); margin-right: 6px; font-variant-numeric: tabular-nums; }
+.chip { font: 600 12px/1 var(--body); padding: 5px 9px; border-radius: 99px; white-space: nowrap; }
+.chip.ok { color: var(--ok); background: var(--ok-bg); }
+.chip.warn { color: var(--warn); background: var(--warn-bg); }
+.chip.no { color: var(--no); background: var(--no-bg); }
+.chip.ask { color: var(--ask); background: var(--ask-bg); }
+.qa .ans { margin: 8px 0 0; }
+.qa .show { font-size: 14px; color: var(--muted); margin-top: 8px; }
+.qa .show b { color: var(--ink); font-weight: 600; }
+.legend { display: flex; flex-wrap: wrap; gap: 8px; margin: 8px 0 4px; }
+.buckets { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin: 12px 0; }
+.bucket { border: 1px solid var(--line); border-radius: 6px; padding: 12px 14px; }
+.bucket b { font: 600 16px/1.3 var(--display); display: block; margin-bottom: 4px; }
+.bucket p { margin: 0 0 6px; font-size: 14px; color: var(--muted); }
+.bucket ul { margin: 0; padding-left: 18px; font-size: 14px; }
+.check { list-style: none; padding: 0; }
+.check li { padding-left: 26px; position: relative; }
+.check li::before { content: ""; position: absolute; left: 0; top: 5px; width: 14px; height: 14px; border: 2px solid var(--orange); border-radius: 3px; }
+footer { margin-top: 56px; padding-top: 16px; border-top: 1px solid var(--line); font-size: 13px; color: var(--muted); }
+@media (max-width: 640px) {
+  h1 { font-size: 27px; }
+  .phases, .buckets { grid-template-columns: 1fr; }
+  .agenda .row { grid-template-columns: 72px 1fr; }
+}
+@media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; } }
+html { scroll-behavior: smooth; }
+</style>
+</head>
+<body>
+
+<header class="mast">
+  <div class="wrap">
+    <div class="eyebrow">Manual Magic AI · Partner induction</div>
+    <h1>Call with Ravi: demo, White Glove and your questions answered</h1>
+    <p>An agenda built from Ravi's brief to Penny and the 51 sample documents he sent. Every question in his brief has an answer below, with what works on the platform today and what to show on screen.</p>
+    <div class="meta">
+      <span><b>When</b> Wednesday 4 November 2026, 16:00</span>
+      <span><b>Length</b> 60 minutes</span>
+      <span><b>With</b> Ravi, Wesley Williams</span>
+      <span><b>Screen</b> Demo Operations Manual account</span>
+    </div>
+  </div>
+</header>
+
+<div class="toolbar">
+  <div class="wrap">
+    <nav aria-label="Sections">
+      <a href="#prep" class="wes-only">Before 4 pm</a>
+      <a href="#agenda">Agenda</a>
+      <a href="#demo">Demo</a>
+      <a href="#white-glove">White Glove</a>
+      <a href="#questions">Questions</a>
+      <a href="#library">Ravi's library</a>
+      <a href="#next">Next steps</a>
+    </nav>
+    <button class="toggle" id="toggleNotes" type="button" aria-pressed="false">Hide my notes for screen share</button>
+  </div>
+</div>
+
+<main class="wrap">
+  <div class="share-banner" id="shareBanner">Screen-share view: Wesley's private notes are hidden.</div>
+
+  <!-- ============ WESLEY'S READ ============ -->
+  <section class="wes-only" id="read">
+    <h2>What Ravi is really asking</h2>
+    <p class="lede">His brief reads as a list of how-to questions. Taken with the samples he sent, it adds up to five bigger questions.</p>
+    <div class="note">
+      <span class="tag">Wesley only</span>
+      <ol>
+        <li><b>"Can I deliver what my clients already expect?"</b> Every sample is a finished, printed manual: a cover, an inner cover, a © and disclaimer page, a three-page contents list, numbered chapter separator pages, sections numbered 1.1 to 9.2, a logo and footer on every page, photos inside the text, and English and Arabic side by side. His brand-identity question (covers, separators, page numbers, fonts, back pages) is that expectation in list form. The honest answer is that Manual Magic gives him a live, governed manual on every phone plus a branded PDF of each SOP. It does not give him the designed print book. The call has to deal with that gap directly, not around it.</li>
+        <li><b>"What am I selling under the White Glove name?"</b> He writes "white glow services" as though it means Manual Magic builds and designs the manual for his client. Penny's White Glove is 7 hours of expert consultancy, and the client's team does the writing. He needs that line drawn early, along with the commercials, so he can price his own work on top of it.</li>
+        <li><b>"Will this make me look good in front of a client?"</b> The demo induction and the how-to questions are about confidence. He has hit friction already (images not embedded, exports arriving by email) and doesn't want a client to hit it in front of him.</li>
+        <li><b>"Is it safe and defensible?"</b> Asking how to tell client content from machine content is about IP and liability. Clients in the Gulf and India will ask who wrote it and whose it is. The same goes for food safety rules set by a government authority.</li>
+        <li><b>"Where does my existing library fit?"</b> His spreadsheet maps all 51 documents to the six categories. Many of them (financial models, LOIs, NDAs, brochures, site-selection reports) belong to franchise development, not to an Operations Manual. He needs to hear which documents become SOPs, which are reference material, and which stay outside the platform.</li>
+      </ol>
+      <p><b>The line to land:</b> Manual Magic is the engine and the live manual. The printed, bilingual book his market expects is a layer on top. He can sell that layer himself, or buy it in from Manual Writers International.</p>
+    </div>
+  </section>
+
+  <!-- ============ PREP ============ -->
+  <section class="wes-only" id="prep">
+    <h2>Before 4 pm</h2>
+    <div class="note">
+      <span class="tag">Wesley only · ask Penny now</span>
+      <ul class="check">
+        <li><b>White Glove hours.</b> The consultant template (July) says 7 hours over three phases. The CRM specification (23 July) says a 10-hour engagement. Confirm which one to quote.</li>
+        <li><b>Who delivers White Glove.</b> The template says Manual Writers International delivers it, "introduced via your consultancy", yet the consultant keeps 100% of the £2,997. Pipeline D (consultant training) suggests trained consultants deliver it themselves. Can Ravi deliver it after training?</li>
+        <li><b>Gamma and export design</b> (still open from 29 Oct). Can a subscriber change fonts, covers or templates through Gamma? If so, the answer to Q7 changes from "not today" to "yes, in Gamma".</li>
+        <li><b>Arabic.</b> Brand Voice lets you pick the language. Does Arabic display right-to-left properly in the Editor, the Reader view and the PDF? Is there any way to put two languages side by side?</li>
+        <li><b>Dates on the roadmap</b> for images inside the SOP page and for exporting a whole category as one PDF, if Penny is happy to share them.</li>
+        <li><b>Can we share User Guide v1.1</b> (Section 22 was written for Ravi's questions) even though it is still a draft for review?</li>
+      </ul>
+    </div>
+    <div class="note">
+      <span class="tag">Wesley only · set up the demo account</span>
+      <ul class="check">
+        <li>Check that "To open the store safely and on time" is still in the Draft column. It carries the demo from start to finish.</li>
+        <li>Make the hand-washing SOP (Q9) before the call and press Generate Image on it now. Images take several minutes, so show the finished one.</li>
+        <li>Export one SOP ahead of time so its PDF is already in Assets for Q11.</li>
+        <li>Optional: upload one public food-safety document (FSSAI Schedule 4 or the Dubai Municipality Food Code) so the Q10 Wizard prompt has something to compare against.</li>
+        <li>Do <b>not</b> upload any of Ravi's sample files. He sent them to show the format, and he has said they are the IP of the brands.</li>
+        <li>Open your own phone camera ready to scan a QR code during the demo.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ============ AGENDA ============ -->
+  <section id="agenda">
+    <h2>Agenda</h2>
+    <p class="lede">Six blocks, built so that by the end Ravi can run a demo on his own, explain White Glove, and answer his clients' questions.</p>
+    <div class="agenda">
+      <div class="row"><div class="t">16:00<small>3 min</small></div><div class="what"><b>What you will leave with</b><span>A demo you can run for a client, a clear White Glove offer, an answer to each of your questions, and a view on your document library.</span></div></div>
+      <div class="row"><div class="t">16:03<small>15 min</small></div><div class="what"><b>1. Live demo: one SOP from upload to the team's phones</b><span>The same order you would use with a client. Your brief item 1.</span></div></div>
+      <div class="row"><div class="t">16:18<small>10 min</small></div><div class="what"><b>2. White Glove: what it is, what it is not, how to position it</b><span>The three phases, the commercials, and how it fits what clients in the Middle East and India expect. Your brief item 2.</span></div></div>
+      <div class="row"><div class="t">16:28<small>22 min</small></div><div class="what"><b>3. Your questions, answered on screen</b><span>All eleven of your questions, plus bilingual manuals and file preparation. Your brief item 3.</span></div></div>
+      <div class="row"><div class="t">16:50<small>7 min</small></div><div class="what"><b>4. Your library across the six categories</b><span>Which documents become SOPs, which are reference material, and which stay outside the platform. Your brief item 4.</span></div></div>
+      <div class="row"><div class="t">16:57<small>3 min</small></div><div class="what"><b>5. Next steps</b><span>A pilot client, the open points with Penny, and a second hands-on session.</span></div></div>
+    </div>
+  </section>
+
+  <!-- ============ DEMO ============ -->
+  <section id="demo">
+    <h2><span class="num">1</span>Live demo: how to show Manual Magic to a client</h2>
+    <p class="lede">About 12 minutes, using one SOP the whole way through. Run it in this order with a client and the platform tells its own story.</p>
+    <ol class="beats">
+      <li><div><b>Open on the problem.</b> Ask the client how many versions of their store-opening routine exist across their outlets today.<span class="say">"If it isn't written down, it isn't usable."</span></div></li>
+      <li><div><b>Dashboard.</b> Progress for each of the six categories, Manual Health and Coverage. This is how the owner sees how far along the manual is.</div></li>
+      <li><div><b>Settings: teach it the business.</b> Business Details, Target Reader, then Brand Voice: paste a piece of the client's own writing and press <b>Analyse</b>. Finish with Preferences: logo and five theme colours.<span class="say">"It sounds like you, not like a generic AI."</span></div></li>
+      <li><div><b>Upload IP.</b> Drag in a document and watch it go from ANALYSING to READY. It takes up to 200 files at a time.<span class="wes-only" style="display:block"><b>File:</b> Demo files → <i>Patisserie Penelope - Coffee Standards Flat White.pdf</i>. This is the document the coffee SOP is built from in Q5.</span></div></li>
+      <li><div><b>SOP Board.</b> The Draft column fills with SOPs written from the client's own IP. Open "To open the store safely and on time".</div></li>
+      <li><div><b>The SOP tabs.</b> Editor, then <b>Revise Draft</b> with one line of feedback. Then Checklist, FAQ, Storyboard, Assets (the infographic) and the QR Code tab.</div></li>
+      <li><div><b>Publish.</b> Drag the card from Review to Approved to Published. Click <b>MANUAL</b> in the top bar to see what the team sees, then scan the QR code with your phone.<span class="say">"Publish once and every outlet has the latest version straight away."</span></div></li>
+      <li><div><b>Ask Your Wizard.</b> Run the franchise-agreement gap analysis: "Compare the obligations in my uploaded franchise agreement with my published SOPs. List the franchisee obligations not yet covered."</div></li>
+      <li><div><b>Close.</b> Show the PDF export, then the next step: the free trial (up to 5 SOPs from one substantial document) at manualmagic.ai/try, the scorecard at scorecard.manualmagic.ai, and White Glove for clients who want it done properly from day one.</div></li>
+    </ol>
+    <h3>Habits that make a demo go smoothly</h3>
+    <ul>
+      <li>Set the account up the day before. Generate images in advance, because they take several minutes.</li>
+      <li>Use an example from the client's own sector: a café gets coffee, a QSR gets opening checks.</li>
+      <li>Lead with data safety before they ask: the platform runs on a private model, nothing uploaded is used to train any AI, and the data is hosted in London.</li>
+      <li>Never show another client's account or documents.</li>
+    </ul>
+  </section>
+
+  <!-- ============ WHITE GLOVE ============ -->
+  <section id="white-glove">
+    <h2><span class="num">2</span>White Glove: what you are offering</h2>
+    <p class="lede">White Glove is expert-led consultancy that makes sure the manual the client builds is sound, franchise-ready and scalable from the start. It is the route for franchisors, enterprise customers and multi-site businesses that want extra assurance.</p>
+    <div class="phases">
+      <div class="phase"><span class="h">Phase 1 · 2 hours</span><b>Pre-Subscription Evaluation</b><p>Reviews the client's existing content and IP and maps the business against what replication needs. Ends in a written Readiness Assessment.</p></div>
+      <div class="phase"><span class="h">Phase 2 · 2 hours</span><b>Onboarding and Architecture</b><p>Sets up the platform, brand voice and glossary, and designs the category structure and the order of the SOPs.</p></div>
+      <div class="phase"><span class="h">Phase 3 · 3 hours</span><b>Post-Onboarding Review</b><p>An expert review of the client's first 10 SOPs, with a written SOP Review Report that sets the standard for the rest of the build.</p></div>
+    </div>
+    <h3>What it is not</h3>
+    <ul>
+      <li>It is not a manual-writing service. The client's team edits and approves every SOP.</li>
+      <li>It is not a design or print service. Covers, separators and a bilingual print layout are separate work (see below).</li>
+    </ul>
+    <h3>Commercial terms (from the partner template, July 2026)</h3>
+    <div class="tablebox"><table>
+      <tr><th>Item</th><th>Terms</th></tr>
+      <tr><td>Fee</td><td class="n">£2,997 (£999 × 3 phases). The introducing consultant keeps 100%. Manual Magic earns from the subscription.</td></tr>
+      <tr><td>Your discretion</td><td>Up to 50% off the client's first 12 months of subscription</td></tr>
+      <tr><td>Seats</td><td class="n">Contributor seat £199 ex tax · read-only franchisee seat £5.00 ex tax per outlet</td></tr>
+      <tr><td>Format</td><td>Zoom or Teams sessions with written deliverables, over 4 to 6 weeks</td></tr>
+      <tr><td>Payment</td><td>Invoiced 7 days ahead, due before the first session</td></tr>
+    </table></div>
+    <div class="note"><span class="tag">Wesley only</span><p>Quote the hours and who delivers only once Penny has confirmed them (7 or 10 hours; Ravi or Manual Writers International). Until then, say "about seven hours of expert sessions across three phases".</p></div>
+
+    <h3>How to position it in the Middle East and India</h3>
+    <p>Your clients expect a finished, designed and usually bilingual manual like the samples you sent. Make the offer in three layers, so the client sees all of it and the platform's limits never come as a surprise:</p>
+    <div class="tablebox"><table>
+      <tr><th>Layer</th><th>What the client gets</th><th>Who provides it</th></tr>
+      <tr><td><b>1. The live manual</b></td><td>Every SOP on every phone, QR codes at the point of work, one update reaches every outlet, a branded PDF of each SOP, the Wizard</td><td>Manual Magic AI subscription</td></tr>
+      <tr><td><b>2. Getting it right</b></td><td>Readiness Assessment, platform architecture, expert review of the first 10 SOPs</td><td>White Glove</td></tr>
+      <tr><td><b>3. The print edition</b> (optional)</td><td>A designed book from the approved SOPs: covers, contents, separators, page numbers, the client's fonts, Arabic alongside English, country regulations</td><td>Your own design work, or Manual Writers International Consultancy Services</td></tr>
+    </table></div>
+    <p>Lead with layer 1. A live manual answers the questions a PDF can't: which version is current, whether every outlet has it, whether the team can find it during service. Layer 3 is where your existing design skill earns its own fee.</p>
+  </section>
+
+  <!-- ============ QUESTIONS ============ -->
+  <section id="questions">
+    <h2><span class="num">3</span>Your questions, answered</h2>
+    <p class="lede">Each answer says what the platform does today, what to do now, and what to show on screen. Words used: <b>Category</b> means one of the six parts of the manual; <b>SOP</b> means one procedure.</p>
+    <div class="legend">
+      <span class="chip ok">Works today</span>
+      <span class="chip warn">Workaround today</span>
+      <span class="chip no">Not offered yet</span>
+      <span class="chip ask">Confirming with Penny</span>
+    </div>
+
+    <div class="qa">
+      <div class="qhead"><p class="q"><span class="qn">Q1</span>The illustrations I create are not embedded in the page.</p><span class="chip no">Not offered yet</span></div>
+      <p class="ans">That's right, today. <b>Generate Image</b> saves each illustration to the SOP's <b>Assets</b> tab. Readers see it in the <b>Resources</b> area at the foot of the SOP, under the procedure, but it is not placed inside the text and does not appear in the PDF. Images inside the page are planned. For now, keep illustrations in Assets. For a printed copy, download the image and send or print it with the PDF.</p>
+      <p class="show"><b>Show:</b> Assets tab, then Preview, then scroll to Resources.</p>
+    </div>
+
+    <div class="qa">
+      <div class="qhead"><p class="q"><span class="qn">Q2</span>How do we combine multiple chapters into an SOP?</p><span class="chip warn">Workaround today</span></div>
+      <p class="ans">The platform is built the other way round from a printed manual. One SOP covers one task. A "manual" in your samples, such as the 72-page Customer Service manual, becomes a set of SOPs in one category, grouped with a tag such as <i>Customer Service</i>. Its numbered sections (1.1, 1.2, …) become the SOPs.</p>
+      <ul>
+        <li>To build one larger SOP from several processes: <b>Editor → Revise Draft</b>, and under Feedback type "Combine the opening, handover and close-down routines into one SOP, with a section for each."</li>
+        <li>To merge two existing SOPs: copy the text of one into the other's Editor, then delete the spare one from its Overview tab.</li>
+        <li>Export is one SOP at a time. There is no export of a whole category or the whole manual yet. We have asked for it.</li>
+      </ul>
+      <p class="show"><b>Show:</b> Revise Draft with the "combine" feedback on the store-opening SOP.</p>
+    </div>
+
+    <div class="qa">
+      <div class="qhead"><p class="q"><span class="qn">Q3</span>How is the Table of Contents created?</p><span class="chip warn">Workaround today</span></div>
+      <p class="ans">On screen, the Operations Manual <i>is</i> the contents list: the six categories, then every published SOP in each. Drag the six-dot handle to set the order readers see. Inside an SOP, the H1, H2 and H3 headings give it its structure. The PDF export has no contents page. For a printed set, create an SOP called "Contents" in the Introduction category that lists the SOPs in order.</p>
+      <p class="show"><b>Show:</b> MANUAL in the top bar, open a category, drag one SOP up.</p>
+    </div>
+
+    <div class="qa">
+      <div class="qhead"><p class="q"><span class="qn">Q4</span>How are spacing and alignment fixed?</p><span class="chip ok">Works today, by design</span></div>
+      <p class="ans">The platform sets spacing, alignment and fonts itself, so every SOP looks the same in every outlet. The toolbar controls structure, not layout. If spacing looks wrong, it is nearly always formatting pasted in from Word or email:</p>
+      <ul>
+        <li>Select the text and press the <b>Eraser</b> (clear formatting).</li>
+        <li>Use H2 and H3 for headings, not bold text.</li>
+        <li>Use a numbered list for steps, bullets for everything else, and a table for items side by side.</li>
+        <li>Check the result in <b>Preview</b>.</li>
+      </ul>
+    </div>
+
+    <div class="qa">
+      <div class="qhead"><p class="q"><span class="qn">Q5</span>How do we bring visuals and pictures into an SOP, for example a coffee recipe?</p><span class="chip ok">Works today</span></div>
+      <ol>
+        <li>Write the recipe in the Editor: a <b>table</b> for ingredients and quantities, a <b>numbered list</b> for the method.</li>
+        <li>Photograph each stage (grind, dose, tamp, extract, steam, pour) and upload each one in <b>Assets → Upload asset</b> with a clear name, such as "Step 3 – Tamp".</li>
+        <li>Film the trickiest stage and upload the clip the same way. Videos play on the page in Resources.</li>
+        <li><b>Generate Image</b> with the feedback "Step-by-step infographic of the six stages of making a flat white, numbered, one picture per stage."</li>
+        <li><b>Storyboard → Generate</b> plans a short training video; export it for whoever films it.</li>
+        <li><b>QR Code → Download PNG</b> and fix it to the coffee machine.</li>
+      </ol>
+      <p class="show">The pictures sit under the method in Resources, not between the steps (see Q1).</p>
+      <div class="note wes-only">
+        <span class="tag">Wesley only · the coffee walkthrough, file by file</span>
+        <ol>
+          <li><b>Load the coffee document</b> (done in demo beat 4): Upload IP → drag in <i>Demo files / Patisserie Penelope - Coffee Standards Flat White.pdf</i> → wait for READY.</li>
+          <li><b>Create the coffee SOP:</b> Add SOP → orange + → Objective "To make a flat white to the Patisserie Penelope standard" · Category Day-to-Day Operating Requirements · Tags Coffee, Beverage → <b>Create</b>. If a flat white draft has already appeared on the SOP Board from the upload, open that one instead.</li>
+          <li><b>Write it from the document:</b> Editor → <b>Generate Draft</b>, Feedback: "Write the flat white SOP from our Coffee Standards card: a table for the recipe, a numbered list for the method." Show the recipe table and the numbered method.</li>
+          <li><b>Load the coffee pictures as assets:</b> Assets → <b>Upload asset</b> → from <i>Demo files / photos</i>, in order: <i>Step 1 - Grind</i>, <i>Step 2 - Dose</i>, <i>Step 3 - Tamp</i>, <i>Step 4 - Extract</i>, <i>Step 5 - Steam</i>, <i>Step 6 - Serve</i>.</li>
+          <li><b>Load the video as an asset:</b> Assets → <b>Upload asset</b> → <i>Demo files / photos / Flat white pour.mp4</i>.</li>
+          <li><b>Ask Assets for the infographic:</b> Assets → <b>Generate Image</b>, Feedback: "Step-by-step infographic of the six stages of making a flat white, numbered, one picture per stage." It takes several minutes, so carry on and come back to it.</li>
+          <li><b>Plan the training film:</b> Storyboard → <b>Generate</b>.</li>
+          <li><b>QR for the machine:</b> QR Code → <b>Download PNG</b> ("this goes on the coffee machine").</li>
+          <li><b>Show the result:</b> Preview → scroll to Resources: the six photos, the clip playing on the page, and the infographic once it has arrived (press refresh in Assets).</li>
+        </ol>
+        <p><b>The other demo files:</b> <i>Hand-wash sink.jpg</i> goes in the hand-washing SOP's Assets (Q9, prepared before the call). <i>Store display at opening.jpg</i> goes in the store-opening SOP's Assets (Q7, prepared before the call). <i>Franchise Agreement Schedule 3</i> and <i>Store Operations Standards</i> are uploaded before the call, for demo beat 8 and Q10.</p>
+      </div>
+    </div>
+
+    <div class="qa">
+      <div class="qhead"><p class="q"><span class="qn">Q6</span>How do we navigate, and move from Draft to Review, Approved and Published?</p><span class="chip ok">Works today</span></div>
+      <p class="ans"><b>Getting around:</b> the six icons down the left have no labels yet. From the top: Dashboard, Upload IP (cloud), SOP Board, Ask Your Wizard (hat), Team (people), Settings (cog). The Operations Manual opens from <b>MANUAL</b> in the dark bar at the top.</p>
+      <p class="ans"><b>The stages:</b> on the SOP Board, drag the card from Draft to Review and ask the reviewer to check it. Once it is signed off, drag it to Approved, then to Published when it should go live. Readers see only Published SOPs. If the reviewer wants changes, drag it back to Draft.</p>
+      <p class="show"><b>Show:</b> move the store-opening SOP across all four columns.</p>
+    </div>
+
+    <div class="qa">
+      <div class="qhead"><p class="q"><span class="qn">Q7</span>How do we add the client's brand identity: logo, colours, fonts, covers, separators, page numbers, address, disclaimer, copyright?</p><span class="chip ask">Partly today · confirming</span></div>
+      <div class="tablebox"><table>
+        <tr><th>Today</th><th>Where</th></tr>
+        <tr><td>Logo and five theme colours (Primary, Secondary, Tertiary, Background, Body Text). Applied to the platform, the Reader view and the PDF</td><td>Settings → Preferences</td></tr>
+        <tr><td>The way the manual sounds</td><td>Settings → Brand Voice</td></tr>
+        <tr><td>Store photographs</td><td>Assets in each SOP</td></tr>
+        <tr><td>Company address, disclaimer, copyright notice, how to use the manual</td><td>SOPs in the Introduction category, at the top of the manual</td></tr>
+      </table></div>
+      <p class="ans"><b>Not on screen today:</b> the client's own fonts, a separate headline colour, the client's design template, separator pages, page numbering, front, inner and back covers. The export box offers Include Checklist and Include FAQ only. For a print-ready book like your samples, this is layer 3 in the White Glove section above.</p>
+      <div class="note"><span class="tag">Wesley only</span><p>If Penny confirms that Gamma lets subscribers design the export (fonts, covers, templates), change this answer to "yes, in Gamma" and show it.</p></div>
+    </div>
+
+    <div class="qa">
+      <div class="qhead"><p class="q"><span class="qn">Q8</span>How do we know whether content came from the client or was machine-generated?</p><span class="chip warn">Workaround today</span></div>
+      <p class="ans">Every draft is written from the client's own uploaded IP, shaped by their Business Details, Target Reader and Brand Voice. The platform does not mark individual sentences as written by AI or by a person. Control comes from four things:</p>
+      <ul>
+        <li><b>Created by</b> on the Overview tab shows who created the SOP.</li>
+        <li><b>History</b> in the Editor shows previous editions, so you can see what changed.</li>
+        <li>Nothing reaches readers until a person moves it through Review and Approved. AI helps, humans decide.</li>
+        <li>Agree a tag such as <i>Client-verified</i> and add it once the client's expert has checked the SOP line by line. It shows on the card and in the manual.</li>
+      </ul>
+      <div class="note"><span class="tag">Wesley only</span><p>Ravi's question is a fair one for the builders: a marker showing which uploaded document each section came from. Note it for Penny.</p></div>
+    </div>
+
+    <div class="qa">
+      <div class="qhead"><p class="q"><span class="qn">Q9</span>How do I give a command to create a process, an infographic or a page, for example hand washing in a café?</p><span class="chip ok">Works today</span></div>
+      <ol>
+        <li><b>Add SOP</b> on the Dashboard, then the orange + on the SOP Board.</li>
+        <li>Objective: "To make sure every Team Member washes their hands correctly." Keep it short, because the Objective becomes the title.</li>
+        <li>Category: Day-to-Day Operating Requirements. Steps: the ones you already follow. Tags: Hygiene, Food Safety. <b>Create</b>.</li>
+        <li>Editor → <b>Generate Draft</b>, with Feedback: "Write a hand-washing SOP for café Team Members. Include when to wash, each step in order, how long, how to dry hands and what to do if supplies run out."</li>
+        <li>Checklist → Generate. Assets → <b>Generate Image</b>: "Simple numbered infographic of each hand-washing step, one picture per step, for display above a sink."</li>
+        <li>QR Code → Download PNG for the wall above every sink.</li>
+      </ol>
+      <p class="ans">Quicker start: ask the Wizard "Draft a hand-washing procedure for café Team Members based on our hygiene documents" and paste the answer into a new SOP. Check any generated picture closely, because words and small details can come out wrong.</p>
+      <p class="show"><b>Show:</b> the hand-washing SOP prepared before the call, with its finished infographic.</p>
+    </div>
+
+    <div class="qa">
+      <div class="qhead"><p class="q"><span class="qn">Q10</span>How do we add country-specific food safety guidelines from a government authority?</p><span class="chip ok">Works today, if you upload first</span></div>
+      <ol>
+        <li>Download the current guidance from the authority's own website. For your markets that might be FSSAI (India), Dubai Municipality or ADAFSA (UAE), or the SFDA (Saudi Arabia).</li>
+        <li>Upload it as IP.</li>
+        <li>Ask the Wizard: "Compare our food safety SOPs with the uploaded [authority] guidance. List every gap as a prioritised action plan."</li>
+        <li>Open each SOP that needs changes: <b>Revise Draft</b>, "Align this SOP with the uploaded [authority] guidance."</li>
+        <li>Tag each SOP by country (IN, UAE, KSA) so every region finds its own version, and add the title and date of the guidance it follows.</li>
+        <li>Have a qualified person review it before approval, and set a date to check the authority's site for updates.</li>
+      </ol>
+      <p class="ans"><b>Always upload the regulation first.</b> Without it, the Wizard will still answer from general knowledge, and it doesn't say where that knowledge came from.</p>
+    </div>
+
+    <div class="qa">
+      <div class="qhead"><p class="q"><span class="qn">Q11</span>The document goes to email, then has to be downloaded again. It should stay in the portal until final.</p><span class="chip ok">Works today · feedback noted</span></div>
+      <p class="ans">The whole working process already stays in the portal: drafting, review, approval, Preview, the Reader view and QR codes. Readers never need a PDF. The email only tells you when an export or illustration is ready. The file itself is already saved in the SOP's <b>Assets</b> tab, so press refresh there instead of waiting for the email. Export once, when the SOP is Published, and only for a copy you will print or send. Each export is saved with its date and time.</p>
+      <p class="show"><b>Show:</b> the export made before the call, sitting in Assets.</p>
+      <div class="note"><span class="tag">Wesley only</span><p>Pass this on to Penny for the builders: an in-app "ready" notice instead of the email.</p></div>
+    </div>
+
+    <h3>Two more your clients will ask</h3>
+    <div class="qa">
+      <div class="qhead"><p class="q"><span class="qn">Q12</span>Can the manual be in Arabic, or in English and Arabic side by side like our samples?</p><span class="chip ask">Confirming with Penny</span></div>
+      <p class="ans">Brand Voice lets you choose the language the manual is written in, and the platform writes in languages other than English. We are confirming with Penny how Arabic displays right-to-left in the Editor, the Reader view and the PDF, and whether two languages can sit side by side. Until we have that answer, plan English and Arabic as separate SOPs tagged by language.</p>
+    </div>
+    <div class="qa">
+      <div class="qhead"><p class="q"><span class="qn">Q13</span>What file preparation does a client need?</p><span class="chip ok">Works today</span></div>
+      <ul>
+        <li>Accepted files: PDF, Word (.docx), .txt and .md. Up to 100 MB per file and up to 200 files per batch.</li>
+        <li>Convert Excel to PDF. Transcribe training videos into Word.</li>
+        <li>Keep only the latest version of each document, and sort the files into the six categories before uploading.</li>
+        <li>From your own set: <i>Management Module</i> (142 MB) and <i>Accounting &amp; Finance Guideline</i> (150 MB) are over the limit, so compress or split them. The three .xlsx files need converting.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ============ LIBRARY ============ -->
+  <section id="library">
+    <h2><span class="num">4</span>Your library across the six categories</h2>
+    <p class="lede">Your list is thorough. One shift makes it work on the platform: Manual Magic builds the Operations Manual your client's franchisees run the business from. Your library also holds the franchisor's development and sales documents. Those are valuable, but they are a different job. Here is a suggested three-way split to go through together.</p>
+    <div class="buckets">
+      <div class="bucket"><b>Becomes SOPs</b><p>Upload as IP. The platform drafts SOPs from them.</p>
+        <ul>
+          <li>SOP manuals: Food Safety, Cleaning, Customer Service, Product, Barista, Store Ops, BOH, FOH, Central Kitchen, Ops Checklist (38–47) → Day-to-Day</li>
+          <li>Supply Chain, Accounting, Training guidelines (48–51) → Day-to-Day</li>
+          <li>HR Handbook and HR Manual (36–37) → Your Team</li>
+          <li>New Store Opening, Pre-Opening Checklist (34–35) and the Design Manuals (1–2) → New Business Set-Up</li>
+          <li>Brandbook (13) → Marketing &amp; Promotion</li>
+        </ul></div>
+      <div class="bucket"><b>Reference for the Wizard</b><p>Upload so the Wizard can check the manual against them. Don't turn them into SOPs.</p>
+        <ul>
+          <li>Franchise Agreement (14): the gap analysis</li>
+          <li>Disclosure Documents (18, 20) and Franchisor Legal Guideline (19)</li>
+          <li>Brandbook (13) also gives you the colours and voice for Settings</li>
+          <li>Country food safety regulations (Q10)</li>
+        </ul></div>
+      <div class="bucket"><b>Stays outside the manual</b><p>Franchise development and sales work, which is your consultancy's own product.</p>
+        <ul>
+          <li>Financial models (3–5)</li>
+          <li>Strategy and discovery (6–8)</li>
+          <li>Franchise sales collateral: campaign, flyer, brochure (9–12)</li>
+          <li>LOI, NDA, application form (15–17)</li>
+          <li>Recruitment process (27–28), site selection (29–32)</li>
+          <li>Franchisor-side guides (21–25): decide one by one</li>
+        </ul></div>
+    </div>
+    <p>Small tidy-ups in the list: the Pre-Market Entry Guideline appears twice (rows 31 and 33); the list says Management Module Ver 2 while the file is Ver 1; and the Financial Highlights file is a PDF, not PowerPoint.</p>
+  </section>
+
+  <!-- ============ NEXT ============ -->
+  <section id="next">
+    <h2><span class="num">5</span>Next steps</h2>
+    <div class="tablebox"><table>
+      <tr><th>Action</th><th>Who</th></tr>
+      <tr><td>Pick one pilot client and one category (Day-to-Day SOPs is the easiest to show) and start the free trial from one substantial document</td><td>Ravi</td></tr>
+      <tr><td>Answers on White Glove hours and delivery, Gamma design, Arabic, and roadmap dates</td><td>Wesley with Penny</td></tr>
+      <tr><td>Send the User Guide (Section 22 answers these questions in full)</td><td>Wesley, once Penny approves it</td></tr>
+      <tr><td>Feedback to the builders: in-page images, whole-category export, in-app notices, source markers</td><td>Wesley to Penny</td></tr>
+      <tr><td>Second session: hands-on in Ravi's own account, running the demo himself</td><td>Both, to book</td></tr>
+    </table></div>
+  </section>
+
+  <footer>
+    Prepared for the call on 4 November 2026 from Ravi's brief, his SOP Manual Reference List and sample documents, the Manual Magic AI User Guide v1.1 (checked against the live platform on 2 November 2026) and the White Glove partner template. Manual Magic AI®, Manual Writers International® and Operational Insurance™ are trademarks of Manual Magic AI Limited. Ravi's sample documents remain the property of their brands and were used only to understand the format clients expect.
+  </footer>
+</main>
+
+<script>
+(function () {
+  var btn = document.getElementById('toggleNotes');
+  btn.addEventListener('click', function () {
+    var on = document.body.classList.toggle('screen-share');
+    btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+    btn.textContent = on ? 'Show my notes' : 'Hide my notes for screen share';
+  });
+})();
+</script>
+</body>
+</html>

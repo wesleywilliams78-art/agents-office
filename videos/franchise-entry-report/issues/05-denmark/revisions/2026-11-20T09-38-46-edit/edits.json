@@ -1,0 +1,12 @@
+{
+ "issue": "05-denmark",
+ "why": "Print the advice line once on page 5: drop the leading \"Not legal…\" sentence.",
+ "base": "videos/franchise-entry-report/issues/05-denmark/revisions/2026-11-20T09-35-17-edit/issue.json",
+ "at": "2026-11-20T09:38:46.684Z",
+ "edits": [
+  {
+   "path": "regulation.advice",
+   "value": "Take local advice before you sign."
+  }
+ ]
+}

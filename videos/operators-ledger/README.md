@@ -1,5 +1,7 @@
 # The Operator's Ledger — series library
 
+> **Making a new episode (19 Nov 2026):** use the `ledger-fresh` look of Episode 03 v3 (3D blocks, no Athena), not the Athena/shops/stacked-bar steps below. Read Brain `40-Marketing/operators-ledger-look.md` and `connectors/motion-studio/series/ledger-fresh/BRIEF.md`. "Starting the next episode" and "Making an episode now" below are legacy.
+
 A LinkedIn explainer series (10 episodes planned) under **WRW Hospitality**, Wesley Ross Williams's umbrella brand. This folder is the series bible. Every episode starts here, and anything learned while making one is written back here, so the next one inherits it.
 
 ## Read first

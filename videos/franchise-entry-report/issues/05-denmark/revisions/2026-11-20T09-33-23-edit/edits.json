@@ -1,0 +1,28 @@
+{
+ "issue": "05-denmark",
+ "why": "Replace the page 4 'If I had a brand' box with a named brand (Zambrero, Mexican fast casual) drawn from the page 3 evidence; add the two sources it cites.",
+ "base": "videos/franchise-entry-report/issues/05-denmark/issue.json",
+ "at": "2026-11-20T09:33:23.615Z",
+ "edits": [
+  {
+   "path": "white.position.quote",
+   "value": "If I had a brand for Denmark, it would be Zambrero, in Mexican fast casual, and I would open it straight behind Taco Bell."
+  },
+  {
+   "path": "white.position.paras.0",
+   "value": "Of the three rising categories on page 3, fast casual is the least crowded. Taco Bell is due at Fisketorvet this autumn, and its hiring advert spoke of sites across Denmark through 2027. [S41, S42, S78] Most readers will see a rival. I see a brand paying to teach Danes the burrito. Zambrero is not here yet: it has more than 350 restaurants in five countries and signed 14 UK franchise partners in one year. [S79]"
+  },
+  {
+   "path": "white.position.paras.1",
+   "value": "Avoid pizza. Domino's closed all 27 Danish stores from Jun 2023, and Pizza Hut went bankrupt in Nov 2025 with 13 restaurants. [S30, S33] The fast casual signal is still thin, so prove one site at about DKK 206 an hour all-in before the second."
+  },
+  {
+   "path": "days.sources",
+   "append": "S78 Ekstra Bladet via HORESTA press clips, Taco Bell åbner sin første restaurant i Danmark, 13 Oct 2026"
+  },
+  {
+   "path": "days.sources",
+   "append": "S79 Hospitality & Catering News, Zambrero signs 14 Franchise Partners in first year of UK programme, 22 Jul 2026"
+  }
+ ]
+}

@@ -1,0 +1,351 @@
+Norwegian food waste context: Norway has national targets for food waste reduction (the 2017 industry agreement — Bransjeavtalen om reduksjon av matsvinn). While not legally binding on individual businesses, waste reduction is a reputational positive and a cost saving.
+Waste disposal must comply with local kommune waste regulations (kildesortering — source separation). Organic waste, general waste, paper/cardboard, glass, and plastics must be separated per local requirements.
+Roles & Responsibilities
+All Team Members: Record waste accurately and immediately at the point of disposal.
+Shift Supervisor: Monitors waste during the shift; checks that the waste log is being completed.
+Unit Manager: Conducts weekly waste review; calculates waste cost percentage; implements corrective actions; reports waste data to the Franchisee.
+Franchisee: Reviews waste data monthly; addresses systemic issues (e.g. supplier quality, menu design).
+Measure Analyse Improve
+Track weekly: (a) total waste cost and waste cost as % of food purchases, (b) waste by category (to identify dominant causes), (c) trend over time (improving, stable, deteriorating). Set a waste reduction target and review progress quarterly.
+Tools & Resources
+Daily waste log (printed, one per day). Weekly waste summary template. Waste cost calculator (linked to product cost data). Kommune waste sorting guide.
+
+5.4  EPOS & systems use
+
+EPOS operating procedures   [TOOL-REFERENCED]
+Why this chapter matters
+Every team member needs to know how to use the till system — taking orders, processing payments, running reports, handling voids and refunds.
+What's needed to write this SOP
+The EPOS system name and version currently in use.
+Screenshots or a walkthrough of the main screens (order entry, payment, void, refund, end-of-day).
+Any Creamy-specific configurations (custom buttons, modifier flows, discount codes).
+How to get this done
+The easiest approach: do a screen recording or take screenshots of each key process on the EPOS. YSF Advisory will turn those into a step-by-step SOP with annotated images.
+
+Tidsbanken usage guide   [TOOL-REFERENCED]
+Why this chapter matters
+Tidsbanken handles scheduling and time tracking. Managers and staff need to know how to use it for rotas, clock-in/clock-out, and leave requests.
+What's needed to write this SOP
+Screenshots or a walkthrough of the key Tidsbanken functions (creating a rota, approving hours, requesting leave).
+Any custom settings or rules configured for Creamy (overtime thresholds, break deductions, etc.).
+Access levels — what can team members see vs. managers?
+How to get this done
+Take screenshots of each main screen and note what each step does. Alternatively, send a WhatsApp voice note while walking through the system. YSF Advisory will format it into a user guide.
+
+SmartMate usage guide   [TOOL-REFERENCED]
+Why this chapter matters
+SmartMate supports daily operations. Staff need clear instructions on how to use it for their role.
+What's needed to write this SOP
+What SmartMate is used for at Creamy (food safety logs, checklists, temperature monitoring, task management — whichever applies).
+Screenshots or a walkthrough of the main workflows.
+Who needs to use it and how often.
+How to get this done
+Same approach as the other system guides — screenshots and a brief walkthrough. YSF Advisory will structure it into a step-by-step SOP.
+
+Data governance & systems integration   [NEEDS ADNAN INPUT]
+Why this chapter matters
+EPOS, Tidsbanken, and SmartMate each hold data about customers, staff, and transactions. Someone needs to own that data, ensure it's backed up, and handle it in line with Norwegian personal data requirements (personopplysningsloven / GDPR via EEA). This is lower priority than the day-to-day system guides, but it needs defining before the network scales.
+What you need to provide
+Who currently has admin access to each system (EPOS, Tidsbanken, SmartMate) — names and roles.
+How data is currently backed up (automatic by the provider, manual export, not backed up).
+Whether any of the three systems are integrated with each other (data flows between them) or operate independently.
+What customer data is collected (names, phone numbers, email addresses, order history) and where it's stored.
+What staff data is held beyond payroll basics (e.g. performance records, training logs, disciplinary records) and where.
+Whether a data processing agreement (databehandleravtale) is in place with each system provider.
+Easiest way to get this done
+This is not urgent for current operations, but it blocks franchise scaling — a franchisor must be able to demonstrate data governance to prospective franchisees and to Datatilsynet (the Norwegian Data Protection Authority) if asked. Start by listing who has admin access to what, and whether you have data processing agreements with your providers. Send a WhatsApp voice note or bullet points.
+
+5.5  Customer service standards
+
+Service standards & scripts   [NEEDS ADNAN INPUT]
+Chapter 4.3 — Service Standards & Scripts
+Tag: [YSF ADVISORY — DRAFTED, PENDING REVIEW]
+
+1. Introduction
+Creamy's service model is built around self-ordering kiosks as the primary ordering channel, with bar-side ordering as the secondary option for customers who prefer it. Regardless of how the customer orders, the in-person interaction — the greeting, the handover, the goodbye — is where the brand comes to life. These moments are short, but they're the ones customers remember.
+This chapter sets out the minimum service standards and scripted touchpoints that every team member must deliver consistently. The scripts are not rigid word-for-word mandates — they're the baseline. Team members can personalise the delivery, but every element must be present every time.
+
+2. Minimum Operating Standards
+2.1 The Greeting
+Every customer who enters the location must be acknowledged within seconds of walking through the door. The standard greeting is:
+"Hi, welcome to Creamy."
+Said with a smile, with eye contact. Not shouted across the room, not mumbled while looking at a screen. If the team member is mid-task, they still acknowledge — a smile and a "Hi, welcome" takes two seconds.
+2.2 Self-Ordering Kiosks
+Most customers will use the self-ordering kiosks. The team's role here is to be available, not to hover. If a customer looks uncertain or is hesitating at the kiosk, a team member should approach and offer help naturally — "Can I help you with anything?" — without making them feel they're doing it wrong.
+2.3 Bar-Side Ordering
+When a customer comes to the bar to order, the interaction follows this sequence:
+Step 1 — Allergy Check Before taking the order, ask:
+"Do you have any allergies we should know about?"
+This is non-negotiable. It must happen before the customer starts choosing, not after. If the customer declares an allergy, the team member must know which menu items are affected — refer to the allergen matrix (Chapter 4.X — Allergen Management) and, if unsure, check with the Shift Leader before confirming the order. Never guess.
+Step 2 — Take the Order Ask what they'd like. If the customer is unsure or browsing, guide them with a simple preference question:
+"Would you like something really sweet, or something more with fresh fruits — a bit less sweet?"
+This narrows the menu quickly without overwhelming the customer, and it shows the team member knows the product. It's a recommendation, not a sales pitch.
+Step 3 — Upsell (Natural, Not Pushy) Once the main item is chosen, offer additions:
+"Would you like a drink with that?"
+And where relevant to the dessert:
+"Would you like to add ice cream or cream?"
+These are standard prompts, not hard sells. The tone is helpful — "would you like" — never pressured. If the customer says no, move on immediately.
+Step 4 — Confirm & Process Repeat the order back to confirm, process payment, and let the customer know approximately how long it will take if there's a wait.
+2.4 The Handover
+When the order is ready and served to the customer — whether at the counter or brought to the table — the standard is:
+"Here you go."
+Said with a smile. Simple. Make eye contact. If it's a specific or elaborate dessert, it's fine to add a brief personal touch — "This one's really good, enjoy!" — but the minimum is always delivered.
+2.5 The Goodbye
+When a customer leaves, every team member within earshot should acknowledge them:
+"Goodbye, have a nice day!"
+This is the last impression. A customer who feels seen on the way out is more likely to come back than one who leaves unnoticed. It doesn't matter how busy the team is — the goodbye takes three seconds.
+2.6 What the Standards Are Not
+They are not a script to be recited robotically. The words above are the baseline — the team member's personality and warmth should come through.
+They are not optional when it's busy. Peak hours are when service standards matter most, because that's when the most customers are forming their impression of the brand.
+They are not only for new customers. Regulars get the same greeting, the same smile, the same goodbye. Familiarity is no excuse for dropping the standard.
+
+3. Roles & Responsibilities
+Role | Responsibility
+Operations Manager | Trains all team members on service standards during onboarding. Observes service delivery and provides coaching. Addresses any consistent failure to meet standards.
+Shift Leader | Enforces standards on every shift. Leads by example — if the Shift Leader doesn't greet customers, the team won't either. Provides real-time coaching to team members who miss elements.
+Team Members | Delivers every element of the service standard on every customer interaction: greeting, allergy check (bar orders), guided recommendation, upsell prompts, handover, goodbye.
+Head Office | Sets the service standards. Provides training materials. Assesses compliance through mystery customer visits or audits.
+
+4. Measure, Analyse, Improve
+Metric | Source | Frequency | Action Trigger
+Greeting compliance | Shift Leader observation / mystery customer | Ongoing | If customers are regularly not acknowledged on entry — immediate coaching with the team member(s) responsible
+Allergy check compliance | Shift Leader observation | Ongoing | Any bar-side order taken without the allergy question — immediate correction. This is a food safety and legal requirement, not a courtesy
+Upsell conversion (drinks, add-ons) | EPOS (add-on attachment rate) | Weekly | Low add-on rates may indicate the prompts aren't being delivered — observe before assuming it's a customer preference issue
+Customer feedback on service | Google reviews, delivery platforms, in-store comments | Ongoing | Any mention of unfriendly, rushed, or inattentive service — investigate which shift, which team, and address
+Goodbye compliance | Shift Leader observation / mystery customer | Ongoing | Customers leaving without acknowledgment — retrain and reinforce
+
+5. Tools & Resources
+Service standards quick-reference card — a laminated summary of the greeting, allergy check, upsell prompts, handover, and goodbye for display in the prep area [Adnan to confirm: does this exist or should it be created?]
+Allergen matrix — Chapter 4.X (Allergen Management) — the reference for which items contain which allergens
+Chapter 5.1 — Brand Tone of Voice — the five pillars (Happy, Modern, Premium, Welcoming, Confident) govern how these scripts are delivered
+Chapter 3.1 — Roles & Responsibilities Overview — escalation lines when a team member encounters a situation they're not trained to handle (e.g. a complex allergy query)
+
+
+Hi Welcome to Creamy. (The costumer usually wants to use self-ordering kiosks, but if they come up to the bar to order),Ask if they have any allergies,  Ask what they would like, if they need help choosing something, always ask if they want something really sweet or something more with fresh fruits or less sweet. Always ask if they want a drink to their order,and if they want to add ice cream or cream.When serving always smile and say here you go. When costumer leaving always remember to say good bye and have a nice day. 
+Order accuracy & speed standards   [YSF ADVISORY — DRAFTED, PENDING REVIEW]
+Introduction
+This chapter defines Creamy's standards for order accuracy and speed of service. In a QSR environment, getting the order right and delivering it quickly are the two most fundamental drivers of customer satisfaction. Consistently hitting these standards builds repeat custom; consistently missing them destroys it.
+Minimum Operating Standards
+Order accuracy target: 98%+ of orders delivered exactly as ordered, with the correct items, correct quantities, correct modifications, and correct allergen accommodations.
+Speed of service target: average time from order placement to customer receiving their complete order: 5-7 minutes off peak, on peak 13-15 minutes.
+Order accuracy process: (1) The team member taking the order must read it back to the customer before confirming on the EPOS. (2) The EPOS ticket/screen is the single source of truth for the make station. (3) Before handoff, the person assembling the order must verify each item against the ticket. (4) For allergen-flagged orders, a second check by the Shift Supervisor or senior team member is required (see Chapter 3.6 — Allergen management).
+Speed of service process: monitor ticket times through the EPOS where the system supports it. If the EPOS does not track ticket times, conduct manual time-and-motion observations at least weekly during peak periods.
+When an order error occurs: apologise to the customer, remake the order immediately at no charge, log the error (item, cause, time), and brief the team. Do not blame specific team members publicly.
+Common causes of order errors and mitigations: mishearing the customer (read back the order), unclear EPOS modifiers (standardise button labels), kitchen misreads (clear ticket formatting), and distraction during assembly (dedicated make station, no multitasking during peak).
+Roles & Responsibilities
+Team Members (order taking): Confirm orders with customers; enter accurately into EPOS.
+Team Members (make station): Prepare orders exactly as per EPOS ticket; verify before handoff.
+Shift Supervisor: Monitors ticket times; conducts second checks on allergen orders; addresses errors in real time.
+Unit Manager: Reviews order accuracy and speed data weekly; identifies trends and implements training or process improvements.
+Measure Analyse Improve
+Track weekly: (a) order accuracy rate (correct orders / total orders), (b) average ticket time (order to handoff), (c) number and nature of order errors, (d) customer complaints related to order accuracy. Review weekly and set improvement targets where standards are not being met.
+Tools & Resources
+EPOS ticket time reports (if available). Order error log. Customer feedback/complaint log. Time-and-motion observation template (for manual speed checks).
+
+Handling special requests/allergens at point of sale   [YSF ADVISORY — DRAFTED, PENDING REVIEW]
+Introduction
+This chapter covers the specific procedures for handling customer special requests and allergen declarations at the point of sale. This supplements the allergen management chapter (Chapter 3.6) with the customer-facing process — what the team member at the counter or taking the order must do when a customer mentions an allergy, intolerance, or dietary requirement.
+Minimum Operating Standards
+When a customer declares an allergy or intolerance: the team member must (1) take it seriously — never minimise or dismiss, (2) check the allergen matrix for the requested item(s), (3) if confident the item is safe, confirm to the customer and flag the order on the EPOS as an allergen order, (4) if unsure, call the Shift Supervisor or Unit Manager — never guess, (5) if the allergen cannot be guaranteed absent (due to cross-contamination risk in a shared kitchen), inform the customer clearly and let them decide whether to proceed.
+EPOS allergen flagging: all allergen orders must be flagged in the EPOS system so that the make station and handoff team know to apply allergen protocols.
+Common special requests (non-allergen): dietary preferences (e.g. vegan, halal), portion modifications, ingredient swaps. The team member should accommodate where possible within the menu and operational constraints. Any request that requires deviation from the standard recipe must be approved by the Shift Supervisor.
+Refusal: if a request cannot be safely or practically fulfilled, the team member must explain why politely and suggest alternatives. The customer's safety always takes priority over making the sale.
+Documentation: any allergen-related incident (customer reaction, near-miss, or complaint about allergen handling) must be reported immediately per Chapter 3.6 — H&S incident reporting.
+Halal Considerations Creamy's menu is fully halal — no non-halal ingredients are used in any product across any location. This is a core operational fact, not a marketing claim, and it should be communicated to customers with confidence when they ask.
+However, Creamy does not currently hold formal halal certification from a recognised certification body. This distinction matters, and team members must understand it clearly:
+What to say when a customer asks "Is this halal?": "Yes — all of our ingredients are halal. We don't use any non-halal products. We don't currently hold a formal halal certificate, but everything we serve is halal."
+What not to say: Do not tell customers that Creamy is "halal certified" — this implies third-party verification that is not in place and could be considered misleading under Norwegian marketing law (markedsføringsloven). The difference between "we are halal" and "we are halal certified" is a legal one, not just a wording preference.
+Why this matters for franchise partners: A significant portion of Creamy's customer base — particularly in urban areas — will seek halal assurance. Being able to confirm confidently that everything is halal, while being transparent about the absence of formal certification, is the honest and commercially sound position. It builds trust rather than risking it.
+Supplier verification: The franchise partner's responsibility is to ensure that no non-halal ingredient enters the supply chain at their location. All products sourced through the approved supplier list (Chapter 2.7) are halal. If a franchise partner is ever in doubt about a specific ingredient or a substitute product, they must check with Head Office before using it. Introducing a non-halal ingredient — even unknowingly — would be a serious brand and operational breach.
+Roles & Responsibilities
+Team Members (order taking): First point of contact for allergen and special request declarations; follow the procedure above; never guess.
+Shift Supervisor: Second-line support for allergen queries; verifies allergen-flagged orders before handoff.
+Unit Manager: Ensures the allergen matrix is current and accessible; ensures all team members are trained; investigates any allergen incidents.
+Measure Analyse Improve
+Track: (a) number of allergen-flagged orders per week (indicates team is correctly identifying and flagging), (b) allergen-related complaints or incidents (target: zero), (c) allergen knowledge spot-check results (during audits, ask team members scenario-based questions). Review monthly.
+Tools & Resources
+Allergen matrix (must be accessible at the point of sale — printed at counter or on a tablet). EPOS allergen flagging function. Allergen incident report form (see Chapter 3.6).
+
+5.6  Cleaning & maintenance
+
+Daily/weekly/deep-clean schedules   [YSF ADVISORY — DRAFTED, PENDING REVIEW]
+Introduction
+This chapter defines the cleaning schedules for Creamy units across three tiers: daily, weekly, and deep-clean. Cleaning is a legal requirement under food safety regulations (IK-mat, naeringshygieneforskriften), a customer experience factor, and a health and safety obligation. A clean unit is non-negotiable.
+Minimum Operating Standards
+Daily cleaning tasks (every trading day): all food preparation surfaces sanitised after each use and at end of day, all customer-facing surfaces (tables, counters, menus) wiped down throughout the day and at close, floors swept and mopped (front of house and kitchen), all equipment wiped externally (EPOS screens, coffee machines, display units), customer WC checked and cleaned at least every [Adnan to confirm: e.g. 2 hours during trading], bins emptied and liners replaced, handwash basins restocked (soap, paper towels), and glass/windows spot-cleaned as needed.
+Weekly cleaning tasks: thorough clean of all equipment internals (blenders, mixers, ice cream machines — per manufacturer instructions), deep-clean of customer WC (including walls, fixtures, grouting), clean behind and under all movable equipment, degrease extraction hood filters, clean storage areas (shelves, walk-in fridge/freezer floors), and replenish cleaning chemical stocks.
+Deep-clean (monthly or quarterly depending on item): full extraction system clean (ducting, fans — may require professional contractor [Adnan to confirm: frequency and contractor arrangement]), floor deep-clean and reseal (if applicable), ceiling and high-level clean, pest control inspection areas, limescale removal from all water-contact equipment, and review and replace any worn cleaning equipment (mops, cloths, brushes).
+Cleaning chemicals: only approved, food-safe cleaning chemicals may be used. Chemicals must be stored separately from food items, clearly labelled, and used according to manufacturer dilution rates. COSHH (or equivalent Norwegian HMS) data sheets must be kept on file for all chemicals.
+Colour-coded cleaning equipment: different colours for different areas (e.g. blue for general, red for WC, green for food contact surfaces) to prevent cross-contamination. [Adnan to confirm: specific colour-coding scheme].
+All cleaning tasks must be signed off on the relevant schedule (daily, weekly, or deep-clean) by the person completing the task and verified by the Shift Supervisor or Unit Manager.
+Roles & Responsibilities
+All Team Members: Responsible for completing assigned cleaning tasks to standard; signing off on completion.
+Shift Supervisor: Allocates cleaning tasks; verifies completion and quality; ensures cleaning schedules are signed off.
+Unit Manager: Reviews cleaning schedule compliance weekly; arranges deep-cleans and contractor services; addresses any recurring cleaning failures.
+Measure Analyse Improve
+Track: (a) cleaning schedule sign-off completion rate (daily and weekly), (b) cleaning quality scores during audits (visual inspection), (c) any Mattilsynet or customer feedback related to cleanliness. Address failures immediately — a cleaning failure is a food safety failure.
+Tools & Resources
+Daily cleaning schedule (printed, one per day). Weekly cleaning schedule. Deep-clean schedule and contractor log. Cleaning chemical inventory and COSHH/HMS data sheets. Colour-coded cleaning equipment.
+
+Equipment maintenance log   [YSF ADVISORY — DRAFTED, PENDING REVIEW]
+Introduction
+This chapter covers the equipment maintenance log and preventive maintenance programme for Creamy units. Equipment breakdowns disrupt service, create food safety risks (e.g. a failed fridge), and generate costly emergency repair bills. A disciplined preventive maintenance programme extends equipment life and minimises unplanned downtime.
+Minimum Operating Standards
+Every significant piece of equipment must be listed in the unit's equipment register with: item name, manufacturer, model number, serial number, date of purchase/installation, warranty status and expiry, and the approved service provider or contractor.
+Preventive maintenance: each equipment item must have a scheduled maintenance interval based on manufacturer recommendations and operational intensity. Typical intervals: daily (user cleaning and visual check), weekly (deeper clean, calibration check where applicable), monthly (filter changes, belt/seal checks), annually (professional service — e.g. refrigeration gas check, extraction system inspection, electrical safety test).
+The equipment maintenance log records all maintenance activities: date, equipment item, maintenance type (scheduled/preventive or reactive/breakdown), description of work done, parts replaced, who performed the work (in-house or contractor), and cost.
+Breakdown reporting: when equipment fails, the team member must report it immediately to the Shift Supervisor or Unit Manager. The Unit Manager assesses the impact (can the unit continue to trade safely?) and contacts the approved service provider. If the breakdown creates a food safety risk (e.g. fridge failure), follow the HACCP corrective action procedure (Chapter 3.6).
+Refrigeration: fridge and freezer failures must be treated as food safety emergencies. If a unit cannot maintain safe temperatures, affected stock must be assessed and potentially discarded (document on the waste log). Never re-freeze thawed products.
+Equipment warranties and service contracts should be centralised and reviewed annually to ensure value for money and coverage.
+Norwegian-specific: electrical installations must comply with NEK 400 (Norwegian electrotechnical standards) and any work on electrical systems must be performed by a qualified elektriker (electrician) registered with the Direktoratet for samfunnssikkerhet og beredskap (DSB).
+Roles & Responsibilities
+All Team Members: Report equipment faults immediately; perform daily user-level cleaning and checks.
+Shift Supervisor: Logs faults; escalates to Unit Manager; manages workarounds during breakdowns.
+Unit Manager: Maintains the equipment register and maintenance log; schedules preventive maintenance; manages contractor relationships; approves repair expenditure within authorised limits [Adnan to confirm: expenditure authority limit].
+Franchisee: Approves capital expenditure for equipment replacement; reviews maintenance costs.
+Measure Analyse Improve
+Track: (a) preventive maintenance completion rate vs. schedule, (b) number and cost of breakdown repairs per month, (c) equipment downtime hours, (d) total maintenance cost as % of revenue. A rising breakdown rate or cost may indicate aging equipment due for replacement.
+Tools & Resources
+Equipment register (spreadsheet or asset management tool). Equipment maintenance log (per unit). Service provider contact list. Warranty and service contract file.
+
+Pest control protocol   [YSF ADVISORY — DRAFTED, PENDING REVIEW]
+Introduction
+This chapter defines Creamy's pest control protocol. Pest presence in a food business is a serious food safety and regulatory issue. Mattilsynet expects food businesses to have documented pest prevention and monitoring arrangements as part of the IK-mat system. A pest sighting can result in enforcement action, closure, and severe reputational damage.
+Minimum Operating Standards
+Every Creamy unit must have a pest control contract with a professional, licensed skadedyrbekjemper (pest controller). Aktuelle Provider: Tingstad Skadedyr kontroll. In Norway, professional pest control providers should be members of the Norsk Skadedyrkontroll Forening (NSKF) or equivalent industry body.
+Routine inspections: the pest control provider must conduct scheduled inspections at least quarterly depending on risk level.. Each visit must produce a written report including findings, bait station status, and recommendations.
+Bait stations and monitoring devices: placed by the professional provider at key risk points (external perimeter, waste area, goods receiving, storage areas). Bait stations must not be placed where they could contaminate food or food-contact surfaces. Locations must be mapped and the map kept on file.
+Prevention measures (team responsibility): all external doors kept closed when not in use (or fitted with self-closers or strip curtains), no food debris or spills left on floors or surfaces, waste removed from the building at least daily and stored in lidded bins in the designated waste area, goods receiving area checked for signs of pest activity on every delivery (gnawed packaging, droppings, live insects), all gaps, holes, or cracks in walls, floors, and around pipework reported for sealing.
+If a team member spots any sign of pest activity (live or dead pests, droppings, gnaw marks, unusual odours, damaged packaging): report immediately to the Shift Supervisor or Unit Manager. The Unit Manager must contact the pest control provider for an emergency visit and assess whether the affected area/stock must be isolated or discarded.
+All pest control documentation (contract, visit reports, bait station map, any emergency callout records) must be kept on-site as part of the IK-mat file and available for Mattilsynet inspection.
+Roles & Responsibilities
+All Team Members: Follow prevention measures; report any signs of pest activity immediately.
+Shift Supervisor: First responder for pest sightings; escalates to Unit Manager; isolates affected area if necessary.
+Unit Manager: Manages the pest control contract; liaises with the provider; ensures documentation is current; reports to Franchisee.
+Pest Control Provider: Conducts scheduled inspections and emergency callouts; provides written reports and recommendations.
+Measure Analyse Improve
+Track: (a) scheduled pest control visits completed vs. plan, (b) number of pest sightings or incidents, (c) findings from pest control reports, (d) time from sighting report to provider response. Any pest incident must be treated as a serious event and investigated to root cause.
+Tools & Resources
+Pest control contract and provider contact details. Visit report file. Bait station location map. Pest sighting incident report form. IK-mat folder (pest control section).
+
+5.7  Complaint handling
+
+Complaint resolution process   [YSF ADVISORY — DRAFTED, PENDING REVIEW]
+Introduction
+This chapter defines Creamy's customer complaint resolution process. Every complaint is both a risk and an opportunity — handled well, a complaint can convert a dissatisfied customer into a loyal advocate. Handled poorly, it creates negative word-of-mouth and, in serious cases, legal or regulatory exposure. The goal is to resolve complaints quickly, fairly, and consistently.
+Minimum Operating Standards
+Every complaint — verbal, written, in-person, or online — must be acknowledged, taken seriously, and resolved. No complaint should be dismissed or ignored.
+In-person complaints: the team member receiving the complaint must (1) listen without interrupting, (2) apologise sincerely (an apology is not an admission of liability), (3) offer an immediate resolution where within their authority (e.g. remake the order, offer a replacement), (4) if the issue is beyond their authority, escalate to the Shift Supervisor or Unit Manager immediately — the customer should not have to wait or re-explain.
+Resolution authority levels: Team Members may offer an immediate product replacement or remake at no charge. Shift Supervisors may additionally offer a complimentary item or a modest goodwill gesture. Refund and compensation authority is reserved for the Unit Manager or Shift Leader.
+Written/online complaints (email, social media, review platform): acknowledge within 24 hours, investigate, and provide a substantive response within 72 hours. See Chapter 4.3 — Review/reputation management for online-specific guidance.
+Logging: every complaint must be logged on the complaint register with: date, customer name (if given), nature of complaint, how it was received (in-person, phone, email, review), resolution offered, and outcome (customer satisfied/not satisfied). The register must be reviewed weekly by the Unit Manager.
+Escalation triggers: complaints involving alleged food safety issues (illness, allergen reaction, foreign body), discrimination or harassment by staff, threatening or abusive customers, or potential legal claims must be escalated immediately to the Franchisee and Head Office (see Chapter 5.7 — Escalation thresholds).
+Norwegian consumer law note: forbrukerkjopsloven (Consumer Purchase Act) gives consumers rights to remedy for defective goods. For food service, a product that is not as described or not of satisfactory quality entitles the customer to a replacement or refund. Repeated refusal to honour legitimate complaints could attract Forbrukertilsynet (Consumer Authority) attention.
+Learning: complaints are data. Recurring complaint themes must trigger process or training changes, not just individual resolutions.
+Roles & Responsibilities
+Team Members: First responders for in-person complaints; resolve within authority; escalate where needed.
+Shift Supervisor: Handles escalated in-person complaints during the shift; logs complaints; provides higher-authority resolutions.
+Unit Manager: Reviews complaint register weekly; investigates trends; handles written complaints; escalates serious matters.
+Franchisee: Handles complaints involving legal risk, significant compensation, or reputational impact.
+Head Office: Handles complaints with brand-wide implications; provides guidance on complex or sensitive cases.
+Measure Analyse Improve
+Track: (a) total complaints per week, (b) complaints by type/cause, (c) average resolution time, (d) percentage of complaints resolved at first contact, (e) customer satisfaction with resolution (where follow-up is possible). Review weekly at unit level; report monthly to Franchisee.
+Tools & Resources
+Complaint register (logbook or spreadsheet). Complaint resolution script (for team members — key phrases and steps). Customer feedback form (optional, for customers who prefer written feedback). Escalation flowchart.
+
+Escalation thresholds   [YSF ADVISORY — DRAFTED, PENDING REVIEW]
+Introduction
+This chapter defines the escalation thresholds for customer complaints and operational incidents — the criteria that determine when an issue must be escalated beyond the person handling it. Clear thresholds prevent under-escalation (where serious issues are resolved at too low a level) and over-escalation (where minor issues unnecessarily consume senior management time).
+Minimum Operating Standards
+Level 1 — Team Member resolves: minor product quality issues (e.g. wrong topping, cold drink), simple service delays, and general customer feedback. Resolution: remake, replace, or apologise.
+Level 2 — Shift Supervisor resolves: repeated or more significant product issues, minor customer dissatisfaction not resolved by the team member, team member conduct complaints (minor), and any situation where the team member is uncertain how to respond.
+Level 3 — Unit Manager resolves: requests for refunds, complaints involving multiple issues or persistent dissatisfaction, staff conduct complaints (serious or repeated), any complaint received in writing (email, letter), online review complaints, supplier quality issues, and equipment failures affecting service.
+Level 4 — Franchisee resolves: complaints alleging food safety failure (illness, allergen incident, foreign body), any complaint threatening legal action, staff grievances or disciplinary matters, complaints alleging discrimination or harassment, complaints involving potential media or social media escalation, refund or compensation requests above the Unit Manager's authority, and any interaction with regulatory authorities (Mattilsynet, Arbeidstilsynet, Forbrukertilsynet).
+Level 5 — Head Office involvement: any complaint with potential brand-wide implications, any media enquiry about a complaint, any legal claim or threat of legal proceedings, any incident requiring public communication, and any regulatory enforcement action.
+When in doubt, escalate up. It is always better to over-escalate than to under-escalate a serious issue.
+Every escalation must be documented: who escalated, to whom, when, the issue, and the outcome.
+Roles & Responsibilities
+Team Members: Resolve Level 1; recognise and escalate Level 2+.
+Shift Supervisor: Resolves Level 2; escalates Level 3+.
+Unit Manager: Resolves Level 3; escalates Level 4+.
+Franchisee: Resolves Level 4; escalates Level 5 to Head Office.
+Head Office: Handles Level 5; provides guidance on borderline cases.
+Measure Analyse Improve
+Track: (a) escalation volumes by level, (b) appropriateness of escalation (were issues escalated to the right level?), (c) resolution outcomes by level. Review quarterly to adjust thresholds or training as needed.
+Tools & Resources
+Escalation threshold reference card (printed, laminated, kept at service counter). Escalation log. Complaint register (see Complaint resolution process chapter).
+
+Refund/comp authority levels   [NEEDS ADNAN INPUT]
+Why this chapter matters
+When a customer is unhappy, team members need to know exactly what they can offer without calling a manager. This prevents both under-reacting and giving away too much.
+What you need to provide
+What each role can authorise on the spot (e.g. Team Member: free replacement up to NOK X; Shift Supervisor: refund up to NOK Y; Unit Manager: anything up to NOK Z).
+When Head Office must be informed.
+Any items that are never comped or refunded.
+Easiest way to get this done
+Set a simple tiered table: role → maximum they can authorise → what needs approval from above. Keep it simple enough to memorise.
+Staff member - 500
+Shift leader anything over - 500 and should also inform operational manager.
+
+5.8  Business continuity & contingency procedures
+
+Equipment failure protocol (fridge/freezer/oven down)   [YSF ADVISORY — DRAFTED, PENDING REVIEW]
+Introduction
+This chapter defines what to do when a critical piece of equipment fails during trading hours or is discovered as failed at opening. Equipment failures in a food service environment are not just inconveniences — a fridge or freezer failure is a food safety emergency that can result in total product loss, a Mattilsynet enforcement action, or customer illness. A clear protocol ensures the team acts immediately to protect product, customers, and the business.
+Minimum Operating Standards
+Critical equipment is defined as any equipment whose failure directly affects food safety or the ability to trade: refrigeration (fridge, freezer, display chiller, waffle machine, crepe machine, fridge, freezer, milkshake blender, chocolate warmer, coffee machine.), cooking equipment (oven, hob, fryer, grill — as applicable to menu), and hot/cold holding units.
+Refrigeration failure — immediate actions: (1) Do not open the unit door unless absolutely necessary. A closed fridge maintains safe temperature for approximately 4 hours; a closed chest freezer for approximately 24 hours (these are guidelines — actual times vary). (2) Check whether the failure is the unit itself or the power supply (tripped breaker, power cut). Reset breakers if safe to do so. (3) Begin temperature monitoring — record the internal temperature every 30 minutes using a calibrated probe thermometer. (4) If internal temperature rises above 5°C (fridge) or -15°C (freezer), begin emergency product transfer to alternative cold storage if available. (5) If no alternative storage is available and temperatures exceed safe limits (above 8°C for fridge, above -12°C for freezer), all affected perishable product must be disposed of. Record all waste on the waste log with 'equipment failure' as the reason.
+Cooking equipment failure — immediate actions: (1) Assess whether a reduced menu can be offered using remaining working equipment. (2) If the failed equipment is essential to the core menu and no workaround exists, the Unit Manager must decide whether to continue trading with a reduced offering or to close temporarily. (3) Notify the Franchise Owner immediately if closure is being considered.
+In all cases: (1) Contact the equipment maintenance provider or manufacturer's service line immediately. Record the call reference number. (2) Log the failure in the equipment maintenance log (see Chapter 5.6 — Equipment maintenance log) with: equipment name, time of failure, symptoms, actions taken, and service provider response. (3) If the failure affects food safety, complete a HACCP corrective action record (see Chapter 3.6).
+Temporary closure: if the unit cannot safely trade due to equipment failure, the Unit Manager must (1) inform all scheduled staff, (2) post a notice at the entrance and update any active online ordering channels, (3) notify the Franchise Owner and Head Office, and (4) document the closure period and estimated reopening time.
+Product loss: all product disposed of due to equipment failure must be recorded with quantities and estimated cost. This feeds into insurance claims (business interruption / stock loss) and the monthly waste report.
+Post-repair: before returning the equipment to service, verify that it reaches the correct operating temperature and holds it for at least 1 hour before restocking with product. Record the verification in the equipment maintenance log.
+Roles & Responsibilities
+Shift Supervisor / Opening Lead: First responder — executes the immediate protocol, begins temperature monitoring, contacts the service provider.
+Unit Manager: Decides on reduced menu or temporary closure; notifies the Franchise Owner and Head Office; manages the insurance/waste documentation.
+Franchise Owner / Operator: Authorises expenditure for emergency repair or replacement; liaises with insurers; reviews the incident for prevention.
+Head Office: Maintains the approved equipment service provider list; supports insurance claims; reviews failure patterns across the network.
+Measure Analyse Improve
+Track: (a) number of equipment failures per quarter by type, (b) response time from failure to service provider attendance, (c) product loss value per incident, (d) trading hours lost to equipment-related closure. Review equipment failure frequency during monthly business reviews — recurring failures on the same equipment may justify early replacement rather than continued repair.
+Tools & Resources
+Equipment maintenance log (see Chapter 5.6). HACCP corrective action record (see Chapter 3.6). Waste log (equipment failure entries). Emergency contact list — equipment service providers, with out-of-hours numbers. Temperature monitoring log (30-minute interval during failure). Insurance claim template / insurer contact details.
+
+Systems outage procedure (EPOS/Tidsbanken/SmartMate down)   [YSF ADVISORY — DRAFTED, PENDING REVIEW]
+Introduction
+This chapter defines fallback procedures when one or more of Creamy's operational systems — EPOS, Tidsbanken, or SmartMate — become unavailable during trading. A systems outage does not mean the unit stops trading. It means the unit switches to manual processes until the system is restored. The key risk during an outage is not lost sales — it is lost data: transactions not recorded, hours not logged, and reconciliation gaps that take days to unpick. This chapter should be read alongside Chapter 5.4 (EPOS & systems use) for normal operating procedures.
+Minimum Operating Standards
+EPOS outage — fallback procedure: (1) Switch to manual order-taking using a pre-printed duplicate order pad (kept in back-of-house at all times). Each order slip must record: order number (sequential), items ordered, price, payment method (cash/card), and time. (2) If card payments are unavailable, switch to cash-only and display a notice at the counter and entrance. If a standalone card terminal is available as backup, use it — record transaction references on the manual order slip. (3) All manual order slips must be entered into the EPOS retrospectively once the system is restored. The Unit Manager is responsible for ensuring this is completed by end of the same trading day (or the following morning if the outage extends to close). (4) Reconcile: compare manual order slip total against the till cash count and any standalone card terminal records. Document any discrepancy.
+Tidsbanken outage — fallback procedure: (1) Record all clock-in and clock-out times on a paper sign-in sheet (kept at the staff entrance). Each entry: employee name, date, clock-in time, clock-out time, break duration. (2) The Unit Manager must enter all manual time records into Tidsbanken once the system is restored, within  24 hours. (3) Any discrepancies between the paper record and the restored system log must be investigated and resolved before payroll is processed.
+SmartMate outage — fallback procedure: The principle is the same: capture the data manually, on paper, re-enter it when the system is restored, and reconcile.
+General outage rules: (1) Attempt a restart before escalating — close and reopen the application, restart the device, check the internet connection. (2) If the issue persists after restart, contact the system provider's support line. Record the support ticket number. (3) Notify the Unit Manager (if not on shift) and the Franchise Owner if the outage exceeds 1 hour. (4) Do not attempt any technical fixes beyond restart unless trained to do so — escalate to the system provider.
+Manual-process supplies: each unit must maintain a minimum stock of pre-printed order pads, paper sign-in sheets, and a calculator in back-of-house at all times. These supplies must be checked monthly as part of the equipment/stock audit.
+Post-outage: once the system is restored, the Unit Manager must (1) re-enter all manual records, (2) reconcile manual totals against system records, (3) document the outage in the equipment/systems log (date, time, duration, system affected, cause if known, data re-entered, discrepancies), and (4) report the outage to Head Office if it exceeded 1 hour or affected data integrity.
+Roles & Responsibilities
+Shift Supervisor: Executes the immediate fallback procedure; ensures manual records are kept accurately during the outage.
+Unit Manager: Re-enters manual data once the system is restored; reconciles; reports to the Franchise Owner and Head Office.
+Franchise Owner / Operator: Monitors outage frequency; escalates persistent issues to the system provider at a commercial level; authorises any workaround expenditure (e.g. standalone card terminal).
+Head Office: Maintains relationships with system providers; monitors outage reports across the network; negotiates SLAs with providers.
+Measure Analyse Improve
+Track: (a) number and duration of outages per system per quarter, (b) data re-entry accuracy (discrepancies found during reconciliation), (c) time from outage start to system restoration, (d) availability of manual-process supplies (checked monthly). Persistent outages on one system should trigger a formal review with the provider, including SLA compliance.
+Tools & Resources
+Pre-printed manual order pads (duplicate — one copy for kitchen, one retained). Paper sign-in sheets (Tidsbanken fallback). System provider support contact list (with ticket number log). Outage log (date, system, duration, cause, data reconciliation status). Standalone card terminal (backup — if available). See Chapter 5.4 for normal EPOS/Tidsbanken/SmartMate operating procedures.
+
+Supply disruption contingency   [NEEDS ADNAN INPUT]
+Why this chapter matters
+When a key supplier can't deliver — whether it's a one-off missed delivery or a longer disruption — the unit needs to know exactly what to do. This depends on which suppliers are single-source and which ingredients are critical, so it can only be written after the supplier risk chapter (Chapter 2.4) is completed.
+What you need to provide
+For each critical ingredient: the minimum quantity needed to trade for one day (so the team knows the point at which they must act).
+Whether any ingredients can be sourced from local retail as an emergency measure (and if so, which ones and from where).
+Decision authority: who decides to reduce the menu vs. close temporarily if a critical ingredient is unavailable?
+Communication: how should customers be informed of menu changes due to supply issues (signage, social media, nothing)?
+Any existing contingency arrangements with backup suppliers.
+Easiest way to get this done
+This chapter depends on the supplier risk assessment (Chapter 2.4 — Supplier risk & contingency). Complete that first, then walk through the contingency question for each single-source or critical ingredient. A WhatsApp voice note is fine.
+When a product i unavailable for more then a week, then you will always find substitute at the same supplier, or if it is a product tha can be bought in a normal shop just buy that so you dont have to remove an item from the menu.
+
+6. Development, Growth & Profit
+
+6.1  Financial reporting & KPIs
+
+Daily/weekly/monthly reporting templates   [YSF ADVISORY — DRAFTED, PENDING REVIEW]
+Introduction

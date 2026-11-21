@@ -1,0 +1,391 @@
+When the demand forecast exceeds [Adnan to confirm: e.g. 85%] of documented capacity for any trading period, the Unit Manager must flag this to the Franchise Owner and review mitigation options (adjusted prep schedule, additional staffing, menu simplification for peak, or extended trading hours to redistribute demand). right
+Seasonal trading patterns must be documented once a full year of data is available. The seasonal profile feeds into annual budgeting (Chapter 6.3 — Annual planning process), recruitment planning, and stock ordering.
+Roles & Responsibilities
+Unit Manager: Prepares the weekly demand forecast; monitors forecast accuracy; documents capacity constraints; flags capacity threshold breaches.
+Franchise Owner / Operator: Reviews weekly forecasts; approves mitigation actions when capacity thresholds are breached; uses forecast data for strategic planning and expansion assessment.
+Head Office: Provides forecasting templates and methodology guidance; benchmarks forecast accuracy across units; uses aggregate demand data for network-level planning.
+Measure Analyse Improve
+Track weekly: (a) forecast accuracy — actual vs. predicted revenue by day and by week, (b) number of trading periods where demand exceeded the capacity threshold, (c) correlation between forecast and actual labour deployment (are rotas being built from the forecast or from habit?). Monthly: review forecast accuracy trend — improving accuracy indicates the model is learning; persistent inaccuracy indicates a methodology problem or an external factor not being captured. Quarterly: reassess documented capacity limits based on any changes to equipment, layout, or menu.
+Tools & Resources
+Weekly demand forecast template (spreadsheet — day × trading period matrix with prior-year, trailing-average, and adjustment columns). EPOS sales reports (historical data by day/hour). Capacity assessment worksheet (kitchen throughput, front-of-house limits, equipment constraints). Forecast accuracy tracker (weekly variance log).
+Blocked: Depends on tracker #5 — labour model template not yet sent
+
+Labour-to-sales model — Wes's tool; SOP will document how to use it once built   [TOOL-REFERENCED]
+Why this chapter matters
+This tool will translate sales forecasts into staffing requirements. The SOP will teach managers how to use it for rota planning.
+What's needed to write this SOP
+The finished labour model tool (Wes is building this — tracker item #5).
+Instructions on how to read the outputs and what inputs the tool needs.
+Any business rules built into the model (e.g. minimum staffing floors, break calculations).
+How to get this done
+This chapter is blocked until Wes completes the labour model. Once the tool exists, YSF Advisory will write the user guide. No action needed from Adnan at this stage.
+Currently blocked by: Tracker #5 — labour model template not yet sent.
+
+Rota-building process   [YSF ADVISORY — DRAFTED, PENDING REVIEW ONCE MOVED TO PLANDAY]
+
+Introduction
+This chapter defines the process for building staff rotas at Creamy units. Effective rota management balances customer demand, labour cost control, legal compliance, and team wellbeing. All rotas are managed through Tidsbanken, Creamy's scheduling and time-tracking system.
+Minimum Operating Standards
+Rotas must be published at least 2 weeks in advance. Norwegian law (arbeidsmiljøloven §10-3) requires that working hours are set out in a work schedule (arbeidsplan) that is available as early as possible and no later than 2 weeks before the period begins.
+Maximum working hours: 9 hours per day and 40 hours per week for day workers (§10-4). Overtime must not exceed 10 hours per week, 25 hours per 4 consecutive weeks, or 200 hours per year (§10-6). Overtime requires the employee's consent and must be compensated at a minimum of 40% above the normal hourly rate (§10-6(11)).
+Rest periods: minimum 11 consecutive hours off between shifts (§10-8(1)). Minimum 35 consecutive hours off per 7-day period, which should include Sunday where possible (§10-8(2)).
+Rotas should be built based on projected sales and footfall data, aligned with the labour model (see Chapter 3.4 — Labour-to-sales model [TOOL-REFERENCED]). The goal is to match staffing levels to demand while staying within the target labour cost percentage [Adnan to confirm: target labour cost % of revenue]. 26%
+Employee availability and preferences should be collected and considered, though operational needs take priority.
+Shift swaps between team members are permitted with Unit Manager approval and must be recorded in Tidsbanken.
+The Unit Manager is responsible for building and publishing the rota. Rotas must be entered into Tidsbanken and made visible to all affected staff.
+Under-18 workers are subject to additional restrictions under arbeidsmiljøloven Chapter 11 (e.g. no work between 23:00 and 06:00, maximum 8 hours per day including school time).
+Roles & Responsibilities
+Unit Manager: Builds and publishes the rota; manages shift swaps and absence cover; ensures legal compliance.
+Shift Supervisor: Supports rota planning; manages in-shift adjustments.
+Team Members: Communicate availability; request shift swaps through the approved process; check Tidsbanken for their schedule.
+Franchisee: Reviews labour cost vs. target; approves overtime where necessary.
+Measure Analyse Improve
+Track: (a) labour cost as a percentage of revenue (weekly), (b) overtime hours (weekly, against legal limits), (c) rota compliance (actual hours worked vs. scheduled), (d) staff complaints or feedback related to scheduling. Review weekly and adjust the rota-building approach as needed.
+Tools & Resources
+Tidsbanken (primary scheduling and time-tracking system). Labour model / sales forecast data (see Chapter 3.4). Employee availability forms. Overtime authorisation log.
+
+Peak/off-peak staffing rules   [YSF ADVISORY — DRAFTED, PENDING REVIEW ONCE MOVED TO PLANDAY]
+1. Introduction
+Dessert bars have a distinctive trading pattern — quiet daytime hours followed by a sharp evening surge. Getting staffing levels wrong in either direction costs money: overstaffed off-peak burns labour; understaffed peak loses customers and damages the experience. This chapter sets out Creamy's minimum staffing standards by time period, day type, and season, giving franchise partners a clear framework to build rotas around.
+The core principle is simple: run lean when it's quiet, staff up before the rush hits, and use the team you already have before hiring more.
+
+2. Minimum Operating Standards
+2.1 Defining Peak and Off-Peak
+Off-peak: Opening until 18:00, every day
+Peak: 18:00 until close, every day
+This is a fixed definition for rota-planning purposes. Actual trading patterns may vary by location — a city-centre branch near offices may see a lunchtime spike, a residential-area branch may not. The franchise partner should monitor EPOS data and adjust scheduling within these minimums, but the 18:00 threshold is the baseline for all staffing rules below.
+2.2 Off-Peak Minimums
+Period | Weekdays | Weekends
+Opening | 1 employee alone for up to 30 minutes, then a second team member must be on site | 1 employee alone for up to 1 hour, then a second team member must be on site
+Mid off-peak (after initial opening period until 18:00) | Minimum 2 employees | Minimum 2 employees
+The opening employee must be a Shift Leader or Operations Manager — a team member should not open the location alone. The lone-opening period is for prep and setup; if a customer arrives during this window, they must still receive full service.
+2.3 Peak Minimums
+Period | Weekdays | Weekends
+Evening peak (18:00 onwards) | Minimum 3 employees | Minimum 4–5 employees (depends on branch size — see note below)
+Closing | Minimum 2 employees | Recommended minimum 3 employees
+Weekend peak staffing scales with location size. The franchise partner should agree the standard weekend peak number with Head Office based on the branch's capacity (covers, kitchen stations, delivery volume). Once set, that number becomes the minimum for rota purposes.
+Closing staff must not leave alone — the minimum of two (weekdays) or three (weekends) applies until the premises are locked and secured.
+2.4 School Holidays
+School holidays do not automatically require additional hiring. The solution is already on the payroll: team members who are students and normally work limited hours should be offered extra shifts during holiday periods. This keeps labour costs controlled, avoids the overhead of recruiting and training temporary staff, and gives existing team members the hours they want.
+The Operations Manager should identify student team members at least two weeks before each school holiday period and confirm their availability for additional shifts. If the existing team cannot cover the demand, the Operations Manager escalates to the franchise owner / Head Office before any external recruitment.
+
+3. Roles & Responsibilities
+Role | Responsibility
+Operations Manager | Builds the weekly rota to meet the minimums above. Monitors EPOS data to identify whether actual demand justifies staffing above minimums. Plans ahead for school holiday periods by securing student availability.
+Shift Leader | Ensures the correct number of team members are on site at the transition to peak (18:00). Opens the location during the lone-opening period. Flags to Operations Manager if a shift is at risk of falling below minimum.
+Team Members | Arrive on time for scheduled shifts. Student team members communicate holiday availability to the Operations Manager when requested.
+Head Office | Agrees the weekend peak number for each branch based on size. Reviews any request to recruit additional staff during school holidays.
+
+4. Measure, Analyse, Improve
+Metric | Source | Frequency | Action Trigger
+Labour cost as % of revenue (peak vs. off-peak) | EPOS + Tidsbanken | Weekly | If peak labour % consistently exceeds [Adnan to confirm] target, review whether staffing is above minimum or revenue is underperforming
+Shifts falling below minimum staffing | Shift Leader reports / Tidsbanken | Ongoing | Any shift that drops below the minimums in this chapter — immediate escalation to Operations Manager; root-cause review (no-show, rota error, insufficient team size)
+Customer wait times during peak | Observation / customer feedback | Weekly | Consistently long wait times at peak despite meeting staffing minimums may indicate the minimum needs raising for that branch — escalate to Head Office
+School holiday shift coverage | Operations Manager planning | Per holiday period | If fewer than [Adnan to confirm]% of additional shifts are covered by existing student staff, review team composition and recruitment pipeline
+
+5. Tools & Resources
+Tidsbanken — rota building, shift scheduling, hours tracking
+EPOS system — transaction volume by hour for demand-pattern analysis
+Chapter 3.1 — Roles & Responsibilities Overview — authority and escalation lines for each role
+Norwegian working time regulations (arbeidsmiljøloven Chapter 10) — maximum hours, rest period requirements, and rules on working alone that underpin the minimums above. The franchise partner must ensure all rotas comply with statutory rest periods (minimum 11 hours between shifts, minimum 35 hours continuous weekly rest).
+
+
+Peak hours are every day after 18.00, before that its peak off. 
+For peak off you can have one employee opening and being alone for the first hour in the weekends, in the weekdays the opening employee can be alone for 30 minutes. 
+In the evening it should be atleast 3 employees working ein weekdays, in weekends it should be 4-5 depends on how big the branch is. 
+For closing you need minimum of two people in the weekdays, it recommended inthe weekend to have minimum 3 employees at closing.
+In school holidays you dont usually need to hire more staff, use the staff that usually goes to school and dont work much, give them extra shifts.
+3.5  HR policies & conduct
+
+Code of conduct   [YSF ADVISORY — DRAFTED, PENDING REVIEW ONCE MOVED TO PLANDAY]
+
+Introduction
+This chapter sets out the Creamy Code of Conduct, which defines the behavioural expectations for all team members, supervisors, managers, and franchise owners. The Code of Conduct underpins Creamy's culture and brand values, and provides the basis for the disciplinary process (see Chapter 3.5 — Disciplinary & grievance process).
+Minimum Operating Standards
+All Creamy team members are expected to: treat customers, colleagues, and suppliers with respect and courtesy; maintain high standards of personal hygiene and appearance (clean uniform, hair tied back, no excessive jewellery in food handling areas per food safety requirements); arrive on time for scheduled shifts and be ready to work at the start of the shift; follow all SOPs set out in this manual; handle company property, equipment, and stock with care; maintain confidentiality regarding business information, recipes, financial data, and customer information.
+The following are examples of misconduct that may result in disciplinary action: repeated lateness or unauthorised absence, failure to follow food safety or hygiene procedures, rudeness or poor attitude towards customers or colleagues, use of mobile phones during working hours except during designated breaks, unauthorised use or removal of company property or stock, breach of data protection obligations (personopplysningsloven / GDPR).
+The following are examples of gross misconduct that may result in summary dismissal (avskjed, arbeidsmiljøloven §15-14): theft or fraud, deliberate damage to property, being under the influence of alcohol or illegal substances at work, violent or threatening behaviour, serious breach of food safety procedures putting customers at risk, harassment or discrimination (in breach of likestillings- og diskrimineringsloven).
+All team members must sign an acknowledgement that they have read and understood the Code of Conduct as part of their onboarding.
+The Code of Conduct applies equally to all staff regardless of position or tenure.
+Roles & Responsibilities
+All Staff: Adhere to the Code of Conduct at all times while on Creamy premises or representing the brand.
+Unit Manager: Models expected behaviour; addresses breaches promptly and consistently; ensures all team members have signed the acknowledgement.
+Franchisee: Ensures the Code is enforced fairly; handles escalated conduct issues.
+Head Office: Maintains and updates the Code; provides guidance on interpretation.
+Measure Analyse Improve
+Track: (a) number of Code of Conduct breaches logged per quarter, (b) nature and severity of breaches, (c) consistency of enforcement (same breach type should receive the same response regardless of who commits it). Review the Code annually and update as needed.
+Tools & Resources
+Code of Conduct acknowledgement form (signed during onboarding). Disciplinary process (see Chapter 3.5). Incident report form.
+
+Disciplinary & grievance process   [YSF ADVISORY — DRAFTED, PENDING REVIEW ONCE MOVED TO PLANDAY]
+
+Introduction
+This chapter defines the disciplinary and grievance procedures for Creamy. These processes must comply with arbeidsmiljøloven (the Working Environment Act) and provide a fair, documented framework for addressing both employer-initiated concerns (disciplinary) and employee-initiated concerns (grievance). Getting this wrong in Norway exposes the business to unfair dismissal claims and potential compensation orders.
+Minimum Operating Standards
+Disciplinary process — stages: (1) Informal conversation (minor first-time issues — documented in a file note), (2) Formal verbal warning (documented, employee informed it is a warning), (3) Written warning (formal letter setting out the issue, expected improvement, timeline, and consequences of failure to improve), (4) Final written warning, (5) Dismissal (oppsigelse, §15-7 — requires saklig grunn, i.e. justifiable cause) or summary dismissal (avskjed, §15-14 — only for gross misconduct).
+Before any dismissal, a drøftelsesmøte (consultation meeting) must be held (§15-1). The employee must be given reasonable notice of the meeting, informed of the matters to be discussed, and offered the right to bring a tillitsvalgt or colleague. The meeting must be a genuine consultation, not a rubber stamp.
+Dismissal notices must be in writing, delivered personally or by registered post, and must inform the employee of their right to request negotiation (forhandlinger, §17-3) and their right to take legal action (§17-4). The statutory notice period is 1 month during the first 5 years of employment (§15-3), though the contract may specify a longer period.
+Grievance process: any employee may raise a grievance about their working conditions, treatment, or any other workplace concern. Grievances should be raised with the Unit Manager in the first instance; if the grievance concerns the Unit Manager, it should be raised with the Franchisee. The grievance must be acknowledged within 3 working days and a response provided within 10 working days. Right
+All disciplinary and grievance records must be retained confidentially in the employee's personnel file. Access is restricted to the Franchisee and, where relevant, Head Office HR support.
+Legal note: Norwegian employees have strong statutory protections. If in any doubt about the lawfulness of a proposed dismissal, seek legal advice before proceeding. The cost of an unfair dismissal finding (usaklig oppsigelse) can be substantial, including reinstatement and compensation.
+Roles & Responsibilities
+Unit Manager: Handles informal conversations and Stage 1-2 disciplinary matters; investigates and responds to grievances at unit level.
+Franchisee: Handles Stage 3+ disciplinary matters and dismissals; chairs drøftelsesmøte; handles grievances escalated beyond Unit Manager.
+Employee: Engages with the process in good faith; may be accompanied by a tillitsvalgt or colleague at formal meetings.
+Head Office / External HR Advisor: Provides guidance on complex cases; ensures consistency across franchise locations.
+Measure Analyse Improve
+Track: (a) number of disciplinary cases by stage, (b) number of grievances raised and outcomes, (c) time to resolution, (d) any cases that result in legal claims. A high volume of disciplinary cases in one unit may indicate a management or culture issue rather than an employee issue.
+Tools & Resources
+Disciplinary letter templates (verbal warning, written warning, final written warning, dismissal). Drøftelsesmøte invitation template. Grievance form. Investigation record template. Personnel file checklist.
+
+Leave & absence policy   [YSF ADVISORY — DRAFTED, PENDING REVIEW]
+Introduction
+This chapter sets out Creamy's leave and absence policies, covering annual leave, sick leave, and other statutory and discretionary leave types. These policies must comply with Norwegian law, primarily ferieloven (the Holiday Act) and arbeidsmiljøloven (the Working Environment Act), which together provide some of the most generous employee entitlements in Europe.
+Minimum Operating Standards
+Annual leave (ferie): all employees are entitled to 25 working days (4 weeks + 1 day) of annual leave per year under ferieloven §5. Employees over 60 are entitled to an additional 6 working days (§5(2)). Holiday pay (feriepenger) is 10.2% of the previous year's gross earnings (§10(2)), or 12.5% for employees over 60.
+Main holiday period (hovedferieperioden): employees are entitled to take 3 consecutive weeks of their leave between 1 June and 30 September (§7(2)). The employer may determine the timing of the remaining leave with at least 2 weeks' notice.
+Leave requests must be submitted via Tidsbanken at least 4 weeks in advance for periods of 1 week or more, and at least 2 weeks  in advance for single days. The Unit Manager approves or declines requests based on operational requirements.
+Sick leave (sykefravær): employees are entitled to self-certification (egenmelding) for up to 3 consecutive calendar days, up to 4 times in a 12-month period (folketrygdloven §8-24). After 3 days, a medical certificate (sykemelding) from a doctor is required.
+Employer's sick pay obligation (arbeidsgiverperioden): the employer pays full salary for the first 16 calendar days of sickness absence (folketrygdloven §8-19). After 16 days, NAV takes over payment (sykepenger).
+Absence reporting: team members must notify the Unit Manager of any unplanned absence as early as possible before their scheduled shift, and in any event before the shift starts. The notification method is a phone call, SMS is not acceptable.
+Other statutory leave types (for reference): parental leave (foreldrepermisjon, arbeidsmiljøloven §12-5: up to 49 weeks at 100% or 59 weeks at 80% paid by NAV), military service leave, leave for care of sick children (omsorgspermisjon, §12-9: up to 10 days per year per parent for children under 12), and bereavement leave (permisjon ved dødsfall — no statutory entitlement, but common practice is 3 days.
+Roles & Responsibilities
+Team Members: Submit leave requests in advance; notify absence promptly; provide medical certificates when required.
+Unit Manager: Approves/declines leave requests; manages absence cover; tracks absence patterns; conducts return-to-work conversations after extended absence.
+Franchisee: Monitors overall absence rates; ensures compliance with statutory obligations; approves any discretionary leave.
+Measure Analyse Improve
+Track: (a) absence rate (days lost as % of total working days), (b) short-term absence frequency (egenmelding usage), (c) long-term absence cases, (d) leave request approval/decline rates. Review monthly and investigate patterns (e.g. high Friday/Monday absence, clustering around holidays).
+Tools & Resources
+Tidsbanken (leave requests and absence recording). Return-to-work conversation template. Absence tracker (monthly summary). Leave policy summary card (printed, issued to all staff).
+
+3.6  Food safety/H&S
+
+Allergen management  YSF ADVISORY — DRAFTED, PENDING REVIEW - COMPLETED FROM NOTES]
+
+Introduction
+This chapter defines Creamy's allergen management procedures. Allergen management is a critical food safety obligation and a legal requirement in Norway under matinformasjonsforskriften (implementing EU Regulation 1169/2011 on food information to consumers via the EEA Agreement). Failure to manage allergens correctly can cause serious illness or death and exposes the business to criminal liability.
+Minimum Operating Standards
+The 14 mandatory allergens that must be declared are: (1) cereals containing gluten, (2) crustaceans, (3) eggs, (4) fish, (5) peanuts, (6) soybeans, (7) milk (including lactose), (8) nuts (almonds, hazelnuts, walnuts, cashews, pecans, Brazil nuts, pistachios, macadamias), (9) celery, (10) mustard, (11) sesame seeds, (12) sulphur dioxide/sulphites (>10mg/kg), (13) lupin, (14) molluscs.
+Every menu item must have a documented allergen profile listing which of the 14 allergens are present. This information must be kept current and updated whenever a recipe or ingredient changes.
+Allergen information must be available to customers at the point of sale. In Norway, for non-pre-packed food (which covers most QSR service), allergen information must be provided orally on request, but a written reference (allergen matrix or menu annotation) must be available to support staff in providing accurate information (matinformasjonsforskriften §6).
+Cross-contamination prevention: separate utensils, preparation surfaces, and storage must be used where practicable for allergen-free preparation. Where full separation is not possible (common in a small QSR kitchen), the risk must be documented and communicated to the customer ('may contain' warnings).
+All team members must receive allergen awareness training during onboarding and refresher training at least annually (see Chapter 3.3).
+When a customer declares an allergy: the order must be flagged (verbally and on the EPOS ticket), the team member must check the allergen matrix, the manager or a trained senior team member must verify the order before it is served, and if there is any doubt, the customer must be informed that the allergen cannot be guaranteed absent.
+Ingredient supplier specifications must be kept on file for all products. Any supplier change or ingredient reformulation must trigger a review of the allergen matrix.
+Allergen-related incidents (customer reaction, near-miss, or complaint) must be reported immediately to the Unit Manager and logged as a food safety incident (see Chapter 3.6 — H&S incident reporting).
+Roles & Responsibilities
+Unit Manager: Maintains the allergen matrix; ensures all team members are trained; investigates allergen incidents.
+Shift Supervisor: Verifies allergen-flagged orders before service; manages allergen queries during service.
+Team Members: Follow allergen procedures; ask customers about allergies; flag orders correctly.
+Head Office: Provides allergen matrix templates and training materials; updates the matrix when central recipes change.
+Measure Analyse Improve
+Track: (a) allergen-related customer complaints (target: zero), (b) allergen training completion rates, (c) allergen matrix currency (last review date). Conduct allergen knowledge spot-checks during audits — ask team members to identify allergens in specific products.
+Tools & Resources
+Allergen matrix (product x allergen grid, displayed in kitchen and available at point of sale). Allergen awareness training materials. Allergen incident report form. Supplier specification files.
+
+HACCP/food safety procedures   YSF ADVISORY — DRAFTED, PENDING REVIEW - COMPLETED FROM NOTES]
+
+Introduction
+This chapter covers Creamy's HACCP-based food safety procedures, which form the core of the IK-mat (internal control) system required by Norwegian food safety law. Every food business in Norway must have a documented HACCP-based system in place (matloven, næringsmiddelhygieneforskriften implementing EU Regulation 852/2004 via the EEA Agreement). Mattilsynet will inspect for compliance.
+Minimum Operating Standards
+Creamy's food safety system is based on the seven HACCP principles: (1) Conduct a hazard analysis, (2) Determine Critical Control Points (CCPs), (3) Establish critical limits, (4) Establish monitoring procedures, (5) Establish corrective actions, (6) Establish verification procedures, (7) Establish documentation and record-keeping.
+Critical Control Points for a QSR/dessert operation typically include: (a) Goods receiving — check delivery temperatures (chilled goods must arrive at 0-4°C, frozen at -18°C or below), check use-by dates, check packaging integrity; (b) Cold storage — fridges must operate at 0-4°C, freezers at -18°C or below, temperatures checked and logged at least twice daily; (c) Hot holding (if applicable) — food must be held at 60°C or above; (d) Allergen control (see separate chapter); (e) Cleaning and sanitisation. [Adnan to confirm: specific CCPs based on Creamy's actual menu and processes — the above are standard starting points].
+Temperature logs: fridge and freezer temperatures must be recorded at least twice daily (morning and afternoon). Any reading outside the critical limit must trigger immediate corrective action (check probe accuracy, adjust thermostat, relocate stock if necessary) and be documented.
+Cleaning schedules: documented daily, weekly, and deep-clean schedules must be in place and signed off (see Chapter 5.6 — Cleaning & maintenance).
+Personal hygiene: all food handlers must wash hands before handling food, after touching raw ingredients, after using the toilet, after handling waste, and after sneezing/coughing. Hand sanitiser is not a substitute for handwashing. Clean uniform policy applies at all times.
+Traceability: under EU Regulation 178/2002 (applied in Norway via the EEA Agreement), every food business must be able to trace ingredients one step back (supplier) and one step forward (customer, where applicable). Delivery records and batch information must be retained for [Adnan to confirm: recommended minimum 2 years].
+Pest control: documented pest control arrangements must be in place (see Chapter 5.6 — Pest control protocol).
+IK-mat documentation must be kept on-site and available for Mattilsynet inspection at all times. It must include: HACCP plan, temperature logs, cleaning records, training records, pest control records, supplier specifications, allergen matrix, and any corrective action records.
+Roles & Responsibilities
+Unit Manager: Designated as the food safety lead for the unit; maintains the IK-mat system; ensures daily compliance; handles Mattilsynet inspections.
+Shift Supervisor: Conducts temperature checks; signs off cleaning schedules; monitors food handling practices during shifts.
+Team Members: Follow food safety SOPs; report any concerns or breaches immediately.
+Head Office: Provides the HACCP plan template and IK-mat framework; conducts internal food safety audits; updates procedures when regulations change.
+Measure Analyse Improve
+Track: (a) temperature log compliance (percentage of checks completed on time), (b) cleaning schedule sign-off completion, (c) Mattilsynet inspection results, (d) food safety incidents and corrective actions. Conduct internal food safety audits at least quarterly.
+Tools & Resources
+HACCP plan document. Temperature log sheets (fridge, freezer, delivery). Cleaning schedule templates. IK-mat folder (physical or digital, containing all required documentation). Corrective action log. Supplier specification files.
+
+H&S incident reporting   YSF ADVISORY — DRAFTED, PENDING REVIEW - COMPLETED FROM NOTES]
+
+Introduction
+This chapter sets out the health and safety incident reporting procedures for Creamy. Norwegian law requires employers to maintain a safe working environment (arbeidsmiljøloven Chapter 4) and to report certain incidents to Arbeidstilsynet (the Labour Inspection Authority). Under-reporting of incidents is both a legal risk and a missed opportunity to prevent recurrence.
+Minimum Operating Standards
+All incidents must be reported, no matter how minor. An 'incident' includes: any injury to a team member or customer (however slight), any near-miss (an event that could have caused injury but did not), any property damage, any fire or fire alarm activation, any food safety event (customer illness, allergen reaction, contamination), and any criminal activity on the premises.
+Immediate actions: (1) ensure the safety of all persons, (2) administer first aid if trained and safe to do so, (3) call emergency services if required (110 fire, 112 police, 113 ambulance), (4) preserve the scene where relevant (do not clean up until the cause is understood), (5) notify the Unit Manager immediately.
+Reporting to Arbeidstilsynet: serious injuries (alvorlig personskade), deaths, or dangerous occurrences must be reported to Arbeidstilsynet without delay (arbeidsmiljøloven §5-2). 'Serious injury' includes fractures, amputations, significant burns, chemical exposure, and any injury requiring hospitalisation. The employer must also report to the local police. [Adnan to confirm: whether Creamy has an appointed verneombud (safety representative) — this is mandatory for businesses with 10+ employees (§6-1)]. We do have Verneombud
+Internal reporting: all incidents must be recorded on the Creamy incident report form within 24 hours. The form captures: date, time, location, persons involved, description of what happened, immediate actions taken, root cause (preliminary), and follow-up actions required.
+Investigation: all incidents must be investigated proportionally. Minor incidents require a brief root-cause note. Serious incidents require a full investigation including witness statements, timeline reconstruction, and identification of systemic causes.
+Follow-up: corrective actions must be assigned, given a deadline, and tracked to completion. The Unit Manager must review all open actions weekly.
+Incident data must be reviewed monthly to identify trends (e.g. recurring slip hazards, equipment-related injuries) and inform preventive action.
+Roles & Responsibilities
+All Staff: Report all incidents immediately; cooperate with investigations.
+Unit Manager: Completes incident report forms; conducts investigations; reports to Arbeidstilsynet where required; tracks corrective actions.
+Verneombud (safety representative): Participates in investigations; advocates for employee safety concerns; role mandated by law for businesses with 10+ employees.
+Franchisee: Ensures the reporting system is in place; reviews incident trends; ensures Arbeidstilsynet reporting obligations are met.
+Head Office: Reviews incident data across franchise locations; identifies systemic issues; updates procedures as needed.
+Measure Analyse Improve
+Track: (a) total number of incidents reported per month (low numbers may indicate under-reporting, not safety), (b) time from incident to report completion, (c) corrective action completion rate and timeliness, (d) incident trends by type, location, and time. Review monthly at unit level and quarterly at franchise level.
+Tools & Resources
+Incident report form (paper and/or digital). Investigation template (for serious incidents). Corrective action tracker. First aid kit check log. Arbeidstilsynet reporting portal (arbeidstilsynet.no). Emergency contact poster (displayed prominently).
+
+4. Marketing & Promotion
+
+4.1  Brand guidelines
+
+Logo usage rules   [NEEDS ADNAN INPUT]
+Why this chapter matters
+Protects the logo from being stretched, recoloured, or placed on clashing backgrounds. Essential for brand consistency across units.
+What you need to provide
+All versions of the Creamy logo (primary, secondary, icon, mono, reversed).
+Clear space rules (how much space must surround the logo).
+Minimum size the logo can be used at.
+Backgrounds it can and cannot be placed on.
+Examples of incorrect usage (if you have any pet peeves).
+Easiest way to get this done
+If you have a designer or a Canva brand kit, most of this already exists. Share what you have and note anything missing.
+I think Lajla will be the right person to hand over all of thats needed here. 
+
+Colour palette & typography   [NEEDS ADNAN INPUT]
+Why this chapter matters
+Ensures every piece of Creamy communication — from menu boards to social media — looks like it belongs to the same brand.
+What you need to provide
+Primary and secondary brand colours with exact codes (hex, RGB, CMYK, or Pantone).
+Font names for headings, body text, and any accent/display fonts.
+Where each colour/font should be used (e.g. 'primary colour for headings, secondary for accents').
+Easiest way to get this done
+Check your Canva account, any design files, or your website — the colours and fonts are already in use. List them with their codes.
+Lajla Will provide this
+
+Tone of voice   [NEEDS ADNAN INPUT]
+1. Introduction
+Every interaction a customer has with Creamy — a social media post, a greeting at the counter, a reply to a Google review, a delivery note — carries the brand's voice. That voice must be consistent regardless of who is speaking, which location they're at, or what channel they're using. Inconsistency makes a brand feel disjointed; consistency builds recognition and trust.
+Creamy's tone of voice is built on five pillars, each defined below with guidance on what it sounds like in practice and what it does not sound like. This chapter is the reference point for anyone creating content, writing copy, or communicating on behalf of the brand.
+
+2. Minimum Operating Standards
+2.1 The Five Pillars
+Happy Creamy exists to make people's day better. The tone is upbeat, warm, and genuinely positive — never forced, never sarcastic, never passive-aggressive. Customers chose to treat themselves; the brand's voice should reflect that this is a good moment.
+Sounds like: "We're so glad you came in!" · "Can't wait for you to try this one."
+Does not sound like: Over-the-top enthusiasm that feels fake · Emoji overload · Ignoring a complaint with relentless cheerfulness
+Modern Creamy speaks like a brand that belongs in 2024, not 2004. The language is current, clean, and natural — the way you'd talk to a friend, not the way a corporate handbook reads. Visual identity, social content, and in-store communication should all feel fresh and relevant.
+Sounds like: Direct, conversational language · Short sentences · Current references where appropriate
+Does not sound like: Slang that dates quickly · Trying too hard to be trendy · Corporate stiffness ("We at Creamy would like to inform valued customers that…")
+Premium Creamy is a quality-first brand. The tone reflects that — it's confident about the product without being arrogant, and it never undersells. The brand doesn't compete on price; it doesn't talk like it does either. No "cheap," no "bargain," no apologetic discounting language.
+Sounds like: "Made with real Belgian chocolate." · "We don't cut corners on ingredients."
+Does not sound like: Luxury-brand pretension · Exclusionary language · Price-led messaging ("Only 99kr!")
+Welcoming Everyone is welcome at Creamy — families, students, couples, groups of friends, solo visitors. The tone is inclusive, approachable, and never intimidating. A first-time customer should feel as comfortable as a regular.
+Sounds like: "Come as you are." · "There's always room for one more."
+Does not sound like: Exclusive or cliquey · Assuming the customer already knows the menu · Language that makes anyone feel like they don't belong
+Confident Creamy knows what it is and doesn't apologise for it. The brand leads its category in Norway — the tone should reflect that quiet confidence. State what the brand does well without hedging, but never cross into arrogance or putting competitors down.
+Sounds like: "Norway's dessert bar." · "We set the standard."
+Does not sound like: Naming or disparaging competitors · Boastful claims that can't be backed up · Defensive or reactive language
+2.2 Applying the Pillars
+The five pillars work together — no single pillar should dominate at the expense of the others. A post that's happy but not premium feels cheap. A response that's confident but not welcoming feels cold. The skill is in blending all five into a single, recognisable voice.
+Channel | Priority Emphasis | Watch Out For
+Social media posts | Happy, Modern | Don't sacrifice Premium for trend-chasing
+Customer complaint responses | Welcoming, Confident | Don't let Happy override genuine acknowledgment of the issue
+Menu descriptions / in-store signage | Premium, Modern | Don't over-describe — keep it clean and appetising
+Recruitment posts | Welcoming, Happy | Don't lose Confident — Creamy is a brand people should want to work for
+Review responses (positive) | Happy, Welcoming | Keep it brief and genuine — don't copy-paste the same reply
+Review responses (negative) | Welcoming, Confident | Acknowledge, resolve, move offline. Never defensive, never dismissive
+2.3 What Creamy Never Sounds Like
+Apologetic about pricing
+Aggressive or confrontational
+Corporate or bureaucratic
+Desperate for attention
+Dismissive of feedback
+Imitative of another brand's voice
+
+3. Roles & Responsibilities
+Role | Responsibility
+Head Office / Brand Team | Owns the tone of voice standards. Reviews and approves all template communications. Provides examples and guidance materials to franchise partners. Has final say on any public-facing content that departs from these pillars.
+Franchise Partner | Ensures all local content — social media, signage, recruitment posts, review responses — aligns with these five pillars. Briefs any local marketing support on this chapter before they create content.
+Operations Manager | Reinforces tone of voice in day-to-day team communication — how staff greet customers, how complaints are handled verbally, how the brand "sounds" on the shop floor.
+All Staff | Embodies the tone in every customer interaction. The voice isn't just written — it's how the team speaks, welcomes, and resolves.
+
+4. Measure, Analyse, Improve
+Metric | Source | Frequency | Action Trigger
+Social media content consistency | Head Office review of franchise partner posts | Monthly | Any post that contradicts a pillar (e.g. price-led language, defensive complaint response) — direct feedback to franchise partner with corrected example
+Customer review sentiment | Google, delivery platforms | Monthly | Recurring language from customers that conflicts with the brand tone (e.g. "felt unwelcome," "staff seemed disinterested") — investigate whether the in-store experience matches the brand voice
+Mystery customer / brand audit | Head Office | [Adnan to confirm frequency] | Score verbal and written communication against the five pillars
+
+5. Tools & Resources
+Brand asset library — approved copy templates, social media caption examples, review response templates (provided by Head Office)
+Chapter 1.4 — Core Values — the values that underpin the tone; tone is how the values sound when the brand speaks
+Chapter 5.3 — Social Media & Digital Marketing — platform-specific content guidelines
+Chapter 1.3 — Market Positioning — competitive context that informs what "confident" means in practice
+
+
+Happy 
+Modern
+Premium
+Welcoming
+Confident
+Photography/imagery standards   [NEEDS ADNAN INPUT]
+
+Why this chapter matters
+Bad product photos damage the brand. This chapter sets minimum quality standards for all Creamy photography.
+What you need to provide
+Examples of product photography you like (your own or from other brands).
+Lighting preferences (natural, studio, warm, cool).
+Styling preferences (clean/minimal, messy/indulgent, lifestyle/in-context).
+Any no-go's (e.g. 'no stock photos', 'no phone photos without editing').
+Easiest way to get this done
+Share 5-10 photos that represent how you want Creamy to look. Mark which ones are 'this, exactly' and which are 'this direction, but better'. YSF Advisory will turn that into a written standard.
+Lajla Will do this
+
+4.2  Local marketing toolkit
+
+Local store marketing playbook   [YSF ADVISORY — DRAFTED, PENDING REVIEW]
+Introduction
+Dependency note: Content in this chapter uses interim defaults pending resolution of 1.1 — Positioning vs. category. Re-review on positioning sign-off.This chapter provides the framework for local store marketing (LSM) — marketing activities planned and executed at the individual unit level to drive footfall and build community presence. LSM complements any central brand marketing and is particularly important for Creamy as a single-unit operation building local awareness. All local marketing must align with Creamy's brand guidelines (see Chapter 4.1).
+Minimum Operating Standards
+Every unit must maintain a rolling local marketing plan covering at least the next 3 months. The plan should be reviewed and updated monthly.
+Approved LSM activities include: leaflet and flyer distribution within a defined catchment area [Adnan to confirm: target radius, e.g. 1-2 km]leaflet and flyer dosent work very well in Norway, partnerships with local businesses (cross-promotion, staff discount agreements), participation in local events and markets, in-store promotions (e.g. limited-time offers, combo deals), sampling and tasting events, and community sponsorship (local sports teams, school events).
+All printed materials, signage, and promotional content must use approved brand assets and templates (see Chapter 4.1 — Brand guidelines and Chapter 4.2 — Approved templates [TOOL-REFERENCED]). Franchisees must not create marketing materials from scratch without Head Office approval.
+Digital LSM: the unit's local social media presence (if separate from central accounts) must adhere to the social media posting standards (see Chapter 4.3). Geo-targeted paid advertising (e.g. Facebook/Instagram local ads) is permitted within approved guidelines and budgets. All social media posting will be centrally controlled and express permission must be given before using the brand to post publicly.
+LSM budget: [Adnan to confirm: whether there is a mandatory minimum local marketing spend as a percentage of revenue, e.g. 1-2%, and whether this is specified in the franchise agreement]. Not sure about this one - let’s align on this when we get to franchise agreement comversation
+Norwegian advertising law note: markedsføringsloven (the Marketing Control Act) applies. All marketing must be truthful, not misleading, and clearly identifiable as advertising. Special rules apply to marketing directed at children (§20-21). Price comparisons must be verifiable.
+
+Roles & Responsibilities
+Unit Manager / Franchisee: Plans and executes LSM activities; manages the LSM budget; submits the rolling plan to Head Office.
+Head Office: Provides brand-approved templates and assets; reviews and approves non-standard LSM activities; shares best practices across locations.
+Team Members: Support LSM execution (e.g. distributing flyers, promoting in-store offers to customers).
+Measure Analyse Improve
+Track: (a) LSM spend vs. budget, (b) footfall and sales uplift during and after LSM campaigns (compare to baseline weeks), (c) customer acquisition source (ask new customers how they heard about Creamy). Review monthly; share successful LSM tactics across the franchise network.
+Tools & Resources
+Local marketing plan template (rolling 3-month). Brand-approved templates (Canva — see Chapter 4.2 [TOOL-REFERENCED]). LSM activity tracker (date, activity, cost, result). Campaign ROI calculator.
+
+Community engagement guidance   [YSF ADVISORY — DRAFTED, PENDING REVIEW]
+Introduction
+This chapter provides guidance on community engagement for Creamy units. Building genuine relationships within the local community drives long-term loyalty, positive word-of-mouth, and brand affinity. Community engagement is not just marketing — it is how Creamy embeds itself as a valued part of the neighbourhood.
+Minimum Operating Standards
+Each unit should identify and engage with at least 3-5 local community organisations, groups, or institutions per year. Examples include: schools, sports clubs, religious or cultural organisations, local charities, and business associations (næringsforening). Right
+Approved engagement activities include: sponsorship of local events or teams (within approved budget), hosting community events at the unit (e.g. charity evenings, school fundraisers), offering venue space for local group meetings (where space permits), providing product donations for local fundraising events, and participating in local business networks or events.
+All community engagement must be consistent with Creamy's brand values. The unit should not engage with organisations or causes that are politically divisive or that conflict with the brand's positioning.
+Community engagement activities should be documented and shared with Head Office for inclusion in any central communications or social media content.
+Budget: community engagement spend should come from the LSM budget (see Local store marketing playbook chapter). Significant sponsorship commitments (above NOK 5,000) require Head Office approval. Right
+Roles & Responsibilities
+Franchisee / Unit Manager: Identifies community engagement opportunities; manages relationships; represents Creamy at local events.
+Team Members: Participate in community events as brand ambassadors when asked.
+Head Office: Provides guidance on brand-appropriate engagements; amplifies local stories through central channels.
+Measure Analyse Improve
+Track: (a) number of community engagements per quarter, (b) estimated reach/impact of each engagement, (c) any resulting media coverage or social media mentions. Community engagement is difficult to tie directly to sales, so measure it through brand awareness indicators and customer feedback rather than pure ROI.
+Tools & Resources
+Community engagement log (activity, date, organisation, estimated reach, cost). Event planning checklist. Brand ambassador guidelines for team members attending events.
+
+Approved templates (flyers, signage) — Canva production, not SOP prose   [TOOL-REFERENCED]
+Why this chapter matters
+Franchisees need ready-to-use marketing templates they can customise within brand guidelines. The SOP will explain how to access and use them.
+What's needed to write this SOP
+Access to the Canva brand kit / shared Canva workspace.
+A list of template types needed (flyer, poster, social media post, menu insert, A-board, etc.).
+Any existing templates already created.
+How to get this done
+Share your Canva workspace link and any templates you've already made. YSF Advisory will write the SOP explaining how franchisees access, customise, and get approval for printed materials.
+Need Lajla to do this
+
+4.3  Social & digital
+
+Social media posting standards   [YSF ADVISORY — DRAFTED, PENDING REVIEW]
+Introduction

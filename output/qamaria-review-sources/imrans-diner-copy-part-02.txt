@@ -1,0 +1,326 @@
+Franchisee (prospective): Identifies and shortlists potential sites; completes the evaluation checklist with support from their property advisor.
+Head Office / Site Approval Committee: Reviews completed checklists; conducts a site visit where required; issues formal approval or rejection.
+Property Advisor / Agent: Provides lease and property data; supports the franchisee in negotiating terms.
+Legal Advisor: Reviews lease terms before signing (UK commercial leases are typically governed by the Landlord and Tenant Act 1954 where security of tenure applies, though many terms are freely negotiable).
+Measure Analyse Improve
+Track: (a) number of sites evaluated vs. approved, (b) time from initial identification to lease signing, (c) any post-opening issues attributable to site evaluation gaps. Review the checklist annually against operational experience and update criteria as needed.
+Tools & Resources
+Site evaluation checklist (standardised form issued by Head Office). Site visit report template. Lease summary template (key commercial terms extracted for Head Office review).
+Sign-off & approval process
+Introduction
+This chapter defines the formal sign-off and approval process for new Imran’s Diner site openings. No new unit may proceed to fit-out, lease signing, or trading without completing the approval stages set out here. This process protects both the franchisee and the brand by ensuring every new site meets Imran’s Diner's commercial, operational, and regulatory requirements before capital is committed.
+Minimum Operating Standards
+The approval process has four stages: (1) Site Evaluation — completed checklist submitted to Head Office, (2) Commercial Review — Head Office assesses the site against the five-gate site decision rule (Chapter 2.1 — Demographic & footfall requirements), including the occupancy cost test, projected revenue and fit-out costs, (3) Conditional Approval — Head Office issues conditional approval subject to lease terms, planning, and licensing, (4) Final Approval — issued once the lease is agreed, licences are confirmed, and the fit-out plan is signed off.
+Each stage must be formally documented. Head Office must issue a written decision (approval, conditional approval, or rejection with reasons) within 10 working days of receiving a complete submission.
+No fit-out works may commence before Final Approval is issued.
+The franchisee must not enter into any binding lease, contractor, or supplier commitment before receiving at least Conditional Approval from Head Office.
+If the franchisee proceeds without approval, this constitutes a breach of the franchise agreement and may result in termination of the agreement.
+All approval documentation must be retained by both Head Office and the franchisee for the duration of the franchise agreement plus 6 years, matching the contract limitation period in England and Wales.
+Roles & Responsibilities
+Franchisee: Prepares and submits site evaluation pack; responds to Head Office queries; does not commit to lease or works without approval.
+Head Office (currently the Owner): Reviews submissions; conducts site visits; issues formal decisions at each stage.
+Finance / Commercial review (currently the Owner, with external accountant support where needed): Assesses financial projections and viability as part of Stage 2.
+Legal Advisor: Reviews lease and franchise agreement implications.
+Measure Analyse Improve
+Track: (a) turnaround time at each approval stage vs. target, (b) number of sites rejected and reasons, (c) any instances of franchisees proceeding without approval. Review the process annually for efficiency and adjust stage requirements as the brand scales.
+Tools & Resources
+Site approval pack template (compiled submission for Head Office). Stage gate tracker (spreadsheet or project management tool tracking each site through the four stages). Approval/rejection letter templates.
+2.2 Fit-out & equipment spec
+Kitchen equipment list & specs
+Current status (interim)
+The existing Sheffield kitchen equipment has been shared as photographs only. There is no written equipment list yet, so the specification for new units cannot be set from it.
+Step 1 — Written equipment register. Every item in the current kitchen is recorded in a written register: item, brand and model, quantity, fuel or power type (gas, electric, three-phase), approximate age and condition, and whether it has a current service or gas safety record. Small items (scales, probes, containers, utensils) are included. The register is maintained by Head Office and reissued whenever equipment is added, replaced or retired. It is the source for the approved equipment list that every new unit is specified and costed against.
+Step 2 — Keep, replace or remove. Once the company finances have been reviewed, each item on the register is marked keep, replace or remove for the remodelled operation.
+Step 3 — Independent equipment review. Where equipment is purchased outside of the approved supply list, an independent commercial catering equipment adviser reviews the register and recommends the most cost-effective specification for new units, taking into account purchase price, energy use, lifetime cost, and service and parts support.
+Step 4 — Approved specification. The approved list (item, minimum specification, quantity, mandatory or optional) is published in this chapter.
+Until Step 4 is complete, no equipment for a new unit may be purchased without written Head Office approval.
+Front-of-house layout standards
+Design intent
+The front of house at Imran’s Diner is designed on purpose, using customer psychology most takeaways ignore. It is not a generic QSR layout with the Imran’s Diner name on it. Every unit applies the six design principles below. A shopfitter or store designer translates them into a layout for each site, and Head Office approves that layout before fit-out starts (Chapter 2.1 — Sign-off & approval process).
+The six design principles (mandatory)
+1. A landing zone between door and counter. Customers get a moment to arrive before they have to decide. The counter is not placed directly inside the door. The minimum clear distance from the entrance door to the front of the counter is 2 metres, measured along the customer's natural path, with a queue area that does not block the door when three or more customers are waiting. Head Office confirms the landing zone against the measured Sheffield unit during the menu engineering walkaround; where a site cannot achieve it, the layout requires written Head Office approval before fit-out. 
+2. Staff face the door. The counter is positioned so staff face the entrance and acknowledge every customer within seconds of arrival. Being seen changes how long a wait feels more than the actual wait time does.
+3. Order and collection are separate, with a visible queue system. Customers order at one point and collect at another, and can see where their order is. Uncertain or seemingly unfair waits feel much longer than ones people can see clearly. Separate order and collection points are mandatory in every unit from fit-out. Order numbers are issued at the point of order and called at collection. An order-status screen is the network standard and is specified by Head Office as part of the EPOS rollout; until it is in place, units operate the number system manually, and no unit installs its own screen or queue system without Head Office approval.
+4. A menu board that is easy to decide from. The menu board shows a few clear groups, not a wall of options, so decisions at the counter are faster.
+5. Food visible from the door. Food preparation or hot display is visible from the entrance, so the food sells on sight and smell before anyone reads the menu.
+6. Lighting zoned for pace and comfort. Brighter lighting at the counter keeps service moving; warmer lighting in any seating area makes it feel like a diner, not a processing station. The counter and order zone are lit to 500 lux at a colour temperature of 4000K, which reads as bright and clean without feeling clinical. Any seating area is lit to 200-300 lux at 2700-3000K, which reads as warm. Kitchen and prep areas follow food-safety lighting requirements, not these standards. All lighting is dimmable where practical, and the full specification is issued by Head Office to the shopfitter as part of the fit-out pack.
+Where Sheffield is today
+The Sheffield unit was built before these principles were written, and does not yet meet all six. Head Office records which principles the unit currently meets and which are outstanding, and holds a dated plan to bring it to the full standard. New units are built to all six from opening. The standard applies to Head Office's own unit as it does to every franchisee's.
+Signage & branding installation
+Current status (interim)
+The signage at the Sheffield unit is the current reference. It works, but it can be improved, and it will be updated once the approved brand identity is agreed (see Chapter 1.4 — Logo & visual identity summary). A copy of the current signage artwork has been requested from Imperial Signs so that it is held on file by Head Office.
+Current supplier. Imperial Signs produced the current signage and is the approved supplier for new units. Signage is ordered through Head Office rather than direct, so that specification, finish and colour match across the network. Head Office may approve an alternative supplier where a franchisee can evidence equivalent specification and finish, and will review the arrangement as the network grows.
+Interim rule. Until the approved identity and signage specification are issued, no external or internal signage may be ordered for any unit without written Head Office approval of the artwork. Most external signs, and illuminated signs in particular, need advertisement consent from the local planning authority, so consent must be confirmed before any sign is ordered or installed.
+Approved suppliers/contractors
+Where Imran’s Diner is today
+There are no approved contractors in place yet and no agreed contractor pricing. Equipment has been bought second-hand online, and routine maintenance and servicing of machines is handled in house by a family member and an employee. Emergency cover for equipment breakdowns, electrical faults and technical issues has not yet been arranged. This chapter sets the minimum standard every unit must meet, including the Sheffield unit.
+Minimum contractor set (in place before opening)
+Every unit must have a named contractor, with an emergency call-out arrangement, for each of the following before it trades:
+Gas engineer — Gas Safe registered. Only a Gas Safe registered engineer may install, service or repair gas appliances (Gas Safety (Installation and Use) Regulations 1998). Annual gas safety inspection of all commercial gas appliances.
+Electrician — NICEIC or NAPIT registered. Electrical faults, installation work, and a current Electrical Installation Condition Report (EICR) for the premises.
+Refrigeration engineer — F-gas certified. Servicing and repair of fridges, freezers and cold rooms, including any work involving refrigerant gas.
+Catering equipment service and repair. Planned servicing and breakdown repair of fryers, grills, ovens and other cooking equipment.
+Extraction and ductwork cleaning — to TR19 standard. Grease extract cleaning, with certificates kept on file; insurers commonly require this.
+Pest control. Contracted pest control service (see Chapter 5.6 — Pest control protocol).
+Head Office maintains the approved contractor list, recording for each category the contractor, contact details, response and call-out terms, and the certification held. The list is issued to every franchisee before opening and reissued whenever it changes. Where a franchisee uses a contractor outside the list they must hold a copy of that contractor's current certification and provide it to Head Office on request; for gas, electrical, refrigeration and extraction work, written Head Office approval is required first.
+Rules for in-house maintenance and second-hand equipment
+In-house maintenance. Team members and family members may carry out day-to-day user care only — cleaning, filter changes and the checks set out in Chapter 5.6 (Equipment maintenance log). They must not carry out any work on gas supplies or gas appliances, fixed electrical installations or refrigeration systems.
+Second-hand equipment. Second-hand equipment may only be bought with written Head Office approval, and gas appliances must be checked and certified safe by a Gas Safe registered engineer before use. Service history or a condition report should be obtained wherever possible.
+2.3 Pre-opening checklist
+Regulatory/licensing requirements (UK-specific)
+Introduction
+This chapter sets out the regulatory and licensing requirements that must be satisfied before a new Imran’s Diner unit can legally commence trading in the UK. The UK has specific requirements for food businesses covering food safety registration, planning/use class, and (for late-opening units) licensing. Failure to obtain the correct registrations and permissions before opening is an offence and will result in enforcement action from the local authority (Environmental Health) or the Food Standards Agency.
+Minimum Operating Standards
+Food business registration: Every food business in the UK must be registered with the local authority (Environmental Health) before commencing operations, via the free online form at register.food.gov.uk. Registration must be submitted at least 28 days before the planned opening date (the statutory minimum notice period). This is a registration, not an approval — the council does not issue a 'permit' but will inspect and rate the premises under the Food Hygiene Rating Scheme.
+Food safety management system: A documented, HACCP-based food safety management system must be established before opening. This is a legal requirement under Regulation (EC) 852/2004 (retained in UK law), most commonly met using the Food Standards Agency's 'Safer Food Better Business' (SFBB) pack. The system must cover HACCP principles, allergen management, cleaning routines, temperature control, traceability, and staff training. See Chapter 3.6 for detailed HACCP procedures.
+Late Night Refreshment authorisation: Required under the Licensing Act 2003 only if the unit will supply hot food or hot drink to the public between 11pm and 5am. Applied for from the relevant local authority licensing team, either as a standalone authorisation or combined with a premises licence. Not required for units trading solely within standard daytime/evening hours.
+Food hygiene training: There is no UK statutory exam gating trading (unlike some other jurisdictions), but the person responsible for daily operations, and all food handlers, must be 'trained, instructed, or supervised' to a level commensurate with their role (Regulation (EC) 852/2004, Annex II). Company policy: the Unit Manager (currently Owner) must hold Level 3 Food Safety and Hygiene for Catering, and every food handler must hold Level 2 (or equivalent), completed before unsupervised duties begin — see Staffing & training lead time chapter.
+Business registration: The franchise entity must be registered with Companies House (if trading as a limited company) or registered for Self Assessment with HMRC (if a sole trader/partnership), and must register for VAT with HMRC once taxable turnover exceeds the registration threshold (currently £90,000).
+Health & Safety Executive (HSE): If employing staff, the employer must comply with the general duties under the Health and Safety at Work etc. Act 1974, register as an employer with HMRC for PAYE, and hold Employers' Liability insurance (a legal requirement — see below). No separate HSE licence is needed for a standard QSR takeaway, but a written health and safety policy is mandatory once the business has 5 or more employees, and RIDDOR-reportable incidents must be reported to the HSE (see H&S incident reporting chapter).
+Fire safety: A fire risk assessment must be completed and documented before opening, and the unit must comply with the Regulatory Reform (Fire Safety) Order 2005. Contact the local fire and rescue authority if a pre-opening inspection is required.
+Insurance: Appropriate business insurance must be in place before trading, covering at a minimum: public liability, Employers' Liability (a legal requirement in the UK under the Employers' Liability (Compulsory Insurance) Act 1969, minimum £5 million cover), property/contents, and business interruption.
+Roles & Responsibilities
+Franchisee: Responsible for obtaining all registrations and permissions before opening; ensuring the Unit Manager holds the required food hygiene qualification; establishing the food safety management system.
+Head Office: Provides guidance and templates (e.g. SFBB/HACCP plan template); verifies that all requirements are met before issuing Final Approval.
+Legal / Compliance Advisor: Supports with applications and regulatory interpretation where needed.
+Unit Manager: Must hold Level 3 Food Safety and Hygiene for Catering; is the named food safety lead for the unit.
+Measure Analyse Improve
+Pre-opening audit: Head Office must verify all registrations and permissions are in place before the unit is authorised to trade. Maintain a licence register for each unit listing: registration/permission type, date obtained, renewal date (if applicable), and responsible person. Flag: food business registration confirmation, Late Night Refreshment authorisation (if applicable), food hygiene certificates, SFBB/HACCP documentation, fire risk assessment, and insurance certificates must all be on file before opening day.
+Tools & Resources
+Pre-opening regulatory checklist (Head Office template). Licence register (per-unit spreadsheet). SFBB/HACCP template (see Chapter 3.6). Food business registration portal: register.food.gov.uk. Local authority licensing application forms (Late Night Refreshment, alcohol, where applicable).
+Insurance & risk transfer requirements
+Where we are today
+The Sheffield unit holds buildings and liability insurance. The current policy has been shared and is to be reviewed with an insurance broker to confirm exactly what is covered, the limits, and any gaps. 
+Priority check. The broker review must first confirm that Employers’ Liability insurance is in place, because it is a legal requirement (see below) and “liability” cover on its own may mean public liability only.
+Minimum cover — every unit, in place before trading
+Employers’ Liability (legal requirement). Any business with employees must hold Employers’ Liability insurance of at least £5 million. A copy of the certificate must be displayed where employees can easily read it, or made available electronically where staff know how to access it. Operating without cover can lead to fines of up to £2,500 for each day; failing to display the certificate can lead to a fine of up to £1,000 (HSE guidance, HSE40).
+Public liability. Injury to customers or members of the public, or damage to their property, arising from the business. Minimum limit as set in the Head Office insurance schedule.
+Product liability. Illness or injury caused by food sold, including allergen incidents. Minimum limit as set in the Head Office insurance schedule.
+Contents, stock and equipment. Kitchen equipment, fixtures and fittings, and stock, including loss of refrigerated or frozen stock following equipment or power failure.
+Business interruption. Loss of gross profit if the unit cannot trade after an insured event. Minimum indemnity period as set in the Head Office insurance schedule. 
+Buildings. Where the lease makes the tenant responsible for insuring the building.
+Delivery vehicles. Delivery using a unit's own drivers requires written Head Office approval before it starts. Where it is approved, every driver must hold motor insurance that covers hire and reward (food delivery); ordinary social, domestic and pleasure or business-use cover is not sufficient, and a driver using a personal policy for delivery is uninsured for that journey. The franchisee is responsible for checking and holding a copy of each driver's insurance certificate, licence and right-to-work documents before the driver makes a first delivery, and for rechecking at each policy renewal. Where delivery is handled through a third-party platform, the platform's rider cover applies instead and the franchisee holds written confirmation of it.
+Evidence and verification
+Head Office sets the minimum insurance limits and indemnity periods for the network on broker advice, and issues them to franchisees as an insurance schedule, reviewed annually. Each franchisee must hold cover at or above those limits, and trading without current cover at the required limits is a breach of the franchise agreement. Franchisees send Head Office copies of their insurance schedules and certificates before opening and at every renewal. Head Office checks cover is current during field visits and audits. Franchisees arrange their own insurance with an insurer or broker of their choosing, and Head Office is not named as an additional insured or interested party on franchisee policies. Keeping cover current is the franchisee's responsibility; currency is verified through the unit audit, which carries the standard question "Are business insurance policies up to date?"
+Staffing & training lead time
+Introduction
+This chapter establishes the minimum lead times for recruiting, hiring, and training the team required to open a new Imran’s Diner unit. Insufficient staffing lead time is one of the most common causes of chaotic openings. The timelines here are calibrated to UK labour market norms, notice periods, and the training requirements set out in Chapter 3.3.
+Minimum Operating Standards
+Recruitment begins no later than 8 weeks before the planned opening date.
+The Unit Manager (currently Owner) is hired and in role at least 4 weeks before opening. Build and fit-out are delivered to specification by the appointed shopfitting partner, so the Unit Manager has no site setup role. The first two weeks in post are spent in centralised training with the franchise partner. The team is recruited by the time the Unit Manager starts and begins 2 weeks before opening, so the Unit Manager is trained and in place to lead the team through final training and pre-opening preparation.
+The Unit Manager must hold Level 3 Food Safety and Hygiene for Catering before opening (see Regulatory/licensing requirements chapter). Allow at least 2 weeks for course booking and completion.
+Minimum staffing for a new unit at opening: [Tawheed to confirm: e.g. 1 Unit Manager, 2 Shift Supervisor (currently Team Leader), and X team members based on projected trading hours and labour model].
+All staff must complete the new starter training programme (see Chapter 3.3) before serving customers. Minimum training duration is 3 to 5 days full-time equivalent for team members and 2 weeks for supervisors. Day one is dedicated to food safety and allergen protocols for every new starter, regardless of role.
+Employment contracts must comply with the Employment Rights Act 1996. A written statement of employment particulars is a day-one right and must be issued on or before the first day of work. Contracts must specify: job title, start date, probation period (typically 3–6 months by convention; there is no statutory maximum. From 1 January 2027, employees gain unfair dismissal protection after 6 months’ service, reduced from 2 years under the Employment Rights Act 2025, so probation reviews must be completed and documented before the 6-month point — see Chapter 3.1, Probation review), working hours, pay, and notice period (statutory minimum is 1 week per complete year of service, up to 12 weeks, under s.86).
+All staff must be registered with HMRC before commencing work — the employer must operate PAYE and report earnings via Real Time Information (RTI) submissions.
+A staffing readiness sign-off must be submitted to Head Office as part of the pre-opening checklist at least 48 hours before opening. Where the sign-off identifies that the team is not ready, Head Office may require the opening date to move, or agree mitigating action with the franchisee before trading begins.
+Roles & Responsibilities
+Franchisee: Owns the recruitment process; ensures adequate lead time is maintained; signs employment contracts.
+Unit Manager: Leads team recruitment once hired; delivers training programme; confirms staffing readiness.
+Head Office: Provides job description templates, training materials, and the staffing readiness sign-off form.
+Measure Analyse Improve
+Track: (a) actual recruitment start date vs. target lead time, (b) percentage of staff fully trained before opening day, (c) staffing level at opening vs. plan. Post-opening, monitor early turnover (first 90 days) — high early turnover may indicate rushed recruitment or inadequate training.
+Tools & Resources
+Recruitment timeline planner (Gantt or checklist format). Job description templates (see Chapter 3.1). Training plan and sign-off sheets (see Chapter 3.3). Staffing readiness sign-off form. the rota/scheduling system (for scheduling once staff are hired).
+Systems setup — EPOS, the rota/scheduling system, due diligence system
+Why this chapter matters
+Every new unit needs these three systems configured and tested before opening. This SOP will document the setup steps, account creation, and integration checks.
+What's needed to write this SOP
+EPOS: system provider, contact for new account setup, standard menu/product configuration, hardware requirements.
+the rota/scheduling system: account setup process, who requests access, standard shift templates.
+due diligence system: onboarding process, user roles, integration with other systems.
+How to get this done
+Once the systems are live and configured at the current unit, YSF Advisory will write the setup SOP by documenting the process. For now, note any setup guides or contacts from each provider.
+Soft-launch protocol
+Introduction
+This chapter defines the soft-launch protocol for new Imran’s Diner units. A soft launch is a controlled, limited opening designed to stress-test operations, identify issues, and build team confidence before the full public launch. Every new Imran’s Diner unit must complete a soft-launch period before proceeding to grand opening.
+Minimum Operating Standards
+The soft-launch period must be a minimum of 3 trading days before the grand opening. The soft launch must test the unit at real trading pace, not simply open the doors: live ticket times against target, kitchen-to-pass handover, allergen handling, and till and card operation. The Unit Manager must debrief the soft launch with Head Office before the grand opening, and any issue identified must be closed out or carry an agreed action with a named owner and date.
+During soft launch, the unit operates with reduced hours and/or a limited menu to control volume and allow the team to focus on execution quality.
+Soft-launch invitations should be limited to: friends and family of the franchisee and team, local business neighbours, and a controlled number of walk-ins. No public marketing or social media promotion should occur during this period.
+A daily soft-launch debrief must be conducted at the end of each day, covering: what went well, what went wrong, customer feedback, equipment or system issues, and staffing observations.
+Critical issues identified during soft launch must be resolved before grand opening. If issues cannot be resolved in time, the grand opening date must be postponed — Head Office must approve any postponement.
+Head Office (or a designated representative) should be present for at least one day of the soft launch to observe and provide feedback.
+At the end of the soft-launch period, the Franchisee and Unit Manager (currently Owner) must complete a 'Launch Readiness Declaration' confirming that all identified issues have been addressed and the unit is ready for full public trading.
+Roles & Responsibilities
+Franchisee: Organises the soft-launch guest list; participates in daily debriefs; signs the Launch Readiness Declaration.
+Unit Manager: Runs day-to-day soft-launch operations; leads debriefs; documents issues and resolutions.
+Team Members: Operate as they would during normal trading; flag issues in real time.
+Head Office: Observes, provides feedback, and co-signs the Launch Readiness Declaration.
+Measure Analyse Improve
+Track: (a) number of issues identified during soft launch and percentage resolved before grand opening, (b) customer feedback scores (even informal), (c) average ticket time and order accuracy during soft launch vs. targets. Use soft-launch data to set realistic opening-week targets.
+Tools & Resources
+Soft-launch debrief template (daily log). Launch Readiness Declaration form. Issue tracker (simple spreadsheet: issue, owner, status, resolution date).
+2.4 Supplier & procurement setup
+Approved supplier list
+Current suppliers
+The Sheffield unit currently buys from the suppliers below. Status and certification are to be confirmed before this list is issued to franchisees.
+Category | Current supplier | What they supply | Required or approved alternative | Certification / documents
+Dry, frozen, chilled, packaging and cleaning | Emara Cash & Carry; CaterChoice | Chips, gas-flushed chicken breast, popcorn chicken, fish, pizza cheese, yoghurt, turkey ham and rashers, pizza flour, batter and breading, oil, pizza sauce, peri peri marinade, mayonnaise, chilli and BBQ table sauces, non-brewed condiment, green pepper, sweetcorn, jalapeños, cabbage, mushroom, drinks, packaging (kraft boxes, foil containers, cups, carrier bags), cutlery, napkins, cling film, centre-feed rolls, gloves, hairnets, beard nets, degreaser, washing-up liquid | Any approved wholesaler branch, provided the approved product specification is bought (see rules below) | Product specification and allergen information for every item supplied
+Fresh meat | Sayed Butchers; Riasat Butchers | Smash burger meat, seekh kebab mince, pizza mince, chicken wings, chicken thighs, half chickens, chicken legs for Southern Fried Chicken | [Tawheed to confirm: named backup butcher able to supply to the same specification and halal status] | [Tawheed to confirm: halal certification, traceability records and local authority approval, held on site and current]
+Fresh salad | Local greengrocer [Tawheed to confirm] | Lettuce, tomato, cucumber | Any local greengrocer; retail purchase permitted as a short-term emergency measure only | Supplier must be identifiable for traceability; no product certification required
+Smallwares and consumables (monthly order) | [Supplier to be named] | Tongs, knives, colour-coded chopping boards, utensils, spray bottles, Rational cleaning tablets, GN containers, aprons, bin bags, first aid supplies, heat lamp bulbs (see list below) | Any approved supplier; the product codes in the monthly order list below are the specification | n/a
+Branded carrier bags | [Tawheed to confirm] | Imran’s branded carrier bags (plain black XL bags used only if branded stock runs out) | Any printer able to produce to brand specification; artwork issued by Head Office. Plain black XL bags are a short-term fallback only | n/a
+Rules that apply to every unit
+Approved product, not just approved supplier. Most products are bought through cash & carry, so the same wholesaler can sell several versions of the same item. For core items — chicken, burger and kebab meat, cheese, oil, batter and breading, peri peri marinade and sauces — the approved brand or specification is fixed, whichever supplier it is bought from. Units in other areas may use a different wholesaler branch as long as the approved product is bought. No substitution without written Head Office approval. See Chapter 2.4 (Quality/spec standards for ingredients). 
+Halal status. If any halal claim is made, every unit must buy those items only from suppliers that can evidence certification, and keep current certificates on site (see Chapter 5.5 — Handling special requests/allergens at point of sale).
+Supplier documentation. Every supplier must be able to provide product specifications and allergen information for what it supplies. Meat suppliers must also provide traceability information and be registered or approved with their local authority as required for the products they supply.
+Branded packaging. Plain packaging is a short-term fallback only. Branded bags and boxes are reordered before stock runs out.
+Monthly smallwares and consumables order list
+Item | Product code
+Red Tong 16” | —
+3” Sauce Brush | —
+Floor Brush Heads | —
+Red Tong 12” | 116182
+Red Tong 14” | —
+Mop Holder Bracket | —
+Egg Whisk 8 Wire 50cm | 117169
+Heavy Duty Pizza Cutter 4” | 122744
+Cello Tape | —
+Salt Shaker | 117119
+Red Chopping Board | —
+Blue Chopping Boards | —
+Yellow Chopping Board | —
+Green Chopping Board | —
+Buffalo Sauce | —
+Straws | —
+Mop Heads | —
+Plain Parmesan Flour | —
+Vinegar Bottle | 117118
+Heavy Duty Metal Hammer | 119321
+Sanitizer Trigger Spray | 122198
+2 Pint Measuring Jug Plastic | 128380
+Heat Lamp Jacketed Infrared R7s 300W | —
+Red Cooks Knife | —
+Green Cook Knife 8.5” | 122204
+Yellow Cook Knife 8.5” | 107463
+Heavy Duty Cleaner Empty Trigger Spray | 122199
+Wooden Handle Scraper 12cm Blade | 109505
+Disposable Aprons | —
+Toilet Bin Bags | —
+Wooden Handle Turner Big 20x12.5 | 109507
+Araven Gn 1/3 x150 6lt | 103520
+White Spray Head Bottle | 131033
+Rational Tablets Blue x150 | 123911
+Yellow Spray Head Bottle | 117190
+Green Rational Tablets x150 | 131136
+Pizza Lifter Wooden Handle 8x3”x14.5” | 119306
+Wedges Serrated Cutter | 119316
+Yellow Tong 16” | 116032
+Yellow Tong 14” | —
+Yellow Tong 12” | —
+Fries Scoop 12oz | 123233
+Plasters First Aid | —
+Henny Penny Brush | —
+Chipotle Sauce | —
+Gas Pipe | —
+Supplier risk & contingency
+First-pass risk read
+This is based on the current supplier list in Chapter 2.4 (Approved supplier list) and must be confirmed by Tawheed before it is issued.
+Dry, frozen, packaging and cleaning — low risk if confirmed. Two wholesalers (Emara Cash & Carry and CaterChoice) are already used, so one can cover for the other.
+Fresh meat — potentially the highest risk. Two butchers are named (Sayed and Riasat). If both supply to the same specification (and the same halal status), a failure at one is covered by the other. If only one can meet the specification, fresh meat is effectively single-source and needs a named backup.
+Fresh salad — low risk. One local greengrocer, but lettuce, tomato and cucumber can be bought locally, including from retail as an emergency measure.
+Branded carrier bags — low trading risk. The fallback (plain black XL bags) is already in use; the risk is to brand presentation, not to trading.
+Smallwares and consumables — low trading risk. Supplier still to be named.
+Critical ingredients
+These ingredients are considered critical to the reputation and success of the business: Imran’s sauces (various), chicken (Southern Fried Chicken, peri peri, wings), chips/wedges, pizza flour and pizza cheese? (To confirm based on the sales mix), and cooking oil.
+Decisions and communication
+Disruptions are rare. When a critical ingredient is unavailable, the Owner decides whether to reduce the menu or close temporarily. Customers are told through social media and by staff at the counter. The full procedure is set out in Chapter 5.8 (Supply disruption contingency). All closures must be approved by Head Office in advance.
+Ordering & account setup process
+Introduction
+This chapter covers the process for setting up supplier accounts and placing initial orders for a new Imran’s Diner unit. Timely account setup and first orders are critical to ensuring ingredients, packaging, and consumables are available for the soft launch and opening. All ordering must go through Imran’s Diner's approved supplier list to maintain product consistency.
+Minimum Operating Standards
+Supplier accounts must be set up at least 6 weeks before the planned soft-launch date, to allow for credit checks, delivery scheduling and initial order lead times. A newly incorporated franchisee company has no trading history, so new units should expect to trade on pro-forma or cash-on-delivery terms until a payment history is established. The opening cash requirement must be budgeted on that basis, not on credit terms.
+All ingredient and packaging orders must be placed with suppliers on the Imran’s Diner approved supplier list (see Chapter 2.4 — Approved supplier list). Franchisees must not source from unapproved suppliers without written Head Office approval.
+The first order (opening stock) should be calculated based on the projected first two weeks of trading volume, with a 20% buffer to account for demand uncertainty.
+Each supplier account must be set up with: the correct legal entity name, delivery address, billing address, agreed payment terms, and a nominated order contact at the unit.
+Delivery schedules must be confirmed with each supplier and aligned with the unit's storage capacity and operating hours.
+A master order list (all SKUs, supplier, unit cost, minimum order quantity, lead time) must be maintained and kept current. Head Office provides the template; the franchisee maintains it locally.
+Payment terms: Franchisees must not agree to terms outside the standard without Head Office approval. Payment terms must be followed in line with supplier terms set out per supplier.
+Roles & Responsibilities
+Franchisee: Sets up supplier accounts; places initial orders; maintains the local master order list.
+Unit Manager (currently Owner): Manages day-to-day ordering once the unit is operational; monitors stock levels against par levels (see Chapter 5.3).
+Head Office: Maintains the approved supplier list; negotiates central pricing as the supply base develops; provides the master order list template.
+Measure Analyse Improve
+Track: (a) all supplier accounts confirmed and active before the target date, (b) first delivery received on schedule, (c) any stock-outs during the first two weeks of trading. Review supplier performance (delivery reliability, quality, pricing) quarterly.
+Tools & Resources
+Master order list template (Head Office issued). Supplier account setup checklist. Delivery schedule planner.
+Quality/spec standards for ingredients
+Why this chapter matters
+If a franchisee uses a cheaper bun, patty, or sauce, the product won't taste like Imran’s Diner. This chapter locks down ingredient quality.
+What you need to provide
+Key ingredients and their exact specifications (brand, fat content, origin, grade — whatever matters for the product).
+Any substitution rules (what can be swapped, what can never change).
+Receiving standards — how to check deliveries (temperature, packaging, dates).
+Easiest way to get this done
+Start with the 5-10 ingredients that most affect your product quality. For each one, write what makes the right one right.
+2.5 Launch marketing
+Local launch plan
+Why this chapter matters
+PRIORITY — REVENUE-CRITICAL FOR SITE #2. The first few weeks of a new unit determine whether it succeeds. This chapter is the marketing playbook specifically for launch. It sits directly next to the fully drafted grand opening protocol and soft-launch protocol — the execution machinery is ready, but the demand generation side is blank. This directly gates first-90-days revenue at Site #2, which then feeds the financial-readiness criteria in 6.4.
+What you need to provide
+What marketing activities you'd want a new unit to run before, during, and after opening (social media, local press, flyers, partnerships, etc.).
+Timeline — how far before opening should marketing start?
+Budget guidance — how much should a franchisee expect to spend on launch marketing?
+Easiest way to get this done
+Think about what worked (or what you wish you'd done) when you opened your first unit. That experience is the content. Recommendation: cover both this chapter and Initial customer acquisition tactics in a single combined WhatsApp voice note, since they're sequential (pre-opening demand build → first 3-6 months acquisition).
+Grand opening protocol
+Introduction
+This chapter defines the protocol for the grand opening of a new Imran’s Diner unit. The grand opening is the first full public trading day and is a significant marketing and operational event. It must be executed with precision — the team has one chance to make a first impression on the local market.
+Minimum Operating Standards
+The grand opening may only proceed after the soft-launch period is complete and the Launch Readiness Declaration has been signed by the Franchisee, Unit Manager (currently Owner), and Head Office (see Soft-launch protocol chapter).
+The grand opening date must be confirmed with Head Office at least 4 weeks in advance, so that pre-opening awareness activity can run ahead of the date. Detailed marketing coordination with Head Office takes place in the final 2 weeks before opening.
+Staffing across the grand opening weekend must be at 150% of the level the labour model sets for normal trading, to handle expected higher footfall. This cover comes from the unit's own team, not from other units: the opening team is recruited to 120% of the establishment the labour model requires, which provides the headroom to roster up for the opening weekend and absorbs early leavers. The 150% level is a short burst for the opening weekend only and is not a sustainable standing rota.
+A grand opening marketing plan must be agreed with Head Office covering: social media announcements, local press outreach, any opening-day promotions or giveaways, and signage/banners. [Tawheed to confirm: grand opening marketing budget, to be set when Chapter 2.5 (Local launch plan) is written. It forms part of the franchisee's opening cash requirement, so it cannot be left open indefinitely.]
+The unit must be fully stocked with at least 3 days' worth of inventory before grand opening day to avoid stock-outs during peak demand.
+Operating hours on grand opening day: Normal operating hours, where different this should be agreed with Head Office in advance.
+A designated Head Office representative should be present on grand opening day.
+A post-opening review meeting must be held within 5 days of the grand opening covering: sales performance vs. projection, customer feedback, operational issues, and lessons learned.
+Roles & Responsibilities
+Franchisee: Owns the grand opening event; ensures readiness across staffing, stock, and marketing; hosts any VIP/press attendees.
+Unit Manager: Manages operations on the day; ensures team is briefed and positioned; handles real-time issues.
+Head Office: Provides marketing support; sends a representative; participates in the post-opening review.
+Team Members: Execute at the highest standard; every team member must be briefed on grand opening expectations before the day.
+Measure Analyse Improve
+Track: (a) grand opening day sales vs. projection, (b) customer complaints or issues on the day, (c) social media reach and engagement from opening-day content, (d) staff feedback on preparedness. Use grand opening data to refine the protocol for future openings.
+Tools & Resources
+Grand opening checklist (day-before and day-of). Marketing plan template (coordinated with Head Office). Post-opening review template. Social media content calendar for launch week.
+Initial customer acquisition tactics
+Why this chapter matters
+PRIORITY — REVENUE-CRITICAL FOR SITE #2. Beyond the launch event, new units need ongoing tactics to build a customer base in the first 3-6 months. Currently blank, sitting directly next to the fully drafted soft-launch protocol and grand opening protocol. Without this chapter, a new unit opens with fanfare but has no documented plan for sustained customer acquisition afterwards.
+What you need to provide
+Specific tactics that work for Imran’s Diner (sampling, delivery app promotions, local business partnerships, school/university outreach, etc.).
+Any tactics you've tried that didn't work.
+Target customer numbers or revenue for the first 3 months.
+Easiest way to get this done
+List what you've actually done or would do. Real-world tactics are more useful than generic marketing theory. Recommendation: cover this together with the Local launch plan chapter in a single combined WhatsApp voice note — they're sequential and the thinking flows naturally from one to the other.
+3. People
+3.1 Recruitment & onboarding
+Job descriptions by role
+Introduction
+This chapter provides standardised job description templates for core roles within an Imran’s Diner unit. Clear job descriptions support the written statement of employment particulars required under the Employment Rights Act 1996 (which must specify the employee's job title or a brief description of the work), and they are essential for setting expectations, supporting performance management, and ensuring consistency across franchise locations.
+Minimum Operating Standards
+Every role within a Imran’s Diner unit must have a written job description approved by Head Office. Job descriptions must be issued to employees as part of their employment contract or as an attached schedule.
+Core roles (minimum): Unit Manager (currently Owner), Shift Supervisor (currently Team Leader), Team Member (front of house/counter), Team Member (kitchen/prep).
+Each job description must include: job title, reporting line, key responsibilities (no more than 10), required qualifications or certifications, working hours/pattern, and physical requirements.
+Job descriptions must comply with the Equality Act 2010 — they must not include requirements that directly or indirectly discriminate on a protected characteristic.
+Job descriptions must be reviewed and updated at least annually, or whenever a role changes materially.
+All job descriptions must be available in English. Translated versions may be maintained in parallel where relevant for non-English-speaking staff, but the English version is the reference document.
+Roles & Responsibilities
+Head Office: Develops and maintains master job description templates; approves role changes.
+Franchisee: Ensures all staff have received their job description; adapts templates for local needs within approved parameters.
+Unit Manager: Uses job descriptions for recruitment, onboarding, and performance conversations.
+Measure Analyse Improve
+Audit annually that every employee has a current, signed job description on file. Track any role-related disputes or grievances that may indicate unclear job descriptions. Review job descriptions as part of the annual manual review cycle.
+Tools & Resources
+Job description templates (by role, issued by Head Office). Employment contract template (see Chapter 3.5). Role matrix (summary table showing all roles, reporting lines, and key differentiators).
+Recruitment process & channels
+Introduction
+This chapter defines the standard recruitment process and approved channels for hiring staff into Imran’s Diner units. A consistent recruitment process ensures the brand attracts and selects team members who align with Imran’s Diner's values and service standards, while complying with UK employment law.
+Minimum Operating Standards
+All vacancies must be advertised using approved channels. Recommended channels for the UK market include: Indeed, the DWP's Find a Job service (free job postings via gov.uk/find-a-job), social media (Instagram, Facebook, TikTok), local community boards, and word-of-mouth/employee referrals.
+Job advertisements must comply with the Equality Act 2010 — no discriminatory language or requirements. Advertisements must state the role title, location, approximate hours, and application method.
+The recruitment process follows six stages: (1) Advertise vacancy, (2) Screen applications (CV and cover letter), (3) Interview (at least one structured interview using standardised questions), (4) Reference check (minimum one reference from a previous employer), (5) Right to work check, completed and evidenced before the start date, (6) Offer and contract.
+Interviews must be conducted using a standardised question set to ensure fairness and consistency. Head Office provides interview guides by role.
+Under UK law, employers should not ask about pregnancy, family planning, religion, political views, or trade union membership during interviews, as doing so risks a discrimination claim under the Equality Act 2010.
+All applicants must receive a response (offer or rejection) within 10 working days of their interview. Rejected candidates should receive a respectful, professional notification. 

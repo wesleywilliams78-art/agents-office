@@ -35,10 +35,11 @@ export const CLAUDE_CODE = 'claude-code';
 const BOX = { id: CLAUDE_CODE, name: 'Grace', department: '' }; // Grace (after Grace Hopper): the box's name in the office, 8 Nov 2026
 // what the review card and the task record hold: one entry per decision, numbered, with the problem if it cannot run
 // "pco", "PROJECT CO-ORDINATOR", "project-co-ordinator" all find the seat, the writer's own included (unlike a handoff); ambiguous or unknown names find nothing
+const DEPT = { finance: 'fin', accounting: 'fin', operations: 'ops' };
 const norm = s => String(s || '').toLowerCase().replace(/[^a-z0-9]+/g, '');
 export function plan(blocks, agents, from) {
   const self = agents.find(a => a.id === from);
-  const seat = to => { const n = norm(to); if (!n) return self; if (n === 'claudecode' || n === 'grace') return BOX; const hit = agents.filter(a => [a.id, a.name, a.role].some(x => norm(x) === n)); return hit.length === 1 ? hit[0] : null; };
+  const seat = to => { const n = norm(to); if (!n) return self; if (n === 'claudecode' || n === 'grace') return BOX; const hit = agents.filter(a => [a.id, a.name, a.role].some(x => norm(x) === n)); if (hit.length === 1) return hit[0]; const dept = DEPT[n] || n; return hit.length ? null : agents.find(a => a.lead && a.department === dept) || null; }; // a department name ("finance", "ops") finds that department's lead (20 Nov 2026)
   return blocks.map((b, i) => {
     const a = seat(b.to);
     const problem = !b.ask ? 'no question' : !a ? `no seat called "${b.to}"` : !b.text ? 'no instructions for a yes' : '';

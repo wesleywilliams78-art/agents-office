@@ -1,0 +1,12 @@
+{
+ "issue": "04-kenya",
+ "why": "Rebuild the 9 Nov Harlyy revision on the current builder (cover disclosure, page 4 labels) and confirm the date reads 13 NOV 2026.",
+ "base": "videos/franchise-entry-report/issues/04-kenya/revisions/2026-11-09T09-10-25-edit/issue.json",
+ "at": "2026-11-09T16:23:12.295Z",
+ "edits": [
+  {
+   "path": "dateLong",
+   "value": "13 NOV 2026"
+  }
+ ]
+}

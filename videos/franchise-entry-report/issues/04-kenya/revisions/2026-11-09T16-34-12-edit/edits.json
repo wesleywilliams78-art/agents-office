@@ -1,0 +1,13 @@
+{
+ "issue": "04-kenya",
+ "why": "Probe: locate the 15-minute figure in the white-space intro.",
+ "base": "videos/franchise-entry-report/issues/04-kenya/revisions/2026-11-09T16-32-29-edit/issue.json",
+ "at": "2026-11-09T16:34:12.288Z",
+ "edits": [
+  {
+   "path": "white.intro",
+   "find": "15",
+   "replace": "15"
+  }
+ ]
+}

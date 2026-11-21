@@ -1,5 +1,7 @@
 # DESIGN.md — The Operator's Ledger (series design system)
 
+> **Legacy for visuals (19 Nov 2026).** The character, shopfront, stacked-bar and cartoon rules below describe the original Episodes 01 to 04. New episodes use the `ledger-fresh` look (Episode 03 v3): see `connectors/motion-studio/series/ledger-fresh/BRIEF.md` and Brain `40-Marketing/operators-ledger-look.md`. Colours, type, voice, captions, end card and the format below still apply.
+
 Applies to all 10 episodes. Each episode folder reads this file and does not change it. The brand comes from `motion.md` and the brain skill `Agents Office/skills/brand-visual-system`. Where they disagree with this file, they win, except where this file names an exception.
 
 All design decisions were settled on 24 Oct 2026.

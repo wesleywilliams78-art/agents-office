@@ -1,0 +1,75 @@
+· voicing line 1 of 9
+· voicing line 2 of 9
+· voicing line 3 of 9
+· voicing line 4 of 9
+· voicing line 5 of 9
+· voicing line 6 of 9
+· voicing line 7 of 9
+· voicing line 8 of 9
+· voicing line 9 of 9
+· softening the plosives
+· timing the words of line 1
+· timing the words of line 2
+· timing the words of line 3
+· timing the words of line 4
+· timing the words of line 5
+· timing the words of line 6
+· timing the words of line 7
+· timing the words of line 8
+· timing the words of line 9
+{
+ "id": "ep05v1",
+ "source": "clone",
+ "standIn": false,
+ "voice": "Wesley (VoiceStudio voxcpm2, profile ca7acc09)",
+ "lines": [
+  {
+   "id": "s1",
+   "duration": 7.75,
+   "wpm": 139
+  },
+  {
+   "id": "s2",
+   "duration": 5.97,
+   "wpm": 171
+  },
+  {
+   "id": "s3",
+   "duration": 8.57,
+   "wpm": 154
+  },
+  {
+   "id": "s4",
+   "duration": 9.18,
+   "wpm": 111
+  },
+  {
+   "id": "s5",
+   "duration": 14.59,
+   "wpm": 107
+  },
+  {
+   "id": "s6",
+   "duration": 11.52,
+   "wpm": 130
+  },
+  {
+   "id": "s7",
+   "duration": 15.19,
+   "wpm": 130
+  },
+  {
+   "id": "s8",
+   "duration": 10.06,
+   "wpm": 149
+  },
+  {
+   "id": "s9",
+   "duration": 2.38,
+   "wpm": 126
+  }
+ ],
+ "warnings": [
+  "line s2: Whisper did not hear \"and\": retake that line"
+ ]
+}

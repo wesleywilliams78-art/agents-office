@@ -1,0 +1,344 @@
+All staff must complete the new starter training programme (see Chapter 3.3) before serving customers. Minimum training duration: 3-5 days full-time equivalent for team members, 2 weeks for supervisors. Right - Done WW
+Employment contracts must comply with arbeidsmiljøloven (Working Environment Act). Written contracts are mandatory and must be issued before or on the first day of work (§14-5). Contracts must specify: job title, start date, probation period (max 6 months per §15-6), working hours, pay, and notice period.
+All staff must be registered with the Norwegian tax authorities (Skatteetaten) before commencing work — the employer must report via A-meldingen (the monthly employment and income report).
+A staffing readiness sign-off must be submitted to Head Office as part of the pre-opening checklist at least 2 weeks before opening.
+Roles & Responsibilities
+Franchisee: Owns the recruitment process; ensures adequate lead time is maintained; signs employment contracts.
+Unit Manager: Leads team recruitment once hired; delivers training programme; confirms staffing readiness.
+Head Office: Provides job description templates, training materials, and the staffing readiness sign-off form.
+Measure Analyse Improve
+Track: (a) actual recruitment start date vs. target lead time, (b) percentage of staff fully trained before opening day, (c) staffing level at opening vs. plan. Post-opening, monitor early turnover (first 90 days) — high early turnover may indicate rushed recruitment or inadequate training.
+Tools & Resources
+Recruitment timeline planner (Gantt or checklist format). Job description templates (see Chapter 3.1). Training plan and sign-off sheets (see Chapter 3.3). Staffing readiness sign-off form. Tidsbanken (for scheduling once staff are hired).
+
+Systems setup — EPOS, Tidsbanken, SmartMate   [TOOL-REFERENCED] - Finalise once new tools are agreed and settled
+Why this chapter matters
+Every new unit needs these three systems configured and tested before opening. This SOP will document the setup steps, account creation, and integration checks.
+What's needed to write this SOP
+EPOS: system provider, contact for new account setup, standard menu/product configuration, hardware requirements.
+Tidsbanken: account setup process, who requests access, standard shift templates.
+SmartMate: onboarding process, user roles, integration with other systems.
+How to get this done
+Once the systems are live and configured at the current unit, YSF Advisory will write the setup SOP by documenting the process. For now, note any setup guides or contacts from each provider.
+
+Soft-launch protocol   [YSF ADVISORY — DRAFTED, PENDING REVIEW - COMPLETED FROM NOTES]
+
+Introduction
+This chapter defines the soft-launch protocol for new Creamy units. A soft launch is a controlled, limited opening designed to stress-test operations, identify issues, and build team confidence before the full public launch. Every new Creamy unit must complete a soft-launch period before proceeding to grand opening.
+Minimum Operating Standards
+The soft-launch period must be a minimum of 3-5 trading days before the grand opening.
+During soft launch, the unit operates with reduced hours and/or a limited menu to control volume and allow the team to focus on execution quality.
+Soft-launch invitations should be limited to: friends and family of the franchisee and team, local business neighbours, and a controlled number of walk-ins. No public marketing or social media promotion should occur during this period.
+A daily soft-launch debrief must be conducted at the end of each day, covering: what went well, what went wrong, customer feedback, equipment or system issues, and staffing observations.
+Critical issues identified during soft launch must be resolved before grand opening. If issues cannot be resolved in time, the grand opening date must be postponed — Head Office must approve any postponement.
+Head Office (or a designated representative) should be present for at least one day of the soft launch to observe and provide feedback.
+At the end of the soft-launch period, the Franchisee and Unit Manager must complete a 'Launch Readiness Declaration' confirming that all identified issues have been addressed and the unit is ready for full public trading.
+Roles & Responsibilities
+Franchisee: Organises the soft-launch guest list; participates in daily debriefs; signs the Launch Readiness Declaration.
+Unit Manager: Runs day-to-day soft-launch operations; leads debriefs; documents issues and resolutions.
+Team Members: Operate as they would during normal trading; flag issues in real time.
+Head Office: Observes, provides feedback, and co-signs the Launch Readiness Declaration.
+Measure Analyse Improve
+Track: (a) number of issues identified during soft launch and percentage resolved before grand opening, (b) customer feedback scores (even informal), (c) average ticket time and order accuracy during soft launch vs. targets. Use soft-launch data to set realistic opening-week targets.
+Tools & Resources
+Soft-launch debrief template (daily log). Launch Readiness Declaration form. Issue tracker (simple spreadsheet: issue, owner, status, resolution date).
+
+2.4  Supplier & procurement setup
+
+Approved supplier list   [YSF ADVISORY — DRAFTED, PENDING REVIEW - COMPLETED FROM NOTES]
+Introduction
+This chapter lists the approved suppliers for all Creamy franchise units. Franchisees must purchase from approved suppliers only — this is not a recommendation, it is a requirement. Supplier control is how Creamy guarantees product consistency, food safety traceability, and cost efficiency across the franchise network.
+Using unapproved suppliers introduces risk at every level: the product may taste different, allergen information may be unreliable, traceability in the event of a food safety incident is broken, and the brand's negotiated pricing is undermined. The non-negotiable operating standards (see Chapter 2.3) explicitly prohibit using ingredients or products that are not confirmed by Head Office — the approved supplier list is how that standard is enforced in practice.
+This chapter provides the current approved suppliers and what each one supplies. Specific product codes, order processes, delivery schedules, and account setup instructions are maintained separately by Head Office and provided to each franchisee during onboarding.
+
+Minimum Operating Standards
+APPROVED SUPPLIERS
+The following suppliers are approved for all Creamy franchise units. Franchisees must order from these suppliers for the specified product categories.
+
+1. ASKO — Main Food Supplier
+Category | Primary food and dry goods
+Supplier | ASKO (part of NorgesGruppen)
+What they supply | General food products, dairy, dry goods, and other kitchen supplies as specified in the Creamy product list
+Coverage | Nationwide delivery across Norway
+Account | Each franchisee will be set up with an ASKO account during onboarding. Head Office will provide the Creamy-specific product list and ordering guidance.
+ASKO is Norway's largest food wholesaler and delivers to all regions of the country. Their nationwide coverage ensures that franchisees in any approved city (see Chapter 2.2 — Site Selection) can receive consistent supply without sourcing locally.
+
+2. Tingstad — Packaging and Cleaning Supplies
+Category | Disposable packaging, cleaning products, consumables
+Supplier | Tingstad
+What they supply | Takeaway packaging, disposable containers, napkins, cleaning chemicals, hygiene consumables, and related supplies
+Account | Each franchisee will be set up with a Tingstad account during onboarding.
+Packaging is brand-facing — a takeaway box or bag is the last thing a customer sees and touches. Using non-approved packaging with different colours, branding, or quality undermines the brand experience. All disposable packaging must be ordered through Tingstad to ensure consistency.
+Cleaning products must also be sourced through Tingstad to ensure they are food-safe, compliant with Norwegian chemical safety regulations (kjemikalieforskriften), and appropriate for use in a food preparation environment. Franchisees must not substitute with household cleaning products or unapproved commercial alternatives.
+
+3. Egil Jensen — Fruit Supplier
+Category | Fresh fruit
+Supplier | Egil Jensen
+What they supply | Fresh fruit for dessert preparation and garnishing
+Coverage | Regional — does not deliver to all Norwegian cities
+Local alternative | If a franchisee is located in a city where Egil Jensen does not deliver, the franchisee may use a local fruit supplier, subject to Head Office approval.
+Important — local supplier exception: This is the only product category where a local supplier may be used as an alternative to the approved supplier. The exception exists because fresh fruit logistics are regionally constrained — unlike dry goods or frozen products, fresh fruit requires frequent delivery from a supplier with local distribution capability.
+If a franchisee needs to use a local fruit supplier, the following conditions apply:
+The franchisee must notify Head Office and obtain written approval before placing orders with the local supplier
+The local supplier must be able to provide consistent quality, reliable delivery, and full allergen and origin traceability
+The fruit quality must meet or exceed the standard delivered by Egil Jensen — approval is based on quality equivalence, not price
+Head Office reserves the right to reject a proposed local supplier or to revoke approval if quality standards are not maintained
+The franchisee must keep records of all deliveries from the local supplier (delivery notes, invoices) for traceability purposes
+[Adnan to confirm: whether there are specific fruit varieties, quality grades, or sourcing standards that a local supplier must meet — e.g. organic requirements, origin preferences, minimum ripeness standards.]
+
+4. Coca-Cola — Drinks Supplier
+Category | Soft drinks and beverages
+Supplier | Coca-Cola (Coca-Cola Europacific Partners Norge)
+What they supply | Soft drinks, juices, and other branded beverages as specified in the Creamy drinks menu
+Account | Franchise accounts are set up through Coca-Cola's commercial team. Head Office will facilitate the introduction.
+The drinks menu is defined by Head Office. Franchisees must not add drinks from other suppliers or brands to the menu without Head Office approval. The Coca-Cola relationship may include equipment provision (dispensers, fridges) — terms will be confirmed during onboarding.
+
+5. Creamy Drift AS — Proprietary Creamy Products
+Category | Creamy-specific proprietary products
+Supplier | Creamy Drift AS (Creamy's own company)
+What they supply | Chocolate pallets, pistachio cream, and other proprietary Creamy products as specified
+Account | Direct supply from Head Office — ordering process provided during onboarding.
+These are products that are specific to Creamy and not available through general wholesale suppliers. They are core to the Creamy product range and directly define the brand's flavour profile. Substitution is absolutely prohibited — this is the most critical element of the non-negotiable "approved products only" standard (see Chapter 2.3).
+As the product range evolves, additional proprietary items may be added to the Creamy Drift AS supply list. Head Office will communicate any additions with appropriate lead time for franchisees to adjust their ordering.
+
+6. Vaffelprinsen AS — Waffle and Crepe Mix, and Equipment
+Category | Waffle mix, crepe mix, and waffle/crepe equipment
+Supplier | Vaffelprinsen AS
+What they supply | Waffle batter mix, crepe batter mix, waffle machines, and crepe machines
+Account | Account setup facilitated by Head Office during onboarding.
+Vaffelprinsen supplies both the mixes and the machines. This is significant — the product result depends on the combination of the correct mix with the correct machine. Using a Vaffelprinsen mix in a non-approved machine (or vice versa) may produce an inconsistent product. Both the mix and the equipment must come from Vaffelprinsen unless Head Office specifies otherwise.
+The waffle mix is the product that turned Creamy's fortunes around in 2017 (see Chapter 1.1 — Origin Story). It is a defining element of the brand. Using any alternative waffle or crepe mix is a non-negotiable breach — listed explicitly in Chapter 2.3.
+
+SUPPLIER SUMMARY TABLE
+Supplier | Category | Local alternative permitted?
+ASKO | Main food and dry goods | No
+Tingstad | Packaging and cleaning | No
+Egil Jensen | Fresh fruit | Yes — with Head Office approval, where Egil Jensen does not deliver
+Coca-Cola | Drinks | No
+Creamy Drift AS | Proprietary Creamy products | No
+Vaffelprinsen AS | Waffle/crepe mix and equipment | No
+
+GENERAL SUPPLIER RULES
+(a) No unapproved suppliers. Franchisees must not purchase any product used in Creamy operations from a supplier not on this list without prior written approval from Head Office. This includes "temporary" purchases, "emergency" substitutions, and products sourced from retail shops. If a delivery fails and the franchisee needs product urgently, they must contact Head Office for guidance — not go to the local supermarket.
+(b) No unapproved products from approved suppliers. The approved supplier relationship covers specific product categories. Ordering non-approved products from an approved supplier (e.g. ordering a different brand of chocolate from ASKO instead of the Creamy Drift AS product) is still a breach of the supplier standards.
+(c) Pricing and terms. Creamy has negotiated pricing and terms with each approved supplier. Franchisees benefit from these terms through their franchise accounts. Franchisees must not negotiate separate pricing or terms with approved suppliers without Head Office involvement — individual negotiations can undermine the network-wide arrangement.
+(d) New supplier requests. If a franchisee identifies a potential supplier for a product category not currently covered, or believes a better alternative exists, they may propose it to Head Office for evaluation. Head Office will assess the supplier on quality, reliability, coverage, pricing, food safety compliance, and traceability before making a decision. The franchisee must not use the proposed supplier until formal approval is granted.
+(e) Supplier changes. Head Office may change approved suppliers as better options become available or as the network's needs evolve. Any supplier change will be communicated to franchisees with sufficient lead time to transition ordering. Franchisees must transition to the new supplier within the timeframe specified.
+
+Roles & Responsibilities
+Creamy Head Office / Creamy Drift AS: Maintains the approved supplier list. Negotiates pricing and terms. Onboards franchisees with each supplier. Evaluates new supplier proposals. Communicates supplier changes. Supplies proprietary Creamy products directly.
+Franchise Owner / Operator: Orders exclusively from approved suppliers. Sets up accounts during onboarding. Manages ordering, deliveries, and stock levels at the unit. Reports any supplier quality or delivery issues to Head Office. Seeks approval before using any local alternative (fruit only). Does not negotiate independently with suppliers.
+Unit Manager: Manages day-to-day ordering and receiving. Checks deliveries against orders for quantity, quality, and damage. Reports any quality issues (wrong product, poor quality fruit, damaged packaging) to the franchisee and Head Office. Ensures all received products are stored, labelled, and dated correctly (see Chapter 2.3 — non-negotiable on labelling and expiry dates).
+Team Members: Use only the products provided through approved suppliers. Report any product that looks, smells, or performs differently from normal to the Unit Manager. Do not use products from personal purchases or unapproved sources under any circumstances.
+
+Measure, Analyse, Improve
+(a) Supplier compliance audit. During operational audits, check that all products in the kitchen are from approved suppliers. Inspect labels, packaging, and product branding. Any non-approved product is a non-negotiable breach.
+(b) Delivery reliability tracking. Track delivery performance by supplier: on-time rate, order accuracy, product quality on receipt. Report issues to Head Office centrally so that patterns can be identified and addressed at the supplier relationship level, not just the individual franchisee level.
+(c) Cost tracking. Monitor purchasing costs by supplier and product category. Compare across franchisees to identify any units paying above the agreed terms (which may indicate ordering outside the approved arrangement) or any units with unusually low costs (which may indicate substitution with cheaper alternatives).
+(d) Local supplier review (fruit). Where a local fruit supplier is approved, review their performance at least quarterly: quality consistency, delivery reliability, pricing, and traceability. Head Office should aim to bring all units onto Egil Jensen supply as the network grows and delivery coverage potentially expands.
+
+Tools & Resources
+Approved supplier contact and account setup guide (provided by Head Office during onboarding).
+Creamy product ordering list (product codes, minimum order quantities, order frequency guidance — by supplier).
+Delivery receipt and quality check form.
+Local supplier approval request form (for fruit supplier alternative only).
+Supplier performance tracker (delivery, quality, cost — maintained centrally by Head Office).
+Sources:
+ASKO — About Us
+Tingstad — Packaging and Consumables in Norway
+
+Asko. the main supplier, Tingstad. For the packaging and cleaning.Egil jensen. Fruit supplier, is the franchisee in a city where they dont deliver, then they can use a local supplier.Coca cola. Drink supplier. Creamy Drift As. supplier of chocolate pallets, pistascio cream etcVaffelprinsen AS. Supplier of Waffle and Crepe mix. And Machine for Waffle and crepes. 
+
+Supplier risk & contingency   [YSF ADVISORY — DRAFTED, PENDING REVIEW - COMPLETED FROM NOTES]
+Introduction
+This chapter addresses what happens when a supplier cannot fulfil an order — a delivery fails, a product is temporarily unavailable, or a supplier relationship ends. It is a short chapter because the honest position is that significant supply disruption is rare in the Norwegian market, and the correct response in almost every scenario is the same: contact Head Office.
+Norway's food wholesale market is concentrated. For most product categories, there are not multiple equivalent suppliers offering the same product at the same standard. This is precisely why Creamy operates with a single approved supplier per category (see Chapter 2.7 — Approved Supplier List) — it guarantees consistent quality, consistent shelf life, and a traceable supply chain. The trade-off is that switching suppliers is not a quick fix when something goes wrong, and franchisees should not attempt it independently.
+This chapter exists to ensure that franchisees know what to do — and, equally importantly, what not to do — if a supply issue arises.
+
+Minimum Operating Standards
+The core principle: Head Office resolves supply disruptions. Franchisees do not.
+If an approved supplier cannot provide a product, the franchisee must contact Head Office. Head Office will either source an approved alternative from the same supplier (most suppliers carry similar or substitute products), identify a temporary approved replacement from another source, or confirm that the product should be removed from the menu temporarily until supply is restored.
+The franchisee must not independently source a replacement product from a non-approved supplier, purchase from a retail shop, or substitute with a different product from the approved supplier's range without Head Office confirmation. This is not bureaucracy — it is the only way to guarantee that what ends up in the customer's dessert meets Creamy's quality, allergen, and traceability standards.
+Scenario-by-scenario guidance:
+Scenario 1 — Short-term product unavailability (supplier is temporarily out of stock).
+This is the most common situation and is usually resolved within one or two delivery cycles.
+Action: Contact Head Office. In most cases, the supplier will have a similar or equivalent product available. Head Office will confirm whether the alternative is approved for use. If no suitable alternative is available from the supplier, Head Office will advise whether to temporarily remove the affected menu item or source from an alternative approved channel.
+Do not: Assume that a "similar-looking" product from the same supplier is an acceptable substitute without Head Office confirmation. Product specifications (ingredients, allergens, portion sizes, flavour profiles) may differ.
+Scenario 2 — Delivery failure (order placed but not received or received incomplete).
+Action: Contact the supplier directly to resolve the delivery issue (reschedule, partial redelivery). If the issue cannot be resolved in time for service, contact Head Office for guidance. If a critical product is missing and the unit cannot operate its core menu, Head Office will advise on the best course of action — which may include temporary menu adjustment or emergency sourcing.
+Do not: Go to a retail shop or local wholesale to "fill the gap." The product will not be the same specification, it will not carry the correct traceability, and it may not meet Creamy's quality standard.
+Scenario 3 — Supplier discontinues a product permanently.
+This is rare but does happen — a supplier may discontinue a product line, change a recipe, or exit a product category.
+Action: Head Office will have a replacement ready. When a supplier signals that a product is being discontinued, Head Office will identify, test, and approve a replacement before the current supply runs out. Franchisees will be notified of the change with sufficient lead time to adjust their ordering.
+Do not: Attempt to stockpile the outgoing product beyond normal stock levels (this creates waste and storage problems), or source the "same" product from another supplier without Head Office approval (it may be a different formulation, different allergen profile, or different quality).
+Scenario 4 — Supplier relationship ends (Creamy changes supplier for a category).
+Head Office may change an approved supplier — for example, if a better option becomes available, if the current supplier's quality deteriorates, or if pricing terms change unfavourably.
+Action: Head Office will manage the transition. Franchisees will receive the new supplier details, account setup instructions, updated product codes, and a transition timeline. Franchisees must complete the transition within the specified timeframe.
+Do not: Continue ordering from the outgoing supplier after the transition deadline. Do not negotiate independently with the outgoing supplier to retain a relationship.
+Scenario 5 — Local fruit supplier issue (where Egil Jensen does not deliver).
+Franchisees operating with an approved local fruit supplier (see Chapter 2.7) are responsible for managing that relationship day to day. If the local supplier cannot deliver:
+Action: Contact Head Office. Head Office will advise on whether an alternative local supplier can be approved, whether fruit products should be temporarily removed from the menu, or whether ASKO (the main supplier) can provide acceptable fruit products as a short-term substitute.
+Do not: Source fruit from a retail shop or unapproved supplier without Head Office confirmation.
+
+WHAT FRANCHISEES MUST NEVER DO — REGARDLESS OF SCENARIO
+Purchase any food product from a retail supermarket or shop for use in Creamy operations
+Use a product from a non-approved supplier without written Head Office approval
+Substitute one ingredient for another (even within the same supplier's range) without Head Office confirmation
+Serve a product made with non-approved ingredients to a customer
+Decide independently to remove a menu item — menu changes, even temporary ones, must be coordinated with Head Office to ensure consistency across locations and accuracy on delivery platforms and printed menus
+
+Roles & Responsibilities
+Creamy Head Office: Monitors supplier relationships and product availability across the network. Maintains contingency plans for each supplier and product category — specifically, an identified replacement product or alternative source for every critical product. Communicates proactively with franchisees if a supply disruption is anticipated (e.g. a supplier has signalled a discontinuation). Resolves supply issues centrally rather than leaving individual franchisees to navigate them alone.
+Franchise Owner / Operator: Reports supply issues to Head Office promptly. Does not attempt to resolve supply problems independently through unapproved channels. Maintains sufficient stock levels to absorb a single missed delivery without menu disruption (see Chapter 5.3 — Stock management [NEEDS ADNAN INPUT] for guidance on minimum stock levels). Follows Head Office instructions on approved alternatives or temporary menu adjustments.
+Unit Manager: Monitors stock levels daily and places orders with sufficient lead time to avoid emergency situations. Checks deliveries on receipt for completeness and quality. Reports any delivery shortfall, damaged goods, or quality concern to the franchisee and Head Office immediately — early reporting gives Head Office the most time to find a solution.
+Team Members: Report to the Unit Manager if any product looks, smells, or performs differently from normal — this may indicate a supplier has changed a formulation. Do not use any product that is not part of the normal Creamy supply, even if a manager asks — escalate to the franchisee or Head Office if you are asked to use an unapproved product.
+
+Measure, Analyse, Improve
+(a) Supply disruption log. Track all supply disruptions across the franchise network: date, supplier, product, nature of the disruption, how it was resolved, and any impact on the unit's ability to trade its full menu. Review quarterly to identify patterns — if the same supplier is repeatedly failing to deliver, it becomes a supplier performance issue for Head Office to address at the relationship level.
+(b) Resolution time. Track how quickly supply disruptions are resolved — from the franchisee's report to the product being available again (or an approved alternative in place). Aim for same-day or next-day resolution for critical products. Longer resolution times may indicate a gap in Head Office's contingency planning.
+(c) Unauthorised sourcing. During operational audits, check for any products in the kitchen that do not come from an approved supplier (see Chapter 2.7 audit guidance). Any unauthorised product found is a non-negotiable breach, regardless of the reason it was sourced.
+
+Tools & Resources
+Head Office supply disruption contact (phone and email — for franchisees to report issues and receive guidance).
+Supply disruption report form (date, supplier, product, impact, action taken).
+Approved supplier list (Chapter 2.7 — the single reference for who supplies what).
+Minimum stock level guidance (see Chapter 5.3 — to reduce the likelihood of supply disruptions causing immediate menu impact).
+
+It is very rarely that a supplier can not supply you with a product or dosent have something similar. In Norway we usually dont have many supplier of the same product. We stick to one supplier for the benefit of the right quality, expiring date etc.
+If for some reasons the supplier can not provide the product anymore the head office will have a replacement for that product ready.
+
+Ordering & account setup process   [YSF ADVISORY — DRAFTED, PENDING REVIEW]
+Introduction
+This chapter covers the process for setting up supplier accounts and placing initial orders for a new Creamy unit. Timely account setup and first orders are critical to ensuring ingredients, packaging, and consumables are available for the soft launch and opening. All ordering must go through Creamy's approved supplier list to maintain product consistency and negotiated pricing.
+Minimum Operating Standards
+Supplier accounts must be set up at least [Adnan to confirm: e.g. 4 weeks] before the planned soft-launch date to allow for credit checks, delivery scheduling, and initial order lead times. Right
+All ingredient and packaging orders must be placed with suppliers on the Creamy approved supplier list (see Chapter 2.4 — Approved supplier list). Franchisees must not source from unapproved suppliers without written Head Office approval. Right
+The first order (opening stock) should be calculated based on the projected first two weeks of trading volume, with a buffer of [Adnan to confirm: e.g. 20%] to account for demand uncertainty. Right
+Each supplier account must be set up with: the correct legal entity name, delivery address, billing address, agreed payment terms, and a nominated order contact at the unit. Right
+Delivery schedules must be confirmed with each supplier and aligned with the unit's storage capacity and operating hours. Right
+A master order list (all SKUs, supplier, unit cost, minimum order quantity, lead time) must be maintained and kept current. Head Office provides the template; the franchisee maintains it locally. Right
+Payment terms: Franchisees must not agree to terms outside the standard set by the supplier without Head Office approval. It is standard from the supplier
+Roles & Responsibilities
+Franchisee: Sets up supplier accounts; places initial orders; maintains the local master order list.
+Unit Manager: Manages day-to-day ordering once the unit is operational; monitors stock levels against par levels (see Chapter 5.3).
+Head Office: Maintains the approved supplier list; negotiates central pricing where applicable; provides the master order list template.
+Measure Analyse Improve
+Track: (a) all supplier accounts confirmed and active before the target date, (b) first delivery received on schedule, (c) any stock-outs during the first two weeks of trading. Review supplier performance (delivery reliability, quality, pricing) quarterly.
+Tools & Resources
+Master order list template (Head Office issued). Supplier account setup checklist. Delivery schedule planner.
+
+Quality/spec standards for ingredients   [YSF ADVISORY — DRAFTED, PENDING REVIEW - COMPLETED FROM NOTES]
+Introduction
+This chapter explains why Creamy's ingredient specifications exist — not just what to buy (that is covered in Chapter 2.7 — Approved Supplier List) but why specific quality grades matter and what goes wrong when they are substituted. It is the chapter a franchisee should read when they are tempted to save money by switching to a cheaper version of something.
+Every ingredient specification in Creamy's product range exists because it has been tested. In many cases, the cheaper alternative has also been tested — and rejected. The founder and Head Office have already made the mistakes that a cost-cutting franchisee would make, and this chapter documents the lessons so they do not need to be repeated at the customer's expense.
+The underlying principle is simple: Creamy's product quality is built on the interaction between specific ingredients, specific recipes, and specific techniques. Change one ingredient and the product changes — sometimes obviously, sometimes subtly, but always in a way the customer will eventually notice. "Quality Always First" (see Chapter 1.4 — Core Values) is not an abstract value when it comes to ingredients — it is a purchasing discipline.
+
+Minimum Operating Standards
+THE PRINCIPLE: SPECIFICATION EXISTS FOR A REASON
+Every ingredient used in Creamy products is specified by Head Office — the supplier, the brand, the grade, and in some cases the exact product code. These specifications are not arbitrary preferences. Each one reflects a tested relationship between the ingredient and the final product outcome. The sections below illustrate this with specific examples from Creamy's core product range.
+Franchisees must use the specified ingredients exactly as listed in the approved product list (see Chapter 2.7). The examples below explain why — so that the reasoning is understood, not just the rule.
+
+CHOCOLATE — COCOA PERCENTAGE MATTERS
+Creamy uses chocolate at a specific cocoa percentage. This is not a premium label or a marketing choice — it is a flavour and performance specification. Chocolate with a different cocoa percentage will taste different in the finished dessert, even if the difference seems small on the packaging.
+A lower cocoa percentage produces a sweeter, less complex flavour and a different melt profile. Sauces and toppings will be thinner and less rich.
+A higher cocoa percentage produces a more bitter, more intense flavour that may overpower other dessert components.
+The specified percentage is calibrated to Creamy's recipes. The recipes assume a specific sweetness, viscosity, and flavour intensity from the chocolate. Change the chocolate and the recipe no longer produces the intended result.
+The chocolate specification is supplied by Creamy Drift AS (see Chapter 2.7). There is no acceptable substitute from another supplier.
+
+BUTTER — AFFECTS WAFFLE TEXTURE AND APPEARANCE
+The waffle mix from Vaffelprinsen AS is designed to work with a specific type of butter. Using a different butter — particularly a cheaper alternative with a different fat content, water content, or composition — produces a measurably different result:
+Crispness: The right butter gives the golden waffle its characteristic crisp exterior. A cheaper butter with higher water content produces a softer, less satisfying texture that does not hold through service.
+Colour: Butter quality directly affects the golden colour of the finished waffle. A cheaper butter may produce a paler or less even result.
+Flavour: Butter is a primary flavour carrier in the waffle. A lower-quality butter tastes different, and the customer will notice — particularly repeat customers who know what a Creamy waffle should taste like.
+The specified butter is ordered through ASKO. The product code is provided in the Creamy ordering list. Substitution is not permitted.
+
+CREAM — CONSISTENCY AND TASTE
+Cheaper cream products often have a lower fat content, contain stabilisers or thickeners, or are partially reconstituted. These differences affect the finished dessert in two ways:
+Consistency: Lower-fat or stabiliser-heavy cream does not whip, set, or pour the same way. Desserts that rely on cream for body and texture will be visibly and texturally different — less rich, less stable, more likely to separate or weep during service.
+Taste: Cream is not a neutral carrier — it has its own flavour profile. Cheaper cream tastes different. In a dessert where cream is a major component, the difference is obvious.
+The specified cream is ordered through ASKO. There is no "equivalent but cheaper" option that produces the same result.
+
+CHOCOLATE SPREAD — NO SUBSTITUTE MATCHES NUTELLA
+Creamy uses Nutella as its chocolate spread. This is a tested decision, not a default. Head Office has trialled multiple cheaper chocolate spread alternatives. None of them match the flavour, texture, or customer expectation.
+Customers know what Nutella tastes like. Serving a cheaper alternative and calling it "chocolate spread" may not trigger an immediate complaint, but it changes the product and erodes trust. The cost difference per portion between Nutella and a budget alternative is marginal; the brand damage from a noticeable quality drop is not.
+Nutella is ordered through ASKO. Substitution with any other chocolate spread is not permitted.
+
+FRESH FRUIT AND BERRIES — QUALITY DETERMINES COST, NOT THE OTHER WAY AROUND
+Cheap fruit is not cheap. This is counterintuitive, but it is the most common ingredient false economy in food service:
+Lower-quality fruit and berries have a shorter usable life — often no more than two days before they deteriorate visibly (bruising, softening, discolouration, mould).
+Shorter shelf life means more waste. Fruit that is thrown away after two days costs more per usable portion than better-quality fruit that lasts four or five days.
+Lower-quality fruit also looks worse on the plate. Dessert presentation is a brand standard (see Chapter 2.3 — Non-Negotiable Operating Standards). Bruised strawberries or soft blueberries on a plated dessert undermine the product visually before the customer takes a bite.
+The calculation is straightforward: buy quality fruit from the approved supplier (Egil Jensen, or an approved local alternative — see Chapter 2.7), manage your stock rotation properly (first in, first out), and you will waste less and present better. Buy cheap fruit and you will throw more away, serve a worse-looking product, and spend more in total.
+
+GENERAL QUALITY SPECIFICATION RULES
+(a) No downgrade substitution. Franchisees must not substitute any specified ingredient with a cheaper or lower-grade alternative. This applies even if the packaging looks similar, the product name is similar, or the supplier's salesperson describes it as "equivalent."
+(b) If in doubt, ask. If a franchisee is unsure whether a product matches the specification — for example, if the supplier has updated its packaging and the product code has changed — they must contact Head Office before using it. A quick check prevents a quality failure.
+(c) Taste-test discipline. If a product tastes, looks, or performs differently from normal — even if it is from the approved supplier with the correct product code — stop using it and report to Head Office. Suppliers occasionally change formulations without notice. Head Office needs to know immediately so the issue can be investigated and, if necessary, the specification updated or the supplier challenged.
+(d) Cost is managed through waste reduction, not ingredient quality. If a franchisee's food cost is above target, the solution is never to buy cheaper ingredients. The solution is in waste control, stock management (see Chapter 5.3), portion consistency (not reduction — see Chapter 1.4), and pricing (see Chapter 6.2 — Pricing review framework). Ingredient quality is fixed; everything else is variable.
+
+Roles & Responsibilities
+Creamy Head Office / Creamy Drift AS: Defines and maintains all ingredient specifications. Tests alternatives before approving any specification change. Communicates specification changes to franchisees with clear reasoning and transition timelines. Investigates reports of ingredient quality variation from franchisees or from its own quality checks.
+Franchise Owner / Operator: Purchases only specified ingredients from approved suppliers. Does not substitute, downgrade, or independently trial alternatives. Manages food cost through operational efficiency, not ingredient compromise. Reports any ingredient quality concern to Head Office.
+Unit Manager: Checks deliveries against specifications on receipt — correct product, correct brand, correct quality. Stores ingredients correctly to maximise usable life (particularly fresh fruit, dairy, and chocolate). Manages stock rotation (first in, first out). Reports any ingredient that looks, tastes, or performs differently to the franchisee and Head Office.
+Team Members: Follow recipes using the specified ingredients. Report to the Unit Manager if any ingredient seems different from normal — different taste, different colour, different texture, different packaging. Do not use a product you are unsure about without checking.
+
+Measure, Analyse, Improve
+(a) Ingredient compliance audit. During operational audits, verify that all ingredients in use match the approved specification. Check product labels, brands, and supplier origin. Any non-specified ingredient is a non-negotiable breach (see Chapter 2.3).
+(b) Waste tracking by ingredient category. Monitor waste rates for high-value perishable ingredients (fresh fruit, dairy, cream). High waste rates may indicate poor stock rotation, over-ordering, or inadequate storage — all of which are fixable without touching ingredient quality. Conversely, very low waste rates combined with customer complaints about freshness or appearance may indicate that products are being used beyond their optimal quality window.
+(c) Product consistency monitoring. Periodically compare the finished product across units. If Unit A's golden waffle looks or tastes different from Unit B's, the cause is almost always an ingredient variation, a recipe deviation, or an equipment issue. Investigate systematically rather than assuming "every kitchen is different."
+(d) Supplier quality tracking. Log any instance where an approved ingredient arrives below expected quality (damaged, short-dated, visually substandard). Report centrally so Head Office can address patterns with the supplier.
+
+Tools & Resources
+Approved ingredient specification list (Head Office document — product name, supplier, product code, key quality attributes for each specified ingredient).
+Delivery quality check form (what to inspect on receipt — brand, product code, condition, use-by date, temperature where applicable).
+Waste log template (daily recording of discarded ingredients by category, quantity, and reason).
+Ingredient quality concern report form (for reporting to Head Office when a product does not match expected quality).
+Chapter 2.7 — Approved Supplier List (who supplies what).
+Chapter 2.3 — Non-Negotiable Operating Standards (enforcement framework).
+
+Chocolate, need to be the right percentage of the cocoa that we use, if there is any other percentage it will taste differently.
+Using not the right butter in the waffle mix, will not give you the right crisp on the outside of the waffle, or the right color.
+Using a cheaper Cream will not give you the right consistency or the right taste. 
+Using a cheaper chocolate spread will never taste like Nutella,(we have tried many)
+Dont by cheaper fruits/berries they will not hold more then 2 days and will only cost you more in waste.
+
+
+2.5  Launch marketing
+
+Local launch plan   [YSF ADVISORY — DRAFTED, PENDING REVIEW - COMPLETED FROM NOTES]
+Introduction
+This chapter defines the standard launch plan for every new Creamy unit. A launch is not just an opening day — it is a planned campaign that builds awareness before the doors open, creates an event that draws a crowd on day one, and sustains momentum through the critical first week of trading.
+The temptation for a new franchisee is to be conservative with launch spending — they have just invested in fit-out, equipment, stock, and staff, and the instinct is to protect cash. This is the wrong instinct at the wrong moment. A strong launch generates immediate revenue, creates word-of-mouth, builds the social media content library, and establishes the unit as a local destination from day one. The cost of a strong launch is recovered quickly; the cost of a quiet opening lingers for months.
+The founder's approach has always been to make the opening a big event — give away product, offer meaningful discounts, create a buzz. This chapter codifies that approach into a repeatable framework for every new unit.
+
+Minimum Operating Standards
+PHASE 1 — PRE-LAUNCH (3 WEEKS BEFORE OPENING)
+The launch campaign begins a minimum of three weeks before the opening date. This lead time is non-negotiable — it is how awareness is built so that people know to come on opening day rather than discovering the unit weeks later by accident.
+Week 3 before opening — Announce and build anticipation:
+Announce the opening date across all social media platforms (Instagram, Facebook, TikTok — see Chapter 4.3 for approved platforms). The announcement should include: the opening date, the location, teaser imagery of the fit-out in progress (if available), and a clear statement that this is a new Creamy location.
+Begin paid social media advertising targeting the local catchment area. Geo-targeted ads on Instagram and Facebook are the primary channel. The targeting should align with the demographic profile defined in Chapter 2.2 (15–35 age group, multicultural, evening/weekend culture).
+If the fit-out is visible from the street (which it should be, given the window frontage requirements in Chapter 2.2), ensure the exterior signage and any window branding is in place early so that passing foot traffic begins to register the brand before opening.
+Week 2 before opening — Intensify and detail:
+Increase posting frequency — daily content showing progress, menu previews, team introductions ("meet the team who'll be making your desserts").
+Announce the opening day offer (see Phase 2 below) — this is the hook that converts awareness into footfall.
+Engage with local community accounts, food bloggers, and influencer accounts in the area. [Adnan to confirm: whether Head Office provides a list of local food influencers for each target city, or whether this is the franchisee's responsibility.] Any influencer collaboration must comply with Norwegian advertising law — content must be clearly marked as 'annonse' (see Chapter 4.3 — Social media posting standards, legal section).
+Consider a pre-opening event or soft launch for local community contacts, neighbouring businesses, or local media — [Adnan to confirm: whether a pre-opening soft launch is standard practice or at franchisee discretion].
+Week 1 before opening — Final push:
+Daily countdown content on social media.
+Confirm all operational readiness: equipment tested (Chapter 2.5), stock received and prepped (Chapter 2.7), team fully trained, checklists ready (Chapter 2.3), insurance in place (Chapter 2.6).
+Final paid advertising push — boost the opening day offer post to maximise reach in the final days before opening.
+
+PHASE 2 — OPENING DAY
+The opening day must be an event, not a quiet first day of trading. The goal is maximum footfall, maximum social media content generation, and maximum word-of-mouth.
+Opening day mechanics:
+Free product giveaway. Give away free product on opening day. People love free product — it removes the barrier to trial, fills the unit with customers, creates an atmosphere of generosity and excitement, and generates social media content as customers photograph and share their experience. The giveaway can be structured as: a free item with any purchase, free samples outside the unit, or a free product for the first [Adnan to confirm: number, e.g. 50–100] customers. The specific mechanic should be confirmed with Head Office before launch.
+Big opening day discount. Alongside the giveaway, offer a significant discount across the menu on opening day. This should be a meaningful discount that feels generous — not a token 10% that does not change behaviour. [Adnan to confirm: recommended opening day discount level, e.g. 30–50%.] The discount is a one-day investment in trial, not a precedent for everyday pricing.
+First-week discount (declining). After opening day, continue a lower discount for the remainder of the first week. The discount should step down from the opening day level — still attractive enough to drive repeat visits from opening day customers and to catch people who missed opening day, but lower than the opening day headline offer. [Adnan to confirm: recommended first-week discount level, e.g. 15–20%, and whether it steps down daily or stays flat across the week.]
+Social media content capture. The opening day is the richest content opportunity the unit will have. Capture everything: the queue (if there is one), the team in action, products being made and served, happy customers (with permission — GDPR/personopplysningsloven applies), the atmosphere. This content feeds the social media calendar for weeks afterwards (see Chapter 4.4 — Content calendar guidance). Consider assigning one team member or an external person specifically to photograph and film throughout the day — do not rely on the team to capture content while also serving a busy opening.
+Operational readiness. Opening day will be the busiest day the unit has before it has found its operational rhythm. Staff accordingly — more team members than a normal day, with the franchisee and/or Head Office representative present. Product prep should be significantly above a normal day's forecast. Running out of product on opening day is a reputational disaster. It is better to over-prep and manage waste than to turn customers away.
+
+PHASE 3 — FIRST WEEK
+The first week establishes whether the opening day buzz converts into a sustainable customer base.
+Continue the first-week discount as announced.
+Post opening day content across social media — photos, customer reactions, behind-the-scenes moments. Tag customers who have shared their own content (with permission).
+Monitor and respond to all social media comments, messages, and reviews within the timeframes specified in Chapter 4.3 (Social media posting standards) and Chapter 4.5 (Review/reputation management). First-week reviews are disproportionately influential — they set the tone for the unit's online reputation.

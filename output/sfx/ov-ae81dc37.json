@@ -1,0 +1,37 @@
+{
+  "id": "ov-ae81dc37",
+  "openverse": "ae81dc37-a10f-46f3-8619-9af22a898885",
+  "title": "Page Turn",
+  "creator": "davidbain",
+  "creatorUrl": "https://freesound.org/people/davidbain",
+  "source": "freesound",
+  "landing": "https://freesound.org/people/davidbain/sounds/136778",
+  "licence": "cc0",
+  "licenceVersion": "1.0",
+  "licenceUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+  "needsCredit": false,
+  "credit": "\"Page Turn\" by davidbain (CC0), https://freesound.org/people/davidbain/sounds/136778",
+  "attribution": "\"Page Turn\" by davidbain is marked with CC0 1.0. To view the terms, visit https://creativecommons.org/publicdomain/zero/1.0/.",
+  "tags": [
+    "flip",
+    "page",
+    "paper",
+    "turn"
+  ],
+  "pack": "SFX",
+  "file": "https://cdn.freesound.org/previews/136/136778_2207512-hq.mp3",
+  "fetchedAt": "2026-11-04T20:04:43.687Z",
+  "seconds": 1.676,
+  "onset": 0.1016,
+  "peakAt": 0.9354,
+  "peakDb": -3,
+  "floorDb": -120,
+  "leadDb": -120,
+  "tailDb": -34.4,
+  "clippedSamples": 0,
+  "loudSeconds": 0,
+  "flags": [
+    "ends abruptly: still at -34.4 dBFS when the file stops (cut off, or noise under it); end it earlier with dur and a fadeOut"
+  ],
+  "waveform": "C:\\Users\\Wesley\\agents-office\\output\\sfx\\ov-ae81dc37.png"
+}

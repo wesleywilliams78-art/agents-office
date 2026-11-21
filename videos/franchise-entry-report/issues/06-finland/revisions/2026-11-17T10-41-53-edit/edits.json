@@ -1,0 +1,30 @@
+{
+ "issue": "06-finland",
+ "why": "Fix literal bold markers on cover, doubled advice line, wrapped wage floor label, duplicated CTA and copyright in method.",
+ "base": "videos/franchise-entry-report/issues/06-finland/issue.json",
+ "at": "2026-11-17T10:41:53.606Z",
+ "edits": [
+  {
+   "path": "cover.verdict",
+   "find": "**Finland is open, but the sites sit with a few operators.**",
+   "replace": "Finland is open, but the sites sit with a few operators."
+  },
+  {
+   "path": "regulation.advice",
+   "value": "Check the draft 2027 tax cut and any treaty rate with a Finnish adviser before signing."
+  },
+  {
+   "path": "regulation.wage.floorPre",
+   "value": "PAM pay floor"
+  },
+  {
+   "path": "regulation.wage.floorNote",
+   "value": "From 1 Jun 2026. Evening supplement €1.40 and night €2.37 an hour. Sundays and holidays pay double."
+  },
+  {
+   "path": "days.method",
+   "find": " Which country should we cover next? © 2026 WRW Hospitality (Wesley Williams). Not to be resold, rebranded or redistributed.",
+   "replace": ""
+  }
+ ]
+}
