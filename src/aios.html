@@ -1425,6 +1425,9 @@
   .uspill .usv { text-align: right; letter-spacing: 0; font-size: 10.5px; font-weight: 600; color: var(--ink); font-variant-numeric: tabular-nums; }
   .uspill .hot i { background: var(--red); } .uspill .usv.hot { color: var(--red); }
   .uspill.old { opacity: .6; }
+  /* Review queue pill (21 Nov 2026): shown while anything waits for the OK; opens them one after another */
+  .rqpill { display: inline-flex; align-items: center; gap: 8px; height: 44px; padding: 0 16px; border: 0; border-radius: 99px; background: var(--ink); color: var(--bg); font-size: 10.5px; font-weight: 700; letter-spacing: .12em; cursor: pointer; white-space: nowrap; }
+  .rqpill[hidden] { display: none; } .rqpill b { min-width: 20px; padding: 3px 6px; border-radius: 99px; background: var(--red, #EC3013); color: #fff; font-size: 11px; letter-spacing: 0; text-align: center; }
   /* Health strip (21 Nov 2026): a row under the bar, shown only when something the office leans on is down */
   header.top .hstrip { --hsw: #E0A526; flex-basis: 100%; display: flex; flex-wrap: wrap; align-items: center; gap: 6px; padding: 0 0 12px; }
   header.top .hstrip[hidden] { display: none; }
@@ -1572,7 +1575,7 @@
     <button data-go="clients">Workstreams <span class="n" id="nClients"></span></button>
     <span class="ind" id="sideInd" aria-hidden="true"></span>
   </nav>
-    <div class="right"><div class="uspill" id="usPill" role="status" hidden></div><div class="ccpill" id="ccPill"><button type="button" class="ccopen" id="ccBtn" aria-expanded="false" aria-controls="ccBox" title="Consultants’ Corner: open the player"><span class="ccart" id="ccArt" aria-hidden="true"></span><span class="cctx"><b id="ccTitle">Consultants’ Corner</b><small id="ccSub">Press play</small></span><span class="cceq" aria-hidden="true"><i></i><i></i><i></i><i></i></span></button><button type="button" class="ccplay" id="ccPlay" aria-label="Play Consultants’ Corner"><svg viewBox="0 0 24 24" aria-hidden="true"><path class="pl" d="M8 5.5v13l11-6.5z"/><path class="pa" d="M6.5 5h3.8v14H6.5zM13.7 5h3.8v14h-3.8z"/></svg></button><span class="ccprog" aria-hidden="true"><i id="ccProg"></i></span></div><button id="themeBtn" class="tpill" type="button" title="Switch between automatic, light and dark">Auto</button></div>
+    <div class="right"><button type="button" class="rqpill" id="rqPill" hidden>REVIEW <b>0</b></button><div class="uspill" id="usPill" role="status" hidden></div><div class="ccpill" id="ccPill"><button type="button" class="ccopen" id="ccBtn" aria-expanded="false" aria-controls="ccBox" title="Consultants’ Corner: open the player"><span class="ccart" id="ccArt" aria-hidden="true"></span><span class="cctx"><b id="ccTitle">Consultants’ Corner</b><small id="ccSub">Press play</small></span><span class="cceq" aria-hidden="true"><i></i><i></i><i></i><i></i></span></button><button type="button" class="ccplay" id="ccPlay" aria-label="Play Consultants’ Corner"><svg viewBox="0 0 24 24" aria-hidden="true"><path class="pl" d="M8 5.5v13l11-6.5z"/><path class="pa" d="M6.5 5h3.8v14H6.5zM13.7 5h3.8v14h-3.8z"/></svg></button><span class="ccprog" aria-hidden="true"><i id="ccProg"></i></span></div><button id="themeBtn" class="tpill" type="button" title="Switch between automatic, light and dark">Auto</button></div>
     <div class="subnav" id="navDash" aria-label="Workstreams"></div>
     <div class="hstrip" id="hStrip" role="status" aria-live="polite" hidden></div>
 </header>
@@ -5282,8 +5285,29 @@ const rv = initReview({
   onAnswer: (t, text, say) => send(t, 'answer', { feedback: text }, say),
   onHandover: (t, opts) => api(`/tasks/${encodeURIComponent(t.sid)}/handover`, { method: 'POST', body: opts }).then(r => { poll(); return r; }).catch(e => ({ error: e.message })),
   listAgents: () => S.agents.map(a => ({ id: a.id, name: a.person ? `${a.person.toUpperCase()} · ${a.name}` : a.name })),
+  quick: isQuick,
 });
-let shown = ''; // the one task on the card: after approve or reject the card closes rather than moving on to another
+// Review queue (21 Nov 2026): REVIEW N in the bar (or R) loads every waiting task, oldest first, and steps through them (J/K, Y/N/A, swipe).
+// Quick = a read or report that sends, posts, files and starts nothing on approval, and that no lead sent up unresolved: those can go in one click.
+function isQuick(t) {
+  const has = x => Array.isArray(x) && x.length;
+  return !t.needsOk && t.channel !== 'email' && !t.error && !has(t.decisions) && !has(t.brain) && !has(t.site) && !has(t.handoffs)
+    && t.leadReview?.phase !== 'escalated' && !/^\s*MATRIX ITEMS\b/m.test(String(t.draft || t.result || ''));
+}
+const waiting = () => S.tasks.filter(x => x.state === 'waiting').sort((a, b) => (a.waitingAt || a.addedAt || 0) - (b.waitingAt || b.addedAt || 0));
+function openQueue(first) {
+  const list = waiting(); if (!list.length) return;
+  for (const sid of rv.ids()) if (!list.some(x => x.id === sid)) rv.drop(sid);
+  for (const t of list) rv.push({ ...t, sid: t.id }, { auto: false });
+  rv.open(first ? (x => x.sid === first) : undefined);
+}
+const rqPill = document.getElementById('rqPill');
+rqPill?.addEventListener('click', () => openQueue());
+function paintPill() { const n = S.tasks.filter(x => x.state === 'waiting').length; if (!rqPill) return; rqPill.hidden = !n; rqPill.querySelector('b').textContent = n; rqPill.title = `${n} waiting for your OK. Opens them one after another, oldest first (R).`; }
+document.addEventListener('keydown', e => {
+  if (e.key.toLowerCase() !== 'r' || e.ctrlKey || e.metaKey || e.altKey || rv.isOpen() || /^(INPUT|TEXTAREA|SELECT)$/.test(document.activeElement?.tagName || '') || document.activeElement?.isContentEditable) return;
+  if (waiting().length) { e.preventDefault(); openQueue(); }
+});
 function openReview(id) {
   const t = S.tasks.find(x => x.id === id);
   if (!t) return;
@@ -5291,11 +5315,11 @@ function openReview(id) {
     if (t.state === 'done' && t.result) rv.read({ sid: t.id, state: t.state, nextStep: t.nextStep, handedTo: t.handedTo, handoffFrom: t.handoffFrom, agent: t.agent, dept: t.dept, title: t.title, content: t.result, used: t.used, read: t.read, kindLabel: t.closed ? 'REJECTED · CLOSED' : t.error ? 'COULD NOT COMPLETE' : t.approved ? 'APPROVED' : 'DONE', meta: t.doneAt ? (t.closed ? 'closed ' : 'done ') + ago(t.doneAt) : '' });
     return;
   }
-  if (shown && rv.has(shown)) rv.drop(shown);
-  rv.push({ ...t, sid: t.id }, { auto: false }); shown = t.id; rv.open(x => x.sid === t.id);
+  for (const sid of rv.ids()) if (sid !== t.id) rv.drop(sid); // a single card, even if the queue was open before
+  rv.push({ ...t, sid: t.id }, { auto: false }); rv.open(x => x.sid === t.id);
 }
 document.addEventListener('click', e => { const b = e.target.closest('[data-review]'); if (!b) return; e.preventDefault(); if (b.classList.contains('sent')) return; openReview(b.dataset.review); });
-setInterval(() => { if (shown && rv.has(shown) && !S.tasks.some(x => x.id === shown && x.state === 'waiting')) rv.drop(shown); }, 2000); // decided in the office or the chat meanwhile
+setInterval(() => { for (const sid of rv.ids()) if (!S.tasks.some(x => x.id === sid && x.state === 'waiting')) rv.drop(sid); paintPill(); }, 2000); // decided in the office or the chat meanwhile
 </script>
 </body>
 </html>

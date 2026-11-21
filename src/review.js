@@ -18,6 +18,8 @@ body.dark #rv .rv-box { background: #1B1C21; color: #ECEAE3; border-color: rgba(
 #rv .rv-kind { padding: 4px 8px; border-radius: 99px; background: #F2B84B; color: #151414; }
 #rv .rv-kind.read { background: rgba(127,127,127,.18); color: inherit; }
 #rv .rv-q { margin-left: auto; color: var(--grey); font-weight: 600; }
+#rv .rv-quick { display: flex; align-items: center; gap: 12px; margin: 12px 18px 0; padding: 8px 8px 8px 14px; border-radius: 12px; background: rgba(30,144,112,.10); font: 500 12px/1.4 var(--ui); } #rv .rv-quick[hidden] { display: none; }
+#rv .rv-quick span { flex: 1; } #rv .rv-quick .rv-btn { flex: none; }
 #rv .rv-x { border: 0; background: none; color: inherit; font-size: 20px; line-height: 1; cursor: pointer; padding: 2px 4px; opacity: .6; }
 #rv .rv-x:hover { opacity: 1; }
 #rv .rv-title { font: 400 27px/1.15 var(--serif); padding: 10px 18px 4px; }
@@ -125,11 +127,12 @@ function render(text, esc) {
 
 // head (optional, the AIOS): t => HTML for the header line in place of "NAME · DEPT". glance (optional): t => { reviewed, built, recommend };
 // the card then opens short (those three lines, the decisions, REJECT and APPROVE) and "Show the full result" opens the rest.
-export function initReview({ esc, agentOf, onApprove, onReject, onAnswer, onHandover, listAgents, head, glance }) {
+export function initReview({ esc, agentOf, onApprove, onReject, onAnswer, onHandover, listAgents, head, glance, quick }) {
   const st = document.createElement('style'); st.textContent = CSS; document.head.appendChild(st);
   const el = document.createElement('div'); el.id = 'rv';
   el.innerHTML = `<div class="rv-dim"></div><div class="rv-box" role="dialog" aria-modal="true" aria-labelledby="rvTitle">
     <div class="rv-head"><span class="rv-chip"></span><span class="rv-who"></span><span class="rv-kind"></span><span class="rv-q"></span><button class="rv-x" title="Close (Esc) — it stays waiting">×</button></div>
+    <div class="rv-quick" hidden></div>
     <div class="rv-title" id="rvTitle"></div><div class="rv-meta"></div>
     <div class="rv-body"><div class="rv-gl"></div><div class="doc"></div><button class="rv-more" hidden>Show the full result</button><div class="rv-dec" hidden></div></div>
     <div class="rv-next" hidden></div>
@@ -161,6 +164,8 @@ export function initReview({ esc, agentOf, onApprove, onReject, onAnswer, onHand
     const email = t.needsOk && t.channel === 'email';
     k.textContent = readOnly ? (t.kindLabel || 'DELIVERED') : email ? 'EMAIL · YOUR OK TO DRAFT' : t.needsOk ? 'READY TO SEND · YOUR OK' : 'FOR YOUR REVIEW';
     $('.rv-q').textContent = !readOnly && queue.length > 1 ? `${queue.indexOf(cur) + 1} OF ${queue.length}` : '';
+    $('.rv-q').title = !readOnly && queue.length > 1 ? 'J or → next · K or ← previous · Y approve · N reject · A answer (swipe on the phone)' : '';
+    paintQuick();
     $('#rvTitle').textContent = t.title;
     const bits = [];
     if (t.routine) bits.push(`routine · ${t.when}`);
@@ -262,6 +267,28 @@ export function initReview({ esc, agentOf, onApprove, onReject, onAnswer, onHand
   function openReject(pick) { if (!open(pick)) return false; el.classList.add('rej'); paint(); setTimeout(() => ta.focus(), 30); return true; }
   function read(doc) { readOnly = doc; el.classList.remove('rej', 'ans'); show(); } // { agent, title, content, meta, kindLabel }
 
+  // Review queue (21 Nov 2026): step through the waiting cards; and, when the page says which are quick (a read or report that sends, posts,
+  // files and starts nothing), approve those in one go. Each still goes through onApprove one at a time, exactly as the APPROVE button would.
+  function step(d) {
+    if (readOnly || !cur || busy || el.classList.contains('rej')) return;
+    const i = queue.indexOf(cur), n = queue[i + d]; if (!n) return;
+    cur = n; paint();
+  }
+  const quickOnes = () => (quick && !readOnly ? queue.filter(quick) : []);
+  function paintQuick() {
+    const box = $('.rv-quick'), q = quickOnes();
+    box.hidden = q.length < 2 || el.classList.contains('rej');
+    if (!box.hidden) box.innerHTML = `<span>${q.length} of these only read and report: nothing is sent, posted, filed or started.</span><button class="rv-btn rv-qall">APPROVE THE ${q.length}</button>`;
+  }
+  async function approveQuick() {
+    if (busy) return; const q = quickOnes(); if (q.length < 2) return;
+    busy = true; const say = s => { const w = $('.rv-wait'); w.textContent = s || ''; w.hidden = !s; };
+    let ok = 0;
+    try { for (const t of q) { say(`Approving ${ok + 1} of ${q.length}…`); if (await onApprove(t, null, say) === false) break; ok++; drop(t.sid); } }
+    finally { busy = false; }
+    if (el.classList.contains('on')) say(ok === q.length ? '' : `Approved ${ok} of ${q.length}; the rest are still here.`);
+  }
+
   async function decide(approved) {
     if (!cur || busy) return;
     const t = cur, reason = ta.value.trim(), ans = el.classList.contains('ans'), closeIt = !approved && permOn();
@@ -304,6 +331,7 @@ export function initReview({ esc, agentOf, onApprove, onReject, onAnswer, onHand
     if (b.classList.contains('rv-hand')) return doHand({ to: b.dataset.to });
     if (b.classList.contains('rv-go')) { const v = $('.rv-pick').value; return v ? doHand({ to: v }) : undefined; }
     if (b.classList.contains('rv-ea')) return doHand({ ea: true });
+    if (b.classList.contains('rv-qall')) return approveQuick();
     if (b.classList.contains('rv-yes')) return decide(true);
     if (b.classList.contains('rv-no')) { el.classList.add('rej'); el.classList.remove('ans'); paint(); setTimeout(() => ta.focus(), 30); return; }
     if (b.classList.contains('rv-ans')) { el.classList.add('rej', 'ans'); paint(); setTimeout(() => ta.focus(), 30); return; } // ANSWER shares the reason screen, worded for context instead of rejection
@@ -317,8 +345,19 @@ export function initReview({ esc, agentOf, onApprove, onReject, onAnswer, onHand
     if (!el.classList.contains('on')) return;
     if (e.key === 'Escape') { e.stopPropagation(); if (el.classList.contains('rej') && !readOnly) { el.classList.remove('rej', 'ans'); paint(); } else close(); return; }
     if (e.key === 'Enter' && (e.ctrlKey || e.metaKey) && el.classList.contains('rej')) { e.preventDefault(); decide(false); }
+    const tag = document.activeElement?.tagName || '';
+    if (!readOnly && !el.classList.contains('rej') && !e.ctrlKey && !e.metaKey && !e.altKey && !/^(INPUT|TEXTAREA|SELECT)$/.test(tag)) { // the queue's keys, on the card only
+      const k = e.key.toLowerCase();
+      if (k === 'j' || e.key === 'ArrowRight') { e.preventDefault(); step(1); }
+      else if (k === 'k' || e.key === 'ArrowLeft') { e.preventDefault(); step(-1); }
+      else if (k === 'y') { e.preventDefault(); decide(true); }
+      else if (k === 'n' || k === 'a') { e.preventDefault(); el.classList.add('rej'); el.classList.toggle('ans', k === 'a'); paint(); setTimeout(() => ta.focus(), 30); }
+    }
     e.stopPropagation(); // the office's own shortcuts (P, W, …) stay quiet while the reader is up
   }, true);
+  let sx = 0, sy = 0; // swipe on the phone: left for the next card, right for the one before. Never approves: that stays a tap on APPROVE
+  $('.rv-box').addEventListener('touchstart', e => { const p = e.touches[0]; sx = p.clientX; sy = p.clientY; }, { passive: true });
+  $('.rv-box').addEventListener('touchend', e => { const p = e.changedTouches[0], dx = p.clientX - sx, dy = p.clientY - sy; if (Math.abs(dx) > 70 && Math.abs(dy) < 50) step(dx < 0 ? 1 : -1); }, { passive: true });
 
-  return { push, drop, open, openReject, read, close, count: () => queue.length, isOpen: () => el.classList.contains('on'), has: sid => queue.some(x => x.sid === sid) };
+  return { push, drop, open, openReject, read, close, count: () => queue.length, isOpen: () => el.classList.contains('on'), has: sid => queue.some(x => x.sid === sid), ids: () => queue.map(x => x.sid) };
 }
