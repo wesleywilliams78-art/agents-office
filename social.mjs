@@ -58,6 +58,42 @@ export function streams({ posts, done = {}, social = { tasks: {}, signed: {} }, 
   });
 }
 
+// Six weeks ahead (21 Nov 2026): every post on the calendar from this Monday for six weeks, by workstream and week, each at its stage.
+// A week counts as planned when every workstream that has a post this week has at least one in it too; the goal is all six planned.
+export const STAGES = ['planned', 'needs', 'working', 'built', 'scheduled', 'posted'];
+export function board({ posts, done = {}, social = { tasks: {}, signed: {} }, tasks = [], today = Date.now(), weeks = 6 }) {
+  const from = mondayOf(today), byId = new Map(tasks.map(t => [t.id, t])), todayYmd = ymd(new Date(today));
+  const starts = [...Array(weeks)].map((_, i) => { const d = new Date(from + 'T12:00:00'); d.setDate(d.getDate() + 7 * i); return ymd(d); });
+  const end = (() => { const d = new Date(starts[weeks - 1] + 'T12:00:00'); d.setDate(d.getDate() + 7); return ymd(d); })();
+  const weekOf = date => starts.filter(s => s <= date).pop();
+  const stageOf = p => {
+    const key = keyOf(p), st = p.status || '', t = byId.get(social.tasks[key]);
+    if (done[key] || /posted/.test(st)) return 'posted';
+    if (/scheduled/.test(st)) return 'scheduled';
+    if (social.signed[key] || (/built|approved|drafted|ready/.test(st) && !/not drafted/.test(st))) return 'built';
+    if (t && ['next', 'doing', 'scheduled', 'waiting'].includes(t.state)) return 'working';
+    if (/needs/.test(st)) return 'needs';
+    return 'planned';
+  };
+  const mine = posts.filter(p => p.date >= from && p.date < end).map(p => {
+    const stage = stageOf(p);
+    return { key: keyOf(p), date: p.date, time: p.time || '', where: p.where, format: p.format, idea: p.idea || '', stage, late: p.date < todayYmd && !['posted', 'scheduled'].includes(stage), week: weekOf(p.date) };
+  });
+  const active = new Set(mine.filter(p => p.week === from).map(p => p.where)); // the workstreams running this week
+  const wk = starts.map(s => {
+    const ps = mine.filter(p => p.week === s), by = Object.fromEntries(STAGES.map(k => [k, ps.filter(p => p.stage === k).length]));
+    const missing = [...active].filter(w => !ps.some(p => p.where === w));
+    return { from: s, posts: ps.length, stages: by, late: ps.filter(p => p.late).length, planned: ps.length > 0 && !missing.length, missing };
+  });
+  let ahead = 0; for (const w of wk) { if (!w.planned) break; ahead++; } // weeks planned in a row from this one
+  const gap = wk.find(w => !w.planned);
+  return {
+    from, target: weeks, ahead, nextGap: gap ? gap.from : null, weeks: wk,
+    streams: [...STREAMS, ...[...new Set(mine.map(p => p.where))].filter(w => !STREAMS.some(s => s.id === w)).map(w => ({ id: w, name: w, sub: '', colour: '#8f8f8f' }))] // a calendar `where` with no Social card still gets a row
+      .filter(s => mine.some(p => p.where === s.id)).map(s => ({ id: s.id, name: s.name, sub: s.sub, colour: s.colour, cells: starts.map(w => mine.filter(p => p.where === s.id && p.week === w)) })),
+  };
+}
+
 const DAY = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 /** What the office is asked to do for a card. Written for the Marketing department; the router picks the desk. */
 export function handText(s, p) {

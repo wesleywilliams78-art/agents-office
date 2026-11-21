@@ -107,6 +107,33 @@
   .wa th { text-align: left; font: 500 11px/1 var(--sans, inherit); letter-spacing: .08em; text-transform: uppercase; color: var(--muted, #777); padding: 6px 8px; }
   .wa td { padding: 8px; border-top: 1px solid var(--line); vertical-align: top; }
   .wa select { font: inherit; font-size: 12px; background: transparent; color: inherit; border: 1px solid var(--line); border-radius: 6px; padding: 2px 4px; }
+  /* Six weeks ahead (21 Nov 2026): the content calendar as a board, workstreams down, weeks across, one dot per post at its stage */
+  .sbd { margin-top: 22px; } .sbd:empty { display: none; }
+  .sbd .sbh { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; margin-bottom: 10px; } .sbd .sbh h3 { margin: 0; font: 400 22px/1.1 var(--serif); }
+  .sbd .sbh .sbs { font-size: 12px; color: var(--grey); } .sbd .sbh .sbs b { color: var(--ink); font-weight: 600; } .sbd .sbh .sbs b.r { color: var(--red, #C8553D); }
+  .sbd .sblg { display: flex; flex-wrap: wrap; gap: 4px 14px; margin-bottom: 10px; font-size: 10.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--grey); }
+  .sbd .sblg span { display: inline-flex; align-items: center; gap: 6px; }
+  .sbd .sbw { overflow-x: auto; border: 1px solid var(--line); border-radius: 16px; background: var(--panel); }
+  .sbd table { width: 100%; min-width: 760px; border-collapse: collapse; table-layout: fixed; }
+  .sbd th, .sbd td { padding: 9px 10px; border-top: 1px solid var(--line); text-align: left; vertical-align: top; } .sbd thead th { border-top: 0; }
+  .sbd th:first-child, .sbd td:first-child { width: 190px; } .sbd td:first-child { font-size: 12.5px; font-weight: 600; } .sbd td:first-child small { display: block; font-weight: 400; color: var(--faint); font-size: 10.5px; }
+  .sbd td:first-child i { display: inline-block; width: 8px; height: 8px; border-radius: 2px; margin-right: 7px; background: var(--sc); }
+  .sbd thead th { font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: var(--grey); font-weight: 700; } .sbd thead th small { display: block; letter-spacing: 0; text-transform: none; font-weight: 500; font-size: 11px; color: var(--faint); }
+  .sbd thead th.gap { color: var(--red, #C8553D); } .sbd thead th.now { color: var(--ink); }
+  .sbd td.gap { background: repeating-linear-gradient(135deg, transparent 0 6px, color-mix(in srgb, var(--red, #C8553D) 8%, transparent) 6px 12px); }
+  .sbd .sbc { display: flex; flex-wrap: wrap; gap: 4px; }
+  .sbp { width: 22px; height: 22px; display: inline-grid; place-items: center; padding: 0; border-radius: 7px; border: 1px solid transparent; font: 700 9px/1 var(--ui); color: #fff; cursor: pointer; }
+  .sbp.planned { background: transparent; border-color: var(--line-strong, var(--line)); color: var(--grey); } .sbp.needs { background: var(--red, #C8553D); } .sbp.working { background: #4C7EA8; }
+  .sbp.built { background: #D9A32E; color: #151414; } .sbp.scheduled { background: #16908F; } .sbp.posted { background: var(--ok); }
+  .sbp.late { box-shadow: 0 0 0 2px var(--bg), 0 0 0 3.5px var(--red, #C8553D); } .sbp.on { outline: 2px solid var(--ink); outline-offset: 1px; }
+  .sblg .sbp { width: 12px; height: 12px; border-radius: 4px; cursor: default; }
+  .sbd .sbdet { margin-top: 10px; padding: 10px 14px; border-left: 3px solid var(--ink); background: var(--soft); border-radius: 0 10px 10px 0; font-size: 12.5px; line-height: 1.5; color: var(--grey); } .sbd .sbdet b { color: var(--ink); } .sbd .sbdet:empty { display: none; }
+  .ovGauge { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; padding: 14px 20px; color: var(--ink); text-decoration: none; } .ovGauge:empty { display: none; }
+  .ovGauge .gk { font-size: 10.5px; letter-spacing: .12em; text-transform: uppercase; font-weight: 700; color: var(--grey); }
+  .ovGauge .gd { width: 9px; height: 9px; border-radius: 50%; background: #D9A32E; flex: none; } .ovGauge.met .gd { background: var(--ok); }
+  .ovGauge .gt { font-size: 14px; } .ovGauge .gt b { font-weight: 600; } .ovGauge .gt .r { color: var(--red, #C8553D); }
+  .ovGauge .gw { display: inline-flex; gap: 3px; } .ovGauge .gw i { width: 18px; height: 6px; border-radius: 3px; background: var(--line-strong, var(--line)); } .ovGauge .gw i.on { background: var(--ok); }
+  .ovGauge .go { margin-left: auto; font-size: 10.5px; letter-spacing: .12em; font-weight: 700; color: var(--grey); } .ovGauge:hover .go { color: var(--ink); }
   .sogrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 10px; }
   .so { padding: 13px 14px 12px; border-top: 3px solid var(--sc); display: flex; flex-direction: column; gap: 7px; }
   .so .soh { display: flex; align-items: baseline; gap: 8px; } .so .son { font-weight: 700; font-size: 13.5px; } .so .sos { font-size: 11px; color: var(--grey); }
@@ -1608,6 +1635,7 @@
     <div id="peOut"></div>
   </div>
   <div class="ovCard needs" id="needs" data-cat="overview"></div>
+  <a class="ovCard ovGauge" id="ovGauge" data-cat="overview" href="#office/marketing"></a>
   <div class="cw" id="week" data-cat="overview"></div>
   <div class="ovCard ovProj" id="ovProj" data-cat="overview"></div>
 
@@ -1679,6 +1707,7 @@
     </div>
     <div class="msg" id="soMsg"></div>
     <div class="sogrid" id="soGrid"></div>
+    <div class="sbd" id="soBoard"></div>
   </section>
   <div class="hxd-w" id="hxDr" data-cat="hierarchy" aria-hidden="true"></div>
 
@@ -2208,7 +2237,7 @@ async function setCat(c, push = true) {
 }
 
 // Social (V3.12, 3 Nov): the next post in each workstream. The server works out the state; this draws it and sends the buttons.
-async function loadSocial() { try { S.social = (await api('/social')).streams; } catch (e) { $('soMsg').className = 'msg err'; $('soMsg').textContent = 'Could not read the content calendar: ' + e.message; return; } renderSocial(); renderNav(); }
+async function loadSocial() { loadBoard(); try { S.social = (await api('/social')).streams; } catch (e) { $('soMsg').className = 'msg err'; $('soMsg').textContent = 'Could not read the content calendar: ' + e.message; return; } renderSocial(); renderNav(); }
 // Social arrives like the rest of Marketing (8 Nov 2026): its heading and cards sit just out of sight, then rise one after another as they scroll into view,
 // once per visit to Marketing. Straight after Marketing opens they wait for the desks and trail to finish first. The 15-second refresh never replays them.
 const soRevealed = new Set(); let soEnterAt = 0, soTimer = 0;
@@ -2258,6 +2287,34 @@ function renderSocial() {
   }).join('');
   soWatch();
 }
+// Six weeks ahead (21 Nov 2026): /api/social/board drawn as a board under Social, and as one line on the Overview. Read every two minutes and
+// whenever Social reloads. Read-only: a post's stage comes from the calendar, its tick and its Social card, so it moves when they do.
+const SB_STAGE = { planned: 'Planned', needs: 'Needs you', working: 'Office on it', built: 'Built', scheduled: 'Scheduled', posted: 'Posted' };
+const sbDay = (d, o) => new Date(d + 'T12:00:00').toLocaleDateString('en-GB', o);
+async function loadBoard() { try { S.board = await api('/social/board'); } catch { return; } renderBoard(); renderGauge(); }
+function renderBoard() {
+  const b = S.board, box = $('soBoard'); if (!b || !box) return;
+  const now = b.weeks[0], late = now ? now.late : 0, det = S.sbSel && b.streams.flatMap(s => s.cells.flat()).find(p => p.key === S.sbSel);
+  const head = b.weeks.map((w, i) => `<th class="${!w.planned ? 'gap' : i === 0 ? 'now' : ''}">${i === 0 ? 'This week' : 'W/c ' + sbDay(w.from, { day: 'numeric', month: 'short' })}<small>${w.posts ? `${w.posts} post${w.posts > 1 ? 's' : ''}${w.stages.built + w.stages.scheduled + w.stages.posted ? ` · ${w.stages.built + w.stages.scheduled + w.stages.posted} ready` : ''}` : 'nothing planned'}</small></th>`).join('');
+  const rows = b.streams.map(s => `<tr><td style="--sc:${esc(s.colour)}"><i></i>${esc(s.name)}${s.sub ? `<small>${esc(s.sub)}</small>` : ''}</td>${s.cells.map((c, i) => {
+    const gap = !c.length && !b.weeks[i].planned;
+    return `<td class="${gap ? 'gap' : ''}"><div class="sbc">${c.map(p => `<button type="button" class="sbp ${p.stage}${p.late ? ' late' : ''}${S.sbSel === p.key ? ' on' : ''}" data-sbp="${esc(p.key)}" title="${esc(`${sbDay(p.date, { weekday: 'short', day: 'numeric', month: 'short' })}${p.time ? ' ' + p.time : ''} · ${p.format} · ${SB_STAGE[p.stage]}${p.late ? ' · overdue' : ''}`)}">${esc(sbDay(p.date, { weekday: 'short' }).slice(0, 2))}</button>`).join('')}</div></td>`;
+  }).join('')}</tr>`).join('');
+  box.innerHTML = `<div class="sbh"><h3>Six weeks ahead</h3><span class="sbs"><b>${b.ahead} of ${b.target}</b> weeks planned${b.nextGap ? ` · next gap <b class="r">w/c ${esc(sbDay(b.nextGap, { day: 'numeric', month: 'short' }))}</b>` : ''}${late ? ` · <b class="r">${late} overdue</b> this week` : ''}</span></div>
+    <div class="sblg">${Object.entries(SB_STAGE).map(([k, v]) => `<span><span class="sbp ${k}"></span>${v}</span>`).join('')}<span><span class="sbp planned late"></span>Overdue</span></div>
+    <div class="sbw"><table><thead><tr><th>Workstream</th>${head}</tr></thead><tbody>${rows}</tbody></table></div>
+    <div class="sbdet">${det ? `<b>${esc(sbDay(det.date, { weekday: 'long', day: 'numeric', month: 'long' }))}${det.time ? ' · ' + esc(det.time) : ''} · ${esc(det.where)}</b><br>${esc(det.format)} · <b>${SB_STAGE[det.stage]}</b>${det.late ? ' · overdue' : ''}${det.idea ? '<br>' + esc(det.idea) : ''}` : ''}</div>`;
+}
+function renderGauge() {
+  const b = S.board, el = $('ovGauge'); if (!b || !el) return;
+  const late = b.weeks[0] ? b.weeks[0].late : 0;
+  el.classList.toggle('met', b.ahead >= b.target);
+  el.innerHTML = `<span class="gd"></span><span class="gk">Content</span><span class="gt"><b>${b.ahead} of ${b.target}</b> weeks planned ahead${b.nextGap ? ` · next gap w/c ${esc(sbDay(b.nextGap, { day: 'numeric', month: 'short' }))}` : ''}${late ? ` · <span class="r">${late} overdue this week</span>` : ''}</span><span class="gw">${b.weeks.map(w => `<i class="${w.planned ? 'on' : ''}"></i>`).join('')}</span><span class="go">OPEN THE BOARD →</span>`;
+  el.title = 'A week counts as planned when every workstream running this week has a post in it. Opens the board under Marketing.';
+}
+$('ovGauge')?.addEventListener('click', () => setTimeout(() => $('soBoard')?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 700));
+document.addEventListener('click', e => { const p = e.target.closest('[data-sbp]'); if (!p) return; S.sbSel = S.sbSel === p.dataset.sbp ? '' : p.dataset.sbp; renderBoard(); });
+loadBoard(); setInterval(() => { if (!document.hidden) loadBoard(); }, 120000);
 document.addEventListener('click', async e => {
   const el = e.target.closest('[data-sohand],[data-sosign],[data-sounsign],[data-soposted],[data-soopen],[data-soidea]'); if (!el) return;
   if (el.dataset.soidea !== undefined) { el.classList.toggle('open'); return; }

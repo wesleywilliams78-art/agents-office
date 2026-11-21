@@ -1721,6 +1721,8 @@ const server = http.createServer(async (req, res) => {
       const list = social.streams({ posts: weekpack.posts(ROOT, BRAIN), done: calendarDone(), social: social.load(DATA), tasks: load() });
       return json(res, 200, { streams: list.map(s => s.task ? { ...s, task: { ...s.task, agentName: agentName(s.task.agent) } } : s) });
     }
+    if (url.pathname === '/api/social/board' && req.method === 'GET') // six weeks ahead: every post by workstream and week, at its stage (21 Nov 2026)
+      return json(res, 200, social.board({ posts: weekpack.posts(ROOT, BRAIN), done: calendarDone(), social: social.load(DATA), tasks: load() }));
     if (url.pathname.startsWith('/api/social/') && req.method === 'POST') { // hand · sign: the card's buttons (posted is the calendar's own tick)
       const act = url.pathname.slice(12), { key, on } = await body(req), st = social.load(DATA);
       const s = social.streams({ posts: weekpack.posts(ROOT, BRAIN), done: calendarDone(), social: st, tasks: load() }).find(x => x.key === key); // same ticks as the cards, or the "next" post differs
